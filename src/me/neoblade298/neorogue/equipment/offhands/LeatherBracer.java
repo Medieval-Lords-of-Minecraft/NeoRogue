@@ -38,8 +38,7 @@ public class LeatherBracer extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new LeatherBracerInstance(this, p));
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new LeatherBracerInstance(this));
 	}
 
 	@Override
@@ -48,14 +47,12 @@ public class LeatherBracer extends Equipment {
 	}
 
 	private class LeatherBracerInstance implements TriggerAction {
-		private Player p;
 		private int count = instances;
 		private ItemStack icon;
 		private Equipment eq;
 		private String buffId = UUID.randomUUID().toString();
 
-		public LeatherBracerInstance(Equipment eq, Player p) {
-			this.p = p;
+		public LeatherBracerInstance(Equipment eq) {
 			icon = item.clone();
 			icon.setAmount(count);
 			this.eq = eq;
@@ -67,6 +64,7 @@ public class LeatherBracer extends Equipment {
 			if (ev.isNullified()) {
 				return TriggerResult.keep();
 			}
+			Player p = data.getPlayer();
 			Sounds.block.play(p, p);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));

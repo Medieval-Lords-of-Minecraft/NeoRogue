@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +26,7 @@ public class Lethality extends Equipment {
 	
 	public Lethality(boolean isUpgraded) {
 		super(ID, "Lethality", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
 		thres = isUpgraded ? 30 : 40;
 		inc = isUpgraded ? 40 : 25;
 	}
@@ -35,19 +37,25 @@ public class Lethality extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			if (data.getStamina() < thres) return TriggerResult.keep();
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			String buffId = UUID.randomUUID().toString();
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				if (data.getStamina() < thres) return TriggerResult.keep();
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc)
+				GlossaryTag.POWER.tag(this) + ". Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc)
 				+ " while above " + DescUtil.yellow(thres) + " stamina.");
 	}
 }

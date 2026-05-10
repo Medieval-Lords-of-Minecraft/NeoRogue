@@ -107,7 +107,6 @@ public class BlightTendril extends Equipment {
 
 	private class BlightTendrilProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private String statusName;
 
 		public BlightTendrilProjectile(PlayerFightData data, Equipment eq, int slot, String statusName) {
@@ -115,13 +114,12 @@ public class BlightTendril extends Equipment {
 			this.homing(0.02); // Light homing
 			this.blocksPerTick(0.2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.statusName = statusName;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -134,7 +132,7 @@ public class BlightTendril extends Equipment {
 			// Mark the enemy with custom status
 			FightData fd = FightInstance.getFightData(target);
 			if (!fd.hasStatus(statusName)) {
-				Sounds.infect.play(p, target);
+				Sounds.infect.play(data.getPlayer(), target);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 				fd.applyStatus(s, data, 1, 160); // 8 seconds duration
 			}
@@ -143,7 +141,7 @@ public class BlightTendril extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			// Set homing target to nearest enemy
-			LivingEntity nearest = TargetHelper.getNearest(p, tp);
+			LivingEntity nearest = TargetHelper.getNearest(data.getPlayer(), tp);
 			if (nearest != null) {
 				proj.setHomingTarget(nearest);
 			}

@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -80,7 +79,6 @@ public class WarningShot extends Equipment {
 	
 	private class WarningShotProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
@@ -88,13 +86,12 @@ public class WarningShot extends Equipment {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.blocksPerTick(2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -105,10 +102,10 @@ public class WarningShot extends Equipment {
 			if (proj.getLocation().getY() >= b.getLocation().getY()) {
 				loc = loc.add(0, 2, 0);
 			}	
-			Sounds.fire.play(p, loc);
+			Sounds.fire.play(data.getPlayer(), loc);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 
-			LinkedList<LivingEntity> ents = TargetHelper.getEntitiesInRadius(p, loc, tp);
+			LinkedList<LivingEntity> ents = TargetHelper.getEntitiesInRadius(data.getPlayer(), loc, tp);
 			for (LivingEntity ent : ents) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
@@ -118,7 +115,7 @@ public class WarningShot extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 		}
 
 		@Override

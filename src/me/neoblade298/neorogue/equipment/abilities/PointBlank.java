@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -27,7 +29,7 @@ public class PointBlank extends Equipment {
 	
 	public PointBlank(boolean isUpgraded) {
 		super(ID, "Point Blank", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 0, 0));
 		thres = isUpgraded ? 7 : 5;
 		damage = isUpgraded ? 25 : 15;
 	}
@@ -38,22 +40,28 @@ public class PointBlank extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			DamageMeta dm = ev.getMeta();
-			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
-			IProjectileInstance ip = dm.getProjectile();
-			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			String buffId = UUID.randomUUID().toString();
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				DamageMeta dm = ev.getMeta();
+				if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+				IProjectileInstance ip = dm.getProjectile();
+				if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
+				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE_SLAB,
-				"Passive. Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
+				GlossaryTag.POWER.tag(this) + ". Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
 				DescUtil.yellow(damage) + ".");
 	}
 }

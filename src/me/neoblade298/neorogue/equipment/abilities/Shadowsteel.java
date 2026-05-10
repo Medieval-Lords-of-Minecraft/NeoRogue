@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -48,7 +49,7 @@ public class Shadowsteel extends Equipment {
 
 	public Shadowsteel(boolean isUpgraded) {
 		super(ID, "Shadowsteel", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(45, 30, 0, 0));
 		damage = isUpgraded ? 350 : 250;
 	}
 
@@ -58,9 +59,11 @@ public class Shadowsteel extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
-		LinkedList<Location> locationQueue = new LinkedList<Location>();
-		ActionMeta cooldown = new ActionMeta();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			LinkedList<Location> locationQueue = new LinkedList<Location>();
+			ActionMeta cooldown = new ActionMeta();
 		
 		// Task to track player position every half second and display shadow ball
 		data.addTask(new BukkitRunnable() {
@@ -83,7 +86,7 @@ public class Shadowsteel extends Equipment {
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
 		
 		// Trigger when dealing physical damage
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 			Player p = data.getPlayer();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
@@ -118,14 +121,17 @@ public class Shadowsteel extends Equipment {
 			Sounds.attackSweep.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
 			
-			return TriggerResult.keep();
-		});
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
-				"Passive. A ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
+				GlossaryTag.POWER.tag(this) + ". A ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage " + DescUtil.white("(2s cooldown)") + ", deal " + GlossaryTag.DARK.tag(this, damage, true) + 
 				" damage in a line from the ball to " + DescUtil.white(3) + " blocks in front of you and teleport the ball there.");
 	}

@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -60,7 +59,6 @@ public class StonyWand extends Equipment {
 	}
 	
 	private class StonyWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private StonyWand eq;
 		private int slot;
@@ -69,26 +67,25 @@ public class StonyWand extends Equipment {
 			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			StonyWand.hit.play(p, loc);
+			StonyWand.hit.play(data.getPlayer(), loc);
 			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, conc, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			start.play(p, proj.getLocation());
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

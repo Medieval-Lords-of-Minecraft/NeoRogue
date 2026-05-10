@@ -105,7 +105,6 @@ public class SadisticNature extends Equipment {
 
 	private class SadisticNatureProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private HashSet<LivingEntity> hitEntities = new HashSet<>();
@@ -113,7 +112,6 @@ public class SadisticNature extends Equipment {
 	public SadisticNatureProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, range, 1); // -1 = infinite pierce
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.pierce(-1);
@@ -121,7 +119,7 @@ public class SadisticNature extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -165,7 +163,7 @@ public class SadisticNature extends Equipment {
 			// Spawn trap at block location
 			initTrap(blockLoc, data, eq, slot);
 			
-			Sounds.anvil.play(p, blockLoc);
+			Sounds.anvil.play(data.getPlayer(), blockLoc);
 		}
 
 		@Override

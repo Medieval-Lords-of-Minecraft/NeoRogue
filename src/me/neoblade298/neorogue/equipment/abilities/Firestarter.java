@@ -75,7 +75,6 @@ public class Firestarter extends Equipment {
 	
 	private class FirestarterProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 
@@ -84,14 +83,13 @@ public class Firestarter extends Equipment {
 			this.size(0.2, 0.2);
 			this.pierce(-1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -106,6 +104,7 @@ public class Firestarter extends Equipment {
 		}
 		
 		private void explode(Location loc) {
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			explode.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {

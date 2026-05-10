@@ -115,7 +115,6 @@ public class FlashfireVolley extends Equipment {
 	
 	private class FlashfireVolleyProjectile extends Projectile {
 		private static ParticleContainer trail = new ParticleContainer(Particle.FLAME).count(5).spread(0.2, 0.2);
-		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
 		private int slot;
@@ -123,7 +122,6 @@ public class FlashfireVolley extends Equipment {
 
 		public FlashfireVolleyProjectile(PlayerFightData data, AmmunitionInstance ammo, int slot, ActionMeta hitEnemies) {
 			super(1, 10, 1);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.ammo = ammo;
 			this.slot = slot;
@@ -132,7 +130,7 @@ public class FlashfireVolley extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			dm.addDamageSlice(new DamageSlice(data, fireDamage, DamageType.FIRE, DamageStatTracker.of(id + slot, FlashfireVolley.this)));
 			ammo.onStart(proj, false);
@@ -141,7 +139,7 @@ public class FlashfireVolley extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			fire.play(p, hit.getEntity().getLocation());
+			fire.play(data.getPlayer(), hit.getEntity().getLocation());
 			ammo.onHit(proj, meta, hit.getEntity());
 			
 			// Check if this enemy was hit by the initial AoE
@@ -154,8 +152,8 @@ public class FlashfireVolley extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			trail.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			trail.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 	}
 

@@ -40,7 +40,7 @@ public class WoodenWand extends Equipment {
 	public WoodenWand(boolean isUpgraded) {
 		super(
 				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 30 : 20, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 35 : 25, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
@@ -69,7 +69,6 @@ public class WoodenWand extends Equipment {
 	}
 	
 	private class WoodenWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private WoodenWand eq;
 		private int slot;
@@ -77,7 +76,6 @@ public class WoodenWand extends Equipment {
 		public WoodenWandProjectile(PlayerFightData data, WoodenWand eq, int slot) {
 			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -85,18 +83,18 @@ public class WoodenWand extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			WoodenWand.hit.play(p, loc);
+			WoodenWand.hit.play(data.getPlayer(), loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			tickSound.play(p, proj.getLocation());
+			tickSound.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

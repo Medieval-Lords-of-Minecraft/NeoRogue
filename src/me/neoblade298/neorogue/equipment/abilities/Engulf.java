@@ -41,7 +41,7 @@ public class Engulf extends Equipment {
 
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0, tp.range));
+				EquipmentProperties.ofUsable(15, 5, 0, 0, tp.range));
 		damage = isUpgraded ? 60 : 90;
 		thres = isUpgraded ? 300 : 500;
 	}
@@ -52,43 +52,45 @@ public class Engulf extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			HashMap<DamageType, Double> dmg = ev.getMeta().getPostMitigationDamage();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-			if (!dmg.containsKey(DamageType.FIRE))
+			ActionMeta am = new ActionMeta();
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				DealDamageEvent ev = (DealDamageEvent) in2;
+				HashMap<DamageType, Double> dmg = ev.getMeta().getPostMitigationDamage();
+				if (!dmg.containsKey(DamageType.FIRE))
+					return TriggerResult.keep();
+				am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
+				if (am.getCount() >= thres) {
+					am.addCount(-thres);
+					data.addTask(new BukkitRunnable() {
+						private int count = 0;
+						public void run() {
+							Player p = data.getPlayer();
+							Sounds.fire.play(p, p);
+							circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
+							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
+										DamageStatTracker.of(id + slot, Engulf.this)), ent);
+							}
+							if (++count >= 3) {
+								cancel();
+							}
+						}
+					}.runTaskTimer(NeoRogue.inst(), 20, 20));
+				}
 				return TriggerResult.keep();
-			am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
+			});
 
-			if (am.getCount() >= thres) {
-				am.addCount(-thres);
-				data.addTask(new BukkitRunnable() {
-					private int count = 0;
-
-					public void run() {
-						Player p = data.getPlayer();
-						Sounds.fire.play(p, p);
-						circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
-						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
-									DamageStatTracker.of(id + slot, Engulf.this)), ent);
-						}
-
-						if (++count >= 3) {
-							cancel();
-						}
-					}
-				}.runTaskTimer(NeoRogue.inst(), 20, 20));
-			}
-			return TriggerResult.keep();
+			return TriggerResult.remove();
 		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Passive. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
+				GlossaryTag.POWER.tag(this) + ". Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ".");
 	}

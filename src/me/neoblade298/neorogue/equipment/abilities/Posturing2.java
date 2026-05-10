@@ -8,6 +8,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -30,7 +31,7 @@ public class Posturing2 extends Equipment {
 	
 	public Posturing2(boolean isUpgraded) {
 		super(ID, "Posturing II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 0, 0));
 		time = 6;
 		inc = isUpgraded ? 8 : 6;
 	}
@@ -41,39 +42,45 @@ public class Posturing2 extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction act = new StandardPriorityAction(id);
-		act.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (!p.isSneaking()) return TriggerResult.keep();
-			act.addCount(1);
-			if (act.getCount() >= time) {
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
-				act.addCount(-time);
-			}
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			Player p = data.getPlayer();
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			for (IProjectileInstance ipi : ev.getInstances()) {
-				if (ipi instanceof ProjectileInstance) {
-					ProjectileInstance inst = (ProjectileInstance) ipi;
-					double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
-					inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
+			StandardPriorityAction act = new StandardPriorityAction(id);
+			act.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (!p.isSneaking()) return TriggerResult.keep();
+				act.addCount(1);
+				if (act.getCount() >= time) {
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+					data.applyStatus(StatusType.FOCUS, data, 1, -1);
+					act.addCount(-time);
 				}
-			}
-			return TriggerResult.keep();
-		});
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.PLAYER_TICK, act);
+
+			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
+				Player p = data.getPlayer();
+				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in3;
+				for (IProjectileInstance ipi : ev.getInstances()) {
+					if (ipi instanceof ProjectileInstance) {
+						ProjectileInstance inst = (ProjectileInstance) ipi;
+						double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
+						inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
+					}
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				"Passive. Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
 				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc, true) + " damage per stack of " + GlossaryTag.FOCUS.tag(this) +
 				", up to " + DescUtil.white(4) + ". This bonus is doubled if the projectile is fired while crouching.");
 	}

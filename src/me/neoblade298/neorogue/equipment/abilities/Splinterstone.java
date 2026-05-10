@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.Cone;
@@ -74,7 +73,6 @@ public class Splinterstone extends Equipment {
 	}
 
 	private class SplinterstoneProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
@@ -83,12 +81,11 @@ public class Splinterstone extends Equipment {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -99,8 +96,8 @@ public class Splinterstone extends Equipment {
 			LivingEntity ent = hit.getEntity();
 			hit.applyStatus(StatusType.CONCUSSED, data, conc, -1);
 			cone.play(tick, ent.getLocation(), new LocalAxes(left, up, forward), tick);
-			sc.play(p, ent.getLocation());
-			for (LivingEntity tmp : TargetHelper.getEntitiesInCone(p, ent.getLocation(), forward, tp)) {
+			sc.play(data.getPlayer(), ent.getLocation());
+			for (LivingEntity tmp : TargetHelper.getEntitiesInCone(data.getPlayer(), ent.getLocation(), forward, tp)) {
 				if (tmp == hit.getEntity())
 					continue;
 				FightInstance.dealDamage(new DamageMeta(data, pierce, DamageType.PIERCING,
@@ -110,7 +107,7 @@ public class Splinterstone extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.EARTHEN, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}

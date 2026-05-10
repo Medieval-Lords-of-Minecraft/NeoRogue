@@ -64,7 +64,6 @@ public class FlashMark extends Equipment {
 	}
 	
 	private class FlashMarkProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -73,7 +72,6 @@ public class FlashMark extends Equipment {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.slot = slot;
 			this.eq = eq;
 			this.ignore(false, false, true);
@@ -83,7 +81,7 @@ public class FlashMark extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -98,6 +96,7 @@ public class FlashMark extends Equipment {
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
+			Player p = data.getPlayer();
 			Location startLoc = p.getLocation().add(0, 1, 0);
 			Location endLoc = b.getLocation();
 			

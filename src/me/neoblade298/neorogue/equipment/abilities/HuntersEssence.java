@@ -41,7 +41,7 @@ public class HuntersEssence extends Equipment {
 	
 	public HuntersEssence(boolean isUpgraded) {
 		super(ID, "Hunter's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 40, 0, 0));
 		stamina = isUpgraded ? 30 : 20;
 		damageBuff = isUpgraded ? 0.10 : 0.05;
 		focusChance = isUpgraded ? 0.60 : 0.30;
@@ -53,21 +53,22 @@ public class HuntersEssence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta count = new ActionMeta();
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		
-		// When player kills an enemy, drop a collectable stack at their location
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			KillEvent ev = (KillEvent) in;
-			Location deathLoc = ev.getTarget().getLocation();
-			
-			// Create a collectible marker at death location
-			data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, count, icon));
-			
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta count = new ActionMeta();
+			ItemStack icon = item.clone();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				KillEvent ev = (KillEvent) in2;
+				Location deathLoc = ev.getTarget().getLocation();
+				data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, count, icon));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private class HuntersEssenceStack extends Marker {
@@ -141,7 +142,7 @@ public class HuntersEssence extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				"Passive. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
+				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina, " + 
 				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage permanently, and has a " +
 				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ".");

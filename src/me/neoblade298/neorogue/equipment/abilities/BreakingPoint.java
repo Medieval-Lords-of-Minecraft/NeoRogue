@@ -46,7 +46,6 @@ public class BreakingPoint extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
@@ -72,6 +71,7 @@ public class BreakingPoint extends Equipment {
 				}
 				task = new BukkitRunnable() {
 					public void run() {
+						Player p = data.getPlayer();
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
 						Util.msg(p, hoverable.append(Component.text(" was refreshed", NamedTextColor.GRAY)));
@@ -81,7 +81,7 @@ public class BreakingPoint extends Equipment {
 				am.setTask(task);
 				if (am.getDouble() <= 0)
 					return TriggerResult.keep();
-				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
+				Shield shield = data.addPermanentShield(data.getPlayer().getUniqueId(), am.getDouble(), true);
 				am.setObject(shield);
 			}
 			return TriggerResult.keep();
@@ -92,6 +92,7 @@ public class BreakingPoint extends Equipment {
 			Shield shield = (Shield) am.getObject();
 			if (shield.getAmount() <= shields / 2) {
 				// Gain damage buff
+				Player p = data.getPlayer();
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this)));
 				Sounds.blazeDeath.play(p, p);
 				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));

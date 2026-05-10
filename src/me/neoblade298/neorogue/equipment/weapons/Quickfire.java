@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -52,7 +51,6 @@ public class Quickfire extends Equipment {
 	
 	private class QuickfireProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private AmmunitionInstance ammo;
 		private Equipment eq;
 		private int slot;
@@ -62,7 +60,6 @@ public class Quickfire extends Equipment {
 			super(properties.get(PropertyType.RANGE), 1);
 			setBowDefaults();
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
@@ -70,8 +67,8 @@ public class Quickfire extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
@@ -81,7 +78,7 @@ public class Quickfire extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;

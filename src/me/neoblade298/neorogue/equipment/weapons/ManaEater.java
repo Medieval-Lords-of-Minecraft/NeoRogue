@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -60,7 +59,6 @@ public class ManaEater extends Equipment {
 	}
 	
 	private class ManaEaterProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private ManaEater eq;
 		private int slot;
@@ -68,7 +66,6 @@ public class ManaEater extends Equipment {
 		public ManaEaterProjectile(PlayerFightData data, ManaEater eq, int slot) {
 			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -76,18 +73,18 @@ public class ManaEater extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			ManaEater.hit.play(p, loc);
+			ManaEater.hit.play(data.getPlayer(), loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			tickSound.play(p, proj.getLocation());
+			tickSound.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

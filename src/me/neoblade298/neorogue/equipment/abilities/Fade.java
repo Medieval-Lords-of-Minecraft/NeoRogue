@@ -3,9 +3,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -19,14 +20,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Fade extends Equipment {
 	private static final String ID = "Fade";
-	private int duration, cooldown;
+	private int duration;
 	
 	public Fade(boolean isUpgraded) {
 		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 7 : 10, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
 		duration = 2;
-		cooldown = (int) properties.get(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -35,27 +34,31 @@ public class Fade extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
-		
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
-		inst.setAction((pdata, in) -> {
-			if (!inst.canUse()) return TriggerResult.keep();
-			inst.setNextUse(System.currentTimeMillis() + (1000 * cooldown));
-			data.applyStatus(StatusType.STEALTH, data, 1, 60);
-			return TriggerResult.keep();
-		});
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, inst);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PRE_RECEIVE_STATUS, (pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
+				ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
+				return TriggerResult.keep();
+			});
+
+			StandardPriorityAction inst = new StandardPriorityAction(ID);
+			inst.setAction((pdata3, in3) -> {
+				data.applyStatus(StatusType.STEALTH, data, 1, 60);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
+				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
 				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

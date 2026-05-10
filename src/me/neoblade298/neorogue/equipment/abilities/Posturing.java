@@ -11,9 +11,11 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -29,7 +31,7 @@ public class Posturing extends Equipment {
 	
 	public Posturing(boolean isUpgraded) {
 		super(ID, "Posturing", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 5, 0, 0));
 		time = isUpgraded ? 3 : 4;
 		inc = isUpgraded ? 5 : 3;
 	}
@@ -45,34 +47,40 @@ public class Posturing extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ItemStack icon = item.clone();
-		String buffId = UUID.randomUUID().toString();
-		StandardPriorityAction act = new StandardPriorityAction(id);
-		act.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (!p.isSneaking()) return TriggerResult.keep();
-			act.addCount(1);
-			if (act.getCount() >= time) {
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
-				act.addCount(-time);
-				if (act.getBool()) {
-					icon.setAmount(icon.getAmount() + 1);
-					p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ItemStack icon = item.clone();
+			String buffId = UUID.randomUUID().toString();
+			StandardPriorityAction act = new StandardPriorityAction(id);
+			act.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (!p.isSneaking()) return TriggerResult.keep();
+				act.addCount(1);
+				if (act.getCount() >= time) {
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+					act.addCount(-time);
+					if (act.getBool()) {
+						icon.setAmount(icon.getAmount() + 1);
+						p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
+					}
+					else {
+						act.setBool(true);
+					}
 				}
-				else {
-					act.setBool(true);
-				}
-			}
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.PLAYER_TICK, act);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				"Passive. Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, increase your damage by " + DescUtil.yellow(inc) + ".");
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, increase your damage by " + DescUtil.yellow(inc) + ".");
 	}
 }

@@ -135,7 +135,6 @@ public class PhantasmalKiller extends Equipment {
 	
 	private class PhantasmalKillerProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private PhantasmalKiller eq;
 		private int slot;
 		private ActionMeta attacks;
@@ -149,7 +148,6 @@ public class PhantasmalKiller extends Equipment {
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.eq = eq;
-			this.p = data.getPlayer();
 			this.slot = slot;
 			this.attacks = attacks;
 			this.charges = charges;
@@ -159,7 +157,7 @@ public class PhantasmalKiller extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -177,6 +175,7 @@ public class PhantasmalKiller extends Equipment {
 				currentIcon.setAmount(charges.getCount());
 				inst.setIcon(currentIcon);
 				
+				Player p = data.getPlayer();
 				Sounds.success.play(p, p);
 				pc.play(p, p);
 			}

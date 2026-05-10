@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -61,7 +60,6 @@ public class SparkStick extends Equipment {
 	}
 	
 	private class SparkStickProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private SparkStick eq;
 		private int pierceAmount, slot;
@@ -69,7 +67,6 @@ public class SparkStick extends Equipment {
 		public SparkStickProjectile(PlayerFightData data, SparkStick eq, int slot) {
 			super(2.5, 10, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -77,13 +74,13 @@ public class SparkStick extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			Sounds.explode.play(p, loc);
+			Sounds.explode.play(data.getPlayer(), loc);
 		}
 
 		@Override

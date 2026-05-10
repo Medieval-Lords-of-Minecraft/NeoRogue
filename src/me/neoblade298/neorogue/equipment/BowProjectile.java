@@ -25,7 +25,6 @@ public class BowProjectile extends Projectile {
 	
 	private String id; // Unique id per bow + slot, used for damage stat tracker
 	private PlayerFightData data;
-	private Player p;
 	private Bow bow;
 	private EquipmentProperties props;
 	private AmmunitionInstance ammo;
@@ -38,7 +37,6 @@ public class BowProjectile extends Projectile {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		setBowDefaults();
 		this.data = data;
-		this.p = data.getPlayer();
 		this.bow = bow;
 		this.ammo = data.getAmmoInstance();
 		this.props = bow.getProperties();
@@ -62,6 +60,7 @@ public class BowProjectile extends Projectile {
 
 	@Override
 	public void onTick(ProjectileInstance proj, int interpolation) {
+		Player p = data.getPlayer();
 		bow.onTick(p, proj, interpolation);
 		ammo.onTick(p, proj, interpolation);
 		for (ProjectileTickAction act : tickActions) {
@@ -86,6 +85,7 @@ public class BowProjectile extends Projectile {
 
 	@Override
 	public void onStart(ProjectileInstance proj) {
+		Player p = data.getPlayer();
 		Sounds.shoot.play(p, p);
 		DamageMeta dm = proj.getMeta();
 		EquipmentProperties ammoProps = ammo.getProperties();

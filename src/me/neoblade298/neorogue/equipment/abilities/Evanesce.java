@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -34,7 +35,7 @@ public class Evanesce extends Equipment {
 	
 	public Evanesce(boolean isUpgraded) {
 		super(ID, "Evanesce", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(40, 25, 0, 0));
 		damage = isUpgraded ? 150 : 100;
 		stealthDuration = isUpgraded ? 200 : 120;
 		damageBuff = isUpgraded ? 0.3 : 0.2;
@@ -46,51 +47,42 @@ public class Evanesce extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
-			EvadeEvent ev = (EvadeEvent) in;
-			
-			// Get the damager entity from the DamageMeta
-			if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
-				return TriggerResult.keep();
-			}
-			
-			Player p = data.getPlayer();
-			LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
-			Location playerLoc = p.getLocation();
-			Location damagerLoc = damager.getLocation();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-			// Calculate dash direction away from the enemy
-			Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
-
-			// Dash away from the enemy
-			data.dash(awayFromEnemy);
-			
-			// Deal damage to the attacker
-			FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, damager, 
-					DamageStatTracker.of(id + slot, this));
-			
-			// Apply stealth
-			FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
-			
-			// Delayed damage buff (1 second = 20 ticks later)
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
-						100); // 5 seconds
+			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
+				EvadeEvent ev = (EvadeEvent) in2;
+				if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
+					return TriggerResult.keep();
 				}
-			}.runTaskLater(NeoRogue.inst(), 20L));
-			
-			Sounds.attackSweep.play(p, p);
-			
-			return TriggerResult.keep();
-		});
+				Player p = data.getPlayer();
+				LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
+				Location playerLoc = p.getLocation();
+				Location damagerLoc = damager.getLocation();
+				Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
+				data.dash(awayFromEnemy);
+				FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
+						DamageStatTracker.of(id + slot, this));
+				FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+							new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
+							100);
+					}
+				}.runTaskLater(NeoRogue.inst(), 20L));
+				Sounds.attackSweep.play(p, p);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
+				GlossaryTag.POWER.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
 				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + DescUtil.yellow(

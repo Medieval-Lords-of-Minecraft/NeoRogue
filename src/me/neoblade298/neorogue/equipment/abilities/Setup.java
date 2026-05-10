@@ -13,6 +13,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -43,7 +44,7 @@ public class Setup extends Equipment {
 	
 	public Setup(boolean isUpgraded) {
 		super(ID, "Setup", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 0, 0));
 		time = 6;
 		inc = isUpgraded ? 15 : 10;
 		damage = isUpgraded ? 225 : 150;
@@ -55,31 +56,36 @@ public class Setup extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		StandardPriorityAction act = new StandardPriorityAction(id);
-		ItemStack icon = item.clone();
-		act.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (!p.isSneaking()) return TriggerResult.keep();
-			act.addCount(1);
-			if (act.getCount() >= time) {
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-				initTrap(p, data, this, slot);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
-				act.addCount(-time);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-				if (act.getBool()) {
-					icon.setAmount(icon.getAmount() + 1);
+			String buffId = UUID.randomUUID().toString();
+			StandardPriorityAction act = new StandardPriorityAction(id);
+			ItemStack icon = item.clone();
+			act.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (!p.isSneaking()) return TriggerResult.keep();
+				act.addCount(1);
+				if (act.getCount() >= time) {
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+					initTrap(p, data, Setup.this, slot);
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+					act.addCount(-time);
+					if (act.getBool()) {
+						icon.setAmount(icon.getAmount() + 1);
+					}
+					else {
+						act.setBool(true);
+					}
+					p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
 				}
-				else {
-					act.setBool(true);
-				}
-				p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
-			}
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.PLAYER_TICK, act);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
@@ -102,7 +108,7 @@ public class Setup extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				"Passive. Every " + DescUtil.white(time +"s") + " spent crouched during a fight, drop a " + GlossaryTag.TRAP.tag(this) + " at your feet [<white>10s</white>] that deals " +
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(time +"s") + " spent crouched during a fight, drop a " + GlossaryTag.TRAP.tag(this) + " at your feet [<white>10s</white>] that deals " +
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage and deactivates when walked over, and increase your " + GlossaryTag.TRAP.tag(this) + 
 				" damage by " + DescUtil.yellow(inc + "%") + ".");
 	}

@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -29,7 +31,7 @@ public class Electrolysis extends Equipment {
 	
 	public Electrolysis(boolean isUpgraded) {
 		super(ID, "Electrolysis", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
 		mult = isUpgraded ? 0.5 : 0.3;
 		mana = isUpgraded ? 10 : 5;
 		multStr = (int) (mult * 100);
@@ -41,21 +43,27 @@ public class Electrolysis extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (!ev.getMeta().containsType(DamageType.LIGHTNING) || !fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(buffId, this)));
-			data.addMana(mana);
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			String buffId = UUID.randomUUID().toString();
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				if (!ev.getMeta().containsType(DamageType.LIGHTNING) || !fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(buffId, this)));
+				data.addMana(mana);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ORANGE_DYE,
-				"Passive. Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage to enemies with " + GlossaryTag.ELECTRIFIED.tag(this) + " increases the damage by "
+				GlossaryTag.POWER.tag(this) + ". Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage to enemies with " + GlossaryTag.ELECTRIFIED.tag(this) + " increases the damage by "
 				+ DescUtil.yellow(multStr + "%") + " and grants " + DescUtil.yellow(mana) + " mana.");
 	}
 }

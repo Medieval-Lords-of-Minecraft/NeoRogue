@@ -119,6 +119,31 @@ inst.setAction((pdata, in) -> { ... return TriggerResult.keep(); });
 data.addTrigger(id, bind, inst);
 ```
 
+**CRITICAL — EquipmentInstance and Resource Costs:**
+`EquipmentInstance` automatically deducts mana/stamina and checks cooldowns every time its trigger fires. Only use it as a trigger action when you **want** resource costs checked (e.g., the main bind trigger). For inner triggers (e.g., passive effects registered inside a power activation), use **plain lambdas** — otherwise mana/stamina will be re-deducted on every trigger fire.
+
+```java
+// ❌ WRONG — inner trigger re-charges resources
+data.addTrigger(id, Trigger.KILL, new EquipmentInstance(data, this, slot, es, (pdata2, in2) -> {
+    return TriggerResult.keep(); // Deducts mana/stam every kill!
+}));
+
+// ✓ CORRECT — plain lambda
+data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+    return TriggerResult.keep();
+});
+```
+
+For icon-only tracking inside powers, create an `EquipmentInstance` with no-action constructor and call `setIcon()` from a plain lambda:
+```java
+EquipmentInstance inst = new EquipmentInstance(data, this, slot, es); // Icon tracking only
+data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+    icon.setAmount(am.addCount(1));
+    inst.setIcon(icon);
+    return TriggerResult.keep();
+});
+```
+
 ## ActionMeta — Lightweight State Storage
 ```java
 ActionMeta am = new ActionMeta();
@@ -379,6 +404,8 @@ public void setupItem() {
 - Always play `Sounds.equip` on activation
 - All passive triggers go **inside** the bind lambda
 - Bind trigger returns `TriggerResult.remove()`
+- **Never use `EquipmentInstance` for inner triggers after activation** — use plain lambdas (EquipmentInstance re-deducts mana/stamina)
+- For icon tracking inside powers, create EquipmentInstance with no-action constructor for `setIcon()` only
 - BukkitRunnable tasks (auto-fire, periodic effects) also start inside the activation lambda
 - Use `pdata2, in2` etc. for inner lambda params to avoid shadowing
 
@@ -425,6 +452,7 @@ For particle effects and sound design beyond basic `pc.play()` calls, delegate t
 - DO NOT schedule BukkitRunnables without `data.addTask()`
 - DO NOT forget equipment registration in `Equipment.java`
 - DO NOT use `addUpgrades()` for properties that don't change between versions
+- DO NOT use `EquipmentInstance` for inner triggers in powers — it re-deducts mana/stamina on every fire
 - DO NOT return anything other than `TriggerResult.keep()` unless intentionally removing the trigger
 - DO NOT use `data.charge(20)` for wands — use `data.charge(properties.get(PropertyType.CHARGE_TIME))`
 

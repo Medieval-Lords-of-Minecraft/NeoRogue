@@ -67,7 +67,6 @@ public class Fireball2 extends Equipment {
 	}
 	
 	private class FireballProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
@@ -76,14 +75,13 @@ public class Fireball2 extends Equipment {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -98,10 +96,11 @@ public class Fireball2 extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void explode(Location loc) {
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			explode.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {

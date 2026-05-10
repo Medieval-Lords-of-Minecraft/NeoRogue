@@ -70,12 +70,12 @@ public class BeamStaff extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		String statName = p.getName() + "beamStaff";
+		String statName = data.getPlayer().getName() + "beamStaff";
 		String buffId = UUID.randomUUID().toString();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
+			Player p = data.getPlayer();
 			Block block = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
 			if (block == null) {
 				return TriggerResult.keep();

@@ -6,9 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -28,7 +31,7 @@ public class Initiator extends Equipment {
 
 	public Initiator(boolean isUpgraded) {
 		super(ID, "Initiator", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 15, 10, 0));
+				EquipmentProperties.ofUsable(0, 25, 0, 0));
 		damage = isUpgraded ? 50 : 30;
 	}
 
@@ -38,25 +41,31 @@ public class Initiator extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			Player p = data.getPlayer();
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd.hasStatus(p.getName() + "-INITIATOR"))
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			String buffId = UUID.randomUUID().toString();
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				if (fd.hasStatus(p.getName() + "-INITIATOR"))
+					return TriggerResult.keep();
+				fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR", fd, true),
+						data, 1, -1, ev.getMeta(), false);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 				return TriggerResult.keep();
-			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR", fd, true),
-					data, 1, -1, ev.getMeta(), false);
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. The first time you deal non-status damage to an enemy, increase the damage by " + DescUtil.yellow(
+				GlossaryTag.POWER.tag(this) + ". The first time you deal non-status damage to an enemy, increase the damage by " + DescUtil.yellow(
 						damage + "%") + ".");
 	}
 }

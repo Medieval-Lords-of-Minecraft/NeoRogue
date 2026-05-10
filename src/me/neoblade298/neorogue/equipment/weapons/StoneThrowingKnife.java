@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -54,7 +53,6 @@ public class StoneThrowingKnife extends Equipment {
 	
 	private class StoneThrowingKnifeProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private StoneThrowingKnife eq;
 		private int slot;
 
@@ -63,19 +61,18 @@ public class StoneThrowingKnife extends Equipment {
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.eq = eq;
-			this.p = data.getPlayer();
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			StoneThrowingKnife.hit.play(p, loc);
+			StoneThrowingKnife.hit.play(data.getPlayer(), loc);
 		}
 
 		@Override

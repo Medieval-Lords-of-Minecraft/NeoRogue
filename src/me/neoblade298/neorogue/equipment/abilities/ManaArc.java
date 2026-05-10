@@ -70,7 +70,8 @@ public class ManaArc extends Equipment {
 		am.setBool(true);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (pdata.getMana() <= mana) {
-				Sounds.flap.play(p, p);
+				Player pl = data.getPlayer();
+				Sounds.flap.play(pl, pl);
 				am.setBool(false);
 				return TriggerResult.remove();
 			}
@@ -85,15 +86,15 @@ public class ManaArc extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().isSecondary())
 				return TriggerResult.keep();
+			Player pl = data.getPlayer();
 			LivingEntity trg = ev.getTarget();
-			Vector dir = trg.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();
-			proj.start(data, p.getLocation().add(0, 1, 0), dir);
+			Vector dir = trg.getLocation().toVector().subtract(pl.getLocation().toVector()).normalize();
+			proj.start(data, pl.getLocation().add(0, 1, 0), dir);
 			return TriggerResult.keep();
 		});
 	}
 
 	private class ManaArcProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -101,19 +102,18 @@ public class ManaArc extends Equipment {
 		public ManaArcProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(0.5, 12, 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.slot = slot;
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.firework.play(p, proj.getLocation());
+			Sounds.firework.play(data.getPlayer(), proj.getLocation());
 			FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, elec, -1);
 		}
 

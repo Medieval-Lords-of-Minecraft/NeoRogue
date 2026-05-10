@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -34,7 +35,7 @@ public class GetCentered extends Equipment {
 	
 	public GetCentered(boolean isUpgraded) {
 		super(ID, "Get Centered", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
 		thres = isUpgraded ? 6 : 8;
 		damage = isUpgraded ? 15 : 12;
 	}
@@ -45,36 +46,42 @@ public class GetCentered extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		StandardPriorityAction inst = new StandardPriorityAction(id);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!ev.isBowProjectile()) return TriggerResult.keep();
-			BowProjectile bp = (BowProjectile) ev.getInstances().getFirst().getParent();
-			if (bp.getInitialVelocity() < 2.9)  return TriggerResult.keep();
-			
-			inst.addCount(1);
-			if (inst.getCount() >= thres) {
-				inst.addCount(-thres);
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-			}
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-			for (IProjectileInstance pi : ev.getInstances()) {
-				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
-			}
-			return TriggerResult.keep();
-		});
-		data.addTrigger(ID, Trigger.LAUNCH_PROJECTILE_GROUP, inst);
+			String buffId = UUID.randomUUID().toString();
+			StandardPriorityAction inst = new StandardPriorityAction(id);
+			inst.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
+				if (!ev.isBowProjectile()) return TriggerResult.keep();
+				BowProjectile bp = (BowProjectile) ev.getInstances().getFirst().getParent();
+				if (bp.getInitialVelocity() < 2.9) return TriggerResult.keep();
+
+				inst.addCount(1);
+				if (inst.getCount() >= thres) {
+					inst.addCount(-thres);
+					data.applyStatus(StatusType.FOCUS, data, 1, -1);
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+				}
+
+				for (IProjectileInstance pi : ev.getInstances()) {
+					((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
+				}
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK,
-				"Passive. Every " + DescUtil.yellow(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1, false) + 
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1, false) + 
 				". Basic attack damage at max draw is increased by " + DescUtil.yellow(damage) + " per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
 	}
 }

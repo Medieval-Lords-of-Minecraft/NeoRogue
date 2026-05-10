@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -43,7 +44,7 @@ public class TrappersEssence extends Equipment {
 	
 	public TrappersEssence(boolean isUpgraded) {
 		super(ID, "Trapper's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 35, 0, 0));
 		damage = isUpgraded ? 400 : 300;
 		shields = isUpgraded ? 6 : 4;
 	}
@@ -54,20 +55,22 @@ public class TrappersEssence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// When player kills an enemy, drop a trap at their location
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			KillEvent ev = (KillEvent) in;
-			Location deathLoc = ev.getTarget().getLocation();
-			
-			// Create a trap at death location
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					initTrap(deathLoc, data, TrappersEssence.this, slot);
-				}
-			}.runTaskLater(NeoRogue.inst(), 5));
-			
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				KillEvent ev = (KillEvent) in2;
+				Location deathLoc = ev.getTarget().getLocation();
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						initTrap(deathLoc, data, TrappersEssence.this, slot);
+					}
+				}.runTaskLater(NeoRogue.inst(), 5));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private void initTrap(Location loc, PlayerFightData data, Equipment eq, int slot) {
@@ -99,7 +102,7 @@ public class TrappersEssence extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_TRAPDOOR,
-				"Passive. When you kill an enemy, they drop a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>]. " +
+				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>]. " +
 				"When triggered, the trap deals " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
 				"and grants you " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

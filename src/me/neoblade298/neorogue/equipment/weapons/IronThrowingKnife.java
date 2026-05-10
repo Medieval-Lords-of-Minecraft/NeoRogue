@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -67,7 +66,6 @@ public class IronThrowingKnife extends Equipment {
 	
 	private class IronThrowingKnifeProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private IronThrowingKnife eq;
 		private int slot;
 		private ActionMeta hitCount;
@@ -77,25 +75,24 @@ public class IronThrowingKnife extends Equipment {
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.eq = eq;
-			this.p = data.getPlayer();
 			this.slot = slot;
 			this.hitCount = hitCount;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			IronThrowingKnife.hit.play(p, loc);
+			IronThrowingKnife.hit.play(data.getPlayer(), loc);
 			
 			hitCount.addCount(1);
 			if (hitCount.getCount() >= 3) {
 				hitCount.setCount(0);
-				FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, dur * 20);
+				FightInstance.applyStatus(data.getPlayer(), StatusType.STEALTH, data, 1, dur * 20);
 			}
 		}
 

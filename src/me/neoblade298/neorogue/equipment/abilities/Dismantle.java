@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -21,7 +23,7 @@ public class Dismantle extends Equipment {
 	
 	public Dismantle(boolean isUpgraded) {
 		super(ID, "Dismantle", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 0, 0));
 		stacks = isUpgraded ? 25 : 15;
 	}
 	
@@ -31,7 +33,11 @@ public class Dismantle extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, new DismantleInstance(data, this, slot, es));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, new DismantleInstance(data, this, slot, es));
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class DismantleInstance extends PriorityAction {
@@ -54,6 +60,6 @@ public class Dismantle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_PICKAXE,
-				"Passive. Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
+				GlossaryTag.POWER.tag(this) + ". Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
 	}
 }

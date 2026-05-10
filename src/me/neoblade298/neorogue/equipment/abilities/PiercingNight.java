@@ -118,7 +118,6 @@ public class PiercingNight extends Equipment {
 	
 	private class PiercingNightProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private String statusName;
@@ -130,7 +129,6 @@ public class PiercingNight extends Equipment {
 			this.rotation(angleOffset);
 			this.size(0.3, 0.3);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.statusName = statusName;
@@ -139,7 +137,7 @@ public class PiercingNight extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -155,7 +153,7 @@ public class PiercingNight extends Equipment {
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 			fd.applyStatus(s, data, 1, 60); // 3 seconds duration
 			
-			Sounds.extinguish.play(p, target.getLocation());
+			Sounds.extinguish.play(data.getPlayer(), target.getLocation());
 		}
 
 		@Override

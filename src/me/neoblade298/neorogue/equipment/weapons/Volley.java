@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -69,7 +68,6 @@ public class Volley extends Equipment {
 	
 	private class VolleyProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private AmmunitionInstance ammo;
 		private Equipment eq;
 
@@ -79,15 +77,14 @@ public class Volley extends Equipment {
 			setBowDefaults();
 			this.rotation(rotation);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
@@ -97,7 +94,7 @@ public class Volley extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			proj.applyAmmo(data, eq, ammo);
 			ammo.onStart(proj);
 		}

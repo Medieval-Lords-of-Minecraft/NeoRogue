@@ -61,6 +61,7 @@ public class SunderingShot extends Equipment {
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Vector v = p.getEyeLocation().getDirection();
 					p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.4).setY(0.1));
 					ProjectileGroup projs = new ProjectileGroup(new SunderingShotProjectile(data, eq, slot));
@@ -74,7 +75,6 @@ public class SunderingShot extends Equipment {
 
 	private class SunderingShotProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private AmmunitionInstance ammo;
 		private Equipment eq;
 		private int slot;
@@ -85,7 +85,6 @@ public class SunderingShot extends Equipment {
 			this.size(1.5, 1.5);
 			this.pierce(-1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
@@ -95,20 +94,20 @@ public class SunderingShot extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			pc.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.explode.play(p, hit.getEntity());
+			Sounds.explode.play(data.getPlayer(), hit.getEntity());
 			ammo.onHit(proj, meta, hit.getEntity());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
-			Sounds.explode.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
+			Sounds.explode.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			int stacks = Math.min(MAX, data.getStatus(StatusType.FOCUS).getStacks());

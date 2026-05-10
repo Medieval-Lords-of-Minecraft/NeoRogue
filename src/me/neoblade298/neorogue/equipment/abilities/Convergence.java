@@ -137,7 +137,6 @@ public class Convergence extends Equipment {
 	
 	private class ConvergenceProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private DamageType damageType;
@@ -148,7 +147,6 @@ public class Convergence extends Equipment {
 			this.rotation(angleOffset);
 			this.size(0.2, 0.2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.damageType = damageType;
@@ -162,7 +160,7 @@ public class Convergence extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			particleTrail.play(p, proj.getLocation());
+			particleTrail.play(data.getPlayer(), proj.getLocation());
 		}
 		
 		@Override

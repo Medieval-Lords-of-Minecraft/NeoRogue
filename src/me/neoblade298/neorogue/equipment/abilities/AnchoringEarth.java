@@ -9,7 +9,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -76,7 +75,6 @@ public class AnchoringEarth extends Equipment {
 
 	private class AnchoringEarthProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private HashSet<UUID> enemiesHit = new HashSet<UUID>();
 		private int slot;
 		private Equipment eq;
@@ -85,7 +83,6 @@ public class AnchoringEarth extends Equipment {
 		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.pierce(-1);
 			this.slot = slot;
 			this.eq = eq;
@@ -93,7 +90,7 @@ public class AnchoringEarth extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -103,21 +100,21 @@ public class AnchoringEarth extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			enemiesHit.clear();
 		}
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location loc = b.getLocation();
-			sc.play(p, loc);
+			sc.play(data.getPlayer(), loc);
 			for (UUID uuid : enemiesHit) {
 				FightData fd = FightInstance.getFightData(uuid);
 				if (fd == null || fd.getEntity() == null || !fd.getEntity().isValid())
 					continue;
 				LivingEntity ent = fd.getEntity();
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), ent);
-				ParticleUtil.drawLine(p, pc, loc, ent.getLocation(), 1);
+				ParticleUtil.drawLine(data.getPlayer(), pc, loc, ent.getLocation(), 1);
 				Vector pull = loc.toVector().subtract(fd.getEntity().getLocation().toVector()).normalize()
 						.multiply(0.5);
 				FightInstance.knockback(ent, pull);

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -77,7 +76,6 @@ public class RapidFire extends Equipment {
 	
 	private class RapidFireProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private AmmunitionInstance ammo;
 		private Equipment eq;
 
@@ -86,15 +84,14 @@ public class RapidFire extends Equipment {
 			super(properties.get(PropertyType.RANGE), 1);
 			setBowDefaults();
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
@@ -104,7 +101,7 @@ public class RapidFire extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			proj.applyAmmo(data, eq, ammo);
 			ammo.onStart(proj);
 		}

@@ -65,13 +65,14 @@ public class TreeTrunk extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
 			return;
 		}
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			data.runAnimation(id, p, swing, p);
 			weaponSwing(p, data);
@@ -86,6 +87,7 @@ public class TreeTrunk extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, (pdata, inputs) -> {
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			weaponSwing(p, data, 0.25);
 			rightHit(p, data, slot);
 			return TriggerResult.keep();

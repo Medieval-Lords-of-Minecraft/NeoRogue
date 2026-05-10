@@ -65,20 +65,21 @@ public class ArrowRain extends Equipment {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initRain(p, data, eq, id + slot);
+					initRain(data, eq, id + slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initRain(Player p, PlayerFightData data, ArrowRain eq, String id) {
+	private void initRain(PlayerFightData data, ArrowRain eq, String id) {
 		data.addTask(new BukkitRunnable() {
 			private int tick = 0;
 			public void run() {
 				if (data.getAmmoInstance() != null) { 
+					Player p = data.getPlayer();
 					Sounds.shoot.play(p, p);
-					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data, eq, id));
+					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p.getLocation(), data, eq, id));
 					Location block = TargetHelper.getSightLocation(p, tp);
 					targeter.play(p, block);
 					if (block != null) {
@@ -102,15 +103,13 @@ public class ArrowRain extends Equipment {
 	}
 	
 	private class ArrowRainProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
 		private ArrowRain eq;
 		private String id;
 
-		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data, ArrowRain eq, String id) {
+		public ArrowRainProjectile(Location trg, PlayerFightData data, ArrowRain eq, String id) {
 			super(0.5, 6, 1);
-			this.p = p;
 			this.data = data;
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
@@ -119,7 +118,7 @@ public class ArrowRain extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.setOrigin(p.getLocation());
+			proj.setOrigin(data.getPlayer().getLocation());
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
@@ -131,7 +130,7 @@ public class ArrowRain extends Equipment {
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location block = b.getLocation().add(0, 1, 0);
 			hitAnimation(block);
-			LivingEntity trg = TargetHelper.getNearest(p, block, hitTp);
+			LivingEntity trg = TargetHelper.getNearest(data.getPlayer(), block, hitTp);
 			if (trg == null) return;
 			DamageMeta dm = proj.getMeta();
 			ammo.onHit(proj, dm, trg);
@@ -146,13 +145,13 @@ public class ArrowRain extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		private void hitAnimation(Location loc) {
-			Sounds.explode.play(p, loc);
-			hit.play(p, loc);
+			Sounds.explode.play(data.getPlayer(), loc);
+			hit.play(data.getPlayer(), loc);
 		}
 	}
 

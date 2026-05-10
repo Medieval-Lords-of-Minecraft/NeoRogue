@@ -65,7 +65,6 @@ public class Firewall extends Equipment {
 	}
 	
 	private class FirewallProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
@@ -74,7 +73,6 @@ public class Firewall extends Equipment {
 			super(1, properties.get(PropertyType.RANGE), 2);
 			this.size(0.2, 0.2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ignore(false, false, true);
 			this.eq = eq;
 			this.slot = slot;
@@ -82,7 +80,7 @@ public class Firewall extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -109,13 +107,14 @@ public class Firewall extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.getActionMeta().setLocation(proj.getLocation().clone());
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void activateFirewall(Location start, Location end, int slot) {
 			data.addTask(new BukkitRunnable() {
 				private int tick = 0;
 				public void run() {
+					Player p = data.getPlayer();
 					ParticleUtil.drawLine(p, wall, start, end, 1);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
 						if (!(ent instanceof Player)) {

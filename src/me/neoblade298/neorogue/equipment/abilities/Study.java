@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,7 +25,7 @@ public class Study extends Equipment {
 	
 	public Study(boolean isUpgraded) {
 		super(ID, "Study", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 0, 0));
 		intel = isUpgraded ? 3 : 2;
 	}
 
@@ -42,29 +41,30 @@ public class Study extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		data.addTrigger(id, Trigger.KILL, inst);
-		inst.setAction((pdata, in) -> {
-			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			ItemStack icon = item.clone();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				am.addCount(1);
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Sounds.enchant.play(p, p);
+				pc.play(p, p);
+				icon.setAmount(am.getCount());
+				inst.setIcon(icon);
 				return TriggerResult.keep();
-			}
-			Player p = data.getPlayer();
-			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-			Sounds.enchant.play(p, p);
-			pc.play(p, p);
-			icon.setAmount(am.getCount());
-			inst.setIcon(icon);
-			am.setTime(System.currentTimeMillis());
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill.");
+				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill.");
 	}
 }

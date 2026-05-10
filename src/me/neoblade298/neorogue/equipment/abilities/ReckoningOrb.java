@@ -78,7 +78,6 @@ public class ReckoningOrb extends Equipment {
 	}
 
 	private class ReckoningOrbProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private String buffId;
 		private ReckoningOrb eq;
@@ -88,14 +87,13 @@ public class ReckoningOrb extends Equipment {
 			this.gravity(0.05);
 			this.arc(0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.buffId = buffId;
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -110,10 +108,11 @@ public class ReckoningOrb extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			shoot.play(p, p);
+			shoot.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void slowArea(Location loc) {
+			Player p = data.getPlayer();
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}

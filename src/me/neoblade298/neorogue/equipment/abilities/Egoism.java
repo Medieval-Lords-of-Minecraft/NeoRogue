@@ -8,10 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.ActionMeta;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -21,14 +21,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Egoism extends Equipment {
 	private static final String ID = "Egoism";
-	private int healthRegen, stealth, cooldown = 5;
+	private int healthRegen, stealth;
 	
 	public Egoism(boolean isUpgraded) {
 		super(ID, "Egoism", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 0, 0));
 		healthRegen = isUpgraded ? 3 : 2;
 		stealth = isUpgraded ? 2 : 1;
-		properties.add(PropertyType.COOLDOWN, cooldown);
 	}
 	
 	public static Equipment get() {
@@ -37,38 +36,37 @@ public class Egoism extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
-			if (am.getTime() > System.currentTimeMillis()) return TriggerResult.keep();
-			am.setTime(System.currentTimeMillis() + (cooldown * 1000));
-			// Regen health over 10 seconds (10 player ticks)
-			data.addTask(new BukkitRunnable() {
-				private int count = 0;
-				
-				public void run() {
-					data.addHealth(healthRegen / 10.0);
-					count++;
-					if (count >= 10) {
-						this.cancel();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
+				// Regen health over 10 seconds (10 player ticks)
+				data.addTask(new BukkitRunnable() {
+					private int count = 0;
+					public void run() {
+						data.addHealth(healthRegen / 10.0);
+						count++;
+						if (count >= 10) {
+							this.cancel();
+						}
 					}
-				}
-			}.runTaskTimer(NeoRogue.inst(), 0L, 20L)); // Every 1 second for 10 seconds
-			
-			// Gain stealth for 10 seconds
-			data.applyStatus(StatusType.STEALTH, data, stealth, 200);
-			
-			// Gain Speed 1 for 5 seconds
-			Player p = data.getPlayer();
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
-			
-			return TriggerResult.keep();
-		});
+				}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
+				// Gain stealth for 10 seconds
+				data.applyStatus(StatusType.STEALTH, data, stealth, 200);
+				// Gain Speed 1 for 5 seconds
+				Player p = data.getPlayer();
+				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_APPLE,
-				"Passive. On " + GlossaryTag.EVADE.tag(this) + ", regen " + DescUtil.yellow(healthRegen) + " health over " + DescUtil.white("10s") + ", " +
+				GlossaryTag.POWER.tag(this) + ". On " + GlossaryTag.EVADE.tag(this) + ", regen " + DescUtil.yellow(healthRegen) + " health over " + DescUtil.white("10s") + ", " +
 				"gain " + GlossaryTag.STEALTH.tag(this, stealth, true) + " [<white>10s</white>], and gain " + DescUtil.potion("Speed", 0, 5) + ".");
 	}
 }

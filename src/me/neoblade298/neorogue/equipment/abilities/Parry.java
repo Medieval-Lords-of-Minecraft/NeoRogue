@@ -55,33 +55,32 @@ public class Parry extends Equipment {
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			Sounds.equip.play(p, p);
-			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ParryBlock(p, this, slot));
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ParryBlock(this, slot));
 			return TriggerResult.keep();
 		}));
 	}
 	
 	private class ParryBlock implements TriggerAction {
 		private long createTime;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private String buffId = UUID.randomUUID().toString();
-		public ParryBlock(Player p, Equipment eq, int slot) {
-			this.p = p;
+		public ParryBlock(Equipment eq, int slot) {
 			this.eq = eq;
 			createTime = System.currentTimeMillis();
 		}
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
+			Player p = data.getPlayer();
 			bpc.play(p, p);
 			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, eq)));
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, eq));
-				hit.play(p, ev.getTarget().getLocation());
-				Sounds.anvil.play(p, p);
+				hit.play(pdata.getPlayer(), ev.getTarget().getLocation());
+				Sounds.anvil.play(pdata.getPlayer(), pdata.getPlayer());
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

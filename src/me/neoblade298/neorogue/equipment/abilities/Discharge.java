@@ -43,8 +43,7 @@ public class Discharge extends Equipment {
 			ActionMeta am = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.KILL, inst);
-			inst.setAction((pdata2, in2) -> {
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 				Player p = data.getPlayer();
 				am.addCount(1);
 				data.applyStatus(StatusType.INTELLECT, data, intel, -1);

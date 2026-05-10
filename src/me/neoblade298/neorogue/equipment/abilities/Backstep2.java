@@ -120,7 +120,6 @@ public class Backstep2 extends Equipment {
 	
 	private class Backstep2Projectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Backstep2 eq;
 		private String id;
 
@@ -130,14 +129,13 @@ public class Backstep2 extends Equipment {
 			this.blocksPerTick(3);
 			this.rotation(rotation);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.id = ID + slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -147,7 +145,7 @@ public class Backstep2 extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id, eq)));
 		}

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -23,7 +24,7 @@ public class Entrench extends Equipment {
 
 	public Entrench(boolean isUpgraded) {
 		super(ID, "Entrench", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
 		shields = isUpgraded ? 5 : 3;
 	}
 
@@ -33,29 +34,33 @@ public class Entrench extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Gain shields when placing a trap
-		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
-			Player p = data.getPlayer();
-			data.addPermanentShield(p.getUniqueId(), shields);
-			Sounds.equip.play(p, p);
-			pc.play(p, p);
-			return TriggerResult.keep();
-		});
-		
-		// Gain shields when removing/deactivating a trap
-		data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata, in) -> {
-			Player p = data.getPlayer();
-			data.addPermanentShield(p.getUniqueId(), shields);
-			Sounds.equip.play(p, p);
-			pc.play(p, p);
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.LAY_TRAP, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				data.addPermanentShield(p.getUniqueId(), shields);
+				Sounds.equip.play(p, p);
+				pc.play(p, p);
+				return TriggerResult.keep();
+			});
+
+			data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata3, in3) -> {
+				Player p = data.getPlayer();
+				data.addPermanentShield(p.getUniqueId(), shields);
+				Sounds.equip.play(p, p);
+				pc.play(p, p);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BLOCK,
-				"Passive. Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every time you place or remove a " +
+				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every time you place or remove a " +
 				GlossaryTag.TRAP.tag(this) + ".");
 	}
 }

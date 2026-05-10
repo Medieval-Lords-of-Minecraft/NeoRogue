@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
@@ -79,7 +78,6 @@ public class TwinShiv extends Equipment {
 	
 	private class TwinShivProjectile extends Projectile {
 		private TwinShivInstance inst;
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -88,7 +86,6 @@ public class TwinShiv extends Equipment {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.inst = inst;
 			this.slot = slot;
 			this.eq = eq;
@@ -96,7 +93,7 @@ public class TwinShiv extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -107,16 +104,16 @@ public class TwinShiv extends Equipment {
 			else {
 				if (inst.firstHit.equals(hit.getUniqueId())) {
 					meta.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq)));
-					Sounds.anvil.play(p, hit.getEntity());
+					Sounds.anvil.play(data.getPlayer(), hit.getEntity());
 				}
 			}
-			Sounds.breaks.play(p, hit.getEntity());
+			Sounds.breaks.play(data.getPlayer(), hit.getEntity());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq)));
-			Sounds.attackSweep.play(p, p);
+			Sounds.attackSweep.play(data.getPlayer(), data.getPlayer());
 			proj.setTag("" + inst.isFirstProj);
 		}
 	}

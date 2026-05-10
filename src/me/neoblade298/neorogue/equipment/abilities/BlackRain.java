@@ -118,7 +118,6 @@ public class BlackRain extends Equipment {
 	
 	private class BlackRainProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private List<LivingEntity> hitEntities;
@@ -128,7 +127,6 @@ public class BlackRain extends Equipment {
 			this.rotation(angleOffset);
 			this.size(0.3, 0.3);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.hitEntities = hitEntities;
@@ -136,7 +134,7 @@ public class BlackRain extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -147,7 +145,7 @@ public class BlackRain extends Equipment {
 					hitEntities.add(entity);
 				}
 			}
-			Sounds.extinguish.play(p, hit.getEntity().getLocation());
+			Sounds.extinguish.play(data.getPlayer(), hit.getEntity().getLocation());
 		}
 
 		@Override

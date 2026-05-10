@@ -35,8 +35,7 @@ public class Bulwark extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		BulwarkInstance inst = new BulwarkInstance(id, p);
+		BulwarkInstance inst = new BulwarkInstance(id, data);
 		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
@@ -45,6 +44,7 @@ public class Bulwark extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			data.applyStatus(StatusType.PROTECT, data, prot, 60);
 			data.applyStatus(StatusType.SHELL, data, prot, 60);
@@ -63,11 +63,11 @@ public class Bulwark extends Equipment {
 	private class BulwarkInstance extends PriorityAction {
 		private Shield s;
 		private long nextUse;
-		public BulwarkInstance(String id, Player p) {
+		public BulwarkInstance(String id, PlayerFightData data) {
 			super(id);
 			action = (pdata, inputs) -> {
 				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
-				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				s = pdata.addPermanentShield(data.getPlayer().getUniqueId(), shields);
 				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};

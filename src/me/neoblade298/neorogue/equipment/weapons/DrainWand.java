@@ -65,7 +65,6 @@ public class DrainWand extends Equipment {
 	}
 
 	private class DrainWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private DrainWand eq;
 		private int slot;
@@ -74,20 +73,19 @@ public class DrainWand extends Equipment {
 			super(1.5, RANGE, 3);
 			this.size(1, 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			data.addSimpleShield(p.getUniqueId(), shieldAmount, 40);
-			sc.play(p, hit.getEntity());
+			data.addSimpleShield(data.getPlayer().getUniqueId(), shieldAmount, 40);
+			sc.play(data.getPlayer(), hit.getEntity());
 		}
 		
 		@Override

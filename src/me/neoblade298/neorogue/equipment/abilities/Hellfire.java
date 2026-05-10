@@ -9,6 +9,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -40,7 +41,7 @@ public class Hellfire extends Equipment {
 	
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 0, 0));
 		damage = isUpgraded ? 160 : 80;
 	}
 	
@@ -50,27 +51,29 @@ public class Hellfire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-		// Check if basic attack hit an enemy with burn
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
-			
-			LivingEntity target = ev.getTarget();
-			if (target == null) return TriggerResult.keep();
-			
-			FightData fd = FightInstance.getFightData(target);
-			if (fd.hasStatus(StatusType.BURN)) {
-				data.addExtraShot(group);
-			}
-			return TriggerResult.keep();
-		});
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
+				LivingEntity target = ev.getTarget();
+				if (target == null) return TriggerResult.keep();
+				FightData fd = FightInstance.getFightData(target);
+				if (fd.hasStatus(StatusType.BURN)) {
+					data.addExtraShot(group);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"Passive. Dealing basic attack damage to an enemy with " + GlossaryTag.BURN.tag(this) + 
+				GlossaryTag.POWER.tag(this) + ". Dealing basic attack damage to an enemy with " + GlossaryTag.BURN.tag(this) + 
 				" causes your next basic attack to fire an additional projectile that deals " + 
 				GlossaryTag.FIRE.tag(this, damage, true) + " damage.");
 	}
@@ -78,7 +81,6 @@ public class Hellfire extends Equipment {
 	private class HellfireProjectile extends Projectile {
 		private AmmunitionInstance ammo;
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		
@@ -87,7 +89,6 @@ public class Hellfire extends Equipment {
 			this.blocksPerTick(3);
 			this.homing(0.02);
 			this.data = data;
-			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
@@ -95,6 +96,7 @@ public class Hellfire extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
+			Player p = data.getPlayer();
 			pc.play(p, proj.getLocation());
 			ammo.onTick(p, proj, interpolation);
 		}
@@ -106,6 +108,7 @@ public class Hellfire extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);

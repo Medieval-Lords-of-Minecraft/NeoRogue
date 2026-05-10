@@ -65,7 +65,6 @@ public class AzureCutter extends Artifact {
 
 	private class AzureCutterProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 
 		public AzureCutterProjectile(PlayerFightData data, Equipment eq) {
@@ -73,24 +72,23 @@ public class AzureCutter extends Artifact {
 			this.size(1, 1);
 			this.initialY(1.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			part.play(p, proj.getLocation());
+			part.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.breaks.play(p, hit.getEntity());
+			Sounds.breaks.play(data.getPlayer(), hit.getEntity());
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id, eq)), hit.getEntity());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.success.play(p, p);
+			Sounds.success.play(data.getPlayer(), data.getPlayer());
 		}
 	}
 

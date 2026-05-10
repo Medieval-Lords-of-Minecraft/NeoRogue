@@ -7,11 +7,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -22,7 +26,7 @@ public class Rushdown extends Equipment {
 	
 	public Rushdown(boolean isUpgraded) {
 		super(ID, "Rushdown", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 0, 0));
 		secs = isUpgraded ? 40 : 30;
 	}
 	
@@ -32,20 +36,26 @@ public class Rushdown extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addStaminaRegen(inc);
-		data.addTask(new BukkitRunnable() {
-			public void run() {
-				Player p = data.getPlayer();
-				data.addStaminaRegen(-inc);
-				Util.msg(p, hoverable.append(Component.text(" has expired", NamedTextColor.GRAY)));
-			}
-		}.runTaskLater(NeoRogue.inst(), 20L * secs));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addStaminaRegen(inc);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Player p = data.getPlayer();
+					data.addStaminaRegen(-inc);
+					Util.msg(p, hoverable.append(Component.text(" has expired", NamedTextColor.GRAY)));
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L * secs));
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_BANNER,
-				"Passive. Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
+				GlossaryTag.POWER.tag(this) + ". Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
 				secs + "s") + " of a fight.");
 	}
 }

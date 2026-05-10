@@ -154,7 +154,6 @@ public class Illusion extends Equipment {
 	}
 
 	private class IllusionProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -164,13 +163,12 @@ public class Illusion extends Equipment {
 			this.size(0.4, 0.4);
 			this.data = data;
 			this.slot = slot;
-			this.p = data.getPlayer();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			projectileParticle.play(p, proj.getLocation());
+			projectileParticle.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override

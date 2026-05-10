@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -56,7 +55,6 @@ public class OldStaff extends Equipment {
 	}
 	
 	private class OldStaffProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private OldStaff eq;
 		private int slot;
@@ -66,19 +64,18 @@ public class OldStaff extends Equipment {
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.eq = eq;
-			this.p = data.getPlayer();
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			OldStaff.hit.play(p, loc);
+			OldStaff.hit.play(data.getPlayer(), loc);
 		}
 
 		@Override

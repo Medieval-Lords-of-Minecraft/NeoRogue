@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -33,7 +35,7 @@ public class Overload extends Equipment {
 	
 	public Overload(boolean isUpgraded) {
 		super(ID, "Overload", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, tp.range));
 		
 		damage = isUpgraded ? 90 : 60;
 		mult = 10;
@@ -45,22 +47,28 @@ public class Overload extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, (pd, in) -> {
-			KillEvent ev = (KillEvent) in;
-			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
-			Player p = data.getPlayer();
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * mult), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
-				part.play(p, ent);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.KILL, (pd, in2) -> {
+				KillEvent ev = (KillEvent) in2;
+				int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
+				Player p = data.getPlayer();
+				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
+					FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * mult), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
+					part.play(p, ent);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				"Passive. On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
+				GlossaryTag.POWER.tag(this) + ". On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
 				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by " + DescUtil.white(mult) + " in an area.");
 	}
 }

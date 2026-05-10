@@ -78,7 +78,6 @@ public class MagicQuiver extends Equipment {
 	private class MagicQuiverProjectile extends Projectile {
 		private AmmunitionInstance ammo;
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		public MagicQuiverProjectile(PlayerFightData data, Equipment eq, int slot) {
@@ -86,7 +85,6 @@ public class MagicQuiver extends Equipment {
 			this.blocksPerTick(3);
 			this.homing(0.02);
 			this.data = data;
-			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
@@ -94,8 +92,8 @@ public class MagicQuiver extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
@@ -105,7 +103,7 @@ public class MagicQuiver extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);

@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -26,7 +27,7 @@ public class MindShell extends Equipment {
 
 	public MindShell(boolean isUpgraded) {
 		super(ID, "Mind Shell", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(25, 5, 0, 0));
 		regen = 0.3;
 		shell = isUpgraded ? 2 : 1;
 	}
@@ -42,25 +43,31 @@ public class MindShell extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
-			am.addCount(1);
-			if (am.getCount() >= THRES) {
-				am.addCount(-THRES);
-				pdata.addManaRegen(regen);
-				data.applyStatus(StatusType.SHELL, data, shell, -1);
-				Player p = data.getPlayer();
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			data.addTrigger(id, Trigger.CAST_USABLE, (pdata2, in2) -> {
+				am.addCount(1);
+				if (am.getCount() >= THRES) {
+					am.addCount(-THRES);
+					pdata2.addManaRegen(regen);
+					data.applyStatus(StatusType.SHELL, data, shell, -1);
+					Player p = data.getPlayer();
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
 						+ DescUtil.white(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell, true) + ".");
 	}
 }

@@ -56,8 +56,7 @@ public class DarkPulse extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		DarkPulseInstance inst = new DarkPulseInstance(p, data, this, es, slot);
+		DarkPulseInstance inst = new DarkPulseInstance(data, this, es, slot);
 		data.addTrigger(id, bind, inst);
 
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -69,24 +68,24 @@ public class DarkPulse extends Equipment {
 	}
 
 	private class DarkPulseInstance extends EquipmentInstance {
-		private Player p;
 		private PlayerFightData data;
 		private boolean active = false;
 		private Location loc;
 		private int dealt = 0;
-		public DarkPulseInstance(Player p, PlayerFightData data, Equipment eq, EquipSlot es, int slot) {
+		public DarkPulseInstance(PlayerFightData data, Equipment eq, EquipSlot es, int slot) {
 			super(data, eq, slot, es);
-			this.p = p;
 			this.data = data;
 
 			action = (pdata, in) -> {
 				active = true;
+				Player p = data.getPlayer();
 				placePart.play(p, p);
 				place.play(p, p);
 				loc = p.getLocation();
 				
 				pdata.addTask(new BukkitRunnable() {
 					public void run() {
+						Player p = data.getPlayer();
 						if (p.getLocation().distanceSquared(loc) > tp.range * tp.range) {
 							Sounds.extinguish.play(p, loc);
 							active = false;
@@ -111,8 +110,8 @@ public class DarkPulse extends Equipment {
 				}
 				pulseDamage *= damage;
 
-				pulseSound.play(p, loc);
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
+			pulseSound.play(data.getPlayer(), loc);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(data.getPlayer(), loc, tp)) {
 					FightInstance.dealDamage(data, DamageType.DARK, pulseDamage, ent, DamageStatTracker.of(id + slot, eq));
 				}
 			}

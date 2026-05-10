@@ -93,7 +93,6 @@ public class RedBaron extends Bow {
 	}
 
 	private class RedBaronProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
@@ -103,7 +102,6 @@ public class RedBaron extends Bow {
 			this.gravity(0.05);
 			this.rotation(NeoRogue.gen.nextDouble(-30, 30));
 			this.arc(0.5);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -111,7 +109,7 @@ public class RedBaron extends Bow {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -126,13 +124,14 @@ public class RedBaron extends Bow {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void dealDamageArea(Location loc) {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			circ.play(p, pc, loc, LocalAxes.xz(), fill);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {

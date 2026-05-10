@@ -14,8 +14,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -44,7 +44,7 @@ public class Wildfire extends Equipment {
 	
 	public Wildfire(boolean isUpgraded) {
 		super(ID, "Wildfire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.none().add(PropertyType.COOLDOWN, 1));
+				EquipmentProperties.ofUsable(10, 5, 0, 0));
 		damage = isUpgraded ? 90 : 60;
 	}
 	
@@ -54,25 +54,30 @@ public class Wildfire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			if (in == StatusType.BURN && System.currentTimeMillis() - am.getTime() >= 1000) {
-				am.setTime(System.currentTimeMillis());
-				ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data, this, slot));
-				group.start(data);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				if (in2 == StatusType.BURN && System.currentTimeMillis() - am.getTime() >= 1000) {
+					am.setTime(System.currentTimeMillis());
+					ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data, this, slot));
+					group.start(data);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Passive. When you apply " + GlossaryTag.BURN.tag(this) + ", launch a fireball randomly in front of you that arcs, dealing " +
+		item = createItem(Material.BLAZE_POWDER, GlossaryTag.POWER.tag(this) + ". When you apply " + GlossaryTag.BURN.tag(this) + ", launch a fireball randomly in front of you that arcs, dealing " +
 			GlossaryTag.FIRE.tag(this, damage, true) + " damage in an area upon hitting an enemy or block.");
 	}
 
 	private class WildfireProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
@@ -82,7 +87,6 @@ public class Wildfire extends Equipment {
 			this.gravity(0.05);
 			this.rotation(NeoRogue.gen.nextDouble(-30, 30));
 			this.arc(0.5);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -90,7 +94,7 @@ public class Wildfire extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -105,6 +109,7 @@ public class Wildfire extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 		}
 
@@ -112,6 +117,7 @@ public class Wildfire extends Equipment {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			circ.play(p, pc, loc, LocalAxes.xz(), fill);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {

@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +26,7 @@ public class Plague extends Equipment {
 	
 	public Plague(boolean isUpgraded) {
 		super(ID, "Plague", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
 		damage = 10;
 		thres = 200;
 		maxThres = isUpgraded ? 5 : 3;
@@ -36,13 +38,19 @@ public class Plague extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		PlagueInstance inst = new PlagueInstance(ID, slot, this);
-		data.addTrigger(ID, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-			return inst.calculateStacks(ev.getStacks());
-		});
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, inst);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			PlagueInstance inst = new PlagueInstance(ID, slot, this);
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+				return inst.calculateStacks(ev.getStacks());
+			});
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class PlagueInstance extends PriorityAction	{
@@ -69,7 +77,7 @@ public class Plague extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				"Passive. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
+				GlossaryTag.POWER.tag(this) + ". Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
 				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied, up to " + DescUtil.yellow(maxThres * thres) + ".");
 	}
 }

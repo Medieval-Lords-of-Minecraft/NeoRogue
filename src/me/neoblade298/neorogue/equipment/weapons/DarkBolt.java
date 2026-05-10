@@ -4,7 +4,6 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -74,7 +73,6 @@ public class DarkBolt extends Equipment {
 	
 	private class DarkBoltProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 
@@ -84,12 +82,11 @@ public class DarkBolt extends Equipment {
 			this.data = data;
 			this.slot = slot;
 			this.eq = eq;
-			this.p = data.getPlayer();
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -99,7 +96,7 @@ public class DarkBolt extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, eq)));
 		}
 	}

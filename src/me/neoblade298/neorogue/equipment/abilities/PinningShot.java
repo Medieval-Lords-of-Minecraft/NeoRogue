@@ -9,7 +9,6 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -85,7 +84,6 @@ public class PinningShot extends Equipment {
 
 	private class PinningShotProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private HashSet<LivingEntity> hitEntities = new HashSet<>();
@@ -93,7 +91,6 @@ public class PinningShot extends Equipment {
 		public PinningShotProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, range, 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.pierce(-1);
@@ -101,7 +98,7 @@ public class PinningShot extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -142,12 +139,12 @@ public class PinningShot extends Equipment {
 				}
 			}
 			
-			Sounds.anvil.play(p, blockLoc);
+			Sounds.anvil.play(data.getPlayer(), blockLoc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 		}
 	}
 

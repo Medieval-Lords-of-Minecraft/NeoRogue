@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -32,7 +34,7 @@ public class Grit extends Equipment {
 	
 	public Grit(boolean isUpgraded) {
 		super(ID, "Grit", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 		inc = isUpgraded ? 35 : 25;
 		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);
@@ -44,34 +46,40 @@ public class Grit extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			Player p = data.getPlayer();
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
-			if (dist <= 25) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			KillEvent ev = (KillEvent) in;
-			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
-			if (dist <= 25) {
-				pc.play(p, p);
-				data.addSimpleShield(p.getUniqueId(), shields, 60);
-				equip.play(p, p);
-			}
-			return TriggerResult.keep();
-		});
+			String buffId = UUID.randomUUID().toString();
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
+				if (dist <= 25) {
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+				}
+				return TriggerResult.keep();
+			});
+
+			data.addTrigger(id, Trigger.KILL, (pdata3, in3) -> {
+				Player p = data.getPlayer();
+				KillEvent ev = (KillEvent) in3;
+				double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
+				if (dist <= 25) {
+					pc.play(p, p);
+					data.addSimpleShield(p.getUniqueId(), shields, 60);
+					equip.play(p, p);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. Killing an enemy within " + DescUtil.white(5) + " blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
+				GlossaryTag.POWER.tag(this) + ". Killing an enemy within " + DescUtil.white(5) + " blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
 				"Damage at this range is also increased by " + DescUtil.yellow(inc) + ".");
 	}
 }

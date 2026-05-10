@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -63,7 +62,6 @@ public class Inflame extends Equipment {
 	
 	private class InflameProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private int lvl = 0;
 		private int slot;
 		private Equipment eq;
@@ -72,14 +70,13 @@ public class Inflame extends Equipment {
 		public InflameProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.slot = slot;
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -91,7 +88,7 @@ public class Inflame extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)));
 		}
 	}

@@ -68,7 +68,6 @@ public class FireStaff extends Equipment {
 	}
 
 	private class FireStaffProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private FireStaff eq;
 		private int slot;
@@ -76,7 +75,6 @@ public class FireStaff extends Equipment {
 		public FireStaffProjectile(PlayerFightData data, FireStaff eq, int slot) {
 			super(0.5, 15, 2);
 			this.size(1, 1).gravity(0.0125).initialY(0.55);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -84,7 +82,7 @@ public class FireStaff extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -99,13 +97,14 @@ public class FireStaff extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void dealDamageArea(ProjectileInstance proj, Location loc, Barrier hitBarrier) {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			exp.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, props)) {

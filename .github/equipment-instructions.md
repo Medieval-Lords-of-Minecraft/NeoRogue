@@ -141,6 +141,9 @@ public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slo
 - Reset to 1 (not 0) when clearing stacks to show the base item
 - Choose pattern based on whether you need icon updates in same or separate trigger
 
+**IMPORTANT — EquipmentInstance and Resource Costs:**
+`EquipmentInstance` automatically deducts mana/stamina and checks cooldowns every time its trigger fires. Only use `EquipmentInstance` as a trigger action when you **want** resource costs checked (e.g., the main bind trigger for abilities). For inner triggers (e.g., passive effects after a power activation), use **plain lambdas** instead. If you only need `setIcon()`, create an `EquipmentInstance` with the no-action constructor for icon tracking, and register the trigger separately with a plain lambda.
+
 **Using Different Icons for Active States:**
 When you want to change the icon material when active (e.g., different item when charged):
 ```java
@@ -326,10 +329,40 @@ public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slo
 }
 ```
 
+#### EquipmentInstance in Powers (CRITICAL)
+**Never use `EquipmentInstance` for inner triggers after a power is activated.** `EquipmentInstance` automatically deducts mana/stamina and checks cooldowns every time its trigger fires. After activation, inner triggers should use **plain lambdas** — the resource cost was already paid on activation.
+
+```java
+// ❌ WRONG — inner trigger uses EquipmentInstance, re-deducts mana on every kill
+data.addTrigger(id, Trigger.KILL, new EquipmentInstance(data, this, slot, es, (pdata2, in2) -> {
+    // This deducts mana/stamina every kill!
+    return TriggerResult.keep();
+}));
+
+// ✓ CORRECT — plain lambda, no resource cost
+data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+    // Free to fire without resource cost
+    return TriggerResult.keep();
+});
+```
+
+If you need icon tracking via `setIcon()`, create an `EquipmentInstance` with the **no-action constructor** for icon updates only, and register the trigger with a **separate plain lambda**:
+```java
+EquipmentInstance inst = new EquipmentInstance(data, this, slot, es); // For icon only
+data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+    stacks.addCount(1);
+    icon.setAmount(stacks.getCount());
+    inst.setIcon(icon); // Update icon through the instance
+    return TriggerResult.keep();
+});
+```
+
 #### Key Points
 - Always play `Sounds.equip` on activation for audio feedback
 - All passive triggers go **inside** the bind lambda so they only exist after activation
 - The bind trigger returns `TriggerResult.remove()` — it's a one-shot
+- **Never use `EquipmentInstance` for inner triggers after activation** — use plain lambdas (EquipmentInstance re-deducts mana/stamina)
+- For icon tracking inside powers, create EquipmentInstance with no-action constructor for `setIcon()` only
 - For BukkitRunnable tasks (e.g., auto-fire projectiles), start them inside the activation lambda too
 - Use inner lambda variable names like `pdata2, in2` to avoid shadowing the outer `pdata, in`
 

@@ -90,7 +90,6 @@ public class BowTrap extends Equipment {
 	}
 
 	private class BowTrapProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private BowTrap eq;
 		private String id;
@@ -101,14 +100,13 @@ public class BowTrap extends Equipment {
 			this.gravity(0);
 			blocksPerTick(3);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.id = id;
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -118,7 +116,7 @@ public class BowTrap extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id, eq)));
 			proj.getMeta().addOrigin(DamageOrigin.TRAP);
 		}

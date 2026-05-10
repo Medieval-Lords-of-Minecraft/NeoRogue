@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -37,7 +38,7 @@ public class OdinsDecree extends Equipment {
 	
 	public OdinsDecree(boolean isUpgraded) {
 		super(ID, "Odin's Decree", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(30, 15, 0, 0));
 		damage = isUpgraded ? 150 : 100;
 		electrified = isUpgraded ? 12 : 8;
 		chance = isUpgraded ? 1.0 : 0.5;
@@ -49,39 +50,35 @@ public class OdinsDecree extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			am.addCount(1);
-			// PLAYER_TICK triggers every tick, so 40 ticks = 2 seconds
-			if (am.getCount() >= 2) {
-				Player p = data.getPlayer();
-				am.setCount(0);
-				
-				// Check chance
-				if (Math.random() >= chance) return TriggerResult.keep();
-				
-				// Find nearest enemy
-				LivingEntity target = TargetHelper.getNearest(p, tp);
-				if (target == null) return TriggerResult.keep();
-				
-				// Drop lightning bolt
-				pc.play(p, target.getLocation());
-				Sounds.thunder.play(p, target.getLocation());
-				
-				// Deal damage and apply electrified
-				FightInstance.dealDamage(pdata, DamageType.LIGHTNING, damage, target, 
-						DamageStatTracker.of(id + slot, this));
-				FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				am.addCount(1);
+				if (am.getCount() >= 2) {
+					Player p = data.getPlayer();
+					am.setCount(0);
+					if (Math.random() >= chance) return TriggerResult.keep();
+					LivingEntity target = TargetHelper.getNearest(p, tp);
+					if (target == null) return TriggerResult.keep();
+					pc.play(p, target.getLocation());
+					Sounds.thunder.play(p, target.getLocation());
+					FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, target, 
+							DamageStatTracker.of(id + slot, this));
+					FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. Every " + DescUtil.white("2s") + ", " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white("2s") + ", " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
 				"chance to drop a lightning bolt on the nearest enemy, dealing " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");

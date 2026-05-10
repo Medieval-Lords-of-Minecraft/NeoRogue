@@ -79,7 +79,6 @@ public class AshenHeadhunter extends Equipment {
 	}
 	
 	private class AshenHeadhunterProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private AshenHeadhunter eq;
 		private int slot;
@@ -89,19 +88,18 @@ public class AshenHeadhunter extends Equipment {
 			super(2, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			Sounds.infect.play(p, loc);
+			Sounds.infect.play(data.getPlayer(), loc);
 			if (++hits % 3 == 0) {
 				hit.applyStatus(StatusType.BURN, data, burn, -1);
 			}
@@ -109,7 +107,7 @@ public class AshenHeadhunter extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

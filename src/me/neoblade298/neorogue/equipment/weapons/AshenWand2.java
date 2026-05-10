@@ -59,7 +59,6 @@ public class AshenWand2 extends Equipment {
 	}
 	
 	private class AshenWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private AshenWand2 eq;
 		private int slot;
@@ -67,7 +66,6 @@ public class AshenWand2 extends Equipment {
 		public AshenWandProjectile(PlayerFightData data, AshenWand2 eq, int slot) {
 			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -75,18 +73,18 @@ public class AshenWand2 extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			Sounds.infect.play(p, loc);
+			Sounds.infect.play(data.getPlayer(), loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

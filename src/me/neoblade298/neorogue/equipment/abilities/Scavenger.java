@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.Marker;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -35,7 +36,7 @@ public class Scavenger extends Equipment {
 	
 	public Scavenger(boolean isUpgraded) {
 		super(ID, "Scavenger", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
 		stamina = isUpgraded ? 30 : 20;
 		damageBuff = isUpgraded ? 0.05 : 0.03;
 	}
@@ -51,20 +52,21 @@ public class Scavenger extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		
-		// When player kills an enemy, drop a collectable stack at their location
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			KillEvent ev = (KillEvent) in;
-			Location deathLoc = ev.getTarget().getLocation();
-			
-			// Create a collectible marker at death location
-			data.addMarker(new ScavengerStack(data, deathLoc, p, slot, stamina, damageBuff, this, inst, icon));
-			
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ItemStack icon = item.clone();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				KillEvent ev = (KillEvent) in2;
+				Location deathLoc = ev.getTarget().getLocation();
+				data.addMarker(new ScavengerStack(data, deathLoc, p, slot, stamina, damageBuff, this, inst, icon));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private class ScavengerStack extends Marker {
@@ -129,7 +131,7 @@ public class Scavenger extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHEAT,
-				"Passive. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
+				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina and " + 
 				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage.");
 	}

@@ -63,7 +63,6 @@ public class TwinBolt extends Equipment {
 
 	private class TwinBoltProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private boolean left;
 		private int slot;
 		private Equipment eq;
@@ -73,7 +72,6 @@ public class TwinBolt extends Equipment {
 		public TwinBoltProjectile(PlayerFightData data, boolean left, int slot, Equipment eq) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.left = left;
 			this.slot = slot;
 			this.eq = eq;
@@ -87,7 +85,7 @@ public class TwinBolt extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 			int tick = proj.getTick();
 			if (tick <= 6) {
 				proj.getVelocity().rotateAroundY(left ? ANGLE : -ANGLE);
@@ -98,6 +96,7 @@ public class TwinBolt extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			if (hit.hasStatus("TWINBOLT-" + p.getName())) {
 				// If the hit already has a twinbolt status, apply burn
 				hit.applyStatus(StatusType.BURN, data, burn, -1);

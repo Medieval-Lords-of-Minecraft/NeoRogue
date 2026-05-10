@@ -4,8 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -25,7 +27,7 @@ public class StaticSurge extends Equipment {
 	
 	public StaticSurge(boolean isUpgraded) {
 		super(ID, "Static Surge", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(20, 10, 0, 0));
 		damage = isUpgraded ? 50 : 30;
 		electrified = isUpgraded ? 8 : 5;
 	}
@@ -36,45 +38,39 @@ public class StaticSurge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		
-		// Track when sprinting is toggled
-		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
-			Player p = data.getPlayer();
-			if (p.isSprinting()) {
-				// Player started sprinting - record the time
-				am.setTime(System.currentTimeMillis());
-			} else {
-				// Player stopped sprinting - reset time
-				am.setTime(0);
-			}
-			return TriggerResult.keep();
-		});
-		
-		// Apply bonus damage and electrified on basic attack if sprinted for 1+ second
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			// Check if player has been sprinting for at least 1 second (1000ms)
-			if (am.getTime() == 0 || System.currentTimeMillis() - am.getTime() < 1000) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (p.isSprinting()) {
+					am.setTime(System.currentTimeMillis());
+				} else {
+					am.setTime(0);
+				}
 				return TriggerResult.keep();
-			}
-			
-			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			
-			// Deal additional lightning damage
-			ev.getMeta().addDamageSlice(
-					new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)));
-			
-			// Apply electrified
-			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
-			
-			return TriggerResult.keep();
-		});
+			});
+
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+				if (am.getTime() == 0 || System.currentTimeMillis() - am.getTime() < 1000) {
+					return TriggerResult.keep();
+				}
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in3;
+				ev.getMeta().addDamageSlice(
+						new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)));
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
+				GlossaryTag.POWER.tag(this) + ". If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");
 	}

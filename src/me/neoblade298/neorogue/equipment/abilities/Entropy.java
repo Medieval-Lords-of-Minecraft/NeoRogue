@@ -12,7 +12,6 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -28,7 +27,7 @@ public class Entropy extends Equipment {
 	
 	public Entropy(boolean isUpgraded) {
 		super(ID, "Entropy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 0, 0));
 		intel = 3;
 		riftThres = isUpgraded ? 3 : 4;
 	}
@@ -46,34 +45,35 @@ public class Entropy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		data.addTrigger(id, Trigger.KILL, inst);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			ItemStack icon = item.clone();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				am.addCount(1);
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Sounds.enchant.play(p, p);
+				pc.play(p, p);
+				if (am.getCount() % riftThres == 0) {
+					Sounds.fire.play(p, p);
+					data.addRift(new Rift(data, p.getLocation(), 160));
+				}
+				icon.setAmount(am.getCount());
+				inst.setIcon(icon);
 				return TriggerResult.keep();
-			}
-			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-			Sounds.enchant.play(p, p);
-			pc.play(p, p);
-			if (am.getCount() % riftThres == 0) {
-				Sounds.fire.play(p, p);
-				data.addRift(new Rift(data, p.getLocation(), 160));
-			}
-			icon.setAmount(am.getCount());
-			inst.setIcon(icon);
-			am.setTime(System.currentTimeMillis());
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
+				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
 				GlossaryTag.RIFT.tag(this) + " [<white>8s</white>] at your location.");
 	}
 }

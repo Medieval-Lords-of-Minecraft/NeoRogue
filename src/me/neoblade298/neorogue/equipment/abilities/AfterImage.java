@@ -32,11 +32,11 @@ public class AfterImage extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 			
-			data.addTrigger(id, Trigger.DASH, new EquipmentInstance(data, this, slot, es, (pdata2, inputs) -> {
+			data.addTrigger(id, Trigger.DASH, (pdata2, inputs) -> {
 				Player p = data.getPlayer();
 				data.addSimpleShield(p.getUniqueId(), shields, 100);
 				return TriggerResult.keep();
-			}));
+			});
 			
 			return TriggerResult.remove();
 		}));

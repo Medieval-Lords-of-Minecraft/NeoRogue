@@ -33,7 +33,7 @@ public class Wound extends Equipment {
 	public Wound(boolean isUpgraded) {
 		super(ID, "Wound", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 3, 0));
-		stacks = isUpgraded ? 12 : 8;
+		stacks = isUpgraded ? 5 : 3;
 		properties.setCastType(CastType.TOGGLE);
 	}
 

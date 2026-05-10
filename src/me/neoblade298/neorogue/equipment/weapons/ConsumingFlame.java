@@ -69,7 +69,6 @@ public class ConsumingFlame extends Equipment {
 	}
 
 	private class ConsumingFlameProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private ConsumingFlame eq;
 		private int slot;
@@ -79,7 +78,6 @@ public class ConsumingFlame extends Equipment {
 			super(2.0, RANGE, 1);
 			this.size(0.6, 0.6);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.attackCounter = attackCounter;
@@ -87,7 +85,7 @@ public class ConsumingFlame extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -111,7 +109,7 @@ public class ConsumingFlame extends Equipment {
 				}
 			}
 
-			sc.play(p, hit.getEntity());
+			sc.play(data.getPlayer(), hit.getEntity());
 		}
 
 		@Override

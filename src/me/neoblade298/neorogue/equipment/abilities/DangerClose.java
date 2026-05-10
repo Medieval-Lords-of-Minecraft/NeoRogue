@@ -48,7 +48,7 @@ public class DangerClose extends Equipment {
 			ActionMeta stacks = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			inst.setAction((pdata2, in2) -> {
+			data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata2, in2) -> {
 				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
 				if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
 				
@@ -63,8 +63,6 @@ public class DangerClose extends Equipment {
 				
 				return TriggerResult.keep();
 			});
-			
-			data.addTrigger(id, Trigger.RECEIVE_STATUS, inst);
 			return TriggerResult.remove();
 		}));
 	}

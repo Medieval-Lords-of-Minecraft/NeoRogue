@@ -72,7 +72,6 @@ public class ElectricOrb extends Equipment {
 	}
 
 	private class ElectricOrbProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private HashSet<UUID> hitEntities = new HashSet<UUID>();
 		private Equipment eq;
@@ -81,7 +80,6 @@ public class ElectricOrb extends Equipment {
 		public ElectricOrbProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(0.3, tp.range, 4);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ignore(false, false, true);
 			this.eq = eq;
 			this.slot = slot;
@@ -89,6 +87,7 @@ public class ElectricOrb extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
+			Player p = data.getPlayer();
 			pc.play(p, proj.getLocation());
 			if (proj.getTick() % 10 == 0 && proj.getTick() > 0) {
 				Sounds.firework.play(p, proj.getLocation());
@@ -109,7 +108,7 @@ public class ElectricOrb extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			shoot.play(p, p);
+			shoot.play(data.getPlayer(), data.getPlayer());
 			hitEntities.clear();
 		}
 	}

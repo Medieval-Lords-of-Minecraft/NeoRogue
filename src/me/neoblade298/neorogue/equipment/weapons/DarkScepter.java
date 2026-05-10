@@ -75,7 +75,6 @@ public class DarkScepter extends Equipment {
 	}
 
 	private class DarkRay extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private DarkScepter eq;
 		private int slot;
@@ -83,7 +82,6 @@ public class DarkScepter extends Equipment {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce(-1);
 			this.ignore(false, true, false);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -91,7 +89,7 @@ public class DarkScepter extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 		
 		@Override

@@ -110,7 +110,6 @@ public class Snareweaver extends Bow {
 	
 	private class SnareweaverProjectile extends BowProjectile {
 		private PlayerFightData data;
-		private Player p;
 		private int slot;
 		private Snareweaver bow;
 		private ActionMeta trapMeta;
@@ -120,7 +119,6 @@ public class Snareweaver extends Bow {
 			this.pierce(-1); // Infinite piercing
 			this.rotation(angle); // Apply cone spread
 			this.data = data;
-			this.p = data.getPlayer();
 			this.bow = bow;
 			this.trapMeta = trapMeta;
 			// Extract slot from id (format is "snareweaver" + slot)
@@ -146,6 +144,7 @@ public class Snareweaver extends Bow {
 			// Call parent implementation for ammunition handling
 			super.onHitBlock(proj, b);
 			
+			Player p = data.getPlayer();
 			// Explosion effect
 			Sounds.explode.play(p, proj.getLocation());
 			pc.play(p, proj.getLocation());

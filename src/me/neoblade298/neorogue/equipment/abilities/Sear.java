@@ -64,7 +64,6 @@ public class Sear extends Equipment {
 	
 	private class SearProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 
@@ -74,7 +73,6 @@ public class Sear extends Equipment {
 			this.size(4, 1);
 			this.pierce(-1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 
@@ -83,6 +81,7 @@ public class Sear extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
+			Player p = data.getPlayer();
 			pc.play(p, proj.getLocation());
 			Vector v = proj.getVelocity().clone().normalize();
 			Location left = proj.getLocation().clone().add(v.clone().rotateAroundY(Math.PI / 2).multiply(2));
@@ -93,7 +92,7 @@ public class Sear extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.extinguish.play(p, hit.getEntity());
+			Sounds.extinguish.play(data.getPlayer(), hit.getEntity());
 			if (!hit.hasStatus(StatusType.BURN)) {
 				hit.applyStatus(StatusType.BURN, data, burn, -1);
 			}
@@ -101,7 +100,7 @@ public class Sear extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
 		}

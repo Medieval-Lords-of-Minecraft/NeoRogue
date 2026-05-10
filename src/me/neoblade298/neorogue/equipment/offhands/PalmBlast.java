@@ -52,11 +52,11 @@ public class PalmBlast extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20, 2).then(new Runnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Sounds.fire.play(p, p);
 					Sounds.explode.play(p, p);
 					expl.play(p, p);

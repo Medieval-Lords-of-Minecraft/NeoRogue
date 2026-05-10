@@ -79,25 +79,24 @@ public class Depletion extends Equipment {
 	
 	private class DarkTorrentProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private int slot;
 		private Equipment eq;
 
 		public DarkTorrentProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			Location loc = hit.getEntity().getLocation();
 			data.addRift(new Rift(data, loc, 200));
 			Sounds.infect.play(p, loc);
@@ -114,7 +113,7 @@ public class Depletion extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, eq)));
 		}
 	}

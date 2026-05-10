@@ -93,7 +93,6 @@ public class AnchoringEarth2 extends Equipment {
 
 	private class AnchoringEarthProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private HashSet<UUID> enemiesHit = new HashSet<UUID>();
 		private Equipment eq;
 		private int slot;
@@ -102,7 +101,6 @@ public class AnchoringEarth2 extends Equipment {
 		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.pierce(-1);
 			this.slot = slot;
 			this.eq = eq;
@@ -110,7 +108,7 @@ public class AnchoringEarth2 extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -120,12 +118,13 @@ public class AnchoringEarth2 extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			enemiesHit.clear();
 		}
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
+			Player p = data.getPlayer();
 			Location loc = b.getLocation();
 			sc.play(p, loc);
 			for (UUID uuid : enemiesHit) {

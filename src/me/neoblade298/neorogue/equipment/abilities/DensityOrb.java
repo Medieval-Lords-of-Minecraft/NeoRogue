@@ -76,7 +76,6 @@ public class DensityOrb extends Equipment {
 	}
 
 	private class DensityOrbProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 
 		public DensityOrbProjectile(PlayerFightData data) {
@@ -84,12 +83,11 @@ public class DensityOrb extends Equipment {
 			this.gravity(0.05);
 			this.arc(0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -104,13 +102,14 @@ public class DensityOrb extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			shoot.play(p, p);
+			shoot.play(data.getPlayer(), data.getPlayer());
 		}
 
 		private void slowArea(Location loc) {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}
+			Player p = data.getPlayer();
 			expl.play(p, loc);
 			circ.play(p, pc, loc, LocalAxes.xz(), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);

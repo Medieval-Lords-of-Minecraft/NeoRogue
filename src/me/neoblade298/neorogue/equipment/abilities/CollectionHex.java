@@ -53,10 +53,10 @@ public class CollectionHex extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
-		String statusName = p.getName() + "-collectionhex";
+		String statusName = data.getPlayer().getName() + "-collectionhex";
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			am.setBool(true);
 			data.addTask(new BukkitRunnable() {
@@ -71,6 +71,7 @@ public class CollectionHex extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(statusName)) {
+				Player p = data.getPlayer();
 				Location loc = ev.getTarget().getLocation();
 				sc.play(p, loc);
 				cons.play(p, loc);
@@ -91,6 +92,7 @@ public class CollectionHex extends Equipment {
 			Location loc = ev.getTarget().getLocation();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(statusName)) {
+				Player p = data.getPlayer();
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);

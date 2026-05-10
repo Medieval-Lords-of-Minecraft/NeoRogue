@@ -67,7 +67,7 @@ public class PreySeeker extends Equipment {
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
-				initTrap(p, data);
+				initTrap(data);
 				return TriggerResult.of(false, true);
 			};
 		}
@@ -80,16 +80,17 @@ public class PreySeeker extends Equipment {
 			return super.canTrigger(p, data, in);
 		}
 
-		private void initTrap(Player p, PlayerFightData data) {
-			Location loc = p.getLocation();
+		private void initTrap(PlayerFightData data) {
+			Location loc = data.getPlayer().getLocation();
 			AmmunitionInstance ammo = data.getAmmoInstance();
 			data.addTrap(new Trap(data, loc, dur * 20) {
 				@Override
 				public void tick() {
+					Player p = data.getPlayer();
 					trap.play(p, loc);
 					LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
 					if (trg != null) {
-						ProjectileGroup projs = new ProjectileGroup(new PreySeekerProjectile(p, loc, data, ammo, slot, eq));
+						ProjectileGroup projs = new ProjectileGroup(new PreySeekerProjectile(loc, data, ammo, slot, eq));
 						Location up = loc.clone().add(0, 4, 0);
 						projs.start(data, up, new Vector(0, -1, 0));
 						data.removeTrap(this);
@@ -101,16 +102,14 @@ public class PreySeeker extends Equipment {
 	
 	private class PreySeekerProjectile extends Projectile {
 		private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1, 0.1).speed(0.1);
-		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
 		private Location src;
 		private int slot;
 		private Equipment eq;
 
-		public PreySeekerProjectile(Player p, Location src, PlayerFightData data, AmmunitionInstance ammo, int slot, Equipment eq) {
+		public PreySeekerProjectile(Location src, PlayerFightData data, AmmunitionInstance ammo, int slot, Equipment eq) {
 			super(0.5, 6, 1);
-			this.p = p;
 			this.data = data;
 			this.ammo = ammo;
 			this.src = src;
@@ -133,7 +132,7 @@ public class PreySeeker extends Equipment {
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location block = b.getLocation().add(0, 1, 0);
 			hitAnimation(block);
-			LivingEntity trg = TargetHelper.getNearest(p, block, tp);
+			LivingEntity trg = TargetHelper.getNearest(data.getPlayer(), block, tp);
 			if (trg == null) return;
 			DamageMeta dm = proj.getMeta();
 			ammo.onHit(proj, dm, trg);
@@ -148,13 +147,13 @@ public class PreySeeker extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		private void hitAnimation(Location loc) {
-			Sounds.explode.play(p, loc);
-			hit.play(p, loc);
+			Sounds.explode.play(data.getPlayer(), loc);
+			hit.play(data.getPlayer(), loc);
 		}
 	}
 

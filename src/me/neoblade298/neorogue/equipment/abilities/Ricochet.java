@@ -101,7 +101,6 @@ public class Ricochet extends Equipment {
 
 	private class RicochetProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private LivingEntity originalTarget;
@@ -111,7 +110,6 @@ public class Ricochet extends Equipment {
 			this.size(0.4, 0.4);
 			this.homing(0.02);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.originalTarget = originalTarget;
@@ -119,7 +117,7 @@ public class Ricochet extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -136,13 +134,13 @@ public class Ricochet extends Equipment {
 			meta.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, 
 					DamageStatTracker.of(ID + slot, eq)));
 			
-			Sounds.anvil.play(p, target.getLocation());
+			Sounds.anvil.play(data.getPlayer(), target.getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			// Set homing target to nearest enemy
-			LivingEntity nearest = TargetHelper.getNearest(p, proj.getLocation(), tp);
+			LivingEntity nearest = TargetHelper.getNearest(data.getPlayer(), proj.getLocation(), tp);
 			if (nearest != null) {
 				proj.setHomingTarget(nearest);
 			}

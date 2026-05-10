@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
@@ -79,7 +78,6 @@ public class DangerousGame extends Equipment {
 	private class DangerousGameProjectile extends Projectile {
 		private AmmunitionInstance ammo;
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		
@@ -88,7 +86,6 @@ public class DangerousGame extends Equipment {
 			this.blocksPerTick(3);
 			this.homing(0.02);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
@@ -96,8 +93,8 @@ public class DangerousGame extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
-			ammo.onTick(p, proj, interpolation);
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
+			ammo.onTick(data.getPlayer(), proj, interpolation);
 		}
 
 		@Override
@@ -112,7 +109,7 @@ public class DangerousGame extends Equipment {
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
-			Sounds.shoot.play(p, p);
+			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			ammo.onStart(proj);
 		}
 	}

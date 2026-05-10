@@ -85,7 +85,6 @@ public class PocketBallista extends Bow {
 	
 	private class PocketBallistaProjectile extends BowProjectile {
 		private PlayerFightData data;
-		private Player p;
 		private int slot;
 		private PocketBallista bow;
 
@@ -93,7 +92,6 @@ public class PocketBallista extends Bow {
 			super(data, v, bow, ID + slot);
 			this.pierce(-1); // Infinite piercing
 			this.data = data;
-			this.p = data.getPlayer();
 			this.bow = bow;
 			this.slot = slot;
 		}
@@ -103,6 +101,7 @@ public class PocketBallista extends Bow {
 			// Call parent implementation for ammunition handling
 			super.onHitBlock(proj, b);
 			
+			Player p = data.getPlayer();
 			// Explosion effect
 			Sounds.explode.play(p, proj.getLocation());
 			pc.play(p, proj.getLocation());

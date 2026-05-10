@@ -88,7 +88,7 @@ public class StoneSpear extends Equipment {
 
 		public StoneSpearInstance(PlayerFightData pdata, Equipment eq, int slot, EquipSlot es) {
 			super(pdata, eq, slot, es);
-			projs = new ProjectileGroup(new StoneSpearProjectile(p, slot, eq));
+			projs = new ProjectileGroup(new StoneSpearProjectile(slot, eq));
 			
 			action = (pdata2, in) -> {
 				setCooldown(throwCooldown);
@@ -108,29 +108,28 @@ public class StoneSpear extends Equipment {
 	}
 	
 	private class StoneSpearProjectile extends Projectile {
-		private Player p;
 		private int slot;
 		private Equipment eq;
 
-		public StoneSpearProjectile(Player p, int slot, Equipment eq) {
+		public StoneSpearProjectile(int slot, Equipment eq) {
 			super(1, 15, 1);
 			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(1);
-			this.p = p;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			throwPart.play(p, proj.getLocation());
+			throwPart.play((Player) proj.getOwner().getEntity(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.explode.play(p, hit.getEntity().getLocation());
+			Sounds.explode.play((Player) proj.getOwner().getEntity(), hit.getEntity().getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Player p = (Player) proj.getOwner().getEntity();
 			Sounds.threw.play(p, p);
 			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(),
 				throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq)));

@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -23,7 +25,7 @@ public class FlashDraw extends Equipment {
 	
 	public FlashDraw(boolean isUpgraded) {
 		super(ID, "Flash Draw", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
 		thres = isUpgraded ? 15 : 20;
 	}
 	
@@ -33,37 +35,42 @@ public class FlashDraw extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta md = new ActionMeta();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent e = (ApplyStatusEvent) in;
-			if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
-			md.addCount(e.getStacks());
-			return TriggerResult.keep();
-		});
+			ActionMeta md = new ActionMeta();
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				ApplyStatusEvent e = (ApplyStatusEvent) in2;
+				if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
+				md.addCount(e.getStacks());
+				return TriggerResult.keep();
+			});
 
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in;
-			Player p = data.getPlayer();
-			if (!p.isSneaking()) return TriggerResult.keep();
-			if (!e.isBasicAttack()) return TriggerResult.keep();
-			data.addExtraShot(e.getGroup());
-			if (md.getCount() >= thres) {
-				md.addCount(-thres);
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						data.addExtraShot(e.getGroup());
-					}
-				}.runTaskLater(NeoRogue.inst(), 10L));
-			}
-			return TriggerResult.keep();
-		});
+			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
+				LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
+				Player p = data.getPlayer();
+				if (!p.isSneaking()) return TriggerResult.keep();
+				if (!e.isBasicAttack()) return TriggerResult.keep();
+				data.addExtraShot(e.getGroup());
+				if (md.getCount() >= thres) {
+					md.addCount(-thres);
+					data.addTask(new BukkitRunnable() {
+						public void run() {
+							data.addExtraShot(e.getGroup());
+						}
+					}.runTaskLater(NeoRogue.inst(), 10L));
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BEETROOT_SEEDS,
-				"Passive. Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
+				GlossaryTag.POWER.tag(this) + ". Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
 				GlossaryTag.REND.tag(this, thres, true) + " to enemies, instead fire thrice.");
 	}
 }

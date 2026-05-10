@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -70,7 +69,6 @@ public class EnfeeblingWand extends Equipment {
 	}
 	
 	private class EnfeeblingWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private String buffId = UUID.randomUUID().toString();
 		private EnfeeblingWand eq;
@@ -79,7 +77,6 @@ public class EnfeeblingWand extends Equipment {
 		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq, int slot) {
 			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -87,19 +84,19 @@ public class EnfeeblingWand extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			EnfeeblingWand.hit.play(p, loc);
+			EnfeeblingWand.hit.play(data.getPlayer(), loc);
 			hit.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, -mult, BuffStatTracker.defenseDebuffEnemy(buffId, eq, false)), 100);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			tickSound.play(p, proj.getLocation());
+			tickSound.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

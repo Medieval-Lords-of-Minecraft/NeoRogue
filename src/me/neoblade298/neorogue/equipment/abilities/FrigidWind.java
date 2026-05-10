@@ -74,7 +74,6 @@ public class FrigidWind extends Equipment {
 
 	private class FrigidWindProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private HashSet<UUID> hitEntities = new HashSet<>();
@@ -85,14 +84,13 @@ public class FrigidWind extends Equipment {
 			this.pierce(-1);
 			this.blocksPerTick(0.4);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			wind.play(p, proj.getLocation());
+			wind.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -108,7 +106,7 @@ public class FrigidWind extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.wind.play(p, p);
+			Sounds.wind.play(data.getPlayer(), data.getPlayer());
             data.addTask(new BukkitRunnable() {
 				public void run() {
 					Player p = data.getPlayer();

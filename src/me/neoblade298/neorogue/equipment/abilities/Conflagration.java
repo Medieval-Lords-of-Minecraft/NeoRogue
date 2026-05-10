@@ -103,7 +103,6 @@ public class Conflagration extends Equipment {
 
 	private class ConflagrationProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private int burnToApply;
@@ -115,7 +114,6 @@ public class Conflagration extends Equipment {
 			this.size(0.2, 0.2);
 			this.homing(0.015);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.burnToApply = (int) (originalBurn * burnMult);
@@ -125,7 +123,7 @@ public class Conflagration extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -143,7 +141,7 @@ public class Conflagration extends Equipment {
 			// Apply burn
 			FightInstance.applyStatus(target, StatusType.BURN, data, burnToApply, -1);
 			
-			Sounds.explode.play(p, target.getLocation());
+			Sounds.explode.play(data.getPlayer(), target.getLocation());
 		}
 
 		@Override

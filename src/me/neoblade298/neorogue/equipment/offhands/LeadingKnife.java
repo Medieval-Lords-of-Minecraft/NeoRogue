@@ -88,7 +88,6 @@ public class LeadingKnife extends Equipment {
 	}
 	
 	private class LeadingKnifeProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private LeadingKnifeInstance inst;
 		private int slot;
@@ -97,19 +96,18 @@ public class LeadingKnife extends Equipment {
 			super(1.5, 10, 1);
 			this.size(0.5, 0.5);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.inst = inst;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			LeadingKnife.hit.play(p, hit.getEntity());
+			LeadingKnife.hit.play(data.getPlayer(), hit.getEntity());
 			inst.marked = hit.getEntity();
 			inst.hitTime = System.currentTimeMillis();
 		}

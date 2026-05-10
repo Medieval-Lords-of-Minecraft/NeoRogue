@@ -70,7 +70,6 @@ public class LightningWand extends Equipment {
 	}
 
 	private class LightningWandProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private LightningWand eq;
 		private int slot;
@@ -78,7 +77,6 @@ public class LightningWand extends Equipment {
 		public LightningWandProjectile(PlayerFightData data, LightningWand eq, int slot) {
 			super(2.5, RANGE, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
-			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
@@ -86,13 +84,13 @@ public class LightningWand extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			Sounds.explode.play(p, loc);
+			Sounds.explode.play(data.getPlayer(), loc);
 		}
 		
 		@Override

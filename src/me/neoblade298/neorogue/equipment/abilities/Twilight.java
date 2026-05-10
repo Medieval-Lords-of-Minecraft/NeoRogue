@@ -4,7 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -24,7 +26,7 @@ public class Twilight extends Equipment {
 	
 	public Twilight(boolean isUpgraded) {
 		super(ID, "Twilight", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 20, 0, 0));
 		duration = isUpgraded ? 5 : 3;
 		evade = isUpgraded ? 2 : 1;
 	}
@@ -35,31 +37,29 @@ public class Twilight extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
-		inst.setAction((pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			
-			// Increase stealth duration
-			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
-			
-			// Apply evade
-			Player p = data.getPlayer();
-			FightInstance.applyStatus(p, StatusType.EVADE, data, evade, 160);
-			
-			// Add stamina
-			data.addStamina(10);
-			
-			return TriggerResult.keep();
-		});
-		
-		data.addTrigger(ID, Trigger.PRE_RECEIVE_STATUS, inst);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			StandardPriorityAction inst = new StandardPriorityAction(ID);
+			inst.setAction((pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
+				ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
+				Player p = data.getPlayer();
+				FightInstance.applyStatus(p, StatusType.EVADE, data, evade, 160);
+				data.addStamina(10);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.PRE_RECEIVE_STATUS, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
+				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
 				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and " + DescUtil.white(10) + " stamina.");
 	}
 }

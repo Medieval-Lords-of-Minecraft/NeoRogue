@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -25,7 +27,7 @@ public class SilentSteps2 extends Equipment {
 	
 	public SilentSteps2(boolean isUpgraded) {
 		super(ID, "Silent Steps II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 15, 0, 0));
 		duration = 3;
 		damage = isUpgraded ? 30 : 25;
 	}
@@ -36,27 +38,32 @@ public class SilentSteps2 extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
-		
-		
-		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(id + slot, this)));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PRE_RECEIVE_STATUS, (pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
+				ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
+				return TriggerResult.keep();
+			});
+
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata3, in3) -> {
+				if (!pdata3.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
+				PreDealDamageEvent ev = (PreDealDamageEvent) in3;
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(pdata3, damage, 0, StatTracker.damageBuffAlly(id + slot, this)));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration)
+				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration)
 						+ " and its stacks by " + DescUtil.white(1) + "." +
 						" Damage dealt is increased by " + DescUtil.yellow(damage) + " if you have " + GlossaryTag.STEALTH.tag(this) +".");
 	}

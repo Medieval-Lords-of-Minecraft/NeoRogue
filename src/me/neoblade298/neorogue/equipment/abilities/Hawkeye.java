@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -41,7 +42,7 @@ public class Hawkeye extends Equipment {
 	
 	public Hawkeye(boolean isUpgraded) {
 		super(ID, "Hawkeye", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
 		threshold = isUpgraded ? 8 : 12;
 		damage = isUpgraded ? 500 : 300;
 	}
@@ -52,41 +53,32 @@ public class Hawkeye extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
-			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			
-			// Check if focus is above threshold
-			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
-			if (focusStacks <= threshold) return TriggerResult.keep();
-			
-			Player p = data.getPlayer();
-			
-			// Reduce damage
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
-			
-			// Reduce focus by 1
-			data.applyStatus(StatusType.FOCUS, data, -1, -1);
-			
-			// Check if damager exists and shoot projectile
-			if (ev.getDamager() != null) {
-				LivingEntity damager = ev.getDamager().getEntity();
-				Location playerLoc = p.getLocation().add(0, 1, 0);
-				Location damagerLoc = damager.getEyeLocation();
-				
-				// Calculate direction from player to damager
-				Vector direction = damagerLoc.toVector().subtract(playerLoc.toVector()).normalize();
-				
-				// Shoot projectile
-				HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
-				proj.start(data, playerLoc, direction);
-				
-				Sounds.fire.play(p, p);
-				pc.play(p, playerLoc);
-			}
-			
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
+				ReceiveDamageEvent ev = (ReceiveDamageEvent) in2;
+				int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
+				if (focusStacks <= threshold) return TriggerResult.keep();
+				Player p = data.getPlayer();
+				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
+				data.applyStatus(StatusType.FOCUS, data, -1, -1);
+				if (ev.getDamager() != null) {
+					LivingEntity damager = ev.getDamager().getEntity();
+					Location playerLoc = p.getLocation().add(0, 1, 0);
+					Location damagerLoc = damager.getEyeLocation();
+					Vector direction = damagerLoc.toVector().subtract(playerLoc.toVector()).normalize();
+					HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
+					proj.start(data, playerLoc, direction);
+					Sounds.fire.play(p, p);
+					pc.play(p, playerLoc);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private class HawkeyeProjectile extends Projectile {
@@ -123,7 +115,7 @@ public class Hawkeye extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
+				GlossaryTag.POWER.tag(this) + ". While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
 				"damage taken gets reduced by " + DescUtil.white(DAMAGE_REDUCTION) + ", " +
 				"reduces your " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ", " +
 				"and shoots a piercing projectile at the damager that deals " +

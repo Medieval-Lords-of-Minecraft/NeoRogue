@@ -64,7 +64,6 @@ public class Fireblast extends Equipment {
 	}
 
 	private class FireballProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -74,14 +73,13 @@ public class Fireblast extends Equipment {
 			this.size(0.5, 0.5);
 			this.rotation(rotation);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override

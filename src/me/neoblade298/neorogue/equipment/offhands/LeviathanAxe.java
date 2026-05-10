@@ -43,9 +43,8 @@ public class LeviathanAxe extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		ItemStack icon = item.withType(Material.GOLD_INGOT);
-		p.getInventory().setItemInOffHand(icon);
+		data.getPlayer().getInventory().setItemInOffHand(icon);
 		ActionMeta am = new ActionMeta();
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
@@ -60,7 +59,7 @@ public class LeviathanAxe extends Equipment {
 			}
 			int pct = am.getCount() / (thres / 10);
 			icon.setAmount(Math.max(1, pct));
-			p.getInventory().setItemInOffHand(icon);
+			data.getPlayer().getInventory().setItemInOffHand(icon);
 			return TriggerResult.keep();
 		});
 	}
@@ -75,7 +74,7 @@ public class LeviathanAxe extends Equipment {
 			RightClickHitEvent ev = (RightClickHitEvent) inputs;
 			if (ev.getTarget() instanceof Player)
 				return TriggerResult.keep();
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
 			return TriggerResult.keep();
 		});
 	}

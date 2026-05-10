@@ -4,12 +4,15 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -26,7 +29,7 @@ public class Momentum extends Equipment {
 	
 	public Momentum(boolean isUpgraded) {
 		super(ID, "Momentum", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 0, 0));
 				damage = isUpgraded ? 20 : 10;
 				dur = 3;
 	}
@@ -37,27 +40,33 @@ public class Momentum extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		double distSq = DISTANCE * DISTANCE;
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			Player p = data.getPlayer();
-			if (am.getLocation() != null && am.getLocation().distanceSquared(p.getLocation()) >= distSq) {
-				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-				for (IProjectileInstance ipi : ev.getInstances()) {
-					if (!(ipi instanceof ProjectileInstance)) continue;
-					ProjectileInstance pi = (ProjectileInstance) ipi;
-					pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta am = new ActionMeta();
+			double distSq = DISTANCE * DISTANCE;
+			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (am.getLocation() != null && am.getLocation().distanceSquared(p.getLocation()) >= distSq) {
+					LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
+					for (IProjectileInstance ipi : ev.getInstances()) {
+						if (!(ipi instanceof ProjectileInstance)) continue;
+						ProjectileInstance pi = (ProjectileInstance) ipi;
+						pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
+					}
 				}
-			}
-			am.setLocation(p.getLocation());
-			return TriggerResult.keep();
-		});
+				am.setLocation(p.getLocation());
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOW_ITEM_FRAME,
-				"Passive. Upon firing a projectile, if you are at least " + DescUtil.white(DISTANCE) + " blocks away from where you last fired a projectile, " +
+				GlossaryTag.POWER.tag(this) + ". Upon firing a projectile, if you are at least " + DescUtil.white(DISTANCE) + " blocks away from where you last fired a projectile, " +
 				"increase your damage by " + DescUtil.yellow(damage) + " " + DescUtil.duration(dur, false) + ".");
 	}
 }

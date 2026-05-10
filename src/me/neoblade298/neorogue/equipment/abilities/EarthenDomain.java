@@ -8,7 +8,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
@@ -80,7 +79,6 @@ public class EarthenDomain extends Equipment {
 
 	private class AnchoringEarthProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 
@@ -88,7 +86,6 @@ public class EarthenDomain extends Equipment {
 		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.pierce(-1);
 			this.eq = eq;
 			this.slot = slot;
@@ -96,7 +93,7 @@ public class EarthenDomain extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -106,7 +103,7 @@ public class EarthenDomain extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 		}
 
 		@Override
@@ -116,14 +113,14 @@ public class EarthenDomain extends Equipment {
 
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);
+					LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(data.getPlayer(), loc, tp);
 					if (trgs.isEmpty()) {
 						cancel();
 						return;
 					}
 
 					circ.play(pc, fLoc, LocalAxes.xz(), null);
-					sc.play(p, fLoc);
+					sc.play(data.getPlayer(), fLoc);
 					for (LivingEntity trg : trgs) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), trg);
 						FightInstance.applyStatus(trg, StatusType.CONCUSSED, data, conc, -1);

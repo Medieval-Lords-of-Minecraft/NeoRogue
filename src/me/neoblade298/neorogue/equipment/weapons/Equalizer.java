@@ -88,7 +88,6 @@ public class Equalizer extends Bow {
 	
 	private class EqualizerProjectile extends BowProjectile {
 		private PlayerFightData data;
-		private Player p;
 		private int slot;
 		private Equalizer bow;
 
@@ -96,7 +95,6 @@ public class Equalizer extends Bow {
 			super(data, v, bow, id);
 			this.pierce(-1); // Infinite piercing
 			this.data = data;
-			this.p = data.getPlayer();
 			this.bow = bow;
 			// Extract slot from id (format is "equalizer" + slot)
 			this.slot = Integer.parseInt(id.replace(ID, ""));
@@ -107,6 +105,7 @@ public class Equalizer extends Bow {
 			// Call parent implementation for ammunition handling
 			super.onHitBlock(proj, b);
 			
+			Player p = data.getPlayer();
 			// Explosion effect
 			Sounds.explode.play(p, proj.getLocation());
 			pc.play(p, proj.getLocation());

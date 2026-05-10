@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -65,7 +64,6 @@ public class GrowingSpark extends Equipment {
 	
 	private class GrowingSparkProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private EquipmentInstance inst;
 		private int stacks = 0;
 		private long lastCast = 0;
@@ -76,7 +74,6 @@ public class GrowingSpark extends Equipment {
 		public GrowingSparkProjectile(PlayerFightData data, EquipmentInstance inst, int slot, Equipment eq) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.inst = inst;
 			this.slot = slot;
 			this.eq = eq;
@@ -84,7 +81,7 @@ public class GrowingSpark extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -94,7 +91,7 @@ public class GrowingSpark extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.firework.play(p, p);
+			Sounds.firework.play(data.getPlayer(), data.getPlayer());
 			stacks = Math.min(5, stacks + 1);
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage * (stacks + 1), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)));
 			chargedIcon.setAmount(stacks);
@@ -115,7 +112,7 @@ public class GrowingSpark extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.QUARTZ, "On cast, " + GlossaryTag.CHARGE.tag(this) + " <white>1s</white before firing a projectile that deals "
+		item = createItem(Material.QUARTZ, "On cast, " + GlossaryTag.CHARGE.tag(this) + " <white>1s</white> before firing a projectile that deals "
 				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. Every time you cast within " + DescUtil.white("6s") + " of the last cast, increase " +
 				"its damage by " + DescUtil.yellow(growth) + ", up to " + DescUtil.white(5) + ". Otherwise, reset the stacks.");
 		chargedIcon = item.clone().withType(Material.NETHER_STAR);

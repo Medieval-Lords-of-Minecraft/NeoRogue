@@ -62,7 +62,6 @@ public class Blackspike extends Equipment {
 	
 	private class BlackspikeProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 
@@ -71,19 +70,18 @@ public class Blackspike extends Equipment {
 			this.rotation(angleOffset);
 			this.size(0.3, 0.3);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.extinguish.play(p, hit.getEntity().getLocation());
+			Sounds.extinguish.play(data.getPlayer(), hit.getEntity().getLocation());
 		}
 
 		@Override

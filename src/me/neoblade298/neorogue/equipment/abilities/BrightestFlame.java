@@ -76,7 +76,6 @@ public class BrightestFlame extends Equipment {
 	}
 
 	private class BrightestFlameProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -90,14 +89,13 @@ public class BrightestFlame extends Equipment {
 			this.homing(0.008);
 			this.initialY(1.0);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			trail.play(p, proj.getLocation());
+			trail.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -111,13 +109,13 @@ public class BrightestFlame extends Equipment {
 			// Apply burn
 			FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1);
 			
-			Sounds.fire.play(p, target.getLocation());
+			Sounds.fire.play(data.getPlayer(), target.getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			// Set homing target to nearest enemy
-			LivingEntity nearest = TargetHelper.getNearest(p, proj.getLocation(), tp);
+			LivingEntity nearest = TargetHelper.getNearest(data.getPlayer(), proj.getLocation(), tp);
 			if (nearest != null) {
 				proj.setHomingTarget(nearest);
 			}

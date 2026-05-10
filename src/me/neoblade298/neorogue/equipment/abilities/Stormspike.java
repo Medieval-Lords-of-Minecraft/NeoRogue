@@ -72,7 +72,6 @@ public class Stormspike extends Equipment {
 	
 	private class StormspikeProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
 		private ActionMeta am;
@@ -82,7 +81,6 @@ public class Stormspike extends Equipment {
 			this.rotation(angleOffset);
 			this.size(0.3, 0.3);
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.am = am;
@@ -90,11 +88,12 @@ public class Stormspike extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, hit.getEntity().getLocation());
 			am.addCount(1);
 			
@@ -109,7 +108,7 @@ public class Stormspike extends Equipment {
 				// Add lightning damage and electrified on basic attack for 6 seconds
 				String triggerId = id + slot + "-empowered";
 				data.addTrigger(triggerId, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-					Player p = data.getPlayer();
+					Player pl = data.getPlayer();
 					// Check if 6 seconds have passed
 					if (System.currentTimeMillis() - startTime >= 6000) {
 						return TriggerResult.remove();
@@ -118,7 +117,7 @@ public class Stormspike extends Equipment {
 					PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 					ev.getMeta().addDamageSlice(new DamageSlice(data, basicLightning, DamageType.LIGHTNING,
 						DamageStatTracker.of(triggerId, eq)));
-					Sounds.firework.play(p, p);
+					Sounds.firework.play(pl, pl);
 					FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, electrified, -1);
 					return TriggerResult.keep();
 				});

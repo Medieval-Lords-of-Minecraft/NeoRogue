@@ -105,7 +105,6 @@ public class NightSurge extends Equipment {
 	}
 
 	private class NightSurgeProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -116,13 +115,12 @@ public class NightSurge extends Equipment {
 			this.initialY(1);
 			this.data = data;
 			this.slot = slot;
-			this.p = data.getPlayer();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			projectileParticle.play(p, proj.getLocation());
+			projectileParticle.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override

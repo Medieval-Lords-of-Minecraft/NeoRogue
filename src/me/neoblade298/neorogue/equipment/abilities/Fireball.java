@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -64,7 +63,6 @@ public class Fireball extends Equipment {
 	}
 
 	private class FireballProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
@@ -74,13 +72,12 @@ public class Fireball extends Equipment {
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.slot = slot;
-			this.p = data.getPlayer();
 			this.eq = eq;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
+			tick.play(data.getPlayer(), proj.getLocation());
 		}
 
 		@Override
@@ -90,7 +87,7 @@ public class Fireball extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
