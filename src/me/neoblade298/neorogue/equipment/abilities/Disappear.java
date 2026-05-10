@@ -30,7 +30,7 @@ public class Disappear extends Equipment {
 	
 	public Disappear(boolean isUpgraded) {
 		super(ID, "Disappear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
 		
 		damage = isUpgraded ? 225 : 150;
 	}

@@ -2,7 +2,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -19,7 +21,7 @@ public class PowerThrough extends Equipment {
 	
 	public PowerThrough(boolean isUpgraded) {
 		super(ID, "Power Through", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 25, 0, 0));
 		
 		cutoff = isUpgraded ? 3 : 4;
 	}
@@ -30,23 +32,29 @@ public class PowerThrough extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
-		inst.setAction((pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.BERSERK.name())) return TriggerResult.keep();
-			inst.addCount(ev.getStacks());
-			
-			int num = inst.getCount() / cutoff;
-			data.applyStatus(StatusType.PROTECT, data, num, -1);
-			inst.setCount(inst.getCount() % cutoff);
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.APPLY_STATUS, inst);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			StandardPriorityAction inst = new StandardPriorityAction(ID);
+			inst.setAction((pdata2, in2) -> {
+				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+				if (!ev.getStatusId().equals(StatusType.BERSERK.name())) return TriggerResult.keep();
+				inst.addCount(ev.getStacks());
+				
+				int num = inst.getCount() / cutoff;
+				data.applyStatus(StatusType.PROTECT, data, num, -1);
+				inst.setCount(inst.getCount() % cutoff);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.APPLY_STATUS, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every " + GlossaryTag.BERSERK.tag(this, cutoff, true) + " you acquire, apply " + GlossaryTag.PROTECT.tag(this, 1, false) + " to yourself.");
+				GlossaryTag.POWER.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, cutoff, true) + " you acquire, apply " + GlossaryTag.PROTECT.tag(this, 1, false) + " to yourself.");
 	}
 }

@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -22,7 +24,7 @@ public class Frenzy extends Equipment {
 	
 	public Frenzy(boolean isUpgraded) {
 		super(ID, "Frenzy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 0, 0));
 		atkSpeed = isUpgraded ? 10 : 7;
 	}
 	
@@ -37,18 +39,24 @@ public class Frenzy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata, in) -> {
-			int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);
-			WeaponSwingEvent ev = (WeaponSwingEvent) in;
-			ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.WEAPON_SWING, (pdata2, in2) -> {
+				int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);
+				WeaponSwingEvent ev = (WeaponSwingEvent) in2;
+				ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW,
-				"Passive. For every " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " you have, up to " + DescUtil.white(20) + ", increase your attack speed by"
+				GlossaryTag.POWER.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " you have, up to " + DescUtil.white(20) + ", increase your attack speed by"
 				+ " " + DescUtil.yellow(atkSpeed + "%") + ".");
 	}
 }

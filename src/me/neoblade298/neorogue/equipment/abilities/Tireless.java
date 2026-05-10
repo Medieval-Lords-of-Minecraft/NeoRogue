@@ -4,7 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -23,7 +25,7 @@ public class Tireless extends Equipment {
 
 	public Tireless(boolean isUpgraded) {
 		super(ID, "Tireless", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(30, 0, 0, 0));
 
 		cutoff = 20;
 		reduc = isUpgraded ? 3 : 2;
@@ -36,27 +38,33 @@ public class Tireless extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			PreCastUsableEvent ev = (PreCastUsableEvent) in;
-			if (ev.getInstance().getStaminaCost() > 0) {
-				ev.addBuff(PropertyType.STAMINA_COST, ID,
-						new Buff(data, inst.getCount(), 0, BuffStatTracker.of(id + slot, this, "Stamina cost reduced")));
-			}
-			if (ev.getInstance().getStaminaCost() < cutoff)
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			StandardPriorityAction inst = new StandardPriorityAction(ID);
+			inst.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				PreCastUsableEvent ev = (PreCastUsableEvent) in2;
+				if (ev.getInstance().getStaminaCost() > 0) {
+					ev.addBuff(PropertyType.STAMINA_COST, ID,
+							new Buff(data, inst.getCount(), 0, BuffStatTracker.of(id + slot, this, "Stamina cost reduced")));
+				}
+				if (ev.getInstance().getStaminaCost() < cutoff)
+					return TriggerResult.keep();
+				inst.addCount(reduc);
+				data.addSimpleShield(p.getUniqueId(), shields, 100);
 				return TriggerResult.keep();
-			inst.addCount(reduc);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			return TriggerResult.keep();
-		});
-		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, inst);
+			});
+			data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
+				GlossaryTag.POWER.tag(this) + ". For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
 						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.yellow(reduc)
 						+ " and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

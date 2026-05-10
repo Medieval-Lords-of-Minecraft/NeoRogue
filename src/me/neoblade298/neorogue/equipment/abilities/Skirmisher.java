@@ -10,7 +10,9 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,7 +33,7 @@ public class Skirmisher extends Equipment {
 	
 	public Skirmisher(boolean isUpgraded) {
 		super(ID, "Skirmisher", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 	
@@ -41,7 +43,11 @@ public class Skirmisher extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, data));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, data));
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private class SkirmisherInstance extends PriorityAction {
@@ -69,7 +75,7 @@ public class Skirmisher extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				"Passive. Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
+				GlossaryTag.POWER.tag(this) + ". Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
 				+ " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

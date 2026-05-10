@@ -8,6 +8,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +25,7 @@ public class Bloodlust extends Equipment {
 	
 	public Bloodlust(boolean isUpgraded) {
 		super(ID, "Bloodlust", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 0, 0));
 		strength = isUpgraded ? 15 : 10;
 	}
 	
@@ -34,24 +35,30 @@ public class Bloodlust extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
-			}
-			else {
-				pc.play(p, p);
-				Sounds.fire.play(p, p);
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
+					data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				}
+				else {
+					pc.play(p, p);
+					Sounds.fire.play(p, p);
+					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				"On kill, if below " + DescUtil.white(CUTOFF) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
+				GlossaryTag.POWER.tag(this) + ". On kill, if below " + DescUtil.white(CUTOFF) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
 				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ".");
 	}
 }

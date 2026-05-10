@@ -24,7 +24,7 @@ public class DarkShroud extends Equipment {
 	
 	public DarkShroud(boolean isUpgraded) {
 		super(ID, "Dark Shroud", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ACCESSORY,
-				EquipmentProperties.ofUsable(20, 0, 0, 0));
+				EquipmentProperties.ofUsable(20, 10, 0, 0));
 		damage = isUpgraded ? 60 : 40;
 	}
 	

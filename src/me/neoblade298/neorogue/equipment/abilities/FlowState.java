@@ -3,9 +3,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -17,7 +20,7 @@ public class FlowState extends Equipment {
 	
 	public FlowState(boolean isUpgraded) {
 		super(ID, "Flow State", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 0, 0));
 		thres = isUpgraded ? 40 : 30;
 		inc = isUpgraded ? 0.8 : 0.5;
 	}
@@ -33,17 +36,23 @@ public class FlowState extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (data.getStamina() < thres) return TriggerResult.keep();
-			data.addStamina(inc);
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				if (data.getStamina() < thres) return TriggerResult.keep();
+				data.addStamina(inc);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase stamina regen by " + DescUtil.yellow(inc) + " when above "
+				GlossaryTag.POWER.tag(this) + ". Increase stamina regen by " + DescUtil.yellow(inc) + " when above "
 				+ DescUtil.yellow(thres) + " stamina.");
 	}
 }

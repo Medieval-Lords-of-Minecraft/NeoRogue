@@ -39,7 +39,7 @@ public class Windcutter extends Equipment {
 	
 	public Windcutter(boolean isUpgraded) {
 		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 0, 5));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 5));
 		damage = isUpgraded ? 120 : 80;
 	}
 	

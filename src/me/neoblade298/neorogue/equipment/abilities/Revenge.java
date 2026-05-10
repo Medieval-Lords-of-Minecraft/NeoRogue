@@ -8,6 +8,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -28,7 +29,7 @@ public class Revenge extends Equipment {
 	
 	public Revenge(boolean isUpgraded) {
 		super(ID, "Revenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 25, 0, 0));
 		strength = isUpgraded ? 15 : 10;
 		heal = isUpgraded ? 3 : 2;
 	}
@@ -39,37 +40,43 @@ public class Revenge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction inst = new StandardPriorityAction(id);
-		inst.setAction((pdata, in) -> {
-			if (!inst.canUse()) return TriggerResult.keep();
-			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
-			inst.setNextUse(System.currentTimeMillis() + 2000);
-			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
-			}
-			else {
-				Player p = data.getPlayer();
-				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
-				Sounds.fire.play(p, p);
-				pc.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			StandardPriorityAction inst = new StandardPriorityAction(id);
+			inst.setAction((pdata2, in2) -> {
+				if (!inst.canUse()) return TriggerResult.keep();
+				data.applyStatus(StatusType.STRENGTH, data, strength, 200);
+				inst.setNextUse(System.currentTimeMillis() + 2000);
+				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
+					data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				}
+				else {
+					Player p = data.getPlayer();
+					data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
+					Sounds.fire.play(p, p);
+					pc.play(p, p);
+					return TriggerResult.keep();
+				}
 				return TriggerResult.keep();
-			}
-			return TriggerResult.keep();
 			});
-		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, inst);
-		
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			if (!data.hasStatus("Revenge")) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			FightInstance.giveHeal(p, heal, p);
-			return TriggerResult.keep();
-		});
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, inst);
+
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+				if (!data.hasStatus("Revenge")) return TriggerResult.keep();
+				Player p = data.getPlayer();
+				FightInstance.giveHeal(p, heal, p);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				"Passive. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) + ". Additionally, if you're below "
+				GlossaryTag.POWER.tag(this) + ". Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) + ". Additionally, if you're below "
 				+ GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " stacks, gain " + GlossaryTag.BERSERK.tag(this, 1, false) + ". Otherwise, your basic attacks heal you "
 						+ "for " + DescUtil.yellow(heal) + " " + DescUtil.duration(10, false) + ".");
 	}

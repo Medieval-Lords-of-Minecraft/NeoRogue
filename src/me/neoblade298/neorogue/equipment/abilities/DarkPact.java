@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -30,7 +32,7 @@ public class DarkPact extends Equipment {
 	
 	public DarkPact(boolean isUpgraded) {
 		super(ID, "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 30, 0, 0));
 		seconds = isUpgraded ? 25 : 40;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
@@ -41,8 +43,14 @@ public class DarkPact extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5, BuffStatTracker.of(UUID.randomUUID().toString(), this, "Additional Damage Taken")), seconds * 20);
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new DarkPactTriggerAction());
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5, BuffStatTracker.of(UUID.randomUUID().toString(), this, "Additional Damage Taken")), seconds * 20);
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new DarkPactTriggerAction());
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	class DarkPactTriggerAction implements TriggerAction {
@@ -65,7 +73,7 @@ public class DarkPact extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Passive. Increase your " + GlossaryTag.STRENGTH.tag(this) + " by 2 every 3 basic attacks. In exchange, take "
+				GlossaryTag.POWER.tag(this) + ". Increase your " + GlossaryTag.STRENGTH.tag(this) + " by 2 every 3 basic attacks. In exchange, take "
 				+ DescUtil.white("50%") + " increased damage for the first " + DescUtil.yellow(seconds + "s") + " of a fight.");
 	}
 }

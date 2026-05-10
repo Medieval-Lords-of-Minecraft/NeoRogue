@@ -26,7 +26,7 @@ public class Counter extends Equipment {
 	
 	public Counter(boolean isUpgraded) {
 		super(ID, "Counter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 0, 0, 0));
+				EquipmentProperties.ofUsable(10, 15, 0, 0));
 		damage = isUpgraded ? 150 : 100;
 	}
 	

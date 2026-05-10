@@ -19,7 +19,7 @@ public class AfterImage extends Equipment {
 	
 	public AfterImage(boolean isUpgraded) {
 		super(ID, "After Image", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 10, 0, 0));
+				EquipmentProperties.ofUsable(10, 15, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 	

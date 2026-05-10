@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -39,7 +41,7 @@ public class LightPulse extends Equipment {
 	
 	public LightPulse(boolean isUpgraded) {
 		super(ID, "Light Pulse", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 6));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 0, 6));
 		damage = isUpgraded ? 240 : 160;
 		cost = 6;
 	}
@@ -50,19 +52,23 @@ public class LightPulse extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new LightPulseProjectile(i, PROJECTILE_AMOUNT / 2, slot, this));
 		}
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new LightPulseInstance(id, p, data));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new LightPulseInstance(id, data));
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private class LightPulseInstance extends PriorityAction {
 		private int count = 0;
-		public LightPulseInstance(String id, Player p, PlayerFightData data) {
+		public LightPulseInstance(String id, PlayerFightData data) {
 			super(id);
 			action = (pdata, in) -> {
 				if (++count >= 3 && (data.getMana() / data.getMaxMana()) > 0.5) {
+					Player p = data.getPlayer();
 					sound.play(p, p);
 					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
 					data.addMana(-cost);
@@ -77,7 +83,7 @@ public class LightPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				"Passive. When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
+				GlossaryTag.POWER.tag(this) + ". When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
 				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	

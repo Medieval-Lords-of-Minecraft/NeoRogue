@@ -26,7 +26,7 @@ public class ChosenOfTheLight extends Equipment {
 	
 	public ChosenOfTheLight(boolean isUpgraded) {
 		super(ID, "Chosen of the Light", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
 		heal = 1;
 		mult = isUpgraded ? 0.3 : 0.2;
 		multStr = (int) (mult * 100);

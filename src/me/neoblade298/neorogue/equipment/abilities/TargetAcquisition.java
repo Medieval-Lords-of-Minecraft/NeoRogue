@@ -9,8 +9,8 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,7 +31,7 @@ public class TargetAcquisition extends Equipment {
 	
 	public TargetAcquisition(boolean isUpgraded) {
 		super(ID, "Target Acquisition", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 0, 0));
 		
 		damage = isUpgraded ? 50 : 30;
 		shields = isUpgraded ? 5 : 3;
@@ -43,35 +43,39 @@ public class TargetAcquisition extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (!inst.canUse()) return TriggerResult.keep();
-			inst.setNextUse((long) (System.currentTimeMillis() + (properties.get(PropertyType.COOLDOWN) * 1000)));
-			sc.play(p, p);
-			part.play(p, p);
-			inst.addCount(1);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.KILL, inst);
-		
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			Player p = data.getPlayer();
-			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			if (inst.getCount() <= 0) return TriggerResult.keep();
-			inst.addCount(-1);
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
-			Sounds.anvil.play(p, p);
-			hit.play(p, ev.getTarget());
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			StandardPriorityAction inst = new StandardPriorityAction(ID);
+			inst.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				sc.play(p, p);
+				part.play(p, p);
+				inst.addCount(1);
+				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				return TriggerResult.keep();
+			});
+			data.addTrigger(id, Trigger.KILL, inst);
+
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+				Player p = data.getPlayer();
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in3;
+				if (inst.getCount() <= 0) return TriggerResult.keep();
+				inst.addCount(-1);
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
+				Sounds.anvil.play(p, p);
+				hit.play(p, ev.getTarget());
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. Killing an enemy grants your next basic attack an additional " +
+				GlossaryTag.POWER.tag(this) + ". Killing an enemy grants your next basic attack an additional " +
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage and grants " +
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

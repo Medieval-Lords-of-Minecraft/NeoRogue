@@ -33,7 +33,7 @@ public class CompoundingInjury extends Equipment {
 	
 	public CompoundingInjury(boolean isUpgraded) {
 		super(ID, "Compounding Injury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
 				thres = isUpgraded ? 20 : 30;
 				mult = isUpgraded ? 1.5 : 1;
 				multStr = (int) (mult * 100);

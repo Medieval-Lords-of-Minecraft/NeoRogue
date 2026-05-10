@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +26,7 @@ public class FeelNoPain extends Equipment {
 	
 	public FeelNoPain(boolean isUpgraded) {
 		super(ID, "Feel No Pain", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 0, 0));
 		reduc = isUpgraded ? 0.08 : 0.05;
 		reducString = (int) (reduc * 100);
 	}
@@ -35,20 +37,26 @@ public class FeelNoPain extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
-			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			int stacks = data.getStatus(StatusType.BERSERK).getStacks();
-			int ct = Math.min(COUNT, stacks / THRES);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.multiplier(data, ct * reduc, null));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
+				ReceiveDamageEvent ev = (ReceiveDamageEvent) in2;
+				int stacks = data.getStatus(StatusType.BERSERK).getStacks();
+				int ct = Math.min(COUNT, stacks / THRES);
+				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						Buff.multiplier(data, ct * reduc, null));
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_HELMET,
-				"Passive. Gain " + DescUtil.yellow(reducString + "%") + " damage reduction for every " + DescUtil.white(THRES) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", up to " +
+				GlossaryTag.POWER.tag(this) + ". Gain " + DescUtil.yellow(reducString + "%") + " damage reduction for every " + DescUtil.white(THRES) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", up to " +
 				DescUtil.white(CUTOFF) + " stacks.");
 	}
 }
