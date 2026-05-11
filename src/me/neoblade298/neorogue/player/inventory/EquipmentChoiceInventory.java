@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,8 +16,11 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.reward.RewardInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EquipmentChoiceInventory extends CoreInventory {
+	private static final int BACK = 8;
 	private RewardInventory prev;
 	private ArrayList<Equipment> equips;
 	private int prevSlot;
@@ -43,6 +47,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		for (int i = 0; i < equips.size(); i++) {
 			contents[i] = equips.get(i).getItem();
 		}
+		contents[BACK] = CoreInventory.createButton(Material.BARRIER, Component.text("Back", NamedTextColor.RED));
 		inv.setContents(contents);
 	}
 	@Override
@@ -54,6 +59,11 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 		
 		int slot = e.getSlot();
+		
+		if (slot == BACK) {
+			prev.openInventory();
+			return;
+		}
 		
 		if (slot < equips.size()) {
 			if (e.isRightClick()) {
