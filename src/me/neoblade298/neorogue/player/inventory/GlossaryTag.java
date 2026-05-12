@@ -46,7 +46,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	LIGHT(Material.END_ROD, DamageType.LIGHT.tag,
 			"A type of magical damage."),
 	POISON(Material.GREEN_DYE, StatusType.POISON.tag,
-			"Deals 0.2 poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration. 1 stack is removed every tick."),
+			"Deals 10 poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration. 1 stack is removed every tick."),
 	REND(Material.NETHERITE_SCRAP, StatusType.REND.tag,
 			"Certain abilities become stronger with more stacks of these applied to enemies. 1 stack is removed every tick."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
