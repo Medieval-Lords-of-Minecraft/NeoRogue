@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -40,7 +40,7 @@ public class BalefulStrike extends Equipment {
 	public BalefulStrike(boolean isUpgraded) {
 		super(ID, "Baleful Strike", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		damageMultiplier = isUpgraded ? 3 : 2;
+		damageMultiplier = isUpgraded ? 9 : 6;
 		applyMultiplier = isUpgraded ? 1.5 : 1;
 	}
 	

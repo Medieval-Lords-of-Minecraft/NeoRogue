@@ -51,8 +51,8 @@ public class CorpseExplosion extends Equipment {
 	public CorpseExplosion(boolean isUpgraded) {
 		super(ID, "Corpse Explosion", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 0, 0, radius));
-		poisonPerSecond = isUpgraded ? 75 : 50;
-		duration = 5;
+		poisonPerSecond = isUpgraded ? 5 : 4;
+		duration = 3;
 	}
 	
 	public static Equipment get() {

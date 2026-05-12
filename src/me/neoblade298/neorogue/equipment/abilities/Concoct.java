@@ -22,12 +22,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Concoct extends Equipment {
 	private static final String ID = "Concoct";
-	private int poison;
+	private int poison, duration;
 	
 	public Concoct(boolean isUpgraded) {
 		super(ID, "Concoct", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, 0));
-		poison = isUpgraded ? 45 : 30;
+		poison = isUpgraded ? 4 : 3;
+		duration = 3;
 	}
 	
 	public static Equipment get() {
@@ -50,7 +51,7 @@ public class Concoct extends Equipment {
 						return;
 					}
 					p.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, 1F, pitches[count]);
-					if (++count >= 5) this.cancel();
+					if (++count >= duration) this.cancel();
 				}
 			}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
 			return TriggerResult.keep();
@@ -73,6 +74,6 @@ public class Concoct extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DRAGON_BREATH,
 				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " "
-						+ "for every second you charged, up to " + DescUtil.white(5) + " seconds.");
+						+ "for every second you charged, up to " + DescUtil.white(duration) + " seconds.");
 	}
 }

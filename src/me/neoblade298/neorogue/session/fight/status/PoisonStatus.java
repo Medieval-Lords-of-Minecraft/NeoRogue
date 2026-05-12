@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class PoisonStatus extends DecrementStackStatus {
 	private static String id = "POISON";
+	public static int POISON_DAMAGE = 5;
 
 	public PoisonStatus(FightData data) {
 		super(id, data, StatusClass.NEGATIVE);
@@ -39,7 +40,7 @@ public class PoisonStatus extends DecrementStackStatus {
 		FightData owner = slices.getSliceOwners().entrySet().iterator().next().getKey();
 		DamageMeta meta = new DamageMeta(owner);
 		meta.isSecondary(true);
-		double damagePerStack = holder instanceof PlayerFightData ? 1 : 10;
+		double damagePerStack = holder instanceof PlayerFightData ? 1 : POISON_DAMAGE;
 		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * damagePerStack, DamageType.POISON, true, DamageStatTracker.poison()));
 		}

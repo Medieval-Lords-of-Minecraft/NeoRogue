@@ -41,12 +41,13 @@ public class AcidBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	private int poison;
+	private int poison, duration;
 	
 	public AcidBomb(boolean isUpgraded) {
 		super(ID, "Acid Bomb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0));
-		poison = isUpgraded ? 90 : 60;
+		poison = isUpgraded ? 3 : 2;
+		duration = 4;
 	}
 	
 	public static Equipment get() {
@@ -65,7 +66,7 @@ public class AcidBomb extends Equipment {
 				public void run() {
 					Sounds.explode.play(p, loc);
 					data.addTask(new BukkitRunnable() {
-						private static final int TICKS = 5;
+						private final int TICKS = duration;
 						private int tick = 0;
 						public void run() {
 							smoke.play(p, loc);
@@ -87,7 +88,7 @@ public class AcidBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, drop an acid bomb that detonates after " + DescUtil.white(3) + " seconds. After detonation, every second for " + DescUtil.white(5) + " seconds,"
+				"On cast, drop an acid bomb that detonates after " + DescUtil.white(3) + " seconds. After detonation, every second for " + DescUtil.white(duration) + " seconds,"
 				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);

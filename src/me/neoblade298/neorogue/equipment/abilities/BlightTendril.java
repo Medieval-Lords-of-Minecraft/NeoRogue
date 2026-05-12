@@ -43,11 +43,13 @@ public class BlightTendril extends Equipment {
 			.count(5).spread(0.1, 0.1);
 	
 	private int poison;
+	private double poisonMult;
 
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
-		poison = isUpgraded ? 200 : 150;
+		poison = isUpgraded ? 7 : 5;
+		poisonMult = 0.5;
 	}
 
 	public static Equipment get() {
@@ -93,7 +95,7 @@ public class BlightTendril extends Equipment {
 					// Apply 2x the existing poison stacks (resulting in 3x total)
 					if (fd.hasStatus(StatusType.POISON)) {
 						int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-						FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, existingPoison * 2, -1);
+						FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
 						pc.play(p, ev.getTarget());
 					}
 				}
@@ -153,6 +155,6 @@ public class BlightTendril extends Equipment {
 		item = createItem(Material.VINE,
 				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
 				"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
-				"Basic attacks consume the mark and apply an additional " + DescUtil.white("2x") + " their current " + GlossaryTag.POISON.tag(this) + ".");
+				"Basic attacks consume the mark and apply an additional " + DescUtil.white((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }
