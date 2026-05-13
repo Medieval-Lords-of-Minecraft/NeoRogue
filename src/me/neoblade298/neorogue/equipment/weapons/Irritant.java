@@ -25,7 +25,7 @@ public class Irritant extends Equipment {
 		super(ID, "Irritant", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sounds.extinguish));
-		dmg = isUpgraded ? 80 : 40;
+		dmg = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {

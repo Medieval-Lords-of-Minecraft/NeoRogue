@@ -28,7 +28,7 @@ public class SerratedRazor extends Equipment {
 		super(ID, "Serrated Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 3, 0, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		bonus = isUpgraded ? 80 : 50;
+		bonus = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {
