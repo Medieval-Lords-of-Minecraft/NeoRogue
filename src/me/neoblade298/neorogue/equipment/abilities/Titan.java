@@ -27,7 +27,7 @@ public class Titan extends Equipment {
 
 	public Titan(boolean isUpgraded) {
 		super(ID, "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 20, 0, 0));
+				EquipmentProperties.ofUsable(10, 10, 0, 0));
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		staminaReduction = isUpgraded ? 15 : 10;
 	}

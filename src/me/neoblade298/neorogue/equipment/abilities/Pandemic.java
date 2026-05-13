@@ -51,8 +51,8 @@ public class Pandemic extends Equipment {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(40, 20, 0, 0).add(PropertyType.AREA_OF_EFFECT, radius));
 		bonusDamage = isUpgraded ? 0.9 : 0.6;
-		bonusPoison = isUpgraded ? 180 : 120;
-		areaPoison = isUpgraded ? 60 : 40;
+		bonusPoison = isUpgraded ? 7 : 5;
+		areaPoison = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

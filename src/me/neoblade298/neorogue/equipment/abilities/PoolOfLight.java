@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -37,7 +36,6 @@ public class PoolOfLight extends Equipment {
 	public PoolOfLight(boolean isUpgraded) {
 		super(ID, "Pool of Light", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 20, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		sanct = isUpgraded ? 3 : 2;
 	}
 	

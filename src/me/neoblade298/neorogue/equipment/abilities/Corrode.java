@@ -35,7 +35,7 @@ public class Corrode extends Equipment {
 		super(ID, "Corrode", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 15, 0, 0));
 		bonusDamage = isUpgraded ? 0.6 : 0.4;
-		bonusPoison = isUpgraded ? 120 : 80;
+		bonusPoison = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

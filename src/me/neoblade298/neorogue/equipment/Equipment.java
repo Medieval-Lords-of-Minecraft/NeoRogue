@@ -562,7 +562,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PiercingNight(b);
 			new PiercingShot(b);
 			new PiercingShot2(b);
-			new PiercingVenom(b);
 			new Pin(b);
 			new PinningShot(b);
 			new Plague(b);

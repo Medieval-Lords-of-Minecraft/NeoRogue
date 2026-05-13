@@ -34,7 +34,8 @@ public class MinibossFightInstance extends FightInstance {
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, RegionType type) {
 		super(s, party);
-		map = Map.generateMiniboss(type, 0, s.isDebug());
+		map = Map.generateMiniboss(type, 0, s.isDebug(), s.getLastMiniboss());
+		s.setLastMiniboss(map.getPieces().getFirst().getPiece().getId());
 		targets.addAll(map.getTargets());
 	}
 	

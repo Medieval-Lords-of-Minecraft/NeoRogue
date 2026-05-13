@@ -115,9 +115,18 @@ public class Map {
 		return generate(type, numPieces, piece, debugMode);
 	}
 	
-	public static Map generateMiniboss(RegionType type, int numPieces, boolean debugMode) {
+	public static Map generateMiniboss(RegionType type, int numPieces, boolean debugMode, String exclude) {
         ArrayList<MapPiece> pieces = minibossPieces.get(debugMode ? RegionType.getDebugRegion(type) : type);
-		MapPiece piece = pieces.get(NeoRogue.gen.nextInt(pieces.size()));
+		ArrayList<MapPiece> candidates = pieces;
+		if (exclude != null && pieces.size() > 1) {
+			candidates = new ArrayList<MapPiece>();
+			for (MapPiece mp : pieces) {
+				if (!mp.getId().equals(exclude)) {
+					candidates.add(mp);
+				}
+			}
+		}
+		MapPiece piece = candidates.get(NeoRogue.gen.nextInt(candidates.size()));
 		return generate(type, numPieces, piece, debugMode);
 	}
 	

@@ -28,7 +28,7 @@ public class Plague extends Equipment {
 		super(ID, "Plague", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
 		damage = 10;
-		thres = 200;
+		thres = 5;
 		maxThres = isUpgraded ? 5 : 3;
 	}
 	
@@ -78,6 +78,6 @@ public class Plague extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
 				GlossaryTag.POWER.tag(this) + ". Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
-				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied, up to " + DescUtil.yellow(maxThres * thres) + ".");
+				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied this fight, up to " + DescUtil.yellow(maxThres * thres) + ".");
 	}
 }

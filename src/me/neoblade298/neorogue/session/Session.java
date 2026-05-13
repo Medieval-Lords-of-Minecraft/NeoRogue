@@ -79,6 +79,7 @@ public class Session {
 	private Plot plot;
 	private SessionType sessionType;
 	private boolean busy;
+	private String lastMiniboss;
 	private long nextSuggest = 0L;
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
 	private double BASE_UPGRADE_CHANCE = 0.3;
@@ -196,6 +197,8 @@ public class Session {
 					potionChance = sessSet.getInt("potionChance");
 					regionsCompleted = sessSet.getInt("regionsCompleted");
 
+					lastMiniboss = sessSet.getString("lastMiniboss");
+
 					// settings
 					endless = sessSet.getBoolean("endless");
 					enemyHealthScale = sessSet.getInt("enemyHealthScale");
@@ -274,7 +277,7 @@ public class Session {
 					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(coinReduction).addValue(fightTimeReduction)
 					.addValue(endless ? 1 : 0)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party))
-					.addString(sessionType.name());
+					.addString(sessionType.name()).addString(lastMiniboss);
 			insert.execute(sql.build());
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
@@ -615,6 +618,14 @@ public class Session {
 	
 	public void setNodesVisited(int nodesVisited) {
 		this.nodesVisited = nodesVisited;
+	}
+
+	public String getLastMiniboss() {
+		return lastMiniboss;
+	}
+
+	public void setLastMiniboss(String lastMiniboss) {
+		this.lastMiniboss = lastMiniboss;
 	}
 
 	public void setRegionsCompleted(int regionsCompleted) {

@@ -33,13 +33,13 @@ public class Envenom extends Equipment {
 	public Envenom(boolean isUpgraded) {
 		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		poison = isUpgraded ? 30 : 20;
+		poison = isUpgraded ? 2 : 1;
 	}
 
 	@Override
 	public void setupReforges() {
 		addReforge(Resourcefulness.get(), EndlessVenom.get());
-		addReforge(Dexterity.get(), PiercingVenom.get(), Envenom2.get());
+		addReforge(Dexterity.get(), Envenom2.get());
 	}
 	
 	public static Equipment get() {

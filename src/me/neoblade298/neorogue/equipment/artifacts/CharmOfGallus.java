@@ -34,7 +34,7 @@ public class CharmOfGallus extends Artifact {
 	public CharmOfGallus() {
 		super(ID, "Charm Of Gallus", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 
-		stamina = 25;
+		stamina = 5;
 	}
 
 	public static Equipment get() {

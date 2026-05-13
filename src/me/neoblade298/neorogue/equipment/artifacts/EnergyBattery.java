@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -34,7 +33,7 @@ public class EnergyBattery extends Artifact {
 	public EnergyBattery() {
 		super(ID, "Energy Battery", Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		num = 2;
+		num = 1;
 	}
 
 	public static Equipment get() {
@@ -106,6 +105,6 @@ public class EnergyBattery extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_BULB,
-				"Your first " + DescUtil.white(num) + " skills are free to cast and have no cooldown.");
+				"Your first ability is free to cast and has no cooldown.");
 	}
 }
