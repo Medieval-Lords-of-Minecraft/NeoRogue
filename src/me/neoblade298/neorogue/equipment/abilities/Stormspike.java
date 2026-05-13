@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Stormspike extends Equipment {
 	private static final String ID = "Stormspike";
-	private int damage, basicLightning, shields, electrified;
+	private int damage, basicLightning, shields, electrified, empowerDur = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 		.dustOptions(new DustOptions(Color.fromRGB(135, 206, 250), 1F));
 	
@@ -43,7 +43,7 @@ public class Stormspike extends Equipment {
 				EquipmentProperties.ofUsable(30, 15, 8, 8));
 		damage = isUpgraded ? 350 : 250;
 		basicLightning = isUpgraded ? 100 : 75;
-        electrified = isUpgraded ? 90 : 60;
+        electrified = isUpgraded ? 9 : 6;
 		shields = isUpgraded ? 25 : 20;
 	}
 	
@@ -105,12 +105,11 @@ public class Stormspike extends Equipment {
 				// Track when empowerment started
 				long startTime = System.currentTimeMillis();
 				
-				// Add lightning damage and electrified on basic attack for 6 seconds
+				// Add lightning damage and electrified on basic attack for empowerDur seconds
 				String triggerId = id + slot + "-empowered";
 				data.addTrigger(triggerId, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 					Player pl = data.getPlayer();
-					// Check if 6 seconds have passed
-					if (System.currentTimeMillis() - startTime >= 6000) {
+					if (System.currentTimeMillis() - startTime >= empowerDur * 1000) {
 						return TriggerResult.remove();
 					}
 					
@@ -143,8 +142,8 @@ public class Stormspike extends Equipment {
 		item = createItem(Material.LIGHTNING_ROD,
 			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
 			GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. If you hit at least " + DescUtil.white(2) + " enemies, " +
-			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>6s</white>] and basic attacks deal " +
+			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(empowerDur + "s") + "] and basic attacks deal " +
 			GlossaryTag.LIGHTNING.tag(this, basicLightning, true) + " damage and apply " + 
-			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " [<white>5s</white>] " + DescUtil.duration(6, false) + ".");
+			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " " + DescUtil.duration(empowerDur, false) + ".");
 	}
 }

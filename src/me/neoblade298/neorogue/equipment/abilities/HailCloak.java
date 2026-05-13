@@ -44,7 +44,7 @@ public class HailCloak extends Equipment {
 		super(ID, "Hail Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 5, 12, 5));
 		damage = isUpgraded ? 30 : 20;
-		stacks = isUpgraded ? 15 : 10;
+		stacks = isUpgraded ? 7 : 5;
 	}
 
 	public static Equipment get() {

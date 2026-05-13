@@ -41,7 +41,7 @@ public class Lightfall extends Equipment {
 		super(ID, "Lightfall", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 30, 12, 0, tp.range));
 		damage = isUpgraded ? 600 : 400;
-		sanct = isUpgraded ? 150 : 100;
+		sanct = isUpgraded ? 25 : 15;
 	}
 
 	public static Equipment get() {

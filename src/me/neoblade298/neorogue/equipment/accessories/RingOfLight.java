@@ -23,7 +23,7 @@ public class RingOfLight extends Equipment {
 	public RingOfLight(boolean isUpgraded) {
 		super(ID, "Ring Of Light", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
-		sanct = isUpgraded ? 60 : 40;
+		sanct = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

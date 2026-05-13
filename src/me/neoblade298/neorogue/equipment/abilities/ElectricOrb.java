@@ -47,7 +47,7 @@ public class ElectricOrb extends Equipment {
 	public ElectricOrb(boolean isUpgraded) {
 		super(ID, "Electric Orb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 16, tp.range));
-		elec = isUpgraded ? 30 : 20;
+		elec = isUpgraded ? 3 : 2;
 		damage = isUpgraded ? 60 : 40;
 	}
 	

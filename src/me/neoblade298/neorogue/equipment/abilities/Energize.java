@@ -37,7 +37,7 @@ public class Energize extends Equipment {
 		super(ID, "Energize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, 0));
 		damage = isUpgraded ? 225 : 150;
-		elec = isUpgraded ? 50 : 30;
+		elec = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -49,7 +49,7 @@ public class Energize extends Equipment {
 		item = createItem(Material.POTION,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage " +
 		"and marks the enemy. For the next " + DescUtil.white("5s") + ", the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
-		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy, including this ability.");
+		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy.");
 	}
 
 	@Override

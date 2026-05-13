@@ -39,7 +39,7 @@ public class Tempest extends Equipment {
 		super(ID, "Tempest", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(25, 20, 0, 0, 5));
 		damage = isUpgraded ? 600 : 400;
-		electrified = isUpgraded ? 50 : 30;
+		electrified = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {

@@ -45,7 +45,7 @@ public class Demoralize extends Equipment {
 	public Demoralize(boolean isUpgraded) {
 		super(ID, "Demoralize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0, tp.range));
-		injure = isUpgraded ? 120 : 80;
+		injure = isUpgraded ? 12 : 8;
 		dec = isUpgraded ? 30 : 20;
 	}
 	
