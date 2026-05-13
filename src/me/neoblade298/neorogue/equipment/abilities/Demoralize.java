@@ -46,7 +46,7 @@ public class Demoralize extends Equipment {
 		super(ID, "Demoralize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0, tp.range));
 		injure = isUpgraded ? 120 : 80;
-		dec = isUpgraded ? 25 : 15;
+		dec = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {
@@ -74,7 +74,7 @@ public class Demoralize extends Equipment {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightData fd = FightInstance.getFightData(ent);
 							fd.applyStatus(StatusType.INJURY, data, injure, -1);
-							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.defenseDebuffEnemy(buffId, eq)), 160);
+							fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.damageDebuffEnemy(buffId, eq)), 160);
 						}
 					}
 					insts.removeFirst();
@@ -96,6 +96,6 @@ public class Demoralize extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TARGET,
 				"On cast, if you do not take health damage for the next " + DescUtil.white("3s") + ", all nearby enemies are granted " + GlossaryTag.INJURY.tag(this, injure, true) + " and have " +
-				"their defense decreased by " + DescUtil.yellow(dec + "%") + " [<white>8s</white>]." );
+				"their damage decreased by " + DescUtil.yellow(dec + "%") + " [<white>8s</white>]." );
 	}
 }

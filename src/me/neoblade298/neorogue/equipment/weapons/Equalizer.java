@@ -41,7 +41,7 @@ public class Equalizer extends Bow {
 	private static final String ID = "Equalizer";
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
-	private int damage, arrowDamage;
+	private int damage, arrowDamage, injuryThres = 100;
 	
 	public Equalizer(boolean isUpgraded) {
 		super(ID, "Equalizer", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
@@ -82,7 +82,7 @@ public class Equalizer extends Bow {
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage to nearby enemies. " +
 				"On hit, rains " + DescUtil.white(1) + " arrow dealing " + GlossaryTag.PIERCING.tag(this, arrowDamage, true) + 
-				" damage for every " + DescUtil.white(100) + " " + GlossaryTag.INJURY.tag(this) + " the enemy has " +
+				" damage for every " + GlossaryTag.INJURY.tag(this, injuryThres, false) + " the enemy has " +
 				"[<white>10 tick initial delay, 3 tick delay between arrows</white>].");
 	}
 	
@@ -123,8 +123,8 @@ public class Equalizer extends Bow {
 			
 			// Check injury stacks on hit enemy
 			int injuryStacks = hit.getStatus(StatusType.INJURY).getStacks();
-			if (injuryStacks >= 100) {
-				int numArrows = injuryStacks / 100;
+			if (injuryStacks >= injuryThres) {
+				int numArrows = injuryStacks / injuryThres;
 				Location targetLoc = hit.getEntity().getLocation();
 				
 				// Schedule arrow rain with 10 tick initial delay, 3 tick spacing

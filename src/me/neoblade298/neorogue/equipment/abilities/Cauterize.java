@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Cauterize extends Equipment {
 	private static final String ID = "Cauterize";
-	private int dec = 15, stacks;
+	private int dec = 15, stacks, hitReq = 3;
 	private double damage;
 	private ItemStack activeIcon;
 
@@ -40,7 +40,7 @@ public class Cauterize extends Equipment {
 		super(ID, "Cauterize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 3, 0));
 		stacks = 4;
-		damage = isUpgraded ? 3 : 2;
+		damage = isUpgraded ? 25 : 15;
 		properties.setCastType(CastType.TOGGLE);
 	}
 
@@ -66,12 +66,16 @@ public class Cauterize extends Equipment {
 		});
 		data.addTrigger(id, bind, inst);
 
+		int[] hits = {0};
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, -dec, 0, StatTracker.damageBuffAlly(buffId, this)));
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+				if (++hits[0] >= hitReq) {
+					hits[0] = 0;
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+				}
 			}
 			return TriggerResult.keep();
 		});
@@ -99,7 +103,7 @@ public class Cauterize extends Equipment {
 		item = createItem(Material.REDSTONE_TORCH,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
 						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, false)
-						+ ". When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of "
+						+ " every " + DescUtil.white(hitReq) + " hits. When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of "
 						+ GlossaryTag.INJURY.tag(this) + " and deals " + GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage per stack removed.");
 		activeIcon = item.withType(Material.TORCH);

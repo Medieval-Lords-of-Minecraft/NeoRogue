@@ -23,7 +23,7 @@ public class FightStatistics {
 	private int deaths, revives;
 
 	// Etc stats
-	private double evadeMitigated, injuryMitigated;
+	private double evadeMitigated;
 
 	public void addEvadeMitigated(double evadeMitigated) {
 		this.evadeMitigated += evadeMitigated;
@@ -35,10 +35,6 @@ public class FightStatistics {
 
 	public void addDamageBarriered(double damageBarriered) {
 		this.damageBarriered += damageBarriered;
-	}
-
-	public void addInjuryMitigated(double injuryMitigated) {
-		this.injuryMitigated += injuryMitigated;
 	}
 
 	public void addShieldsApplied(double amount) {
@@ -222,7 +218,7 @@ public class FightStatistics {
 				hover = hover.appendNewline().append(extra);
 			}
 		}
-		score += evadeMitigated + injuryMitigated;
+		score += evadeMitigated;
 		Component cmp = Component.text(df.format(score), NamedTextColor.GOLD);
 		if (score > 0) cmp = cmp.hoverEvent(hover);
 		return cmp;
@@ -247,8 +243,6 @@ public class FightStatistics {
 		switch (type) {
 		case EVADE:
 			return type.ctag.append(Component.text(" Mitigation: " + df.format(evadeMitigated), NamedTextColor.WHITE));
-		case INJURY:
-			return type.ctag.append(Component.text(" Mitigation: " + df.format(injuryMitigated), NamedTextColor.WHITE));
 		default:
 			return null;
 		}

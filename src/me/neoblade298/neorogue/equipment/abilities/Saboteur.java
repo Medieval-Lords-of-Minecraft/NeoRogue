@@ -4,9 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,7 +29,7 @@ public class Saboteur extends Equipment {
 	
 	public Saboteur(boolean isUpgraded) {
 		super(ID, "Saboteur", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damageBuff = isUpgraded ? 0.15 : 0.10;
 		injuryBuff = isUpgraded ? 0.30 : 0.20;
 	}
@@ -42,44 +40,38 @@ public class Saboteur extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		// Apply focus at start of fight
+		data.applyStatus(StatusType.FOCUS, data, FOCUS_STACKS, -1);
 
-			// Apply focus at start of fight
-			data.applyStatus(StatusType.FOCUS, data, FOCUS_STACKS, -1);
+		// Combined trap and distance damage buff
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+			if (ev.getMeta().hasOrigin(DamageOrigin.TRAP)) {
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
+						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
+			}
+			double distSq = DISTANCE_THRESHOLD * DISTANCE_THRESHOLD;
+			if (ev.getTarget().getLocation().distanceSquared(p.getLocation()) <= distSq) {
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
+			}
+			return TriggerResult.keep();
+		});
 
-			// Combined trap and distance damage buff
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				if (ev.getMeta().hasOrigin(DamageOrigin.TRAP)) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
-							Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
-				}
-				double distSq = DISTANCE_THRESHOLD * DISTANCE_THRESHOLD;
-				if (ev.getTarget().getLocation().distanceSquared(p.getLocation()) <= distSq) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-							Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
-				}
-				return TriggerResult.keep();
-			});
-
-			// Injury application buff
-			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata3, in3) -> {
-				PreApplyStatusEvent ev = (PreApplyStatusEvent) in3;
-				if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
-				ev.getStacksBuffList().add(Buff.multiplier(data, injuryBuff, BuffStatTracker.ignored(this)));
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
-		}));
+		// Injury application buff
+		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+			ev.getStacksBuffList().add(Buff.multiplier(data, injuryBuff, BuffStatTracker.ignored(this)));
+			return TriggerResult.keep();
+		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				GlossaryTag.POWER.tag(this) + ". Start fights with " + DescUtil.white(FOCUS_STACKS) + " " + GlossaryTag.FOCUS.tag(this) + ". " +
+				"Passive. Start fights with " + DescUtil.white(FOCUS_STACKS) + " " + GlossaryTag.FOCUS.tag(this) + ". " +
 				GlossaryTag.TRAP.tag(this) + " damage and damage dealt to enemies within " + DescUtil.white(DISTANCE_THRESHOLD) + " blocks " +
 				"is increased by " + DescUtil.yellow((int) (damageBuff * 100) + "%") + ". " +
 				GlossaryTag.INJURY.tag(this) + " application is increased by " + DescUtil.yellow((int) (injuryBuff * 100) + "%") + ".");

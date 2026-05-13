@@ -22,8 +22,8 @@ public class BluntedArrow extends Ammunition {
 	public BluntedArrow(boolean isUpgraded) {
 		super(ID, "Blunted Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(5, 0.1, DamageType.BLUNT));
-				stacks = isUpgraded ? 8 : 5;
+				EquipmentProperties.ofAmmunition(10, 0.1, DamageType.BLUNT));
+				stacks = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

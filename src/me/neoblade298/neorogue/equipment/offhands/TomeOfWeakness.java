@@ -34,7 +34,7 @@ public class TomeOfWeakness extends Equipment {
 	public TomeOfWeakness(boolean isUpgraded) {
 		super(ID, "Tome of Weakness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.OFFHAND,
 				EquipmentProperties.ofUsable(15, 0, 12, tp.range));
-		inj = isUpgraded ? 90 : 60;
+		inj = isUpgraded ? 9 : 6;
 	}
 
 	public static Equipment get() {

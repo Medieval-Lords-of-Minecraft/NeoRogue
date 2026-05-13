@@ -84,7 +84,7 @@ public abstract class Status {
 		case STEALTH: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
-		case INJURY: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
+		case INJURY: return new InjuryStatus(target);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case STOPPED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);

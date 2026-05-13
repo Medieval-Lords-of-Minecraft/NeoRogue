@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Advantage extends Equipment {
 	private static final String ID = "Advantage";
-	private int shields, thres = 75;
+	private int shields, thres = 15;
 	
 	public Advantage(boolean isUpgraded) {
 		super(ID, "Advantage", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

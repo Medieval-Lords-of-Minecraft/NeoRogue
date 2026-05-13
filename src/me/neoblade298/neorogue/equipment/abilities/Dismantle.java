@@ -24,7 +24,7 @@ public class Dismantle extends Equipment {
 	public Dismantle(boolean isUpgraded) {
 		super(ID, "Dismantle", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 0, 0));
-		stacks = isUpgraded ? 25 : 15;
+		stacks = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

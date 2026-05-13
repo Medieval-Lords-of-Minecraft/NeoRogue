@@ -26,7 +26,7 @@ public class SaboteursRing extends Equipment {
 	public SaboteursRing(boolean isUpgraded) {
 		super(ID, "Saboteur's Ring", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);
-		inc = isUpgraded ? 0.6 : 0.4;
+		inc = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

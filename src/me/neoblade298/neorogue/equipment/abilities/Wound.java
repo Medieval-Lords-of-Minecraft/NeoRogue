@@ -27,13 +27,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Wound extends Equipment {
 	private static final String ID = "Wound";
-	private int dec = 15, stacks;
+	private int dec = 15, stacks, hitReq = 3;
 	private ItemStack activeIcon;
 
 	public Wound(boolean isUpgraded) {
 		super(ID, "Wound", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 3, 0));
-		stacks = isUpgraded ? 5 : 3;
+		stacks = isUpgraded ? 3 : 2;
 		properties.setCastType(CastType.TOGGLE);
 	}
 
@@ -65,12 +65,16 @@ public class Wound extends Equipment {
 		});
 		data.addTrigger(id, bind, inst);
 
+		int[] hits = {0};
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(buffId, this)));
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+				if (++hits[0] >= hitReq) {
+					hits[0] = 0;
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+				}
 			}
 			return TriggerResult.keep();
 		});
@@ -80,7 +84,8 @@ public class Wound extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BONE,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
-						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, true) + " every "
+						+ DescUtil.white(hitReq) + " hits.");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}
 }

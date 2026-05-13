@@ -27,14 +27,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Malice extends Equipment {
 	private static final String ID = "Malice";
-	private int dec = 15, stacks, thres;
+	private int dec = 15, stacks, thres, hitReq = 3;
 	private ItemStack activeIcon;
 
 	public Malice(boolean isUpgraded) {
 		super(ID, "Malice", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 3, 0));
-		stacks = 12;
-		thres = isUpgraded ? 75 : 100;
+		stacks = 3;
+		thres = isUpgraded ? 20 : 30;
 		properties.setCastType(CastType.TOGGLE);
 	}
 
@@ -76,12 +76,16 @@ public class Malice extends Equipment {
 			return TriggerResult.keep();
 		});
 
+		int[] hits = {0};
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getBool()) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(am.getId(), this)));
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1);
+				if (++hits[0] >= hitReq) {
+					hits[0] = 0;
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1);
+				}
 			}
 			return TriggerResult.keep();
 		});
@@ -92,7 +96,7 @@ public class Malice extends Equipment {
 		item = createItem(Material.BONE,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
 						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, false)
-						+", increased by " + DescUtil.white(1) + " for every " + GlossaryTag.INJURY.tag(this, thres, true)
+						+ " every " + DescUtil.white(hitReq) + " hits, increased by " + DescUtil.white(1) + " for every " + GlossaryTag.INJURY.tag(this, thres, true)
 						+ " you apply.");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}

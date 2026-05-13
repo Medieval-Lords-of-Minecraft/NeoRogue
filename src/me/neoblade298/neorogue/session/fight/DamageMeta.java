@@ -561,52 +561,6 @@ public class DamageMeta {
 			pl.runActions(pl, Trigger.EVADE, new EvadeEvent(totalDamage, evasionLimit, this));
 		}
 
-		// Injury
-		if (owner.hasStatus(StatusType.INJURY) && !isStatusDamage && (damage > 0 || ignoreShieldsDamage > 0)) {
-			double totalDamage = damage + ignoreShieldsDamage;
-			Status injury = owner.getStatus(StatusType.INJURY);
-			int stacks = injury.getStacks();
-			HashMap<FightData, Integer> owners = owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
-			int numOwners = owners.size();
-			// Full block with injury
-			if (stacks * 0.2 >= totalDamage) {
-				int toRemove = (int) (totalDamage / 0.2);
-				injury.apply(owner, -toRemove, -1);
-				for (Entry<FightData, Integer> ent : owners.entrySet()) {
-					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(totalDamage / numOwners);
-					}
-				}
-				statSlices.clear();
-				trackerSlices.clear();
-				damage = 0;
-				ignoreShieldsDamage = 0;
-			}
-			// No full block with injury
-			else {
-				injury.apply(owner, -stacks, -1);
-				for (Entry<FightData, Integer> ent : owners.entrySet()) {
-					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(stacks * 0.2 / numOwners);
-					}
-				}
-				
-				// Block ignore shields damage first
-				if (stacks * 0.2 >= ignoreShieldsDamage) {
-					stacks -= (int) (ignoreShieldsDamage / 0.2);
-					subtractFromStats((int) (ignoreShieldsDamage / 0.2));
-					ignoreShieldsDamage = 0;
-				}
-				else {
-					ignoreShieldsDamage -= stacks * 0.2;
-					subtractFromStats(stacks * 0.2);
-					stacks = 0;
-				}
-				subtractFromStats(stacks * 0.2);
-				damage -= stacks * 0.2;
-			}
-		}
-		
 		// Threat
 		if (NeoRogue.mythicApi.isMythicMob(target)) {
 			NeoRogue.mythicApi.addThreat(target, owner.getEntity(), damage + ignoreShieldsDamage);
