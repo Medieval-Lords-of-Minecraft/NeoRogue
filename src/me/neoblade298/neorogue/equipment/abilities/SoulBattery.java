@@ -13,8 +13,8 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -46,7 +46,6 @@ public class SoulBattery extends Equipment {
 	private static final TargetProperties boltAoe = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final int SHIELD_DURATION = 160; // 8s
 	private static final int STRIKE_DELAY = 40; // 2s
-	private static final int STRIKE_COUNT = 3;
 	private static final int STRIKE_RADIUS = 5;
 	private static final Circle circ = new Circle(STRIKE_RADIUS);
 	private int threshold, damage;
@@ -54,7 +53,7 @@ public class SoulBattery extends Equipment {
 	public SoulBattery(boolean isUpgraded) {
 		super(ID, "Soul Battery", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 12, 0));
-		threshold = isUpgraded ? 15 : 10;
+		threshold = isUpgraded ? 6 : 9;
 		damage = isUpgraded ? 225 : 150;
 	}
 
@@ -79,19 +78,17 @@ public class SoulBattery extends Equipment {
 				@Override
 				public void run() {
 					Player p2 = data.getPlayer();
-					for (int i = 0; i < STRIKE_COUNT; i++) {
+					// Bolt directly in front of the player
+					Location front = p2.getLocation().clone().add(p2.getLocation().getDirection().setY(0).normalize().multiply(2));
+					strikeBolt(p2, data, front, eq, slot);
+					// 2 random bolts
+					for (int i = 0; i < 2; i++) {
 						double angle = Math.random() * 2 * Math.PI;
 						double distance = Math.random() * STRIKE_RADIUS;
 						double x = Math.cos(angle) * distance;
 						double z = Math.sin(angle) * distance;
 						Location loc = center.clone().add(x, 0, z);
-						ParticleUtil.drawLine(p2, lightningCore, loc.clone().add(0, 5, 0), loc, 0.3);
-						ParticleUtil.drawLine(p2, lightningGlow, loc.clone().add(0, 5, 0), loc, 0.25);
-						Sounds.thunder.play(p2, loc);
-						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, loc, boltAoe)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING,
-									DamageStatTracker.of(id + slot, eq)), ent);
-						}
+						strikeBolt(p2, data, loc, eq, slot);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), STRIKE_DELAY));
@@ -99,12 +96,22 @@ public class SoulBattery extends Equipment {
 		}));
 	}
 
+	private void strikeBolt(Player p, PlayerFightData data, Location loc, Equipment eq, int slot) {
+		ParticleUtil.drawLine(p, lightningCore, loc.clone().add(0, 5, 0), loc, 0.3);
+		ParticleUtil.drawLine(p, lightningGlow, loc.clone().add(0, 5, 0), loc, 0.25);
+		Sounds.thunder.play(p, loc);
+		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, boltAoe)) {
+			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING,
+					DamageStatTracker.of(id + slot, eq)), ent);
+		}
+	}
+
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, false) + " [<white>8s</white>] for every " + DescUtil.yellow(threshold) +
 				" " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After " + DescUtil.white("2s") + ", " +
-				"drop " + DescUtil.white(3) + " bolts of lightning at random in a " + DescUtil.white(5) + " block radius, each dealing " +
+				"strike a bolt of lightning " + DescUtil.white(2) + " blocks in front of you and drop " + DescUtil.white(2) + " bolts at random in a " + DescUtil.white(5) + " block radius, each dealing " +
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a " + DescUtil.white(3) + " block radius.");
 	}
 }

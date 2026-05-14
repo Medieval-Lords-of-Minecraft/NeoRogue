@@ -77,4 +77,9 @@ public class BuffStatTracker extends StatTracker {
     public boolean shouldCombine() {
         return shouldCombine;
     }
+
+    public BuffStatTracker shouldCombine(boolean shouldCombine) {
+        this.shouldCombine = shouldCombine;
+        return this;
+    }
 }

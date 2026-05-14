@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -33,7 +34,7 @@ public class TomeOfScorchedEarth extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3);
-	private int damage, selfDmg = 3;
+	private int damage, corr = 1;
 
 	public TomeOfScorchedEarth(boolean isUpgraded) {
 		super(ID, "Tome of Scorched Earth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
@@ -56,8 +57,7 @@ public class TomeOfScorchedEarth extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 			}
 			if (trgs.size() < 2) {
-				FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
-						DamageStatTracker.of(id + slot, this, "Self damage")).ignoreBuffs(true), p);
+				data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
 			}
 			return TriggerResult.keep();
 		}));
@@ -66,7 +66,7 @@ public class TomeOfScorchedEarth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " damage to all enemies in a cone in front of you. If you hit less than " + DescUtil.white(2) + " enemies, also "
-				+ "deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself (unaffected by buffs/debuffs).");
+				+ " damage to all enemies in a cone in front of you. If you hit less than " + DescUtil.white(2) + " enemies, "
+				+ "gain " + GlossaryTag.CORRUPTION.tag(this, corr, false) + ".");
 	}
 }

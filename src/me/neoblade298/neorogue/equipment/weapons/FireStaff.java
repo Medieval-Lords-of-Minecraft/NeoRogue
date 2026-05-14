@@ -46,6 +46,7 @@ public class FireStaff extends Equipment {
 		super(
 				ID, "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 80 : 60, 0.5, DamageType.FIRE, Sound.ENTITY_BLAZE_SHOOT)
+				.add(PropertyType.RANGE, 10)
 				.add(PropertyType.AREA_OF_EFFECT, props.range)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
@@ -73,7 +74,7 @@ public class FireStaff extends Equipment {
 		private int slot;
 
 		public FireStaffProjectile(PlayerFightData data, FireStaff eq, int slot) {
-			super(0.5, 15, 2);
+			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1).gravity(0.0125).initialY(0.55);
 			this.data = data;
 			this.eq = eq;

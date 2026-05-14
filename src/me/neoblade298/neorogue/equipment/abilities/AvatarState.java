@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -22,7 +21,7 @@ public class AvatarState extends Equipment {
 
 	public AvatarState(boolean isUpgraded) {
 		super(ID, "Avatar State", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(5, 15, 40, 0));
+				EquipmentProperties.ofUsable(5, 15, 0, 0));
 		mreg = isUpgraded ? 2.5 : 1.5;
 		hreg = isUpgraded ? 1.5 : 1;
 		shields = isUpgraded ? 10 : 5;
@@ -34,35 +33,26 @@ public class AvatarState extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		am.setCount(-1);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			am.setCount(0);
 			Sounds.fire.play(p, p);
 			data.addManaRegen(mreg);
 			data.addSimpleShield(p.getUniqueId(), shields, 200);
-			return TriggerResult.keep();
-		}));
 
-		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (am.getCount() == -1)
+			data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				data.addHealth(hreg);
 				return TriggerResult.keep();
-			am.addCount(1);
-			data.addHealth(hreg);
-			if (am.getCount() >= 10) {
-				data.addManaRegen(-mreg);
-				am.setCount(-1);
-			}
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE,
-				"On cast, increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
+				GlossaryTag.POWER.tag(this) + ". Increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
 						+ DescUtil.yellow(hreg) + ", and gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
-						+ " " + DescUtil.duration(10, false) + " or until you receive health damage.");
+						+ " [" + DescUtil.white("10s") + "].");
 	}
 }

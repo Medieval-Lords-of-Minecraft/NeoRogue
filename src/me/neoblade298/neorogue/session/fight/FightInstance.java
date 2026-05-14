@@ -755,7 +755,10 @@ public abstract class FightInstance extends Instance {
 		if (data.hasStatus(StatusType.STOPPED))
 			return true;
 		
-		boolean cancel = data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+		boolean cancel = false;
+		if (trigger.isSlotBased()) {
+			cancel = data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+		}
 		return data.runActions(data, trigger, obj) || cancel; // Either slot-based or non-slotbased can cancel the event
 	}
 

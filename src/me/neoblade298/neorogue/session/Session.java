@@ -172,6 +172,7 @@ public class Session {
 	// Load from existing data
 	private void load(int saveSlot, UUID host, int xOff, int zOff, LoadLobbyInstance lobby) {
 		Session s = this;
+		busy = true;
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -214,6 +215,8 @@ public class Session {
 					lobby.completeLoad(inst);
 				} catch (SQLException e) {
 					e.printStackTrace();
+				} finally {
+					busy = false;
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());

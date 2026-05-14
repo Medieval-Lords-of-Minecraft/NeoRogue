@@ -74,10 +74,11 @@ public class LoadLobbyInstance extends LobbyInstance {
 
         // Host at top
         PlayerSessionData hostData = session.getParty().get(host);
+        if (hostData == null) return;
         playerLines.add(createBoardLine(hostData, true));
 
         for (PlayerSessionData data : session.getParty().values()) {
-            if (data.getUniqueId().equals(host)) continue;
+            if (data == null || data.getUniqueId().equals(host)) continue;
             String line = createBoardLine(data, false);
             playerLines.add(line);
         }

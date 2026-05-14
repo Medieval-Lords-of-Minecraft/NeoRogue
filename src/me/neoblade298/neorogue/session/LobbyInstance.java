@@ -75,6 +75,8 @@ public abstract class LobbyInstance extends Instance {
 					.append(Component.text(" disbanded the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);
 			SessionManager.endSession(s);
+			p.teleport(NeoRogue.spawn);
+			return;
 		} else {
 			SessionManager.removeFromSession(p.getUniqueId());
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)

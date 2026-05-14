@@ -71,4 +71,18 @@ public enum Trigger {
 			return -1;
 		}
 	}
+
+	public boolean isSlotBased() {
+		switch (this) {
+		case LEFT_CLICK:
+		case LEFT_CLICK_NO_HIT:
+		case LEFT_CLICK_BLOCK:
+		case LEFT_CLICK_HIT:
+		case RIGHT_CLICK:
+		case RIGHT_CLICK_HIT:
+			return true;
+		default:
+			return false;
+		}
+	}
 }

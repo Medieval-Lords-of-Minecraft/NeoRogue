@@ -23,7 +23,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class CailiricCrystal extends Artifact {
 	private static final String ID = "CailiricCrystal";
-	private static final int inc = 10;
+	private static final int str = 3, intel = 1;
 	
 	public CailiricCrystal() {
 		super(ID, "Cailiric Crystal", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -36,13 +36,13 @@ public class CailiricCrystal extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_CLUSTER, "Visiting a shrine will increase your starting " +
-		GlossaryTag.STRENGTH.tag(this) + " and " + GlossaryTag.INTELLECT.tag(this) + " by " + DescUtil.white(inc) + ".");
+		GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.white(str) + " and " + GlossaryTag.INTELLECT.tag(this) + " by " + DescUtil.white(intel) + ".");
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.applyStatus(StatusType.STRENGTH, data, inc * ai.getAmount(), -1);
-		data.applyStatus(StatusType.INTELLECT, data, inc * ai.getAmount(), -1);
+		data.applyStatus(StatusType.STRENGTH, data, str * ai.getAmount(), -1);
+		data.applyStatus(StatusType.INTELLECT, data, intel * ai.getAmount(), -1);
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public class CailiricCrystal extends Artifact {
 						data.giveEquipment(CailiricCrystal.get(), null, null);
 						Util.msg(data.getPlayer(), Component.empty().append(hoverable).append(
 							SharedUtil.color(
-							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount())
-						)).decoration(TextDecoration.UNDERLINED, State.FALSE)));
+							"<gray> potency has increased!"
+						)).decoration(TextDecoration.UNDERLINED, State.FALSE));
 					}
 				}.runTaskLater(NeoRogue.inst(), 10); // Must be delayed else this will trigger twice for some reason
 			}

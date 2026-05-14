@@ -20,12 +20,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Fade extends Equipment {
 	private static final String ID = "Fade";
-	private int duration;
+	private int duration, stealthDur;
 	
 	public Fade(boolean isUpgraded) {
 		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
 		duration = 2;
+		stealthDur = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -46,7 +47,7 @@ public class Fade extends Equipment {
 
 			StandardPriorityAction inst = new StandardPriorityAction(ID);
 			inst.setAction((pdata3, in3) -> {
-				data.applyStatus(StatusType.STEALTH, data, 1, 60);
+				data.applyStatus(StatusType.STEALTH, data, 1, stealthDur * 20);
 				return TriggerResult.keep();
 			});
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, inst);
@@ -59,6 +60,6 @@ public class Fade extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
 				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
-				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>3s</white>].");
+				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " " + DescUtil.duration(stealthDur, true) + ".");
 	}
 }
