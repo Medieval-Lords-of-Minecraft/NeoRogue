@@ -33,7 +33,7 @@ public class ManaInfusion extends Equipment {
 		super(ID, "Mana Infusion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 2, 0));
 		damage = isUpgraded ? 30 : 20;
-		drain = isUpgraded ? 3 : 2;
+		drain = isUpgraded ? 6 : 4;
 		properties.setCastType(CastType.TOGGLE);
 	}
 

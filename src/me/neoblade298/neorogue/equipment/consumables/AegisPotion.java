@@ -41,7 +41,7 @@ public class AegisPotion extends Consumable {
 			if (ticks[0] >= TICK_INTERVAL) {
 				ticks[0] = 0;
 				Player p2 = data.getPlayer();
-				data.addPermanentShield(p2.getUniqueId(), periodic);
+				data.addSimpleShield(p2.getUniqueId(), periodic, 60);
 			}
 			return TriggerResult.keep();
 		});
