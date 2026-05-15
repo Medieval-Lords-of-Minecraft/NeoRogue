@@ -13,13 +13,16 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -30,6 +33,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class CorpseExplosion extends Equipment {
@@ -50,7 +54,7 @@ public class CorpseExplosion extends Equipment {
 	
 	public CorpseExplosion(boolean isUpgraded) {
 		super(ID, "Corpse Explosion", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 0, 0, radius));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0, radius));
 		poisonPerSecond = isUpgraded ? 5 : 4;
 		duration = 3;
 	}
@@ -61,20 +65,28 @@ public class CorpseExplosion extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 5) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.KILL, (pdata2, inputs2) -> {
-				KillEvent ev = (KillEvent) inputs2;
-				LivingEntity killed = ev.getTarget();
-				
+				KillEvent killEv = (KillEvent) inputs2;
+				LivingEntity killed = killEv.getTarget();
+
 				// Check if the enemy was killed by poison damage
-				if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.POISON)) {
+				if (killEv.getDamageMeta() == null || !killEv.getDamageMeta().containsType(DamageType.POISON)) {
 					return TriggerResult.keep();
 				}
-				
+
 				Location killedLoc = killed.getLocation().add(0, 1, 0);
-				
+
 				// Create two poison circles near the killed enemy
 				for (int i = 0; i < 2; i++) {
 					// Random offset for circle placement (within 2 blocks of the killed enemy)
@@ -82,20 +94,20 @@ public class CorpseExplosion extends Equipment {
 					double distance = 2 + Math.random() * 4; // 2-6 blocks away
 					double offsetX = Math.cos(angle) * distance;
 					double offsetZ = Math.sin(angle) * distance;
-					
+
 					Location circleCenter = killedLoc.clone().add(offsetX, 0, offsetZ);
-					
+
 					// Animate poison shooting out in a parabolic arc
-					Player p = data.getPlayer();
+					Player p2 = data.getPlayer();
 					animatePoisonArc(data, killedLoc.clone(), circleCenter);
-					scheduleCircleEffects(p, data, circleCenter);
+					scheduleCircleEffects(p2, data, circleCenter);
 				}
-				
+
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	private void animatePoisonArc(PlayerFightData data, Location start, Location end) {

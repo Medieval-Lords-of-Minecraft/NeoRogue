@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -21,6 +21,9 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ThriveInChaos extends Equipment {
 	private static final String ID = "ThriveInChaos";
@@ -29,7 +32,7 @@ public class ThriveInChaos extends Equipment {
 	
 	public ThriveInChaos(boolean isUpgraded) {
 		super(ID, "Thrive in Chaos", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 20, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		insanityPerStack = isUpgraded ? 7 : 10;
 	}
 	
@@ -39,17 +42,25 @@ public class ThriveInChaos extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
 
-			ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 5) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			ActionMeta am2 = new ActionMeta();
 			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
-				am.addCount(1);
-				if (am.getCount() >= 3) {
-					am.setCount(0);
+				am2.addCount(1);
+				if (am2.getCount() >= 3) {
+					am2.setCount(0);
 					int totalInsanity = 0;
-					Player p = data.getPlayer();
-					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+					Player p2 = data.getPlayer();
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, tp)) {
 						FightData fd = FightInstance.getFightData(ent);
 						if (fd.hasStatus(StatusType.INSANITY)) {
 							totalInsanity += fd.getStatus(StatusType.INSANITY).getStacks();
@@ -64,7 +75,7 @@ public class ThriveInChaos extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

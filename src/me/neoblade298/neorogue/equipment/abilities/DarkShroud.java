@@ -1,10 +1,12 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -17,6 +19,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DarkShroud extends Equipment {
 	private static final String ID = "DarkShroud";
@@ -24,7 +28,7 @@ public class DarkShroud extends Equipment {
 	
 	public DarkShroud(boolean isUpgraded) {
 		super(ID, "Dark Shroud", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ACCESSORY,
-				EquipmentProperties.ofUsable(20, 10, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 60 : 40;
 	}
 	
@@ -34,8 +38,13 @@ public class DarkShroud extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+			am.addCount(1);
+			if (am.getCount() < 3) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
@@ -50,7 +59,7 @@ public class DarkShroud extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

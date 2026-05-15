@@ -117,7 +117,7 @@ public class ConstantFlux extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				GlossaryTag.POWER.tag(this) + ". While you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", cast to " + 
+				GlossaryTag.POWER.tag(this) + ". On cast, while you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", " + 
 				GlossaryTag.DASH.tag(this) + " forward and increase your " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage by " + DescUtil.yellow(damagePerStack) + ", stacking up to " + DescUtil.white(MAX_STACKS + "x") + ". " +
 				"Not casting this ability for " + DescUtil.white("5s") + " removes all stacks.");

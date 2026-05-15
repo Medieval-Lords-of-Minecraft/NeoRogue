@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -29,17 +31,22 @@ public class RingOfMentalism extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
+			am.addCount(1);
+			if (am.getCount() >= 3) {
+				am.setCount(0);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
+			}
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, "Dealing " + GlossaryTag.MAGICAL.tag(this) + " damage to an enemy applies "
-				+ GlossaryTag.INSANITY.tag(this, stacks, true) + " to them.");
+		item = createItem(Material.AMETHYST_SHARD, "Every " + DescUtil.white("3") + " times you deal " + GlossaryTag.MAGICAL.tag(this) + " damage, apply "
+				+ GlossaryTag.INSANITY.tag(this, stacks, true) + " to the target.");
 	}
 }

@@ -10,10 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -35,7 +36,10 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreKillEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Conflagration extends Equipment {
 	private static final String ID = "Conflagration";
@@ -49,7 +53,7 @@ public class Conflagration extends Equipment {
 
 	public Conflagration(boolean isUpgraded) {
 		super(ID, "Conflagration", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 0, 0, 0).add(PropertyType.RANGE, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.RANGE, tp.range));
 		damage = 150;
 		burnMult = isUpgraded ? 1.5 : 1.0;
 	}
@@ -58,47 +62,57 @@ public class Conflagration extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 5;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
+			count.addCount(1);
+			if (count.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_KILL, (pdata2, in2) -> {
-				PreKillEvent ev = (PreKillEvent) in2;
-				FightData fd = FightInstance.getFightData(ev.getTarget());
-				
+				PreKillEvent ev2 = (PreKillEvent) in2;
+				FightData fd = FightInstance.getFightData(ev2.getTarget());
+
 				// Check if killed by burn damage
 				if (!fd.hasStatus(StatusType.BURN)) {
 					return TriggerResult.keep();
 				}
-				
-				Player p = data.getPlayer();
-				LivingEntity killed = ev.getTarget();
+
+				Player p2 = data.getPlayer();
+				LivingEntity killed = ev2.getTarget();
 				Location killedLoc = killed.getLocation().add(0, 1, 0);
-				
+
 				// Get the burn stacks the killed enemy had
 				int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
-				
+
 				// Find nearest enemy from killed location
 				LivingEntity nearest = TargetHelper.getNearest(killed, tp);
 				if (nearest == null) return TriggerResult.keep();
-				
+
 				// Calculate direction from killed enemy to nearest enemy
 				Vector direction = nearest.getLocation().toVector()
 						.subtract(killedLoc.toVector()).normalize();
-				
+
 				// Fire projectile
 				ProjectileGroup proj = new ProjectileGroup(
 						new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
 				proj.start(data, killedLoc, direction);
-				
-				Sounds.fire.play(p, killedLoc);
-				
+
+				Sounds.fire.play(p2, killedLoc);
+
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class ConflagrationProjectile extends Projectile {

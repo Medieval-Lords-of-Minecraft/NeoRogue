@@ -2,13 +2,15 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -29,6 +31,9 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DangerousGame extends Equipment {
 	private static final String ID = "DangerousGame";
@@ -36,7 +41,7 @@ public class DangerousGame extends Equipment {
 	
 	public DangerousGame(boolean isUpgraded) {
 		super(ID, "Dangerous Game", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		range = 5;
 		damage = isUpgraded ? 70 : 50;
 	}
@@ -45,27 +50,37 @@ public class DangerousGame extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 500;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().isBasicAttack()) return TriggerResult.keep();
+			am.addDouble(ev.getTotalDamage());
+			if (am.getDouble() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				BasicAttackEvent ev2 = (BasicAttackEvent) in2;
 				ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 				
-				LivingEntity target = ev.getTarget();
+				LivingEntity target = ev2.getTarget();
 				if (target == null) return TriggerResult.keep();
 				
 				// Check if target is within 5 blocks
-				if (ev.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
+				if (ev2.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
 					data.addExtraShot(group);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

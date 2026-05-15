@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -19,6 +20,8 @@ import me.neoblade298.neorogue.session.fight.Rift;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Entropy extends Equipment {
 	private static final String ID = "Entropy";
@@ -27,7 +30,7 @@ public class Entropy extends Equipment {
 	
 	public Entropy(boolean isUpgraded) {
 		super(ID, "Entropy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = 3;
 		riftThres = isUpgraded ? 3 : 4;
 	}
@@ -45,21 +48,23 @@ public class Entropy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				am.addCount(1);
 				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-				Sounds.enchant.play(p, p);
-				pc.play(p, p);
+				Sounds.enchant.play(p2, p2);
+				pc.play(p2, p2);
 				if (am.getCount() % riftThres == 0) {
-					Sounds.fire.play(p, p);
-					data.addRift(new Rift(data, p.getLocation(), 160));
+					Sounds.fire.play(p2, p2);
+					data.addRift(new Rift(data, p2.getLocation(), 160));
 				}
 				icon.setAmount(am.getCount());
 				inst.setIcon(icon);
@@ -67,7 +72,7 @@ public class Entropy extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

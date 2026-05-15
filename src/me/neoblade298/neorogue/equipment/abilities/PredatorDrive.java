@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -16,6 +17,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PredatorDrive extends Equipment {
 	private static final String ID = "PredatorDrive";
@@ -23,7 +26,7 @@ public class PredatorDrive extends Equipment {
 	
 	public PredatorDrive(boolean isUpgraded) {
 		super(ID, "Predator Drive", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-			EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 30, 0, 0));
+			EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		threshold = isUpgraded ? 2 : 3;
 	}
 	
@@ -33,10 +36,13 @@ public class PredatorDrive extends Equipment {
 	
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		ActionMeta castCount = new ActionMeta();
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			if (castCount.addCount(1) < 4) return TriggerResult.keep();
 			Player p = data.getPlayer();
-			Sounds.equip.play(p, p);
-			
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			ItemStack icon = item.clone();
 			ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
 			ActionMeta am = new ActionMeta();
@@ -81,7 +87,7 @@ public class PredatorDrive extends Equipment {
 			});
 			
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	@Override

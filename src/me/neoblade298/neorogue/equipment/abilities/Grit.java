@@ -9,10 +9,11 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -23,8 +24,11 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Grit extends Equipment {
 	private static final String ID = "Grit";
@@ -34,7 +38,7 @@ public class Grit extends Equipment {
 	
 	public Grit(boolean isUpgraded) {
 		super(ID, "Grit", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 		inc = isUpgraded ? 35 : 25;
 		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);
@@ -46,34 +50,41 @@ public class Grit extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (data.getPlayer().getLocation().distance(ev.getTarget().getLocation()) > 5) return TriggerResult.keep();
+			if (am.addCount(1) < 5) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			String buffId = UUID.randomUUID().toString();
 			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
+				Player p2 = data.getPlayer();
+				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+				double dist = ev2.getTarget().getLocation().distanceSquared(p2.getLocation());
 				if (dist <= 25) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+					ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 				}
 				return TriggerResult.keep();
 			});
 
 			data.addTrigger(id, Trigger.KILL, (pdata3, in3) -> {
-				Player p = data.getPlayer();
-				KillEvent ev = (KillEvent) in3;
-				double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
+				Player p3 = data.getPlayer();
+				KillEvent ev3 = (KillEvent) in3;
+				double dist = ev3.getTarget().getLocation().distanceSquared(p3.getLocation());
 				if (dist <= 25) {
-					pc.play(p, p);
-					data.addSimpleShield(p.getUniqueId(), shields, 60);
-					equip.play(p, p);
+					pc.play(p3, p3);
+					data.addSimpleShield(p3.getUniqueId(), shields, 60);
+					equip.play(p3, p3);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -27,6 +28,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class HuntersEssence extends Equipment {
 	private static final String ID = "HuntersEssence";
@@ -41,7 +44,7 @@ public class HuntersEssence extends Equipment {
 	
 	public HuntersEssence(boolean isUpgraded) {
 		super(ID, "Hunter's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 40, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		stamina = isUpgraded ? 30 : 20;
 		damageBuff = isUpgraded ? 0.10 : 0.05;
 		focusChance = isUpgraded ? 0.60 : 0.30;
@@ -53,22 +56,24 @@ public class HuntersEssence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta count = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				KillEvent ev = (KillEvent) in2;
 				Location deathLoc = ev.getTarget().getLocation();
-				data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, count, icon));
+				data.addMarker(new HuntersEssenceStack(data, deathLoc, p2, stamina, damageBuff, focusChance, this, inst, count, icon));
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	private class HuntersEssenceStack extends Marker {

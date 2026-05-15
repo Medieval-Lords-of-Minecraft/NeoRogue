@@ -5,10 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -19,6 +20,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BloodFrenzy extends Equipment {
 	private static final String ID = "BloodFrenzy";
@@ -28,7 +31,7 @@ public class BloodFrenzy extends Equipment {
 	
 	public BloodFrenzy(boolean isUpgraded) {
 		super(ID, "Blood Frenzy", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 30, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		strength = isUpgraded ? 20 : 15;
 		atkSpeed = isUpgraded ? 13 : 10;
 	}
@@ -37,19 +40,28 @@ public class BloodFrenzy extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 5, ACTIVATION_BERSERK = 3;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			if (data.getStatus(StatusType.BERSERK).getStacks() < ACTIVATION_BERSERK) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF_STRENGTH) {
 					data.applyStatus(StatusType.BERSERK, data, 1, -1);
 				}
 				else {
-					pc.play(p, p);
-					Sounds.fire.play(p, p);
+					pc.play(p2, p2);
+					Sounds.fire.play(p2, p2);
 					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 				}
 				return TriggerResult.keep();
@@ -61,9 +73,9 @@ public class BloodFrenzy extends Equipment {
 				ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
 				return TriggerResult.keep();
 			});
-			
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

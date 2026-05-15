@@ -3,23 +3,26 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StaticSurge extends Equipment {
 	private static final String ID = "StaticSurge";
@@ -27,7 +30,7 @@ public class StaticSurge extends Equipment {
 	
 	public StaticSurge(boolean isUpgraded) {
 		super(ID, "Static Surge", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 10, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 50 : 30;
 		electrified = isUpgraded ? 8 : 5;
 	}
@@ -38,33 +41,41 @@ public class StaticSurge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+			FightData fd = FightInstance.getFightData(ev.getTarget());
+			if (fd == null || !fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
+			if (am.addCount(1) < 3) return TriggerResult.keep();
 
-			ActionMeta am = new ActionMeta();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			ActionMeta sprintMeta = new ActionMeta();
 			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (p.isSprinting()) {
-					am.setTime(System.currentTimeMillis());
+				Player p2 = data.getPlayer();
+				if (p2.isSprinting()) {
+					sprintMeta.setTime(System.currentTimeMillis());
 				} else {
-					am.setTime(0);
+					sprintMeta.setTime(0);
 				}
 				return TriggerResult.keep();
 			});
 
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
-				if (am.getTime() == 0 || System.currentTimeMillis() - am.getTime() < 1000) {
+				if (sprintMeta.getTime() == 0 || System.currentTimeMillis() - sprintMeta.getTime() < 1000) {
 					return TriggerResult.keep();
 				}
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in3;
-				ev.getMeta().addDamageSlice(
+				PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in3;
+				ev2.getMeta().addDamageSlice(
 						new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)));
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
+				FightInstance.applyStatus(ev2.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

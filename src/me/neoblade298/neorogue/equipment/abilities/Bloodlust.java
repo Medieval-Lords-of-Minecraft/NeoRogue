@@ -5,10 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -16,6 +17,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Bloodlust extends Equipment {
 	private static final String ID = "Bloodlust";
@@ -25,7 +28,7 @@ public class Bloodlust extends Equipment {
 	
 	public Bloodlust(boolean isUpgraded) {
 		super(ID, "Bloodlust", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		strength = isUpgraded ? 15 : 10;
 	}
 	
@@ -33,26 +36,35 @@ public class Bloodlust extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 5;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			if (data.getStatus(StatusType.BERSERK).getStacks() < 1) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
 					data.applyStatus(StatusType.BERSERK, data, 1, -1);
 				}
 				else {
-					pc.play(p, p);
-					Sounds.fire.play(p, p);
+					pc.play(p2, p2);
+					Sounds.fire.play(p2, p2);
 					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

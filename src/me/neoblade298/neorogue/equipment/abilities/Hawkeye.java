@@ -8,10 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -31,7 +32,10 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Hawkeye extends Equipment {
 	private static final String ID = "Hawkeye";
@@ -42,7 +46,7 @@ public class Hawkeye extends Equipment {
 	
 	public Hawkeye(boolean isUpgraded) {
 		super(ID, "Hawkeye", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		threshold = isUpgraded ? 8 : 12;
 		damage = isUpgraded ? 500 : 300;
 	}
@@ -53,32 +57,39 @@ public class Hawkeye extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.FOCUS)) return TriggerResult.keep();
+			if (count.addCount(ev.getStacks()) < 6) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
-				ReceiveDamageEvent ev = (ReceiveDamageEvent) in2;
+				ReceiveDamageEvent rev = (ReceiveDamageEvent) in2;
 				int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
 				if (focusStacks <= threshold) return TriggerResult.keep();
-				Player p = data.getPlayer();
-				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				Player p2 = data.getPlayer();
+				rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
 				data.applyStatus(StatusType.FOCUS, data, -1, -1);
-				if (ev.getDamager() != null) {
-					LivingEntity damager = ev.getDamager().getEntity();
-					Location playerLoc = p.getLocation().add(0, 1, 0);
+				if (rev.getDamager() != null) {
+					LivingEntity damager = rev.getDamager().getEntity();
+					Location playerLoc = p2.getLocation().add(0, 1, 0);
 					Location damagerLoc = damager.getEyeLocation();
 					Vector direction = damagerLoc.toVector().subtract(playerLoc.toVector()).normalize();
 					HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
 					proj.start(data, playerLoc, direction);
-					Sounds.fire.play(p, p);
-					pc.play(p, playerLoc);
+					Sounds.fire.play(p2, p2);
+					pc.play(p2, playerLoc);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	private class HawkeyeProjectile extends Projectile {

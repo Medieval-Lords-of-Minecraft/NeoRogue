@@ -16,11 +16,12 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -35,6 +36,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DyingStar extends Equipment {
 	private static final String ID = "DyingStar";
@@ -48,7 +51,7 @@ public class DyingStar extends Equipment {
 	
 	public DyingStar(boolean isUpgraded) {
 		super(ID, "Dying Star", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(50, 20, 30, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 450 : 300;
 		properties.add(PropertyType.DAMAGE, damage);
 	}
@@ -66,90 +69,82 @@ public class DyingStar extends Equipment {
 				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "] in the same place.");
 	}
 
+	private static final int ACTIVATION_THRES = 2;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Track rift explosion locations and entities hit by them
-		HashMap<UUID, Location> killedEntityToRiftLoc = new HashMap<>();
-		
-		DyingStarInstance inst = new DyingStarInstance(data, this, slot, es);
-		data.addTrigger(id, bind, inst);
-		
-		// Handle rift expiration - pull enemies and explode
-		data.addTrigger(id, Trigger.REMOVE_RIFT, (pdata, in) -> {
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
+			am.addCount(1);
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
 			Player p = data.getPlayer();
-			Rift rift = (Rift) in;
-			Location riftLoc = rift.getLocation();
-			
-			// Pull enemies toward rift
-			pullSound.play(p, riftLoc);
-			circ.play(pull, riftLoc, LocalAxes.xz(), null);
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, riftLoc, tp)) {
-				Vector direction = riftLoc.toVector().subtract(ent.getLocation().toVector());
-				if (!direction.isZero()) {
-					direction = direction.normalize().setY(0.3);
-					ent.setVelocity(direction);
-				}
-			}
-			
-			// Explode 1 second later
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					Player p = data.getPlayer();
-					explodeSound.play(p, riftLoc);
-					circ.play(explode, riftLoc, LocalAxes.xz(), null);
-					Sounds.explode.play(p, riftLoc);
-					
-					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, riftLoc, tp)) {
-						FightInstance.dealDamage(data, DamageType.DARK, damage, ent,
-							DamageStatTracker.of(id + slot, DyingStar.this));
-						// Track this entity as potentially killed by this rift
-						killedEntityToRiftLoc.put(ent.getUniqueId(), riftLoc.clone());
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			// Create a rift on activation
+			data.addRift(new Rift(data, p.getLocation(), 100));
+
+			// Track rift explosion locations and entities hit by them
+			HashMap<UUID, Location> killedEntityToRiftLoc = new HashMap<>();
+
+			// Handle rift expiration - pull enemies and explode
+			data.addTrigger(id, Trigger.REMOVE_RIFT, (pdata2, in2) -> {
+				Player p2 = data.getPlayer();
+				Rift rift = (Rift) in2;
+				Location riftLoc = rift.getLocation();
+
+				// Pull enemies toward rift
+				pullSound.play(p2, riftLoc);
+				circ.play(pull, riftLoc, LocalAxes.xz(), null);
+				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, riftLoc, tp)) {
+					Vector direction = riftLoc.toVector().subtract(ent.getLocation().toVector());
+					if (!direction.isZero()) {
+						direction = direction.normalize().setY(0.3);
+						ent.setVelocity(direction);
 					}
-					
-					// Clean up old entries after a short delay
-					data.addTask(new BukkitRunnable() {
-						public void run() {
-							killedEntityToRiftLoc.entrySet().removeIf(entry -> 
-								entry.getValue().equals(riftLoc));
-						}
-					}.runTaskLater(NeoRogue.inst(), 10L));
 				}
-			}.runTaskLater(NeoRogue.inst(), 20L));
-			
-			return TriggerResult.keep();
-		});
-		
-		// Handle kills to spawn new rifts
-		data.addTrigger(id, Trigger.KILL_GLOBAL, (pdata, in) -> {
-			LivingEntity ent = (LivingEntity) in;
-			Location riftLoc = killedEntityToRiftLoc.remove(ent.getUniqueId());
-			if (riftLoc != null) {
-				// Spawn a new rift at the location where the rift exploded
-				Player p = data.getPlayer();
-				Sounds.equip.play(p, riftLoc);
-				data.addRift(new Rift(data, riftLoc, 200)); // 10 seconds = 200 ticks
-			}
-			return TriggerResult.keep();
-		});
-	}
-	
-	private class DyingStarInstance extends EquipmentInstance {
-		private boolean used = false;
-		
-		public DyingStarInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
-			
-			action = (pdata, in) -> {
-				if (used) return TriggerResult.remove();
-				used = true;
-				
-				Player p = data.getPlayer();
-				Location loc = p.getLocation();
-				Sounds.equip.play(p, p);
-				data.addRift(new Rift(data, loc, 100)); // 5 seconds = 100 ticks
-				
+
+				// Explode 1 second later
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						Player p3 = data.getPlayer();
+						explodeSound.play(p3, riftLoc);
+						circ.play(explode, riftLoc, LocalAxes.xz(), null);
+						Sounds.explode.play(p3, riftLoc);
+
+						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p3, riftLoc, tp)) {
+							FightInstance.dealDamage(data, DamageType.DARK, damage, ent,
+								DamageStatTracker.of(id + slot, DyingStar.this));
+							killedEntityToRiftLoc.put(ent.getUniqueId(), riftLoc.clone());
+						}
+
+						// Clean up old entries after a short delay
+						data.addTask(new BukkitRunnable() {
+							public void run() {
+								killedEntityToRiftLoc.entrySet().removeIf(entry ->
+									entry.getValue().equals(riftLoc));
+							}
+						}.runTaskLater(NeoRogue.inst(), 10L));
+					}
+				}.runTaskLater(NeoRogue.inst(), 20L));
+
 				return TriggerResult.keep();
-			};
-		}
+			});
+
+			// Handle kills to spawn new rifts
+			data.addTrigger(id, Trigger.KILL_GLOBAL, (pdata2, in2) -> {
+				LivingEntity ent = (LivingEntity) in2;
+				Location riftLoc = killedEntityToRiftLoc.remove(ent.getUniqueId());
+				if (riftLoc != null) {
+					Player p2 = data.getPlayer();
+					Sounds.equip.play(p2, riftLoc);
+					data.addRift(new Rift(data, riftLoc, 200));
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		});
 	}
 }

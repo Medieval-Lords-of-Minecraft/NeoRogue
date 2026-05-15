@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -24,6 +25,9 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AbsoluteZero extends Equipment {
 	private static final String ID = "AbsoluteZero";
@@ -33,7 +37,7 @@ public class AbsoluteZero extends Equipment {
 	
 	public AbsoluteZero(boolean isUpgraded) {
 		super(ID, "Absolute Zero", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		thres = isUpgraded ? 8 : 12;
 		frost = isUpgraded ? 12 : 8;
 	}
@@ -42,59 +46,69 @@ public class AbsoluteZero extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 5;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
+			count.addCount(1);
+			if (count.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			ItemStack icon = item.clone();
 			ItemStack charged = item.clone().withType(Material.PACKED_ICE);
 			ActionMeta am = new ActionMeta();
 			am.setCount(0);
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			
+
 			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 				am.addCount(1);
-				
+
 				if (am.getCount() >= thres) {
-					Player p = data.getPlayer();
+					Player p2 = data.getPlayer();
 					am.setCount(0);
 					icon.setAmount(1);
 					inst.setIcon(icon);
-					
+
 					// Play effects
-					pc.play(p, p);
-					Sounds.glass.play(p, p);
-					
+					pc.play(p2, p2);
+					Sounds.glass.play(p2, p2);
+
 					// Apply frost and double existing frost in radius
-					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, tp)) {
 						FightData fd = FightInstance.getFightData(ent);
-						
+
 						// Get current frost stacks
 						int currentFrost = fd.getStatus(StatusType.FROST).getStacks();
-						
+
 						// Apply new frost and double existing frost
 						int totalFrostToApply = frost + currentFrost;
 						FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1);
 					}
 				} else {
 					// Update icon count
-					int count = am.getCount();
-					if (count >= thres - 1) {
+					int count2 = am.getCount();
+					if (count2 >= thres - 1) {
 						// Show charged version
-						charged.setAmount(count);
+						charged.setAmount(count2);
 						inst.setIcon(charged);
 					} else {
-						icon.setAmount(count);
+						icon.setAmount(count2);
 						inst.setIcon(icon);
 					}
 				}
-				
+
 				return TriggerResult.keep();
 			});
-			
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

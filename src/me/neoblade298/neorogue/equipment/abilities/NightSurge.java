@@ -9,10 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -32,7 +33,10 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NightSurge extends Equipment {
 	private static final String ID = "NightSurge";
@@ -44,7 +48,7 @@ public class NightSurge extends Equipment {
 
 	public NightSurge(boolean isUpgraded) {
 		super(ID, "Night Surge", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(35, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 200 : 150;
 	}
 
@@ -54,9 +58,32 @@ public class NightSurge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			String cooldownStatus = data.getPlayer().getName() + "-nightsurge";
+		ActionMeta insanityCount = new ActionMeta();
+		ActionMeta darkCount = new ActionMeta();
+
+		// Track insanity applications
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.isStatus(StatusType.INSANITY)) insanityCount.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		// Track dark damage dealt
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (ev.getMeta().containsType(DamageType.DARK)) darkCount.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		// Check both conditions on PLAYER_TICK
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (insanityCount.getCount() < 3 || darkCount.getCount() < 3) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			String cooldownStatus = p.getName() + "-nightsurge";
 
 			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 				DealDamageEvent ev = (DealDamageEvent) in2;
@@ -80,7 +107,7 @@ public class NightSurge extends Equipment {
 				
 				// Get target entity and location
 				if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, NightSurge.this)));
 				LivingEntity targetEntity = (LivingEntity) ev.getTarget();
 				Location targetLoc = targetEntity.getLocation();
 				
@@ -91,17 +118,17 @@ public class NightSurge extends Equipment {
 				// Spawn location slightly behind
 				Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
 				
-				Player p = data.getPlayer();
-				ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, this));
+				Player p2 = data.getPlayer();
+				ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, NightSurge.this));
 				proj.start(data, spawnLoc, projectileDirection);
 				
-				Sounds.fire.play(p, spawnLoc);
+				Sounds.fire.play(p2, spawnLoc);
 				
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class NightSurgeProjectile extends Projectile {

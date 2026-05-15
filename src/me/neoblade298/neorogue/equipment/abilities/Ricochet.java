@@ -10,10 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -22,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -33,6 +35,9 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Ricochet extends Equipment {
 	private static final String ID = "Ricochet";
@@ -46,7 +51,7 @@ public class Ricochet extends Equipment {
 
 	public Ricochet(boolean isUpgraded) {
 		super(ID, "Ricochet", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 180 : 120;
 	}
 
@@ -56,21 +61,28 @@ public class Ricochet extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+			am.addDouble(ev.getTotalDamage());
+			if (am.getDouble() < 300) return TriggerResult.keep();
+
 			Player p = data.getPlayer();
-			Sounds.equip.play(p, p);
-			
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				BasicAttackEvent ev2 = (BasicAttackEvent) in2;
 				
-				if (!ev.isProjectile()) return TriggerResult.keep();
+				if (!ev2.isProjectile()) return TriggerResult.keep();
 				
 				Player p2 = data.getPlayer();
-				LivingEntity target = ev.getTarget();
+				LivingEntity target = ev2.getTarget();
 				if (target == null) return TriggerResult.keep();
 				
 				// Check if target is within 5 blocks of the projectile origin
-				if (ev.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
+				if (ev2.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
 					return TriggerResult.keep();
 				}
 				
@@ -96,7 +108,7 @@ public class Ricochet extends Equipment {
 			});
 			
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class RicochetProjectile extends Projectile {

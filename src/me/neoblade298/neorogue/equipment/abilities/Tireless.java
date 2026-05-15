@@ -3,10 +3,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -17,7 +17,10 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Tireless extends Equipment {
 	private static final String ID = "Tireless";
@@ -25,7 +28,7 @@ public class Tireless extends Equipment {
 
 	public Tireless(boolean isUpgraded) {
 		super(ID, "Tireless", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 0, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 
 		cutoff = 20;
 		reduc = isUpgraded ? 3 : 2;
@@ -38,12 +41,17 @@ public class Tireless extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			CastUsableEvent cev = (CastUsableEvent) in;
+			if (cev.getInstance().getStaminaCost() < cutoff) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			StandardPriorityAction inst = new StandardPriorityAction(ID);
 			inst.setAction((pdata2, in2) -> {
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				PreCastUsableEvent ev = (PreCastUsableEvent) in2;
 				if (ev.getInstance().getStaminaCost() > 0) {
 					ev.addBuff(PropertyType.STAMINA_COST, ID,
@@ -52,13 +60,13 @@ public class Tireless extends Equipment {
 				if (ev.getInstance().getStaminaCost() < cutoff)
 					return TriggerResult.keep();
 				inst.addCount(reduc);
-				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				data.addSimpleShield(p2.getUniqueId(), shields, 100);
 				return TriggerResult.keep();
 			});
 			data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

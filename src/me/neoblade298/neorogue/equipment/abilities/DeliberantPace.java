@@ -7,11 +7,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,6 +24,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DeliberantPace extends Equipment {
 	private static final String ID = "DeliberantPace";
@@ -33,7 +35,7 @@ public class DeliberantPace extends Equipment {
 
 	public DeliberantPace(boolean isUpgraded) {
 		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 20, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		seconds = isUpgraded ? 4 : 5;
 		damagePerStack = isUpgraded ? 0.06 : 0.05; // 6% or 5%
 	}
@@ -44,16 +46,23 @@ public class DeliberantPace extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (!p.isSneaking()) return TriggerResult.keep();
+			if (count.addCount(1) < 3) return TriggerResult.keep();
+
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			String buffId = UUID.randomUUID().toString();
 			ActionMeta am = new ActionMeta();
-			am.setCount(0); // Tick counter
+			am.setCount(0);
 
 			// Reset counter when player starts sprinting
 			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (p.isSprinting()) {
+				Player p2 = data.getPlayer();
+				if (p2.isSprinting()) {
 					am.setCount(0);
 				}
 				return TriggerResult.keep();
@@ -61,8 +70,8 @@ public class DeliberantPace extends Equipment {
 
 			// Track ticks without sprinting
 			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (p.isSprinting()) {
+				Player p2 = data.getPlayer();
+				if (p2.isSprinting()) {
 					am.setCount(0);
 					return TriggerResult.keep();
 				}
@@ -72,10 +81,10 @@ public class DeliberantPace extends Equipment {
 
 				// Every ticksRequired ticks without sprinting, grant a stack of focus
 				if (am.getCount() >= seconds) {
-					am.setCount(0); // Reset counter
+					am.setCount(0);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					pc.play(p, p);
-					Sounds.enchant.play(p, p);
+					pc.play(p2, p2);
+					Sounds.enchant.play(p2, p2);
 				}
 
 				return TriggerResult.keep();
@@ -95,7 +104,7 @@ public class DeliberantPace extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

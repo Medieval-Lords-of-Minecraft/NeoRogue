@@ -5,10 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -22,7 +23,10 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Posturing2 extends Equipment {
 	private static final String ID = "Posturing2";
@@ -31,7 +35,7 @@ public class Posturing2 extends Equipment {
 	
 	public Posturing2(boolean isUpgraded) {
 		super(ID, "Posturing II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		time = 6;
 		inc = isUpgraded ? 8 : 6;
 	}
@@ -42,17 +46,24 @@ public class Posturing2 extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.FOCUS)) return TriggerResult.keep();
+			if (count.addCount(ev.getStacks()) < 2) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			StandardPriorityAction act = new StandardPriorityAction(id);
 			act.setAction((pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (!p.isSneaking()) return TriggerResult.keep();
+				Player p2 = data.getPlayer();
+				if (!p2.isSneaking()) return TriggerResult.keep();
 				act.addCount(1);
 				if (act.getCount() >= time) {
-					pc.play(p, p);
-					Sounds.enchant.play(p, p);
+					pc.play(p2, p2);
+					Sounds.enchant.play(p2, p2);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
 					act.addCount(-time);
 				}
@@ -61,20 +72,20 @@ public class Posturing2 extends Equipment {
 			data.addTrigger(id, Trigger.PLAYER_TICK, act);
 
 			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
-				Player p = data.getPlayer();
-				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in3;
-				for (IProjectileInstance ipi : ev.getInstances()) {
+				Player p3 = data.getPlayer();
+				LaunchProjectileGroupEvent ev3 = (LaunchProjectileGroupEvent) in3;
+				for (IProjectileInstance ipi : ev3.getInstances()) {
 					if (ipi instanceof ProjectileInstance) {
 						ProjectileInstance inst = (ProjectileInstance) ipi;
 						double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
-						inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
+						inst.getMeta().addDamageSlice(new DamageSlice(data, p3.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 					}
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

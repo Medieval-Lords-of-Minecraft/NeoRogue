@@ -33,7 +33,7 @@ public class SelfDestruct extends Equipment {
 	
 	public SelfDestruct(boolean isUpgraded) {
 		super(ID, "Self-Destruct", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 120 : 90;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
@@ -66,7 +66,7 @@ public class SelfDestruct extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE,
-				GlossaryTag.POWER.tag(this) + ". Any time a " + GlossaryTag.TRAP.tag(this) + " is removed, " +
+				GlossaryTag.POWER.tag(this) + ". On cast, any time a " + GlossaryTag.TRAP.tag(this) + " is removed, " +
 				"including removal on activation, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies near the trap.");
 	}
 }

@@ -1,11 +1,13 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +26,10 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Corrode extends Equipment {
 	private static final String ID = "Corrode";
@@ -33,7 +38,7 @@ public class Corrode extends Equipment {
 	
 	public Corrode(boolean isUpgraded) {
 		super(ID, "Corrode", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 15, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		bonusDamage = isUpgraded ? 0.6 : 0.4;
 		bonusPoison = isUpgraded ? 5 : 3;
 	}
@@ -44,53 +49,62 @@ public class Corrode extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			String statusName = data.getPlayer().getName() + "-corrode";
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+			FightData fd = FightInstance.getFightData(ev.getTarget());
+			if (fd == null || !fd.hasStatus(StatusType.POISON)) return TriggerResult.keep();
+			if (am.addCount(1) < 3) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			String statusName = p.getName() + "-corrode";
 
 			// Mark enemies on basic attack
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
-				FightData fd = FightInstance.getFightData(ev.getTarget());
-				if (fd == null) return TriggerResult.keep();
+				BasicAttackEvent bev = (BasicAttackEvent) in2;
+				FightData fd2 = FightInstance.getFightData(bev.getTarget());
+				if (fd2 == null) return TriggerResult.keep();
 				
 				// Apply 3 second mark
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 60);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd2, true);
+				fd2.applyStatus(s, data, 1, 60);
 				
 				return TriggerResult.keep();
 			});
 			
 			// Bonus damage when dealing poison damage to marked enemies
 			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+				PreDealDamageEvent dev = (PreDealDamageEvent) in2;
+				if (!dev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 				
-				FightData fd = FightInstance.getFightData(ev.getTarget());
-				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+				FightData fd2 = FightInstance.getFightData(dev.getTarget());
+				if (fd2 == null || !fd2.hasStatus(statusName)) return TriggerResult.keep();
 				
 				// Add bonus damage
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.POISON), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+				dev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.POISON), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 				
 				return TriggerResult.keep();
 			});
 			
 			// Increase poison application to marked enemies
 			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
-				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+				PreApplyStatusEvent sev = (PreApplyStatusEvent) in2;
+				if (!sev.isStatus(StatusType.POISON)) return TriggerResult.keep();
 				
-				FightData fd = ev.getTarget();
-				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+				FightData fd2 = sev.getTarget();
+				if (fd2 == null || !fd2.hasStatus(statusName)) return TriggerResult.keep();
 				
 				// Add bonus poison stacks
-				ev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
+				sev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
 				
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

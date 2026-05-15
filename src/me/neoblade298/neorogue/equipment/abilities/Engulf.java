@@ -11,12 +11,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -30,6 +30,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Engulf extends Equipment {
 	private static final String ID = "Engulf";
@@ -41,7 +43,7 @@ public class Engulf extends Equipment {
 
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 5, 0, 0, tp.range));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 60 : 90;
 		thres = isUpgraded ? 300 : 500;
 	}
@@ -50,15 +52,25 @@ public class Engulf extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 3;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta activationAm = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
+			activationAm.addCount(1);
+			if (activationAm.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
 			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev = (DealDamageEvent) in2;
-				HashMap<DamageType, Double> dmg = ev.getMeta().getPostMitigationDamage();
+				DealDamageEvent ev2 = (DealDamageEvent) in2;
+				HashMap<DamageType, Double> dmg = ev2.getMeta().getPostMitigationDamage();
 				if (!dmg.containsKey(DamageType.FIRE))
 					return TriggerResult.keep();
 				am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
@@ -67,10 +79,10 @@ public class Engulf extends Equipment {
 					data.addTask(new BukkitRunnable() {
 						private int count = 0;
 						public void run() {
-							Player p = data.getPlayer();
-							Sounds.fire.play(p, p);
-							circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
-							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+							Player p2 = data.getPlayer();
+							Sounds.fire.play(p2, p2);
+							circ.play(pc, p2.getLocation(), LocalAxes.xz(), null);
+							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, tp)) {
 								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
 										DamageStatTracker.of(id + slot, Engulf.this)), ent);
 							}
@@ -84,7 +96,7 @@ public class Engulf extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

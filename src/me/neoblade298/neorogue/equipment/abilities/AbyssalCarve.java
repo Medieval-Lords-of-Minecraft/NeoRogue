@@ -10,9 +10,10 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Cone;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -26,6 +27,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AbyssalCarve extends Equipment {
 	private static final String ID = "AbyssalCarve";
@@ -39,7 +42,7 @@ public class AbyssalCarve extends Equipment {
 	
 	public AbyssalCarve(boolean isUpgraded) {
 		super(ID, "Abyssal Carve", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 5, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 200 : 150;
 	}
 	
@@ -49,9 +52,13 @@ public class AbyssalCarve extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			am.addCount(1);
+			if (am.getCount() < 1) return TriggerResult.keep();
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
+			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
 				Player p = data.getPlayer();
 				EvadeEvent ev = (EvadeEvent) in2;
@@ -84,9 +91,9 @@ public class AbyssalCarve extends Equipment {
 				
 				return TriggerResult.keep();
 			});
-			
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

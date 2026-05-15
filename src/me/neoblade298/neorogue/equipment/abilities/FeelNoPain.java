@@ -1,11 +1,13 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -16,7 +18,10 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FeelNoPain extends Equipment {
 	private static final String ID = "FeelNoPain";
@@ -26,7 +31,7 @@ public class FeelNoPain extends Equipment {
 	
 	public FeelNoPain(boolean isUpgraded) {
 		super(ID, "Feel No Pain", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		reduc = isUpgraded ? 0.08 : 0.05;
 		reducString = (int) (reduc * 100);
 	}
@@ -37,8 +42,25 @@ public class FeelNoPain extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.BERSERK)) return TriggerResult.keep();
+			am.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
+			am.setBool(true);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (am.getCount() < 3 || !am.getBool()) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
 				ReceiveDamageEvent ev = (ReceiveDamageEvent) in2;
@@ -50,7 +72,7 @@ public class FeelNoPain extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

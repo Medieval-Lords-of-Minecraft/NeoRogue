@@ -20,14 +20,14 @@ public class Charge extends Equipment {
 	
 	public Charge(boolean isUpgraded) {
 		super(ID, "Charge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, isUpgraded ? 15 : 30, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BOOTS,
-				GlossaryTag.POWER.tag(this) + ". Sprinting costs " + DescUtil.white(1) + " additional stamina per second, and every " + DescUtil.white("3s") + " of sprinting grants you "
+				GlossaryTag.POWER.tag(this) + ". On cast, sprinting costs " + DescUtil.white(1) + " additional stamina per second, and every " + DescUtil.white("3s") + " of sprinting grants you "
 				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
 	}
 	

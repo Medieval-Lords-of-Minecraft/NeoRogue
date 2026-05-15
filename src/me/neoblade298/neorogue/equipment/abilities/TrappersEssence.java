@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -28,6 +28,8 @@ import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TrappersEssence extends Equipment {
 	private static final String ID = "TrappersEssence";
@@ -44,7 +46,7 @@ public class TrappersEssence extends Equipment {
 	
 	public TrappersEssence(boolean isUpgraded) {
 		super(ID, "Trapper's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 35, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 400 : 300;
 		shields = isUpgraded ? 6 : 4;
 	}
@@ -55,8 +57,10 @@ public class TrappersEssence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 				KillEvent ev = (KillEvent) in2;
@@ -70,7 +74,7 @@ public class TrappersEssence extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	private void initTrap(Location loc, PlayerFightData data, Equipment eq, int slot) {

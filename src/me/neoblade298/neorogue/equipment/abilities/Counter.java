@@ -6,9 +6,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -19,6 +20,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Counter extends Equipment {
 	private static final String ID = "Counter";
@@ -26,7 +29,7 @@ public class Counter extends Equipment {
 	
 	public Counter(boolean isUpgraded) {
 		super(ID, "Counter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 15, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 150 : 100;
 	}
 	
@@ -43,8 +46,13 @@ public class Counter extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 1) return TriggerResult.keep();
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
+			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
 				Player p = data.getPlayer();
@@ -74,7 +82,7 @@ public class Counter extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

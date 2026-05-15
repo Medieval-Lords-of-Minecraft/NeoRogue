@@ -6,11 +6,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -18,6 +19,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Egoism extends Equipment {
 	private static final String ID = "Egoism";
@@ -25,7 +28,7 @@ public class Egoism extends Equipment {
 	
 	public Egoism(boolean isUpgraded) {
 		super(ID, "Egoism", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		healthRegen = isUpgraded ? 3 : 2;
 		stealth = isUpgraded ? 2 : 1;
 	}
@@ -36,8 +39,14 @@ public class Egoism extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			if (data.getMana() < data.getMaxMana() * 0.6) return TriggerResult.keep();
+			if (data.getStamina() < data.getMaxStamina() * 0.6) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 1) return TriggerResult.keep();
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
+			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
 				// Regen health over 10 seconds (10 player ticks)
@@ -60,7 +69,7 @@ public class Egoism extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

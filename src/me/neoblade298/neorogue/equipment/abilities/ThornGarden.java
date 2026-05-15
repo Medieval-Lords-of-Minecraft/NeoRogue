@@ -2,12 +2,13 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -16,6 +17,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ThornGarden extends Equipment {
 	private static final String ID = "ThornGarden";
@@ -25,7 +28,7 @@ public class ThornGarden extends Equipment {
 	
 	public ThornGarden(boolean isUpgraded) {
 		super(ID, "Thorn Garden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 15, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		
 		thorns = isUpgraded ? 6 : 4;
@@ -37,28 +40,22 @@ public class ThornGarden extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new ThornguardInstance(data, this, slot, es));
-	}
-	
-	private class ThornguardInstance extends EquipmentInstance {
-		private int count = 0;
-		public ThornguardInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
-			action = (pdata, inputs) -> {
-				pc.play(p, p);
-				Sounds.equip.play(p, p);
-				p.getInventory().setItem(slot, null);
-				pdata.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
-					GrantShieldsEvent ev = (GrantShieldsEvent) inputs2;
-					count += ev.getShield().getAmount();
-					pdata.applyStatus(StatusType.THORNS, pdata, thorns * (count / CUTOFF), -1);
-					count = count % CUTOFF;
-					return TriggerResult.keep();
-				});
-				return TriggerResult.remove();
-			};
-		}
-		
+		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			int[] shieldCount = {0};
+			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, in2) -> {
+				GrantShieldsEvent ev = (GrantShieldsEvent) in2;
+				shieldCount[0] += ev.getShield().getAmount();
+				data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1);
+				shieldCount[0] = shieldCount[0] % CUTOFF;
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		});
 	}
 
 	@Override

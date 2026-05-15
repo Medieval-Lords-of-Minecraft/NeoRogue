@@ -15,12 +15,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -42,6 +42,9 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Illusion extends Equipment {
 	private static final String ID = "Illusion";
@@ -55,7 +58,7 @@ public class Illusion extends Equipment {
 
 	public Illusion(boolean isUpgraded) {
 		super(ID, "Illusion", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(40, 20, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 250 : 150;
 		dur = 3;
 	}
@@ -66,10 +69,31 @@ public class Illusion extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		ActionMeta evadeCount = new ActionMeta();
+		ActionMeta darkCount = new ActionMeta();
+
+		// Track evade applications
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.isStatus(StatusType.EVADE)) evadeCount.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		// Track dark damage dealt
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (ev.getMeta().containsType(DamageType.DARK)) darkCount.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		// Check both conditions on PLAYER_TICK
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (evadeCount.getCount() < 3 || darkCount.getCount() < 3) return TriggerResult.keep();
+
 			Player p = data.getPlayer();
-			Sounds.equip.play(p, p);
-			
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
 			LinkedList<Location> locationQueue = new LinkedList<Location>();
 			ActionMeta cooldown = new ActionMeta();
@@ -148,9 +172,9 @@ public class Illusion extends Equipment {
 
 				return TriggerResult.keep();
 			});
-			
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class IllusionProjectile extends Projectile {

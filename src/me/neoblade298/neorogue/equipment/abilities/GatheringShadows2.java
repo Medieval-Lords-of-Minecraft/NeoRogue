@@ -64,7 +64,7 @@ public class GatheringShadows2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				GlossaryTag.POWER.tag(this) + ". Gain " + DescUtil.white(1) + " stack per second, up to " + DescUtil.white(10) + ". On basic attack, deal "
+				GlossaryTag.POWER.tag(this) + ". On cast, gain " + DescUtil.white(1) + " stack per second, up to " + DescUtil.white(10) + ". On basic attack, deal "
 				+ GlossaryTag.DARK.tag(this, damage, true) + " damage per stack plus " + DescUtil.yellow(bonus) + " for every stack above "
 				+ DescUtil.white(2) + " and reset the stack counter.");
 	}

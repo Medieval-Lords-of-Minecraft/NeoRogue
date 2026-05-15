@@ -10,10 +10,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -35,8 +36,11 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Pandemic extends Equipment {
 	private static final String ID = "Pandemic";
@@ -49,7 +53,7 @@ public class Pandemic extends Equipment {
 	
 	public Pandemic(boolean isUpgraded) {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(40, 20, 0, 0).add(PropertyType.AREA_OF_EFFECT, radius));
+				EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, radius));
 		bonusDamage = isUpgraded ? 0.9 : 0.6;
 		bonusPoison = isUpgraded ? 7 : 5;
 		areaPoison = isUpgraded ? 5 : 3;
@@ -61,14 +65,21 @@ public class Pandemic extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-			String statusName = data.getPlayer().getName() + "-pandemic";
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+			am.addCount((int) ev.getTotalDamage());
+			if (am.getCount() < 300) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			String statusName = p.getName() + "-pandemic";
 
 			// Mark enemies on basic attack
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
-				FightData fd = FightInstance.getFightData(ev.getTarget());
+				BasicAttackEvent ev2 = (BasicAttackEvent) in2;
+				FightData fd = FightInstance.getFightData(ev2.getTarget());
 				if (fd == null) return TriggerResult.keep();
 				
 				// Apply 3 second mark to primary target
@@ -80,14 +91,14 @@ public class Pandemic extends Equipment {
 			
 			// Bonus damage when dealing poison damage to marked enemies
 			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+				if (!ev2.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 				
-				FightData fd = FightInstance.getFightData(ev.getTarget());
+				FightData fd = FightInstance.getFightData(ev2.getTarget());
 				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 				
 				// Add bonus damage
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
 					Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 				
 				return TriggerResult.keep();
@@ -95,24 +106,24 @@ public class Pandemic extends Equipment {
 			
 			// Increase poison application to marked enemies and spread poison in area
 			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
-				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-				if (ev.isSecondary()) return TriggerResult.keep();
+				PreApplyStatusEvent ev2 = (PreApplyStatusEvent) in2;
+				if (!ev2.isStatus(StatusType.POISON)) return TriggerResult.keep();
+				if (ev2.isSecondary()) return TriggerResult.keep();
 				
-				FightData fd = ev.getTarget();
+				FightData fd = ev2.getTarget();
 				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 				
 				// Add bonus poison stacks
-				ev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
+				ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
 				
 				// Spread poison in area around marked target
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				LivingEntity target = fd.getEntity();
-				pc.play(p, target.getLocation());
-				Sounds.water.play(p, p);
-				LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p, target.getLocation(), tp);
+				pc.play(p2, target.getLocation());
+				Sounds.water.play(p2, p2);
+				LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p2, target.getLocation(), tp);
 				for (LivingEntity ent : list) {
-					if (ent == ev.getTarget().getEntity()) continue;
+					if (ent == ev2.getTarget().getEntity()) continue;
 					FightData targetFd = FightInstance.getFightData(ent);
 					if (targetFd == null) continue;
 					targetFd.applyStatus(StatusType.POISON, data, areaPoison, -1, null, true);
@@ -122,7 +133,7 @@ public class Pandemic extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

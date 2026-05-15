@@ -1,13 +1,17 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -26,7 +30,7 @@ public class Plague extends Equipment {
 	
 	public Plague(boolean isUpgraded) {
 		super(ID, "Plague", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = 10;
 		thres = 5;
 		maxThres = isUpgraded ? 5 : 3;
@@ -38,19 +42,27 @@ public class Plague extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 3) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			PlagueInstance inst = new PlagueInstance(ID, slot, this);
 			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-				return inst.calculateStacks(ev.getStacks());
+				ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+				if (!ev2.isStatus(StatusType.POISON)) return TriggerResult.keep();
+				return inst.calculateStacks(ev2.getStacks());
 			});
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, inst);
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class PlagueInstance extends PriorityAction	{

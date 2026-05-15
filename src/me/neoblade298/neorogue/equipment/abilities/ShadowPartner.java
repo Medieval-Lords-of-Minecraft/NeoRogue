@@ -48,7 +48,7 @@ public class ShadowPartner extends Equipment {
 
 	public ShadowPartner(boolean isUpgraded) {
 		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 15, 0, 0));
 		damage = isUpgraded ? 250 : 150;
 	}
 
@@ -160,7 +160,7 @@ public class ShadowPartner extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
-				GlossaryTag.POWER.tag(this) + ". A ball of darkness follows " + DescUtil.white("2s") + " behind you. Anytime you apply " +
+				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.white("2s") + " behind you. Anytime you apply " +
 				GlossaryTag.INSANITY.tag(this) + " " + DescUtil.white("(1s cooldown)") + ", the ball fires a projectile at them, dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit.");
 	}

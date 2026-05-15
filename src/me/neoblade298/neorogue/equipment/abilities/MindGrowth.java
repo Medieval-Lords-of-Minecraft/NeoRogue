@@ -5,17 +5,19 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MindGrowth extends Equipment {
 	private static final String ID = "MindGrowth";
@@ -25,7 +27,7 @@ public class MindGrowth extends Equipment {
 
 	public MindGrowth(boolean isUpgraded) {
 		super(ID, "Mind Growth", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		regen = isUpgraded ? 0.3 : 0.2;
 	}
 
@@ -42,8 +44,10 @@ public class MindGrowth extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
 			data.addTrigger(id, Trigger.CAST_USABLE, (pdata2, in2) -> {
@@ -51,15 +55,15 @@ public class MindGrowth extends Equipment {
 				if (am.getCount() >= THRES) {
 					am.addCount(-THRES);
 					pdata2.addManaRegen(regen);
-					Player p = data.getPlayer();
-					pc.play(p, p);
-					Sounds.enchant.play(p, p);
+					Player p2 = data.getPlayer();
+					pc.play(p2, p2);
+					Sounds.enchant.play(p2, p2);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

@@ -6,10 +6,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -20,6 +21,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -32,7 +34,11 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Hellfire extends Equipment {
 	private static final String ID = "Hellfire";
@@ -41,7 +47,7 @@ public class Hellfire extends Equipment {
 	
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 120 : 80;
 	}
 	
@@ -51,9 +57,34 @@ public class Hellfire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-
+		ActionMeta projCount = new ActionMeta();
+		ActionMeta burnCount = new ActionMeta();
+		
+		// Track projectile damage dealt
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) {
+				projCount.addCount(1);
+			}
+			return TriggerResult.keep();
+		});
+		
+		// Track burn applications
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.isStatus(StatusType.BURN)) {
+				burnCount.addCount(1);
+			}
+			return TriggerResult.keep();
+		});
+		
+		// Poll both conditions
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (projCount.getCount() < 5 || burnCount.getCount() < 3) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in2;
 				ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
@@ -65,9 +96,9 @@ public class Hellfire extends Equipment {
 				}
 				return TriggerResult.keep();
 			});
-
+			
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

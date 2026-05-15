@@ -6,12 +6,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -24,6 +27,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class Overload extends Equipment {
@@ -35,7 +39,7 @@ public class Overload extends Equipment {
 	
 	public Overload(boolean isUpgraded) {
 		super(ID, "Overload", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
 		
 		damage = isUpgraded ? 90 : 60;
 		mult = 10;
@@ -47,22 +51,30 @@ public class Overload extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 5) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.KILL, (pd, in2) -> {
-				KillEvent ev = (KillEvent) in2;
-				int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
-				Player p = data.getPlayer();
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
+				KillEvent killEv = (KillEvent) in2;
+				int stacks = FightInstance.getFightData(killEv.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
+				Player p2 = data.getPlayer();
+				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(killEv.getTarget(), tp)) {
 					FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * mult), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
-					part.play(p, ent);
+					part.play(p2, ent);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

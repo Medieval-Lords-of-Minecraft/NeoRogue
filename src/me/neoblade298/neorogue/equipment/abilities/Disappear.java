@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -22,7 +23,10 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Disappear extends Equipment {
 	private static final String ID = "Disappear";
@@ -30,7 +34,7 @@ public class Disappear extends Equipment {
 	
 	public Disappear(boolean isUpgraded) {
 		super(ID, "Disappear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		
 		damage = isUpgraded ? 225 : 150;
 	}
@@ -41,8 +45,14 @@ public class Disappear extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			KillEvent ev = (KillEvent) in;
+			if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.PIERCING)) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			ItemStack baseIcon = item.clone();
 			ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
 			EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
@@ -65,7 +75,7 @@ public class Disappear extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class DisappearInstance extends PriorityAction {

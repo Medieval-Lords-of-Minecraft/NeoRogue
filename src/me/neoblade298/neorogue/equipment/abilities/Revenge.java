@@ -5,10 +5,10 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -20,6 +20,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Revenge extends Equipment {
 	private static final String ID = "Revenge";
@@ -29,7 +31,7 @@ public class Revenge extends Equipment {
 	
 	public Revenge(boolean isUpgraded) {
 		super(ID, "Revenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 25, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		strength = isUpgraded ? 15 : 10;
 		heal = isUpgraded ? 3 : 2;
 	}
@@ -40,8 +42,10 @@ public class Revenge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			StandardPriorityAction inst = new StandardPriorityAction(id);
 			inst.setAction((pdata2, in2) -> {
@@ -52,10 +56,10 @@ public class Revenge extends Equipment {
 					data.applyStatus(StatusType.BERSERK, data, 1, -1);
 				}
 				else {
-					Player p = data.getPlayer();
+					Player p2 = data.getPlayer();
 					data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
-					Sounds.fire.play(p, p);
-					pc.play(p, p);
+					Sounds.fire.play(p2, p2);
+					pc.play(p2, p2);
 					return TriggerResult.keep();
 				}
 				return TriggerResult.keep();
@@ -64,13 +68,13 @@ public class Revenge extends Equipment {
 
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
 				if (!data.hasStatus("Revenge")) return TriggerResult.keep();
-				Player p = data.getPlayer();
-				FightInstance.giveHeal(p, heal, p);
+				Player p3 = data.getPlayer();
+				FightInstance.giveHeal(p3, heal, p3);
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

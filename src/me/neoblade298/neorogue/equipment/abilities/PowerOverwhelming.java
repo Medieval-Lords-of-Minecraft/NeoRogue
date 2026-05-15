@@ -3,11 +3,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -18,6 +18,8 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PowerOverwhelming extends Equipment {
 	private static final String ID = "PowerOverwhelming";
@@ -25,7 +27,7 @@ public class PowerOverwhelming extends Equipment {
 
 	public PowerOverwhelming(boolean isUpgraded) {
 		super(ID, "Power Overwhelming", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 80 : 100, 25, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		manaReduc = isUpgraded ? 30 : 20;
 		properties.addUpgrades(PropertyType.MANA_COST);
 	}
@@ -39,11 +41,14 @@ public class PowerOverwhelming extends Equipment {
 		addReforge(CatalystCrucible.get(), TollOfTheArcane.get());
 	}
 
+	private static final int ACTIVATION_THRES = 2;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta activated = new ActionMeta();
 		String procId = id + slot;
 
+		// Pre-register the cost reduction trigger (only active after activation)
+		ActionMeta activated = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			if (!activated.getBool()) return TriggerResult.keep();
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
@@ -59,12 +64,20 @@ public class PowerOverwhelming extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		// Activation condition: cast 2 abilities while above 50% mana
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			if (data.getMana() < data.getMaxMana() * 0.5) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
 			activated.setBool(true);
 			Player p = data.getPlayer();
-			Sounds.roar.play(p, p);
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

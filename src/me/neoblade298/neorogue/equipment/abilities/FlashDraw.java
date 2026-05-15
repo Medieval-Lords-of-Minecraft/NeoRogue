@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -18,6 +18,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FlashDraw extends Equipment {
 	private static final String ID = "FlashDraw";
@@ -25,7 +27,7 @@ public class FlashDraw extends Equipment {
 	
 	public FlashDraw(boolean isUpgraded) {
 		super(ID, "Flash Draw", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		thres = isUpgraded ? 15 : 20;
 	}
 	
@@ -33,10 +35,20 @@ public class FlashDraw extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 30;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.REND)) return TriggerResult.keep();
+			count.addCount(ev.getStacks());
+			if (count.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta md = new ActionMeta();
 			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
@@ -48,8 +60,8 @@ public class FlashDraw extends Equipment {
 
 			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
 				LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
-				Player p = data.getPlayer();
-				if (!p.isSneaking()) return TriggerResult.keep();
+				Player p2 = data.getPlayer();
+				if (!p2.isSneaking()) return TriggerResult.keep();
 				if (!e.isBasicAttack()) return TriggerResult.keep();
 				data.addExtraShot(e.getGroup());
 				if (md.getCount() >= thres) {
@@ -64,7 +76,7 @@ public class FlashDraw extends Equipment {
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

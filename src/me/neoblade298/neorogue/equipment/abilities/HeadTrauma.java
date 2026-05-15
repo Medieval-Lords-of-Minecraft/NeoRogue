@@ -9,10 +9,11 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -33,18 +34,20 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class HeadTrauma extends Equipment {
 	private static final String ID = "HeadTrauma";
 	private int damage, reducStr;
 	private double reduc;
-	private static final int THRESHOLD = 30;
+	private static final int THRESHOLD = 15;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.DIRT.createBlockData()).count(20).spread(1, 1).offsetY(1);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK);
 	
 	public HeadTrauma(boolean isUpgraded) {
 		super(ID, "Head Trauma", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		reduc = isUpgraded ? 0.6 : 0.4;
 		reducStr = (int) (100 * reduc);
 		damage = isUpgraded ? 300 : 200;
@@ -54,31 +57,41 @@ public class HeadTrauma extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 15;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
+			am.addCount(ev.getStacks());
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			String statusName = data.getPlayer().getName() + "-headTrauma";
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
+			String statusName = p.getName() + "-headTrauma";
 			String buffId = UUID.randomUUID().toString();
 			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
-				FightData fd = ev.getTarget();
+				ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+				if (!ev2.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
+				FightData fd = ev2.getTarget();
 				if (fd.getStatus(StatusType.CONCUSSED).getStacks() < THRESHOLD) return TriggerResult.keep();
 				if (fd.hasStatus(statusName)) return TriggerResult.keep();
 				Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
 				fd.applyStatus(s, data, 1, -1);
-				Player p = data.getPlayer();
+				Player p2 = data.getPlayer();
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), fd.getEntity());
 				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, this, false)));
-				pc.play(p, fd.getEntity());
-				sc.play(p, fd.getEntity());
+				pc.play(p2, fd.getEntity());
+				sc.play(p2, fd.getEntity());
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

@@ -5,15 +5,17 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Entrench extends Equipment {
 	private static final String ID = "Entrench";
@@ -24,7 +26,7 @@ public class Entrench extends Equipment {
 
 	public Entrench(boolean isUpgraded) {
 		super(ID, "Entrench", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		shields = isUpgraded ? 5 : 3;
 	}
 
@@ -34,27 +36,29 @@ public class Entrench extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.LAY_TRAP, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				data.addPermanentShield(p.getUniqueId(), shields);
-				Sounds.equip.play(p, p);
-				pc.play(p, p);
+				Player p2 = data.getPlayer();
+				data.addPermanentShield(p2.getUniqueId(), shields);
+				Sounds.equip.play(p2, p2);
+				pc.play(p2, p2);
 				return TriggerResult.keep();
 			});
 
 			data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata3, in3) -> {
-				Player p = data.getPlayer();
-				data.addPermanentShield(p.getUniqueId(), shields);
-				Sounds.equip.play(p, p);
-				pc.play(p, p);
+				Player p3 = data.getPlayer();
+				data.addPermanentShield(p3.getUniqueId(), shields);
+				Sounds.equip.play(p3, p3);
+				pc.play(p3, p3);
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

@@ -5,10 +5,11 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -17,6 +18,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StormweaversPromise extends Equipment {
 	private static final String ID = "StormweaversPromise";
@@ -28,7 +31,7 @@ public class StormweaversPromise extends Equipment {
 	
 	public StormweaversPromise(boolean isUpgraded) {
 		super(ID, "Stormweaver's Promise", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		shields = isUpgraded ? 2 : 1;
 	}
 	
@@ -38,29 +41,37 @@ public class StormweaversPromise extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
+			if (am.addCount(1) < 8) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			LinkedList<Long> recentHitTimes = new LinkedList<>();
 			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev = (DealDamageEvent) in2;
-				if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
-				Player p = data.getPlayer();
+				DealDamageEvent ev2 = (DealDamageEvent) in2;
+				if (!ev2.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+				Player p2 = data.getPlayer();
 				long currentTime = System.currentTimeMillis();
 				recentHitTimes.add(currentTime);
 				while (!recentHitTimes.isEmpty() && currentTime - recentHitTimes.getFirst() > CONSECUTIVE_WINDOW_MS) {
 					recentHitTimes.removeFirst();
 				}
 				int duration = recentHitTimes.size() >= 2 ? EXTENDED_DURATION_TICKS : BASE_DURATION_TICKS;
-				data.addSimpleShield(p.getUniqueId(), shields, duration);
+				data.addSimpleShield(p2.getUniqueId(), shields, duration);
 				if (duration == EXTENDED_DURATION_TICKS) {
-					Sounds.levelup.play(p, p);
+					Sounds.levelup.play(p2, p2);
 				}
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

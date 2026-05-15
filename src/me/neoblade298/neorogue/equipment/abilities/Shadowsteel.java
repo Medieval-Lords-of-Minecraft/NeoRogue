@@ -49,7 +49,7 @@ public class Shadowsteel extends Equipment {
 
 	public Shadowsteel(boolean isUpgraded) {
 		super(ID, "Shadowsteel", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(45, 30, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(35, 15, 0, 0));
 		damage = isUpgraded ? 350 : 250;
 	}
 
@@ -131,7 +131,7 @@ public class Shadowsteel extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
-				GlossaryTag.POWER.tag(this) + ". A ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
+				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage " + DescUtil.white("(2s cooldown)") + ", deal " + GlossaryTag.DARK.tag(this, damage, true) + 
 				" damage in a line from the ball to " + DescUtil.white(3) + " blocks in front of you and teleport the ball there.");
 	}

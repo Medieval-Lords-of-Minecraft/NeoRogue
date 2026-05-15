@@ -3,9 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -23,6 +23,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DangerClose extends Equipment {
 	private static final String ID = "DangerClose";
@@ -30,7 +32,7 @@ public class DangerClose extends Equipment {
 	
 	public DangerClose(boolean isUpgraded) {
 		super(ID, "Danger Close", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 0, 0));
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damageIncrease = isUpgraded ? 0.10 : 0.06;
 	}
 	
@@ -40,10 +42,14 @@ public class DangerClose extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Player p = data.getPlayer();
-			Sounds.equip.play(p, p);
-			
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 1) return TriggerResult.keep();
+			Sounds.fire.play(data.getPlayer(), data.getPlayer());
+			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			String buffId = UUID.randomUUID().toString();
 			ActionMeta stacks = new ActionMeta();
 			ItemStack icon = item.clone();
@@ -64,7 +70,7 @@ public class DangerClose extends Equipment {
 				return TriggerResult.keep();
 			});
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

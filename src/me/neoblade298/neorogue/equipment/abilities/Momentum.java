@@ -3,11 +3,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -21,6 +21,8 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Momentum extends Equipment {
 	private static final String ID = "Momentum";
@@ -29,7 +31,7 @@ public class Momentum extends Equipment {
 	
 	public Momentum(boolean isUpgraded) {
 		super(ID, "Momentum", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 				damage = isUpgraded ? 20 : 10;
 				dur = 3;
 	}
@@ -40,14 +42,20 @@ public class Momentum extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		ActionMeta count = new ActionMeta();
+		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
+			if (count.addCount(1) < 5) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
 			double distSq = DISTANCE * DISTANCE;
 			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (am.getLocation() != null && am.getLocation().distanceSquared(p.getLocation()) >= distSq) {
+				Player p2 = data.getPlayer();
+				if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
 					LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
 					for (IProjectileInstance ipi : ev.getInstances()) {
 						if (!(ipi instanceof ProjectileInstance)) continue;
@@ -55,12 +63,12 @@ public class Momentum extends Equipment {
 						pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
 					}
 				}
-				am.setLocation(p.getLocation());
+				am.setLocation(p2.getLocation());
 				return TriggerResult.keep();
 			});
 
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	@Override

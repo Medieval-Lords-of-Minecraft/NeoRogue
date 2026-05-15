@@ -9,13 +9,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -33,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class BlightTendril extends Equipment {
@@ -47,7 +51,7 @@ public class BlightTendril extends Equipment {
 
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		poison = isUpgraded ? 7 : 5;
 		poisonMult = 0.5;
 	}
@@ -59,10 +63,17 @@ public class BlightTendril extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String statusName = data.getPlayer().getName() + "-blighttendril";
-        Equipment eq = this;
+		Equipment eq = this;
+		ActionMeta am = new ActionMeta();
 
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < 3) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -80,31 +91,31 @@ public class BlightTendril extends Equipment {
 					Sounds.shoot.play(p, p);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0, 80));
-			
+
 			// Consume mark on basic attack and triple poison
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
-				FightData fd = FightInstance.getFightData(ev.getTarget());
-				
+				Player p2 = data.getPlayer();
+				PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in2;
+				FightData fd = FightInstance.getFightData(ev2.getTarget());
+
 				if (fd.hasStatus(statusName)) {
 					// Target is marked - consume mark and triple poison
 					Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 					fd.applyStatus(s, data, -1, -1);
-					
+
 					// Apply 2x the existing poison stacks (resulting in 3x total)
 					if (fd.hasStatus(StatusType.POISON)) {
 						int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-						FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
-						pc.play(p, ev.getTarget());
+						FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
+						pc.play(p2, ev2.getTarget());
 					}
 				}
-				
+
 				return TriggerResult.keep();
 			});
-			
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 
 	private class BlightTendrilProjectile extends Projectile {

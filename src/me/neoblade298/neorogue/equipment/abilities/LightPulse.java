@@ -7,10 +7,11 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -28,6 +29,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LightPulse extends Equipment {
 	private static final String ID = "LightPulse";
@@ -41,7 +44,7 @@ public class LightPulse extends Equipment {
 	
 	public LightPulse(boolean isUpgraded) {
 		super(ID, "Light Pulse", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 0, 6));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 6));
 		damage = isUpgraded ? 240 : 160;
 		cost = 6;
 	}
@@ -50,16 +53,28 @@ public class LightPulse extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	private static final int ACTIVATION_THRES = 3;
+
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new LightPulseProjectile(i, PROJECTILE_AMOUNT / 2, slot, this));
 		}
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			if (data.getMana() < data.getMaxMana()) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
+
+			Player p = data.getPlayer();
+			Sounds.fire.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new LightPulseInstance(id, data));
+
 			return TriggerResult.remove();
-		}));
+		});
 	}
 	
 	private class LightPulseInstance extends PriorityAction {
