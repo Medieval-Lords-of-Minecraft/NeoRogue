@@ -4,11 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -71,7 +73,11 @@ public class LightPulse extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new LightPulseInstance(id, data));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.PRE_BASIC_ATTACK, new LightPulseInstance(id, data));
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -98,7 +104,7 @@ public class LightPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				GlossaryTag.POWER.tag(this) + ". When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
+				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times while above " + DescUtil.white("50%") + " mana. When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
 				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	

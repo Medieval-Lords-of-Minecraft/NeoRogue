@@ -2,9 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -53,19 +55,23 @@ public class Momentum extends Equipment {
 
 			ActionMeta am = new ActionMeta();
 			double distSq = DISTANCE * DISTANCE;
-			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
-					LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
-					for (IProjectileInstance ipi : ev.getInstances()) {
-						if (!(ipi instanceof ProjectileInstance)) continue;
-						ProjectileInstance pi = (ProjectileInstance) ipi;
-						pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
-					}
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
+							LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
+							for (IProjectileInstance ipi : ev.getInstances()) {
+								if (!(ipi instanceof ProjectileInstance)) continue;
+								ProjectileInstance pi = (ProjectileInstance) ipi;
+								pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
+							}
+						}
+						am.setLocation(p2.getLocation());
+						return TriggerResult.keep();
+					});
 				}
-				am.setLocation(p2.getLocation());
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -74,7 +80,7 @@ public class Momentum extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOW_ITEM_FRAME,
-				GlossaryTag.POWER.tag(this) + ". Upon firing a projectile, if you are at least " + DescUtil.white(DISTANCE) + " blocks away from where you last fired a projectile, " +
+				GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(5) + " projectiles while above " + DescUtil.white("50%") + " stamina. Upon firing a projectile, if you are at least " + DescUtil.white(DISTANCE) + " blocks away from where you last fired a projectile, " +
 				"increase your damage by " + DescUtil.yellow(damage) + " " + DescUtil.duration(dur, false) + ".");
 	}
 }

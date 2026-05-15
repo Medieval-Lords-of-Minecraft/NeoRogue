@@ -6,11 +6,13 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -74,21 +76,25 @@ public class HeadTrauma extends Equipment {
 
 			String statusName = p.getName() + "-headTrauma";
 			String buffId = UUID.randomUUID().toString();
-			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
-				if (!ev2.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
-				FightData fd = ev2.getTarget();
-				if (fd.getStatus(StatusType.CONCUSSED).getStacks() < THRESHOLD) return TriggerResult.keep();
-				if (fd.hasStatus(statusName)) return TriggerResult.keep();
-				Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
-				fd.applyStatus(s, data, 1, -1);
-				Player p2 = data.getPlayer();
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), fd.getEntity());
-				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, this, false)));
-				pc.play(p2, fd.getEntity());
-				sc.play(p2, fd.getEntity());
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+						ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+						if (!ev2.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
+						FightData fd = ev2.getTarget();
+						if (fd.getStatus(StatusType.CONCUSSED).getStacks() < THRESHOLD) return TriggerResult.keep();
+						if (fd.hasStatus(statusName)) return TriggerResult.keep();
+						Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
+						fd.applyStatus(s, data, 1, -1);
+						Player p2 = data.getPlayer();
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, HeadTrauma.this)), fd.getEntity());
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, HeadTrauma.this, false)));
+						pc.play(p2, fd.getEntity());
+						sc.play(p2, fd.getEntity());
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -97,7 +103,7 @@ public class HeadTrauma extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				GlossaryTag.POWER.tag(this) + ". Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(THRESHOLD) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
 				" to an enemy will deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage to them and reduce their defense by " + 
 				DescUtil.yellow(reducStr + "%") + " permanently.");
 	}

@@ -3,10 +3,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,18 +53,22 @@ public class MindShell extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
-			data.addTrigger(id, Trigger.CAST_USABLE, (pdata2, in2) -> {
-				am.addCount(1);
-				if (am.getCount() >= THRES) {
-					am.addCount(-THRES);
-					pdata2.addManaRegen(regen);
-					data.applyStatus(StatusType.SHELL, data, shell, -1);
-					Player p2 = data.getPlayer();
-					pc.play(p2, p2);
-					Sounds.enchant.play(p2, p2);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.CAST_USABLE, (pdata2, in2) -> {
+						am.addCount(1);
+						if (am.getCount() >= THRES) {
+							am.addCount(-THRES);
+							pdata2.addManaRegen(regen);
+							data.applyStatus(StatusType.SHELL, data, shell, -1);
+							Player p2 = data.getPlayer();
+							pc.play(p2, p2);
+							Sounds.enchant.play(p2, p2);
+						}
+						return TriggerResult.keep();
+					});
 				}
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -71,7 +77,7 @@ public class MindShell extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+				GlossaryTag.POWER.tag(this) + ". Activates after casting an ability. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
 						+ DescUtil.white(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell, true) + ".");
 	}
 }

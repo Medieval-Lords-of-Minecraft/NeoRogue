@@ -2,9 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -53,7 +55,7 @@ public class StaticSurge extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta sprintMeta = new ActionMeta();
-			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
+			data.addTrigger(id + "-sprint", Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
 				Player p2 = data.getPlayer();
 				if (p2.isSprinting()) {
 					sprintMeta.setTime(System.currentTimeMillis());
@@ -63,16 +65,20 @@ public class StaticSurge extends Equipment {
 				return TriggerResult.keep();
 			});
 
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
-				if (sprintMeta.getTime() == 0 || System.currentTimeMillis() - sprintMeta.getTime() < 1000) {
-					return TriggerResult.keep();
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+						if (sprintMeta.getTime() == 0 || System.currentTimeMillis() - sprintMeta.getTime() < 1000) {
+							return TriggerResult.keep();
+						}
+						PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in3;
+						ev2.getMeta().addDamageSlice(
+								new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, StaticSurge.this)));
+						FightInstance.applyStatus(ev2.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
+						return TriggerResult.keep();
+					});
 				}
-				PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in3;
-				ev2.getMeta().addDamageSlice(
-						new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)));
-				FightInstance.applyStatus(ev2.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -81,7 +87,7 @@ public class StaticSurge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				GlossaryTag.POWER.tag(this) + ". If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(3) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " enemies. If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");
 	}

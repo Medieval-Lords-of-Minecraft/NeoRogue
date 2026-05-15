@@ -2,9 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -55,13 +57,17 @@ public class ChosenOfTheLight extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
-				if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
-				data.addHealth(heal);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this, true)), 200);
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+						ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+						if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
+						data.addHealth(heal);
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), 200);
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -70,7 +76,7 @@ public class ChosenOfTheLight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_ORE,
-				GlossaryTag.POWER.tag(this) + ". Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
 				DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
 				DescUtil.yellow(multStr + "%") + " [<white>10s</white>], stackable.");
 	}

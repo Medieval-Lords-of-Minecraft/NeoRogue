@@ -50,7 +50,11 @@ public class ConstantFlux extends Equipment {
 			ItemStack noStackIcon = item.clone();
 			ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
 			ConstantFluxInstance inst = new ConstantFluxInstance(data, this, slot, es, stacks, taskId, noStackIcon, stackIcon);
-			data.addTrigger(id, bind, inst);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", bind, inst);
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		}));

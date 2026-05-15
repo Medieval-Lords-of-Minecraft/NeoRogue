@@ -63,7 +63,7 @@ public class DyingStar extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.POWER.tag(this) + ". Create a " + GlossaryTag.RIFT.tag(this) + ". Afterwards, when any " + GlossaryTag.RIFT.tag(this) +
+				GlossaryTag.POWER.tag(this) + ". Activates after creating " + DescUtil.white(2) + " " + GlossaryTag.RIFT.tag(this) + "s. Create a " + GlossaryTag.RIFT.tag(this) + ". Afterwards, when any " + GlossaryTag.RIFT.tag(this) +
 				" expires, pull in nearby enemies, then explode " + DescUtil.white("1s") + " later dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage. If an enemy is killed, spawn a new " +
 				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "] in the same place.");

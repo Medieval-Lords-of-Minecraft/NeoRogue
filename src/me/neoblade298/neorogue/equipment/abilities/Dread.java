@@ -77,8 +77,8 @@ public class Dread extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL,
-				"Passive. Upon applying " + GlossaryTag.STEALTH.tag(this, thres, false) + ", " +
-				"gain " + GlossaryTag.STEALTH.tag(this, stealthGained, true) + ", " + DescUtil.white("Speed 1") + ", and " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(thres) + " " + GlossaryTag.STEALTH.tag(this) + " stacks. " +
+				"Gain " + GlossaryTag.STEALTH.tag(this, stealthGained, true) + ", " + DescUtil.white("Speed 1") + ", and " +
 				DescUtil.yellow((int)(damageIncrease * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage permanently.");
 	}
 }

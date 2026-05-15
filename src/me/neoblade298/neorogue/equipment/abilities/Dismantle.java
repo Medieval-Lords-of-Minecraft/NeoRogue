@@ -3,8 +3,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -49,7 +52,11 @@ public class Dismantle extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, new DismantleInstance(data, this, slot, es));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, new DismantleInstance(data, Dismantle.this, slot, es));
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -75,6 +82,6 @@ public class Dismantle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_PICKAXE,
-				GlossaryTag.POWER.tag(this) + ". Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(200) + " damage. Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
 	}
 }

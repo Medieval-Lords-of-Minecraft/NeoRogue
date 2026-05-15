@@ -164,7 +164,7 @@ public class BlightTendril extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.VINE,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
 				"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
 				"Basic attacks consume the mark and apply an additional " + DescUtil.white((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}

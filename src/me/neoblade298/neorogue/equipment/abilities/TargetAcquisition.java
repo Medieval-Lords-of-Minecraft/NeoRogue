@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -85,7 +86,7 @@ public class TargetAcquisition extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.POWER.tag(this) + ". Killing an enemy grants your next basic attack an additional " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " damage. Killing an enemy grants your next basic attack an additional " +
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage and grants " +
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

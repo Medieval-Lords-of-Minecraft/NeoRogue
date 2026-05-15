@@ -75,7 +75,7 @@ public class Egoism extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_APPLE,
-				GlossaryTag.POWER.tag(this) + ". On " + GlossaryTag.EVADE.tag(this) + ", regen " + DescUtil.yellow(healthRegen) + " health over " + DescUtil.white("10s") + ", " +
+				GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.white("60%") + " mana and stamina. On " + GlossaryTag.EVADE.tag(this) + ", regen " + DescUtil.yellow(healthRegen) + " health over " + DescUtil.white("10s") + ", " +
 				"gain " + GlossaryTag.STEALTH.tag(this, stealth, true) + " [<white>10s</white>], and gain " + DescUtil.potion("Speed", 0, 5) + ".");
 	}
 }

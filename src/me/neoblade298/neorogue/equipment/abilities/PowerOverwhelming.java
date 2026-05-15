@@ -29,7 +29,6 @@ public class PowerOverwhelming extends Equipment {
 		super(ID, "Power Overwhelming", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		manaReduc = isUpgraded ? 30 : 20;
-		properties.addUpgrades(PropertyType.MANA_COST);
 	}
 
 	public static Equipment get() {
@@ -83,7 +82,7 @@ public class PowerOverwhelming extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
+				GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(2) + " abilities while above " + DescUtil.white("50%") + " mana. Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
 						+ ", up to " + DescUtil.white("half") + " of each ability's base mana cost, for the duration of the fight.");
 	}
 }

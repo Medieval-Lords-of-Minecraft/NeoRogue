@@ -5,10 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -62,13 +64,17 @@ public class Scavenger extends Equipment {
 
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				KillEvent ev = (KillEvent) in2;
-				Location deathLoc = ev.getTarget().getLocation();
-				data.addMarker(new ScavengerStack(data, deathLoc, p2, slot, stamina, damageBuff, this, inst, icon));
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						KillEvent ev = (KillEvent) in2;
+						Location deathLoc = ev.getTarget().getLocation();
+						data.addMarker(new ScavengerStack(data, deathLoc, p2, slot, stamina, damageBuff, Scavenger.this, inst, icon));
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -136,7 +142,7 @@ public class Scavenger extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHEAT,
-				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
+				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina and " + 
 				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage.");
 	}

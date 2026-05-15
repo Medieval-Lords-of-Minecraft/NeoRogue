@@ -7,10 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -64,13 +66,17 @@ public class HuntersEssence extends Equipment {
 			ActionMeta count = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				KillEvent ev = (KillEvent) in2;
-				Location deathLoc = ev.getTarget().getLocation();
-				data.addMarker(new HuntersEssenceStack(data, deathLoc, p2, stamina, damageBuff, focusChance, this, inst, count, icon));
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						KillEvent ev = (KillEvent) in2;
+						Location deathLoc = ev.getTarget().getLocation();
+						data.addMarker(new HuntersEssenceStack(data, deathLoc, p2, stamina, damageBuff, focusChance, HuntersEssence.this, inst, count, icon));
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -147,7 +153,7 @@ public class HuntersEssence extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
+				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina, " + 
 				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage permanently, and has a " +
 				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ".");

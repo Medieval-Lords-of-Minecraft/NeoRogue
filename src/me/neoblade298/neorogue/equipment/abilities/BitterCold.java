@@ -97,7 +97,7 @@ public class BitterCold extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				GlossaryTag.POWER.tag(this) + ". All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.ICE.tag(this) + " damage " + DescUtil.white(3) + " times. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
 				GlossaryTag.FROST.tag(this, THRESHOLD, false) + " to them will deal " + GlossaryTag.ICE.tag(this, damage, true) + " damage to them.");
 	}
 }

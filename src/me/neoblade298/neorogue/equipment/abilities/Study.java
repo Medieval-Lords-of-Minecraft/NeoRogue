@@ -3,14 +3,14 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -48,28 +48,32 @@ public class Study extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ActionMeta am = new ActionMeta();
-			ItemStack icon = item.clone();
-			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				am.addCount(1);
-				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-				Sounds.enchant.play(p2, p2);
-				pc.play(p2, p2);
-				icon.setAmount(am.getCount());
-				inst.setIcon(icon);
-				return TriggerResult.keep();
-			});
+			
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					activate(data);
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
+		});
+	}
+
+	private void activate(PlayerFightData data) {
+		data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+			ActionMeta am = new ActionMeta();
+			Player p2 = data.getPlayer();
+			am.addCount(1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			Sounds.enchant.play(p2, p2);
+			pc.play(p2, p2);
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill.");
+				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill.");
 	}
 }

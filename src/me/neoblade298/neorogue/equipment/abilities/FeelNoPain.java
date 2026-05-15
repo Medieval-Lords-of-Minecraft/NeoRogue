@@ -78,7 +78,7 @@ public class FeelNoPain extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_HELMET,
-				GlossaryTag.POWER.tag(this) + ". Gain " + DescUtil.yellow(reducString + "%") + " damage reduction for every " + DescUtil.white(THRES) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", up to " +
+				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + DescUtil.white(3) + " " + GlossaryTag.BERSERK.tag(this) + " stacks and taking damage. Gain " + DescUtil.yellow(reducString + "%") + " damage reduction for every " + DescUtil.white(THRES) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", up to " +
 				DescUtil.white(CUTOFF) + " stacks.");
 	}
 }

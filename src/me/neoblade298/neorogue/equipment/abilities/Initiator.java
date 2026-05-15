@@ -75,7 +75,7 @@ public class Initiator extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				GlossaryTag.POWER.tag(this) + ". The first time you deal non-status damage to an enemy, increase the damage by " + DescUtil.yellow(
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(250) + " damage. The first time you deal non-status damage to an enemy, increase the damage by " + DescUtil.yellow(
 						damage + "%") + ".");
 	}
 }

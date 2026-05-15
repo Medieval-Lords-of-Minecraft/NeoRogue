@@ -26,7 +26,7 @@ public class StoneMace extends Equipment {
 	public StoneMace(boolean isUpgraded) {
 		super(ID, "Stone Mace", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 0.75, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 65 : 50, 0.75, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
 		conc = isUpgraded ? 3 : 2;

@@ -3,9 +3,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -41,15 +43,19 @@ public class Entrench extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.LAY_TRAP, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				data.addPermanentShield(p2.getUniqueId(), shields);
-				Sounds.equip.play(p2, p2);
-				pc.play(p2, p2);
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.LAY_TRAP, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						data.addPermanentShield(p2.getUniqueId(), shields);
+						Sounds.equip.play(p2, p2);
+						pc.play(p2, p2);
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
-			data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata3, in3) -> {
+			data.addTrigger(id + "-deactivate", Trigger.DEACTIVATE_TRAP, (pdata3, in3) -> {
 				Player p3 = data.getPlayer();
 				data.addPermanentShield(p3.getUniqueId(), shields);
 				Sounds.equip.play(p3, p3);
@@ -64,7 +70,7 @@ public class Entrench extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BLOCK,
-				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every time you place or remove a " +
+				GlossaryTag.POWER.tag(this) + ". Activates after placing a " + GlossaryTag.TRAP.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every time you place or remove a " +
 				GlossaryTag.TRAP.tag(this) + ".");
 	}
 }

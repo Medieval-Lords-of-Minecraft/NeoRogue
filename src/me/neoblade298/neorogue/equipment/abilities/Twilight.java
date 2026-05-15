@@ -72,7 +72,7 @@ public class Twilight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
+				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " once while above " + DescUtil.white("50%") + " mana and stamina. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
 				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and " + DescUtil.white(10) + " stamina.");
 	}
 }

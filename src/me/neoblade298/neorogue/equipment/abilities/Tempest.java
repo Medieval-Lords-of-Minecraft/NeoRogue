@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -86,7 +87,7 @@ public class Tempest extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				GlossaryTag.POWER.tag(this) + ". Whenever you deal damage with " + GlossaryTag.ELECTRIFIED.tag(this) + ", drop a lightning bolt " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.white(5) + " times. Whenever you deal damage with " + GlossaryTag.ELECTRIFIED.tag(this) + ", drop a lightning bolt " +
 				"onto the target and deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " +
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " to enemies in the radius, except the original target.");
 	}

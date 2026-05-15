@@ -85,7 +85,7 @@ public class NightSurge extends Equipment {
 
 			String cooldownStatus = p.getName() + "-nightsurge";
 
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 				DealDamageEvent ev = (DealDamageEvent) in2;
 				
 				// Check if damage contains dark damage type
@@ -164,7 +164,7 @@ public class NightSurge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Dealing " + GlossaryTag.DARK.tag(this) + " damage to an enemy with " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INSANITY.tag(this) + " " + DescUtil.white(3) + " times and dealing " + GlossaryTag.DARK.tag(this) + " damage " + DescUtil.white(3) + " times. Dealing " + GlossaryTag.DARK.tag(this) + " damage to an enemy with " +
 				GlossaryTag.INSANITY.tag(this) + " spawns a projectile from them that fires " +
 				"opposite the direction they're facing, dealing " + GlossaryTag.DARK.tag(this, damage, true) + 
 				" damage. The target hit also takes this damage. " + DescUtil.white("2s") + " cooldown per enemy.");

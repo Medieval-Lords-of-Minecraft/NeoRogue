@@ -90,7 +90,7 @@ public class Grit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				GlossaryTag.POWER.tag(this) + ". Killing an enemy within " + DescUtil.white(5) + " blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing damage to " + DescUtil.white(5) + " enemies within " + DescUtil.white(5) + " blocks. Killing an enemy within " + DescUtil.white(5) + " blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
 				"Damage at this range is also increased by " + DescUtil.yellow(inc) + ".");
 	}
 }

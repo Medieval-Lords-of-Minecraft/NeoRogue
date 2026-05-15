@@ -121,7 +121,7 @@ public class Setup extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(time +"s") + " spent crouched during a fight, drop a " + GlossaryTag.TRAP.tag(this) + " at your feet [<white>10s</white>] that deals " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " damage. Every " + DescUtil.white(time +"s") + " spent crouched during a fight, drop a " + GlossaryTag.TRAP.tag(this) + " at your feet [<white>10s</white>] that deals " +
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage and deactivates when walked over, and increase your " + GlossaryTag.TRAP.tag(this) + 
 				" damage by " + DescUtil.yellow(inc + "%") + ".");
 	}

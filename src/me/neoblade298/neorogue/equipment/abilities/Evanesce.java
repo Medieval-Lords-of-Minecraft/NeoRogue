@@ -58,30 +58,34 @@ public class Evanesce extends Equipment {
 			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
-				EvadeEvent ev = (EvadeEvent) in2;
-				if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
-					return TriggerResult.keep();
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.EVADE, (pdata2, in2) -> {
+						EvadeEvent ev = (EvadeEvent) in2;
+						if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
+							return TriggerResult.keep();
+						}
+						Player p = data.getPlayer();
+						LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
+						Location playerLoc = p.getLocation();
+						Location damagerLoc = damager.getLocation();
+						Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
+						data.dash(awayFromEnemy);
+						FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
+								DamageStatTracker.of(id + slot, Evanesce.this));
+						FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
+						data.addTask(new BukkitRunnable() {
+							public void run() {
+								data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+									new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
+									100);
+							}
+						}.runTaskLater(NeoRogue.inst(), 20L));
+						Sounds.attackSweep.play(p, p);
+						return TriggerResult.keep();
+					});
 				}
-				Player p = data.getPlayer();
-				LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
-				Location playerLoc = p.getLocation();
-				Location damagerLoc = damager.getLocation();
-				Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
-				data.dash(awayFromEnemy);
-				FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
-						DamageStatTracker.of(id + slot, this));
-				FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-							new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
-							100);
-					}
-				}.runTaskLater(NeoRogue.inst(), 20L));
-				Sounds.attackSweep.play(p, p);
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -90,7 +94,7 @@ public class Evanesce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after evading once while in " + GlossaryTag.STEALTH.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
 				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + DescUtil.yellow(

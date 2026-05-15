@@ -93,7 +93,7 @@ public class CompoundingInjury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				GlossaryTag.POWER.tag(this) + ". Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(ACTIVATION_THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
 				+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
 	}
 }

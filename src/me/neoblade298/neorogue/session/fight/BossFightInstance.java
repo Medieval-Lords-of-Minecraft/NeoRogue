@@ -55,6 +55,7 @@ public class BossFightInstance extends FightInstance {
 	
 	@Override
 	public void handleMobKill(FightData fd, String id, boolean playerKill) {
+		if (!isActive) return;
 		Mob mob = Mob.get(id);
 		if (mob == null) return;
 		

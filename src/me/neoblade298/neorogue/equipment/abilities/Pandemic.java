@@ -139,7 +139,7 @@ public class Pandemic extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
-				GlossaryTag.POWER.tag(this) + ". Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " " + GlossaryTag.POISON.tag(this) + " damage. Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
 				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +

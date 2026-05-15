@@ -91,7 +91,7 @@ public class Posturing2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
+				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + DescUtil.white(2) + " " + GlossaryTag.FOCUS.tag(this) + " stacks. Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
 				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc, true) + " damage per stack of " + GlossaryTag.FOCUS.tag(this) +
 				", up to " + DescUtil.white(4) + ". This bonus is doubled if the projectile is fired while crouching.");
 	}

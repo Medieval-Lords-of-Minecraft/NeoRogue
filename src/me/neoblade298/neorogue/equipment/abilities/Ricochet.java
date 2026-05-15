@@ -162,7 +162,7 @@ public class Ricochet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				GlossaryTag.POWER.tag(this) + ". Dealing basic attack damage to an enemy within " + DescUtil.white(DISTANCE) + " blocks " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " projectile damage. Dealing basic attack damage to an enemy within " + DescUtil.white(DISTANCE) + " blocks " +
 				"fires a projectile from that target to the nearest enemy, dealing " + 
 				DescUtil.yellow(damage) + " damage.");
 	}

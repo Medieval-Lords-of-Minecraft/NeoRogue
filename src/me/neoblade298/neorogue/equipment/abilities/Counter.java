@@ -4,9 +4,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -54,32 +57,36 @@ public class Counter extends Equipment {
 			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.EVADE, (pdata2, in2) -> {
-				Player p = data.getPlayer();
-				EvadeEvent ev = (EvadeEvent) in2;
-				
-				// Get the damager entity from the DamageMeta
-				if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
-					return TriggerResult.keep();
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.EVADE, (pdata2, in2) -> {
+						Player p = data.getPlayer();
+						EvadeEvent ev = (EvadeEvent) in2;
+						
+						// Get the damager entity from the DamageMeta
+						if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
+							return TriggerResult.keep();
+						}
+						
+						LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
+						Location playerLoc = p.getLocation();
+						Location damagerLoc = damager.getLocation();
+
+						// Calculate dash direction away from the enemy
+						Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
+
+						// Dash away from the enemy
+						data.dash(awayFromEnemy);
+						
+						// Deal damage to the attacker
+						FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
+								DamageStatTracker.of(id + slot, Counter.this));
+						Sounds.attackSweep.play(p, p);
+						
+						return TriggerResult.keep();
+					});
 				}
-				
-				LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
-				Location playerLoc = p.getLocation();
-				Location damagerLoc = damager.getLocation();
-
-				// Calculate dash direction away from the enemy
-				Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
-
-				// Dash away from the enemy
-				data.dash(awayFromEnemy);
-				
-				// Deal damage to the attacker
-				FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
-						DamageStatTracker.of(id + slot, this));
-				Sounds.attackSweep.play(p, p);
-				
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -88,7 +95,7 @@ public class Counter extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.white("50%") + " stamina. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them.");
 	}

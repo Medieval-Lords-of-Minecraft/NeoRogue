@@ -60,8 +60,8 @@ public class AvatarState extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE,
-				GlossaryTag.POWER.tag(this) + ". After casting " + DescUtil.white(ACTIVATION_THRES)
-						+ " abilities, increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
+				GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(ACTIVATION_THRES)
+						+ " abilities. Increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
 						+ DescUtil.yellow(hreg) + ", and gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
 						+ " [" + DescUtil.white("10s") + "].");
 	}

@@ -2,9 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,17 +52,21 @@ public class Advantage extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			StandardPriorityAction act = new StandardPriorityAction(id);
-			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
-				if (!ev2.isStatus(StatusType.INJURY)) return TriggerResult.keep();
-				act.addCount(ev2.getStacks());
-				if (act.getCount() >= thres) {
-					data.addPermanentShield(p2.getUniqueId(), shields * (act.getCount() / thres));
-					act.setCount(act.getCount() % thres);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+						if (!ev2.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+						act.addCount(ev2.getStacks());
+						if (act.getCount() >= thres) {
+							data.addPermanentShield(p2.getUniqueId(), shields * (act.getCount() / thres));
+							act.setCount(act.getCount() % thres);
+						}
+						return TriggerResult.keep();
+					});
 				}
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -69,7 +75,7 @@ public class Advantage extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.POWER.tag(this) + ". For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.white(3) + " times. For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
 				"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
 	}
 }

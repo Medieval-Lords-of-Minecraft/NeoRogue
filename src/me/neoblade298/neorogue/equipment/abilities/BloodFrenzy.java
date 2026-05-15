@@ -81,7 +81,7 @@ public class BloodFrenzy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				GlossaryTag.POWER.tag(this) + ". On kill, if below " + DescUtil.white(CUTOFF_STRENGTH) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
+				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times with " + DescUtil.white(ACTIVATION_BERSERK) + "+ " + GlossaryTag.BERSERK.tag(this) + ". On kill, if below " + DescUtil.white(CUTOFF_STRENGTH) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
 				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ". Also, for every " + GlossaryTag.BERSERK.tag(this, THRES_ATK_SPEED, false) + " you have, up to " + DescUtil.white(CUTOFF_ATK_SPEED) +
 				", increase your attack speed by " + DescUtil.yellow(atkSpeed + "%") + ".");
 	}

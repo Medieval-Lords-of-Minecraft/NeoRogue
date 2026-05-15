@@ -1063,6 +1063,7 @@ public abstract class FightInstance extends Instance {
 	private void cleanupHelper(boolean pluginDisable) {
 		if (isCleaned) return;
 		isCleaned = true;
+		isActive = false;
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
 			PlayerSessionData data = pdata.getSessionData();

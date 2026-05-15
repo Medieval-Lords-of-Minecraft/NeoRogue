@@ -3,10 +3,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -46,13 +48,17 @@ public class ThornGarden extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			int[] shieldCount = {0};
-			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, in2) -> {
-				GrantShieldsEvent ev = (GrantShieldsEvent) in2;
-				shieldCount[0] += ev.getShield().getAmount();
-				data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1);
-				shieldCount[0] = shieldCount[0] % CUTOFF;
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.RECEIVE_SHIELDS, (pdata2, in2) -> {
+						GrantShieldsEvent ev = (GrantShieldsEvent) in2;
+						shieldCount[0] += ev.getShield().getAmount();
+						data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1);
+						shieldCount[0] = shieldCount[0] % CUTOFF;
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -61,7 +67,7 @@ public class ThornGarden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				GlossaryTag.POWER.tag(this) + ". For every " + DescUtil.white(CUTOFF) + " " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
+				GlossaryTag.POWER.tag(this) + ". Activates after receiving shields. For every " + DescUtil.white(CUTOFF) + " " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
 						+ "gain " + DescUtil.yellow(thorns) + " stacks of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

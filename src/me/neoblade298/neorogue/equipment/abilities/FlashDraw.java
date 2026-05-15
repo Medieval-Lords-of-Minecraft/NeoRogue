@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -51,14 +52,18 @@ public class FlashDraw extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta md = new ActionMeta();
-			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent e = (ApplyStatusEvent) in2;
-				if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
-				md.addCount(e.getStacks());
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-rend", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+						ApplyStatusEvent e = (ApplyStatusEvent) in2;
+						if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
+						md.addCount(e.getStacks());
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
-			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
+			data.addTrigger(id + "-draw", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
 				LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
 				Player p2 = data.getPlayer();
 				if (!p2.isSneaking()) return TriggerResult.keep();
@@ -82,7 +87,7 @@ public class FlashDraw extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BEETROOT_SEEDS,
-				GlossaryTag.POWER.tag(this) + ". Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(30) + " " + GlossaryTag.REND.tag(this) + " stacks. Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
 				GlossaryTag.REND.tag(this, thres, true) + " to enemies, instead fire thrice.");
 	}
 }

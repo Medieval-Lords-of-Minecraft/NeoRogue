@@ -72,7 +72,7 @@ public class Tireless extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				GlossaryTag.POWER.tag(this) + ". For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
+				GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.white(cutoff) + "+ stamina. For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
 						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.yellow(reduc)
 						+ " and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

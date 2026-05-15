@@ -4,10 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -56,20 +58,24 @@ public class Entropy extends Equipment {
 			ActionMeta am = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				am.addCount(1);
-				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-				Sounds.enchant.play(p2, p2);
-				pc.play(p2, p2);
-				if (am.getCount() % riftThres == 0) {
-					Sounds.fire.play(p2, p2);
-					data.addRift(new Rift(data, p2.getLocation(), 160));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+						Player p2 = data.getPlayer();
+						am.addCount(1);
+						data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+						Sounds.enchant.play(p2, p2);
+						pc.play(p2, p2);
+						if (am.getCount() % riftThres == 0) {
+							Sounds.fire.play(p2, p2);
+							data.addRift(new Rift(data, p2.getLocation(), 160));
+						}
+						icon.setAmount(am.getCount());
+						inst.setIcon(icon);
+						return TriggerResult.keep();
+					});
 				}
-				icon.setAmount(am.getCount());
-				inst.setIcon(icon);
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -78,7 +84,7 @@ public class Entropy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
 				GlossaryTag.RIFT.tag(this) + " [<white>8s</white>] at your location.");
 	}
 }

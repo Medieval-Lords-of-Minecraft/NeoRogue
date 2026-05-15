@@ -86,7 +86,7 @@ public class DangerousGame extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				GlossaryTag.POWER.tag(this) + ". When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(500) + " basic attack damage. When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
 				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.yellow(damage) + " damage.");
 	}
 

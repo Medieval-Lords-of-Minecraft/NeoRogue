@@ -62,16 +62,20 @@ public class TrappersEssence extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				KillEvent ev = (KillEvent) in2;
-				Location deathLoc = ev.getTarget().getLocation();
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						initTrap(deathLoc, data, TrappersEssence.this, slot);
-					}
-				}.runTaskLater(NeoRogue.inst(), 5));
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+						KillEvent ev = (KillEvent) in2;
+						Location deathLoc = ev.getTarget().getLocation();
+						data.addTask(new BukkitRunnable() {
+							public void run() {
+								initTrap(deathLoc, data, TrappersEssence.this, slot);
+							}
+						}.runTaskLater(NeoRogue.inst(), 5));
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -106,7 +110,7 @@ public class TrappersEssence extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_TRAPDOOR,
-				GlossaryTag.POWER.tag(this) + ". When you kill an enemy, they drop a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>]. " +
+				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>]. " +
 				"When triggered, the trap deals " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
 				"and grants you " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}

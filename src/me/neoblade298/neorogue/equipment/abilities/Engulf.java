@@ -68,32 +68,36 @@ public class Engulf extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev2 = (DealDamageEvent) in2;
-				HashMap<DamageType, Double> dmg = ev2.getMeta().getPostMitigationDamage();
-				if (!dmg.containsKey(DamageType.FIRE))
-					return TriggerResult.keep();
-				am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
-				if (am.getCount() >= thres) {
-					am.addCount(-thres);
-					data.addTask(new BukkitRunnable() {
-						private int count = 0;
-						public void run() {
-							Player p2 = data.getPlayer();
-							Sounds.fire.play(p2, p2);
-							circ.play(pc, p2.getLocation(), LocalAxes.xz(), null);
-							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, tp)) {
-								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
-										DamageStatTracker.of(id + slot, Engulf.this)), ent);
-							}
-							if (++count >= 3) {
-								cancel();
-							}
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+						DealDamageEvent ev2 = (DealDamageEvent) in2;
+						HashMap<DamageType, Double> dmg = ev2.getMeta().getPostMitigationDamage();
+						if (!dmg.containsKey(DamageType.FIRE))
+							return TriggerResult.keep();
+						am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
+						if (am.getCount() >= thres) {
+							am.addCount(-thres);
+							data.addTask(new BukkitRunnable() {
+								private int count = 0;
+								public void run() {
+									Player p2 = data.getPlayer();
+									Sounds.fire.play(p2, p2);
+									circ.play(pc, p2.getLocation(), LocalAxes.xz(), null);
+									for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, tp)) {
+										FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
+												DamageStatTracker.of(id + slot, Engulf.this)), ent);
+									}
+									if (++count >= 3) {
+										cancel();
+									}
+								}
+							}.runTaskTimer(NeoRogue.inst(), 20, 20));
 						}
-					}.runTaskTimer(NeoRogue.inst(), 20, 20));
+						return TriggerResult.keep();
+					});
 				}
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -102,7 +106,7 @@ public class Engulf extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ".");
 	}

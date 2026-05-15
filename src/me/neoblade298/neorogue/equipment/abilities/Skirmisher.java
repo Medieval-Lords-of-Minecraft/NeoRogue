@@ -6,11 +6,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -57,7 +59,11 @@ public class Skirmisher extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, data));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, data));
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -88,7 +94,7 @@ public class Skirmisher extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				GlossaryTag.POWER.tag(this) + ". Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
+				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times. Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
 				+ " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

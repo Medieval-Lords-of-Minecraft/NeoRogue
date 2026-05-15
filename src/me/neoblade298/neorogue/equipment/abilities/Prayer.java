@@ -59,7 +59,7 @@ public class Prayer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Increase " + GlossaryTag.SANCTIFIED.tag(this) + " application by " + DescUtil.yellow(inc) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this, thres, true) + " heals you for "
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this, thres, true) + " stacks. Increase " + GlossaryTag.SANCTIFIED.tag(this) + " application by " + DescUtil.yellow(inc) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this, thres, true) + " heals you for "
 				+ DescUtil.yellow(heal) + " once per fight.");
 	}
 }

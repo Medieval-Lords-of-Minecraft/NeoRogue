@@ -2,8 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -46,17 +49,21 @@ public class DarkShroud extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
-				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
-				
-				for (IProjectileInstance pi : ev.getInstances()) {
-					ProjectileInstance proj = (ProjectileInstance) pi;
-					proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, 
-							DamageStatTracker.of(id + slot, this)));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
+						LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
+						
+						for (IProjectileInstance pi : ev.getInstances()) {
+							ProjectileInstance proj = (ProjectileInstance) pi;
+							proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, 
+									DamageStatTracker.of(id + slot, DarkShroud.this)));
+						}
+						
+						return TriggerResult.keep();
+					});
 				}
-				
-				return TriggerResult.keep();
-			});
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -65,6 +72,6 @@ public class DarkShroud extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				GlossaryTag.POWER.tag(this) + ". Your projectiles deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage.");
+				GlossaryTag.POWER.tag(this) + ". Activates after launching " + DescUtil.white(3) + " projectile groups. Your projectiles deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage.");
 	}
 }

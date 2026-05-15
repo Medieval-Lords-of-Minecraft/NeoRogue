@@ -5,10 +5,12 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -80,11 +82,15 @@ public class GetCentered extends Equipment {
 
 				for (IProjectileInstance pi : ev2.getInstances()) {
 					((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
+						new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, GetCentered.this)));
 				}
 				return TriggerResult.keep();
 			});
-			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, inst);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, inst);
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -93,7 +99,7 @@ public class GetCentered extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1, false) + 
+				GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(2) + " max draw projectiles. Every " + DescUtil.yellow(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1, false) + 
 				". Basic attack damage at max draw is increased by " + DescUtil.yellow(damage) + " per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
 	}
 }

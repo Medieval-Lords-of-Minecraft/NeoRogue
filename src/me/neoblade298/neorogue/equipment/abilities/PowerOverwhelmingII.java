@@ -36,7 +36,6 @@ public class PowerOverwhelmingII extends Equipment {
 		shields = isUpgraded ? 6 : 4;
 		shieldDuration = 5;
 		cdReduc = isUpgraded ? 3 : 2;
-		properties.addUpgrades(PropertyType.MANA_COST);
 	}
 
 	public static Equipment get() {
@@ -104,7 +103,7 @@ public class PowerOverwhelmingII extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
+				GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(2) + " abilities while above " + DescUtil.white("50%") + " mana. Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
 						+ ", up to " + DescUtil.white("half") + " of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.yellow(cdReduc)
 						+ " seconds. Every ability cast grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(shieldDuration + "s") + "].");
 	}

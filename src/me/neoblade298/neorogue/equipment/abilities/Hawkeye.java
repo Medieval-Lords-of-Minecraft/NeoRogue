@@ -126,7 +126,7 @@ public class Hawkeye extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.POWER.tag(this) + ". While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
+				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + DescUtil.white(6) + " " + GlossaryTag.FOCUS.tag(this) + " stacks. While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
 				"damage taken gets reduced by " + DescUtil.white(DAMAGE_REDUCTION) + ", " +
 				"reduces your " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ", " +
 				"and shoots a piercing projectile at the damager that deals " +

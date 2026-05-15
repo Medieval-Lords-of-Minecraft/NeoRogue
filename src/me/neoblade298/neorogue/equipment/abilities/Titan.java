@@ -65,7 +65,7 @@ public class Titan extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_BUSH, GlossaryTag.POWER.tag(this) + ". Abilities that cost at least " + DescUtil.white(CUTOFF)
+		item = createItem(Material.DEAD_BUSH, GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.white(CUTOFF) + "+ stamina. Abilities that cost at least " + DescUtil.white(CUTOFF)
 				+ " stamina have their stamina cost reduced by " + DescUtil.yellow(staminaReduction) + ".");
 	}
 }

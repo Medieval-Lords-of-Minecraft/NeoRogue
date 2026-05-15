@@ -78,7 +78,7 @@ public class Electrolysis extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ORANGE_DYE,
-				GlossaryTag.POWER.tag(this) + ". Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage to enemies with " + GlossaryTag.ELECTRIFIED.tag(this) + " increases the damage by "
+				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.white(5) + " times. Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage to enemies with " + GlossaryTag.ELECTRIFIED.tag(this) + " increases the damage by "
 				+ DescUtil.yellow(multStr + "%") + " and grants " + DescUtil.yellow(mana) + " mana.");
 	}
 }

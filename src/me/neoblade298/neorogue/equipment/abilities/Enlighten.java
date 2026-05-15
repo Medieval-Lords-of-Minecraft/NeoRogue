@@ -60,12 +60,12 @@ public class Enlighten extends Equipment {
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am2 = new ActionMeta();
-			data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata2, in2) -> {
+			data.addTrigger(id + "-active", Trigger.GRANT_SHIELDS, (pdata2, in2) -> {
 				am2.setBool(true);
 				return TriggerResult.keep();
 			});
 
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata3, in3) -> {
+			data.addTrigger(id + "-attack", Trigger.BASIC_ATTACK, (pdata3, in3) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in3;
 				if (am2.getBool()) {
 					FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1);
@@ -81,6 +81,6 @@ public class Enlighten extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				GlossaryTag.POWER.tag(this) + ". Every time you apply " + GlossaryTag.SHIELDS.tag(this) + ", your next basic attack applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Does not stack.");
+				GlossaryTag.POWER.tag(this) + ". Activates after granting shields and dealing " + GlossaryTag.LIGHT.tag(this) + " damage. Every time you apply " + GlossaryTag.SHIELDS.tag(this) + ", your next basic attack applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Does not stack.");
 	}
 }

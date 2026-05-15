@@ -2,8 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -39,11 +41,15 @@ public class AfterImage extends Equipment {
 			Sounds.fire.play(data.getPlayer(), data.getPlayer());
 			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			data.addTrigger(id, Trigger.DASH, (pdata2, inputs) -> {
-				Player p = data.getPlayer();
-				data.addSimpleShield(p.getUniqueId(), shields, 100);
-				return TriggerResult.keep();
-			});
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addTrigger(id + "-active", Trigger.DASH, (pdata2, inputs) -> {
+						Player p = data.getPlayer();
+						data.addSimpleShield(p.getUniqueId(), shields, 100);
+						return TriggerResult.keep();
+					});
+				}
+			}.runTask(NeoRogue.inst()));
 
 			return TriggerResult.remove();
 		});
@@ -52,7 +58,7 @@ public class AfterImage extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				GlossaryTag.POWER.tag(this) + ". Every time you " + GlossaryTag.DASH.tag(this) + ", gain " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after dashing once. Every time you " + GlossaryTag.DASH.tag(this) + ", gain " + 
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

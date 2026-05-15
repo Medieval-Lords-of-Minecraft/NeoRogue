@@ -9,7 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EditSession;
@@ -400,7 +402,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		
 		if (piece.getInitialSpawns() != null) {
 			for (MapSpawner initialSpawner : piece.getInitialSpawns()) {
-				Location loc = initialSpawner.getCoordinates().clone().applySettings(this).toLocation();
+				Coordinates coords = initialSpawner.getCoordinates().clone().applySettings(this);
+				Location loc = coords.toLocation();
 				loc.setWorld(world);
 				loc.add(-x - rotateOffset[0] - flipOffset[0],
 						y,
@@ -415,7 +418,32 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					Util.msg(p, "<red>An initial spawn appears to be floating or off map.");
 					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
 				}
-				loc.getBlock().setType(Material.PURPLE_WOOL);
+				Block b = loc.getBlock();
+				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+
+				Directional bmeta = (Directional) b.getBlockData();
+				switch (coords.getDirection()) {
+				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
+				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
+				case EAST: bmeta.setFacing(BlockFace.WEST); break;
+				case WEST: bmeta.setFacing(BlockFace.EAST); break;
+				}
+				b.setBlockData(bmeta);
+
+				loc.add(0, 1, 0);
+				Block signBlock = loc.getBlock();
+				signBlock.setType(Material.OAK_SIGN);
+				Rotatable signData = (Rotatable) signBlock.getBlockData();
+				switch (coords.getDirection()) {
+				case NORTH: signData.setRotation(BlockFace.NORTH); break;
+				case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
+				case EAST: signData.setRotation(BlockFace.EAST); break;
+				case WEST: signData.setRotation(BlockFace.WEST); break;
+				}
+				signBlock.setBlockData(signData);
+				Sign sign = (Sign) signBlock.getState();
+				sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text("Initial Spawn"));
+				sign.update();
 			}
 		}
 		
@@ -449,11 +477,26 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
             case WEST: bmeta.setFacing(BlockFace.EAST);
             }
             b.setBlockData(bmeta);
+
+			loc.add(0, 1, 0);
+			Block signBlock = loc.getBlock();
+			signBlock.setType(Material.OAK_SIGN);
+			Rotatable signData = (Rotatable) signBlock.getBlockData();
+			switch (coords.getDirection()) {
+			case NORTH: signData.setRotation(BlockFace.NORTH); break;
+			case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
+			case EAST: signData.setRotation(BlockFace.EAST); break;
+			case WEST: signData.setRotation(BlockFace.WEST); break;
+			}
+			signBlock.setBlockData(signData);
+			Sign sign = (Sign) signBlock.getState();
+			sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text("Player Spawn"));
+			sign.update();
 		}
 		
 		// Mythic Locations
-		for (Coordinates mythicLocation : mythicLocations.values()) {
-			Coordinates coords = mythicLocation.clone().applySettings(this);
+		for (Entry<String, Coordinates> entry : mythicLocations.entrySet()) {
+			Coordinates coords = entry.getValue().clone().applySettings(this);
 			Location loc = coords.toLocation();
 			loc.setWorld(world);
 			loc.add(-x - rotateOffset[0] - flipOffset[0],
@@ -481,6 +524,21 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
             case WEST: bmeta.setFacing(BlockFace.EAST);
             }
             b.setBlockData(bmeta);
+
+			loc.add(0, 1, 0);
+			Block signBlock = loc.getBlock();
+			signBlock.setType(Material.OAK_SIGN);
+			Rotatable signData = (Rotatable) signBlock.getBlockData();
+			switch (coords.getDirection()) {
+			case NORTH: signData.setRotation(BlockFace.NORTH); break;
+			case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
+			case EAST: signData.setRotation(BlockFace.EAST); break;
+			case WEST: signData.setRotation(BlockFace.WEST); break;
+			}
+			signBlock.setBlockData(signData);
+			Sign sign = (Sign) signBlock.getState();
+			sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text(entry.getKey()));
+			sign.update();
 		}
 
 		if (piece.getEntrances() != null) {

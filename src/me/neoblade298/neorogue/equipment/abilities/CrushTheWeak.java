@@ -75,7 +75,7 @@ public class CrushTheWeak extends Equipment {
 			ActionMeta am = new ActionMeta();
 			
 			// Track injury applied and grant permanent shields when threshold is reached
-			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+			data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
 				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
 				if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
 				
@@ -89,7 +89,7 @@ public class CrushTheWeak extends Equipment {
 			});
 			
 			// Deal additional damage to injured enemies based on current shields
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			data.addTrigger(id + "-bonus", Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
 				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
 				LivingEntity target = ev.getTarget();
 				FightData fd = FightInstance.getFightData(target);
@@ -116,7 +116,7 @@ public class CrushTheWeak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRICK,
-				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(500) + " damage and applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.white(5) + " times. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
 				DescUtil.yellow(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
 				"Enemies with " + GlossaryTag.INJURY.tag(this) + " take " + 
 				DescUtil.yellow((int)(damagePercent * 100) + "%") + " of your current " + 

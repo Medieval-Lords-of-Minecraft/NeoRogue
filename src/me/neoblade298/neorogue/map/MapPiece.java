@@ -66,7 +66,10 @@ public class MapPiece {
 				MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
 				i = 0;
 				for (String spawnerKey : spawnerSets.getKeys()) {
-					spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+					spawners[i] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+					Coordinates coords = spawners[i].getCoordinates();
+					coords.setOriginalDirection(coords.getOriginalDirection().flip(false));
+					i++;
 				}
 				this.spawnerSets.add(spawners);
 			}
@@ -77,7 +80,10 @@ public class MapPiece {
 			initialSpawns = new MapSpawner[sec.getKeys().size()];
 			i = 0;
 			for (String spawnerKey : sec.getKeys()) {
-				initialSpawns[i++] = new MapSpawner(sec.getSection(spawnerKey), this);
+				initialSpawns[i] = new MapSpawner(sec.getSection(spawnerKey), this);
+				Coordinates coords = initialSpawns[i].getCoordinates();
+				coords.setOriginalDirection(coords.getOriginalDirection().flip(false));
+				i++;
 			}
 		}
 		
@@ -86,7 +92,9 @@ public class MapPiece {
 			this.spawns = new Coordinates[spawns.size()];
 			i = 0;
 			for (String line : spawns) {
-				this.spawns[i] = new Coordinates(this, line, true);
+				Coordinates coords = new Coordinates(this, line, true);
+				coords.setOriginalDirection(coords.getOriginalDirection().flip(false));
+				this.spawns[i] = coords;
 				i++;
 			}
 		}
@@ -94,7 +102,9 @@ public class MapPiece {
 		sec = cfg.getSection("mythiclocations");
 		if (sec != null) {
 			for (String key : sec.getKeys()) {
-				mythicLocations.put(key, new Coordinates(this, sec.getString(key), true));
+				Coordinates coords = new Coordinates(this, sec.getString(key), true);
+				coords.setOriginalDirection(coords.getOriginalDirection().flip(false));
+				mythicLocations.put(key, coords);
 			}
 		}
 		
