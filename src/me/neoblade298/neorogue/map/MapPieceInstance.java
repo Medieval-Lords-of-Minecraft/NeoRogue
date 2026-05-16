@@ -453,14 +453,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Location loc = coords.toLocation();
 			loc.setWorld(world);
 			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					y,
+					y - 1,
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			Block b = loc.getBlock();
-			if (b.getType().isSolid()) {
+			Location lookAbove = loc.clone().add(0, 1, 0);
+			if (lookAbove.getBlock().getType().isSolid()) {
 				Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
 				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-				Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
 			}
 			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
 
@@ -500,14 +501,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Location loc = coords.toLocation();
 			loc.setWorld(world);
 			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					y,
+					y - 1,
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			Block b = loc.getBlock();
-			if (b.getType().isSolid()) {
+			Location lookAbove = loc.clone().add(0, 1, 0);
+			if (lookAbove.getBlock().getType().isSolid()) {
 				Util.msg(p, "<red>A mythic location appears to be inside a block.");
 				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-				Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
 			}
 			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
 
