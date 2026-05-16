@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -32,7 +33,7 @@ public class Exertion extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.5);
-	private int damage, selfDmg = 3;
+	private int damage, corruption = 1;
 
 	public Exertion(boolean isUpgraded) {
 		super(ID, "Exertion", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
@@ -61,8 +62,7 @@ public class Exertion extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				if (ent.getHealth() <= 0) kill = true;
 			}
-			if (!kill) FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
-						DamageStatTracker.of(id + slot, this)), p);
+			if (!kill) data.applyStatus(StatusType.CORRUPTION, data, corruption, -1);
 			return TriggerResult.keep();
 		}));
 	}
@@ -71,8 +71,8 @@ public class Exertion extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-						+ " to all enemies in a cone in front of you, but " + "deal "
-						+ GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself if you don't kill " +
+						+ " to all enemies in a cone in front of you, but gain "
+						+ GlossaryTag.CORRUPTION.tag(this, corruption, false) + " if you don't kill " +
 						"at least one enemy with it.");
 	}
 }
