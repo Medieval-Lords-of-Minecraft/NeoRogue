@@ -54,7 +54,6 @@ public class EquipmentChoiceInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		Inventory iclicked = e.getClickedInventory();
-		if (spectator != null) return;
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 		
@@ -64,6 +63,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 			prev.openInventory();
 			return;
 		}
+		if (spectator != null) return;
 		
 		if (slot < equips.size()) {
 			if (e.isRightClick()) {
