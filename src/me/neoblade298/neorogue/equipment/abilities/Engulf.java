@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -45,7 +46,7 @@ public class Engulf extends Equipment {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = isUpgraded ? 60 : 90;
-		thres = isUpgraded ? 300 : 500;
+		thres = isUpgraded ? 200 : 300;
 	}
 
 	public static Equipment get() {
@@ -72,6 +73,10 @@ public class Engulf extends Equipment {
 				public void run() {
 					data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 						DealDamageEvent ev2 = (DealDamageEvent) in2;
+						// Don't count Engulf's own damage
+						for (DamageSlice slice : ev2.getMeta().getSlices()) {
+							if (slice.getTracker().getId().equals(id + slot)) return TriggerResult.keep();
+						}
 						HashMap<DamageType, Double> dmg = ev2.getMeta().getPostMitigationDamage();
 						if (!dmg.containsKey(DamageType.FIRE))
 							return TriggerResult.keep();
@@ -106,7 +111,7 @@ public class Engulf extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage from other sources, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ".");
 	}

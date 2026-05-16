@@ -66,9 +66,10 @@ public class Hullbreaker extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, in) -> {
+			RightClickHitEvent ev = (RightClickHitEvent) in;
+			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			sc.play(p, p);
-			RightClickHitEvent ev = (RightClickHitEvent) in;
 			LivingEntity trg = ev.getTarget();
 			FightData fd = FightInstance.getFightData(trg);
 			weaponSwingAndDamage(p, data, trg);
