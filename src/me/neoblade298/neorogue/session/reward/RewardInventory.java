@@ -63,7 +63,7 @@ public class RewardInventory extends CoreInventory {
 					Component.text("Clear remaining rewards", NamedTextColor.RED),
 					Component.text("Gain ", NamedTextColor.GRAY)
 							.append(Component.text(PotOfGreed.GOLD + " coins ", NamedTextColor.YELLOW))
-							.append(Component.text("for each reward skipped")));
+							.append(Component.text("for each non-coin reward skipped")));
 		}
 		else {
 			contents[8] = CoreInventory.createButton(Material.RED_WOOL,

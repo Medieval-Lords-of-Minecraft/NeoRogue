@@ -19,7 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AvatarState extends Equipment {
 	private static final String ID = "AvatarState";
-	private static final int ACTIVATION_THRES = 2;
+	private static final int ACTIVATION_THRES = 5;
 	private double mreg, hreg;
 	private int shields;
 
@@ -44,11 +44,14 @@ public class AvatarState extends Equipment {
 
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
-			data.addManaRegen(mreg);
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
+			data.addManaRegen(mreg, 200);
 			data.addSimpleShield(p.getUniqueId(), shields, 200);
 
+			ActionMeta healthMeta = new ActionMeta();
 			data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				healthMeta.addCount(1);
+				if (healthMeta.getCount() > 200) return TriggerResult.remove();
 				data.addHealth(hreg);
 				return TriggerResult.keep();
 			});
@@ -61,8 +64,8 @@ public class AvatarState extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE,
 				GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(ACTIVATION_THRES)
-						+ " abilities. Increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
+						+ " abilities while above 50% mana. Increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
 						+ DescUtil.yellow(hreg) + ", and gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
-						+ " [" + DescUtil.white("10s") + "].");
+						+ " [" + DescUtil.white("10s") + "] (all last 10s).");
 	}
 }

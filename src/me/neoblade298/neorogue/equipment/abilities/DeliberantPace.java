@@ -53,7 +53,7 @@ public class DeliberantPace extends Equipment {
 			if (count.addCount(1) < 3) return TriggerResult.keep();
 
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			String buffId = UUID.randomUUID().toString();
 			ActionMeta am = new ActionMeta();

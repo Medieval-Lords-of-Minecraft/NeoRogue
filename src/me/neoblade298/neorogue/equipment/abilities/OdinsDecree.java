@@ -59,7 +59,7 @@ public class OdinsDecree extends Equipment {
 			if (data.getMana() < data.getMaxMana() * 0.5) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta am = new ActionMeta();
 			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {

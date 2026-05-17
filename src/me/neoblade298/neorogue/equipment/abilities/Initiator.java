@@ -52,7 +52,7 @@ public class Initiator extends Equipment {
 			if (am.getCount() < 250) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			String buffId = UUID.randomUUID().toString();
 			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {

@@ -74,7 +74,7 @@ public class BreakingPoint extends Equipment {
 						Player p = data.getPlayer();
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
-						Util.msg(p, hoverable.append(Component.text(" was refreshed", NamedTextColor.GRAY)));
+						Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was refreshed", NamedTextColor.GRAY)));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				data.addTask(task);
@@ -95,7 +95,7 @@ public class BreakingPoint extends Equipment {
 				Player p = data.getPlayer();
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this)));
 				Sounds.blazeDeath.play(p, p);
-				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();

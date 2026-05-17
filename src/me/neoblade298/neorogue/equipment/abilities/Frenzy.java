@@ -53,7 +53,7 @@ public class Frenzy extends Equipment {
 
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.WEAPON_SWING, (pdata2, in2) -> {
 				int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);

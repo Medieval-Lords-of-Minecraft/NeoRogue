@@ -31,8 +31,8 @@ public class HeatRising extends Equipment {
 	
 	public HeatRising(boolean isUpgraded) {
 		super(ID, "Heat Rising", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 15, 0));
-		mult = isUpgraded ? 0.5 : 0.3;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
+		mult = isUpgraded ? 0.3 : 0.2;
 		multDisplay = (int) (mult * 100);
 		corr = 2;
 	}
@@ -52,7 +52,7 @@ public class HeatRising extends Equipment {
 				public void run() {
 					Sounds.fire.play(p, p);
 					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)), 200);
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)), -1);
 				}
 			});
 			pc.play(p, p);
@@ -65,6 +65,6 @@ public class HeatRising extends Equipment {
 		item = createItem(Material.TORCHFLOWER,
 				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before applying " +
 				GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself and increase your " + GlossaryTag.FIRE.tag(this) + " damage by "
-						+ DescUtil.yellow(multDisplay + "%") + " [<white>10s</white>].");
+						+ DescUtil.yellow(multDisplay + "%") + " permanently.");
 	}
 }

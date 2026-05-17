@@ -74,7 +74,7 @@ public class Mahoraga extends Equipment {
 					public void run() {
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
-						Util.msg(p, hoverable.append(Component.text(" was refreshed")));
+						Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was refreshed")));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				data.addTask(task);

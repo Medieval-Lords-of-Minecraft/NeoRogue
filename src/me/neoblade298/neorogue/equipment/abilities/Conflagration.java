@@ -75,7 +75,7 @@ public class Conflagration extends Equipment {
 
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_KILL, (pdata2, in2) -> {
 				PreKillEvent ev2 = (PreKillEvent) in2;

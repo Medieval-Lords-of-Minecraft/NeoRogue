@@ -50,7 +50,7 @@ public class LordOfTheNight extends Equipment {
 			if (am.getCount() < 500) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, inputs) -> {
 				int stealthStacks = data.getStatus(StatusType.STEALTH).getStacks();

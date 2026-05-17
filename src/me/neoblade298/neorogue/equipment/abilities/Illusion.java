@@ -92,7 +92,7 @@ public class Illusion extends Equipment {
 
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
 			LinkedList<Location> locationQueue = new LinkedList<Location>();

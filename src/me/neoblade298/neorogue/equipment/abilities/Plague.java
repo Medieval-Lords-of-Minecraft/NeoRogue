@@ -53,7 +53,7 @@ public class Plague extends Equipment {
 			if (am.getCount() < 3) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			PlagueInstance inst = new PlagueInstance(ID, slot, this);
 			data.addTask(new BukkitRunnable() {

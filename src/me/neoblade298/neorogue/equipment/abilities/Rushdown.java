@@ -44,7 +44,7 @@ public class Rushdown extends Equipment {
 				public void run() {
 					Player p = data.getPlayer();
 					data.addStaminaRegen(-inc);
-					Util.msg(p, hoverable.append(Component.text(" has expired", NamedTextColor.GRAY)));
+					Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" has expired", NamedTextColor.GRAY)));
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L * secs));
 

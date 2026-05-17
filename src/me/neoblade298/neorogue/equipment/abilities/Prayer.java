@@ -48,7 +48,7 @@ public class Prayer extends Equipment {
 			if (am.addCount(ev.getStacks()) > thres && !am.getBool()) {
 				Player p = data.getPlayer();
 				FightInstance.giveHeal(p, heal, p);
-				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 				Sounds.success.play(p, p);
 				am.setBool(true);
 			}

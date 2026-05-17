@@ -80,6 +80,7 @@ public enum Trigger {
 		case LEFT_CLICK_HIT:
 		case RIGHT_CLICK:
 		case RIGHT_CLICK_HIT:
+		case VANILLA_PROJECTILE:
 			return true;
 		default:
 			return false;

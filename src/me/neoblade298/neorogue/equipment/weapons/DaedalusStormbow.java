@@ -165,6 +165,6 @@ public class DaedalusStormbow extends Bow {
 		item = createItem(Material.BOW,
 				"Passive. Increase basic attack range by " + DescUtil.white(4) + " and fire an extra shot on basic attack launch. " +
 				"Every " + DescUtil.yellow(threshold) + " times you deal projectile damage, increases the damage your extra shots " +
-				"deal by " + DescUtil.yellow(EXTRA_SHOT_DAMAGE_INCREMENT) + ".");
+				"deal by " + DescUtil.white(EXTRA_SHOT_DAMAGE_INCREMENT) + ".");
 	}
 }

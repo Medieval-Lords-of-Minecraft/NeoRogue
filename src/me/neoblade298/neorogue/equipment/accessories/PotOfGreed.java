@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.reward.CoinsReward;
 
 public class PotOfGreed extends Artifact {
 	public static final String ID = "PotOfGreed";
@@ -31,7 +32,7 @@ public class PotOfGreed extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each reward you skip (by clearing), gain " + DescUtil.white(GOLD) + " gold.");
+		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each non-coin reward you skip (by clearing), gain " + DescUtil.white(GOLD) + " gold.");
 	}
 
 	@Override
@@ -50,8 +51,13 @@ public class PotOfGreed extends Artifact {
 		data.addTrigger(id, SessionTrigger.CLEAR_REWARDS, (pdata, in) -> {
 			Player p = data.getPlayer();
 			ClearRewardsEvent ev = (ClearRewardsEvent) in;
+			int skippedNonCoinRewards = (int) ev.getRewards().stream()
+					.filter(reward -> !(reward instanceof CoinsReward))
+					.count();
+			if (skippedNonCoinRewards <= 0) return;
+
 			Sounds.success.play(p, p, Audience.ORIGIN);
-			int coins = GOLD * ev.getRewards().size();
+			int coins = GOLD * skippedNonCoinRewards;
 			data.addCoins(coins);
 			Util.msg(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.yellow(coins) + " coins")));
 		});

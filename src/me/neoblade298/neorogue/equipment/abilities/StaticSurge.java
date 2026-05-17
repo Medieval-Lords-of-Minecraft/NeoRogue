@@ -52,7 +52,7 @@ public class StaticSurge extends Equipment {
 
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ActionMeta sprintMeta = new ActionMeta();
 			data.addTrigger(id + "-sprint", Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {

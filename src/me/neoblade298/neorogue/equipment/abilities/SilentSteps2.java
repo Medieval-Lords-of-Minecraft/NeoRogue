@@ -51,7 +51,7 @@ public class SilentSteps2 extends Equipment {
 			if (am.getCount() < 2) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			data.addTrigger(id, Trigger.PRE_RECEIVE_STATUS, (pdata2, in2) -> {
 				PreApplyStatusEvent ev2 = (PreApplyStatusEvent) in2;

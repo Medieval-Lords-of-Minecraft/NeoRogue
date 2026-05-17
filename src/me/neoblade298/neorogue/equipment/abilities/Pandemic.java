@@ -73,7 +73,7 @@ public class Pandemic extends Equipment {
 			if (am.getCount() < 300) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 			String statusName = p.getName() + "-pandemic";
 
 			// Mark enemies on basic attack

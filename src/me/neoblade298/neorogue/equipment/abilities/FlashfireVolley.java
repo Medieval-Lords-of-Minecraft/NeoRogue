@@ -76,7 +76,7 @@ public class FlashfireVolley extends Equipment {
 				Sounds.explode.play(p, p);
 				
 				// Launch player upward
-				p.setVelocity(new Vector(0, 1, 0));
+				p.setVelocity(new Vector(0, 0.7, 0));
 				
 				// Deal AoE blunt damage and track hit enemies
 				HashSet<LivingEntity> hit = new HashSet<LivingEntity>();
@@ -99,7 +99,7 @@ public class FlashfireVolley extends Equipment {
 								proj.start(data);
 							}
 						}
-					}.runTaskLater(NeoRogue.inst(), 10 + (i + 1) * 3L)); // 3, 6, 9 tick delays
+					}.runTaskLater(NeoRogue.inst(), 5 + (i + 1) * 3L)); // 3, 6, 9 tick delays
 				}
 				
 				return TriggerResult.of(false, true);

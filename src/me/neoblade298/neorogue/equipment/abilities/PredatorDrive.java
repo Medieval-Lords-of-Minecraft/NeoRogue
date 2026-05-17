@@ -41,7 +41,7 @@ public class PredatorDrive extends Equipment {
 			if (castCount.addCount(1) < 4) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ItemStack icon = item.clone();
 			ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
