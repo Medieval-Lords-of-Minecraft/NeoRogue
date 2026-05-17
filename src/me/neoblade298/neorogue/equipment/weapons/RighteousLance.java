@@ -42,7 +42,7 @@ public class RighteousLance extends Equipment {
 	public RighteousLance(boolean isUpgraded) {
 		super(
 				ID, "Righteous Lance", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(80, 0.7, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(70, 0.7, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		sanct = isUpgraded ? 3 : 2;
 		dmgMult = isUpgraded ? 5 : 3;

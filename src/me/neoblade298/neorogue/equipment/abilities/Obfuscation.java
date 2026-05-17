@@ -27,7 +27,7 @@ public class Obfuscation extends Equipment {
 		super(ID, "Obfuscation", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(40, 20, 0, 0));
 		duration = isUpgraded ? 8 : 3;
-		insanityMult = isUpgraded ? 0.3 : 0.2;
+		insanityMult = isUpgraded ? 0.25 : 0.15;
 	}
 	
 	public static Equipment get() {

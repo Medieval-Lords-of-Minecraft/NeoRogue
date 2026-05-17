@@ -31,8 +31,8 @@ public class Rampage extends Equipment {
 	public Rampage(boolean isUpgraded) {
 		super(ID, "Rampage", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 6, 0));
-		damage = isUpgraded ? 300 : 200;
-		inc = isUpgraded ? 75 : 50;
+		damage = isUpgraded ? 250 : 175;
+		inc = isUpgraded ? 60 : 40;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}

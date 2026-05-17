@@ -24,9 +24,9 @@ public class HerculeanStrength extends Equipment {
 	public HerculeanStrength(boolean isUpgraded) {
 		super(ID, "Herculean Strength", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				strength = isUpgraded ? 6 : 4;
-				bers = isUpgraded ? 5 : 3;
-				conc = isUpgraded ? 5 : 3;
+				strength = isUpgraded ? 5 : 3;
+				bers = isUpgraded ? 4 : 2;
+				conc = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

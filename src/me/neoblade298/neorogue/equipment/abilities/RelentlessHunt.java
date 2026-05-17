@@ -49,7 +49,7 @@ public class RelentlessHunt extends Equipment {
 		super(ID, "Relentless Hunt", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, isUpgraded ? 10 : 20, tp.range));
 		shields = isUpgraded ? 3 : 2;
-		damageIncrease = isUpgraded ? 0.3 : 0.2;
+		damageIncrease = isUpgraded ? 0.25 : 0.15;
 	}
 	
 	public static Equipment get() {

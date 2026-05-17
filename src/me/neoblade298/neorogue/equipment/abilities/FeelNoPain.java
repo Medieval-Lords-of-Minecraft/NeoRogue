@@ -32,7 +32,7 @@ public class FeelNoPain extends Equipment {
 	public FeelNoPain(boolean isUpgraded) {
 		super(ID, "Feel No Pain", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		reduc = isUpgraded ? 0.08 : 0.05;
+		reduc = isUpgraded ? 0.07 : 0.04;
 		reducString = (int) (reduc * 100);
 	}
 	

@@ -24,8 +24,8 @@ public class GuardianSpirit extends Equipment {
 	public GuardianSpirit(boolean isUpgraded) {
 		super(ID, "Guardian Spirit", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				shields = isUpgraded ? 6 : 4;
-				sanct = isUpgraded ? 5 : 3;
+				shields = isUpgraded ? 5 : 3;
+				sanct = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

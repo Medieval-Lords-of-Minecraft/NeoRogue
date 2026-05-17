@@ -38,7 +38,7 @@ public class LaceratingWave extends Equipment {
 	public LaceratingWave(boolean isUpgraded) {
 		super(ID, "Lacerating Wave", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
-		damage = isUpgraded ? 60 : 40;
+		damage = isUpgraded ? 50 : 35;
 		rendThreshold = isUpgraded ? 25 : 40;
 	}
 	

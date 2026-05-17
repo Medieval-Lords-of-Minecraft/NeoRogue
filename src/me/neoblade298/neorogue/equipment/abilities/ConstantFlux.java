@@ -33,7 +33,7 @@ public class ConstantFlux extends Equipment {
 	public ConstantFlux(boolean isUpgraded) {
 		super(ID, "Constant Flux", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
-		damagePerStack = isUpgraded ? 15 : 10;
+		damagePerStack = isUpgraded ? 12 : 8;
 	}
 
 	public static Equipment get() {

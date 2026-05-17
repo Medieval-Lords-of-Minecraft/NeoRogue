@@ -34,8 +34,8 @@ public class Finale extends Equipment {
 		super(ID, "Finale", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 30 : 40, 12, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
-		damage = 360;
-		bonusDamage = 50;
+		damage = 300;
+		bonusDamage = 40;
 		thres = isUpgraded ? 20 : 30;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);

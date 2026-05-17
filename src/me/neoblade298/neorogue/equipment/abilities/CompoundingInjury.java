@@ -40,7 +40,7 @@ public class CompoundingInjury extends Equipment {
 		super(ID, "Compounding Injury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 				thres = isUpgraded ? 20 : 30;
-				mult = isUpgraded ? 1.5 : 1;
+				mult = isUpgraded ? 1.25 : 0.8;
 				multStr = (int) (mult * 100);
 	}
 	

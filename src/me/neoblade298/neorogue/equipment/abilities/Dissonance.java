@@ -24,8 +24,8 @@ public class Dissonance extends Equipment {
 	public Dissonance(boolean isUpgraded) {
 		super(ID, "Dissonance", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 20, 0));
-		mana = isUpgraded ? 9 : 6;
-		shields = isUpgraded ? 5 : 3;
+		mana = isUpgraded ? 8 : 5;
+		shields = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

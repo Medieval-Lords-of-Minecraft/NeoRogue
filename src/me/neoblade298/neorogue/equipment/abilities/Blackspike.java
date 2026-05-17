@@ -37,7 +37,7 @@ public class Blackspike extends Equipment {
 	public Blackspike(boolean isUpgraded) {
 		super(ID, "Blackspike", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(25, 10, 10, 8));
-		damage = isUpgraded ? 225 : 150;
+		damage = isUpgraded ? 190 : 125;
 	}
 	
 	public static Equipment get() {

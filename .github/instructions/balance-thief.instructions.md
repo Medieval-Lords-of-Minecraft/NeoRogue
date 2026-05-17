@@ -123,39 +123,39 @@ description: "Thief balance reference. Use when: evaluating thief ability costs/
 
 | Equipment | Mana | Stam | CD(s) | Effect (Base→Upgraded) | Type |
 |-----------|------|------|-------|------------------------|------|
-| Analyze | — | — | — | 1 stack/s (max 5); basic: 50→75 dmg + 4 shields/stack | Passive |
-| Assassinate | 0 | 30→40 | 12 | 180 piercing; kill refunds stam + resets CD | Active |
-| Blackspike | 25 | 10 | 8 | 3×200→300 dark (cone projectiles) | Active |
-| Blight Tendril | — | — | 4 | Auto-fire: 150→200 poison; basic on mark: ×3 poison (range 15) | Passive |
-| Constant Flux | 0 | 15 | 2 | Dash + 10→15 phys/stack (max 5); stacks expire 5s | Active |
+| Analyze | — | — | — | 1 stack/s (max 5); basic: 40→65 dmg + 3 shields/stack | Passive |
+| Assassinate | 0 | 30→40 | 12 | 150 piercing; kill refunds stam + resets CD | Active |
+| Blackspike | 25 | 10 | 8 | 3×125→190 dark (cone projectiles) | Active |
+| Blight Tendril | — | — | 4 | Auto-fire: poison proj; basic on mark: ×3 poison (range 15) | Passive |
+| Constant Flux | 0 | 15 | 2 | Dash + 8→12 phys/stack (max 5); stacks expire 5s | Active |
 | Corpse Explosion | 0 | 0 | 0 | Poison kills: 2 zones 50→75 poison/s (5s, 5 AoE) | Passive |
-| Danger Close | — | — | — | Each evade: +6→10% phys damage (permanent stacking) | Passive |
-| Dread | — | — | — | After 10 stealth: perm stealth + Speed + 40→60% dmg | Passive |
+| Danger Close | — | — | — | Each evade: +5→8% phys damage (permanent stacking) | Passive |
+| Dread | — | — | — | After 10 stealth: perm stealth + Speed + 30→50% dmg | Passive |
 | Egoism | — | — | 5 | On evade: heal 2→3, stealth 1→2 (10s), Speed (5s) | Passive |
-| Finale | 0 | 40→30 | 12 | 360 + 50 per 30→20 stam spent = piercing | Active |
-| Flash Mark | 30 | 10 | 8 | 180→250 lightning + 10→15 electrified (projectile) | Active |
-| Flash Spark | 20 | 0 | 12 | 150→200 lightning (delay) + 4→6 electrified (5 AoE) | Active |
-| Lord of the Night | — | — | — | +20→30% general dmg per stealth stack | Passive |
-| Mastermind | — | — | — | +20 phys; +20→30% poison/elec stacks → 40→60% at 20s | Passive |
-| Obfuscation | — | — | — | +1 stealth/evade + 3→8s dur; +20→30% insanity | Passive |
-| Odin's Decree | — | — | 2 | Auto: 100→150 lightning + 8→12 elec (50→100% chance, range 20) | Passive |
-| Saboteur | — | — | — | +3 focus; +10→15% trap/close dmg; +20→30% injury | Passive |
-| Shadow Partner | 0 | 0 | 1 | Shadow 2s behind; fires on basic: 150→250 dark | Passive |
-| Spark Trap | 0 | 15 | 10 | Place trap; recast: teleport + 200→300 line + 100 AoE (4 AoE) | Active |
-| Speed Blitz | 15 | 0 | 15→12 | 1s charge → 5×80→120 piercing (auto-target, range 20) | Active |
-| Static Surge | — | — | — | After 1s sprint: basics +30→50 lightning + 5→8 elec | Passive |
-| Tempest | 0 | 0 | 0 | On elec status dmg: AoE 400→600 lightning + 30→50 elec (5 AoE) | Passive |
-| Thrive in Chaos | — | — | — | Every 3s: stealth per 10→7 total enemy insanity (range 7) | Passive |
-| Thunderclap & Flash | 0 | 15 | 10 | On evade: dash + 150→200 lightning; cast: line 100→150 (4 line) | Active |
-| Twilight | — | — | — | On stealth: +3→5s dur + 1→2 evade (8s) + 10 stam | Passive |
-| Umbral Volley | 0 | 0 | 3 int | On basic: 5×60→80 dark projectiles (cone, delay, range 4) | Passive |
-| Wall Jump | 0 | 25 | 12 | 2-stage: flip → recast: dash + 200→300 piercing line (4 line) | Active |
-| WE: Darkness | — | — | — | Every 3rd basic: 200→300 dark projectile | Passive |
+| Finale | 0 | 40→30 | 12 | 300 + 40 per 30→20 stam spent = piercing | Active |
+| Flash Mark | 30 | 10 | 8 | 150→210 lightning + 8→12 electrified (projectile) | Active |
+| Flash Spark | 20 | 0 | 12 | 125→190 lightning (delay) + 5→7 electrified (5 AoE) | Active |
+| Lord of the Night | — | — | — | +15→25% general dmg per stealth stack | Passive |
+| Mastermind | — | — | — | +20 phys; +15→25% poison/elec stacks → 30→50% at 20s | Passive |
+| Obfuscation | — | — | — | +1 stealth/evade + 3→8s dur; +15→25% insanity | Passive |
+| Odin's Decree | — | — | 2 | Auto: 85→125 lightning + 6→10 elec (50→100% chance, range 20) | Passive |
+| Saboteur | — | — | — | +3 focus; +8→12% trap/close dmg; +15→25% injury | Passive |
+| Shadow Partner | 0 | 0 | 1 | Shadow 2s behind; fires on basic: 125→210 dark | Passive |
+| Spark Trap | 0 | 15 | 10 | Place trap; recast: teleport + 175→250 line + 85 AoE (4 AoE) | Active |
+| Speed Blitz | 15 | 0 | 15→12 | 1s charge → 5×35→50 piercing (auto-target, range 20) | Active |
+| Static Surge | — | — | — | After 1s sprint: basics +25→40 lightning + 4→7 elec | Passive |
+| Tempest | 0 | 0 | 0 | On elec status dmg: AoE 340→500 lightning + 30→50 elec (5 AoE) | Passive |
+| Thrive in Chaos | — | — | — | Every 3s: stealth per 12→8 total enemy insanity (range 7) | Passive |
+| Thunderclap & Flash | 0 | 15 | 10 | On evade: dash + 125→175 lightning; cast: line 85→125 (4 line) | Active |
+| Twilight | — | — | — | On stealth: +2→4s dur + 1→2 evade (8s) + 8 stam | Passive |
+| Umbral Volley | 0 | 0 | 3 int | On basic: 5×50→65 dark projectiles (cone, delay, range 4) | Passive |
+| Wall Jump | 0 | 25 | 12 | 2-stage: flip → recast: dash + 175→250 piercing line (4 line) | Active |
+| WE: Darkness | — | — | — | Every 3rd basic: 175→250 dark projectile | Passive |
 
 ### Rare Baselines
 - Cost: 0–30 mana, 0–40 stamina
 - Cooldown: 2–15s (short burst windows)
-- Direct damage: 150–600+ (single target burst), 400–600 (passive procs)
+- Direct damage: 125–500 (single target burst), 340–500 (passive procs)
 - Many are combined versions of uncommon passives or scaling mechanics
 
 ---
@@ -204,9 +204,9 @@ description: "Thief balance reference. Use when: evaluating thief ability costs/
 ### Rare (3)
 | Weapon | Damage | Speed | Type | Special |
 |--------|--------|-------|------|---------|
-| Iron Throwing Knife | 50→60 | 1.25 | Piercing | Ranged; grants stealth 5→10s |
-| Noxian Falx | — | — | — | Poison synergy |
-| Toxic Razor | — | — | — | Poison synergy |
+| Iron Throwing Knife | 45→50 | 1.25 | Piercing | Ranged; grants stealth 5→10s |
+| Noxian Falx | 45→55 | — | Slashing | Poison synergy |
+| Toxic Razor | 45 | 3.0 | Slashing | +4/threshold poison synergy |
 
 ### Epic (1)
 | Weapon | Damage | Speed | Type | Special |
@@ -218,7 +218,7 @@ description: "Thief balance reference. Use when: evaluating thief ability costs/
 |--------|-------|-----|
 | Common | 15–35 | 23 |
 | Uncommon | 30–60 | 42 |
-| Rare | 50–60 | 55 |
+| Rare | 45–55 | 48 |
 | Epic | 75–90 | 83 |
 
 ---
@@ -243,8 +243,8 @@ description: "Thief balance reference. Use when: evaluating thief ability costs/
 ### Rare (3)
 | Accessory | Effect |
 |-----------|--------|
-| Cobra Crest | Poison dmg: slow + 30→50 magical vuln (3s) |
-| Plaguebearer | On poison apply: 7→10 shields (8s) |
+| Cobra Crest | Poison dmg: slow + 25→40 magical vuln (3s) |
+| Plaguebearer | On poison apply: 6→8 shields (8s) |
 | Ring of Night | Start with 1→2 permanent stealth |
 
 ---
@@ -262,7 +262,7 @@ description: "Thief balance reference. Use when: evaluating thief ability costs/
 |--------|---------------|-----------------|----------------|
 | Common | 80–150 | 130–240 | 40–60/tick |
 | Uncommon | 150–450 | 200–450 | 60–150/tick |
-| Rare | 180–600+ | 400–900 | 100–200/tick |
+| Rare | 150–500 | 340–570 | 85–175/tick |
 | Epic | 200–1050+ | 750+ | 150–350 per proc |
 
 ### Upgrade Patterns

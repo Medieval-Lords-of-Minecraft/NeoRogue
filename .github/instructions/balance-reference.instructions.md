@@ -206,12 +206,12 @@ Costs should be evaluated against the expected pool at the tier where the rarity
 
 | Equipment | Mana | Stam | CD(s) | Damage | Shields | Notes |
 |-----------|------|------|-------|--------|---------|-------|
-| Mighty Swing | 0 | 25→35 | 10 | 300 | - | Conditional (airborne) |
-| Cull | 0 | 50 | 15 | 200→300 | - | Stacking multiplier |
-| Fortify | 0 | 30 | 5→7 | 200 | - | + fortitude |
-| Fortress | 0 | 0 | 0 | - | 40→60 | Passive recurring |
+| Mighty Swing | 0 | 25→35 | 10 | 250 | - | Conditional (airborne) |
+| Cull | 0 | 50 | 15 | 175→260 | - | Stacking multiplier |
+| Fortify | 0 | 30 | 5→7 | 175 | - | + fortitude |
+| Fortress | 0 | 0 | 0 | - | 35→50 | Passive recurring |
 
-**Baseline:** 0 mana, 25–100 stamina, 5–40s CD, 200–300 damage
+**Baseline:** 0 mana, 25–80 stamina, 5–40s CD, 150–500 damage
 
 ---
 
@@ -241,11 +241,11 @@ Costs should be evaluated against the expected pool at the tier where the rarity
 
 | Equipment | Mana | Stam | CD(s) | Damage | Notes |
 |-----------|------|------|-------|--------|-------|
-| Assassinate | 0 | 30→40 | 12 | 180 | Refund on kill |
-| Blackspike | 25 | 10 | 8 | 200→300 (×3) | Cone spread |
-| Finale | 0 | 30→40 | 12 | 360 + 50/stam | Scaling burst |
+| Assassinate | 0 | 30→40 | 12 | 150 | Refund on kill |
+| Blackspike | 25 | 10 | 8 | 125→190 (×3) | Cone spread |
+| Finale | 0 | 30→40 | 12 | 300 + 40/stam | Scaling burst |
 
-**Baseline:** 0–25 mana, 10–40 stamina, 8–12s CD, 180–600+
+**Baseline:** 0–25 mana, 10–40 stamina, 8–12s CD, 125–500
 
 ---
 
@@ -274,9 +274,9 @@ Costs should be evaluated against the expected pool at the tier where the rarity
 
 | Equipment | Mana | Stam | CD(s) | Damage | Notes |
 |-----------|------|------|-------|--------|-------|
-| Hellfire | 0 | 0 | 0 | 80→160 | Passive on Burn targets |
-| Conflagration | 0 | 0 | 0 | 150 + burn mult (1.0→1.5×) | On-kill chain |
-| Blizzard | 0 | 0 | 0 | 60→90 per tick (4 rad) | Frost threshold |
+| Hellfire | 0 | 0 | 0 | 65→100 | Passive on fire hits |
+| Conflagration | 0 | 0 | 0 | 125 + burn mult (0.8→1.2×) | On-kill chain |
+| Blizzard | 0 | 0 | 0 | 50→75 per tick (4 rad) | Frost threshold |
 
 ---
 
@@ -304,9 +304,9 @@ Costs should be evaluated against the expected pool at the tier where the rarity
 
 | Equipment | Mana | Stam | CD(s) | Damage | Notes |
 |-----------|------|------|-------|--------|-------|
-| Charge Bolt | 20 | 0 | 8 | 200→300 | + mana CDR |
-| Dying Star | 20 | 50 | 30 | 300→450 | Big nuke, high cost |
-| Energy Beam | 25 | 10 | 8 | 70→100 | Reduces next ability cost |
+| Charge Bolt | 20 | 0 | 8 | 175→250 | + mana CDR |
+| Dying Star | 20 | 50 | 30 | 250→375 | Big nuke, high cost |
+| Energy Beam | 25 | 10 | 8 | 60→85 | Reduces next ability cost |
 
 ---
 
@@ -316,8 +316,8 @@ Costs should be evaluated against the expected pool at the tier where the rarity
 |--------|-----------------|----------------|--------------|-------------|
 | Common | 25→35 | 20→25 | 35→45 | 20→30 |
 | Uncommon | 45→50 | 25→30 | 50 | 35→45 |
-| Rare | 65→80 | — | — | — |
-| Epic | 100 | — | — | — |
+| Rare | 55→175 | 45→55 | 15→60 | 35→55 |
+| Epic | 100 | 75→90 | — | 80–100 |
 
 **Scaling (tier to tier):** ~1.4–1.8× per rarity step
 
@@ -375,7 +375,7 @@ Players scale mana/stamina regen throughout a run via shards (post-fight) and cl
 |--------|------------------------|---------|---------------|--------------|----------|
 | Common | 50–160 | 4–30 | 6–30 | 10–20 total | 5–20s |
 | Uncommon | 80–400 | 35–50 | 60–90 | 20–40 total* | 8–25s |
-| Rare | 150–450 | 40–60 | — | 30–100 total* | 5–40s |
+| Rare | 125–500 | 35–50 | — | 30–80 total* | 5–40s |
 | Epic | 150–200 (passive) | 60+ | — | Often 0 (passive) | — |
 
 *Costs marked with * are current values but not yet balanced. Intended to scale with player regen progression.

@@ -36,8 +36,8 @@ public class CrushTheWeak extends Equipment {
 	public CrushTheWeak(boolean isUpgraded) {
 		super(ID, "Crush the Weak", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		threshold = isUpgraded ? 15 : 20;
-		damagePercent = isUpgraded ? 0.6 : 0.4;
+		threshold = isUpgraded ? 18 : 25;
+		damagePercent = isUpgraded ? 0.5 : 0.35;
 	}
 	
 	public static Equipment get() {

@@ -26,9 +26,9 @@ public class ToxicRazor extends Equipment {
 	public ToxicRazor(boolean isUpgraded) {
 		super(ID, "Toxic Razor", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(50, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(45, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		threshold = isUpgraded ? 15 : 20;
-		bonus = 5;
+		bonus = 4;
 	}
 	
 	public static Equipment get() {

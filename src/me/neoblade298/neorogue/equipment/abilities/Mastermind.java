@@ -29,8 +29,8 @@ public class Mastermind extends Equipment {
 	public Mastermind(boolean isUpgraded) {
 		super(ID, "Mastermind", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		initialMult = isUpgraded ? 0.3 : 0.2;
-		finalMult = isUpgraded ? 0.6 : 0.4;
+		initialMult = isUpgraded ? 0.25 : 0.15;
+		finalMult = isUpgraded ? 0.5 : 0.3;
 	}
 	
 	public static Equipment get() {

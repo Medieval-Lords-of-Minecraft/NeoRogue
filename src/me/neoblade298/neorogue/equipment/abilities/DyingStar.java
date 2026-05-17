@@ -52,7 +52,7 @@ public class DyingStar extends Equipment {
 	public DyingStar(boolean isUpgraded) {
 		super(ID, "Dying Star", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 450 : 300;
+		damage = isUpgraded ? 375 : 250;
 		properties.add(PropertyType.DAMAGE, damage);
 	}
 	

@@ -27,9 +27,9 @@ public class AvalonianMace extends Equipment {
 	public AvalonianMace(boolean isUpgraded) {
 		super(
 				ID, "Avalonian Mace", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(100, 0.5, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(85, 0.5, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		mult = isUpgraded ? 8 : 5;
+		mult = isUpgraded ? 7 : 4;
 	}
 
 	@Override

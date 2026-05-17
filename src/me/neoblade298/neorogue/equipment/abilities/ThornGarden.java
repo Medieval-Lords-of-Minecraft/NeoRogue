@@ -33,7 +33,7 @@ public class ThornGarden extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		
-		thorns = isUpgraded ? 6 : 4;
+		thorns = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

@@ -42,8 +42,8 @@ public class OdinsDecree extends Equipment {
 	public OdinsDecree(boolean isUpgraded) {
 		super(ID, "Odin's Decree", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 150 : 100;
-		electrified = isUpgraded ? 12 : 8;
+		damage = isUpgraded ? 125 : 85;
+		electrified = isUpgraded ? 10 : 6;
 		chance = isUpgraded ? 1.0 : 0.5;
 	}
 	

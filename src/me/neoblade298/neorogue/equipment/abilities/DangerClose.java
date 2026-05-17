@@ -33,7 +33,7 @@ public class DangerClose extends Equipment {
 	public DangerClose(boolean isUpgraded) {
 		super(ID, "Danger Close", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damageIncrease = isUpgraded ? 0.10 : 0.06;
+		damageIncrease = isUpgraded ? 0.08 : 0.05;
 	}
 	
 	public static Equipment get() {

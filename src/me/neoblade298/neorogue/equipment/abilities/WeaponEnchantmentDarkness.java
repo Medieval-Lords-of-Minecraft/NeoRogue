@@ -36,7 +36,7 @@ public class WeaponEnchantmentDarkness extends Equipment {
 		super(ID, "Weapon Enchantment: Darkness", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 250 : 175;
 		slash.count(3).spread(0, 0).speed(0);
 		trail.count(15).spread(0.3, 0.3).speed(0.02);
 	}

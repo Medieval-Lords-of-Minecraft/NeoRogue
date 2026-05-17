@@ -28,7 +28,7 @@ public class PowerOverwhelming extends Equipment {
 	public PowerOverwhelming(boolean isUpgraded) {
 		super(ID, "Power Overwhelming", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		manaReduc = isUpgraded ? 30 : 20;
+		manaReduc = isUpgraded ? 25 : 15;
 	}
 
 	public static Equipment get() {

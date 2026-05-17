@@ -29,7 +29,7 @@ public class Fortress extends Equipment {
 	public Fortress(boolean isUpgraded) {
 		super(ID, "Fortress", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		shields = isUpgraded ? 60 : 40;
+		shields = isUpgraded ? 50 : 35;
 		refresh = 10;
 	}
 	

@@ -27,7 +27,7 @@ public class PredatorDrive extends Equipment {
 	public PredatorDrive(boolean isUpgraded) {
 		super(ID, "Predator Drive", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 			EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		threshold = isUpgraded ? 2 : 3;
+		threshold = isUpgraded ? 3 : 4;
 	}
 	
 	public static Equipment get() {

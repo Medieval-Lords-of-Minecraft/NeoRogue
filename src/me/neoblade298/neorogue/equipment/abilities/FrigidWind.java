@@ -43,8 +43,8 @@ public class FrigidWind extends Equipment {
 	public FrigidWind(boolean isUpgraded) {
 		super(ID, "Frigid Wind", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 15));
-		frost = isUpgraded ? 15 : 10;
-		damage = isUpgraded ? 150 : 100;
+		frost = isUpgraded ? 12 : 8;
+		damage = isUpgraded ? 125 : 85;
 		frostPerDamage = 10;
 	}
 	

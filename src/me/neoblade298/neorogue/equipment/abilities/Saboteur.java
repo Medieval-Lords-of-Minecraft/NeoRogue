@@ -30,8 +30,8 @@ public class Saboteur extends Equipment {
 	public Saboteur(boolean isUpgraded) {
 		super(ID, "Saboteur", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		damageBuff = isUpgraded ? 0.15 : 0.10;
-		injuryBuff = isUpgraded ? 0.30 : 0.20;
+		damageBuff = isUpgraded ? 0.12 : 0.08;
+		injuryBuff = isUpgraded ? 0.25 : 0.15;
 	}
 	
 	public static Equipment get() {

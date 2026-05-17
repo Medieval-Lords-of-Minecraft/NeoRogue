@@ -36,8 +36,8 @@ public class DeliberantPace extends Equipment {
 	public DeliberantPace(boolean isUpgraded) {
 		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		seconds = isUpgraded ? 4 : 5;
-		damagePerStack = isUpgraded ? 0.06 : 0.05; // 6% or 5%
+		seconds = isUpgraded ? 5 : 6;
+		damagePerStack = isUpgraded ? 0.05 : 0.04; // 5% or 4%
 	}
 
 	public static Equipment get() {

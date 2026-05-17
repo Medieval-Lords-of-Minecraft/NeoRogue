@@ -54,8 +54,8 @@ public class Conflagration extends Equipment {
 	public Conflagration(boolean isUpgraded) {
 		super(ID, "Conflagration", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.RANGE, tp.range));
-		damage = 150;
-		burnMult = isUpgraded ? 1.5 : 1.0;
+		damage = 125;
+		burnMult = isUpgraded ? 1.2 : 0.8;
 	}
 
 	public static Equipment get() {

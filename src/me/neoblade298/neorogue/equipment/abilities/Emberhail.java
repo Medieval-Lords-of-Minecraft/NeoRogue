@@ -28,8 +28,8 @@ public class Emberhail extends Equipment {
 	public Emberhail(boolean isUpgraded) {
 		super(ID, "Emberhail", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY);
-		damage = isUpgraded ? 30 : 20;
-		statusBuff = isUpgraded ? 0.30 : 0.20;
+		damage = isUpgraded ? 25 : 15;
+		statusBuff = isUpgraded ? 0.25 : 0.15;
 	}
 	
 	public static Equipment get() {

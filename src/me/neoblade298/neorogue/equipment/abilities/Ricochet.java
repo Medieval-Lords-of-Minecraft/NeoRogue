@@ -52,7 +52,7 @@ public class Ricochet extends Equipment {
 	public Ricochet(boolean isUpgraded) {
 		super(ID, "Ricochet", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 180 : 120;
+		damage = isUpgraded ? 150 : 100;
 	}
 
 	public static Equipment get() {

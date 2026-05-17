@@ -42,8 +42,8 @@ public class Scavenger extends Equipment {
 	public Scavenger(boolean isUpgraded) {
 		super(ID, "Scavenger", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		stamina = isUpgraded ? 30 : 20;
-		damageBuff = isUpgraded ? 0.05 : 0.03;
+		stamina = isUpgraded ? 25 : 15;
+		damageBuff = isUpgraded ? 0.04 : 0.02;
 	}
 
 	@Override

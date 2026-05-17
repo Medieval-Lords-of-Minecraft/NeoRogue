@@ -50,7 +50,7 @@ public class PinningShot extends Equipment {
 	public PinningShot(boolean isUpgraded) {
 		super(ID, "Pinning Shot", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, range));
-		bonusDamage = isUpgraded ? 300 : 200;
+		bonusDamage = isUpgraded ? 250 : 175;
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 

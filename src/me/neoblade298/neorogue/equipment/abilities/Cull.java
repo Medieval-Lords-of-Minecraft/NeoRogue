@@ -30,7 +30,7 @@ public class Cull extends Equipment {
 	public Cull(boolean isUpgraded) {
 		super(ID, "Cull", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 50, 15, 0));
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 260 : 175;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}

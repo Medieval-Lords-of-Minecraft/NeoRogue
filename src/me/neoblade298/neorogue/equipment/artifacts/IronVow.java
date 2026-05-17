@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
-import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -29,22 +28,27 @@ public class IronVow extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		ActionMeta sprinted = new ActionMeta();
+		int[] ticksNotSprinting = {0};
 
 		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
 			PlayerToggleSprintEvent ev = (PlayerToggleSprintEvent) in;
 			if (ev.isSprinting()) {
-				sprinted.setCount(1);
+				ticksNotSprinting[0] = 0;
 			}
 			return TriggerResult.keep();
 		});
 
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (sprinted.getCount() == 0) {
-				Player p = data.getPlayer();
-				data.addPermanentShield(p.getUniqueId(), shields);
+			Player p = data.getPlayer();
+			if (!p.isSprinting()) {
+				ticksNotSprinting[0]++;
+				if (ticksNotSprinting[0] >= 2) {
+					ticksNotSprinting[0] = 0;
+					data.addPermanentShield(p.getUniqueId(), shields);
+				}
+			} else {
+				ticksNotSprinting[0] = 0;
 			}
-			sprinted.setCount(0);
 			return TriggerResult.keep();
 		});
 	}
@@ -60,6 +64,6 @@ public class IronVow extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_NUGGET, "Grants " + GlossaryTag.SHIELDS.tag(this, shields, false)
-				+ " for every second you don't sprint.");
+				+ " for every 2 seconds you don't sprint.");
 	}
 }

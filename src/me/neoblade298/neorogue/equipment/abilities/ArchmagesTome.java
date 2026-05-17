@@ -25,8 +25,8 @@ public class ArchmagesTome extends Equipment {
 	public ArchmagesTome(boolean isUpgraded) {
 		super(ID, "Archmage's Tome", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		damage = isUpgraded ? 45 : 30;
-		regen = isUpgraded ? 0.8 : 0.5;
+		damage = isUpgraded ? 38 : 25;
+		regen = isUpgraded ? 0.7 : 0.4;
 	}
 	
 	public static Equipment get() {

@@ -49,7 +49,7 @@ public class ShadowPartner extends Equipment {
 	public ShadowPartner(boolean isUpgraded) {
 		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 15, 0, 0));
-		damage = isUpgraded ? 250 : 150;
+		damage = isUpgraded ? 210 : 125;
 	}
 
 	public static Equipment get() {

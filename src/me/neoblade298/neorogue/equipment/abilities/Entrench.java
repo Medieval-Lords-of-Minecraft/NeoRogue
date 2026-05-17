@@ -29,7 +29,7 @@ public class Entrench extends Equipment {
 	public Entrench(boolean isUpgraded) {
 		super(ID, "Entrench", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		shields = isUpgraded ? 5 : 3;
+		shields = isUpgraded ? 4 : 2;
 	}
 
 	public static Equipment get() {

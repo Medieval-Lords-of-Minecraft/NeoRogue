@@ -39,7 +39,7 @@ public class AbsoluteZero extends Equipment {
 		super(ID, "Absolute Zero", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		thres = isUpgraded ? 8 : 12;
-		frost = isUpgraded ? 12 : 8;
+		frost = isUpgraded ? 10 : 6;
 	}
 	
 	public static Equipment get() {

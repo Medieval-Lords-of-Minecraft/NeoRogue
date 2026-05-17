@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TrinityForce extends Equipment {
 	private static final String ID = "TrinityForce";
-	private static final int DAMAGE = 30;
+	private static final int DAMAGE = 25;
 	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 215, 0), 0.8F))

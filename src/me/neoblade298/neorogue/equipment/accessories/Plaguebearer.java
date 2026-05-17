@@ -19,7 +19,7 @@ public class Plaguebearer extends Equipment {
 	public Plaguebearer(boolean isUpgraded) {
 		super(ID, "Plaguebearer", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		shields = isUpgraded ? 10 : 7;
+		shields = isUpgraded ? 8 : 6;
 	}
 	
 	public static Equipment get() {

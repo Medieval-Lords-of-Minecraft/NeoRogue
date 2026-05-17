@@ -108,33 +108,33 @@ description: "Warrior balance reference. Use when: evaluating warrior ability co
 
 | Equipment | Mana | Stam | CD(s) | Effect (Base→Upgraded) | Type |
 |-----------|------|------|-------|------------------------|------|
-| Blood Frenzy | — | — | — | On kill: +1 berserk (<15) or +15→20 str; per 5 berserk (up to 20): +10→13% atk speed | Passive |
-| Chosen of Light | — | — | — | On sanctified apply: heal 1 + 20→30% magical buff (10s, stacking) | Passive |
-| Compounding Injury | — | — | — | At ≥30→20 concussed on target: repeat dmg at 100→150% mult | Passive |
-| Consecrate | 20 | 20 | 14 | 250→350 light + 10→15 sanctified + 15→20 shields (5 rad, req 5 hits) | Active |
-| Cull | 0 | 50 | 15 | 200→300 slashing (stacking until non-kill) | Active |
+| Blood Frenzy | — | — | — | On kill: +1 berserk (<15) or +13→17 str; per 5 berserk (up to 20): +8→11% atk speed | Passive |
+| Chosen of Light | — | — | — | On sanctified apply: heal 1 + 15→25% magical buff (10s, stacking) | Passive |
+| Compounding Injury | — | — | — | At ≥30→20 concussed on target: repeat dmg at 80→125% mult | Passive |
+| Consecrate | 20 | 20 | 14 | 210→300 light + 8→12 sanctified + 12→17 shields (5 rad, req 5 hits) | Active |
+| Cull | 0 | 50 | 15 | 175→260 slashing (stacking until non-kill) | Active |
 | Dark Pact | — | — | — | +2 str per 3 basics; +50% dmg taken (40→25s) | Passive |
-| Feel No Pain | — | — | — | Per 10 berserk (up to 40): 5→8% DR | Passive |
-| Fortify | 0 | 30 | 7→5 | 200 piercing (aerial) + growing shields/cast | Active |
-| Fortress | — | — | — | 40→60 shields (crouch/uncrouch), refresh 10s | Passive |
-| Guardian Spirit | — | — | — | +4→6 shields all apps, +3→5 sanctified apps | Passive |
-| Herculean Strength | — | — | — | +4→6 all str apps, start 3→5 berserk, basics +3→5 conc | Passive |
-| Lightfall | 30 | 30 | 12 | 400→600 light + 100→150 sanctified (5 rad AoE, slam) | Active |
-| Light Pulse | — | — | — | Every 3rd basic (>50% mana): 3 projs, 160→240 light (-6 mana) | Passive |
-| Limit Break | 20 | 100 | 40 | Double current strength. 1→2 uses | Active |
-| Mighty Swing | 0 | 35→25 | 10 | 300 piercing (aerial, >50% HP: -3→4s CDR) | Active |
-| Rampage | 0 | 35 | 6 | 200→300 slashing (next basic, +50→75/cast) | Active |
-| Reckless Swing | 0 | 25 | 8 | Berserk×15→20 blunt + 1 berserk (next basic) | Active |
-| Siphoning Strike | 0 | 30 | 12 | 180 piercing (aerial); on kill: +15→25 str + half CD | Active |
-| Thorn Garden | 30 | 70→50 | 0 | Per 3 shields received: +4→6 thorns (permanent) | Passive |
-| Tireless | — | — | — | Per cast (≥20 stam): -2→3 cost + 10→15 shields (5s) | Passive |
-| Hullbreaker | — | — | — | 100 blunt weapon; per 40 conc applied: -10→15 phys def on hit | Offhand |
+| Feel No Pain | — | — | — | Per 10 berserk (up to 40): 4→7% DR | Passive |
+| Fortify | 0 | 30 | 7→5 | 175 piercing (aerial) + growing shields/cast | Active |
+| Fortress | — | — | — | 35→50 shields (crouch/uncrouch), refresh 10s | Passive |
+| Guardian Spirit | — | — | — | +3→5 shields all apps, +2→4 sanctified apps | Passive |
+| Herculean Strength | — | — | — | +3→5 all str apps, start 2→4 berserk, basics +2→4 conc | Passive |
+| Lightfall | 30 | 30 | 12 | 350→500 light + 12→20 sanctified (5 rad AoE, slam) | Active |
+| Light Pulse | — | — | — | Every 3rd basic (>50% mana): 3 projs, 135→200 light (-6 mana) | Passive |
+| Limit Break | 20 | 80 | 40 | Double current strength. 1→2 uses | Active |
+| Mighty Swing | 0 | 35→25 | 10 | 250 piercing (aerial, >50% HP: -3→4s CDR) | Active |
+| Rampage | 0 | 35 | 6 | 175→250 slashing (next basic, +40→60/cast) | Active |
+| Reckless Swing | 0 | 25 | 8 | Berserk×13→17 blunt + 1 berserk (next basic) | Active |
+| Siphoning Strike | 0 | 30 | 12 | 150 piercing (aerial); on kill: +12→20 str + half CD | Active |
+| Thorn Garden | — | — | — | Per 3 shields received: +3→5 thorns (permanent) | Passive |
+| Tireless | — | — | — | Per cast (≥20 stam): -2→3 cost + 8→12 shields (5s) | Passive |
+| Hullbreaker | — | — | — | 85 blunt weapon; per 40 conc applied: -8→12 phys def on hit | Offhand |
 
 ### Rare Baselines
-- Cost: 0–30 mana, 25–100 stamina
+- Cost: 0–30 mana, 25–80 stamina
 - Cooldown: 5–40s
-- Direct damage: 200–600
-- Stamina efficiency: 6–12 dmg/stam
+- Direct damage: 150–500
+- Stamina efficiency: 5–10 dmg/stam
 - Many passives are "combined" versions of uncommon pairs
 
 ---
@@ -184,14 +184,14 @@ description: "Warrior balance reference. Use when: evaluating warrior ability co
 ### Rare (8)
 | Weapon | Damage | Type | Upgraded | Special |
 |--------|--------|------|----------|---------|
-| Avalonian Mace | 65 | Blunt | 80 | Shield synergy |
-| Fracturer | 65 | Earthen | 80 | Concussion amp |
-| Groundbreaker | 70 | Earthen | 85 | AoE on slam |
-| Iron Sword | 65 | Slashing | 80 | Solid rare |
-| Righteous Flame | 65 | Fire/Light | 80 | Holy + fire |
-| Righteous Hammer | 70 | Light | 85 | Sanctified scaling |
-| Righteous Lance | 60 | Light/Piercing | 75 | Ranged holy |
-| Hullbreaker | 100 | Blunt | — | Offhand, armor shred |
+| Avalonian Mace | 85 | Blunt | 85 | Str mult 4→7x |
+| Fracturer | 85 | Blunt | 110 | Earthen line 35→50, conc 2→4 |
+| Groundbreaker | 140 | Blunt | 175 | AoE on slam, conc 2→4 |
+| Iron Sword | 55 | Slashing | 70 | CDR every 3rd hit |
+| Righteous Flame | 60 | Fire/Light | 75 | Sanct 2→4 |
+| Righteous Hammer | 95 | Blunt | 95 | AoE, sanct 2→4 |
+| Righteous Lance | 70 | Piercing | 70 | Ranged holy |
+| Hullbreaker | 85 | Blunt | — | Offhand, def -8→12/40 conc |
 
 ### Epic (7)
 | Weapon | Damage | Type | Upgraded | Special |
@@ -209,7 +209,7 @@ description: "Warrior balance reference. Use when: evaluating warrior ability co
 |--------|-------|-----|
 | Common | 20–25 | 23 |
 | Uncommon | 25–50 | 40 |
-| Rare | 60–100 | 72 |
+| Rare | 55–175 | 84 |
 | Epic | 80–100 | 93 |
 
 ---
@@ -235,11 +235,11 @@ description: "Warrior balance reference. Use when: evaluating warrior ability co
 ### Rare (5)
 | Accessory | Effect |
 |-----------|--------|
-| Earthen Bracer | Earthen/concussed amplifier |
-| Lionheart Bangle | Berserk/strength scaling |
-| Major Shielding Relic | Large shield bonuses |
-| Sigil of the Iron Legion | Comprehensive warrior buff |
-| Vermillion Belt | Berserk/damage bonus |
+| Earthen Bracer | +40→65% concussed application |
+| Lionheart Bangle | 1 str per 10 max HP (artifact) |
+| Major Shielding Relic | +2→4% max HP as shield bonus |
+| Sigil of the Iron Legion | Ruby Shard at 100 str (artifact) |
+| Vermillion Belt | 1 berserk per 6→5 basic attacks |
 
 ---
 
@@ -255,7 +255,7 @@ description: "Warrior balance reference. Use when: evaluating warrior ability co
 |--------|--------------|-----|---------|
 | Common | 50–130 | 70–100 | 8–30 |
 | Uncommon | 100–220 | 100–180 | 10–50 |
-| Rare | 200–600 | 250–400 | 40–60 |
+| Rare | 150–500 | 210–350 | 35–50 |
 | Epic | 300–400 (passive) | 300+ | 60–100 |
 
 ### Upgrade Patterns

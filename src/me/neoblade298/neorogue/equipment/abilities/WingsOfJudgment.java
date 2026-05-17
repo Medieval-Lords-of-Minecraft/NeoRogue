@@ -40,7 +40,7 @@ public class WingsOfJudgment extends Equipment {
 	public WingsOfJudgment(boolean isUpgraded) {
 		super(ID, "Wings of Judgment", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, tp.range));
-		damage = isUpgraded ? 100 : 50;
+		damage = isUpgraded ? 80 : 40;
 	}
 	
 	public static Equipment get() {

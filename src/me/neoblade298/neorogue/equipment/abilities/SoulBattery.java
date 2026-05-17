@@ -53,8 +53,8 @@ public class SoulBattery extends Equipment {
 	public SoulBattery(boolean isUpgraded) {
 		super(ID, "Soul Battery", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 12, 0));
-		threshold = isUpgraded ? 6 : 9;
-		damage = isUpgraded ? 225 : 150;
+		threshold = isUpgraded ? 7 : 10;
+		damage = isUpgraded ? 190 : 125;
 	}
 
 	public static Equipment get() {

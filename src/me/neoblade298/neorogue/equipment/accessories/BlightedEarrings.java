@@ -25,7 +25,7 @@ public class BlightedEarrings extends Equipment {
 	public BlightedEarrings(boolean isUpgraded) {
 		super(ID, "Blighted Earrings", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
-		inc = isUpgraded ? 50 : 30;
+		inc = isUpgraded ? 40 : 25;
 	}
 
 	public static Equipment get() {

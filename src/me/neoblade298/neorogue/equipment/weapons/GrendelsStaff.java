@@ -43,11 +43,11 @@ public class GrendelsStaff extends Equipment {
 	public GrendelsStaff(boolean isUpgraded) {
 		super(
 				ID, "Grendel's Staff", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 55 : 65, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 55, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		manaGain = isUpgraded ? 6 : 4;
-		intellectFreq = isUpgraded ? 3 : 5;
+		manaGain = isUpgraded ? 5 : 3;
+		intellectFreq = isUpgraded ? 4 : 6;
 	}
 
 	public static Equipment get() {

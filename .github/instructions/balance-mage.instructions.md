@@ -120,28 +120,28 @@ description: "Mage balance reference. Use when: evaluating mage ability costs/da
 | Equipment | Mana | Stam | CD(s) | Range | AoE | Damage (Base→Upg) | Type |
 |-----------|------|------|-------|-------|-----|-----------|------|
 | Antimatter | all | 0 | 5 | 16 line | — | 120→180 dark | Active. Consumes ALL mana; repeatable |
-| Archmage's Tome | — | — | — | — | — | — | Passive. +30→45 magical dmg; +0.5→0.8 mreg <50% mana |
-| Brightest Flame | 60→45 | 10 | 0 | 10 | — | 5×(80→120) fire | Active. Fan 5 projs + 4→6 Burn/hit + 2 Corruption |
-| Catalyst Crucible | — | — | — | — | — | — | Passive. +15→25% magical mult; +4→6 mana on neg status |
-| Chaos | 20 | 0 | 8 | line | — | 200→300 random | Active. Random type + 5→8 random status |
-| Charge Bolt | 20 | 0 | 8 | 12 line | — | 200→300 lightning | Active. If Electrified on target: -20→30 mana refund |
-| Corruption | — | — | — | — | — | — | Passive. -3→5 mana cost per Corruption stack |
-| Dematerialize | 20 | 0 | 15 | — | 5 | 200→300 dark | Active. Explodes all Rifts + spawns new Rift [15s] |
-| Dissonance | 0 | 0 | 20 once | — | — | — | Passive. On dmg type change: +6→9 mana + 3→5 shields [5s] |
-| Dying Star | 20 | 50 | 30 once | — | 5 | 300→450 dark | Active. Rift → expire: pull + AoE; respawns on kill |
-| Energy Beam | 25 | 10 | 8 | 14 line | — | 70→100 lightning | Active. Reduces next ability mana by 15→25 |
+| Archmage's Tome | — | — | — | — | — | — | Passive. +25→38 magical dmg; +0.4→0.7 mreg <50% mana |
+| Brightest Flame | 60→45 | 10 | 0 | 10 | — | 5×(65→100) fire | Active. Fan 5 projs + 3→5 Burn/hit + 2 Corruption |
+| Catalyst Crucible | — | — | — | — | — | — | Passive. +12→20% magical mult; +3→5 mana on neg status |
+| Chaos | 20 | 0 | 8 | line | — | 175→250 random | Active. Random type + 4→7 random status |
+| Charge Bolt | 20 | 0 | 8 | 12 line | — | 175→250 lightning | Active. If Electrified on target: -15→25 mana refund |
+| Corruption | — | — | — | — | — | — | Passive. -2→4 mana cost per Corruption stack |
+| Dematerialize | 20 | 0 | 15 | — | 5 | 175→250 dark | Active. Explodes all Rifts + spawns new Rift [15s] |
+| Dissonance | 0 | 0 | 20 once | — | — | — | Passive. On dmg type change: +5→8 mana + 2→4 shields [5s] |
+| Dying Star | 20 | 50 | 30 once | — | 5 | 250→375 dark | Active. Rift → expire: pull + AoE; respawns on kill |
+| Energy Beam | 25 | 10 | 8 | 14 line | — | 60→85 lightning | Active. Reduces next ability mana by 12→20 |
 | Hearth | 80→60 | 0 | once | — | — | — | Active. Every 10s: remove 1 Corruption + heal 3 |
-| Lightning Rod | 60 | 20 | 4 | 7 line | — | 300→500 lightning | Active. Unlocked after 10→7 lightning hits; +20→30 Electrified |
+| Lightning Rod | 60 | 20 | 4 | 7 line | — | 250→425 lightning | Active. Unlocked after 10→7 lightning hits; +20→30 Electrified |
 | Nullify | 20+ | 0 | 0 | — | — | — | Active. Protect + Shell 3→5; cost +20→30/cast |
-| Power Overwhelming | 100→80 | 25 | once | — | — | — | Active. Reduce mana costs by 20→30 (max 50%) |
-| Rock Tomb | 25 | 0 | 14 | — | AoE | 300 + 50→100 bonus earthen | Active. Scales with concussed dealt |
-| Soul Battery | 0 | 0 | 12 | — | 3 | 3×(150→225) lightning | Active. Shields from Electrified + 3 strikes |
-| Voltaics | 70→50 | 0 | once | line | — | 80→120/2s lightning | Active. Auto-fires bolts; bonus at 20→15 Elec threshold |
+| Power Overwhelming | 100→80 | 25 | once | — | — | — | Active. Reduce mana costs by 15→25 (max 50%) |
+| Rock Tomb | 25 | 0 | 14 | — | AoE | 250 + 40→80 bonus earthen | Active. Scales with concussed dealt |
+| Soul Battery | 0 | 0 | 12 | — | 3 | 3×(125→190) lightning | Active. Shields from Electrified + 3 strikes |
+| Voltaics | 70→50 | 0 | once | line | — | 65→100/2s lightning | Active. Auto-fires bolts; bonus at 20→15 Elec threshold |
 
 ### Rare Baselines
 - Cost: 20–100 mana (wide range), 0–50 stamina
 - Cooldown: 4–30s (many "once per fight" at high cost)
-- Damage: 120–500 per cast
+- Damage: 125–425 per cast
 - Strong synergy requirements (Electrified threshold, Corruption stacks, Rift count)
 - "Once per fight" abilities trade high upfront cost for permanent effects
 
@@ -208,8 +208,8 @@ description: "Mage balance reference. Use when: evaluating mage ability costs/da
 ### Rare (2)
 | Weapon | Type | Notes |
 |--------|------|-------|
-| Grendel's Staff | Staff | High-power |
-| Rune Harvester | Staff | Rune/mana themed |
+| Grendel's Staff | Staff | 55→45 dmg; +3→5 mana; +1 int per 6→4 hits |
+| Rune Harvester | Staff | 35→45 dmg; CDR 3→5s on kill |
 
 ### Epic (4)
 | Weapon | Type | Notes |
@@ -224,7 +224,7 @@ description: "Mage balance reference. Use when: evaluating mage ability costs/da
 |--------|-------|-----|
 | Common | 20–30 | 25 |
 | Uncommon | 35–45 | 40 |
-| Rare | ~55–65 | ~60 |
+| Rare | ~35–55 | ~45 |
 | Epic | ~80–100 | ~90 |
 
 ---
@@ -255,7 +255,7 @@ description: "Mage balance reference. Use when: evaluating mage ability costs/da
 ### Rare (1)
 | Accessory | Effect |
 |-----------|--------|
-| Blighted Earrings | Status synergy |
+| Blighted Earrings | +25→40% dmg with Corruption |
 
 ---
 
@@ -277,7 +277,7 @@ description: "Mage balance reference. Use when: evaluating mage ability costs/da
 |--------|--------------|----------------|----------|
 | Common | 60–250 | 80–160 | 40–60/tick |
 | Uncommon | 100–360 | 80–300 | 50–90/tick |
-| Rare | 120–500 | 200–450 | 80–120/2s |
+| Rare | 125–425 | 175–375 | 65–100/2s |
 | Epic | Passive/transformative | — | — |
 
 ### Upgrade Patterns

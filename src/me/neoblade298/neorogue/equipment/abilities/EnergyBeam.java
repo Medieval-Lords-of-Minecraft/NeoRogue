@@ -42,8 +42,8 @@ public class EnergyBeam extends Equipment {
 	public EnergyBeam(boolean isUpgraded) {
 		super(ID, "Energy Beam", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 8, tp.range));
-		damage = isUpgraded ? 100 : 70;
-		manaCostReduction = isUpgraded ? 25 : 15;
+		damage = isUpgraded ? 85 : 60;
+		manaCostReduction = isUpgraded ? 20 : 12;
 	}
 	
 	public static Equipment get() {

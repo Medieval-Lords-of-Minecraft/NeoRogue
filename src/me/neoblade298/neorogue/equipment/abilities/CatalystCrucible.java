@@ -25,9 +25,9 @@ public class CatalystCrucible extends Equipment {
 	public CatalystCrucible(boolean isUpgraded) {
 		super(ID, "Catalyst Crucible", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		mult = isUpgraded ? 0.25 : 0.15;
+		mult = isUpgraded ? 0.20 : 0.12;
 		multStr = (int) (mult * 100);
-		mana = isUpgraded ? 6 : 4;
+		mana = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

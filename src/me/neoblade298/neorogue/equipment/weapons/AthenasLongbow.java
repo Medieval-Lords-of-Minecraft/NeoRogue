@@ -31,8 +31,8 @@ public class AthenasLongbow extends Bow {
 	public AthenasLongbow(boolean isUpgraded) {
 		super(ID, "Athena's Longbow", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(50, 1, 0, 14, 0.2, 2));
-		damageBuff = isUpgraded ? 1.0 : 0.5;
+				EquipmentProperties.ofBow(45, 1, 0, 14, 0.2, 2));
+		damageBuff = isUpgraded ? 0.8 : 0.4;
 	}
 
 	@Override

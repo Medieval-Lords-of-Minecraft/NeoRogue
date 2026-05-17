@@ -22,7 +22,7 @@ public class EarthenBracer extends Equipment {
 	public EarthenBracer(boolean isUpgraded) {
 		super(ID, "Earthen Bracer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		mult = isUpgraded ? 0.8 : 0.5;
+		mult = isUpgraded ? 0.65 : 0.4;
 		multStr = (int) (mult * 100);
 	}
 	

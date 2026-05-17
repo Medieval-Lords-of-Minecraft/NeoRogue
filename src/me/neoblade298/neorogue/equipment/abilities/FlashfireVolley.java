@@ -50,9 +50,9 @@ public class FlashfireVolley extends Equipment {
 		super(ID, "Flashfire Volley", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 8, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
-		bluntDamage = isUpgraded ? 150 : 100;
-		fireDamage = isUpgraded ? 150 : 100;
-		burn = isUpgraded ? 15 : 10;
+		bluntDamage = isUpgraded ? 125 : 85;
+		fireDamage = isUpgraded ? 125 : 85;
+		burn = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {

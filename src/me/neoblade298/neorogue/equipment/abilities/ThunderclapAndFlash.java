@@ -42,8 +42,8 @@ public class ThunderclapAndFlash extends Equipment {
 	public ThunderclapAndFlash(boolean isUpgraded) {
 		super(ID, "Thunderclap and Flash", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 15, 10, 0));
-		evadeDamage = isUpgraded ? 200 : 150;
-		castDamage = isUpgraded ? 150 : 100;
+		evadeDamage = isUpgraded ? 175 : 125;
+		castDamage = isUpgraded ? 125 : 85;
 	}
 	
 	public static Equipment get() {

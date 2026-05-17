@@ -24,7 +24,7 @@ public class NoxianFalx extends Equipment {
 	public NoxianFalx(boolean isUpgraded) {
 		super(ID, "Noxian Falx", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 65 : 55, 1.25, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1.25, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stacks = isUpgraded ? 3 : 2;
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}

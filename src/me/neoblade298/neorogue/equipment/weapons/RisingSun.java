@@ -51,7 +51,7 @@ public class RisingSun extends Equipment {
 				ID, "Rising Sun", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 45, 10, tp.range)
 		);
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 250 : 175;
 	}
 	
 	public static Equipment get() {

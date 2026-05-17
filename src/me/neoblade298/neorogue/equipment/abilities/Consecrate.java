@@ -41,9 +41,9 @@ public class Consecrate extends Equipment {
 	public Consecrate(boolean isUpgraded) {
 		super(ID, "Consecrate", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 14, 0, tp.range));
-		damage = isUpgraded ? 350 : 250;
-		sanct = isUpgraded ? 15 : 10;
-		shields = isUpgraded ? 20 : 15;
+		damage = isUpgraded ? 300 : 210;
+		sanct = isUpgraded ? 12 : 8;
+		shields = isUpgraded ? 17 : 12;
 	}
 	
 	public static Equipment get() {

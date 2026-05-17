@@ -43,7 +43,7 @@ public class DangerousGame extends Equipment {
 		super(ID, "Dangerous Game", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		range = 5;
-		damage = isUpgraded ? 70 : 50;
+		damage = isUpgraded ? 60 : 40;
 	}
 	
 	public static Equipment get() {

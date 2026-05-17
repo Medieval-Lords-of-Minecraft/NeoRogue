@@ -32,7 +32,7 @@ public class Tireless extends Equipment {
 
 		cutoff = 20;
 		reduc = isUpgraded ? 3 : 2;
-		shields = isUpgraded ? 15 : 10;
+		shields = isUpgraded ? 12 : 8;
 	}
 
 	public static Equipment get() {

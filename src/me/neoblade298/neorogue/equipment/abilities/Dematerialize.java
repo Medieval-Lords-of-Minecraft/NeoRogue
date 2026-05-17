@@ -40,7 +40,7 @@ public class Dematerialize extends Equipment {
 	public Dematerialize(boolean isUpgraded) {
 		super(ID, "Dematerialize", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0, tp.range));
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 250 : 175;
 	}
 
 	public static Equipment get() {

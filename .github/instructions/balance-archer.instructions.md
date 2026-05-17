@@ -114,32 +114,39 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 
 | Equipment | Mana | Stam | CD(s) | AoE | Effect (Base→Upgraded) | Type |
 |-----------|------|------|-------|-----|------------------------|------|
-| Absolute Zero | — | — | — | 5 rad | Every 12→8 hits: AoE Frost 8→12 + double existing Frost | Passive |
-| Blizzard | — | — | — | — | AoE ice damage ability | Active |
-| Conflagration | 0 | 0 | — | — | On kill w/ Burn: 150 dmg proj + 1.0→1.5× burn stacks to next (range 12) | Passive |
-| Crush the Weak | — | — | — | — | Per 200→150 Injury: +10 perm shields; +40→60% shields as dmg to Injured | Passive |
-| Dangerous Game | — | — | — | — | BA hit ≤5 blocks → next fires bonus proj (+50→70 dmg) (range 5) | Passive |
-| Deliberant Pace | — | — | — | — | Every 5→4s not sprinting: +1 Focus; +5→6%/Focus dmg | Passive |
-| Emberhail | — | — | — | — | Non-BA proj +20→30 dmg; Burn/Frost +20→30% | Passive |
-| Entrench | — | — | — | — | Place/remove trap → +3→5 perm shields | Passive |
-| Ferocious Draw | — | — | — | — | BA hits ≤5 blocks: +60→80 piercing + pierce 1 (range 5) | Passive |
-| Hawkeye | — | — | — | — | >12→8 Focus: receive dmg → -30 def buff + -1 Focus + fire 300→500 dmg proj | Passive |
-| Hellfire | — | — | — | — | Fire AoE rare ability | Active |
-| Neckbreaker | 15 | 15 | 10 | — | Next 3 BAs: 100→150 dmg + Injury 100→150; same target: 20→30 shields + ×2→3 | Active |
-| Pinning Shot | — | — | — | — | Root/CC projectile | Active |
-| Predator Drive | — | — | — | — | Every 3→2 close-range BA hits: -1s all CDs (range 5) | Passive |
-| Ricochet | — | — | — | — | BA hit ≤5 blocks → 120→180 dmg proj to nearest enemy (range 5→12) | Passive |
-| Scavenger | — | — | — | — | On kill: drop collectible → +20→30 stam + 3→5% perm dmg | Passive |
-| Steady Bleed | 15 | 0 | 12 | 7 rad | AoE: consume Rend → 10→15 dmg/stack; shields = 20→40% of dmg (range 7) | Active |
+| Absolute Zero | — | — | — | 5 rad | Every 12→8 hits: AoE Frost 6→10 + double existing Frost | Passive |
+| Blizzard | — | — | — | — | 50→75 ice/tick AoE damage | Power |
+| Conflagration | 0 | 0 | — | — | On kill w/ Burn: 125 dmg proj + 0.8→1.2× burn stacks to next (range 12) | Passive |
+| Crush the Weak | — | — | — | — | Per 25→18 Injury: +10 perm shields; +35→50% shields as dmg to Injured | Power |
+| Dangerous Game | — | — | — | — | BA hit ≤5 blocks → next fires bonus proj (+40→60 dmg) (range 5) | Power |
+| Deliberant Pace | — | — | — | — | Every 6→5s not sprinting: +1 Focus; +4→5%/Focus dmg | Power |
+| Emberhail | — | — | — | — | Non-BA proj +15→25 dmg; Burn/Frost +15→25% | Passive |
+| Entrench | — | — | — | — | Place/remove trap → +2→4 perm shields | Power |
+| Ferocious Draw | — | — | — | — | BA hits ≤5 blocks: +50→65 piercing + pierce 1 (range 5) | Power |
+| Flashfire Volley | 20 | 15 | 12 | 4 rad | 85→125 blunt + 85→125 fire AoE; Burn 8→12 | Active |
+| Frigid Wind | 15 | 10 | 10 | 5 cone | 85→125 ice cone; Frost 8→12 | Active |
+| Frozen Tomb | — | — | — | 5 rad | At 100 Frost: 340 burst + Frost spread 8; +15→25% Frost dmg | Passive |
+| Hawkeye | — | — | — | — | >12→8 Focus: receive dmg → -30 def buff + -1 Focus + fire 250→425 dmg proj | Power |
+| Hellfire | — | — | — | — | Fire hits: bonus +65→100 fire dmg | Power |
+| Infernal Warden | 20 | 10 | 12 | 4 rad | 100→150 fire AoE; Burn 6→10 | Active |
+| Lacerating Wave | — | — | — | 4 rad | Every 5th BA: 35→50 AoE dmg + Rend | Passive |
+| Neckbreaker | 15 | 15 | 10 | — | Next 3 BAs: 85→125 dmg + Injury 2→4; same target: 20→30 shields + ×2→3 | Active |
+| Pinning Shot | 20 | 10 | 12 | — | Pin proj; wall bonus 175→250 dmg | Active |
+| Predator Drive | — | — | — | — | Every 4→3 close-range BA hits: -1s all CDs (range 5) | Power |
+| Relentless Hunt | 15 | 10 | 10 | — | +15→25%/Focus dmg on next BA | Active |
+| Ricochet | — | — | — | — | BA hit ≤5 blocks → 100→150 dmg proj to nearest enemy (range 5→12) | Power |
+| Saboteur | — | — | — | — | +3 Focus; +8→12% trap/close dmg; +15→25% Injury | Passive |
+| Scavenger | — | — | — | — | On kill: drop collectible → +15→25 stam + 2→4% perm dmg | Power |
+| Steady Bleed | 15 | 0 | 12 | 7 rad | AoE: consume Rend → 8→12 dmg/stack; shields = 15→35% of dmg (range 7) | Active |
 | Stormweaver's Promise | — | — | — | — | Proj hits → 4→6 shields [3s/8s if consecutive] | Passive |
-| Trinity Force | 20 | 15 | 10 | — | 3 homing projs, 2→3 hits each (1s charge, range 12) | Active |
-| Wings of Judgment | 20 | 0 | 15 | — | 8 arrows in wing pattern, 50→100 dmg each (1s charge, range 15) | Active |
+| Trinity Force | 20 | 15 | 10 | — | 3 homing projs, 25 dmg each, 2→3 hits each (1s charge, range 12) | Active |
+| Wings of Judgment | 20 | 0 | 15 | — | 8 arrows in wing pattern, 40→80 dmg each (1s charge, range 15) | Active |
 
 ### Rare Baselines
 - Many are passives (0-cost) that reward playstyle (close-range, Focus stacking, trap management)
 - Active abilities: 15–20 mana, 0–15 stamina, 10–15s CD
-- Damage: 100–500 per ability (scaling with stacks/Focus)
-- Shields: Passive generation common (3–10 per proc)
+- Damage: 85–425 per ability (scaling with stacks/Focus)
+- Shields: Passive generation common (2–8 per proc)
 
 ---
 
@@ -174,13 +181,13 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 | (18+ others) | — | — | Various synergies (frost, fire, multi-shot, etc.) |
 
 ### Rare (5)
-| Weapon | Type | Special |
-|--------|------|---------|
-| Athena's Longbow | Bow | Rare |
-| Divergent Piercer | Bow | Piercing specialist |
-| Enchanted Crystal Arrow | Bow | Ice-themed |
-| Iron Bolt | Bow | Heavy crossbow |
-| Pocket Ballista | Bow | High-damage single shot |
+| Weapon | Type | Damage | Special |
+|--------|------|--------|--------|
+| Athena's Longbow | Bow | 45 | Non-BA +40→80% dmg |
+| Divergent Piercer | Bow | 15→20 | Bonus +15→35 on pierce |
+| Enchanted Crystal Arrow | Bow | — | Bonus +8→15 ice |
+| Iron Bolt | Bow | 25→35 | Status +40→80% |
+| Pocket Ballista | Bow | 60 | Explode 35→65 AoE |
 
 ### Epic (6)
 | Weapon | Type | Special |
@@ -219,8 +226,8 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 ### Rare (2)
 | Accessory | Effect |
 |-----------|--------|
-| Ring of Exploitation | +0.6→0.8 dmg/Injury + shields 5→7 on Injury apply |
-| Ring of the Eagle | Every 12→10 proj hits: -1s all CDs |
+| Ring of Exploitation | +0.6→0.8 dmg/Injury + shields 4→6 on Injury apply; per 12→10 Injury |
+| Ring of the Eagle | Every 14→12 proj hits: -1s all CDs |
 
 ---
 
@@ -243,7 +250,7 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 |--------|------------------|--------------|-------------|
 | Common | 50–180 | 15–25/hit | 50–150 |
 | Uncommon | 70–225 | 20–35/hit | 100–225 |
-| Rare | 100–500 | 50–180/proc | 200–400 |
+| Rare | 85–425 | 40–150/proc | 175–340 |
 | Epic | 200–500 | — | 300–500 |
 
 ### Upgrade Patterns

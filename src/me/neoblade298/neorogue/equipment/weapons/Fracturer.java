@@ -64,10 +64,10 @@ public class Fracturer extends Equipment {
 	public Fracturer(boolean isUpgraded) {
 		super(ID, "Fracturer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 130 : 100, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 110 : 85, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		earth = isUpgraded ? 60 : 40;
-		concussed = isUpgraded ? 5 : 3;
+		earth = isUpgraded ? 50 : 35;
+		concussed = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

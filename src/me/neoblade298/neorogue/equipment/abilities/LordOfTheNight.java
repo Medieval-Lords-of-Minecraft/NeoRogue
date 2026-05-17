@@ -32,7 +32,7 @@ public class LordOfTheNight extends Equipment {
 	public LordOfTheNight(boolean isUpgraded) {
 		super(ID, "Lord of the Night", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damageIncrease = isUpgraded ? 30 : 20;
+		damageIncrease = isUpgraded ? 25 : 15;
         damageIncreaseMult = damageIncrease / 100.0;
 	}
 	

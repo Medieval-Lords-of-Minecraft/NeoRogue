@@ -38,8 +38,8 @@ public class SteadyBleed extends Equipment {
 	public SteadyBleed(boolean isUpgraded) {
 		super(ID, "Steady Bleed", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
-		damageMult = isUpgraded ? 15.0 : 10.0;
-		shieldPercent = isUpgraded ? 0.4 : 0.2;
+		damageMult = isUpgraded ? 12.0 : 8.0;
+		shieldPercent = isUpgraded ? 0.35 : 0.15;
 	}
 	
 	public static Equipment get() {

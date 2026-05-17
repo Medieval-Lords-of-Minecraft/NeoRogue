@@ -39,7 +39,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Voltaics extends Equipment {
 	private static final String ID = "Voltaics";
 	private static final int TICK_INTERVAL = 5;
-	private static final int BASE_ELECTRIFIED_STACKS = 3;
+	private static final int BASE_ELECTRIFIED_STACKS = 2;
 	private static final int STACKS_INCREASE_PER_HIT = 2;
 	private static final int RANGE = 16;
 	private static final TargetProperties tp = TargetProperties.line(RANGE, 2, TargetType.ENEMY);
@@ -61,7 +61,7 @@ public class Voltaics extends Equipment {
 		super(ID, "Voltaics", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 30, 5, 0, RANGE));
 		properties.addUpgrades(PropertyType.MANA_COST);
-		damage = isUpgraded ? 120 : 80;
+		damage = isUpgraded ? 100 : 65;
 		stackThreshold = isUpgraded ? 15 : 20;
 	}
 

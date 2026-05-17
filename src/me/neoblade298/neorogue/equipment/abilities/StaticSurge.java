@@ -33,8 +33,8 @@ public class StaticSurge extends Equipment {
 	public StaticSurge(boolean isUpgraded) {
 		super(ID, "Static Surge", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 50 : 30;
-		electrified = isUpgraded ? 8 : 5;
+		damage = isUpgraded ? 40 : 25;
+		electrified = isUpgraded ? 7 : 4;
 	}
 	
 	public static Equipment get() {

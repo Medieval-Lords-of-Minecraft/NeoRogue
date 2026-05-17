@@ -27,8 +27,8 @@ public class IronBolt extends Ammunition {
 	public IronBolt(boolean isUpgraded) {
 		super(ID, "Iron Bolt", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(isUpgraded ? 40 : 30, 0.1, DamageType.PIERCING));
-		mult = isUpgraded ? 1.0 : 0.5;
+				EquipmentProperties.ofAmmunition(isUpgraded ? 35 : 25, 0.1, DamageType.PIERCING));
+		mult = isUpgraded ? 0.8 : 0.4;
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

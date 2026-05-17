@@ -23,7 +23,7 @@ public class Corruption extends Equipment {
 	public Corruption(boolean isUpgraded) {
 		super(ID, "Corruption", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		reduc = isUpgraded ? 5 : 3;
+		reduc = isUpgraded ? 4 : 2;
 	}
 
 	public static Equipment get() {

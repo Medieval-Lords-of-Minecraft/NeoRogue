@@ -31,7 +31,7 @@ public class Twilight extends Equipment {
 	public Twilight(boolean isUpgraded) {
 		super(ID, "Twilight", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		duration = isUpgraded ? 5 : 3;
+		duration = isUpgraded ? 4 : 2;
 		evade = isUpgraded ? 2 : 1;
 	}
 	
@@ -60,7 +60,7 @@ public class Twilight extends Equipment {
 				ev2.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 				Player p2 = data.getPlayer();
 				FightInstance.applyStatus(p2, StatusType.EVADE, data, evade, 160);
-				data.addStamina(10);
+				data.addStamina(8);
 				return TriggerResult.keep();
 			});
 			data.addTrigger(id, Trigger.PRE_RECEIVE_STATUS, inst);
@@ -73,6 +73,6 @@ public class Twilight extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
 				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " once while above " + DescUtil.white("50%") + " mana and stamina. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
-				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and " + DescUtil.white(10) + " stamina.");
+				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and " + DescUtil.white(8) + " stamina.");
 	}
 }

@@ -43,8 +43,8 @@ public class BrightestFlame extends Equipment {
 		super(ID, "Brightest Flame", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(isUpgraded ? 45 : 60, 10, 0, 10));
-		damage = isUpgraded ? 120 : 80;
-		burn = isUpgraded ? 6 : 4;
+		damage = isUpgraded ? 100 : 65;
+		burn = isUpgraded ? 5 : 3;
 		corr = 2;
 	}
 

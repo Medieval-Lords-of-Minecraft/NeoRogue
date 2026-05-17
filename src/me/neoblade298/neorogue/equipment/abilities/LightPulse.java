@@ -47,7 +47,7 @@ public class LightPulse extends Equipment {
 	public LightPulse(boolean isUpgraded) {
 		super(ID, "Light Pulse", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 6));
-		damage = isUpgraded ? 240 : 160;
+		damage = isUpgraded ? 200 : 135;
 		cost = 6;
 	}
 	

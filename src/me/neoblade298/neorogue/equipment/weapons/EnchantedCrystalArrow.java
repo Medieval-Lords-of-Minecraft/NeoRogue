@@ -28,7 +28,7 @@ public class EnchantedCrystalArrow extends Ammunition {
 		super(ID, "Enchanted Crystal Arrow", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(10, 0.1, DamageType.ICE));
-		bonusDamage = isUpgraded ? 20 : 10;
+		bonusDamage = isUpgraded ? 15 : 8;
 		frost = 3;
 	}
 	

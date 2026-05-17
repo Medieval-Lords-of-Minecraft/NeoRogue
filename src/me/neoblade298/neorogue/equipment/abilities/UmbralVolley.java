@@ -40,7 +40,7 @@ public class UmbralVolley extends Equipment {
 		super(ID, "Umbral Volley", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 4));
 		
-		damage = isUpgraded ? 80 : 60;
+		damage = isUpgraded ? 65 : 50;
 	}
 	
 	public static Equipment get() {

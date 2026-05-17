@@ -46,7 +46,7 @@ public class Blizzard extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		threshold = isUpgraded ? 700 : 1000;
-		damage = isUpgraded ? 90 : 60;
+		damage = isUpgraded ? 75 : 50;
 		frost = isUpgraded ? 3 : 2;
 	}
 	

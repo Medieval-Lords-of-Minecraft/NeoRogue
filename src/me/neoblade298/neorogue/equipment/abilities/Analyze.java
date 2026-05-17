@@ -23,13 +23,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 public class Analyze extends Equipment {
 	private static final String ID = "Analyze";
 	private static final int MAX_STACKS = 5;
-	private static final int SHIELDS_PER_STACK = 4;
+	private static final int SHIELDS_PER_STACK = 3;
 	private int damagePerStack;
 	
 	public Analyze(boolean isUpgraded) {
 		super(ID, "Analyze", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		damagePerStack = isUpgraded ? 75 : 50;
+		damagePerStack = isUpgraded ? 65 : 40;
 	}
 	
 	public static Equipment get() {

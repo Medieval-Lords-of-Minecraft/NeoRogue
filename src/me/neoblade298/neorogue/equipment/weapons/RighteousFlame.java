@@ -28,9 +28,9 @@ public class RighteousFlame extends Equipment {
 	public RighteousFlame(boolean isUpgraded) {
 		super(ID, "Righteous Flame", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 90 : 70, 1, 0.4, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
+				EquipmentProperties.ofWeapon(isUpgraded ? 75 : 60, 1, 0.4, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		sanct = isUpgraded ? 5 : 3;
+		sanct = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

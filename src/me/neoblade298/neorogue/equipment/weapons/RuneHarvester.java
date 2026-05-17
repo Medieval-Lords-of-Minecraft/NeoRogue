@@ -42,10 +42,10 @@ public class RuneHarvester extends Equipment {
 	public RuneHarvester(boolean isUpgraded) {
 		super(
 				ID, "Rune Harvester", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 55 : 40, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		cooldownReduction = isUpgraded ? 6 : 4;
+		cooldownReduction = isUpgraded ? 5 : 3;
 	}
 
 	@Override

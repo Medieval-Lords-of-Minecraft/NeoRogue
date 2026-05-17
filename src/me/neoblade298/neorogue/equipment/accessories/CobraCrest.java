@@ -29,7 +29,7 @@ public class CobraCrest extends Equipment {
 	public CobraCrest(boolean isUpgraded) {
 		super(ID, "Cobra Crest", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY, EquipmentProperties.none());
-		dec = isUpgraded ? 50 : 30;
+		dec = isUpgraded ? 40 : 25;
 	}
 	
 	public static Equipment get() {

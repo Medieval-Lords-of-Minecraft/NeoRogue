@@ -39,8 +39,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class FrozenTomb extends Equipment {
 	private static final String ID = "FrozenTomb";
-	private static final int DAMAGE = 400;
-	private static final int SPREAD_FROST = 10;
+	private static final int DAMAGE = 340;
+	private static final int SPREAD_FROST = 8;
 	private static final TargetProperties tp = TargetProperties.radius(6, false, TargetType.ENEMY);
 	private double frostIncrease;
 	private int threshold;
@@ -53,7 +53,7 @@ public class FrozenTomb extends Equipment {
 	public FrozenTomb(boolean isUpgraded) {
 		super(ID, "Frozen Tomb", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		frostIncrease = isUpgraded ? 0.3 : 0.2;
+		frostIncrease = isUpgraded ? 0.25 : 0.15;
 		threshold = isUpgraded ? 15 : 20;
 	}
 	

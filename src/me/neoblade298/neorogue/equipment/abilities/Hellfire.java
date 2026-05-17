@@ -49,7 +49,7 @@ public class Hellfire extends Equipment {
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 120 : 80;
+		damage = isUpgraded ? 100 : 65;
 	}
 	
 	public static Equipment get() {

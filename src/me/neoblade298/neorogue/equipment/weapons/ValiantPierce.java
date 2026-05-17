@@ -45,8 +45,8 @@ public class ValiantPierce extends Equipment {
 				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 35, 8, tp.range)
 		);
-		damage = isUpgraded ? 200 : 150;
-		bonus = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 175 : 130;
+		bonus = isUpgraded ? 250 : 175;
 	}
 	
 	public static Equipment get() {

@@ -43,13 +43,13 @@ public class SparkTrap extends Equipment {
 	private static final TargetProperties radiusProps = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final TargetProperties lineProps = TargetProperties.line(8, 2, TargetType.ENEMY);
 	
-	private int explosionDamage = 100;
+	private int explosionDamage = 85;
 	private int lineDamage;
 
 	public SparkTrap(boolean isUpgraded) {
 		super(ID, "Spark Trap", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0, radiusProps.range));
-		lineDamage = isUpgraded ? 300 : 200;
+		lineDamage = isUpgraded ? 250 : 175;
 	}
 
 	public static Equipment get() {

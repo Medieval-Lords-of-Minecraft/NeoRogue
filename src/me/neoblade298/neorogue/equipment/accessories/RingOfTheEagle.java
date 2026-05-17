@@ -21,7 +21,7 @@ public class RingOfTheEagle extends Equipment {
 	public RingOfTheEagle(boolean isUpgraded) {
 		super(ID, "Ring of the Eagle", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY, EquipmentProperties.none());
-		thres = isUpgraded ? 10 : 12;
+		thres = isUpgraded ? 12 : 14;
 	}
 	
 	public static Equipment get() {

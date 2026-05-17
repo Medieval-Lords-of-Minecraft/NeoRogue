@@ -30,14 +30,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 public class Hullbreaker extends Equipment {
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final String ID = "Hullbreaker";
-	private static int damage = 100;
+	private static int damage = 85;
 	private int reduc;
 	private static final int THRES = 40;
 
 	public Hullbreaker(boolean isUpgraded) {
 		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.OFFHAND,
 				EquipmentProperties.ofWeapon(damage, 0.5, 0, DamageType.BLUNT, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR));
-		reduc = isUpgraded ? 15 : 10;
+		reduc = isUpgraded ? 12 : 8;
 
 	}
 

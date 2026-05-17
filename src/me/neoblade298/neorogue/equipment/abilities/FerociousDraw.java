@@ -34,7 +34,7 @@ public class FerociousDraw extends Equipment {
 		super(ID, "Ferocious Draw", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		range = 5;
-		damage = isUpgraded ? 80 : 60;
+		damage = isUpgraded ? 65 : 50;
 	}
 
 	public static Equipment get() {

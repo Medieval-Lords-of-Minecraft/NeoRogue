@@ -36,7 +36,7 @@ public class Dread extends Equipment {
 		super(ID, "Dread", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		stealthGained = isUpgraded ? 3 : 2;
-		damageIncrease = isUpgraded ? 0.60 : 0.40;
+		damageIncrease = isUpgraded ? 0.50 : 0.30;
 	}
 	
 	public static Equipment get() {
