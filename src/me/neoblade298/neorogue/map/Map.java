@@ -279,9 +279,12 @@ public class Map {
 			if (avail.isEmpty()) {
 				Collections.shuffle(used);
 				avail.addAll(used);
-				used.clear();
 			}
 			MapPiece piece = avail.poll();
+			if (piece == null) {
+				Bukkit.getLogger().warning("[NeoRogue] No pieces available for " + lookupType + " map generation. Stopping placement.");
+				break;
+			}
 			used.add(piece);
 			map.addTargets(piece.getTargets());
 
