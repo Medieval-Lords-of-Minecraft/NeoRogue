@@ -45,7 +45,7 @@ public class AvatarState extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			data.addManaRegen(mreg, 200);
+			data.addManaRegen(mreg);
 			data.addSimpleShield(p.getUniqueId(), shields, 200);
 
 			ActionMeta healthMeta = new ActionMeta();

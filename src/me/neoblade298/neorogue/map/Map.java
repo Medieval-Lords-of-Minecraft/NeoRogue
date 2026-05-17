@@ -246,27 +246,32 @@ public class Map {
 		LinkedList<MapPiece> avail = standardPieces.get(lookupType);
 		LinkedList<MapPiece> used = usedPieces.get(lookupType);
 
-		// Pick 3–5 chunk positions clustered near the center of the MAP_SIZE x MAP_SIZE grid
+		// Pick 3–5 chunk positions where each new position is exactly 1 chunk from an existing one
 		int targetCount = 3 + NeoRogue.gen.nextInt(3); // 3, 4, or 5
 		int center = MAP_SIZE / 2; // = 6 for MAP_SIZE=12
-		int clusterRadius = 3;     // positions drawn from a 7×7 window around center
+		int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
 
 		ArrayList<int[]> selected = new ArrayList<>();
+		// Seed the first position near the center
+		selected.add(new int[]{center, center});
+
 		int maxAttempts = 200;
 		int attempts = 0;
 		while (selected.size() < targetCount && attempts < maxAttempts) {
 			attempts++;
-			int rx = center - clusterRadius + NeoRogue.gen.nextInt(2 * clusterRadius + 1);
-			int rz = center - clusterRadius + NeoRogue.gen.nextInt(2 * clusterRadius + 1);
-			// Keep 1-chunk border clear around the grid
-			rx = Math.max(1, Math.min(MAP_SIZE - 2, rx));
-			rz = Math.max(1, Math.min(MAP_SIZE - 2, rz));
+			// Pick a random existing position and grow from it
+			int[] base = selected.get(NeoRogue.gen.nextInt(selected.size()));
+			int[] dir = dirs[NeoRogue.gen.nextInt(4)];
+			int nx = base[0] + dir[0];
+			int nz = base[1] + dir[1];
+			// Keep within grid bounds with 1-chunk border
+			if (nx < 1 || nx >= MAP_SIZE - 1 || nz < 1 || nz >= MAP_SIZE - 1) continue;
 
 			boolean conflict = false;
 			for (int[] pos : selected) {
-				if (pos[0] == rx && pos[1] == rz) { conflict = true; break; }
+				if (pos[0] == nx && pos[1] == nz) { conflict = true; break; }
 			}
-			if (!conflict) selected.add(new int[]{rx, rz});
+			if (!conflict) selected.add(new int[]{nx, nz});
 		}
 
 		// Place one piece at each selected position
