@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -20,6 +21,9 @@ public class MountainPathGenerator {
 	private static final int MAX_MOUNTAIN_HEIGHT = 22;
 	private static final double NOISE_SCALE = 0.02;
 	private static final int FOUNDATION_DEPTH = 3;
+	private static final int BORDER_WALL_HEIGHT = 20;
+	private static final int BORDER_START = 3; // Distance from pieces/paths where the barrier wall begins
+	private static final int BARRIER_ROOF_Y = 90; // Fixed Y-level for barrier roof
 	// How many blocks of padding around the piece bounding box to generate mountains
 	private static final int PADDING_CHUNKS = 2;
 
@@ -209,6 +213,18 @@ public class MountainPathGenerator {
 	}
 
 	/**
+	 * Returns the clamped projection parameter t (0 to 1) of point (px,pz) onto segment (x1,z1)-(x2,z2).
+	 * t=0 means closest to endpoint A, t=1 means closest to endpoint B.
+	 */
+	private static double projectOntoSegment(double px, double pz, double x1, double z1, double x2, double z2) {
+		double dx = x2 - x1;
+		double dz = z2 - z1;
+		double lenSq = dx * dx + dz * dz;
+		if (lenSq == 0) return 0;
+		return Math.max(0, Math.min(1, ((px - x1) * dx + (pz - z1) * dz) / lenSq));
+	}
+
+	/**
 	 * Compute terrain elevation at a given terrain-space position.
 	 * Returns height in blocks above baseY.
 	 * - Path zone (dist <= CORRIDOR_HALF_WIDTH): 0 (flat)
@@ -245,6 +261,325 @@ public class MountainPathGenerator {
 	}
 
 	/**
+	 * Generate terrain for the FROZEN_WASTES region.
+	 * Flat 16x16 platforms are placed at each piece chunk at the specified height offsets.
+	 * Paths are carved between adjacent chunk pairs (chunks 1 apart in logical space).
+	 * Mountainous terrain fills the remainder.
+	 *
+	 * @param world              Target world
+	 * @param xOff               Plot X offset
+	 * @param zOff               Plot Z offset
+	 * @param mapSize            Logical grid size (e.g. 12)
+	 * @param worldStride        Stride multiplier (e.g. 2 = 1 chunk gap between pieces)
+	 * @param logicalShape       logicalShape[x][z] = true if that logical chunk has a piece
+	 * @param adjacentChunkPairs List of int[]{ax, az, bx, bz} pairs of logically adjacent piece chunks
+	 * @param chunkHeights       Map from "x,z" logical chunk key to Y offset above baseY
+	 * @param seed               Noise seed
+	 */
+	public static void generateFrozenWastes(World world, int xOff, int zOff,
+			int mapSize, int worldStride,
+			boolean[][] logicalShape,
+			List<int[]> adjacentChunkPairs,
+			HashMap<String, Integer> chunkHeights,
+			long seed) {
+
+		long startTime = System.currentTimeMillis();
+		SimplexNoise noise = new SimplexNoise(seed);
+		int baseY = MapPieceInstance.Y_OFFSET;
+		int terrainRadius = 16; // How far mountains generate from pieces/paths
+		int pieceBarrierRadius = 3; // Tight barrier wall around pieces
+		int pathBarrierRadius = CORRIDOR_HALF_WIDTH + TRANSITION_WIDTH; // Wider barrier around paths
+
+		// 1. Determine active bounding box in logical space
+		int minGX = mapSize, maxGX = 0, minGZ = mapSize, maxGZ = 0;
+		for (int gx = 0; gx < mapSize; gx++) {
+			for (int gz = 0; gz < mapSize; gz++) {
+				if (!logicalShape[gx][gz]) continue;
+				minGX = Math.min(minGX, gx);
+				maxGX = Math.max(maxGX, gx);
+				minGZ = Math.min(minGZ, gz);
+				maxGZ = Math.max(maxGZ, gz);
+			}
+		}
+		if (minGX > maxGX) return;
+
+		// Convert to terrain-space block bounds with padding
+		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * worldStride * 16);
+		int endTX = Math.min(mapSize * worldStride * 16, (maxGX + 1 + PADDING_CHUNKS) * worldStride * 16);
+		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * worldStride * 16);
+		int endTZ = Math.min(mapSize * worldStride * 16, (maxGZ + 1 + PADDING_CHUNKS) * worldStride * 16);
+		int width = endTX - startTX;
+		int depth = endTZ - startTZ;
+
+		// 2. Build per-column piece height map (Integer.MIN_VALUE = not a piece chunk)
+		int[][] pieceHeightMap = new int[width][depth];
+		for (int[] row : pieceHeightMap) Arrays.fill(row, Integer.MIN_VALUE);
+
+		for (int gx = 0; gx < mapSize; gx++) {
+			for (int gz = 0; gz < mapSize; gz++) {
+				if (!logicalShape[gx][gz]) continue;
+				int yOff = chunkHeights.getOrDefault(gx + "," + gz, 0);
+				int csx = gx * worldStride * 16 - startTX;
+				int csz = gz * worldStride * 16 - startTZ;
+				for (int dx = 0; dx < 16; dx++) {
+					for (int dz = 0; dz < 16; dz++) {
+						int px = csx + dx;
+						int pz = csz + dz;
+						if (px >= 0 && px < width && pz >= 0 && pz < depth) {
+							pieceHeightMap[px][pz] = yOff;
+						}
+					}
+				}
+			}
+		}
+
+		// 3. Compute path segments from adjacent chunk pairs
+		// Segment format: int[]{sx1, sz1, sx2, sz2, yOffA, yOffB}
+		List<int[]> pathSegments = computePathSegmentsFromChunkPairs(
+				adjacentChunkPairs, worldStride, startTX, startTZ, chunkHeights);
+
+		// 4. Pre-compute distance to nearest piece or path for every terrain block
+		double[][] nearestDist = new double[width][depth];
+		double[][] pieceDist = new double[width][depth]; // Distance to nearest piece edge only
+		double[][] pathDistArr = new double[width][depth]; // Distance to nearest path centerline only
+		for (double[] row : nearestDist) Arrays.fill(row, Double.MAX_VALUE);
+		for (double[] row : pieceDist) Arrays.fill(row, Double.MAX_VALUE);
+		for (double[] row : pathDistArr) Arrays.fill(row, Double.MAX_VALUE);
+
+		// Distance to piece footprints
+		for (int lx = 0; lx < width; lx++) {
+			for (int lz = 0; lz < depth; lz++) {
+				if (pieceHeightMap[lx][lz] != Integer.MIN_VALUE) {
+					nearestDist[lx][lz] = 0;
+					pieceDist[lx][lz] = 0;
+				}
+			}
+		}
+		// Propagate piece distances outward within borderRadius using a simple BFS-like sweep
+		// Also track the Y offset of the nearest piece block for each terrain block
+		double[][] nearestPieceY = new double[width][depth];
+		for (int lx = 0; lx < width; lx++) {
+			for (int lz = 0; lz < depth; lz++) {
+				if (pieceHeightMap[lx][lz] == Integer.MIN_VALUE) continue;
+				int minX = Math.max(0, lx - terrainRadius);
+				int maxX = Math.min(width - 1, lx + terrainRadius);
+				int minZ = Math.max(0, lz - terrainRadius);
+				int maxZ = Math.min(depth - 1, lz + terrainRadius);
+				for (int nx = minX; nx <= maxX; nx++) {
+					for (int nz = minZ; nz <= maxZ; nz++) {
+						double d = Math.sqrt((nx - lx) * (nx - lx) + (nz - lz) * (nz - lz));
+						if (d < nearestDist[nx][nz]) nearestDist[nx][nz] = d;
+						if (d < pieceDist[nx][nz]) {
+							pieceDist[nx][nz] = d;
+							nearestPieceY[nx][nz] = pieceHeightMap[lx][lz];
+						}
+					}
+				}
+			}
+		}
+
+		// Distance to path segments
+		for (int[] seg : pathSegments) {
+			int sx1 = seg[0], sz1 = seg[1], sx2 = seg[2], sz2 = seg[3];
+			int yA = seg[4], yB = seg[5];
+			int influence = CORRIDOR_HALF_WIDTH + terrainRadius;
+			int bMinX = Math.max(0, Math.min(sx1, sx2) - influence);
+			int bMaxX = Math.min(width - 1, Math.max(sx1, sx2) + influence);
+			int bMinZ = Math.max(0, Math.min(sz1, sz2) - influence);
+			int bMaxZ = Math.min(depth - 1, Math.max(sz1, sz2) + influence);
+
+			for (int tx = bMinX; tx <= bMaxX; tx++) {
+				for (int tz = bMinZ; tz <= bMaxZ; tz++) {
+					double dist = distToSegment(tx, tz, sx1, sz1, sx2, sz2);
+					if (dist < nearestDist[tx][tz]) nearestDist[tx][tz] = dist;
+					if (dist < pathDistArr[tx][tz]) pathDistArr[tx][tz] = dist;
+				}
+			}
+		}
+
+		// 5. Generate terrain — only within terrainRadius of pieces/paths
+		int blocksPlaced = 0;
+		for (int lx = 0; lx < width; lx++) {
+			for (int lz = 0; lz < depth; lz++) {
+				// Skip piece footprints (schematics handle those)
+				if (pieceHeightMap[lx][lz] != Integer.MIN_VALUE) continue;
+				// Skip blocks beyond the terrain border
+				double dist = nearestDist[lx][lz];
+				if (dist > terrainRadius) continue;
+
+				int tx = startTX + lx;
+				int tz = startTZ + lz;
+				int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
+				int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
+
+				// Use distance to nearest path for elevation computation (paths vs mountains)
+				double pathDist = Double.MAX_VALUE;
+				double pathYOff = 0;
+				for (int[] seg : pathSegments) {
+					double d = distToSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
+					if (d < pathDist) {
+						pathDist = d;
+						double t = projectOntoSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
+						pathYOff = seg[4] + (seg[5] - seg[4]) * t;
+					}
+				}
+
+				double elevation = computeElevation(noise, tx, tz, pathDist);
+
+				// Feather mountains near piece edges: smooth rise over TRANSITION_WIDTH blocks
+				double pd = pieceDist[lx][lz];
+				if (pd < TRANSITION_WIDTH) {
+					double t = pd / TRANSITION_WIDTH;
+					t = t * t * (3 - 2 * t); // smoothstep
+					elevation *= t;
+				}
+
+				// Compute Y offset: paths use interpolated path Y, mountains/transition use nearest piece Y
+				int yOffset;
+				if (pathDist <= CORRIDOR_HALF_WIDTH) {
+					// Path zone: use interpolated Y from path endpoints + small noise bumps
+					double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
+					yOffset = (int) Math.round(pathYOff + bump) + 2;
+				} else {
+					// Mountain/transition zone: shift Y based on nearest piece
+					yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
+				}
+				blocksPlaced += placeColumn(world, worldX, worldZ, baseY + yOffset, noise, elevation, pathDist, tx, tz);
+			}
+		}
+
+		// 6. Generate 1-block-thick barrier wall and roof (only replacing air)
+		// Pre-compute which blocks are inside the barrier boundary
+		boolean[][] insideBarrier = new boolean[width][depth];
+		for (int lx = 0; lx < width; lx++) {
+			for (int lz = 0; lz < depth; lz++) {
+				insideBarrier[lx][lz] = pieceDist[lx][lz] <= pieceBarrierRadius
+						|| pathDistArr[lx][lz] <= pathBarrierRadius;
+			}
+		}
+		for (int lx = 0; lx < width; lx++) {
+			for (int lz = 0; lz < depth; lz++) {
+				if (!insideBarrier[lx][lz]) continue;
+				// Wall: inside block with at least one outside neighbor
+				boolean isWall = (lx == 0 || !insideBarrier[lx - 1][lz])
+						|| (lx == width - 1 || !insideBarrier[lx + 1][lz])
+						|| (lz == 0 || !insideBarrier[lx][lz - 1])
+						|| (lz == depth - 1 || !insideBarrier[lx][lz + 1]);
+				boolean isRoof = true; // All interior blocks get a roof
+
+				int tx = startTX + lx;
+				int tz = startTZ + lz;
+				int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
+				int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
+
+				if (isWall) {
+					// Barrier wall column up to fixed roof, only replace air
+					for (int y = baseY; y <= BARRIER_ROOF_Y; y++) {
+						Block b = world.getBlockAt(worldX, y, worldZ);
+						if (b.getType() == Material.AIR) {
+							b.setType(Material.BARRIER, false);
+							blocksPlaced++;
+						}
+					}
+				}
+
+				if (isRoof) {
+					// Roof at fixed Y-level, only replace air
+					Block roofBlock = world.getBlockAt(worldX, BARRIER_ROOF_Y, worldZ);
+					if (roofBlock.getType() == Material.AIR) {
+						roofBlock.setType(Material.BARRIER, false);
+						blocksPlaced++;
+					}
+				}
+			}
+		}
+
+		long duration = System.currentTimeMillis() - startTime;
+		Bukkit.getLogger().info("[MountainPath/FW] Generated " + blocksPlaced + " blocks in " + duration + "ms"
+				+ " (" + width + "x" + depth + " area, " + pathSegments.size() + " paths, "
+				+ adjacentChunkPairs.size() + " chunk pairs)");
+	}
+
+	/**
+	 * Compute path segments from adjacent chunk pairs.
+	 * Each pair {ax, az, bx, bz} produces a segment running from the touching edge of A
+	 * to the touching edge of B.
+	 */
+	private static List<int[]> computePathSegmentsFromChunkPairs(List<int[]> pairs,
+			int worldStride, int startTX, int startTZ, HashMap<String, Integer> chunkHeights) {
+		List<int[]> segments = new ArrayList<>();
+		for (int[] pair : pairs) {
+			int ax = pair[0], az = pair[1];
+			int bx = pair[2], bz = pair[3];
+
+			int anchorAX, anchorAZ, anchorBX, anchorBZ;
+			// cxA / czA = terrain-space origin of chunk A; cxB / czB for chunk B
+			int cxA = chunkTerrainOrigin(ax, worldStride);
+			int czA = chunkTerrainOrigin(az, worldStride);
+			int cxB = chunkTerrainOrigin(bx, worldStride);
+			int czB = chunkTerrainOrigin(bz, worldStride);
+
+			if (bx > ax) {
+				// B is east of A
+				anchorAX = cxA + 16; anchorAZ = czA + 8;
+				anchorBX = cxB - 1;  anchorBZ = czB + 8;
+			} else if (bx < ax) {
+				// B is west of A
+				anchorAX = cxA - 1;  anchorAZ = czA + 8;
+				anchorBX = cxB + 16; anchorBZ = czB + 8;
+			} else if (bz > az) {
+				// B is north of A (higher Z)
+				anchorAX = cxA + 8; anchorAZ = czA + 16;
+				anchorBX = cxB + 8; anchorBZ = czB - 1;
+			} else {
+				// B is south of A (lower Z)
+				anchorAX = cxA + 8; anchorAZ = czA - 1;
+				anchorBX = cxB + 8; anchorBZ = czB + 16;
+			}
+
+			segments.add(new int[] {
+					anchorAX - startTX, anchorAZ - startTZ,
+					anchorBX - startTX, anchorBZ - startTZ,
+					chunkHeights.getOrDefault(ax + "," + az, 0),
+					chunkHeights.getOrDefault(bx + "," + bz, 0)
+			});
+		}
+		return segments;
+	}
+
+	/**
+	 * Returns the terrain-space block origin of a logical chunk coordinate.
+	 * e.g. logical chunk 5 with stride 2 → block 5*2*16 = 160
+	 */
+	private static int chunkTerrainOrigin(int chunkCoord, int stride) {
+		return chunkCoord * stride * 16;
+	}
+
+	/**
+	 * Place a flat platform column at a piece chunk position.
+	 * Generates a stone foundation directly below the platform surface (FOUNDATION_DEPTH blocks),
+	 * with a packed-ice surface at baseY + yOffset.
+	 * Returns number of blocks placed.
+	 */
+	private static int placePlatformColumn(World world, int worldX, int worldZ, int baseY, int yOffset) {
+		int platformY = baseY + yOffset;
+		int placed = 0;
+
+		// Stone foundation directly below the platform surface
+		for (int y = platformY - FOUNDATION_DEPTH; y < platformY; y++) {
+			world.getBlockAt(worldX, y, worldZ).setType(Material.STONE, false);
+			placed++;
+		}
+
+		// Platform surface. Packed ice serves as a floor fallback for any column not
+		// covered by the schematic paste; the schematic will overwrite it where present.
+		world.getBlockAt(worldX, platformY, worldZ).setType(Material.PACKED_ICE, false);
+		placed++;
+
+		return placed;
+	}
+
+	/**
 	 * Place a vertical column of terrain blocks at the given world position.
 	 * Returns number of blocks placed.
 	 */
@@ -253,9 +588,11 @@ public class MountainPathGenerator {
 			int tx, int tz) {
 		int surfaceY = baseY + (int) elevation;
 		int placed = 0;
+		int globalBaseY = MapPieceInstance.Y_OFFSET;
 
-		// Foundation below baseY
-		for (int y = baseY - FOUNDATION_DEPTH; y < baseY; y++) {
+		// Foundation: fill from global base down through FOUNDATION_DEPTH up to column baseY
+		int foundationBottom = Math.min(baseY, globalBaseY) - FOUNDATION_DEPTH;
+		for (int y = foundationBottom; y < baseY; y++) {
 			Block b = world.getBlockAt(worldX, y, worldZ);
 			b.setType(Material.STONE, false);
 			placed++;
