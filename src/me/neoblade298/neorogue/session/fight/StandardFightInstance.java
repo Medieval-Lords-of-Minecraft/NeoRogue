@@ -104,7 +104,7 @@ public class StandardFightInstance extends FightInstance {
 					}
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
+		}.runTaskTimer(NeoRogue.inst(), 60L, 20L));
 	}
 
 	@Override
