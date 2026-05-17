@@ -19,9 +19,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ForcePotion extends Consumable {
 	private static final String ID = "ForcePotion";
+	private double damageBuff;
 
 	public ForcePotion(boolean isUpgraded) {
 		super(ID, "Force Potion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		damageBuff = isUpgraded ? 0.6 : 0.4;
 	}
 
 	public static Equipment get() {
@@ -31,14 +33,15 @@ public class ForcePotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-				Buff.multiplier(data, 1.0, StatTracker.damageBuffAlly(id, this)), 400);
+				Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id, this)), 400);
 		return TriggerResult.remove();
 	}
 
 	@Override
 	public void setupItem() {
+		int buffPct = (int) (damageBuff * 100);
 		item = createItem(Material.POTION,
-				"Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.white("100%") + " for [<white>20s</white>]. Consumed on first use.");
+				"Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.white(buffPct + "%") + " for [<white>20s</white>]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 69, 0));
 		item.setItemMeta(meta);

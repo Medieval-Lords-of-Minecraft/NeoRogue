@@ -152,10 +152,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			hotbar[0] = WoodenWand.get();
 			hotbar[1] = ManaBlitz.get();
 			abilitiesEquipped = 1;
-			maxStamina = 25;
-			maxMana = 50;
-			staminaRegen = 1;
-			manaRegen = 2;
+			maxStamina = 35;
+			maxMana = 40;
+			staminaRegen = 1.4;
+			manaRegen = 1.6;
 			break;
 		default:
 			break;

@@ -29,7 +29,7 @@ public class Sidestep extends Equipment {
 	
 	public Sidestep(boolean isUpgraded) {
 		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 35, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		evade = isUpgraded ? 2 : 1;
 	}

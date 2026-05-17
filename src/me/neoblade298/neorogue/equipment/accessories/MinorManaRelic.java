@@ -23,7 +23,7 @@ public class MinorManaRelic extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addStaminaRegen(regen);
+		data.addManaRegen(regen);
 	}
 
 	@Override

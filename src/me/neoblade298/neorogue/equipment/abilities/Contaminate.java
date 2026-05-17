@@ -34,7 +34,7 @@ public class Contaminate extends Equipment {
 	
 	public Contaminate(boolean isUpgraded) {
 		super(ID, "Contaminate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 20, 18, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 18, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		mult = isUpgraded ? 1.6 : 1.4;
 	}
