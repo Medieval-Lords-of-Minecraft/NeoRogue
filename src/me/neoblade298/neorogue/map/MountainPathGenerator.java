@@ -21,8 +21,6 @@ public class MountainPathGenerator {
 	private static final int MAX_MOUNTAIN_HEIGHT = 22;
 	private static final double NOISE_SCALE = 0.02;
 	private static final int FOUNDATION_DEPTH = 3;
-	private static final int BORDER_WALL_HEIGHT = 20;
-	private static final int BORDER_START = 3; // Distance from pieces/paths where the barrier wall begins
 	private static final int BARRIER_ROOF_Y = 90; // Fixed Y-level for barrier roof
 	// How many blocks of padding around the piece bounding box to generate mountains
 	private static final int PADDING_CHUNKS = 2;
@@ -381,7 +379,6 @@ public class MountainPathGenerator {
 		// Distance to path segments
 		for (int[] seg : pathSegments) {
 			int sx1 = seg[0], sz1 = seg[1], sx2 = seg[2], sz2 = seg[3];
-			int yA = seg[4], yB = seg[5];
 			int influence = CORRIDOR_HALF_WIDTH + terrainRadius;
 			int bMinX = Math.max(0, Math.min(sx1, sx2) - influence);
 			int bMaxX = Math.min(width - 1, Math.max(sx1, sx2) + influence);
@@ -553,30 +550,6 @@ public class MountainPathGenerator {
 	 */
 	private static int chunkTerrainOrigin(int chunkCoord, int stride) {
 		return chunkCoord * stride * 16;
-	}
-
-	/**
-	 * Place a flat platform column at a piece chunk position.
-	 * Generates a stone foundation directly below the platform surface (FOUNDATION_DEPTH blocks),
-	 * with a packed-ice surface at baseY + yOffset.
-	 * Returns number of blocks placed.
-	 */
-	private static int placePlatformColumn(World world, int worldX, int worldZ, int baseY, int yOffset) {
-		int platformY = baseY + yOffset;
-		int placed = 0;
-
-		// Stone foundation directly below the platform surface
-		for (int y = platformY - FOUNDATION_DEPTH; y < platformY; y++) {
-			world.getBlockAt(worldX, y, worldZ).setType(Material.STONE, false);
-			placed++;
-		}
-
-		// Platform surface. Packed ice serves as a floor fallback for any column not
-		// covered by the schematic paste; the schematic will overwrite it where present.
-		world.getBlockAt(worldX, platformY, worldZ).setType(Material.PACKED_ICE, false);
-		placed++;
-
-		return placed;
 	}
 
 	/**
