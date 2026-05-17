@@ -379,30 +379,28 @@ public class MountainPathGenerator {
 			int bx = pair[2], bz = pair[3];
 
 			int anchorAX, anchorAZ, anchorBX, anchorBZ;
+			// cxA / czA = terrain-space origin of chunk A; cxB / czB for chunk B
+			int cxA = chunkTerrainOrigin(ax, worldStride);
+			int czA = chunkTerrainOrigin(az, worldStride);
+			int cxB = chunkTerrainOrigin(bx, worldStride);
+			int czB = chunkTerrainOrigin(bz, worldStride);
+
 			if (bx > ax) {
 				// B is east of A
-				anchorAX = ax * worldStride * 16 + 16;
-				anchorAZ = az * worldStride * 16 + 8;
-				anchorBX = bx * worldStride * 16 - 1;
-				anchorBZ = bz * worldStride * 16 + 8;
+				anchorAX = cxA + 16; anchorAZ = czA + 8;
+				anchorBX = cxB - 1;  anchorBZ = czB + 8;
 			} else if (bx < ax) {
 				// B is west of A
-				anchorAX = ax * worldStride * 16 - 1;
-				anchorAZ = az * worldStride * 16 + 8;
-				anchorBX = bx * worldStride * 16 + 16;
-				anchorBZ = bz * worldStride * 16 + 8;
+				anchorAX = cxA - 1;  anchorAZ = czA + 8;
+				anchorBX = cxB + 16; anchorBZ = czB + 8;
 			} else if (bz > az) {
 				// B is north of A (higher Z)
-				anchorAX = ax * worldStride * 16 + 8;
-				anchorAZ = az * worldStride * 16 + 16;
-				anchorBX = bx * worldStride * 16 + 8;
-				anchorBZ = bz * worldStride * 16 - 1;
+				anchorAX = cxA + 8; anchorAZ = czA + 16;
+				anchorBX = cxB + 8; anchorBZ = czB - 1;
 			} else {
 				// B is south of A (lower Z)
-				anchorAX = ax * worldStride * 16 + 8;
-				anchorAZ = az * worldStride * 16 - 1;
-				anchorBX = bx * worldStride * 16 + 8;
-				anchorBZ = bz * worldStride * 16 + 16;
+				anchorAX = cxA + 8; anchorAZ = czA - 1;
+				anchorBX = cxB + 8; anchorBZ = czB + 16;
 			}
 
 			segments.add(new int[] {
@@ -411,6 +409,14 @@ public class MountainPathGenerator {
 			});
 		}
 		return segments;
+	}
+
+	/**
+	 * Returns the terrain-space block origin of a logical chunk coordinate.
+	 * e.g. logical chunk 5 with stride 2 → block 5*2*16 = 160
+	 */
+	private static int chunkTerrainOrigin(int chunkCoord, int stride) {
+		return chunkCoord * stride * 16;
 	}
 
 	/**
@@ -429,7 +435,8 @@ public class MountainPathGenerator {
 			placed++;
 		}
 
-		// Platform surface (packed ice — the piece schematic overwrites the floor blocks)
+		// Platform surface. Packed ice serves as a floor fallback for any column not
+		// covered by the schematic paste; the schematic will overwrite it where present.
 		world.getBlockAt(worldX, platformY, worldZ).setType(Material.PACKED_ICE, false);
 		placed++;
 

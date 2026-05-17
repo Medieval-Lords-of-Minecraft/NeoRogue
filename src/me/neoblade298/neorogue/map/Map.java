@@ -288,7 +288,8 @@ public class Map {
 			else if (flipRand == 2) inst.setFlip(false, true);
 			piece.getShape().applySettings(inst);
 
-			// Random Y height offset: -4 to +4 blocks above baseY
+			// Random Y height offset: -4 to +4 blocks above baseY.
+			// setY() stores a relative offset; pieces are pasted at Y_OFFSET + inst.getY().
 			int yOffset = NeoRogue.gen.nextInt(9) - 4;
 			inst.setX(pos[0]);
 			inst.setY(yOffset);
