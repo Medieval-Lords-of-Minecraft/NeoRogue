@@ -45,13 +45,23 @@ public class AvatarState extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			data.addManaRegen(mreg, 200);
+			data.addManaRegen(mreg);
 			data.addSimpleShield(p.getUniqueId(), shields, 200);
 
+			ActionMeta manaRegenMeta = new ActionMeta();
+			data.addTrigger(ID + "_mana_regen", Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				manaRegenMeta.addCount(1);
+				if (manaRegenMeta.getCount() > 10) {
+					data.addManaRegen(-mreg);
+					return TriggerResult.remove();
+				}
+				return TriggerResult.keep();
+			});
+
 			ActionMeta healthMeta = new ActionMeta();
-			data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+			data.addTrigger(ID + "_health", Trigger.PLAYER_TICK, (pdata2, in2) -> {
 				healthMeta.addCount(1);
-				if (healthMeta.getCount() > 200) return TriggerResult.remove();
+				if (healthMeta.getCount() > 10) return TriggerResult.remove();
 				data.addHealth(hreg);
 				return TriggerResult.keep();
 			});
@@ -66,6 +76,6 @@ public class AvatarState extends Equipment {
 				GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(ACTIVATION_THRES)
 						+ " abilities while above 50% mana. Increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
 						+ DescUtil.yellow(hreg) + ", and gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
-						+ " [" + DescUtil.white("10s") + "] (all last 10s).");
+						+ ", all lasting 10s.");
 	}
 }
