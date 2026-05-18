@@ -39,7 +39,7 @@ public class Grit extends Equipment {
 	public Grit(boolean isUpgraded) {
 		super(ID, "Grit", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 9 : 6;
 		inc = isUpgraded ? 35 : 25;
 		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);
 	}
@@ -77,7 +77,7 @@ public class Grit extends Equipment {
 				double dist = ev3.getTarget().getLocation().distanceSquared(p3.getLocation());
 				if (dist <= 25) {
 					pc.play(p3, p3);
-					data.addSimpleShield(p3.getUniqueId(), shields, 60);
+					data.addSimpleShield(p3.getUniqueId(), shields, 160);
 					equip.play(p3, p3);
 				}
 				return TriggerResult.keep();
@@ -91,6 +91,6 @@ public class Grit extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range damage " + DescUtil.white(5) + " times. Dealing damage from at most " + DescUtil.white(5) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
-				DescUtil.yellow(inc) + ". Killing an enemy within " + DescUtil.white(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("3s") + "].");
+				DescUtil.yellow(inc) + ". Killing an enemy within " + DescUtil.white(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("8s") + "].");
 	}
 }

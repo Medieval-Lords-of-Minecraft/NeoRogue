@@ -42,16 +42,16 @@ import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class Map {
 	private static HashMap<String, MapPiece> allPieces = new HashMap<String, MapPiece>();
-	private static HashMap<RegionType, LinkedList<MapPiece>> standardPieces = new HashMap<RegionType, LinkedList<MapPiece>>(),
+	protected static HashMap<RegionType, LinkedList<MapPiece>> standardPieces = new HashMap<RegionType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<RegionType, LinkedList<MapPiece>>();
 	private static HashMap<RegionType, ArrayList<MapPiece>> minibossPieces = new HashMap<RegionType, ArrayList<MapPiece>>(),
 			bossPieces = new HashMap<RegionType, ArrayList<MapPiece>>();
-	private static final int MAP_SIZE = 12;
+	protected static final int MAP_SIZE = 12;
 	
 	private RegionType type;
 	private boolean hasCustomMobInfo = false;
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private LinkedList<MapEntrance> entrances = new LinkedList<MapEntrance>(),
+	protected LinkedList<MapEntrance> entrances = new LinkedList<MapEntrance>(),
 			obstructedEntrances = new LinkedList<MapEntrance>();
 	private ArrayList<Coordinates> spawns = new ArrayList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
@@ -61,13 +61,24 @@ public class Map {
 	private int effectiveSize;
 	private int worldStride = 1;
 	private ArrayList<MapEntrance[]> connectedEntrances = new ArrayList<>();
-	private List<int[]> adjacentChunkPairs = new ArrayList<>();
-	private HashMap<String, Integer> chunkHeights = new HashMap<>();
 	
 	public Map(RegionType type) {
 		this.type = type;
-		if (type == RegionType.FROZEN_WASTES || type == RegionType.FROZEN_WASTES_DEBUG) {
-			this.worldStride = 2;
+	}
+	
+	/**
+	 * Factory method to create the correct Map subclass for a given RegionType.
+	 */
+	protected static Map createMap(RegionType type) {
+		switch (type) {
+		case HARVEST_FIELDS:
+		case HARVEST_FIELDS_DEBUG:
+			return new HarvestFieldsMap(type);
+		case FROZEN_WASTES:
+		case FROZEN_WASTES_DEBUG:
+			return new FrozenWastesMap(type);
+		default:
+			return new Map(type);
 		}
 	}
 	
@@ -133,14 +144,17 @@ public class Map {
 	}
 	
 	public static Map generate(RegionType type, int numPieces, boolean debugMode) {
-		if (type == RegionType.FROZEN_WASTES || type == RegionType.FROZEN_WASTES_DEBUG) {
-			return generateFrozenWastes(type, numPieces, debugMode);
+		Map map = createMap(type);
+		if (map instanceof FrozenWastesMap) {
+			FrozenWastesMap fwMap = (FrozenWastesMap) map;
+			fwMap.generatePieces(type, debugMode);
+			return fwMap;
 		}
-		return generate(new Map(type), type, numPieces, debugMode);
+		return generate(map, type, numPieces, debugMode);
 	}
 	
 	public static Map generate(RegionType type, int numPieces, MapPiece requiredPiece, boolean debugMode) {
-		Map map = new Map(type);
+		Map map = createMap(type);
 		map.place(requiredPiece);
 		return generate(map, type, numPieces, debugMode);
 	}
@@ -180,146 +194,8 @@ public class Map {
 			}
 		}
 		
-		// Fill in any spots adjacent to pieces with border pieces
-		if (type == RegionType.HARVEST_FIELDS) {
-			boolean hasEntrances = map.getPieces().getFirst().getPiece().getEntrances() != null;
-			int y = hasEntrances ? (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY() : 0;
-			boolean[][] shape = map.shape;
-			HashSet<Pair> set = new HashSet<Pair>();
-			// Look for all empty spots adjacent to used spots
-			for (int i = 0; i < shape.length; i++) {
-				for (int j = 0; j < shape[0].length; j++) {
-					if (!shape[i][j]) continue;
-					for (int x = -1; x <= 1; x++) {
-						for (int z = -1; z <= 1; z++) {
-							int ip = x + i, jp = z + j;
-							if (ip < 0 || ip >= shape.length) continue;
-							if (jp < 0 || jp >= shape.length) continue;
-							if (shape[ip][jp]) continue;
-							set.add(new Pair(ip, jp));
-						}
-					}
-				}
-			}
-			
-			// Only have harvest fields borders for standard maps
-			if (map.getPieces().getFirst().getType().equals("STANDARD")) {
-				for (Pair coords : set) {
-					MapPieceInstance inst = MapPiece.HARVESTBORDER.getInstance();
-					MapShape ms = inst.getPiece().getShape();
-					
-					// Randomly rotate the piece
-					inst.setRotations(NeoRogue.gen.nextInt(4));
-					int rand = NeoRogue.gen.nextInt(3);
-					if (rand == 1) inst.setFlip(true, false);
-					else if (rand == 2) inst.setFlip(false, true);
-					ms.applySettings(inst);
-					inst.setX(coords.i);
-					inst.setY(y);
-					inst.setZ(coords.j);
-					map.place(inst, false);
-				}
-			}
-		}
+		map.postGenerate(type);
 		
-		return map;
-	}
-	
-	private static class Pair {
-		private int i, j;
-		public Pair(int i, int j) {
-			this.i = i;
-			this.j = j;
-		}
-	}
-	
-	/**
-	 * Generate a FROZEN_WASTES map.
-	 * Picks 3–5 isolated chunk positions clustered near the center of the MAP_SIZE grid,
-	 * assigns each a random Y height offset, then places one map piece per position.
-	 * Adjacent chunk pairs (1 apart in the logical grid) are recorded so that
-	 * MountainPathGenerator can carve corridor paths between them.
-	 */
-	public static Map generateFrozenWastes(RegionType type, int numPieces, boolean debugMode) {
-		Map map = new Map(type);
-		RegionType lookupType = debugMode ? RegionType.getDebugRegion(type) : type;
-		LinkedList<MapPiece> avail = standardPieces.get(lookupType);
-		LinkedList<MapPiece> used = usedPieces.get(lookupType);
-
-		// Pick 3–5 chunk positions where each new position is exactly 1 chunk from an existing one
-		int targetCount = 3 + NeoRogue.gen.nextInt(3); // 3, 4, or 5
-		int center = MAP_SIZE / 2; // = 6 for MAP_SIZE=12
-		int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-
-		ArrayList<int[]> selected = new ArrayList<>();
-		// Seed the first position near the center
-		selected.add(new int[]{center, center});
-
-		int maxAttempts = 200;
-		int attempts = 0;
-		while (selected.size() < targetCount && attempts < maxAttempts) {
-			attempts++;
-			// Pick a random existing position and grow from it
-			int[] base = selected.get(NeoRogue.gen.nextInt(selected.size()));
-			int[] dir = dirs[NeoRogue.gen.nextInt(4)];
-			int nx = base[0] + dir[0];
-			int nz = base[1] + dir[1];
-			// Keep within grid bounds with 1-chunk border
-			if (nx < 1 || nx >= MAP_SIZE - 1 || nz < 1 || nz >= MAP_SIZE - 1) continue;
-
-			boolean conflict = false;
-			for (int[] pos : selected) {
-				if (pos[0] == nx && pos[1] == nz) { conflict = true; break; }
-			}
-			if (!conflict) selected.add(new int[]{nx, nz});
-		}
-
-		// Place one piece at each selected position
-		for (int[] pos : selected) {
-			if (avail.isEmpty()) {
-				Collections.shuffle(used);
-				avail.addAll(used);
-			}
-			MapPiece piece = avail.poll();
-			if (piece == null) {
-				Bukkit.getLogger().warning("[NeoRogue] No pieces available for " + lookupType + " map generation. Stopping placement.");
-				break;
-			}
-			used.add(piece);
-			map.addTargets(piece.getTargets());
-
-			MapPieceInstance inst = piece.getInstance();
-			// Random orientation
-			inst.setRotations(NeoRogue.gen.nextInt(4));
-			int flipRand = NeoRogue.gen.nextInt(3);
-			if (flipRand == 1) inst.setFlip(true, false);
-			else if (flipRand == 2) inst.setFlip(false, true);
-			piece.getShape().applySettings(inst);
-
-			// Random Y height offset: -4 to +4 blocks above baseY.
-			// setY() stores a relative offset; pieces are pasted at Y_OFFSET + inst.getY().
-			int yOffset = NeoRogue.gen.nextInt(9) - 4;
-			inst.setX(pos[0]);
-			inst.setY(yOffset);
-			inst.setZ(pos[1]);
-
-			map.chunkHeights.put(pos[0] + "," + pos[1], yOffset);
-			map.place(inst, false);
-		}
-
-		// Find adjacent pairs (exactly 1 apart in one axis) for path generation
-		for (int i = 0; i < selected.size(); i++) {
-			for (int j = i + 1; j < selected.size(); j++) {
-				int[] a = selected.get(i);
-				int[] b = selected.get(j);
-				int dx = Math.abs(a[0] - b[0]);
-				int dz = Math.abs(a[1] - b[1]);
-				if ((dx == 1 && dz == 0) || (dx == 0 && dz == 1)) {
-					map.adjacentChunkPairs.add(new int[]{a[0], a[1], b[0], b[1]});
-				}
-			}
-		}
-
 		return map;
 	}
 	
@@ -343,7 +219,7 @@ public class Map {
 		inst.setX(x);
 		inst.setY(0);
 		inst.setZ(z);
-		place(inst, false);
+		placePiece(inst, false);
 	}
 	
 	public boolean place(MapPiece piece) {
@@ -379,27 +255,26 @@ public class Map {
 			if (potentialPlacements.size() == 0) return false;
 
 			MapPieceInstance best = potentialPlacements.first();
-			place(best, false);
+			placePiece(best, false);
 		}
 		return true;
 	}
 	
-	private boolean canPlace(MapShape shape, int x, int z) {
+	protected boolean canPlace(MapShape shape, int x, int z) {
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				if (x + i > MAP_SIZE - 1 || x + i < 0 || z + j > MAP_SIZE - 1 || z + j < 0) return false;
 				
 				if (this.shape[x + i][z + j] && shape.get(i, j)) return false;
 
-				// Reserve edges for border pieces in HARVEST_FIELDS
-				if (type == RegionType.HARVEST_FIELDS && shape.get(i, j) &&
+				if (!canPlaceOnEdge() && shape.get(i, j) &&
 						(x + i == 0 || x + i == MAP_SIZE - 1 || z + j == 0 || z + j == MAP_SIZE - 1)) return false;
 			}
 		}
 		return true;
 	}
 	
-	private void place(MapPieceInstance inst, boolean deserializing) {
+	protected void placePiece(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
 		shape.applySettings(inst);
 		ArrayList<MapEntrance> obstructed = new ArrayList<MapEntrance>();
@@ -567,24 +442,7 @@ public class Map {
 			
 		    new BukkitRunnable() {
 		    	public void run() {
-		    		// Generate terrain for spaced maps (e.g. FROZEN_WASTES)
-		    		if (type.usesMountainousGeneration()) {
-		    			// FROZEN_WASTES: chunk-pair based generation with per-chunk height platforms
-		    			MountainPathGenerator.generateFrozenWastes(
-		    				Bukkit.getWorld(Region.WORLD_NAME),
-		    				xOff, zOff, MAP_SIZE, worldStride,
-		    				shape, adjacentChunkPairs, chunkHeights,
-		    				NeoRogue.gen.nextLong()
-		    			);
-		    		} else if (worldStride > 1) {
-		    			// Other spaced maps: legacy entrance-based path generation
-		    			MountainPathGenerator.generate(
-		    				Bukkit.getWorld(Region.WORLD_NAME),
-		    				xOff, zOff, MAP_SIZE, worldStride,
-		    				shape, connectedEntrances,
-		    				NeoRogue.gen.nextLong()
-		    			);
-		    		}
+		    		generateTerrain(fi, xOff, zOff);
 		    		
 					// Setup pieces and spawners
 					if (fi != null) {
@@ -609,8 +467,8 @@ public class Map {
 						inst.instantiate(fi, xOff, zOff, worldStride);
 					}
 					
-					// Block off all unused entrances (skip for spaced maps - mountains handle it)
-					if (worldStride <= 1) {
+					// Block off all unused entrances
+					if (shouldBlockEntrances()) {
 						World w = Bukkit.getWorld(Region.WORLD_NAME);
 						for (MapEntrance coords : entrances) {
 							handleUnusedEntrance(coords, w, xOff, zOff);
@@ -624,13 +482,50 @@ public class Map {
 		}
 	}
 	
+	/**
+	 * Override in subclasses to generate custom terrain (mountains, paths, etc.).
+	 * Called during instantiate before pieces are pasted.
+	 * Base implementation generates entrance-based mountain paths for spaced maps.
+	 */
+	protected void generateTerrain(FightInstance fi, int xOff, int zOff) {
+		if (worldStride > 1) {
+			MountainPathGenerator.generate(
+				Bukkit.getWorld(Region.WORLD_NAME),
+				xOff, zOff, MAP_SIZE, worldStride,
+				shape, connectedEntrances,
+				NeoRogue.gen.nextLong()
+			);
+		}
+	}
+	
+	/**
+	 * Whether unused/obstructed entrances should be blocked off with walls.
+	 * Override to return false for maps where terrain handles containment.
+	 */
+	protected boolean shouldBlockEntrances() {
+		return true;
+	}
+	
+	/**
+	 * Whether pieces can be placed on the edge of the map grid.
+	 * Override to return false for maps that reserve edges (e.g. for border pieces).
+	 */
+	protected boolean canPlaceOnEdge() {
+		return true;
+	}
+	
+	/**
+	 * Called after the standard piece placement loop in generate().
+	 * Override to add border pieces or other post-generation modifications.
+	 */
+	protected void postGenerate(RegionType type) {
+	}
+	
 	private void handleUnusedEntrance(MapEntrance coords, World w, int xOff, int zOff) {
-		if (type == RegionType.HARVEST_FIELDS) return;
 		handleObstructedEntrance(coords, w, xOff, zOff);
 	}
 	
 	private void handleObstructedEntrance(MapEntrance coords, World w, int xOff, int zOff) {
-		if (type == RegionType.HARVEST_FIELDS) return;
 		int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
 		int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
 		int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
@@ -747,6 +642,18 @@ public class Map {
 		return worldStride;
 	}
 	
+	protected void setWorldStride(int stride) {
+		this.worldStride = stride;
+	}
+	
+	protected static LinkedList<MapPiece> getStandardPieces(RegionType type) {
+		return standardPieces.get(type);
+	}
+	
+	protected static LinkedList<MapPiece> getUsedPieces(RegionType type) {
+		return usedPieces.get(type);
+	}
+	
 	public List<MapEntrance[]> getConnectedEntrances() {
 		return connectedEntrances;
 	}
@@ -761,12 +668,12 @@ public class Map {
 	
 	public static Map deserialize(String str) {
 		RegionType type = RegionType.valueOf(str.substring(0, str.indexOf("-")));
-		Map map = new Map(type);
+		Map map = createMap(type);
 		str = str.substring(str.indexOf("-") + 1);
 		String[] pieces = str.split(";");
 		for (String piece : pieces) {
 			MapPieceInstance mpi = MapPieceInstance.deserialize(piece);
-			map.place(mpi, true);
+			map.placePiece(mpi, true);
 			map.addTargets(mpi.getPiece().getTargets());
 		}
 		map.recalculateEntrances();
