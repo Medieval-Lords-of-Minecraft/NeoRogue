@@ -11,182 +11,439 @@ You have deep knowledge of MythicMobs plugin configuration. When the user asks a
 
 ## Project File Structure
 
-- **Mob files**: `externals/Mobs/<area>/` — YAML files defining mob entities
-- **Skill files**: `externals/Skills/<area>/` — YAML files defining skill mechanics
-- Areas are organized by zone: `0 - Tutorial`, `1 - Low District`, `2 - Harvest Fields`, etc.
-- Boss files are named `Boss - <Name>.yml` in both Mobs and Skills folders
-- Regular mobs go in `Mobs.yml`, minibosses in `Minibosses.yml`
+- **Mob files**: `src/me/externals/Mobs/<area>/` — YAML files defining mob entities
+- **Skill files**: `src/me/externals/Skills/<area>/` — YAML files defining skill mechanics
+- **Shared skills**: `src/me/externals/Skills/Etc Skills.yml` — Telegraph skills and other shared utilities
+- **Shared mobs**: `src/me/externals/Mobs/Etc Mobs.yml` — Dummy, utility mobs
+- Areas are organized by zone: `1 - Low District`, `2 - Harvest Fields`, etc.
+- Boss mobs get their own file: `<BossName>.yml` in both Mobs and Skills folders
+- Regular mobs go in `<Area> Mobs.yml` (e.g. `Low District Mobs.yml`)
+- Regular mob skills go in `Mob Skills.yml` within the area's Skills folder
 
 ## Mob Configuration Patterns
 
 ### Standard Mob Template
+All mobs use `Damage: 0` because damage is handled entirely through `nrdamage` in skills.
 ```yaml
 MobName:
-  MobType: zombie
-  Display: '&6[Lv X] &cMob Name'
-  Health: <value>
-  Damage: <value>
-  Options:
-    AlwaysShowName: true
-    PreventOtherDrops: true
-    Despawn: true
-    PreventSunburn: true
-    PreventRandomEquipment: true
-  Skills:
-  - skill{s=MobXDeath} ~onDeath @Trigger
-  - msg{m="&4[&c&lMLMC&4] &e<trigger.name> &7was slain by <mob.name>"} @Server ~onKillPlayer
-  - setlevel{level=X} ~onSpawn
-  Drops:
-  - skillapi-exp <value>
+  Type: zombie
+  Display: '&7Mob Name'
+  Health: 50
+  Damage: 0
+  Disguise: <entity_type>
   Modules:
     ThreatTable: true
+  Equipment:
+    - <item>:HAND
+    - <item>:HEAD
+    - <item>:CHEST
+    - <item>:LEGS
+    - <item>:FEET
+  Options:
+    MovementSpeed: 0.275
+    NoDamageTicks: 0
+    PreventOtherDrops: true
+    PreventSunburn: true
+    PreventItemPickup: true
+    KnockbackResistance: 1
+    AlwaysShowName: true
+    Silent: true
+  Skills:
+  - skill{s=MobNameAttack} ~onTimer:20
 ```
 
 ### Boss Template
 ```yaml
 BossName:
-  Mobtype: <type>
-  Health: <large value>
-  Display: '&4&l<Boss Name>'
-  KillMessages:
-  - "&4[&c&lMLMC&4] &e<trigger.name> &7was slain by <mob.name>"
-  Skills:
-  - skill{s=BossSpawn} ~onSpawn 1 1
-  - skill{s=BossDeath} ~onDeath
-  - skill{s=PhaseSkill} ~onTimer:20
-  - scaletolevel{boss=BossName} @Self ~onSpawn
+  Type: zombie
+  Display: '&4BossName'
+  Health: 1500
+  Damage: 0
+  Disguise: wither_skeleton
+  Modules:
+    ThreatTable: true
+  Equipment:
+    - <weapon>:HAND
+    - <armor>:HEAD
+    - <armor>:CHEST
+    - <armor>:LEGS
+    - <armor>:FEET
   BossBar:
     Enabled: true
-    Title: "&4<Boss Name>"
-    Range: 40
+    Title: '&4&lBossName'
+    Range: 50
     Color: GREEN
-    Style: SOLID
+    Style: SEGMENTED_6
     CreateFog: false
     DarkenSky: false
     PlayMusic: false
-  Equipment:
-  - BOOK:0
-  Modules:
-    ThreatTable: true
   Options:
-    KnockbackResistance: 1
-    PreventOtherDrops: true
-    Despawn: true
+    MovementSpeed: 0.3
     NoDamageTicks: 0
+    PreventOtherDrops: true
+    PreventSunburn: true
+    PreventItemPickup: true
+    KnockbackResistance: 1
+    AlwaysShowName: true
+    Silent: true
+  Skills:
+  - skill{s=BossNameSpawn} ~onSpawn
+  - skill{s=BossNameDeath} ~onDeath
+  - skill{s=BossNameHit} ~onDamaged
+  - skill{s=BossNameAttack} ~onTimer:20
+  - skill{s=BossNameAmbient} ~onTimer:120 0.7
 ```
 
 ### Boss Add (Summoned Mob)
 ```yaml
 BossAddName:
-  MobType: zombie
-  Damage: <value>
-  Health: <value>
-  Display: '&4<Name>'
-  Options:
-    PreventOtherDrops: true
-    MovementSpeed: 0.3
-    Despawn: true
+  Type: zombie
+  Display: '&7Add Name'
+  Health: 100
+  Damage: 0
+  Disguise: skeleton
   Modules:
     ThreatTable: true
+  Equipment:
+    - <items>
+  Options:
+    MovementSpeed: 0.275
+    NoDamageTicks: 0
+    PreventOtherDrops: true
+    PreventSunburn: true
+    PreventItemPickup: true
+    KnockbackResistance: 1
+    AlwaysShowName: true
   Skills:
-  - msg{m="&4[&c&lMLMC&4] &e<trigger.name> &7was slain by &4&l<Boss>&7's &cminion"} @Server ~onKillPlayer
-  - scaletolevel{boss=<Boss>} @Self ~onSpawn
+  - skill{s=AddAttack} ~onTimer:20
+```
+
+### Utility Mob (Armor Stand for AOE zones, trails, etc.)
+```yaml
+ZoneMob:
+  Type: ARMOR_STAND
+  Options:
+    Invisible: true
+    CanMove: false
+    Marker: true
+    Invincible: true
+    NoGravity: false
+    Small: true
+  Skills:
+  - skill{s=ZoneEffect} ~onSpawn
 ```
 
 ## Skill Configuration Patterns
 
-### Skill Structure
+### Melee Attack (Standard Pattern)
+Telegraph → delay → stop movement → swing animation → short-range projectile for hit detection.
 ```yaml
-SkillName:
-  Cooldown: <ticks or seconds>
+MobAttack:
+  Cooldown: 2
   Conditions:
-  - <condition> true/false
-  TargetConditions:
-  - <condition>
+  - incombat true
+  - targetwithin{d=4} true
   Skills:
-  - <mechanic>{params} @<Targeter> ~<Trigger>
-  - delay <ticks>
-  - <next mechanic>
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - effect:sound{s=entity.player.attack.sweep;p=1;v=1} @self
+  - potion{t=SPEED;l=-6;d=20;p=false;force=true} @self
+  - playanimation{a=0;audience=World} @Self
+  - delay 5
+  - projectile{onHit=MobAttackHit;v=20;i=1;hR=0.25;vR=0.25;hitConditions=[ - isnrplayer ];mr=3;syo=1.5;sfo=0} @Forward{uel=true}
+  - effect:particleline{particle=crit;amount=5;maxdistance=3;syo=1.5;db=0.25;xs=0.05;ys=0.05;zs=0.05} @Forward{uel=true}
+
+MobAttackHit:
+  Skills:
+  - nrdamage{SLASHING=4;hb=false}
 ```
 
-### Common Mechanics
-- `potion{type=<TYPE>;d=<duration>;l=<level>}` — Apply potion effect
-- `skill{s=<SkillName>}` — Call another skill
-- `effect:particles{particle=<type>;a=<amount>;hS=<spread>;vS=<spread>}` — Particle effects
-- `effect:sound{sound=<sound>;v=<volume>;p=<pitch>}` — Sound effects
-- `teleport{SpreadH=0,SpreadV=0}` — Teleport mob
-- `summon{l=<level>;m=<MobName>;amount=<n>;r=<radius>}` — Summon mobs
-- `throw{velocity=<v>;velocityY=<vy>}` — Throw target
-- `leap{velocity=<v>}` — Leap toward target
-- `msg{m="<message>"}` — Send message
-- `sendactionmessage{m="<message>"}` — Action bar message (telegraphs)
-- `sendtitle{title="<title>";subtitle="<sub>";d=<dur>;fi=<fadein>;fo=<fadeout>}` — Title display
-- `command{cmd="<command>"}` — Run server command
-- `heal{a=<amount>}` — Heal mob
-- `setstance{stance=<Name>}` — Change stance
-- `threat{amount=<n>}` — Modify threat
-- `remove` — Remove mob
-- `suicide` — Kill mob
+### Ranged Projectile Attack (with Barrier Support)
+Telegraph → delay → fire projectile at target with tick particles and barrier condition.
+```yaml
+MobRangedAttack:
+  Cooldown: 7
+  Conditions:
+  - targetwithin{d=12} true
+  - incombat true
+  Skills:
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - effect:sound{s=entity.blaze.shoot} @Self
+  - projectile{onTick=MobRangedAttack-Tick;onHit=MobRangedAttack-Hit;v=12;i=1;hR=0.5;vR=0.5;sE=true;hitConditions=[ - isnrplayer ];mr=12;syo=1.5;so=0.45;tyo=0.5;sfo=0.2} @Target
+
+MobRangedAttack-Tick:
+  Conditions:
+  - hitbarrier{onHit=MobRangedAttack-HitBarrier}
+  Skills:
+  - effect:particles{p=reddust;color=#7b0096;amount=15;speed=0;hS=0.1;vS=0.1} @origin
+
+MobRangedAttack-Hit:
+  Skills:
+  - nrdamage{DARK=6;hb=false}
+
+MobRangedAttack-HitBarrier:
+  Skills:
+  - nrdamage{DARK=6;hb=true}
+```
+
+### Leap/Slam Attack
+Leap at target → slam on landing with AOE.
+```yaml
+MobLeapAttack:
+  Cooldown: 10
+  Conditions:
+  - incombat true
+  - targetwithin{d=6} true
+  Skills:
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - leap{velocity=200} @target
+  - delay 20
+  - throw{velocity=0;velocityY=-15} @self
+  - skill{s=MobLeapSlam;repeat=30;repeatInterval=1}
+
+MobLeapSlam:
+  Conditions:
+  - onground true
+  Cooldown: 5
+  Skills:
+  - effect:particlering{particle=cloud;a=2;r=3;points=64;hS=0;vS=0;y=0.1} @self
+  - nrdamage{EARTHEN=6;hb=false} @PIR{r=3}
+  - effect:sound{s=entity.generic.explode;p=1;v=1} @self
+```
+
+### Multi-Hit Combo Attack
+Multiple swings in sequence with short delays.
+```yaml
+MobComboAttack:
+  Cooldown: 4
+  Conditions:
+  - incombat true
+  - targetwithin{d=4} true
+  Skills:
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - leap{v=100} @Forward{f=1.5}
+  - effect:sound{s=entity.ender_dragon.flap;p=2;v=1} @self
+  - delay 20
+  - effect:sound{s=entity.player.attack.sweep;p=1;v=1} @self
+  - potion{t=SPEED;l=-6;d=20;p=false;force=true} @self
+  - playanimation{a=0;audience=World} @Self
+  - delay 5
+  - projectile{onHit=MobComboHit;v=20;i=1;hR=0.25;vR=0.25;hitConditions=[ - isnrplayer ];mr=2;syo=1.5;sfo=0} @Forward{uel=true}
+  - effect:particleline{particle=crit;amount=5;maxdistance=2;syo=1.5;db=0.25} @Forward{uel=true}
+  - playanimation{a=0;audience=World} @Self
+  - delay 5
+  - projectile{onHit=MobComboHit;v=20;i=1;hR=0.25;vR=0.25;hitConditions=[ - isnrplayer ];mr=2;syo=1.5;sfo=0} @Forward{uel=true}
+  - effect:particleline{particle=crit;amount=5;maxdistance=2;syo=1.5;db=0.25} @Forward{uel=true}
+
+MobComboHit:
+  Skills:
+  - nrdamage{SLASHING=4;hb=false}
+```
+
+### Shield/Barrier Stance
+```yaml
+MobShield:
+  Skills:
+  - effect:sound{s=item.armor.equip_chain;p=1;v=1} @self
+  - nrbarrier{general=0.5;w=3;h=2;f=4;d=80} @self
+  - playanimation{a=3;audience=World} @Self
+```
+
+### Boss Rotation Pattern (Sequential Loop)
+A looping skill sequence that defines the boss's attack cycle. Used when the boss has a fixed sequence.
+```yaml
+BossRotation:
+  Skills:
+  - delay 60
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - skill{s=BossAttack1}
+  - delay 40
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - skill{s=BossAttack2}
+  - delay 80
+  - skill{s=BossRotation}
+```
+
+### Boss Rotation Pattern (Randomized)
+Uses `randomskill` to pseudorandomly select from a pool of skills. Each skill in the pool has its own `Cooldown` to prevent repeats and ensure variety. The boss mob calls this via `~onTimer`.
+
+The router skill uses `offGCD=true` so the timer can always enter the rotation. The rotation skill itself has a `Cooldown` that prevents rapid-fire back-to-back abilities by gating how often it can actually fire.
+```yaml
+# In the mob file:
+#   - skill{s=BossSkills} ~onTimer:40
+
+BossSkills:
+  Skills:
+  - skill{s=BossRandomRotation}
+
+BossRandomRotation:
+  Cooldown: 4
+  Skills:
+  - randomskill{s=BossAbility1,BossAbility2,BossAbility3,BossAbility4}
+
+# Each ability has its own cooldown to prevent immediate repeats:
+BossAbility1:
+  Cooldown: 10
+  Skills:
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - skill{s=BossAbility1Attack}
+
+BossAbility2:
+  Cooldown: 20
+  Skills:
+  - skill{s=TelegraphAttack}
+  - delay 20
+  - skill{s=BossAbility2Attack}
+```
+
+### Boss Spawn/Death
+```yaml
+BossSpawn:
+  Skills:
+  - setstance{stance=Normal} @self
+
+BossDeath:
+  Skills:
+  - sound{s=entity.warden.roar;p=0.65;v=0.5} @self
+  - effect:particles{p=smoke;a=100;hs=0.4;vs=0.4;y=1} @self
+```
+
+### Boss Wave/Phase Management (using stances + mob count checks)
+```yaml
+BossWaveCheck:
+  Skills:
+  - skill{s=BossWave1Check}
+  - skill{s=BossWave2Check}
+
+BossWave1Check:
+  Conditions:
+  - stance{s=Wave1} true
+  - mobsInRadius{types=AddMob1,AddMob2;amount=0;radius=100} true
+  Skills:
+  - summon{t=NextWaveAdd;onSurface=true;a=1} @mythiclocation{id=door1}
+  - setstance{s=Wave2} @self
+```
+
+### Status/Buff Application on Mobs
+```yaml
+MobBuffSkill:
+  Skills:
+  - skill{s=TelegraphBuff}
+  - delay 20
+  - nrstatus{id=THORNS;a=10;t=100} @self
+  - nrbuff{m=0.5;type=GENERAL;dmg=false} @self
+  - effect:particles{p=crit;a=40;hs=0.5;vs=1;y=1;speed=0.05} @Self
+```
+
+### Poison/DOT on Hit
+```yaml
+PoisonHit:
+  Skills:
+  - nrdamage{PIERCING=5} @Trigger
+  - potion{type=POISON;d=20;l=0}
+  - nrdamage{POISON=3}
+  - delay 20
+  - nrdamage{POISON=2}
+```
+
+### AOE Zone (Summoned Armor Stand)
+```yaml
+ZoneEffect:
+  Skills:
+  - effect:particlering{particle=reddust;color=#00FF00;a=1;r=3;points=32;hS=0;vS=0;y=0.1} @self
+  - nrstatus{id=POISON;a=3;ap=true} @PIR{r=3;conditions=[ - isnrplayer ]}
+  - delay 20
+  - skill{s=ZoneEffect}
+  - delay 20
+  - remove @self
+```
+
+### Telegraphs (Shared Skills in Etc Skills.yml)
+```yaml
+TelegraphAttack:
+  Skills:
+  - nrcastability
+  - effect:particles{p=fireworks_spark;a=5;hs=0;vs=0;speed=0.1;y=2} @self
+
+TelegraphAttackLarge:
+  Skills:
+  - nrcastability
+  - effect:particles{p=fireworks_spark;a=15;hs=0.5;vs=0.5;speed=0.1;y=2} @self
+
+TelegraphBuff:
+  Skills:
+  - nrcastability
+  - effect:particles{p=end_rod;a=5;hs=0;vs=0;speed=0.1;y=2} @self
+```
+
+### Common Projectile Parameters
+| Param | Description |
+|-------|-------------|
+| `v` | Velocity/speed |
+| `i` | Interval (tick rate) |
+| `hR` | Horizontal hit radius |
+| `vR` | Vertical hit radius |
+| `mr` | Max range |
+| `syo` | Start Y offset |
+| `sfo` | Start forward offset |
+| `tyo` | Target Y offset |
+| `so` | Side offset |
+| `ho` | Horizontal rotation offset (for spread patterns) |
+| `sE` | Stop at entity (true/false) |
+| `sB` | Stop at block (true/false) |
+| `g` | Gravity |
+| `hitConditions` | Array of conditions for hit detection |
+| `onTick` | Skill to run each tick |
+| `onHit` | Skill to run on entity hit |
+| `onEnd` | Skill to run when projectile ends |
+| `bulletType` | Visual type: `MOB`, `ITEM` |
+| `material` | Item material for ITEM bulletType |
+| `mob` | Mob type for MOB bulletType |
 
 ### Common Targeters
 - `@Self` — The mob itself
 - `@Target` — Current threat target
 - `@Trigger` — Entity that triggered the skill
 - `@NearestPlayer` — Closest player
-- `@PIR{r=<radius>}` / `@PlayersInRadius{r=<radius>}` — Players in radius
-- `@PIB{b=<Boss>}` — Players in boss fight
+- `@Forward{uel=true}` — Forward direction (uel=use eye location)
+- `@Forward{f=<dist>}` — Forward with distance
+- `@TargetLocation` — Target's location
+- `@PIR{r=<radius>}` — Players in radius
+- `@PIR{r=<radius>;conditions=[ - isnrplayer ]}` — NR players in radius
+- `@PLIR{r=<radius>}` — Player locations in radius
+- `@PNTL{r=<radius>}` — Players near target location
+- `@PlayersNearOrigin{r=<radius>}` — Players near projectile origin
 - `@MIR{r=<radius>;t=<types>}` — Mobs in radius of specific types
-- `@Location{x=<x>;y=<y>;z=<z>}` — Specific location
-- `@Server` — All players on server
+- `@MythicLocation{id=<key>}` — Named fight location (custom NR)
+- `@Session` — All session players (custom NR)
+- `@Server` / `@PlayersOnServer` — All players on server
+- `@SelfLocation` — Self's current location (for return-to-origin)
 
 ### Common Triggers
 - `~onSpawn` — When mob spawns
 - `~onDeath` — When mob dies
 - `~onDamaged` — When mob takes damage
-- `~onAttack` — When mob attacks
+- `~onAttack` — When mob attacks (use `CancelEvent ~onAttack` to disable vanilla attacks)
 - `~onKillPlayer` — When mob kills a player
-- `~onTimer:<ticks>` — Repeating timer
-- `~onInteract` — When player interacts with mob
+- `~onTimer:<ticks>` — Repeating timer (20 ticks = 1 second)
+- `~onShoot` — When skeleton shoots (use with `sync=true`)
+- `~onSignal:<signal>` — When receiving a signal
+- `~onInteract` — When player right-clicks mob
 
-### Health Conditions
-- `>25%` — Above 25% health
-- `<25%` — Below 25% health
-
-### Boss Spawn/Death Pattern
-```yaml
-BossSpawn:
-  Cooldown: 30
-  Skills:
-  - command{cmd="boss startstats <BossName>"} @Self
-  - command{c="adminmusic play <target.name> 0";asTarget=true;asOp=true} @PIR{r=50}
-  - delay 40
-  - setstance{stance=Phase1} @Self
-
-BossDeath:
-  Cooldown: 1
-  Skills:
-  - msg{m="&4&l<Boss>&r has been &4slain &fby &6<trigger.name>&r!"} @PlayersOnServer
-  - command{cmd="boss showstats <Boss> <Boss>"}
-  - command{c="adminmusic stop <target.name>";asTarget=true;asOp=true} @PIR{r=50}
-  - scalegold{min=<min>;max=<max>;boss=<Boss>}
-  - scaleexp{a=<amount>} @PIB{b=<Boss>}
-  - pluginmessage{msg=<Boss>} @PIB{b=<Boss>}
-  - givepartybossexp{boss=<Boss>} @PIB{b=<Boss>}
-```
-
-### Telegraph Pattern (Warning Players)
-```yaml
-TelegraphSkill:
-  Skills:
-  - sendactionmessage{m="&fThe &4<Mob> &fis preparing to &e<Attack>&f!"} @target
-  - delay 60
-  - <actual attack mechanics>
-```
-
-### Particle Ring Pattern
-```yaml
-- particlering{particle=<type>;a=<amount>;r=<radius>;points=64;hS=<spread>;vS=<spread>;y=<yOffset>} @self
-```
+### Common Conditions
+- `incombat true` — Mob is in combat
+- `targetwithin{d=<dist>} true` — Target within distance
+- `playerwithin{d=<dist>} true/false` — Any player within distance
+- `stance{s=<Name>} true` — Mob is in specific stance
+- `onground true` — Mob is on ground
+- `mobsInRadius{types=<MobTypes>;amount=<n>;radius=<r>} true` — Count mobs nearby
+- `isinstanceactive true` — NR fight instance is active (custom)
 
 ## Project-Specific Custom Mechanics (from MythicLoader)
 
@@ -377,19 +634,24 @@ No parameters.
 - **NEVER use vanilla `damage{a=<amount>}` or `mmodamage` mechanics** — always use `nrdamage{TYPE=amount;hb=false/true}` for all damage
 - DO NOT invent mechanics or syntax that doesn't exist in MythicMobs
 - DO NOT forget the ThreatTable module — it's required for all mobs in this project
-- DO NOT forget PreventOtherDrops option — all project mobs use it
-- ALWAYS follow the display name format: `'&6[Lv X] &cMob Name'` for regular mobs, `'&4&lBoss Name'` for bosses
-- ALWAYS include kill messages for mobs
-- ALWAYS use `scaletolevel` for boss adds
+- DO NOT forget `Damage: 0` — all damage comes from skills via `nrdamage`
+- DO NOT forget `PreventOtherDrops: true` — all project mobs use it
+- DO NOT forget `NoDamageTicks: 0` — required for fast combat
+- DO NOT forget `KnockbackResistance: 1` — all mobs have this
+- ALWAYS use `'&7Mob Name'` for regular mob display names, `'&4BossName'` for bosses
+- ALWAYS include `hitConditions=[ - isnrplayer ]` on projectiles that can hit players
+- ALWAYS use `skill{s=TelegraphAttack}` before attacks with a `delay 20` after
+- ALWAYS use `potion{t=SPEED;l=-6;d=<ticks>;p=false;force=true} @self` to root mob during attack animations
+- When a mob has a melee weapon, use `CancelEvent ~onAttack` and handle damage through skills instead
 
 ## Approach
 
-1. Ask what type of mob/skill to create (regular mob, miniboss, boss, skill)
-2. Ask which area/zone it belongs to
-3. Determine stats (health, damage, level) appropriate for the zone
-4. Design skills and mechanics based on the mob's theme
-5. Write the YAML configuration following project patterns
-6. Place in the correct file path
+1. Read existing mob/skill files in `src/me/externals/` for reference patterns
+2. Match the attack style to established patterns (melee, ranged, slam, combo, etc.)
+3. Use stances for phase/state management on bosses
+4. Always pair projectile `onHit` with a `hitbarrier` `onHit` variant for ranged attacks
+5. Keep damage numbers consistent with zone difficulty (Low District: 3-7, Harvest Fields: 4-8 per hit)
+6. Write complete YAML ready to paste into the appropriate files
 
 ## Output Format
 
