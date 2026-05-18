@@ -137,7 +137,7 @@ public class FaerieGroveChance extends ChanceSet {
 		ArrayList<TextComponent> lore = new ArrayList<>();
 		lore.addAll(SharedUtil.addLineBreaks(Component.text("Lose ", NamedTextColor.GRAY)
 				.append(Component.text("15", NamedTextColor.RED))
-				.append(Component.text(" health to receive ", NamedTextColor.GRAY))
+				.append(Component.text(" health.", NamedTextColor.GRAY))
 				.append(rewardEq.getHoverable())
 				.append(Component.text(". If you have less, lose all but 1 instead.", NamedTextColor.GRAY)), 250));
 		return lore;
