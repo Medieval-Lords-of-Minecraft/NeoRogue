@@ -65,7 +65,7 @@ public class FaerieGroveChance extends ChanceSet {
 					return null;
 				}));
 
-		stage.addChoice(new ChanceChoice(Material.REDSTONE, "Sacrifice Vitality",
+		stage.addChoice(new ChanceChoice(Material.REDSTONE, "Try to escape",
 				(s, inst, data) -> {
 					return getSacrificeDescription(inst, data);
 				},
@@ -78,7 +78,7 @@ public class FaerieGroveChance extends ChanceSet {
 					Equipment rewardEq = Equipment.deserialize(reward);
 					data.giveEquipment(rewardEq);
 					PlayerSessionInventory.setupInventory(p.getInventory(), data);
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> sacrificed health to the faerie!", p);
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> ran away and paid the price!", p);
 					return null;
 				}));
 	}
