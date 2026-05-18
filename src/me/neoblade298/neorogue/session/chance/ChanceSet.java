@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.builtin.AmbushChance;
 import me.neoblade298.neorogue.session.chance.builtin.CaravanRobberyChance;
+import me.neoblade298.neorogue.session.chance.builtin.FaerieGroveChance;
 import me.neoblade298.neorogue.session.chance.builtin.ForgottenWellChance;
 import me.neoblade298.neorogue.session.chance.builtin.ForkInTheRoadChance;
 import me.neoblade298.neorogue.session.chance.builtin.GreedChance;
@@ -50,6 +52,10 @@ public class ChanceSet {
 		}
 		return set.get(NeoRogue.gen.nextInt(set.size()));
 	}
+
+	public static ArrayList<String> getSets() {
+		return setsById.keySet().stream().collect(Collectors.toCollection(ArrayList::new));
+	}
 	
 	public static ChanceSet get(String id) {
 		return setsById.get(id);
@@ -62,6 +68,7 @@ public class ChanceSet {
 		
 		new AmbushChance();
 		new CaravanRobberyChance();
+		new FaerieGroveChance();
 		new StockpileChance();
 		new ForgottenWellChance();
 		new ForkInTheRoadChance();

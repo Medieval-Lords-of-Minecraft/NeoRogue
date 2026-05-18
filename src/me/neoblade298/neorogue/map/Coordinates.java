@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.map;
 
+import java.util.Collections;
+import java.util.HashSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -13,6 +16,9 @@ public class Coordinates extends Rotatable {
 	private double x, y, z, xp, zp, xlen, zlen, xOff, yOff, zOff;
 	private Direction ogDir;
 	private Direction dir = Direction.NORTH;
+	private HashSet<String> tags = new HashSet<>();
+	private HashSet<String> requiredTags = new HashSet<>();
+	private HashSet<String> allowedTags = new HashSet<>();
 	
 	public Coordinates(MapPiece piece, String line) {
 		this(piece, line, false);
@@ -29,6 +35,19 @@ public class Coordinates extends Rotatable {
 		this.zp = zlen - z;
 		this.ogDir = parsed.length > 3 ? Direction.getFromCharacter(parsed[3].charAt(0)) : Direction.NORTH;
 		this.dir = ogDir;
+		if (parsed.length > 4) this.tags = parseTags(parsed[4]);
+		if (parsed.length > 5) this.requiredTags = parseTags(parsed[5]);
+		if (parsed.length > 6) this.allowedTags = parseTags(parsed[6]);
+	}
+	
+	private static HashSet<String> parseTags(String str) {
+		HashSet<String> result = new HashSet<>();
+		if (str != null && !str.isEmpty()) {
+			for (String tag : str.split("\\+")) {
+				if (!tag.isEmpty()) result.add(tag);
+			}
+		}
+		return result;
 	}
 	
 	public Coordinates(double x, double y, double z, double xlen, double zlen) {
@@ -57,7 +76,11 @@ public class Coordinates extends Rotatable {
 	}
 	
 	public Coordinates clone() {
-		return new Coordinates(x, y, z, xlen, zlen, ogDir, dir, xOff, yOff, zOff, numRotations, flipX, flipZ);
+		Coordinates c = new Coordinates(x, y, z, xlen, zlen, ogDir, dir, xOff, yOff, zOff, numRotations, flipX, flipZ);
+		c.tags = new HashSet<>(tags);
+		c.requiredTags = new HashSet<>(requiredTags);
+		c.allowedTags = new HashSet<>(allowedTags);
+		return c;
 	}
 	
 	public Direction getOriginalDirection() {
@@ -158,7 +181,14 @@ public class Coordinates extends Rotatable {
 	
 	public boolean canConnect(Coordinates other) {
 		if (other.getY() != getY()) return false;
-		return isFacing(other) && dir.equals(other.dir.invert());
+		if (!isFacing(other) || !dir.equals(other.dir.invert())) return false;
+		// Check this entrance's tag requirements against the other entrance's tags
+		if (!other.tags.containsAll(requiredTags)) return false;
+		if (!allowedTags.isEmpty() && Collections.disjoint(allowedTags, other.tags)) return false;
+		// Check the other entrance's tag requirements against this entrance's tags
+		if (!tags.containsAll(other.requiredTags)) return false;
+		if (!other.allowedTags.isEmpty() && Collections.disjoint(other.allowedTags, tags)) return false;
+		return true;
 	}
 
 	@Override
