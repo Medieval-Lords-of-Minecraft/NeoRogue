@@ -146,3 +146,9 @@ GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if
 - Shield/status timing issues with decay/duration parameters
 
 Focus on the trigger system when implementing equipment - most functionality flows through PlayerFightData trigger attachment in the `initialize()` method.
+
+## GitHub Branch Cleanup
+
+To delete a remote branch on GitHub:
+- CLI: `git push origin --delete <branch-name>`
+- GitHub UI: **Repository → Branches → find branch → Delete**
