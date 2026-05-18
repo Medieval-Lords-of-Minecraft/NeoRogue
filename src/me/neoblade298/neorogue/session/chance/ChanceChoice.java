@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.chance;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.bukkit.Material;
@@ -27,6 +28,7 @@ public class ChanceChoice {
 	private Component title;
 	private Material mat;
 	private ArrayList<TextComponent> desc, reqFail;
+	private ChanceDescriptionSupplier dynamicDesc;
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private ChanceAction action;
 	private ChanceRequirement req;
@@ -38,8 +40,21 @@ public class ChanceChoice {
 				deserialize(prereqFail).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
 	}
 	
+	public ChanceChoice(Material mat, String title, ChanceDescriptionSupplier dynamicDesc, String prereqFail, ChanceRequirement req, ChanceAction action) {
+		this(mat, title, dynamicDesc, action);
+		this.req = req;
+		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().
+				deserialize(prereqFail).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
+	}
+	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
 		this(mat, title, description);
+		this.action = action;
+	}
+	
+	public ChanceChoice(Material mat, String title, ChanceDescriptionSupplier dynamicDesc, ChanceAction action) {
+		this(mat, title);
+		this.dynamicDesc = dynamicDesc;
 		this.action = action;
 	}
 	
@@ -88,11 +103,18 @@ public class ChanceChoice {
 		return item;
 	}
 	
-	public ItemStack getItem(Session s, PlayerSessionData data) {
-		ItemStack item = getItemWithoutConditions();
+	public ItemStack getItem(Session s, ChanceInstance inst, PlayerSessionData data) {
+		ItemStack item;
+		
+		// Use dynamic description if available, otherwise static
+		if (dynamicDesc != null && inst != null) {
+			item = buildItem(dynamicDesc.get(s, inst, data));
+		} else {
+			item = getItemWithoutConditions();
+		}
 		
 		// Check conditions
-		boolean canRun = req != null ? req.check(s, (ChanceInstance) s.getInstance(), data) : true;
+		boolean canRun = req != null ? req.check(s, inst, data) : true;
 		if (canRun) return item;
 		
 		// If conditions fail, add extra stuff
@@ -106,6 +128,26 @@ public class ChanceChoice {
 		
 		if (reqFail != null) {
 			lore.addAll(reqFail);
+		}
+		meta.lore(lore);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	private ItemStack buildItem(List<TextComponent> loreLines) {
+		ItemStack item = new ItemStack(mat);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(title);
+		ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
+		if (loreLines != null) {
+			for (TextComponent text : loreLines) {
+				lore.add((TextComponent) text.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE)
+						.colorIfAbsent(NamedTextColor.GRAY));
+			}
+		}
+		if (!tags.isEmpty()) {
+			lore.add((TextComponent) Component.text("Right click for more info", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

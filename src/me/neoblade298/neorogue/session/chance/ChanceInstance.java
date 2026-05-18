@@ -47,6 +47,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
+	private HashMap<String, String> eventData = new HashMap<String, String>();
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
 	private TextDisplay holo;
@@ -72,23 +73,55 @@ public class ChanceInstance extends EditInventoryInstance {
 	public ChanceInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
 		data = data.substring("CHANCE:".length());
-		String[] split = data.split("-");
-		set = ChanceSet.get(split[0]);
+		
+		// Parse event data section (between | and optional -)
+		String setAndData, fightData = null;
+		int dashIdx = data.indexOf('-');
+		if (dashIdx != -1) {
+			setAndData = data.substring(0, dashIdx);
+			fightData = data.substring(dashIdx + 1);
+		} else {
+			setAndData = data;
+		}
+		
+		int pipeIdx = setAndData.indexOf('|');
+		if (pipeIdx != -1) {
+			set = ChanceSet.get(setAndData.substring(0, pipeIdx));
+			String eventDataStr = setAndData.substring(pipeIdx + 1);
+			if (!eventDataStr.isEmpty()) {
+				for (String entry : eventDataStr.split(",")) {
+					String[] kv = entry.split("=", 2);
+					if (kv.length == 2) eventData.put(kv[0], kv[1]);
+				}
+			}
+		} else {
+			set = ChanceSet.get(setAndData);
+		}
+		
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			String id = ent.getValue().getInstanceData();
 			if (id.equals("null"))
 				continue;
-			stage.put(ent.getKey(), set.getStage(id));
+			ChanceStage stg = set.getStage(id);
+			stage.put(ent.getKey(), stg);
 		}
 		
-		if (split.length > 1) {
-			nextInstance = FightInstance.deserializeInstanceData(s, party, split[1]);
+		if (fightData != null) {
+			nextInstance = FightInstance.deserializeInstanceData(s, party, fightData);
 		}
 		deserialized = true;
 	}
 	
 	public ChanceSet getSet() {
 		return set;
+	}
+	
+	public void setEventData(String key, String value) {
+		eventData.put(key, value);
+	}
+	
+	public String getEventData(String key) {
+		return eventData.get(key);
 	}
 
 	@Override
@@ -321,10 +354,25 @@ public class ChanceInstance extends EditInventoryInstance {
 				data.setInstanceData(null);
 				continue;
 			}
-			data.setInstanceData(this.stage.get(data.getPlayer().getUniqueId()).getId());
+			ChanceStage stg = this.stage.get(uuid);
+			data.setInstanceData(stg.getId());
 		}
+		
+		// Build event data section
+		String eventDataStr = "";
+		if (!eventData.isEmpty()) {
+			StringBuilder sb = new StringBuilder("|");
+			boolean first = true;
+			for (var entry : eventData.entrySet()) {
+				if (!first) sb.append(",");
+				first = false;
+				sb.append(entry.getKey()).append("=").append(entry.getValue());
+			}
+			eventDataStr = sb.toString();
+		}
+		
 		String next = nextInstance instanceof FightInstance ? "-" + ((FightInstance) nextInstance).serializeInstanceData() : "";
-		return "CHANCE:" + set.getId() + next;
+		return "CHANCE:" + set.getId() + eventDataStr + next;
 	}
 
 	@Override
