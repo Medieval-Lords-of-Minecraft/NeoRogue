@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,12 +14,15 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.ChanceSet;
 
 public class CmdAdminChance extends Subcommand {
 
 	public CmdAdminChance(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("Chance ID"));
+		this.enableTabComplete();
+		ArrayList<String> tab = new ArrayList<String>(ChanceSet.getSets());
+		args.add(new Arg("Chance ID").setTabOptions(tab));
 	}
 
 	@Override
