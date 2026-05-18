@@ -7,6 +7,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -26,7 +27,7 @@ public class HuntersBow extends Bow {
 	public HuntersBow(boolean isUpgraded) {
 		super(ID, "Hunter's Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 90 : 60, 1, 0, 12, 0, 1.2));
+				EquipmentProperties.ofBow(isUpgraded ? 80 : 60, 1, 0, 12, 0, 1.2));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
@@ -60,6 +61,6 @@ public class HuntersBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW);
+		item = createItem(Material.BOW, "Can only be fired at " + DescUtil.white("max draw") + ".");
 	}
 }
