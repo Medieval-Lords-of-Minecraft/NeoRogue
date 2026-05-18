@@ -27,7 +27,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class FaerieGroveChance extends ChanceSet {
 
 	public FaerieGroveChance() {
-		super(RegionType.LOW_DISTRICT, Material.FLOWERING_AZALEA, "FaerieGrove", "Faerie Grove", true);
+		super(RegionType.HARVEST_FIELDS, Material.FLOWERING_AZALEA, "FaerieGrove", "Faerie Grove", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You wander into a grove buzzing with tiny lights. "
 				+ "A faerie materializes and eyes your belongings with mischief. "
 				+ "\"A trade, perhaps?\"");
@@ -71,13 +71,8 @@ public class FaerieGroveChance extends ChanceSet {
 				},
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					String reward = inst.getEventData(data.getUniqueId() + ":reward");
-					if (reward == null) return null;
 					double healthLoss = Math.min(15, data.getHealth() - 1);
 					data.setHealth(data.getHealth() - healthLoss);
-					Equipment rewardEq = Equipment.deserialize(reward);
-					data.giveEquipment(rewardEq);
-					PlayerSessionInventory.setupInventory(p.getInventory(), data);
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> ran away and paid the price!", p);
 					return null;
 				}));
@@ -129,17 +124,10 @@ public class FaerieGroveChance extends ChanceSet {
 	}
 	
 	private List<TextComponent> getSacrificeDescription(ChanceInstance inst, PlayerSessionData data) {
-		String reward = inst.getEventData(data.getUniqueId() + ":reward");
-		if (reward == null) {
-			return SharedUtil.addLineBreaks((TextComponent) Component.text("The faerie has nothing to offer you.", NamedTextColor.GRAY), 250);
-		}
-		Equipment rewardEq = Equipment.deserialize(reward);
 		ArrayList<TextComponent> lore = new ArrayList<>();
 		lore.addAll(SharedUtil.addLineBreaks(Component.text("Lose ", NamedTextColor.GRAY)
 				.append(Component.text("15", NamedTextColor.RED))
-				.append(Component.text(" health.", NamedTextColor.GRAY))
-				.append(rewardEq.getHoverable())
-				.append(Component.text(". If you have less, lose all but 1 instead.", NamedTextColor.GRAY)), 250));
+				.append(Component.text(" health. If you have less, lose all but 1 instead.", NamedTextColor.GRAY)), 250));
 		return lore;
 	}
 }

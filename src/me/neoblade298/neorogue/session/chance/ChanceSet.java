@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -50,6 +51,10 @@ public class ChanceSet {
 			set = sets.get(RegionType.HARVEST_FIELDS);
 		}
 		return set.get(NeoRogue.gen.nextInt(set.size()));
+	}
+
+	public static ArrayList<String> getSets() {
+		return setsById.keySet().stream().collect(Collectors.toCollection(ArrayList::new));
 	}
 	
 	public static ChanceSet get(String id) {
