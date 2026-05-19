@@ -73,7 +73,9 @@ public class WallJump extends Equipment {
 					Sounds.jump.play(p, p);
 					
 					// Dash in stored direction
-					Vector dashVec = p.getLocation().getDirection().clone().multiply(1.5);
+					Vector dashVec = p.getLocation().getDirection().clone();
+					dashVec.setY(Math.min(dashVec.getY(), 0.5));
+					dashVec.normalize().multiply(1.5);
 					p.setVelocity(dashVec);
 					
 					// Deal line damage

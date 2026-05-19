@@ -74,9 +74,6 @@ BossName:
     Range: 50
     Color: GREEN
     Style: SEGMENTED_6
-    CreateFog: false
-    DarkenSky: false
-    PlayMusic: false
   Options:
     MovementSpeed: 0.3
     NoDamageTicks: 0
