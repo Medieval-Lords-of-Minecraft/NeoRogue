@@ -88,6 +88,12 @@ public class Region {
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
 		
+		// Remove all text_display entities from the world
+		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(org.bukkit.entity.TextDisplay.class)) {
+			e.remove();
+		}
+		
 		loadConfig();
 
 		// Load particles
