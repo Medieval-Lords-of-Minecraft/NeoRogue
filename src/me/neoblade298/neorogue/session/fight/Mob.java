@@ -263,6 +263,10 @@ public class Mob implements Comparable<Mob> {
 	public void resolveSpawnValue() {
 		if (summons == null) return;
 		for (String summon : summons) {
+			if (Mob.get(summon) == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to resolve spawn value for mob " + id + " because summon " + summon + " doesn't exist!");
+				continue;
+			}
 			spawnValue += Mob.get(summon).getSpawnValue();
 		}
 	}

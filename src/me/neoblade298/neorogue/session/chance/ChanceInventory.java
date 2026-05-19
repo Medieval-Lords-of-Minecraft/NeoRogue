@@ -169,7 +169,7 @@ public class ChanceInventory extends CoreInventory {
 	}
 
 	private ItemStack getChoiceItem(int num) {
-		ItemStack item = stage.choices.get(num).getItem(s, data);
+		ItemStack item = stage.choices.get(num).getItem(s, inst, data);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("choice", num + 1);
 		return nbti.getItem();
