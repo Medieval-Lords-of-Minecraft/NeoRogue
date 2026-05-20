@@ -112,8 +112,12 @@ public class StandardFightInstance extends FightInstance {
 		Mob mob = Mob.get(id);
 		if (mob == null)
 			return;
-		if (!playerKill)
+
+		// I think this is for fanatics that explode so they're not player kill but need another mob to respawn
+		if (!playerKill) {
+			respawnMob(fd, id, true, false);
 			return;
+		}
 
 		if (!isActive)
 			return; // If we've moved on to reward instance don't spam the user
