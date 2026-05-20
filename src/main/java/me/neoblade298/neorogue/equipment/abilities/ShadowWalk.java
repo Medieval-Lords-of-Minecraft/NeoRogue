@@ -1,0 +1,93 @@
+package me.neoblade298.neorogue.equipment.abilities;
+
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
+
+public class ShadowWalk extends Equipment {
+	private static final String ID = "ShadowWalk";
+	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
+			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
+	private int damage = 80;
+	
+	public ShadowWalk(boolean isUpgraded) {
+		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, isUpgraded ? 17 : 21, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
+		pc.count(50).spread(0.5, 0.5).offsetY(1);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(Resourcefulness.get(), Contaminate.get());
+		addReforge(BasicManaManipulation.get(), NightShade.get());
+		addReforge(BasicDarkArts.get(), Sidestep.get());
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.RABBIT_FOOT,
+				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) +
+				" [<white>5s</white>]. "
+				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
+				+ " stacks every second.");
+	}
+
+	@Override
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.teleport.play(p, p);
+			pc.play(p, p);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			inst.addCount(3);
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(ID, bind, inst);
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (inst.getCount() > 0) {
+				inst.addCount(-1);
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+				hit.play(p, p);
+				Sounds.anvil.play(p, p);
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
+			}
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
+			inst.reduceCooldown(data.getStatus(StatusType.STEALTH).getStacks());
+			return TriggerResult.keep();
+		});
+	}
+}
