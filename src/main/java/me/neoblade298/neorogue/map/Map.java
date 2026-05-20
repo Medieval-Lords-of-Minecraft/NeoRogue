@@ -20,14 +20,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 
@@ -427,59 +425,92 @@ public class Map {
 	}
 	
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
-		int worldSize = MAP_SIZE * worldStride * 16;
-		// First clear the board
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
-		    CuboidRegion r = new CuboidRegion(
-		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET), 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
-		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + worldSize), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + worldSize));
-		    Mask mask = new ExistingBlockMask(editSession);
-		    try {
-			    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
-			} catch (WorldEditException e) {
-				e.printStackTrace();
+		// Compute bounding box of occupied chunks with padding for terrain
+		int minGX = MAP_SIZE, maxGX = 0, minGZ = MAP_SIZE, maxGZ = 0;
+		for (int gx = 0; gx < MAP_SIZE; gx++) {
+			for (int gz = 0; gz < MAP_SIZE; gz++) {
+				if (!shape[gx][gz]) continue;
+				minGX = Math.min(minGX, gx);
+				maxGX = Math.max(maxGX, gx);
+				minGZ = Math.min(minGZ, gz);
+				maxGZ = Math.max(maxGZ, gz);
 			}
-			
-		    new BukkitRunnable() {
-		    	public void run() {
-		    		generateTerrain(fi, xOff, zOff);
-		    		
-					// Setup pieces and spawners
-					if (fi != null) {
-						for (MapPieceInstance inst : pieces) {
-							// Setup mythic locations first before spawning anything
-							for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
-								Location loc = ent.getValue().applySettings(inst).toLocation();
-								if (worldStride > 1) {
-									loc.add(inst.getX() * 16 * (worldStride - 1), 0,
-											inst.getZ() * 16 * (worldStride - 1));
-								}
-								loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
-										MapPieceInstance.Y_OFFSET,
-										MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
-								loc.setX(-loc.getX() + 0.5);
-								fi.addMythicLocation(ent.getKey(), loc);
-							}
-						}
-					}
-					
-					for (MapPieceInstance inst : pieces) {
-						inst.instantiate(fi, xOff, zOff, worldStride);
-					}
-					
-					// Block off all unused entrances
-					if (shouldBlockEntrances()) {
-						World w = Bukkit.getWorld(Region.WORLD_NAME);
-						for (MapEntrance coords : entrances) {
-							handleUnusedEntrance(coords, w, xOff, zOff);
-						}
-						for (MapEntrance coords : obstructedEntrances) {
-							handleObstructedEntrance(coords, w, xOff, zOff);
-						}
-					}
-		    	}
-		    }.runTaskLater(NeoRogue.inst(), 10L);
 		}
+		// Padding of 3 chunks accounts for terrain generation radius (PADDING_CHUNKS=2 + 1 extra)
+		int padding = 3;
+		minGX = Math.max(0, minGX - padding);
+		maxGX = Math.min(MAP_SIZE - 1, maxGX + padding);
+		minGZ = Math.max(0, minGZ - padding);
+		maxGZ = Math.min(MAP_SIZE - 1, maxGZ + padding);
+		int clearStartX = minGX * worldStride * 16;
+		int clearEndX = (maxGX + 1) * worldStride * 16;
+		int clearStartZ = minGZ * worldStride * 16;
+		int clearEndZ = (maxGZ + 1) * worldStride * 16;
+
+		// First clear the board (only the used region)
+		// Clear Y range: pieces at Y_OFFSET (64) with offsets -4 to +4, mountains up to +22, barriers up to Y=90
+		int clearMinY = MapPieceInstance.Y_OFFSET - 5;
+		int clearMaxY = 95;
+
+		long clearStart = System.currentTimeMillis();
+		EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world);
+		CuboidRegion r = new CuboidRegion(
+				BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + clearStartX), clearMinY, MapPieceInstance.Z_FIGHT_OFFSET + zOff + clearStartZ),
+				BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + clearEndX), clearMaxY, MapPieceInstance.Z_FIGHT_OFFSET + zOff + clearEndZ));
+		try {
+			editSession.replaceBlocks(r, new ExistingBlockMask(editSession), BukkitAdapter.adapt(Material.AIR.createBlockData()));
+		} catch (WorldEditException e) {
+			e.printStackTrace();
+		}
+		long replaceTime = System.currentTimeMillis() - clearStart;
+		long flushStart = System.currentTimeMillis();
+		editSession.close();
+		long flushTime = System.currentTimeMillis() - flushStart;
+		Bukkit.getLogger().info("[Map] WorldEdit clear: replace=" + replaceTime + "ms, flush=" + flushTime + "ms (" + (clearEndX - clearStartX) + "x" + (clearEndZ - clearStartZ) + " area, Y " + clearMinY + "-" + clearMaxY + ")");
+
+		long postClearStart = System.currentTimeMillis();
+		generateTerrain(fi, xOff, zOff);
+		long terrainTime = System.currentTimeMillis() - postClearStart;
+
+		// Setup pieces and spawners
+		if (fi != null) {
+			for (MapPieceInstance inst : pieces) {
+				// Setup mythic locations first before spawning anything
+				for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
+					Location loc = ent.getValue().applySettings(inst).toLocation();
+					if (worldStride > 1) {
+						loc.add(inst.getX() * 16 * (worldStride - 1), 0,
+								inst.getZ() * 16 * (worldStride - 1));
+					}
+					loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
+							MapPieceInstance.Y_OFFSET,
+							MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
+					loc.setX(-loc.getX() + 0.5);
+					fi.addMythicLocation(ent.getKey(), loc);
+				}
+			}
+		}
+
+		long pieceStart = System.currentTimeMillis();
+		for (MapPieceInstance inst : pieces) {
+			inst.instantiate(fi, xOff, zOff, worldStride);
+		}
+		long pieceTime = System.currentTimeMillis() - pieceStart;
+
+		long entranceStart = System.currentTimeMillis();
+		// Block off all unused entrances
+		if (shouldBlockEntrances()) {
+			World w = Bukkit.getWorld(Region.WORLD_NAME);
+			for (MapEntrance coords : entrances) {
+				handleUnusedEntrance(coords, w, xOff, zOff);
+			}
+			for (MapEntrance coords : obstructedEntrances) {
+				handleObstructedEntrance(coords, w, xOff, zOff);
+			}
+		}
+		long entranceTime = System.currentTimeMillis() - entranceStart;
+		long total = System.currentTimeMillis() - clearStart;
+		Bukkit.getLogger().info("[Map] Instantiate: terrain=" + terrainTime + "ms, pieces=" + pieceTime + "ms, entrances=" + entranceTime + "ms, total=" + total + "ms");
 	}
 	
 	/**

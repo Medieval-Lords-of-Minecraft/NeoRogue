@@ -30,8 +30,6 @@ public class MountainPathGenerator {
 	private static final int BARRIER_ROOF_Y = 90; // Fixed Y-level for barrier roof
 	// How many blocks of padding around the piece bounding box to generate mountains
 	private static final int PADDING_CHUNKS = 2;
-	// Mountain columns taller than this use shell-only placement (surface + base, skip interior)
-	private static final int SHELL_THRESHOLD = 4;
 
 	// Pre-adapted block states for WorldEdit bulk placement
 	private static final BaseBlock WE_STONE = BukkitAdapter.adapt(Material.STONE.createBlockData()).toBaseBlock();
@@ -140,7 +138,6 @@ public class MountainPathGenerator {
 
 					int tx = startTX + lx;
 					int tz = startTZ + lz;
-					// Convert terrain space → world space
 					int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
 					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
@@ -267,7 +264,6 @@ public class MountainPathGenerator {
 		} else if (distToPath <= CORRIDOR_HALF_WIDTH + TRANSITION_WIDTH) {
 			// Transition: smooth rise from path to mountain
 			double t = (distToPath - CORRIDOR_HALF_WIDTH) / TRANSITION_WIDTH;
-			// Smooth step for natural transition
 			t = t * t * (3 - 2 * t);
 			return mountainHeight * t;
 		} else {
@@ -300,6 +296,7 @@ public class MountainPathGenerator {
 			long seed) {
 
 		long startTime = System.currentTimeMillis();
+		long phaseStart = startTime;
 		SimplexNoise noise = new SimplexNoise(seed);
 		int baseY = MapPieceInstance.Y_OFFSET;
 		int terrainRadius = 16; // How far mountains generate from pieces/paths
@@ -406,20 +403,22 @@ public class MountainPathGenerator {
 			for (int tx = bMinX; tx <= bMaxX; tx++) {
 				for (int tz = bMinZ; tz <= bMaxZ; tz++) {
 					double dist = distToSegment(tx, tz, sx1, sz1, sx2, sz2);
-					if (dist < nearestDist[tx][tz]) nearestDist[tx][tz] = dist;
+						if (dist < nearestDist[tx][tz]) nearestDist[tx][tz] = dist;
 					if (dist < pathDistArr[tx][tz]) pathDistArr[tx][tz] = dist;
 				}
 			}
 		}
+
+		long distTime = System.currentTimeMillis() - phaseStart;
+		Bukkit.getLogger().info("[MountainPath/FW] Distance maps: " + distTime + "ms");
+		phaseStart = System.currentTimeMillis();
 
 		// 5. Generate terrain via WorldEdit EditSession for bulk placement
 		int blocksPlaced = 0;
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 			for (int lx = 0; lx < width; lx++) {
 				for (int lz = 0; lz < depth; lz++) {
-					// Skip piece footprints (schematics handle those)
 					if (pieceHeightMap[lx][lz] != Integer.MIN_VALUE) continue;
-					// Skip blocks beyond the terrain border
 					double dist = nearestDist[lx][lz];
 					if (dist > terrainRadius) continue;
 
@@ -428,7 +427,6 @@ public class MountainPathGenerator {
 					int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
 					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
-					// Use distance to nearest path for elevation computation (paths vs mountains)
 					double pathDist = Double.MAX_VALUE;
 					double pathYOff = 0;
 					for (int[] seg : pathSegments) {
@@ -442,27 +440,29 @@ public class MountainPathGenerator {
 
 					double elevation = computeElevation(noise, tx, tz, pathDist);
 
-					// Feather mountains near piece edges: smooth rise over TRANSITION_WIDTH blocks
+					// Feather mountains near pieces: scale from 40% at boundary to 100% at TRANSITION_WIDTH
 					double pd = pieceDist[lx][lz];
 					if (pd < TRANSITION_WIDTH) {
 						double t = pd / TRANSITION_WIDTH;
-						t = t * t * (3 - 2 * t); // smoothstep
-						elevation *= t;
+						t = t * t * (3 - 2 * t);
+						elevation *= 0.4 + 0.6 * t;
 					}
 
-					// Compute Y offset: paths use interpolated path Y, mountains/transition use nearest piece Y
 					int yOffset;
 					if (pathDist <= CORRIDOR_HALF_WIDTH) {
-						// Path zone: use interpolated Y from path endpoints + small noise bumps
 						double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
 						yOffset = (int) Math.round(pathYOff + bump) + 2;
 					} else {
-						// Mountain/transition zone: shift Y based on nearest piece
 						yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
 					}
+
 					blocksPlaced += placeColumn(editSession, worldX, worldZ, baseY + yOffset, noise, elevation, pathDist, tx, tz);
 				}
 			}
+
+			long terrainTime = System.currentTimeMillis() - phaseStart;
+			Bukkit.getLogger().info("[MountainPath/FW] Terrain blocks: " + terrainTime + "ms (" + blocksPlaced + " blocks)");
+			phaseStart = System.currentTimeMillis();
 
 			// 6. Generate 1-block-thick barrier wall and roof
 			// Pre-compute which blocks are inside the barrier boundary
@@ -508,8 +508,10 @@ public class MountainPathGenerator {
 			}
 		}
 
+		long barrierTime = System.currentTimeMillis() - phaseStart;
+		Bukkit.getLogger().info("[MountainPath/FW] Barriers: " + barrierTime + "ms");
 		long duration = System.currentTimeMillis() - startTime;
-		Bukkit.getLogger().info("[MountainPath/FW] Generated " + blocksPlaced + " blocks in " + duration + "ms"
+		Bukkit.getLogger().info("[MountainPath/FW] Total: " + blocksPlaced + " blocks in " + duration + "ms"
 				+ " (" + width + "x" + depth + " area, " + pathSegments.size() + " paths, "
 				+ adjacentChunkPairs.size() + " chunk pairs)");
 	}
@@ -571,7 +573,7 @@ public class MountainPathGenerator {
 
 	/**
 	 * Place a vertical column of terrain blocks using WorldEdit EditSession.
-	 * Removes foundation layer and uses shell-only placement for tall mountains.
+	 * Fills full column from base to surface.
 	 * Returns number of blocks placed.
 	 */
 	private static int placeColumn(EditSession editSession, int worldX, int worldZ, int baseY,
@@ -591,38 +593,21 @@ public class MountainPathGenerator {
 					placed++;
 				}
 			} else {
-				int height = surfaceY - baseY;
-				if (height > SHELL_THRESHOLD) {
-					// Shell-only: place surface layers + base block, skip enclosed interior
-					// Surface block
-					editSession.setBlock(BlockVector3.at(worldX, surfaceY, worldZ), WE_SNOW_BLOCK);
-					placed++;
-					// Near-surface (2 blocks below surface)
-					BaseBlock nearSurface = elevation > 15 ? WE_PACKED_ICE : WE_STONE;
-					for (int y = surfaceY - 1; y > surfaceY - 3 && y > baseY; y--) {
-						editSession.setBlock(BlockVector3.at(worldX, y, worldZ), nearSurface);
-						placed++;
+				// Fill full column from base to surface
+				double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
+				for (int y = baseY; y <= surfaceY; y++) {
+					BaseBlock block;
+					if (y == surfaceY) {
+						block = WE_SNOW_BLOCK;
+					} else if (y > surfaceY - 3) {
+						block = elevation > 15 ? WE_PACKED_ICE : WE_STONE;
+					} else {
+						if (stoneVar > 0.3) block = WE_STONE;
+						else if (stoneVar > 0) block = WE_ANDESITE;
+						else block = WE_COBBLESTONE;
 					}
-					// Base block (floor cap visible from paths)
-					editSession.setBlock(BlockVector3.at(worldX, baseY, worldZ), WE_STONE);
+					editSession.setBlock(BlockVector3.at(worldX, y, worldZ), block);
 					placed++;
-				} else {
-					// Short column: place all blocks (all potentially visible)
-					double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
-					for (int y = baseY; y <= surfaceY; y++) {
-						BaseBlock block;
-						if (y == surfaceY) {
-							block = WE_SNOW_BLOCK;
-						} else if (y > surfaceY - 3) {
-							block = elevation > 15 ? WE_PACKED_ICE : WE_STONE;
-						} else {
-							if (stoneVar > 0.3) block = WE_STONE;
-							else if (stoneVar > 0) block = WE_ANDESITE;
-							else block = WE_COBBLESTONE;
-						}
-						editSession.setBlock(BlockVector3.at(worldX, y, worldZ), block);
-						placed++;
-					}
 				}
 			}
 		} catch (Exception ignored) {}

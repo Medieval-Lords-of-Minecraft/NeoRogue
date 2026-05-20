@@ -49,10 +49,17 @@ public class CmdAdminMap extends Subcommand {
 		}
 		
 		
+		long startTime = System.currentTimeMillis();
 		Map map = piece == null ? Map.generate(type, numPieces, true) : Map.generate(type, numPieces, piece, true);
-		Util.msg(p, "Successfully generated map");
+		long genTime = System.currentTimeMillis() - startTime;
+		Util.msg(p, "Piece generation: " + genTime + "ms");
+		long instantiateStart = System.currentTimeMillis();
 		int xOff = 0, zOff = 0;
 		map.instantiate(null, xOff, zOff);
+		long instantiateTime = System.currentTimeMillis() - instantiateStart;
+		Util.msg(p, "Instantiate (clear + schedule): " + instantiateTime + "ms");
+		long totalTime = System.currentTimeMillis() - startTime;
+		Util.msg(p, "Total sync time: " + totalTime + "ms (terrain gen runs async)");
 		map.display();
 		
 		// Mark down spawn location blocks
