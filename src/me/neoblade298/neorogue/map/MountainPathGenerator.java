@@ -8,7 +8,14 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BaseBlock;
+
+import me.neoblade298.neorogue.region.Region;
 
 /**
  * Generates procedural mountain terrain with carved paths between connected map pieces.
@@ -20,10 +27,19 @@ public class MountainPathGenerator {
 	private static final int MIN_MOUNTAIN_HEIGHT = 6;
 	private static final int MAX_MOUNTAIN_HEIGHT = 22;
 	private static final double NOISE_SCALE = 0.02;
-	private static final int FOUNDATION_DEPTH = 3;
 	private static final int BARRIER_ROOF_Y = 90; // Fixed Y-level for barrier roof
 	// How many blocks of padding around the piece bounding box to generate mountains
 	private static final int PADDING_CHUNKS = 2;
+	// Mountain columns taller than this use shell-only placement (surface + base, skip interior)
+	private static final int SHELL_THRESHOLD = 4;
+
+	// Pre-adapted block states for WorldEdit bulk placement
+	private static final BaseBlock WE_STONE = BukkitAdapter.adapt(Material.STONE.createBlockData()).toBaseBlock();
+	private static final BaseBlock WE_ANDESITE = BukkitAdapter.adapt(Material.ANDESITE.createBlockData()).toBaseBlock();
+	private static final BaseBlock WE_COBBLESTONE = BukkitAdapter.adapt(Material.COBBLESTONE.createBlockData()).toBaseBlock();
+	private static final BaseBlock WE_SNOW_BLOCK = BukkitAdapter.adapt(Material.SNOW_BLOCK.createBlockData()).toBaseBlock();
+	private static final BaseBlock WE_PACKED_ICE = BukkitAdapter.adapt(Material.PACKED_ICE.createBlockData()).toBaseBlock();
+	private static final BaseBlock WE_BARRIER = BukkitAdapter.adapt(Material.BARRIER.createBlockData()).toBaseBlock();
 
 	/**
 	 * Generate mountain terrain and path corridors for a spaced map.
@@ -115,22 +131,24 @@ public class MountainPathGenerator {
 			}
 		}
 
-		// 5. Generate terrain
+		// 5. Generate terrain via WorldEdit EditSession for bulk placement
 		int blocksPlaced = 0;
-		for (int lx = 0; lx < width; lx++) {
-			for (int lz = 0; lz < depth; lz++) {
-				if (protectedMask[lx][lz]) continue;
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			for (int lx = 0; lx < width; lx++) {
+				for (int lz = 0; lz < depth; lz++) {
+					if (protectedMask[lx][lz]) continue;
 
-				int tx = startTX + lx;
-				int tz = startTZ + lz;
-				// Convert terrain space → world space
-				int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
-				int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
+					int tx = startTX + lx;
+					int tz = startTZ + lz;
+					// Convert terrain space → world space
+					int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
+					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
-				double dist = pathDist[lx][lz];
-				double elevation = computeElevation(noise, tx, tz, dist);
+					double dist = pathDist[lx][lz];
+					double elevation = computeElevation(noise, tx, tz, dist);
 
-				blocksPlaced += placeColumn(world, worldX, worldZ, baseY, noise, elevation, dist, tx, tz);
+					blocksPlaced += placeColumn(editSession, worldX, worldZ, baseY, noise, elevation, dist, tx, tz);
+				}
 			}
 		}
 
@@ -394,99 +412,98 @@ public class MountainPathGenerator {
 			}
 		}
 
-		// 5. Generate terrain — only within terrainRadius of pieces/paths
+		// 5. Generate terrain via WorldEdit EditSession for bulk placement
 		int blocksPlaced = 0;
-		for (int lx = 0; lx < width; lx++) {
-			for (int lz = 0; lz < depth; lz++) {
-				// Skip piece footprints (schematics handle those)
-				if (pieceHeightMap[lx][lz] != Integer.MIN_VALUE) continue;
-				// Skip blocks beyond the terrain border
-				double dist = nearestDist[lx][lz];
-				if (dist > terrainRadius) continue;
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			for (int lx = 0; lx < width; lx++) {
+				for (int lz = 0; lz < depth; lz++) {
+					// Skip piece footprints (schematics handle those)
+					if (pieceHeightMap[lx][lz] != Integer.MIN_VALUE) continue;
+					// Skip blocks beyond the terrain border
+					double dist = nearestDist[lx][lz];
+					if (dist > terrainRadius) continue;
 
-				int tx = startTX + lx;
-				int tz = startTZ + lz;
-				int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
-				int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
+					int tx = startTX + lx;
+					int tz = startTZ + lz;
+					int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
+					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
-				// Use distance to nearest path for elevation computation (paths vs mountains)
-				double pathDist = Double.MAX_VALUE;
-				double pathYOff = 0;
-				for (int[] seg : pathSegments) {
-					double d = distToSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
-					if (d < pathDist) {
-						pathDist = d;
-						double t = projectOntoSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
-						pathYOff = seg[4] + (seg[5] - seg[4]) * t;
+					// Use distance to nearest path for elevation computation (paths vs mountains)
+					double pathDist = Double.MAX_VALUE;
+					double pathYOff = 0;
+					for (int[] seg : pathSegments) {
+						double d = distToSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
+						if (d < pathDist) {
+							pathDist = d;
+							double t = projectOntoSegment(lx, lz, seg[0], seg[1], seg[2], seg[3]);
+							pathYOff = seg[4] + (seg[5] - seg[4]) * t;
+						}
 					}
-				}
 
-				double elevation = computeElevation(noise, tx, tz, pathDist);
+					double elevation = computeElevation(noise, tx, tz, pathDist);
 
-				// Feather mountains near piece edges: smooth rise over TRANSITION_WIDTH blocks
-				double pd = pieceDist[lx][lz];
-				if (pd < TRANSITION_WIDTH) {
-					double t = pd / TRANSITION_WIDTH;
-					t = t * t * (3 - 2 * t); // smoothstep
-					elevation *= t;
-				}
+					// Feather mountains near piece edges: smooth rise over TRANSITION_WIDTH blocks
+					double pd = pieceDist[lx][lz];
+					if (pd < TRANSITION_WIDTH) {
+						double t = pd / TRANSITION_WIDTH;
+						t = t * t * (3 - 2 * t); // smoothstep
+						elevation *= t;
+					}
 
-				// Compute Y offset: paths use interpolated path Y, mountains/transition use nearest piece Y
-				int yOffset;
-				if (pathDist <= CORRIDOR_HALF_WIDTH) {
-					// Path zone: use interpolated Y from path endpoints + small noise bumps
-					double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
-					yOffset = (int) Math.round(pathYOff + bump) + 2;
-				} else {
-					// Mountain/transition zone: shift Y based on nearest piece
-					yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
+					// Compute Y offset: paths use interpolated path Y, mountains/transition use nearest piece Y
+					int yOffset;
+					if (pathDist <= CORRIDOR_HALF_WIDTH) {
+						// Path zone: use interpolated Y from path endpoints + small noise bumps
+						double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
+						yOffset = (int) Math.round(pathYOff + bump) + 2;
+					} else {
+						// Mountain/transition zone: shift Y based on nearest piece
+						yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
+					}
+					blocksPlaced += placeColumn(editSession, worldX, worldZ, baseY + yOffset, noise, elevation, pathDist, tx, tz);
 				}
-				blocksPlaced += placeColumn(world, worldX, worldZ, baseY + yOffset, noise, elevation, pathDist, tx, tz);
 			}
-		}
 
-		// 6. Generate 1-block-thick barrier wall and roof (only replacing air)
-		// Pre-compute which blocks are inside the barrier boundary
-		boolean[][] insideBarrier = new boolean[width][depth];
-		for (int lx = 0; lx < width; lx++) {
-			for (int lz = 0; lz < depth; lz++) {
-				insideBarrier[lx][lz] = pieceDist[lx][lz] <= pieceBarrierRadius
-						|| pathDistArr[lx][lz] <= pathBarrierRadius;
+			// 6. Generate 1-block-thick barrier wall and roof
+			// Pre-compute which blocks are inside the barrier boundary
+			boolean[][] insideBarrier = new boolean[width][depth];
+			for (int lx = 0; lx < width; lx++) {
+				for (int lz = 0; lz < depth; lz++) {
+					insideBarrier[lx][lz] = pieceDist[lx][lz] <= pieceBarrierRadius
+							|| pathDistArr[lx][lz] <= pathBarrierRadius;
+				}
 			}
-		}
-		for (int lx = 0; lx < width; lx++) {
-			for (int lz = 0; lz < depth; lz++) {
-				if (!insideBarrier[lx][lz]) continue;
-				// Wall: inside block with at least one outside neighbor
-				boolean isWall = (lx == 0 || !insideBarrier[lx - 1][lz])
-						|| (lx == width - 1 || !insideBarrier[lx + 1][lz])
-						|| (lz == 0 || !insideBarrier[lx][lz - 1])
-						|| (lz == depth - 1 || !insideBarrier[lx][lz + 1]);
-				boolean isRoof = true; // All interior blocks get a roof
+			// Cap barrier wall height to just above max mountain height
+			int barrierWallTop = baseY + MAX_MOUNTAIN_HEIGHT + 3;
+			for (int lx = 0; lx < width; lx++) {
+				for (int lz = 0; lz < depth; lz++) {
+					if (!insideBarrier[lx][lz]) continue;
+					// Wall: inside block with at least one outside neighbor
+					boolean isWall = (lx == 0 || !insideBarrier[lx - 1][lz])
+							|| (lx == width - 1 || !insideBarrier[lx + 1][lz])
+							|| (lz == 0 || !insideBarrier[lx][lz - 1])
+							|| (lz == depth - 1 || !insideBarrier[lx][lz + 1]);
 
-				int tx = startTX + lx;
-				int tz = startTZ + lz;
-				int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
-				int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
+					int tx = startTX + lx;
+					int tz = startTZ + lz;
+					int worldX = -(tx + xOff + MapPieceInstance.X_FIGHT_OFFSET);
+					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
-				if (isWall) {
-					// Barrier wall column up to fixed roof, only replace air
-					for (int y = baseY; y <= BARRIER_ROOF_Y; y++) {
-						Block b = world.getBlockAt(worldX, y, worldZ);
-						if (b.getType() == Material.AIR) {
-							b.setType(Material.BARRIER, false);
+					if (isWall) {
+						// Barrier wall column up to capped height
+						for (int y = baseY; y <= barrierWallTop; y++) {
+							try {
+								editSession.setBlock(BlockVector3.at(worldX, y, worldZ), WE_BARRIER);
+							} catch (Exception ignored) {}
 							blocksPlaced++;
 						}
 					}
-				}
 
-				if (isRoof) {
-					// Roof at fixed Y-level, only replace air
-					Block roofBlock = world.getBlockAt(worldX, BARRIER_ROOF_Y, worldZ);
-					if (roofBlock.getType() == Material.AIR) {
-						roofBlock.setType(Material.BARRIER, false);
-						blocksPlaced++;
-					}
+					// Roof at fixed Y-level
+					try {
+						editSession.setBlock(BlockVector3.at(worldX, BARRIER_ROOF_Y, worldZ), WE_BARRIER);
+					} catch (Exception ignored) {}
+					blocksPlaced++;
 				}
 			}
 		}
@@ -553,63 +570,62 @@ public class MountainPathGenerator {
 	}
 
 	/**
-	 * Place a vertical column of terrain blocks at the given world position.
+	 * Place a vertical column of terrain blocks using WorldEdit EditSession.
+	 * Removes foundation layer and uses shell-only placement for tall mountains.
 	 * Returns number of blocks placed.
 	 */
-	private static int placeColumn(World world, int worldX, int worldZ, int baseY,
+	private static int placeColumn(EditSession editSession, int worldX, int worldZ, int baseY,
 			SimplexNoise noise, double elevation, double distToPath,
 			int tx, int tz) {
 		int surfaceY = baseY + (int) elevation;
 		int placed = 0;
-		int globalBaseY = MapPieceInstance.Y_OFFSET;
 
-		// Foundation: fill from global base down through FOUNDATION_DEPTH up to column baseY
-		int foundationBottom = Math.min(baseY, globalBaseY) - FOUNDATION_DEPTH;
-		for (int y = foundationBottom; y < baseY; y++) {
-			Block b = world.getBlockAt(worldX, y, worldZ);
-			b.setType(Material.STONE, false);
-			placed++;
-		}
-
-		if (elevation < 0.5) {
-			// Path zone: flat surface
-			Block surface = world.getBlockAt(worldX, baseY, worldZ);
-			surface.setType(Material.PACKED_ICE, false);
-			placed++;
-			// Railing/wall if right at edge of corridor
-			if (distToPath > CORRIDOR_HALF_WIDTH - 0.5 && distToPath <= CORRIDOR_HALF_WIDTH) {
-				Block wall = world.getBlockAt(worldX, baseY + 1, worldZ);
-				wall.setType(Material.SNOW_BLOCK, false);
+		try {
+			if (elevation < 0.5) {
+				// Path zone: flat surface
+				editSession.setBlock(BlockVector3.at(worldX, baseY, worldZ), WE_PACKED_ICE);
 				placed++;
-			}
-		} else {
-			// Mountain/transition column
-			double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
-			for (int y = baseY; y <= surfaceY; y++) {
-				Block b = world.getBlockAt(worldX, y, worldZ);
-				if (y == surfaceY) {
-					// Surface layer
-					b.setType(Material.SNOW_BLOCK, false);
-				} else if (y > surfaceY - 3) {
-					// Near surface
-					if (elevation > 15) {
-						b.setType(Material.PACKED_ICE, false);
-					} else {
-						b.setType(Material.STONE, false);
+				// Railing/wall if right at edge of corridor
+				if (distToPath > CORRIDOR_HALF_WIDTH - 0.5 && distToPath <= CORRIDOR_HALF_WIDTH) {
+					editSession.setBlock(BlockVector3.at(worldX, baseY + 1, worldZ), WE_SNOW_BLOCK);
+					placed++;
+				}
+			} else {
+				int height = surfaceY - baseY;
+				if (height > SHELL_THRESHOLD) {
+					// Shell-only: place surface layers + base block, skip enclosed interior
+					// Surface block
+					editSession.setBlock(BlockVector3.at(worldX, surfaceY, worldZ), WE_SNOW_BLOCK);
+					placed++;
+					// Near-surface (2 blocks below surface)
+					BaseBlock nearSurface = elevation > 15 ? WE_PACKED_ICE : WE_STONE;
+					for (int y = surfaceY - 1; y > surfaceY - 3 && y > baseY; y--) {
+						editSession.setBlock(BlockVector3.at(worldX, y, worldZ), nearSurface);
+						placed++;
 					}
+					// Base block (floor cap visible from paths)
+					editSession.setBlock(BlockVector3.at(worldX, baseY, worldZ), WE_STONE);
+					placed++;
 				} else {
-					// Core
-					if (stoneVar > 0.3) {
-						b.setType(Material.STONE, false);
-					} else if (stoneVar > 0) {
-						b.setType(Material.ANDESITE, false);
-					} else {
-						b.setType(Material.COBBLESTONE, false);
+					// Short column: place all blocks (all potentially visible)
+					double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
+					for (int y = baseY; y <= surfaceY; y++) {
+						BaseBlock block;
+						if (y == surfaceY) {
+							block = WE_SNOW_BLOCK;
+						} else if (y > surfaceY - 3) {
+							block = elevation > 15 ? WE_PACKED_ICE : WE_STONE;
+						} else {
+							if (stoneVar > 0.3) block = WE_STONE;
+							else if (stoneVar > 0) block = WE_ANDESITE;
+							else block = WE_COBBLESTONE;
+						}
+						editSession.setBlock(BlockVector3.at(worldX, y, worldZ), block);
+						placed++;
 					}
 				}
-				placed++;
 			}
-		}
+		} catch (Exception ignored) {}
 
 		return placed;
 	}
