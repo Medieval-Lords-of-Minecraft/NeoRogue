@@ -106,7 +106,7 @@ public class Session {
 	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
-		newLobby = loadClipboard("newLobby.schem");
+		newLobby = loadClipboard("newlobby.schem");
 		loadLobby = loadClipboard("loadlobby.schem");
 		nodeSelect = loadClipboard("nodeselect.schem");
 		rewardsRoom = loadClipboard("rewards.schem");
@@ -247,7 +247,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.SPRUCE_LOG; // Change this when interstitials change to regen them
+		Material versionCheck = Material.STONE; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());

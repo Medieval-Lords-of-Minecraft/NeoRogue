@@ -22,9 +22,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 public class MirrorPotion extends Consumable {
 	private static final String ID = "MirrorPotion";
 	private static final long DELAY = 20L;
+	private int uses;
 
 	public MirrorPotion(boolean isUpgraded) {
 		super(ID, "Mirror Potion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		uses = isUpgraded ? 2 : 1;
 	}
 
 	public static Equipment get() {
@@ -33,7 +35,7 @@ public class MirrorPotion extends Consumable {
 
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		int[] remaining = { isUpgraded ? 2 : 1 };
+		int[] remaining = { uses };
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
@@ -62,7 +64,7 @@ public class MirrorPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, isUpgraded
-				? "Your next [" + DescUtil.white(2) + "] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
+				? "Your next [" + DescUtil.yellow(uses) + "] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
 				: "Your next ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(186, 85, 211));
