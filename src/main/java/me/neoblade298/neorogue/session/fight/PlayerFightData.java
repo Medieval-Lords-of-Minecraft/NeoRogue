@@ -100,7 +100,7 @@ public class PlayerFightData extends FightData {
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
-	private boolean isDead, ignoreCooldowns, hasSprinted;
+	private boolean isDead, ignoreCooldowns, hasSprinted, droppedThisTick;
 	private AmmunitionInstance ammo = null;
 
 	private FightStatistics stats = new FightStatistics(this);
@@ -454,6 +454,14 @@ public class PlayerFightData extends FightData {
 
 	public boolean isDead() {
 		return isDead;
+	}
+
+	public boolean isDroppedThisTick() {
+		return droppedThisTick;
+	}
+
+	public void setDroppedThisTick(boolean droppedThisTick) {
+		this.droppedThisTick = droppedThisTick;
 	}
 
 	public void cleanup(PlayerSessionData data) {

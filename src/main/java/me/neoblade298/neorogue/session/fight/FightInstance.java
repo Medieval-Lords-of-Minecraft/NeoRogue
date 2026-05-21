@@ -433,6 +433,10 @@ public abstract class FightInstance extends Instance {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		// Drop item is always cancelled
+		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data != null) {
+			data.setDroppedThisTick(true);
+		}
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
 	
@@ -694,6 +698,12 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null)
 			return;
+		// Bukkit fires LEFT_CLICK_AIR alongside PlayerDropItemEvent when Q is pressed;
+		// suppress to prevent slot-based triggers from activating on item drop
+		if (data.isDroppedThisTick()) {
+			data.setDroppedThisTick(false);
+			return;
+		}
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
