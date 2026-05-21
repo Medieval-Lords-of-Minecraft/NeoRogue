@@ -177,6 +177,10 @@ public class PlayerData {
 	public SessionSnapshot getSnapshot(int saveSlot) {
 		return snapshots.get(saveSlot);
 	}
+
+	public boolean hasSlot(int saveSlot) {
+		return saveSlot >= 1 && saveSlot <= slotsAvailable;
+	}
 	
 	public boolean hasUpgrade(String id) {
 		return upgrades.containsKey(id);

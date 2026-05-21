@@ -38,10 +38,10 @@ public class SoulBattery extends Equipment {
 	private static final ParticleContainer lightningCore = new ParticleContainer(Particle.END_ROD)
 			.count(1).spread(0, 0).speed(0);
 	private static final ParticleContainer lightningGlow = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 1.2F))
+			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 1.2F)).offsetY(0.5)
 			.count(1).spread(0.05, 0).speed(0);
 	private static final ParticleContainer circleEdge = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 0.8F))
+			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 0.8F)).offsetY(0.5)
 			.count(1).spread(0, 0).speed(0);
 	private static final TargetProperties boltAoe = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final int SHIELD_DURATION = 160; // 8s

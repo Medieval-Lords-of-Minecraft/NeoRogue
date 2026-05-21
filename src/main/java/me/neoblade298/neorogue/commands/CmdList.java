@@ -97,10 +97,10 @@ public class CmdList extends Subcommand {
 		break;
 		// This one doesn't need commas appended
 		case DROPPABLE: list = droppable;
-		return list.stream().filter(str -> { return str.startsWith(currArgSnip);}).collect(Collectors.toList());
+		return list.stream().filter(str -> { return str.toLowerCase().startsWith(currArgSnip.toLowerCase());}).collect(Collectors.toList());
 		}
 		if (list == null) return null;
-		return list.stream().filter(str -> { return str.startsWith(currArgSnip);})
+		return list.stream().filter(str -> { return str.toLowerCase().startsWith(currArgSnip.toLowerCase());})
 		.map(str -> (hasCommas ? currArgPrefix : "") + str + ",").collect(Collectors.toList());
 	}
 
@@ -249,7 +249,7 @@ public class CmdList extends Subcommand {
 		DROPPABLE;
 		
 		public static FilterType fromString(String str) {
-			switch (str) {
+			switch (str.toLowerCase()) {
 			case "--type": return EQUIPMENT_TYPE;
 			case "--rarity": return RARITY;
 			case "--class": return EQUIPMENT_CLASS;

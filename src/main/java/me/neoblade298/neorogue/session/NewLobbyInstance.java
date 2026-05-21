@@ -13,7 +13,6 @@ import org.bukkit.Tag;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -261,7 +260,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (!e.getAction().isLeftClick() && !e.getAction().isRightClick()) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
@@ -289,7 +288,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		case 'M':
 			switchClass(uuid, EquipmentClass.MAGE);
 			break;
-		case 'R':
+		case 'C':
 			new SessionSettingsInventory(e.getPlayer(), s, this);
 			break;
 		}

@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -99,7 +98,8 @@ public class LoadLobbyInstance extends LobbyInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
         e.setCancelled(true);
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (!e.getAction().isLeftClick() && !e.getAction().isRightClick())
+            return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();
