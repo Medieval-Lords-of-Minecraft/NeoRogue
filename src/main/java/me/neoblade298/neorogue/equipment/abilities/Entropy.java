@@ -31,7 +31,7 @@ public class Entropy extends Equipment {
 	private int intel, riftThres;
 	
 	public Entropy(boolean isUpgraded) {
-		super(ID, "Entropy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+		super(ID, "Entropy", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = 3;
 		riftThres = isUpgraded ? 3 : 4;

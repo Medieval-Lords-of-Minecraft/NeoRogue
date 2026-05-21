@@ -772,6 +772,7 @@ public class DamageMeta {
 	public static enum DamageOrigin {
 		NORMAL,
 		PROJECTILE,
+		RIFT,
 		TRAP;
 	}
 }

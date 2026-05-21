@@ -103,10 +103,10 @@ public class Session {
 
 	private static final ArrayList<Color> fireworkColors = new ArrayList<Color>();
 	
-	private static Clipboard classSelect, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
+	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
-		classSelect = loadClipboard("classselect.schem");
+		newLobby = loadClipboard("newLobby.schem");
 		loadLobby = loadClipboard("loadlobby.schem");
 		nodeSelect = loadClipboard("nodeselect.schem");
 		rewardsRoom = loadClipboard("rewards.schem");
@@ -247,14 +247,14 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.OAK_LOG; // Change this when interstitials change to regen them
+		Material versionCheck = Material.SPRUCE_LOG; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
 			loc.getBlock().setType(versionCheck);
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
-				pasteSchematic(classSelect, editSession, this, Session.NEW_LOBBY_Z);
+				pasteSchematic(newLobby, editSession, this, Session.NEW_LOBBY_Z);
 				pasteSchematic(loadLobby, editSession, this, LOAD_LOBBY_X, 0, Session.LOAD_LOBBY_Z);
 				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
 				pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);

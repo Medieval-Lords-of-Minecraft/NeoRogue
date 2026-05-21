@@ -21,6 +21,9 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -61,7 +64,8 @@ public class Riftmaker extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta attackCounter = new ActionMeta();
-		ProjectileGroup proj = new ProjectileGroup(new RiftmakerProjectile(data, this, slot, attackCounter));
+		ProjectileGroup proj = new ProjectileGroup(new RiftmakerProjectile(data, this, slot, attackCounter, false));
+		ProjectileGroup riftProj = new ProjectileGroup(new RiftmakerProjectile(data, this, slot, attackCounter, true));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -88,7 +92,7 @@ public class Riftmaker extends Equipment {
 					Location target = current.getEyeLocation().add(current.getLocation().getDirection().normalize().multiply(7));
 					Vector direction = target.toVector().subtract(nearest.getLocation().toVector());
 					if (direction.lengthSquared() > 0) {
-						proj.start(data, nearest.getLocation(), direction);
+						riftProj.start(data, nearest.getLocation(), direction);
 					}
 				}
 			});
@@ -101,14 +105,16 @@ public class Riftmaker extends Equipment {
 		private final Riftmaker eq;
 		private final int slot;
 		private final ActionMeta attackCounter;
+		private final boolean fromRift;
 
-		public RiftmakerProjectile(PlayerFightData data, Riftmaker eq, int slot, ActionMeta attackCounter) {
+		public RiftmakerProjectile(PlayerFightData data, Riftmaker eq, int slot, ActionMeta attackCounter, boolean fromRift) {
 			super(2.0, RANGE, 1);
 			this.size(0.6, 0.6);
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
 			this.attackCounter = attackCounter;
+			this.fromRift = fromRift;
 		}
 
 		@Override
@@ -134,7 +140,15 @@ public class Riftmaker extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			start.play(data.getPlayer(), proj.getLocation());
-			proj.applyWeapon(data, eq, slot);
+			if (fromRift) {
+proj.getMeta().addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), DamageType.DARK,
+					DamageStatTracker.of(id + slot, eq)));
+				proj.getMeta().addOrigin(DamageOrigin.RIFT);
+				proj.getMeta().setKnockback(properties.get(PropertyType.KNOCKBACK));
+				proj.getMeta().isBasicAttack(eq, true);
+			} else {
+				proj.applyWeapon(data, eq, slot);
+			}
 		}
 	}
 
