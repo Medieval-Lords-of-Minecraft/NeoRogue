@@ -66,8 +66,8 @@
 
         <!-- NeoCore (install locally via mvn install on NeoCore project) -->
         <dependency>
-            <groupId>NeoCore</groupId>
-            <artifactId>NeoCore</artifactId>
+            <groupId>me.neoblade298</groupId>
+            <artifactId>neocore</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
