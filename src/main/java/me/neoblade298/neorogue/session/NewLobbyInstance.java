@@ -35,6 +35,7 @@ public class NewLobbyInstance extends LobbyInstance {
 			playerNotOnline = Component.text("That player isn't online!", NamedTextColor.RED),
 			maxSizeError = Component.text("This lobby is full as it has a max of " + LobbyInstance.MAX_SIZE + " players!",
 					NamedTextColor.RED);
+    private static final TextComponent hostKickSelf = Component.text("The host cannot kick themselves!", NamedTextColor.RED);
     private static final Comparator<Player> comp = new Comparator<Player>() {
         @Override
         public int compare(Player p1, Player p2) {
@@ -154,6 +155,11 @@ public class NewLobbyInstance extends LobbyInstance {
         }
 
         Player p = Bukkit.getPlayer(name);
+
+        if (p.getUniqueId().equals(host)) {
+            Util.msgRaw(s, hostKickSelf);
+            return;
+        }
 
         if (!inLobby.contains(p.getUniqueId())) {
             Util.msgRaw(s, playerNotInLobby);

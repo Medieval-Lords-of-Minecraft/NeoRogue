@@ -1,6 +1,7 @@
 target/
 externals/
 dependencies/
+bin/
 
 .classpath
 .project

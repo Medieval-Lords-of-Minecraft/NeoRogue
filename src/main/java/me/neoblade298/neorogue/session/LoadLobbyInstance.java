@@ -24,6 +24,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class LoadLobbyInstance extends LobbyInstance {
     private static final double SPAWN_X = Session.LOAD_LOBBY_X + 6.5, SPAWN_Z = Session.LOAD_LOBBY_Z + 3.5, HOLO_X = 0,
             HOLO_Y = 3.2, HOLO_Z = 10;
+    
+    private static final TextComponent hostKickSelf = Component.text("The host cannot kick themselves!",
+            NamedTextColor.RED);
 
     private Instance startInstance;
     private long lastInviteTime = 0;
@@ -162,6 +165,11 @@ public class LoadLobbyInstance extends LobbyInstance {
         }
 
         Player p = Bukkit.getPlayer(name);
+
+        if (p.getUniqueId().equals(host)) {
+            Util.msgRaw(s, hostKickSelf);
+            return;
+        }
 
         if (!inLobby.contains(p.getUniqueId())) {
             Util.msgRaw(s, playerNotInLobby);

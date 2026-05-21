@@ -100,7 +100,6 @@ public class RewardInventory extends CoreInventory {
 			}
 		}
 		else if (slot == 7 && data.getSession().getParty().size() > 1) {
-			if (spectator != null) return;
 			new SpectateSelectInventory(data.getSession(), p, data, true);
 		}
 		else if (slot == 8) {

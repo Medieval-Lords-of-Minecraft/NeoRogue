@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -103,7 +104,7 @@ public class DarkTorrent extends Equipment {
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, aoeDamage, DamageType.DARK,
-								DamageStatTracker.of(id + slot, eq)), ent);
+								DamageStatTracker.of(id + slot, eq), DamageOrigin.RIFT), ent);
 					}
 
 					if (++count >= 5) this.cancel();

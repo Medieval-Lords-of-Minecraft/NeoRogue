@@ -33,12 +33,13 @@ public class HexCurse2 extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);
-	private int damage;
+	private int damage, duration;
 	
 	public HexCurse2(boolean isUpgraded) {
 		super(ID, "Hex Curse II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				damage = isUpgraded ? 75 : 50;
+				damage = isUpgraded ? 180 : 120;
+				duration = 8;
 	}
 	
 	public static Equipment get() {
@@ -75,7 +76,7 @@ public class HexCurse2 extends Equipment {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 160);
+				fd.applyStatus(s, data, 1, duration * 20);
 			}
 			return TriggerResult.keep();
 		});
@@ -84,7 +85,7 @@ public class HexCurse2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"Passive. Your non-basic attack damage marks enemies " + DescUtil.duration(8, false) + ". Dealing to marked enemies basic attack damage deals " +
+				"Passive. Your non-basic attack damage marks enemies " + DescUtil.duration(duration, false) + ". Dealing basic attack damage to marked enemies deals " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage and consumes the mark. Marks do not stack.");
 	}
 }

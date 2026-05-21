@@ -7,16 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -30,7 +27,6 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.Rift;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -56,13 +52,13 @@ public class Convergence extends Equipment {
 		DAMAGE_TYPE_COLORS.put(DamageType.BLUNT, Color.fromRGB(218, 165, 32)); // Goldenrod
 	}
 	
-	private int intel, riftThres, heal;
+	private static final int ACTIVATION_THRES = 2;
+	private int intel, heal;
 	
 	public Convergence(boolean isUpgraded) {
 		super(ID, "Convergence", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = 3;
-		riftThres = isUpgraded ? 3 : 4;
 		heal = isUpgraded ? 2 : 1;
 	}
 	
@@ -77,61 +73,54 @@ public class Convergence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta killTracker = new ActionMeta();
-		ActionMeta lastDamageType = new ActionMeta(); // Stores the last damage type
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		int[] killCount = {0};
+		ActionMeta lastDamageType = new ActionMeta();
 		
-		// Original Entropy mechanics - gain intellect on kill, spawn rifts
-		data.addTrigger(id, Trigger.KILL, inst);
-		inst.setAction((pdata, in) -> {
+		// Power: activates after 2 kills
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			killCount[0]++;
+			if (killCount[0] < ACTIVATION_THRES) return TriggerResult.keep();
+			
 			Player p = data.getPlayer();
-			if (killTracker.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
-				return TriggerResult.keep();
-			}
-			killTracker.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
 			Sounds.enchant.play(p, p);
 			pc.play(p, p);
-			if (killTracker.getCount() % riftThres == 0) {
-				Sounds.fire.play(p, p);
-				data.addRift(new Rift(data, p.getLocation(), 160));
-			}
-			icon.setAmount(killTracker.getCount());
-			inst.setIcon(icon);
-			killTracker.setTime(System.currentTimeMillis());
-			return TriggerResult.keep();
-		});
-		
-		// New mechanic - track damage types and fire projectiles when type changes
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			Player p = data.getPlayer();
+			me.neoblade298.neocore.bukkit.util.Util.msgRaw(p, net.kyori.adventure.text.Component.text("").append(hoverable).append(net.kyori.adventure.text.Component.text(" was activated", net.kyori.adventure.text.format.NamedTextColor.GRAY)));
 			
-			// Get the primary damage type from the first slice
-			if (ev.getMeta().getSlices().isEmpty()) return TriggerResult.keep();
-			DamageSlice primarySlice = ev.getMeta().getSlices().getFirst();
-			DamageType currentType = primarySlice.getPostBuffType();
+			// After activation: gain intellect on kill, fire projectiles on type change
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p2 = data.getPlayer();
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Sounds.enchant.play(p2, p2);
+				pc.play(p2, p2);
+				return TriggerResult.keep();
+			});
 			
-			// Check if this is a different type from the last damage dealt
-			DamageType lastType = (DamageType) lastDamageType.getObject();
-			if (lastType == null || currentType != lastType) {
-				// Heal player
-				FightInstance.giveHeal(p, heal, p);
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				DealDamageEvent ev = (DealDamageEvent) in2;
+				Player p2 = data.getPlayer();
 				
-				// Fire 3 projectiles in a cone
-				ProjectileGroup proj = new ProjectileGroup();
-				for (int angle : new int[] { -15, 0, 15 }) {
-					proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType));
+				if (ev.getMeta().getSlices().isEmpty()) return TriggerResult.keep();
+				DamageSlice primarySlice = ev.getMeta().getSlices().getFirst();
+				DamageType currentType = primarySlice.getPostBuffType();
+				
+				DamageType lastType = (DamageType) lastDamageType.getObject();
+				if (lastType == null || currentType != lastType) {
+					FightInstance.giveHeal(p2, heal, p2);
+					
+					ProjectileGroup proj = new ProjectileGroup();
+					for (int angle : new int[] { -15, 0, 15 }) {
+						proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType));
+					}
+					proj.start(data);
+					Sounds.shoot.play(p2, p2);
+					
+					lastDamageType.setObject(currentType);
 				}
-				proj.start(data);
-				Sounds.shoot.play(p, p);
 				
-				// Update last damage type
-				lastDamageType.setObject(currentType);
-			}
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
+			return TriggerResult.remove();
 		});
 	}
 	
@@ -180,11 +169,11 @@ public class Convergence extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + 
-				DescUtil.yellow(riftThres) + " kills, spawn a " + GlossaryTag.RIFT.tag(this) + 
-				" [<white>8s</white>] at your location. Whenever you deal a damage type that is different " +
-				"from your previous damage type, heal for " + DescUtil.yellow(heal) + " and fire " + DescUtil.white(3) + " " +
-				"color-coded projectiles in a cone dealing " + DescUtil.yellow(PROJECTILE_DAMAGE) + 
-				" damage of the same damage type.");
+				GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ACTIVATION_THRES) + " kills. " +
+				"Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. " +
+				"Whenever you deal a different damage type from your previous type, " +
+				"heal for " + DescUtil.yellow(heal) + " and fire " + DescUtil.white(3) + " " +
+				"projectiles in a cone dealing " + DescUtil.yellow(PROJECTILE_DAMAGE) + 
+				" damage of the same type.");
 	}
 }

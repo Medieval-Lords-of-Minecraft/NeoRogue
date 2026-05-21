@@ -17,6 +17,8 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -56,7 +58,7 @@ public class Dematerialize extends Equipment {
 				circ.play(pc, rift.getLocation(), LocalAxes.xz(), null);
 				sc.play(p, rift.getLocation());
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, rift.getLocation(), tp)) {
-					FightInstance.dealDamage(data, DamageType.DARK, damage, ent, DamageStatTracker.of(id + slot, this));
+					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this), DamageOrigin.RIFT), ent);
 				}
 			}
 

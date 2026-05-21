@@ -265,8 +265,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public abstract class Equipment implements Comparable<Equipment> {
-	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
-	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
+	private static TreeMap<String, Equipment> equipment = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
+	private static TreeMap<String, Equipment> upgraded = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Equipment> weapons = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
