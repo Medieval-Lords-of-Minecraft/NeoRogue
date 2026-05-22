@@ -8,6 +8,15 @@ api-version: 1.20
 commands:
    nr:
       description: NeoRogue General command
+      permission: neorogue.general
    nradmin:
       aliases: [nra]
       description: NeoRogue Admin command
+      permission: neorogue.admin
+permissions:
+   neorogue.general:
+      description: Allows use of /nr commands
+      default: true
+   neorogue.admin:
+      description: Allows use of /nradmin commands
+      default: op
