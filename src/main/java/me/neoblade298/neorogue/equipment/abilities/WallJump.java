@@ -75,7 +75,7 @@ public class WallJump extends Equipment {
 					// Dash in stored direction
 					Vector dashVec = p.getLocation().getDirection().clone();
 					dashVec.setY(Math.min(dashVec.getY(), 0.5));
-					dashVec.normalize().multiply(1.5);
+					dashVec.normalize();
 					p.setVelocity(dashVec);
 					
 					// Deal line damage

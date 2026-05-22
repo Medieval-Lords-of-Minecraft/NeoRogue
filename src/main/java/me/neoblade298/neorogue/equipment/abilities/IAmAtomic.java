@@ -52,6 +52,7 @@ public class IAmAtomic extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		int[] riftHitCount = {0};
 		String buffId = UUID.randomUUID().toString();
+		boolean[] activated = {false};
 		
 		// Power: activates after dealing rift damage 3 times
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -60,6 +61,8 @@ public class IAmAtomic extends Equipment {
 			
 			riftHitCount[0]++;
 			if (riftHitCount[0] < ACTIVATION_THRES) return TriggerResult.keep();
+			if (activated[0]) return TriggerResult.remove();
+			activated[0] = true;
 			
 			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);

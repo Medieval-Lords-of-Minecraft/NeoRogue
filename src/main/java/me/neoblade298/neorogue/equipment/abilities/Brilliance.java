@@ -49,14 +49,10 @@ public class Brilliance extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(Entropy.get());
-	}
-
-	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		HashSet<DamageType> seenTypes = new HashSet<>();
 		String buffId = UUID.randomUUID().toString();
+		boolean[] activated = {false};
 		
 		// Power: activates after dealing 3 different types of damage
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -68,6 +64,8 @@ public class Brilliance extends Equipment {
 			seenTypes.add(currentType);
 			
 			if (seenTypes.size() < ACTIVATION_THRES) return TriggerResult.keep();
+			if (activated[0]) return TriggerResult.remove();
+			activated[0] = true;
 			
 			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);
@@ -96,7 +94,7 @@ public class Brilliance extends Equipment {
 					}
 					
 					brillianceEffect.play(p2, p2);
-					Sounds.levelup.play(p2, p2);
+					Sounds.success.play(p2, p2);
 					lastType[0] = type;
 				}
 				

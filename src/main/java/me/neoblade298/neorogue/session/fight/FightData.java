@@ -529,7 +529,6 @@ public class FightData {
 		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, status, stacks, ticks, isSecondary, meta);
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
-			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
 		}
 		else {
@@ -574,7 +573,9 @@ public class FightData {
 			updateDisplayName();
 		}
 		if (this instanceof PlayerFightData) {
-			((PlayerFightData) this).updateActionBar();
+			PlayerFightData pdata = (PlayerFightData) this;
+			pdata.updateActionBar();
+			pdata.updateBoardLines();
 		}
 	}
 

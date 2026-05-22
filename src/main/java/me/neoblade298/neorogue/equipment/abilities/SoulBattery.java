@@ -48,6 +48,7 @@ public class SoulBattery extends Equipment {
 	private static final int STRIKE_DELAY = 40; // 2s
 	private static final int STRIKE_RADIUS = 5;
 	private static final Circle circ = new Circle(STRIKE_RADIUS);
+	private static final Circle boltCirc = new Circle(3);
 	private int threshold, damage;
 
 	public SoulBattery(boolean isUpgraded) {
@@ -97,8 +98,26 @@ public class SoulBattery extends Equipment {
 	}
 
 	private void strikeBolt(Player p, PlayerFightData data, Location loc, Equipment eq, int slot) {
-		ParticleUtil.drawLine(p, lightningCore, loc.clone().add(0, 5, 0), loc, 0.3);
-		ParticleUtil.drawLine(p, lightningGlow, loc.clone().add(0, 5, 0), loc, 0.25);
+		// Jagged lightning bolt from 5 blocks above down to loc
+		int segments = 5;
+		Location top = loc.clone().add(0, 5, 0);
+		Location prev = top.clone();
+		for (int i = 1; i <= segments; i++) {
+			Location next;
+			if (i == segments) {
+				next = loc.clone();
+			} else {
+				double t = (double) i / segments;
+				double offsetX = (Math.random() - 0.5) * 0.8;
+				double offsetZ = (Math.random() - 0.5) * 0.8;
+				next = loc.clone().add(offsetX, 5 * (1 - t), offsetZ);
+			}
+			ParticleUtil.drawLine(p, lightningCore, prev, next, 0.3);
+			ParticleUtil.drawLine(p, lightningGlow, prev, next, 0.25);
+			prev = next;
+		}
+		// AoE radius indicator
+		boltCirc.play(circleEdge, loc, LocalAxes.xz(), null);
 		Sounds.thunder.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, boltAoe)) {
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING,
