@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -61,7 +60,7 @@ public class SpiritOfTheDragoon extends Equipment {
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
-				p.setVelocity(p.getVelocity().add(new Vector(0, 0.5, 0)));
+				p.setVelocity(p.getVelocity().setY(0.3));
 				Sounds.jump.play(p, p);
 				lastCast = System.currentTimeMillis();
 				return TriggerResult.keep();

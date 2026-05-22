@@ -40,7 +40,7 @@ public class CmdGlossary extends Subcommand {
 		}
 		
 		try {
-			GlossaryTag tag = GlossaryTag.valueOf(args[0]);
+			GlossaryTag tag = GlossaryTag.valueOf(args[0].toUpperCase());
 			Util.msgRaw(p, tag.getTag());
 			Util.msgRaw(p, tag.getLoreString());
 			return;

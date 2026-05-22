@@ -82,6 +82,7 @@ public class Lightfall extends Equipment {
 					if (p.isOnGround()) {
 						activateDamage(p, data, slot);
 						am.setBool(false);
+						cancel();
 					}
 
 					if (++count >= 22) { // Arbitrary basically

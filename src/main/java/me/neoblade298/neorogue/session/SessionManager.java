@@ -68,6 +68,8 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.Instance.PlayerFlags;
@@ -90,6 +92,12 @@ public class SessionManager implements Listener {
 	}
 
 	public static Session createSession(Player p, int saveSlot, boolean isNew, SessionType sessionType) {
+		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
+		if (pd == null || !pd.hasSlot(saveSlot)) {
+			Util.displayError(p, "Invalid save slot! You only have " + (pd != null ? pd.getSlots() : 0) + " slot(s)!");
+			return null;
+		}
+
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, saveSlot, isNew, sessionType);
 		sessions.put(p.getUniqueId(), s);

@@ -4,12 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -43,14 +41,16 @@ public class Entropy extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Convergence.get());
-		addReforge(Brilliance.get());
-		addReforge(IAmAtomic.get());
+		addReforge(CatalystCrucible.get(), Convergence.get(), Brilliance.get(), IAmAtomic.get());
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		boolean[] activated = {false};
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			if (activated[0]) return TriggerResult.remove();
+			activated[0] = true;
+
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
@@ -58,24 +58,20 @@ public class Entropy extends Equipment {
 			ActionMeta am = new ActionMeta();
 			ItemStack icon = item.clone();
 			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
-						Player p2 = data.getPlayer();
-						am.addCount(1);
-						data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-						Sounds.enchant.play(p2, p2);
-						pc.play(p2, p2);
-						if (am.getCount() % riftThres == 0) {
-							Sounds.fire.play(p2, p2);
-							data.addRift(new Rift(data, p2.getLocation(), 160));
-						}
-						icon.setAmount(am.getCount());
-						inst.setIcon(icon);
-						return TriggerResult.keep();
-					});
+			data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+				Player p2 = data.getPlayer();
+				am.addCount(1);
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Sounds.enchant.play(p2, p2);
+				pc.play(p2, p2);
+				if (am.getCount() % riftThres == 0) {
+					Sounds.fire.play(p2, p2);
+					data.addRift(new Rift(data, p2.getLocation(), 160));
 				}
-			}.runTask(NeoRogue.inst()));
+				icon.setAmount(am.getCount());
+				inst.setIcon(icon);
+				return TriggerResult.keep();
+			});
 
 			return TriggerResult.remove();
 		});

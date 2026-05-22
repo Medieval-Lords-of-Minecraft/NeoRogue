@@ -75,11 +75,14 @@ public class Convergence extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		int[] killCount = {0};
 		ActionMeta lastDamageType = new ActionMeta();
+		boolean[] activated = {false};
 		
 		// Power: activates after 2 kills
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			killCount[0]++;
 			if (killCount[0] < ACTIVATION_THRES) return TriggerResult.keep();
+			if (activated[0]) return TriggerResult.remove();
+			activated[0] = true;
 			
 			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);

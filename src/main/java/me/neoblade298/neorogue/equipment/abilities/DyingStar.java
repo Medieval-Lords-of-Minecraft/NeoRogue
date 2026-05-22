@@ -104,8 +104,13 @@ public class DyingStar extends Equipment {
 			Sounds.fire.play(p, p);
 			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 
-			// Create a rift on activation
-			data.addRift(new Rift(data, p.getLocation(), 100));
+			// Create a rift on activation (delayed to avoid ConcurrentModificationException
+			// from re-entering CREATE_RIFT triggers while the list is being iterated)
+			new BukkitRunnable() {
+				public void run() {
+					data.addRift(new Rift(data, data.getPlayer().getLocation(), 100));
+				}
+			}.runTaskLater(NeoRogue.inst(), 1L);
 
 			// Handle rift expiration - pull enemies and explode
 			data.addTrigger(id, Trigger.REMOVE_RIFT, (pdata2, in2) -> {

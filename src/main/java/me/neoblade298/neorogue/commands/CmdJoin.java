@@ -28,6 +28,11 @@ public class CmdJoin extends Subcommand {
 		}
 
 		Player host = Bukkit.getPlayer(args[0]);
+		if (host == null) {
+			Util.displayError(p, "That player is not online!");
+			return;
+		}
+		
 		Session sess = SessionManager.getSession(host);
 		if (sess == null) {
 			Util.displayError(p, "That player is not in a session!");

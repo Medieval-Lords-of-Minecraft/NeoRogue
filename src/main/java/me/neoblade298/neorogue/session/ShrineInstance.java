@@ -121,7 +121,6 @@ public class ShrineInstance extends EditInventoryInstance {
 
 		
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (e.getClickedBlock().getType()!= Material.STONE_BUTTON) return;
 
 			Player p = e.getPlayer();
 			UUID uuid = p.getUniqueId();

@@ -527,9 +527,9 @@ public class PlayerFightData extends FightData {
 			Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
-			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
-			while (iter.hasNext()) {
-				PriorityAction inst = iter.next();
+			ArrayList<PriorityAction> actions = triggers.get(trigger);
+			ArrayList<PriorityAction> snapshot = new ArrayList<>(actions);
+			for (PriorityAction inst : snapshot) {
 				TriggerResult tr;
 
 				if (inst instanceof EquipmentInstance) {
@@ -615,7 +615,7 @@ public class PlayerFightData extends FightData {
 					if (hotbar != -1) {
 						p.getInventory().setItem(hotbar, null);
 					}
-					iter.remove();
+					actions.remove(inst);
 				}
 				if (tr.cancelEvent()) {
 					cancel = true;

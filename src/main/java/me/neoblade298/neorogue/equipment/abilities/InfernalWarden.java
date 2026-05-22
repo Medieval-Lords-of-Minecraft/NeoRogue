@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -7,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -30,9 +34,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGr
 
 public class InfernalWarden extends Equipment {
 	private static final String ID = "InfernalWarden";
-	private static final double ORBIT_RADIUS = 6;
+	private static final double ORBIT_RADIUS = 4;
 	private static final double HIT_RADIUS = 1.5;
 	private static final int DURATION_TICKS = 120; // 6 seconds at 20 ticks/s
+	private static final int HIT_COOLDOWN_TICKS = 20; // 1 second between hits on same target
 	private static final TargetProperties hitTp = TargetProperties.radius(HIT_RADIUS, false, TargetType.ENEMY);
 	private static final ParticleContainer orbPc = new ParticleContainer(Particle.FLAME)
 			.count(3).spread(0.1, 0.1);
@@ -40,6 +45,43 @@ public class InfernalWarden extends Equipment {
 			.count(1).spread(0.05, 0.05);
 	private static final ParticleContainer hitPc = new ParticleContainer(Particle.FLAME)
 			.count(20).spread(0.5, 0.5);
+	private static final ParticleContainer launchFlamePc = new ParticleContainer(Particle.FLAME)
+			.count(1).spread(0.05, 0.05).speed(0);
+	private static final ParticleContainer launchSmokePc = new ParticleContainer(Particle.SMOKE)
+			.count(1).spread(0.03, 0.03).speed(0);
+	private static final ParticleAnimation launchFlameAnim, launchSmokeAnim;
+
+	static {
+		launchFlameAnim = new ParticleAnimation(launchFlamePc, (loc, tick) -> {
+			LinkedList<Location> locs = new LinkedList<>();
+			double height = 1.5 + (1.5 * tick / 9.0);
+			int points = 2 + (tick * 3 / 9);
+			double spread = 0.1 + (tick * 0.15 / 9.0);
+			for (int i = 0; i < points; i++) {
+				double angle = 2 * Math.PI * i / points + tick * 0.5;
+				locs.add(loc.clone().add(Math.cos(angle) * spread, height, Math.sin(angle) * spread));
+			}
+			if (tick == 9) {
+				for (int i = 0; i < 8; i++) {
+					double angle = 2 * Math.PI * i / 8;
+					locs.add(loc.clone().add(Math.cos(angle) * 0.6, height, Math.sin(angle) * 0.6));
+				}
+			}
+			return locs;
+		}, 10);
+
+		launchSmokeAnim = new ParticleAnimation(launchSmokePc, (loc, tick) -> {
+			LinkedList<Location> locs = new LinkedList<>();
+			double height = 1.5 + (1.5 * tick / 9.0) - 0.3;
+			int points = 2;
+			double spread = 0.05 + (tick * 0.05 / 9.0);
+			for (int i = 0; i < points; i++) {
+				double angle = 2 * Math.PI * i / points + tick * 0.3;
+				locs.add(loc.clone().add(Math.cos(angle) * spread, height, Math.sin(angle) * spread));
+			}
+			return locs;
+		}, 10);
+	}
 
 	private int damage, burn;
 
@@ -66,7 +108,14 @@ public class InfernalWarden extends Equipment {
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				Sounds.fire.play(p, p);
-				startOrbit(p, data, slot);
+				Location loc = p.getLocation();
+				data.runAnimation(id, p, launchFlameAnim, loc);
+				data.runAnimation(id, p, launchSmokeAnim, loc);
+				new BukkitRunnable() {
+					public void run() {
+						startOrbit(data.getPlayer(), data, slot);
+					}
+				}.runTaskLater(NeoRogue.inst(), 10L);
 				return TriggerResult.of(false, true);
 			};
 		}
@@ -82,10 +131,10 @@ public class InfernalWarden extends Equipment {
 		private void startOrbit(Player p, PlayerFightData data, int slot) {
 			data.addTask(new BukkitRunnable() {
 				private int tick = 0;
-				private boolean hit = false;
+				private HashMap<LivingEntity, Integer> hitCooldowns = new HashMap<>();
 
 				public void run() {
-					if (hit || tick >= DURATION_TICKS) {
+					if (tick >= DURATION_TICKS) {
 						this.cancel();
 						return;
 					}
@@ -103,8 +152,8 @@ public class InfernalWarden extends Equipment {
 
 					// Check for nearby enemies at the orb location
 					LivingEntity target = TargetHelper.getNearest(p, orbLoc, hitTp);
-					if (target != null) {
-						hit = true;
+					if (target != null && (!hitCooldowns.containsKey(target) || tick - hitCooldowns.get(target) >= HIT_COOLDOWN_TICKS)) {
+						hitCooldowns.put(target, tick);
 						FightInstance.dealDamage(data, DamageType.FIRE, damage, target,
 								DamageStatTracker.of(ID + slot, InfernalWarden.this));
 						FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1);
