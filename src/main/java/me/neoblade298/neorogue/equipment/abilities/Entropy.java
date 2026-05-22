@@ -41,9 +41,7 @@ public class Entropy extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Convergence.get());
-		addReforge(Brilliance.get());
-		addReforge(IAmAtomic.get());
+		addReforge(CatalystCrucible.get(), Convergence.get(), Brilliance.get(), IAmAtomic.get());
 	}
 
 	@Override
