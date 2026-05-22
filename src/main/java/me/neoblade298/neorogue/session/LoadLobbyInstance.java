@@ -127,6 +127,10 @@ public class LoadLobbyInstance extends LobbyInstance {
                 Util.displayError(e.getPlayer(), "Only the host may start the game!");
                 return;
             }
+            if (s.isBusy()) {
+                Util.msgRaw(p, gameGenerating);
+                return;
+            }
             startGame();
 			return;
 		}

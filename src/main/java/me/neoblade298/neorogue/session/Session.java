@@ -533,6 +533,10 @@ public class Session {
 	
 	// False if set instance fails
 	public boolean setInstance(Instance next) {
+		if (next == null) {
+			Bukkit.getLogger().severe("[NeoRogue] Attempted to setInstance with null! Ignoring.");
+			return false;
+		}
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
 			if (!canSetInstance(next)) {
