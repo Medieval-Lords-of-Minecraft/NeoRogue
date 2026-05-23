@@ -5,11 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -75,17 +73,16 @@ public class LayExplosive extends Equipment {
 
 		private void cast(PlayerFightData data) {
 			active = true;
-			data.channel(40);
-			Player p = data.getPlayer();
 			LayExplosiveInstance inst = this;
-			data.addTask(new BukkitRunnable() {
+			data.charge(20).then(new Runnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Sounds.equip.play(p, p);
 					loc = p.getLocation();
 					tr = new Trap(data, loc, -1) {
 						@Override
 						public void tick() {
-							trap.play(p, loc);
+							trap.play(data.getPlayer(), loc);
 							if (inst.ticks < 5) {
 								inst.ticks++;
 							}
@@ -93,12 +90,13 @@ public class LayExplosive extends Equipment {
 					};
 					data.addTrap(tr);
 				}
-			}.runTaskLater(NeoRogue.inst(), 40L));
+			});
 		}
 
 		private void recast(PlayerFightData data) {
 			if (ticks == 0) return;
 			active = false;
+			Player p = data.getPlayer();
 			Sounds.explode.play(p, loc);
 			exp.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
@@ -111,7 +109,7 @@ public class LayExplosive extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + " that explodes on recast, dealing " +
+				"On cast, " + DescUtil.charge(this, 1, 1) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + " that explodes on recast, dealing " +
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage multiplied by how many seconds it's been active, up to " + DescUtil.white("5s") + "," +
 				" to all nearby enemies.");
 	}

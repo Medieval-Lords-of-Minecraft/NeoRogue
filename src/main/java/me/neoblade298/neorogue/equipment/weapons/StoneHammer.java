@@ -35,12 +35,12 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StoneHammer extends Equipment {
 	private static final String ID = "StoneHammer";
-	private static final int DISTANCE = 4, RADIUS = 2;
-	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
+	private static final int DISTANCE = 4, AOE = 2;
+	private static final TargetProperties props = TargetProperties.radius(AOE, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
 			edge = new ParticleContainer(Particle.CLOUD).count(1).spread(0, 0),
 			fill = new ParticleContainer(Particle.CLOUD).count(1).spread(0.1, 0);
-	private static final Circle hitShape = new Circle(RADIUS);
+	private static final Circle hitShape = new Circle(AOE);
 	public static final ParticleAnimation swing;
 	
 	static {
@@ -60,6 +60,7 @@ public class StoneHammer extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
+		properties.add(PropertyType.AREA_OF_EFFECT, props.range);
 	}
 
 	@Override

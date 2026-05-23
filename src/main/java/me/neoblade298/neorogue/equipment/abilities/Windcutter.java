@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -7,9 +10,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -33,14 +36,17 @@ public class Windcutter extends Equipment {
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F);
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	private static final int PROJECTILE_AMOUNT = 5;
+	private static final int ATTACKS_REQUIRED = 12;
+	private static final int MANA_COST = 15;
 	
 	private ProjectileGroup projs = new ProjectileGroup();
+	private HashSet<UUID> enemiesHit = new HashSet<>();
 	private int damage;
 	
 	public Windcutter(boolean isUpgraded) {
 		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 0, 5));
-		damage = isUpgraded ? 120 : 80;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(MANA_COST, 0, 0, 5));
+		damage = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {
@@ -52,12 +58,7 @@ public class Windcutter extends Equipment {
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2, slot, this));
 		}
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Player p = data.getPlayer();
-			Sounds.equip.play(p, p);
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, data));
-			return TriggerResult.remove();
-		}));
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, data));
 	}
 	
 	private class WindcutterInstance extends PriorityAction {
@@ -65,22 +66,29 @@ public class Windcutter extends Equipment {
 		public WindcutterInstance(String id, PlayerFightData data) {
 			super(id);
 			action = (pdata, in) -> {
-				if (++count >= 3) {
-					Player p = data.getPlayer();
-					sound.play(p, p);
-					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
-					count = 0;
+				if (count < ATTACKS_REQUIRED) {
+					count++;
+					return TriggerResult.keep();
 				}
+				if (data.getMana() < MANA_COST) {
+					return TriggerResult.keep();
+				}
+				data.addMana(-MANA_COST);
+				Player p = data.getPlayer();
+				sound.play(p, p);
+				enemiesHit.clear();
+				projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
+				count = 0;
 				return TriggerResult.keep();
 			};
 		}
-		
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				GlossaryTag.POWER.tag(this) + ". Every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
+				GlossaryTag.POWER.tag(this) + ". After " + DescUtil.white(ATTACKS_REQUIRED) + " basic attacks, your next basic attack with " +
+				DescUtil.white(MANA_COST) + " mana fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
 				" damage.");
 	}
 	
@@ -105,7 +113,9 @@ public class Windcutter extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			if (!enemiesHit.add(hit.getUniqueId())) {
+				meta.getSlices().clear();
+			}
 		}
 
 		@Override

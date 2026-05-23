@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -110,9 +112,10 @@ public class Convergence extends Equipment {
 				if (lastType == null || currentType != lastType) {
 					FightInstance.giveHeal(p2, heal, p2);
 					
+					HashSet<UUID> enemiesHit = new HashSet<>();
 					ProjectileGroup proj = new ProjectileGroup();
 					for (int angle : new int[] { -15, 0, 15 }) {
-						proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType));
+						proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType, enemiesHit));
 					}
 					proj.start(data);
 					Sounds.shoot.play(p2, p2);
@@ -133,8 +136,9 @@ public class Convergence extends Equipment {
 		private int slot;
 		private DamageType damageType;
 		private ParticleContainer particleTrail;
+		private HashSet<UUID> enemiesHit;
 		
-		public ConvergenceProjectile(PlayerFightData data, int angleOffset, Equipment eq, int slot, DamageType damageType) {
+		public ConvergenceProjectile(PlayerFightData data, int angleOffset, Equipment eq, int slot, DamageType damageType, HashSet<UUID> enemiesHit) {
 			super(1.5, 12, 1); // Speed, range, tickSpeed
 			this.rotation(angleOffset);
 			this.size(0.2, 0.2);
@@ -142,6 +146,7 @@ public class Convergence extends Equipment {
 			this.eq = eq;
 			this.slot = slot;
 			this.damageType = damageType;
+			this.enemiesHit = enemiesHit;
 			
 			// Create color-coded particle trail
 			Color color = DAMAGE_TYPE_COLORS.getOrDefault(damageType, Color.WHITE);
@@ -157,6 +162,10 @@ public class Convergence extends Equipment {
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			if (!enemiesHit.add(hit.getUniqueId())) {
+				meta.getSlices().clear();
+				return;
+			}
 			// Deal damage of the same type that was just dealt
 			FightInstance.dealDamage(data, damageType, PROJECTILE_DAMAGE, hit.getEntity(),
 				DamageStatTracker.of(ID + slot, eq));

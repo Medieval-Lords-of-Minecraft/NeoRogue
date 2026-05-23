@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -31,23 +33,26 @@ import net.kyori.adventure.title.Title;
 
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
+	private String minibossId;
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, RegionType type) {
 		super(s, party);
 		map = Map.generateMiniboss(type, 0, s.isDebug(), s.getLastMiniboss());
-		s.setLastMiniboss(map.getPieces().getFirst().getPiece().getId());
+		minibossId = map.getPieces().getFirst().getPiece().getId();
+		Bukkit.getOnlinePlayers().stream().forEach(p -> p.sendMessage("[DEBUG] Generated miniboss: " + minibossId));
 		targets.addAll(map.getTargets());
 	}
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, Map map) {
 		super(s, party);
 		this.map = map;
+		minibossId = map.getPieces().getFirst().getPiece().getId();
 		targets.addAll(map.getTargets());
 	}
 
 	@Override
 	protected void setupInstance(Session s) {
-		
+		s.setLastMiniboss(minibossId);
 	}
 	
 	@Override
