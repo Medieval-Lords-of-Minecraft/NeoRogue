@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.status.PoisonStatus;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -46,23 +47,23 @@ public enum GlossaryTag implements GlossaryIcon {
 	LIGHT(Material.END_ROD, DamageType.LIGHT.tag,
 			"A type of magical damage."),
 	POISON(Material.GREEN_DYE, StatusType.POISON.tag,
-			"Deals 5 poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration. 1 stack is removed every tick."),
+			"Deals " + PoisonStatus.POISON_DAMAGE + " poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration. 1 stack is removed every second."),
 	REND(Material.NETHERITE_SCRAP, StatusType.REND.tag,
-			"Certain abilities become stronger with more stacks of these applied to enemies. 1 stack is removed every tick."),
+			"Certain abilities become stronger with more stacks of these applied to enemies. 1 stack is removed every second."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
-			"Reduces the affected entity's fire resistance by damage by 50%. 1 stack is removed every tick."),
+			"Reduces the affected entity's fire resistance by damage by 50%. 1 stack is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
-			"Reduces the affected entity's magical damage dealt by 25%. 1 stack is removed every tick."),
+			"Reduces the affected entity's magical damage dealt by 25%. 1 stack is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every tick."),
+			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
-			"Reduces the affected entity's physical damage dealt by 25%. 1 stack is removed every tick."),
+			"Reduces the affected entity's physical damage dealt by 25%. 1 stack is removed every second."),
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
-			"Increases the affected entity's magical damage taken by 50%. 1 stack is removed every tick."),
+			"Increases the affected entity's magical damage taken by 50%. 1 stack is removed every second."),
 	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,
 			"Increases the affected entity's damage taken by 50%. Each time the affected entity receives damage, 1 stack is removed."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the affected entity receiving light damage, grant the attacker 5 shields for 5 seconds. 1 stack is removed every tick."),
+			"Upon the affected entity receiving light damage, grant the attacker 5 shields for 5 seconds. 1 stack is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the affected entity receiving physical damage, even if it is absorbed by shields, return 1 thorns damage as physical damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
@@ -94,7 +95,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	RIFT(Material.MAGMA_CREAM, "<dark_purple>Rift</dark_purple>",
 			"Placed at a set location. Other abilities may interact with these."),
 	INJURY(Material.BONE, StatusType.INJURY.tag,
-			"Increases the affected entity's physical damage taken by 50%. 1 stack is removed every tick."),
+			"Increases the affected entity's physical damage taken by 50%. 1 stack is removed every second."),
 	DASH(Material.WIND_CHARGE, "<green>Dash</green>",
 			"You become invulnerable for 0.5s on dash. Certain abilities may trigger upon dashing."),
 	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",

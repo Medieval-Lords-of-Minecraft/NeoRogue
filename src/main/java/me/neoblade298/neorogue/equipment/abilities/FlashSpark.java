@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -48,6 +49,7 @@ public class FlashSpark extends Equipment {
 	public FlashSpark(boolean isUpgraded) {
 		super(ID, "Flash Spark", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, 0));
+		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 		damage = isUpgraded ? 190 : 125;
 		electrified = isUpgraded ? 7 : 5;
 	}
@@ -108,8 +110,8 @@ public class FlashSpark extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
 				"On cast, drop a marker at your location. After " + DescUtil.white("1s") + ", a lightning bolt strikes the marker, " +
-				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage to enemies within " +
-				"range. If you're also in range, gain " + 
+				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage to enemies " +
+				"nearby. If you're also in range, gain " + 
 				DescUtil.potion("Speed", 1, 3) + " and your basic attacks apply " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " for the next " + DescUtil.white("10s") + ".");
 	}

@@ -32,7 +32,7 @@ public class EarthenTome extends Artifact {
 	
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.EARTHEN), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.EARTHEN), Buff.multiplier(data, 0.2 * ai.getAmount(), StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 	
 	@Override

@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -39,7 +37,6 @@ public class MinibossFightInstance extends FightInstance {
 		super(s, party);
 		map = Map.generateMiniboss(type, 0, s.isDebug(), s.getLastMiniboss());
 		minibossId = map.getPieces().getFirst().getPiece().getId();
-		Bukkit.getOnlinePlayers().stream().forEach(p -> p.sendMessage("[DEBUG] Generated miniboss: " + minibossId));
 		targets.addAll(map.getTargets());
 	}
 	

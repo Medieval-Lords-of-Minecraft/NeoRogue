@@ -33,7 +33,7 @@ public class TreatiseOnElectricity extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(buffId, this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, 0.2 * ai.getAmount(), StatTracker.damageBuffAlly(buffId, this)));
 	}
 	
 	@Override

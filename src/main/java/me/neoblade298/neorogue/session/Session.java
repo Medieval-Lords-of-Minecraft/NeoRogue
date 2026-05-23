@@ -70,6 +70,7 @@ public class Session {
 	
 	private Region region;
 	private UUID host;
+	private String name;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
 	private HashMap<UUID, MapViewer> spectators = new HashMap<UUID, MapViewer>();
 	private Instance inst;
@@ -159,6 +160,7 @@ public class Session {
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
+		name = p.getName() + "'s game";
 		this.plot = plot;
 		this.sessionType = sessionType;
 		this.inst = isNew ? new NewLobbyInstance(p, this) : new LoadLobbyInstance(p, this);
@@ -779,6 +781,10 @@ public class Session {
 		nodesVisited++;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public UUID getHost() {
 		return host;
 	}

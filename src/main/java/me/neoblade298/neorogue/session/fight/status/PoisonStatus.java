@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class PoisonStatus extends DecrementStackStatus {
 	private static String id = "POISON";
-	public static int POISON_DAMAGE = 5;
+	public static int POISON_DAMAGE = 3;
 
 	public PoisonStatus(FightData data) {
 		super(id, data, StatusClass.NEGATIVE);

@@ -60,6 +60,6 @@ public class EnergizedRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WOODEN_HOE, "Every " + DescUtil.white(3) + " basic attacks, gain " + DescUtil.yellow(res) + " stamina"
-						+ " and your attack cooldown is set to " + DescUtil.white(1) + " seconds.");
+						+ " and your attack cooldown is set to " + DescUtil.white(1 + "s") + ".");
 	}
 }
