@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,6 +24,8 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Posturing extends Equipment {
 	private static final String ID = "Posturing";
@@ -48,23 +51,25 @@ public class Posturing extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
+			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ItemStack icon = item.clone();
 			String buffId = UUID.randomUUID().toString();
 			StandardPriorityAction act = new StandardPriorityAction(id);
 			act.setAction((pdata2, in2) -> {
-				Player p = data.getPlayer();
-				if (!p.isSneaking()) return TriggerResult.keep();
+				Player p2 = data.getPlayer();
+				if (!p2.isSneaking()) return TriggerResult.keep();
 				act.addCount(1);
 				if (act.getCount() >= time) {
-					pc.play(p, p);
-					Sounds.enchant.play(p, p);
+					pc.play(p2, p2);
+					Sounds.enchant.play(p2, p2);
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 					act.addCount(-time);
 					if (act.getBool()) {
 						icon.setAmount(icon.getAmount() + 1);
-						p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
+						p2.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
 					}
 					else {
 						act.setBool(true);

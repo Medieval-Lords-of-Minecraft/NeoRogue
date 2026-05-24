@@ -117,7 +117,7 @@ public class MirrorSickle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD, "Can only be used without an offhand. Basic attacks with this weapon grant "
-				+ DescUtil.white("1 power") + ". Right clicking uses " + DescUtil.white("3 power") + " to " + GlossaryTag.DASH.tag(this) + " and deal "
+				+ DescUtil.white("1 stack") + ". Right clicking uses " + DescUtil.white("3 stacks") + " to " + GlossaryTag.DASH.tag(this) + " and deal "
 				+ GlossaryTag.PIERCING.tag(this, dash, true) + " damage to the nearest enemy.");
 	}
 }

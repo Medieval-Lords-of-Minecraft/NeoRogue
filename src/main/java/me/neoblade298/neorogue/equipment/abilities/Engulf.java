@@ -45,7 +45,7 @@ public class Engulf extends Equipment {
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 60 : 90;
+		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 200 : 300;
 	}
 

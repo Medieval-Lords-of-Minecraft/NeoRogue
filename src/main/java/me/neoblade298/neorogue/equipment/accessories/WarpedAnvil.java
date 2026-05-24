@@ -24,7 +24,7 @@ public class WarpedAnvil extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DAMAGED_ANVIL, "Increases the probability of equipment dropped during fights being upgraded.");
+		item = createItem(Material.DAMAGED_ANVIL, "Increases the probability of equipment dropped after fights being upgraded.");
 	}
 
 	@Override
