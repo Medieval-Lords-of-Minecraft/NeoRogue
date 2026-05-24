@@ -61,6 +61,7 @@ import io.lumine.mythic.api.mobs.entities.SpawnReason;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -610,7 +611,11 @@ public class SessionManager implements Listener {
 			if (e.getSpawnReason() == SpawnReason.SUMMON || e.getSpawnReason() == SpawnReason.COMMAND) {
 				if (s.getInstance() == null)
 					return;
-				FightInstance.scaleMob(s, mob, mythicMob, e.getMob());
+				ActiveMob am = e.getMob();
+				// Delay 1 tick so MythicMobs finishes applying mob options (health) before we override
+				Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+					FightInstance.scaleMob(s, mob, mythicMob, am);
+				});
 				((FightInstance) s.getInstance()).addSpawnCounter(mob.getSpawnValue());
 			}
 		}
