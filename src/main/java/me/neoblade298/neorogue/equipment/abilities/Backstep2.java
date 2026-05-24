@@ -42,7 +42,7 @@ public class Backstep2 extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 1, 12));
 		damage = isUpgraded ? 20 : 10;
 		rend = 3;
-		thres = isUpgraded ? 18 : 25;
+		thres = isUpgraded ? 15 : 20;
 		shields = 6;
 	}
 

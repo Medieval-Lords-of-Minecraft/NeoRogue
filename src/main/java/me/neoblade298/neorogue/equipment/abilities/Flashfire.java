@@ -74,6 +74,6 @@ public class Flashfire extends Equipment {
 				"On cast, double (triple if above " + DescUtil.white("50%") + " mana) the " + GlossaryTag.BURN.tag(this)
 						+ " of all nearby enemies, then deal " + GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage and apply " + GlossaryTag.BURN.tag(this, burn, true)
-						+ " to all enemies nearby enemies.");
+						+ " to all nearby enemies.");
 	}
 }
