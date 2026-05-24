@@ -58,7 +58,7 @@ public class HolySpear extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, (pdata, in) -> {
-			data.charge(20).then(new Runnable() {
+			data.wandDelay(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);

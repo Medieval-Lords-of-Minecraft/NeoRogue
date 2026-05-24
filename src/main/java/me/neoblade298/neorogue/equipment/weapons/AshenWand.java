@@ -62,7 +62,7 @@ public class AshenWand extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
+			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
 				Player p2 = data.getPlayer();
 				Location start = p2.getLocation().add(0, 1, 0);
 				Vector dir = start.getDirection();

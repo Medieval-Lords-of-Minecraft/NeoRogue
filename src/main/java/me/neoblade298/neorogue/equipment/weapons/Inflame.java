@@ -50,7 +50,7 @@ public class Inflame extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new InflameProjectile(data, slot, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			data.charge(20);
+			data.wandDelay(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					proj.start(data);

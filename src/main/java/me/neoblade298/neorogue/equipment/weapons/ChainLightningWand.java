@@ -66,7 +66,7 @@ public class ChainLightningWand extends Equipment {
 			if (target != null) {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
-				data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
+				data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
 					Player p2 = data.getPlayer();
 					start.play(p2, p2);
 					weaponDamage(p2, data, target);

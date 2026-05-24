@@ -62,7 +62,7 @@ public class BoltWand extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
+			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}

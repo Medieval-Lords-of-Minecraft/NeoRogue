@@ -67,7 +67,7 @@ public class WarningShot extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new WarningShotProjectile(data, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
-			data.charge(20);
+			data.wandDelay(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					proj.start(data);

@@ -71,7 +71,7 @@ public class Riftmaker extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
+			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
 				Player current = data.getPlayer();
 				proj.start(data);
 

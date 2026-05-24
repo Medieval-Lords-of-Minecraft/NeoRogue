@@ -64,7 +64,7 @@ public class Gravity extends Equipment {
 		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			data.charge(40).then(new Runnable() {
+			data.wandDelay(40).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));

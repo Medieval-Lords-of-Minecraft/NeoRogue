@@ -21,7 +21,7 @@ public class AshenWreath extends Equipment {
 		super(ID, "Ashen Wreath", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
 		inc = 1;
-		thres = isUpgraded ? 3 : 2;
+		thres = isUpgraded ? 2 : 3;
 	}
 	
 	public static Equipment get() {

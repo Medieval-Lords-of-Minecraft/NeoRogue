@@ -248,6 +248,15 @@ public class PlayerFightData extends FightData {
 		return charge((int) (seconds * 20));
 	}
 
+	public TaskChain wandDelay(int ticks) {
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
+		return new TaskChain(this, ticks);
+	}
+
+	public TaskChain wandDelaySecs(double seconds) {
+		return wandDelay((int) (seconds * 20));
+	}
+
 	public void disableJump(int ticks) {
 		NamespacedKey key = NamespacedKey.fromString("jump", NeoRogue.inst());
 		if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) return;
