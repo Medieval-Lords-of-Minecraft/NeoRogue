@@ -484,8 +484,8 @@ public class Map {
 					}
 					loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
 							MapPieceInstance.Y_OFFSET,
-							MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
-					loc.setX(-loc.getX() + 0.5);
+							MapPieceInstance.Z_FIGHT_OFFSET + zOff);
+					loc.setX(-loc.getX());
 					fi.addMythicLocation(ent.getKey(), loc);
 				}
 			}

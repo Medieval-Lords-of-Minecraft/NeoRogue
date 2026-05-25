@@ -107,14 +107,14 @@ public class Session {
 	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
-		newLobby = loadClipboard("NRNNewlobby.schem");
+		newLobby = loadClipboard("NRNewlobby.schem");
 		loadLobby = loadClipboard("NRLoadLobby.schem");
 		nodeSelect = loadClipboard("NRNodeSelect.schem");
 		rewardsRoom = loadClipboard("NRRewards.schem");
 		shrine = loadClipboard("NRShrine.schem");
 		shop = loadClipboard("NRShop.schem");
 		chance = loadClipboard("NRChance.schem");
-		lose = loadClipboard("NRGraveyard.schem");
+		lose = loadClipboard("NRLose.schem");
 
 		// Firework colors
 		fireworkColors.add(Color.RED);
@@ -341,7 +341,10 @@ public class Session {
 	public void removeSpectator(Player p) {
 		broadcast("<yellow>" + p.getName() + "</yellow> stopped spectating!");
 		inst.handleSpectatorLeave(p);
-		spectators.remove(p.getUniqueId());
+		MapViewer viewer = spectators.remove(p.getUniqueId());
+		if (viewer != null && viewer.isViewingMap()) {
+			viewer.stopViewingMap();
+		}
 		PlayerFlags.applyDefaults(p);
 		SessionManager.removeFromSession(p.getUniqueId());
 	}
@@ -544,6 +547,7 @@ public class Session {
 			if (!canSetInstance(next)) {
 				return false;
 			}
+			this.inst.unloadChunks();
 			this.inst.cleanup(false);
 		}
 		this.inst = next;
@@ -806,6 +810,7 @@ public class Session {
 	}
 	
 	public void cleanup(boolean pluginDisable) {
+		inst.unloadChunks();
 		inst.cleanup(pluginDisable);
 
 		// Remove blocks from node select

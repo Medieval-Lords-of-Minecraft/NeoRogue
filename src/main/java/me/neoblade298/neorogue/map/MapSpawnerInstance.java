@@ -36,9 +36,9 @@ public class MapSpawnerInstance {
 		}
 		this.loc.add(
 				MapPieceInstance.X_FIGHT_OFFSET + xOff, MapPieceInstance.Y_OFFSET,
-				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5
+				MapPieceInstance.Z_FIGHT_OFFSET + zOff
 		);
-		this.loc.setX(-this.loc.getX() + 0.5);
+		this.loc.setX(-this.loc.getX());
 		this.maxMobs = original.getMaxMobs();
 		this.piece = inst;
 	}
