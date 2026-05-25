@@ -91,7 +91,8 @@ public class RewardInstance extends EditInventoryInstance {
 		if (isHost) {
 			line += "★ ";
 		}
-		line += data.getData().getDisplay();
+		line += data.getData().getDisplay() + " (" + Math.round(data.getHealth()) + " / " + (int) data.getMaxHealth()
+				+ "§c♥§f)";
 		return line;
 	}
 

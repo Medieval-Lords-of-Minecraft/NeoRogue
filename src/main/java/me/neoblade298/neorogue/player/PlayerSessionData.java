@@ -910,7 +910,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		boardLines.add("§8§m-----");
 		for (PlayerSessionData psd : s.getParty().values()) {
 			if (psd == this) continue;
-			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()) + "§c♥");
+			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()) + " / " + (int) psd.getMaxHealth() + "§c♥");
 		}
 	}
 
