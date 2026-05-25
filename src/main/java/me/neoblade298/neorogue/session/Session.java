@@ -107,14 +107,14 @@ public class Session {
 	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
-		newLobby = loadClipboard("newlobby.schem");
-		loadLobby = loadClipboard("loadlobby.schem");
-		nodeSelect = loadClipboard("nodeselect.schem");
-		rewardsRoom = loadClipboard("rewards.schem");
-		shrine = loadClipboard("shrine.schem");
-		shop = loadClipboard("shop.schem");
-		chance = loadClipboard("chance.schem");
-		lose = loadClipboard("graveyard.schem");
+		newLobby = loadClipboard("NRNNewlobby.schem");
+		loadLobby = loadClipboard("NRLoadLobby.schem");
+		nodeSelect = loadClipboard("NRNodeSelect.schem");
+		rewardsRoom = loadClipboard("NRRewards.schem");
+		shrine = loadClipboard("NRShrine.schem");
+		shop = loadClipboard("NRShop.schem");
+		chance = loadClipboard("NRChance.schem");
+		lose = loadClipboard("NRGraveyard.schem");
 
 		// Firework colors
 		fireworkColors.add(Color.RED);
