@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;

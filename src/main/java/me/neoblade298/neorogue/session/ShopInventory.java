@@ -150,7 +150,7 @@ public class ShopInventory extends CoreInventory {
 		if (iclicked == null)
 			return;
 
-		
+		int slot = e.getSlot();
 		if (slot == SPECTATE_ICON && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
 			new SpectateSelectInventory(data.getSession(), spectator != null ? spectator : p, data, true);
 			return;
@@ -181,7 +181,6 @@ public class ShopInventory extends CoreInventory {
 			Util.displayError(p, "You've already purchased this item!");
 			return;
 		}
-		int slot = e.getSlot();
 
 		if (e.getCursor().getType().isAir() && slot >= 6 && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
 			ItemStack clicked = e.getCurrentItem();
