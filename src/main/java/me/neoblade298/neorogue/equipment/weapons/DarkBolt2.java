@@ -52,7 +52,7 @@ public class DarkBolt2 extends Equipment {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		ProjectileGroup proj = new ProjectileGroup(new DarkBoltProjectile(data, slot, this));
 		inst.setAction((pdata, in) -> {
-			data.charge(20);
+			data.wandDelay(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					proj.start(data);

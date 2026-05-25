@@ -31,23 +31,25 @@ import net.kyori.adventure.title.Title;
 
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
+	private String minibossId;
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, RegionType type) {
 		super(s, party);
 		map = Map.generateMiniboss(type, 0, s.isDebug(), s.getLastMiniboss());
-		s.setLastMiniboss(map.getPieces().getFirst().getPiece().getId());
+		minibossId = map.getPieces().getFirst().getPiece().getId();
 		targets.addAll(map.getTargets());
 	}
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, Map map) {
 		super(s, party);
 		this.map = map;
+		minibossId = map.getPieces().getFirst().getPiece().getId();
 		targets.addAll(map.getTargets());
 	}
 
 	@Override
 	protected void setupInstance(Session s) {
-		
+		s.setLastMiniboss(minibossId);
 	}
 	
 	@Override

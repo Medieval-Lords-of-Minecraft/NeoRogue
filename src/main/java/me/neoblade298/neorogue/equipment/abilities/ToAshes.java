@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
@@ -39,13 +40,14 @@ public class ToAshes extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.5);
-	private int damage, selfDmg = 3, inc;
+	private int damage, inc, burn;
 
 	public ToAshes(boolean isUpgraded) {
 		super(ID, "To Ashes", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 10, 12, tp.range));
 		damage = 300;
 		inc = isUpgraded ? 100 : 50;
+		burn = isUpgraded ? 5 : 3;
 	}
 
 	public static Equipment get() {
@@ -63,9 +65,9 @@ public class ToAshes extends Equipment {
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.dealDamage(new DamageMeta(data, damage + (inc * am.getCount()), DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 			}
-			FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
-					DamageStatTracker.of(id + slot + "self", this, "Self damage")), p);
+			data.applyStatus(StatusType.CORRUPTION, data, 1, -1);
 
 			Barrier b = Barrier.stationary(p, 4, tp.range, 3, p.getLocation(), LocalAxes.usingEyeLocation(p), null,
 					null, true);
@@ -96,9 +98,10 @@ public class ToAshes extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER, "On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " to all enemies in a cone in front of you, but " + "deal "
-				+ GlossaryTag.FIRE.tag(this, selfDmg, false)
-				+ " to yourself. All projectiles in the cone are destroyed. If you destroy at least " + DescUtil.white(1) + ""
+				+ " and apply " + GlossaryTag.BURN.tag(this, burn, true)
+				+ " to all enemies in a cone in front of you, but gain "
+				+ GlossaryTag.CORRUPTION.tag(this, 1, false)
+				+ ". All projectiles in the cone are destroyed. If you destroy at least " + DescUtil.white(1) + ""
 				+ " projectile, increase the damage of this ability by " + DescUtil.yellow(inc)
 				+ " for the rest of the fight.");
 	}

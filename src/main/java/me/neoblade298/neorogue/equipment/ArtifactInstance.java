@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.TreeMap;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -32,6 +33,11 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	}
 	public ItemStack getItem() {
 		ItemStack item = artifact.getItem();
+		if (amount > 1) {
+			ItemMeta meta = item.getItemMeta();
+			meta.setMaxStackSize(amount);
+			item.setItemMeta(meta);
+		}
 		item.setAmount(amount);
 		return item;
 	}

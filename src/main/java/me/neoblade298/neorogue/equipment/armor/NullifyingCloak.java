@@ -43,7 +43,7 @@ public class NullifyingCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage is decreased by " + DescUtil.yellow(def) + " for every " + GlossaryTag.RIFT.tag(this) + " you have active, " +
+		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage received is decreased by " + DescUtil.yellow(def) + " for every " + GlossaryTag.RIFT.tag(this) + " you have active, " +
 		"up to " + DescUtil.white(3) + " rifts.");
 	}
 }

@@ -1098,12 +1098,15 @@ public abstract class FightInstance extends Instance {
 				fdata.cleanup();
 		}
 
-		ArrayList<FightData> toKill = new ArrayList<FightData>(fightData.values());
+		ArrayList<FightData> toKill = new ArrayList<FightData>();
 		for (FightData fd : fightData.values()) {
 			if (fd == null)
 				continue;
+			if (fd.getInstance() != this)
+				continue;
 			fd.cleanup();
-			if (fd.getEntity() == null) continue;
+			if (fd.getEntity() != null)
+				toKill.add(fd);
 		}
 
 		for (Corpse c : corpses) {
@@ -1259,6 +1262,7 @@ public abstract class FightInstance extends Instance {
 			return am; // Some summoned mobs don't have health
 			
 		double mhealth = mob.getMaxHealthScale(s);
+		System.out.println("Scaling mob " + mob.getId() + " to level " + lvl + " with health " + mhealth);
 		am.getEntity().setMaxHealth(mhealth);
 		am.getEntity().setHealth(mhealth);
 		return am;

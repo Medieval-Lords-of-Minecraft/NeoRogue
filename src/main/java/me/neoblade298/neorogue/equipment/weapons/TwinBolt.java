@@ -50,7 +50,7 @@ public class TwinBolt extends Equipment {
 		ProjectileGroup proj = new ProjectileGroup(new TwinBoltProjectile(data, true, slot, this),
 				new TwinBoltProjectile(data, false, slot, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			data.charge(20).then(new Runnable() {
+			data.wandDelay(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
 					Sounds.fire.play(p, p);

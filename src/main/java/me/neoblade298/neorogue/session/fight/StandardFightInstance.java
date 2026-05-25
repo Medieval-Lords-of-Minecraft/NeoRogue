@@ -113,14 +113,14 @@ public class StandardFightInstance extends FightInstance {
 		if (mob == null)
 			return;
 
-		// I think this is for fanatics that explode so they're not player kill but need another mob to respawn
+		if (!isActive)
+			return; // If we've moved on to reward instance don't spam the user
+
+		// This is for despawned mobs that need to be respawned (and Fanatics)
 		if (!playerKill) {
 			respawnMob(fd, id, true, false);
 			return;
 		}
-
-		if (!isActive)
-			return; // If we've moved on to reward instance don't spam the user
 			
 		score += mob.getKillValue();
 		scoreBar.setProgress(Math.min(1, score / scoreRequired));
@@ -144,6 +144,9 @@ public class StandardFightInstance extends FightInstance {
 	private void respawnMob(FightData data, String id, boolean isDespawn, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null)
+			return;
+
+		if (!isActive)
 			return;
 		
 		if (data.getSpawner() != null) {

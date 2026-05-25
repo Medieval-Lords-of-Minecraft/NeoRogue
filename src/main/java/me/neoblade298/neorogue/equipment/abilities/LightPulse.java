@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.HashSet;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -42,6 +45,7 @@ public class LightPulse extends Equipment {
 	private static final int PROJECTILE_AMOUNT = 3;
 	
 	private ProjectileGroup projs = new ProjectileGroup();
+	private HashSet<UUID> enemiesHit = new HashSet<>();
 	private int damage, cost;
 	
 	public LightPulse(boolean isUpgraded) {
@@ -91,6 +95,7 @@ public class LightPulse extends Equipment {
 				if (++count >= 3 && (data.getMana() / data.getMaxMana()) > 0.5) {
 					Player p = data.getPlayer();
 					sound.play(p, p);
+					enemiesHit.clear();
 					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
 					data.addMana(-cost);
 					count = 0;
@@ -104,7 +109,7 @@ public class LightPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times while above " + DescUtil.white("50%") + " mana. When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
+				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times while above " + DescUtil.white("50%") + " max mana. When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
 				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	
@@ -128,7 +133,9 @@ public class LightPulse extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			if (!enemiesHit.add(hit.getUniqueId())) {
+				meta.getSlices().clear();
+			}
 		}
 
 		@Override

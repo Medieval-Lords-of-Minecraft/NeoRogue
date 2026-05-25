@@ -29,8 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class MarkTarget extends Equipment {
 	private static final String ID = "MarkTarget";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	private int rend;
-	private double damage;
+	private int rend, damage;
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.CRIMSON_SPORE).count(50).spread(0.3, 0.3).offsetY(2);
 	
 	public MarkTarget(boolean isUpgraded) {

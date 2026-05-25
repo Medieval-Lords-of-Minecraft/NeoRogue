@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class IronVow extends Artifact {
 	private static final String ID = "IronVow";
-	private double shields = 1;
+	private int shields = 1;
 
 	public IronVow() {
 		super(ID, "Iron Vow", Rarity.RARE, EquipmentClass.CLASSLESS);

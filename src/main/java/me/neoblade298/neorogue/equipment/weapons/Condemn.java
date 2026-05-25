@@ -67,7 +67,7 @@ public class Condemn extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			data.charge(20).then(new Runnable() {
+			data.wandDelay(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);

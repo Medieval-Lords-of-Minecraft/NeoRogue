@@ -4,6 +4,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -17,9 +18,12 @@ import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CrimsonBlade extends Equipment {
 	private static final String ID = "CrimsonBlade";
+	private static final int DURATION = 30;
 	private int heal;
 	
 	public CrimsonBlade(boolean isUpgraded) {
@@ -42,6 +46,7 @@ public class CrimsonBlade extends Equipment {
 	private class CrimsonBladeInstance extends PriorityAction {
 		private int count;
 		private long start;
+		private boolean deactivated;
 		public CrimsonBladeInstance(String id) {
 			super(id);
 			start = System.currentTimeMillis();
@@ -49,11 +54,16 @@ public class CrimsonBlade extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 				Player p = pdata.getPlayer();
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
-				if (++count >= 5) {
-					if (System.currentTimeMillis() - start < 30000) {
-						Sounds.enchant.play(p, p);
-						FightInstance.giveHeal(p, heal, p);
+				if (System.currentTimeMillis() - start >= DURATION * 1000L) {
+					if (!deactivated) {
+						deactivated = true;
+						Util.msg(p, hoverable.append(Component.text(" was deactivated", NamedTextColor.GRAY)));
 					}
+					return TriggerResult.keep();
+				}
+				if (++count >= 5) {
+					Sounds.enchant.play(p, p);
+					FightInstance.giveHeal(p, heal, p);
 					count = 0;
 				}
 				return TriggerResult.keep();
@@ -63,6 +73,6 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "For the first " + DescUtil.white("30s") + " of a fight, every 5 basic attacks with this weapon heals you for " + DescUtil.yellow(heal) + ".");
+		item = createItem(Material.IRON_SWORD, "For the first " + DescUtil.white(DURATION + "s") + " of a fight, every 5 basic attacks with this weapon heals you for " + DescUtil.yellow(heal) + ".");
 	}
 }

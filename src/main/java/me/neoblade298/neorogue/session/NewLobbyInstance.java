@@ -262,6 +262,7 @@ public class NewLobbyInstance extends LobbyInstance {
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (!e.getAction().isLeftClick() && !e.getAction().isRightClick()) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
+		if (e.getClickedBlock() == null) return;
 		
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
 			readyPlayer(e.getPlayer());

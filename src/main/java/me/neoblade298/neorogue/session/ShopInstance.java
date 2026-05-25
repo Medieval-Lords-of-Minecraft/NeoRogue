@@ -31,7 +31,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 public class ShopInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
-			HOLO_X = 0, HOLO_Y = 1, HOLO_Z = 4;
+			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 4;
 	static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ShopContents> shops = new HashMap<UUID, ShopContents>();

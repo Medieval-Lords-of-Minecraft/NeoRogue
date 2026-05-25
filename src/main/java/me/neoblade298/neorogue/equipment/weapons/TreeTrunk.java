@@ -95,10 +95,11 @@ public class TreeTrunk extends Equipment {
 	}
 	
 	private void leftHit(Player p, PlayerFightData data, int slot) {
+		Location start = p.getLocation().add(0, left.range, 0);
 		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(left.range));
 		Sounds.explode.play(p, p);
-		ParticleUtil.drawLine(p, hitLine, p.getLocation(), hit, 0.5);
-		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInLine(p, p.getLocation(), hit, left);
+		ParticleUtil.drawLine(p, hitLine, start, hit, 0.5);
+		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInLine(p, start, hit, left);
 		if (enemies.isEmpty()) return;
 		boolean first = true;
 		Vector v = new Vector(0, 0.5, 0);

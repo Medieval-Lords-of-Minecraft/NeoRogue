@@ -69,7 +69,7 @@ public class RisingSun extends Equipment {
 		DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			HashSet<UUID> entitiesHit = new HashSet<UUID>();
-			data.charge(20).then(new Runnable() {
+			data.wandDelay(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
 					for (int i = 0; i < 6; i++) {

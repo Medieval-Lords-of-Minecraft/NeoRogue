@@ -91,7 +91,7 @@ public class RuneHarvester extends Equipment {
 			weaponSwing(data.getPlayer(), data);
 
 			ProjectileGroup proj = new ProjectileGroup(new RuneHarvesterProjectile(data, this, slot, source));
-			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
+			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}

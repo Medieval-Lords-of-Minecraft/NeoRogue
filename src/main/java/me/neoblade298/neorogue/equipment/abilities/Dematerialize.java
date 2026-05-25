@@ -70,7 +70,7 @@ public class Dematerialize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FLOWER,
-				"On cast, explode all " + GlossaryTag.RIFT.tag(this) + ", dealing "
+				"On cast, explode all " + GlossaryTag.RIFT.tagPlural(this) + ", dealing "
 						+ GlossaryTag.DARK.tag(this, damage, true)
 						+ " to all enemies near them. Then create a " + GlossaryTag.RIFT.tag(this)
 						+ " [<white>15s</white>] at your location.");

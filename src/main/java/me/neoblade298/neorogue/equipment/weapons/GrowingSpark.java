@@ -51,7 +51,7 @@ public class GrowingSpark extends Equipment {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		ProjectileGroup proj = new ProjectileGroup(new GrowingSparkProjectile(data, inst, slot, this));
 		inst.setAction((pdata, in) -> {
-			data.charge(20);
+			data.wandDelay(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					proj.start(data);
@@ -92,8 +92,8 @@ public class GrowingSpark extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.firework.play(data.getPlayer(), data.getPlayer());
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage + growth * (stacks + 1), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)));
 			stacks = Math.min(5, stacks + 1);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage * (stacks + 1), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)));
 			chargedIcon.setAmount(stacks);
 			inst.setIcon(chargedIcon);
 			lastCast = System.currentTimeMillis();

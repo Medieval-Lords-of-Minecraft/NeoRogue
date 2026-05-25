@@ -62,7 +62,7 @@ public class WandOfIgnition extends Equipment {
 				am.addDouble(-corrThres);
 				FightInstance.applyStatus(data.getPlayer(), StatusType.CORRUPTION, data, corr, -1);
 			}
-			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
+			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}

@@ -32,7 +32,7 @@ public class InfernalTome extends Artifact {
 	
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, 0.2 * ai.getAmount(), StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 	
 	@Override

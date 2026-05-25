@@ -121,13 +121,12 @@ public class Mahoraga extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_SAPLING, new String[] { "Adapt to anything and everything." },
-				"This ability holds up to " + GlossaryTag.SHIELDS.tag(this, shields, false)
-						+ ". While crouching, gain this shield. " + "Not crouching for " + DescUtil.white(refresh)
-						+ " will restore it to full. Receiving damage while crouching grants "
-						+ GlossaryTag.PROTECT.tag(this, 1, false) + " or " + GlossaryTag.SHELL.tag(this, 1, false)
-						+ " if the damage was " + GlossaryTag.PHYSICAL.tag(this) + " or "
-						+ GlossaryTag.MAGICAL.tag(this) + " respectively. " + "Additionally, gain "
-						+ GlossaryTag.BERSERK.tag(this, berserk, true) + " and heal for " + DescUtil.white(heal)
-						+ " over " + DescUtil.white("5s") + " if above " + GlossaryTag.BERSERK.tag(this, thres, true) + ".");
+				"Gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " while crouching. Refreshes after "
+						+ DescUtil.white(refresh + "s") + " uncrouched. Taking " + GlossaryTag.PHYSICAL.tag(this)
+						+ "/" + GlossaryTag.MAGICAL.tag(this) + " damage while crouching grants "
+						+ GlossaryTag.PROTECT.tag(this, 1, false) + "/" + GlossaryTag.SHELL.tag(this, 1, false)
+						+ " and " + GlossaryTag.BERSERK.tag(this, berserk, true) + ". Above "
+						+ GlossaryTag.BERSERK.tag(this, thres, true) + ", heal " + DescUtil.white(heal)
+						+ " over " + DescUtil.white("5s") + ".");
 	}
 }
