@@ -50,12 +50,20 @@ public class MechanicDamage implements ITargetedEntitySkill {
 		this.ignoreShields = cfg.getBoolean(new String[] {"is", "ignoreShields"}, false);
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
 		if (skillName != null) {
-			successSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			try {
+				successSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			} catch (Exception e) {
+				Bukkit.getLogger().warning("[NeoRogue] MechanicDamage failed to load onSuccess skill '" + skillName + "': " + e.getMessage());
+			}
 		}
 
 		skillName = cfg.getString(new String[] { "onFail", "oF" });
 		if (skillName != null) {
-			failSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			try {
+				failSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			} catch (Exception e) {
+				Bukkit.getLogger().warning("[NeoRogue] MechanicDamage failed to load onFail skill '" + skillName + "': " + e.getMessage());
+			}
 		}
 	}
 
