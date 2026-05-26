@@ -58,16 +58,23 @@ public class DarkScepter extends Equipment {
 			
 			RayTraceResult result = p.getWorld().rayTraceBlocks(p.getEyeLocation(), p.getEyeLocation().getDirection(), hitScanRange, FluidCollisionMode.NEVER, false);
 			if (result != null) {
-				double yOff = 0.5;
-				Vector spawnVec = result.getHitBlockFace().getDirection();
-				if (spawnVec.getY() > 0) {
-					yOff = 0;
+				Location spawnLoc;
+				Vector spawnVec;
+				if (result.getHitBlock().isPassable()) {
+					spawnLoc = result.getHitBlock().getLocation().add(0.5, 0.5, 0.5);
+					spawnVec = p.getEyeLocation().getDirection();
+				} else {
+					double yOff = 0.5;
+					spawnVec = result.getHitBlockFace().getDirection();
+					if (spawnVec.getY() > 0) {
+						yOff = 0;
+					}
+					else if (spawnVec.getY() < 0) {
+						yOff = 1;
+					}
+					spawnLoc = result.getHitBlock().getLocation().add(0.5, yOff, 0.5);
+					spawnLoc = spawnLoc.add(spawnVec.clone().multiply(0.75));
 				}
-				else if (spawnVec.getY() < 0) {
-					yOff = 1;
-				}
-				Location spawnLoc = result.getHitBlock().getLocation().add(0.5, yOff, 0.5);
-				spawnLoc = spawnLoc.add(spawnVec.multiply(0.75));
 				proj.start(data, spawnLoc, spawnVec);
 			}
 			

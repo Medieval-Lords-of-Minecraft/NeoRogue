@@ -107,7 +107,7 @@ public class Session {
 	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
-		newLobby = loadClipboard("NRNewlobby.schem");
+		newLobby = loadClipboard("NRNewLobby.schem");
 		loadLobby = loadClipboard("NRLoadLobby.schem");
 		nodeSelect = loadClipboard("NRNodeSelect.schem");
 		rewardsRoom = loadClipboard("NRRewards.schem");
@@ -341,10 +341,8 @@ public class Session {
 	public void removeSpectator(Player p) {
 		broadcast("<yellow>" + p.getName() + "</yellow> stopped spectating!");
 		inst.handleSpectatorLeave(p);
-		MapViewer viewer = spectators.remove(p.getUniqueId());
-		if (viewer != null && viewer.isViewingMap()) {
-			viewer.stopViewingMap();
-		}
+		spectators.remove(p.getUniqueId());
+		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		SessionManager.removeFromSession(p.getUniqueId());
 	}

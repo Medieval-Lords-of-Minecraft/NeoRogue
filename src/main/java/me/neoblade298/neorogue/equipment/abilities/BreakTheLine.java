@@ -67,7 +67,7 @@ public class BreakTheLine extends Equipment {
 			action = (pdata, inputs) -> {
 				Player p = data.getPlayer();
 				Sounds.jump.play(p, p);
-				p.setVelocity(p.getVelocity().setY(0.5));
+				p.setVelocity(p.getVelocity().setY(1));
 				
 				pdata.addTask(new BukkitRunnable() {
 					public void run() {

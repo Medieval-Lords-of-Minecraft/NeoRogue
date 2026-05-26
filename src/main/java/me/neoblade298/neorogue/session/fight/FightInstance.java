@@ -1262,7 +1262,6 @@ public abstract class FightInstance extends Instance {
 			return am; // Some summoned mobs don't have health
 			
 		double mhealth = mob.getMaxHealthScale(s);
-		System.out.println("Scaling mob " + mob.getId() + " to level " + lvl + " with health " + mhealth);
 		am.getEntity().setMaxHealth(mhealth);
 		am.getEntity().setHealth(mhealth);
 		return am;
