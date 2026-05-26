@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
@@ -544,6 +545,10 @@ public class SessionManager implements Listener {
 					|| mat == Material.ENCHANTING_TABLE || mat == Material.BREWING_STAND || mat == Material.FURNACE
 					|| mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE || mat == Material.CARTOGRAPHY_TABLE
 					|| mat == Material.LOOM || mat == Material.JIGSAW) {
+				e.setCancelled(true);
+			}
+
+			if (Tag.DOORS.isTagged(mat) || Tag.TRAPDOORS.isTagged(mat)) {
 				e.setCancelled(true);
 			}
 		}

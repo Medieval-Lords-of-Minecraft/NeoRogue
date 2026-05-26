@@ -85,7 +85,7 @@ public class NeoRogue extends JavaPlugin {
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
 	
-	public static File SCHEMATIC_FOLDER = new File("/home/mlmc/dev/plugins/WorldEdit/schematics");
+	public static File SCHEMATIC_FOLDER = new File("/home/mlmc/dev/plugins/FastAsyncWorldEdit/schematics");
 	
 	public static Location spawn;
 

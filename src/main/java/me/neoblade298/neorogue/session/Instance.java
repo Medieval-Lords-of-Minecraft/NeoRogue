@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -61,6 +62,7 @@ public abstract class Instance {
 	}
 
 	public void start() {
+		loadChunks();
 		for (Player p : s.getOnlinePlayers()) {
 			playerFlags.applyFlags(p);
 		}
@@ -70,6 +72,30 @@ public abstract class Instance {
 		}
 		setup();
 		s.getSessionType().onInstanceSetup(s, this);
+	}
+
+	public void loadChunks() {
+		if (spawn == null) return;
+		World world = spawn.getWorld();
+		int chunkX = spawn.getBlockX() >> 4;
+		int chunkZ = spawn.getBlockZ() >> 4;
+		for (int dx = -1; dx <= 1; dx++) {
+			for (int dz = -1; dz <= 1; dz++) {
+				world.addPluginChunkTicket(chunkX + dx, chunkZ + dz, NeoRogue.inst());
+			}
+		}
+	}
+
+	public void unloadChunks() {
+		if (spawn == null) return;
+		World world = spawn.getWorld();
+		int chunkX = spawn.getBlockX() >> 4;
+		int chunkZ = spawn.getBlockZ() >> 4;
+		for (int dx = -1; dx <= 1; dx++) {
+			for (int dz = -1; dz <= 1; dz++) {
+				world.removePluginChunkTicket(chunkX + dx, chunkZ + dz, NeoRogue.inst());
+			}
+		}
 	}
 	
 	public void handlePlayerLogin(Player p) {

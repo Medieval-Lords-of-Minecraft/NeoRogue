@@ -149,6 +149,12 @@ public class ShopInventory extends CoreInventory {
 		}
 		if (iclicked == null)
 			return;
+
+		int slot = e.getSlot();
+		if (slot == SPECTATE_ICON && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
+			new SpectateSelectInventory(data.getSession(), spectator != null ? spectator : p, data, true);
+			return;
+		}
 		
 		// Clicked outside of shop inventory
 		if (iclicked.getType() != InventoryType.CHEST) {
@@ -173,12 +179,6 @@ public class ShopInventory extends CoreInventory {
 			return; // Must have clicked on an item in the inv
 		if (e.getCurrentItem().getType() == Material.BARRIER) {
 			Util.displayError(p, "You've already purchased this item!");
-			return;
-		}
-		int slot = e.getSlot();
-
-		if (slot == SPECTATE_ICON && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
-			new SpectateSelectInventory(data.getSession(), p, data, true);
 			return;
 		}
 

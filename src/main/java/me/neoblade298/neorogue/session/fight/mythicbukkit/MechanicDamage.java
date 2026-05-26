@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MechanicDamage implements ITargetedEntitySkill {
-	protected final boolean hitBarrier, asParent, debug;
+	protected final boolean hitBarrier, asParent, debug, ignoreShields;
 	protected final HashMap<DamageType, Double> damage = new HashMap<DamageType, Double>();
 	protected Skill successSkill, failSkill;
 
@@ -47,15 +47,23 @@ public class MechanicDamage implements ITargetedEntitySkill {
 		this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
 		this.asParent = cfg.getBoolean(new String[] { "asParent", "ap" }, false);
 		this.debug = cfg.getBoolean("debug", false);
-
+		this.ignoreShields = cfg.getBoolean(new String[] {"is", "ignoreShields"}, false);
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
 		if (skillName != null) {
-			successSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			try {
+				successSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			} catch (Exception e) {
+				Bukkit.getLogger().warning("[NeoRogue] MechanicDamage failed to load onSuccess skill '" + skillName + "': " + e.getMessage());
+			}
 		}
 
 		skillName = cfg.getString(new String[] { "onFail", "oF" });
 		if (skillName != null) {
-			failSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			try {
+				failSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
+			} catch (Exception e) {
+				Bukkit.getLogger().warning("[NeoRogue] MechanicDamage failed to load onFail skill '" + skillName + "': " + e.getMessage());
+			}
 		}
 	}
 
@@ -75,7 +83,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			DamageMeta meta = new DamageMeta(fd);
 			final double mult = 1 + (level * (0.03 + (Session.ENEMY_DAMAGE_SCALE_PER_LEVEL * fd.getInstance().getSession().getEnemyDamageScale())));
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
-				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), DamageStatTracker.ignored("MythicDamage1")));
+				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), true, DamageStatTracker.ignored("MythicDamage1")));
 			}
 			meta.setHitBarrier(hitBarrier);
 			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity(), data);
