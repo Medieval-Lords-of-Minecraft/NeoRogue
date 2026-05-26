@@ -42,7 +42,7 @@ public class DiscountCard extends Artifact {
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.GENERATE_SHOP, (pdata, in) -> {
 			GenerateShopEvent ev = (GenerateShopEvent) in;
-			ev.addDiscount(0.2);
+			ev.addDiscount(0.5);
 		});
 	}
 }

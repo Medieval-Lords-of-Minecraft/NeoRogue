@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -234,6 +236,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				Component.text("Available Reforges", NamedTextColor.GOLD),
 				"Click to view " + count + " available reforge" + (count != 1 ? "s" : "") + "!", 250, NamedTextColor.GRAY);
 		item.setAmount(Math.min(count, 64));
+		ItemMeta meta = item.getItemMeta();
+		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(meta);
 		return item;
 	}
 
