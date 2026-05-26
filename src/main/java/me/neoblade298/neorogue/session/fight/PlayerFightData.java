@@ -314,6 +314,14 @@ public class PlayerFightData extends FightData {
 		return equips;
 	}
 
+	public HashMap<Trigger, ArrayList<PriorityAction>> getTriggers() {
+		return triggers;
+	}
+
+	public HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> getSlotBasedTriggers() {
+		return slotBasedTriggers;
+	}
+
 	@Override
 	public TickResult runTickActions() {
 		if (isDead)
