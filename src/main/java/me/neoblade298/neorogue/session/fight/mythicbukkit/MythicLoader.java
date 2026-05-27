@@ -91,6 +91,9 @@ public class MythicLoader implements Listener {
 		case "nrcastability":
 			mechanic = new MechanicCastAbility(cfg);
 			break;
+		case "nrdisable":
+			mechanic = new MechanicDisable(cfg);
+			break;
 		}
 		if (mechanic != null) {
 			event.register(mechanic);

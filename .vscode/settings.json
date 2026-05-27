@@ -4,6 +4,7 @@
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "sarif-viewer.connectToGithubCodeScanning": "off",
     "chat.tools.terminal.autoApprove": {
-        "mvn compile": true
+        "mvn compile": true,
+        "mvn package": true
     }
 }
