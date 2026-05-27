@@ -86,7 +86,7 @@ public class AshenHeadhunter extends Equipment {
 
 		public AshenHeadhunterProjectile(PlayerFightData data, AshenHeadhunter eq, int slot) {
 			super(2, 10, 2);
-			this.size(0.2, 0.2);
+			this.size(0.4, 0.4);
 			this.data = data;
 			this.slot = slot;
 		}

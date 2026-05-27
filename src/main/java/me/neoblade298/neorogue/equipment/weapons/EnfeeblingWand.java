@@ -75,8 +75,8 @@ public class EnfeeblingWand extends Equipment {
 		private int slot;
 
 		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq, int slot) {
-			super(1.5, RANGE, 2);
-			this.size(0.2, 0.2);
+			super(2, RANGE, 2);
+			this.size(0.4, 0.4);
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;

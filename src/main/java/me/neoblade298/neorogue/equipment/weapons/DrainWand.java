@@ -70,7 +70,7 @@ public class DrainWand extends Equipment {
 		private int slot;
 
 		public DrainWandProjectile(PlayerFightData data, DrainWand eq, int slot) {
-			super(1.5, RANGE, 3);
+			super(2, RANGE, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.eq = eq;
