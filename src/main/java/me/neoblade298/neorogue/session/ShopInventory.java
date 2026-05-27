@@ -139,14 +139,6 @@ public class ShopInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
-		if (InventoryListener.getLowerInventory(p) == null) {
-			InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
-		}
-		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
-		if (spectator != null) {
-			e.setCancelled(true);
-			return;
-		}
 		if (iclicked == null)
 			return;
 
@@ -155,6 +147,16 @@ public class ShopInventory extends CoreInventory {
 			new SpectateSelectInventory(data.getSession(), spectator != null ? spectator : p, data, true);
 			return;
 		}
+
+		if (spectator != null) {
+			e.setCancelled(true);
+			return;
+		}
+		
+		if (InventoryListener.getLowerInventory(p) == null) {
+			InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+		}
+		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		
 		// Clicked outside of shop inventory
 		if (iclicked.getType() != InventoryType.CHEST) {
