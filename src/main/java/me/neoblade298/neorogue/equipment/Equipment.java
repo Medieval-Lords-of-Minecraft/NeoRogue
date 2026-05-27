@@ -1715,19 +1715,22 @@ public abstract class Equipment implements Comparable<Equipment> {
 		private static final int[] EQUIPMENT_VALUES = new int[Rarity.values().length * TIER_MAX];
 		protected HashMap<EquipmentClass, ArrayList<DropTable<E>>> droptables = new HashMap<EquipmentClass, ArrayList<DropTable<E>>>();
 
+		// base tier = regions completed * 2
+		// standard fight S = 3 base tier, 1 base+1 tier
+		// miniboss fight = 3 base+2 tier
+		// boss fight = 3 base+4 tier
 		static {
 			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 0)] = 10;
 
 			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 1)] = 9;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 1)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 6;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 2)] = 4;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 2)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 1;
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 8;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 2;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 1;
 
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 7;
 			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 3;
