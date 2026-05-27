@@ -32,7 +32,7 @@ public class Absorb extends Equipment {
 	
 	public Absorb(boolean isUpgraded) {
 		super(ID, "Absorb", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 8, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		mana = isUpgraded ? 30 : 20;
 	}

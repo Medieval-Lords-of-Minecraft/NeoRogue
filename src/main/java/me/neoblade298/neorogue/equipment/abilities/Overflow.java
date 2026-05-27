@@ -22,7 +22,7 @@ public class Overflow extends Equipment {
 	private static final String ID = "Overflow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.BLUE, 1));
-	private double reduc = isUpgraded ? 0.1 : 0.3;
+	private double mult = isUpgraded ? 2 : 1.5;
 
 	public Overflow(boolean isUpgraded) {
 		super(ID, "Overflow", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
@@ -41,8 +41,7 @@ public class Overflow extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "On cast, set your mana to your max mana and decrease your mana regen by "
-				+ DescUtil.yellow(reduc) + ". Can only be used once per fight.");
+		item = createItem(Material.POTION, "On cast, set your mana to " + DescUtil.yellow(mult + "x") + " your max mana. Can only be used once per fight.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.BLUE);
 		item.setItemMeta(pm);
@@ -54,8 +53,7 @@ public class Overflow extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.infect.play(p, p);
 			pc.play(p, p);
-			data.setMana(data.getMaxMana());
-			data.addManaRegen(-reduc);
+			data.setManaUncapped(data.getMaxMana() * mult);
 			p.getInventory().setItem(slot, null);
 			return TriggerResult.remove();
 		}));

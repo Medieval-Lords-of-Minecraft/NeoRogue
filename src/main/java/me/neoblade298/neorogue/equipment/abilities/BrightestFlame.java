@@ -42,7 +42,7 @@ public class BrightestFlame extends Equipment {
 	public BrightestFlame(boolean isUpgraded) {
 		super(ID, "Brightest Flame", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(isUpgraded ? 45 : 60, 10, 0, 10));
+				EquipmentProperties.ofUsable(isUpgraded ? 36 : 48, 8, 0, 10));
 		damage = isUpgraded ? 100 : 65;
 		burn = isUpgraded ? 5 : 3;
 		corr = 2;

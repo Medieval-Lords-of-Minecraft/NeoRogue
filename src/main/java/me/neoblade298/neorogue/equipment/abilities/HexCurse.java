@@ -41,7 +41,7 @@ public class HexCurse extends Equipment {
 	
 	public HexCurse(boolean isUpgraded) {
 		super(ID, "Hex Curse", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 0, 14, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 0, 6, 0));
 				damage = isUpgraded ? 105 : 70;
 				duration = 8;
 	}

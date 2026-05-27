@@ -23,7 +23,7 @@ public class ManaShell extends Equipment {
 
 	public ManaShell(boolean isUpgraded) {
 		super(ID, "Mana Shell", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(9, 0, 5, 0));
+				EquipmentProperties.ofUsable(7, 0, 3, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 

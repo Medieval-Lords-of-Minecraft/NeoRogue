@@ -44,7 +44,7 @@ public class ToAshes extends Equipment {
 
 	public ToAshes(boolean isUpgraded) {
 		super(ID, "To Ashes", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 10, 12, tp.range));
+				EquipmentProperties.ofUsable(24, 8, 6, tp.range));
 		damage = 300;
 		inc = isUpgraded ? 100 : 50;
 		burn = isUpgraded ? 5 : 3;

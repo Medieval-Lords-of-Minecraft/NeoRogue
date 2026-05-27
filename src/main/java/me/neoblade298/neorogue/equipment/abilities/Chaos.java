@@ -44,7 +44,7 @@ public class Chaos extends Equipment {
 
 	public Chaos(boolean isUpgraded) {
 		super(ID, "Chaos", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 8, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(16, 0, 4, tp.range));
 		damage = isUpgraded ? 250 : 175;
 		stacks = isUpgraded ? 7 : 4;
 	}

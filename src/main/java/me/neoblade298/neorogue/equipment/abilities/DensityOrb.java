@@ -48,7 +48,7 @@ public class DensityOrb extends Equipment {
 	
 	public DensityOrb(boolean isUpgraded) {
 		super(ID, "Density Orb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 16, 0, isUpgraded ? 5 : 3));
+				EquipmentProperties.ofUsable(16, 0, 7, 0, isUpgraded ? 5 : 3));
 		properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.AREA_OF_EFFECT);
 		tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false);
 		circ = new Circle(tp.range);

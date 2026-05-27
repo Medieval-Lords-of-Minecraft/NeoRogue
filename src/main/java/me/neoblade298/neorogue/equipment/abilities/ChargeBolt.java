@@ -43,7 +43,7 @@ public class ChargeBolt extends Equipment {
 
 	public ChargeBolt(boolean isUpgraded) {
 		super(ID, "Charge Bolt", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 8, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(16, 0, 4, tp.range));
 		damage = isUpgraded ? 250 : 175;
 		manaReduction = isUpgraded ? 25 : 15;
 	}

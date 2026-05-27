@@ -31,7 +31,7 @@ public class HeatRising extends Equipment {
 	
 	public HeatRising(boolean isUpgraded) {
 		super(ID, "Heat Rising", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 8, 0));
 		mult = isUpgraded ? 0.3 : 0.2;
 		multDisplay = (int) (mult * 100);
 		corr = 2;

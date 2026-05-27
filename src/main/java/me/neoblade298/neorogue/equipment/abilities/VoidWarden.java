@@ -38,7 +38,7 @@ public class VoidWarden extends Equipment {
 
 	public VoidWarden(boolean isUpgraded) {
 		super(ID, "Void Warden", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 0, 0));
+				EquipmentProperties.ofUsable(16, 0, 0, 0));
 		stacks = isUpgraded ? 5 : 3;
 		manaIncrease = isUpgraded ? 20 : 30;
 		passiveThreshold = isUpgraded ? 2 : 3;

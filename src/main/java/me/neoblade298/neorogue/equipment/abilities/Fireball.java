@@ -34,7 +34,7 @@ public class Fireball extends Equipment {
 
 	public Fireball(boolean isUpgraded) {
 		super(ID, "Fireball", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 5, 12, 10));
+				EquipmentProperties.ofUsable(13, 5, 9, 10));
 		damage = isUpgraded ? 240 : 160;
 		corr = 1;
 	}

@@ -42,7 +42,7 @@ public class CreateEarth extends Equipment {
 
 	public CreateEarth(boolean isUpgraded) {
 		super(ID, "Create Earth", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 15, 15, 12));
+				EquipmentProperties.ofUsable(5, 15, 10, 12));
 		damage = isUpgraded ? 160 : 120;
 		conc = isUpgraded ? 15 : 10;
 		properties.setCastType(CastType.POST_TRIGGER);

@@ -36,7 +36,7 @@ public class Antimatter extends Equipment {
 	
 	public Antimatter(boolean isUpgraded) {
 		super(ID, "Antimatter", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, tp.range));
 		damage = isUpgraded ? 375 : 250;
 	}
 	

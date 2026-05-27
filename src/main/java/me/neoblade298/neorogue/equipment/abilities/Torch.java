@@ -38,7 +38,7 @@ public class Torch extends Equipment {
 	public Torch(boolean isUpgraded) {
 		super(
 				ID , "Torch", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 5, 10, 0, tp.range));
+				EquipmentProperties.ofUsable(16, 4, 5, 0, tp.range));
 		damage = isUpgraded ? 240 : 160;
 		corr = 1;
 	}

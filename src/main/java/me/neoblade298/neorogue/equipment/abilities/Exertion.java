@@ -37,7 +37,7 @@ public class Exertion extends Equipment {
 
 	public Exertion(boolean isUpgraded) {
 		super(ID, "Exertion", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 15, 12, tp.range));
+				EquipmentProperties.ofUsable(5, 15, 8, tp.range));
 		damage = isUpgraded ? 250 : 150;
 	}
 

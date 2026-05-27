@@ -45,7 +45,7 @@ public class ArcaneBlast extends Equipment {
 	
 	public ArcaneBlast(boolean isUpgraded) {
 		super(ID, "Arcane Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 10, 14, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 5, 14, tp.range));
 				damage = isUpgraded ? 120 : 80;
 		properties.setCastType(CastType.POST_TRIGGER);
 	}

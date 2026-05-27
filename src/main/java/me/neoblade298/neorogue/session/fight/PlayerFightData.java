@@ -832,6 +832,12 @@ public class PlayerFightData extends FightData {
 		updateMana();
 	}
 
+	public void setManaUncapped(double amount) {
+		this.mana = amount;
+		updateActionBar();
+		updateBoardLines();
+	}
+
 	public double getMana() {
 		return mana;
 	}

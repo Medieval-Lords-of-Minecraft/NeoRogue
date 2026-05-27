@@ -37,7 +37,7 @@ public class Flashfire extends Equipment {
 
 	public Flashfire(boolean isUpgraded) {
 		super(ID, "Flashfire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 5, 12, 0, tp.range));
+				EquipmentProperties.ofUsable(16, 4, 6, 0, tp.range));
 		damage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 10 : 5;
 	}

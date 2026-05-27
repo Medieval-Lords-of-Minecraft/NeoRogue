@@ -38,7 +38,7 @@ public class Windcall extends Equipment {
 	
 	public Windcall(boolean isUpgraded) {
 		super(ID, "Windcall", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 12, 5, tp.range));
 		reduc = isUpgraded ? 15 : 10;
 		dur = isUpgraded ? 7 : 5;
 	}

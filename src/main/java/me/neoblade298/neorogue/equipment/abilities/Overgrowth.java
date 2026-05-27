@@ -54,7 +54,7 @@ public class Overgrowth extends Equipment {
 
 	public Overgrowth(boolean isUpgraded) {
 		super(ID, "Overgrowth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, RANGE, RADIUS));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(16, 0, 6, RANGE, RADIUS));
 		damage = isUpgraded ? 225 : 150;
 	}
 

@@ -42,7 +42,7 @@ public class SlowingOrb extends Equipment {
 	
 	public SlowingOrb(boolean isUpgraded) {
 		super(ID, "Slowing Orb", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(5, 0, isUpgraded ? 12 : 15, 0, isUpgraded ? 5 : 3));
+				EquipmentProperties.ofUsable(5, 0, isUpgraded ? 5 : 7, 0, isUpgraded ? 5 : 3));
 		properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.AREA_OF_EFFECT);
 		tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false);
 		circ = new Circle(tp.range);

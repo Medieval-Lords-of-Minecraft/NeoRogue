@@ -50,7 +50,7 @@ public class EarthenDomain extends Equipment {
 
 	public EarthenDomain(boolean isUpgraded) {
 		super(ID, "Earthen Domain", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 10, 15, 12, tp.range));
+				EquipmentProperties.ofUsable(16, 8, 7, 12, tp.range));
 		damage = isUpgraded ? 150 : 100;
 		conc = isUpgraded ? 15 : 10;
 	}

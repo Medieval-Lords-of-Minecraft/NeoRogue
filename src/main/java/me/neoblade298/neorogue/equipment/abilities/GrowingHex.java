@@ -41,7 +41,7 @@ public class GrowingHex extends Equipment {
 	
 	public GrowingHex(boolean isUpgraded) {
 		super(ID, "Growing Hex", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 14, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(12, 0, 6, 0));
 				damage = 120;
 				growth = isUpgraded ? 50 : 25;
 	}

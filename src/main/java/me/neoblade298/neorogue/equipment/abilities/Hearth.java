@@ -27,7 +27,7 @@ public class Hearth extends Equipment {
 
 	public Hearth(boolean isUpgraded) {
 		super(ID, "Hearth", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 60 : 80, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 48 : 64, 0, 0, 0));
 		heal = 3;
 	}
 

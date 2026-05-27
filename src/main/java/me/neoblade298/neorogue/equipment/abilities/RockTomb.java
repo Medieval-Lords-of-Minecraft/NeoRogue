@@ -100,7 +100,7 @@ public class RockTomb extends Equipment {
 
 	public RockTomb(boolean isUpgraded) {
 		super(ID, "Rock Tomb", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 14, RANGE, RADIUS));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 6, RANGE, RADIUS));
 		damage = 250;
 		bonusDamage = isUpgraded ? 80 : 40;
 		properties.addUpgrades(PropertyType.COOLDOWN);

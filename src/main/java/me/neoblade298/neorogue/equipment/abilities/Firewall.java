@@ -45,7 +45,7 @@ public class Firewall extends Equipment {
 	
 	public Firewall(boolean isUpgraded) {
 		super(ID, "Firewall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 22, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(16, 4, 9, tp.range));
 		damage = isUpgraded ? 75 : 50;
 		burn = isUpgraded ? 5 : 3;
 		corruption = 1;

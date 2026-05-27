@@ -59,7 +59,7 @@ public class Voltaics extends Equipment {
 
 	public Voltaics(boolean isUpgraded) {
 		super(ID, "Voltaics", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 30, 5, 0, RANGE));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 12 : 24, 4, 0, RANGE));
 		properties.addUpgrades(PropertyType.MANA_COST);
 		damage = isUpgraded ? 100 : 65;
 		stackThreshold = isUpgraded ? 15 : 20;

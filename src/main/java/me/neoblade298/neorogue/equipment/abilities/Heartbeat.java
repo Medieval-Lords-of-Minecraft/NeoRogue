@@ -39,7 +39,7 @@ public class Heartbeat extends Equipment {
 	
 	public Heartbeat(boolean isUpgraded) {
 		super(ID, "Heartbeat", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 10, 0, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(8, 0, 5, 0, tp.range));
 				damage = isUpgraded ? 60 : 40;
 	}
 	

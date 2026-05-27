@@ -41,7 +41,7 @@ public class CollectionHex extends Equipment {
 	
 	public CollectionHex(boolean isUpgraded) {
 		super(ID, "Collection Hex", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 14, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(8, 0, 6, 0));
 				damage = 120;
 				shields = isUpgraded ? 15 : 10;
 				mana = isUpgraded ? 20 : 10;

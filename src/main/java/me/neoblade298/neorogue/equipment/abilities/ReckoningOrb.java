@@ -51,7 +51,7 @@ public class ReckoningOrb extends Equipment {
 	
 	public ReckoningOrb(boolean isUpgraded) {
 		super(ID, "Reckoning Orb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, 15, 0, 5));
+				EquipmentProperties.ofUsable(12, 0, 7, 0, 5));
 		tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false);
 		circ = new Circle(tp.range);
 		mult = isUpgraded ? 1 : 0.5;

@@ -39,7 +39,7 @@ public class Sear extends Equipment {
 	public Sear(boolean isUpgraded) {
 		super(ID, "Sear", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, 13, 6));
+				EquipmentProperties.ofUsable(12, 0, 5, 6));
 		damage = isUpgraded ? 60 : 40;
 		burn = isUpgraded ? 8 : 5;
 	}

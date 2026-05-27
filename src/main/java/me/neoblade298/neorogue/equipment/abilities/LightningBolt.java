@@ -37,7 +37,7 @@ public class LightningBolt extends Equipment {
 
 	public LightningBolt(boolean isUpgraded) {
 		super(ID, "Lightning Bolt", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 0, 7, tp.range));
+				EquipmentProperties.ofUsable(8, 0, 4, tp.range));
 		damage = 70;
 		thres = isUpgraded ? 40 : 30;
 		bonusDamage = isUpgraded ? 140 : 70;

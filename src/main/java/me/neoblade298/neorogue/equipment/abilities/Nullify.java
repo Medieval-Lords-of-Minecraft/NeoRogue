@@ -35,7 +35,7 @@ public class Nullify extends Equipment {
 
 	public Nullify(boolean isUpgraded) {
 		super(ID, "Nullify", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 0, 0));
+				EquipmentProperties.ofUsable(16, 0, 0, 0));
 		stacks = isUpgraded ? 5 : 3;
 		manaIncrease = isUpgraded ? 20 : 30;
 		addTags(GlossaryTag.PROTECT, GlossaryTag.SHELL);

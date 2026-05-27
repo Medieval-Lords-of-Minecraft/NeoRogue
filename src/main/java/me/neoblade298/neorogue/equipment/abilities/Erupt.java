@@ -39,7 +39,7 @@ public class Erupt extends Equipment {
 	
 	public Erupt(boolean isUpgraded) {
 		super(ID, "Erupt", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 14, tp.range, aoe.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(13, 0, 8, tp.range, aoe.range));
 				damage = isUpgraded ? 150 : 100;
 	}
 	

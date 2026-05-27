@@ -28,7 +28,7 @@ public class ToRuins extends Equipment {
 
 	public ToRuins(boolean isUpgraded) {
 		super(ID, "To Ruins", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(12, 0, 5, tp.range));
 		burnPerIntellect = isUpgraded ? 3 : 5;
 	}
 
