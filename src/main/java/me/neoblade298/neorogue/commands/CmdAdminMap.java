@@ -61,6 +61,16 @@ public class CmdAdminMap extends Subcommand {
 		long totalTime = System.currentTimeMillis() - startTime;
 		Util.msg(p, "Total sync time: " + totalTime + "ms (terrain gen runs async)");
 		map.display();
+
+		// List each map piece instance
+		int idx = 0;
+		for (MapPieceInstance mpi : map.getPieces()) {
+			Util.msg(p, "#" + idx + ": " + mpi.getPiece().getId()
+					+ " rot=" + mpi.getNumRotations()
+					+ " flipX=" + mpi.isFlipX()
+					+ " flipZ=" + mpi.isFlipZ());
+			idx++;
+		}
 		
 		// Mark down spawn location blocks
 		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
