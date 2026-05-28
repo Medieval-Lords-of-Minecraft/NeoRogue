@@ -490,20 +490,26 @@ public class MountainPathGenerator {
 					int worldZ = tz + zOff + MapPieceInstance.Z_FIGHT_OFFSET;
 
 					if (isWall) {
-						// Barrier wall column up to capped height
+						// Barrier wall column up to capped height (only replace air)
 						for (int y = baseY; y <= barrierWallTop; y++) {
 							try {
-								editSession.setBlock(BlockVector3.at(worldX, y, worldZ), WE_BARRIER);
+								BlockVector3 pos = BlockVector3.at(worldX, y, worldZ);
+								if (editSession.getBlock(pos).getBlockType().getMaterial().isAir()) {
+									editSession.setBlock(pos, WE_BARRIER);
+									blocksPlaced++;
+								}
 							} catch (Exception ignored) {}
-							blocksPlaced++;
 						}
 					}
 
-					// Roof at fixed Y-level
+					// Roof at fixed Y-level (only replace air)
 					try {
-						editSession.setBlock(BlockVector3.at(worldX, BARRIER_ROOF_Y, worldZ), WE_BARRIER);
+						BlockVector3 roofPos = BlockVector3.at(worldX, BARRIER_ROOF_Y, worldZ);
+						if (editSession.getBlock(roofPos).getBlockType().getMaterial().isAir()) {
+							editSession.setBlock(roofPos, WE_BARRIER);
+							blocksPlaced++;
+						}
 					} catch (Exception ignored) {}
-					blocksPlaced++;
 				}
 			}
 		}
