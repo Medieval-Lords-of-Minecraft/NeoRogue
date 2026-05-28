@@ -50,7 +50,7 @@ public class CmdAdminMap extends Subcommand {
 		
 		
 		long startTime = System.currentTimeMillis();
-		Map map = piece == null ? Map.generate(type, numPieces, true) : Map.generate(type, numPieces, piece, true);
+		Map map = piece == null ? Map.generate(type, numPieces, false) : Map.generate(type, numPieces, piece, false);
 		long genTime = System.currentTimeMillis() - startTime;
 		Util.msg(p, "Piece generation: " + genTime + "ms");
 		long instantiateStart = System.currentTimeMillis();
