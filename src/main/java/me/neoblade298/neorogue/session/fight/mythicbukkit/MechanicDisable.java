@@ -66,7 +66,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 				if (list == null || !list.contains(ei)) continue;
 
 				int invSlot = EquipSlot.convertSlot(es, ei.getSlot());
-				candidates.add(new DisableCandidate(ei, list, invSlot, false));
+				candidates.add(new DisableCandidate(ei, list, invSlot));
 			}
 
 			// Weapons from slotBasedTriggers
@@ -85,7 +85,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 							}
 							if (alreadyAdded) continue;
 						}
-						candidates.add(new DisableCandidate(pa, trigEntry.getValue(), slot, true));
+						candidates.add(new DisableCandidate(pa, trigEntry.getValue(), slot));
 					}
 				}
 			}
@@ -129,13 +129,11 @@ public class MechanicDisable implements ITargetedEntitySkill {
 		final PriorityAction action;
 		final ArrayList<PriorityAction> list;
 		final int invSlot;
-		final boolean isSlotBased;
 
-		DisableCandidate(PriorityAction action, ArrayList<PriorityAction> list, int invSlot, boolean isSlotBased) {
+		DisableCandidate(PriorityAction action, ArrayList<PriorityAction> list, int invSlot) {
 			this.action = action;
 			this.list = list;
 			this.invSlot = invSlot;
-			this.isSlotBased = isSlotBased;
 		}
 	}
 }
