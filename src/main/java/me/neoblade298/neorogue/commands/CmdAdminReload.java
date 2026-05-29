@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -11,18 +12,25 @@ public class CmdAdminReload extends Subcommand {
 
 	public CmdAdminReload(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		args.add(new Arg("fast", false));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
-			gitPull(s, "/home/mlmc/dev/plugins/NeoRogue/mappieces");
-			gitPull(s, "/home/mlmc/dev/plugins/MythicMobs");
-			org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
-				NeoRogue.reload();
-				Util.msg(s, "Reloaded configurations.");
+		boolean fast = args.length > 0 && args[0].equalsIgnoreCase("fast");
+		if (fast) {
+			NeoRogue.reload();
+			Util.msg(s, "Reloaded configurations (fast, no git pull).");
+		} else {
+			org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
+				gitPull(s, "/home/mlmc/dev/plugins/NeoRogue/mappieces");
+				gitPull(s, "/home/mlmc/dev/plugins/MythicMobs");
+				org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
+					NeoRogue.reload();
+					Util.msg(s, "Reloaded configurations.");
+				});
 			});
-		});
+		}
 	}
 
 	private void gitPull(CommandSender s, String directory) {

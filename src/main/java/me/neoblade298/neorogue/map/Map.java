@@ -448,9 +448,9 @@ public class Map {
 		int clearEndZ = (maxGZ + 1) * worldStride * 16;
 
 		// First clear the board (only the used region)
-		// Clear Y range: pieces at Y_OFFSET (64) with offsets -4 to +4, mountains up to +22, barriers up to Y=90
+		// Clear Y range: pieces at Y_OFFSET (64) with offsets -4 to +4, mountains up to +35, barriers above that
 		int clearMinY = MapPieceInstance.Y_OFFSET - 5;
-		int clearMaxY = 95;
+		int clearMaxY = MapPieceInstance.Y_OFFSET + 40;
 
 		long clearStart = System.currentTimeMillis();
 		EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world);
