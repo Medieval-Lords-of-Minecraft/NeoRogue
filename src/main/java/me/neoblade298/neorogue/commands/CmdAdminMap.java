@@ -48,6 +48,10 @@ public class CmdAdminMap extends Subcommand {
 			}
 		}
 		
+		if (Map.getPieces(type) == null || Map.getPieces(type).isEmpty()) {
+			Util.displayError(p, "No map pieces loaded for region " + type + "!");
+			return;
+		}
 		
 		long startTime = System.currentTimeMillis();
 		Map map = piece == null ? Map.generate(type, numPieces, false) : Map.generate(type, numPieces, piece, false);
