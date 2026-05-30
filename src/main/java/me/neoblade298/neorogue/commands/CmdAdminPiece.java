@@ -6,7 +6,9 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +17,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 
@@ -23,9 +24,11 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
+import me.neoblade298.neorogue.region.Region;
 
 public class CmdAdminPiece extends Subcommand {
 
@@ -45,34 +48,60 @@ public class CmdAdminPiece extends Subcommand {
 		}
 		
 		MapPiece piece = pieces.get(args[0]);
-		World w = Bukkit.getWorld("TestMap");
-		
-		if (w == null) {
-			Util.displayError(p, "There must be a loaded world named TestMap!");
-			return;
-		}
 		
 		MapPieceInstance inst = piece.getInstance();
-		inst.setRotations(2);
-		inst.setFlip(true, false);
-		int x = -(piece.getShape().getBaseLength() * 16);
-		int z = 16;
-		final int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
-		
-		// First clear the board
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(w))) {
-		    CuboidRegion o = new CuboidRegion(
-		    		BlockVector3.at(-x + PADDING, -63, z - PADDING),
-		    		BlockVector3.at(-x - PADDING, 64, z + PADDING));
-		    Mask mask = new ExistingBlockMask(editSession);
-		    try {
-			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
+		int xOff = 0, zOff = 0;
+
+		// Clear the area
+		int clearPadding = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
+		int clearMinY = MapPieceInstance.Y_OFFSET - 5;
+		int clearMaxY = MapPieceInstance.Y_OFFSET + 40;
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			CuboidRegion r = new CuboidRegion(
+					BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET) + clearPadding, clearMinY, MapPieceInstance.Z_FIGHT_OFFSET + zOff - clearPadding),
+					BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET) - clearPadding, clearMaxY, MapPieceInstance.Z_FIGHT_OFFSET + zOff + clearPadding));
+			try {
+				editSession.replaceBlocks(r, new ExistingBlockMask(editSession), BukkitAdapter.adapt(Material.AIR.createBlockData()));
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		inst.testPaste(p, w, x, z);
-		p.teleport(new Location(w, -8, 1, 8, -90, 0));
+
+		// Paste the piece using the same method as /nra map
+		inst.instantiate(null, xOff, zOff);
+
+		// Mark spawn locations with terracotta (same as /nra map)
+		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
+		if (inst.getSpawns() != null) {
+			for (Coordinates c : inst.getSpawns()) {
+				Location l = c.clone().applySettings(inst).toLocation();
+				l.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
+						MapPieceInstance.Y_OFFSET,
+						MapPieceInstance.Z_FIGHT_OFFSET + zOff);
+				l.setX(-l.getX());
+
+				Block b = l.getBlock();
+				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+				Directional bmeta = (Directional) b.getBlockData();
+
+				// Apparently terracotta blocks point the direction opposite they're facing
+				switch (c.getDirection()) {
+				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
+				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
+				case EAST: bmeta.setFacing(BlockFace.WEST); break;
+				case WEST: bmeta.setFacing(BlockFace.EAST); break;
+				}
+				b.setBlockData(bmeta);
+				potentialSpawns.add(l);
+			}
+		}
+
+		if (!potentialSpawns.isEmpty()) {
+			p.teleport(potentialSpawns.get(0));
+		} else {
+			// Teleport to the fight offset origin
+			org.bukkit.World w = Bukkit.getWorld(Region.WORLD_NAME);
+			p.teleport(new Location(w, -(xOff + MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET + zOff));
+		}
 	}
 }
