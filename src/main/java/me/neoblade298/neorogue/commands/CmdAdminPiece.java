@@ -37,10 +37,6 @@ public class CmdAdminPiece extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		if (!p.getWorld().getName().equals("TestMap")) {
-			Util.displayError(p, "This command can only be used in the TestMap world!");
-			return;
-		}
 		HashMap<String, MapPiece> pieces = Map.getAllPieces();
 		if (!pieces.containsKey(args[0])) {
 			Util.displayError(p, "Couldn't find a map piece with that name!");
@@ -51,6 +47,8 @@ public class CmdAdminPiece extends Subcommand {
 		
 		MapPieceInstance inst = piece.getInstance();
 		int xOff = 0, zOff = 0;
+
+		Region.useTestWorld();
 
 		// Clear the area
 		int clearPadding = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
@@ -73,11 +71,13 @@ public class CmdAdminPiece extends Subcommand {
 		// Mark spawn locations with terracotta
 		ArrayList<Location> potentialSpawns = inst.markSpawns(xOff, zOff);
 
+		Region.useMainWorld();
+
 		if (!potentialSpawns.isEmpty()) {
 			p.teleport(potentialSpawns.get(0));
 		} else {
 			// Teleport to the fight offset origin
-			org.bukkit.World w = Bukkit.getWorld(Region.WORLD_NAME);
+			org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
 			p.teleport(new Location(w, -(xOff + MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET + zOff));
 		}
 	}

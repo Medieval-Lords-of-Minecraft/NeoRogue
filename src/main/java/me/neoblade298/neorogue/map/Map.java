@@ -500,7 +500,7 @@ public class Map {
 		long entranceStart = System.currentTimeMillis();
 		// Block off all unused entrances
 		if (shouldBlockEntrances()) {
-			World w = Bukkit.getWorld(Region.WORLD_NAME);
+			World w = Bukkit.getWorld(Region.getActiveWorldName());
 			for (MapEntrance coords : entrances) {
 				handleUnusedEntrance(coords, w, xOff, zOff);
 			}
@@ -521,7 +521,7 @@ public class Map {
 	protected void generateTerrain(FightInstance fi, int xOff, int zOff) {
 		if (worldStride > 1) {
 			MountainPathGenerator.generate(
-				Bukkit.getWorld(Region.WORLD_NAME),
+				Bukkit.getWorld(Region.getActiveWorldName()),
 				xOff, zOff, MAP_SIZE, worldStride,
 				shape, connectedEntrances,
 				NeoRogue.gen.nextLong()

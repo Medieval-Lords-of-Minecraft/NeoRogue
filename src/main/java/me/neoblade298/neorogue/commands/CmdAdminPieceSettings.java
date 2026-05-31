@@ -6,6 +6,10 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,6 +29,8 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.region.Region;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CmdAdminPieceSettings extends Subcommand {
 
@@ -38,10 +44,6 @@ public class CmdAdminPieceSettings extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		if (!p.getWorld().getName().equals("TestMap")) {
-			Util.displayError(p, "This command can only be used in the TestMap world!");
-			return;
-		}
 		HashMap<String, MapPiece> pieces = Map.getAllPieces();
 		if (!pieces.containsKey(args[0])) {
 			Util.displayError(p, "Couldn't find a map piece with that name!");
@@ -56,6 +58,8 @@ public class CmdAdminPieceSettings extends Subcommand {
 		int clearMaxY = MapPieceInstance.Y_OFFSET + 40;
 		int clearX = PADDING * (pasteAll ? 4 : 1);
 		int clearZ = PADDING * (pasteAll ? 3 : 1);
+
+		Region.useTestWorld();
 
 		// Clear the area
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
@@ -76,14 +80,17 @@ public class CmdAdminPieceSettings extends Subcommand {
 				inst.setFlip(false, false);
 				inst.instantiate(null, PADDING * i, 0);
 				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, 0, 1));
+				placeVariantSign(PADDING * i, 0, "rot=" + i, "no flip");
 
 				inst.setFlip(true, false);
 				inst.instantiate(null, PADDING * i, PADDING);
 				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING, 1));
+				placeVariantSign(PADDING * i, PADDING, "rot=" + i, "flipX");
 
 				inst.setFlip(false, true);
 				inst.instantiate(null, PADDING * i, PADDING * 2);
 				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING * 2, 1));
+				placeVariantSign(PADDING * i, PADDING * 2, "rot=" + i, "flipZ");
 			}
 		}
 		else {
@@ -96,12 +103,31 @@ public class CmdAdminPieceSettings extends Subcommand {
 			potentialSpawns.addAll(inst.markSpawns(p, 0, 0, 1));
 		}
 
+		Region.useMainWorld();
+
 		if (!potentialSpawns.isEmpty()) {
 			p.teleport(potentialSpawns.get(0));
 		} else {
-			org.bukkit.World w = Bukkit.getWorld(Region.WORLD_NAME);
+			org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
 			p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
 		}
 		Util.msg(p, "Successfully pasted piece settings");
+	}
+
+	private void placeVariantSign(int xOff, int zOff, String line1, String line2) {
+		org.bukkit.World w = Bukkit.getWorld(Region.getActiveWorldName());
+		Location signLoc = new Location(w,
+				-(xOff + MapPieceInstance.X_FIGHT_OFFSET),
+				MapPieceInstance.Y_OFFSET + 2,
+				MapPieceInstance.Z_FIGHT_OFFSET + zOff);
+		Block signBlock = signLoc.getBlock();
+		signBlock.setType(Material.OAK_SIGN);
+		Rotatable signData = (Rotatable) signBlock.getBlockData();
+		signData.setRotation(BlockFace.SOUTH);
+		signBlock.setBlockData(signData);
+		Sign sign = (Sign) signBlock.getState();
+		sign.getSide(org.bukkit.block.sign.Side.FRONT).line(0, Component.text(line1).color(NamedTextColor.YELLOW));
+		sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, Component.text(line2).color(NamedTextColor.WHITE));
+		sign.update();
 	}
 }

@@ -78,6 +78,9 @@ public class Region {
 
 	public static World world;
 	public static final String WORLD_NAME = "Dev";
+	public static final String TEST_WORLD_NAME = "TestMap";
+	public static World testWorld;
+	private static String activeWorldName = WORLD_NAME;
 	private static final int NODE_Y = 64;
 
 	// Offsets
@@ -87,6 +90,9 @@ public class Region {
 
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+		if (Bukkit.getWorld(TEST_WORLD_NAME) != null) {
+			testWorld = BukkitAdapter.adapt(Bukkit.getWorld(TEST_WORLD_NAME));
+		}
 		
 		// Remove all text_display entities from the world
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
@@ -101,6 +107,22 @@ public class Region {
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
 
 		initialized = true;
+	}
+
+	public static void useTestWorld() {
+		if (testWorld != null) {
+			world = testWorld;
+			activeWorldName = TEST_WORLD_NAME;
+		}
+	}
+
+	public static void useMainWorld() {
+		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+		activeWorldName = WORLD_NAME;
+	}
+
+	public static String getActiveWorldName() {
+		return activeWorldName;
 	}
 	
 	public static void loadConfig() {

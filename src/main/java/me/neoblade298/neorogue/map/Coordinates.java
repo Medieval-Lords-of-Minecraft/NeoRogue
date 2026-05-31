@@ -160,10 +160,10 @@ public class Coordinates extends Rotatable {
 	// Should only be used for spawners as it turns x offset into chunk offset
 	// * 15 because xOff/zOff was already added once
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(Region.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
+		return new Location(Bukkit.getWorld(Region.getActiveWorldName()), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
 	public Location toBlockLocation() {
-		return new Location(Bukkit.getWorld(Region.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
+		return new Location(Bukkit.getWorld(Region.getActiveWorldName()), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
 	
 	@Override

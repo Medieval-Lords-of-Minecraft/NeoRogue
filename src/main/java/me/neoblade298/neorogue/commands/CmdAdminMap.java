@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
 
 public class CmdAdminMap extends Subcommand {
@@ -30,10 +31,6 @@ public class CmdAdminMap extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		if (!p.getWorld().getName().equals("TestMap")) {
-			Util.displayError(p, "This command can only be used in the TestMap world!");
-			return;
-		}
 		int numPieces = args.length > 1 ? Integer.parseInt(args[1]) : 5;
 		RegionType type = args.length > 0 ? RegionType.valueOf(args[0]) : RegionType.LOW_DISTRICT;
 
@@ -52,6 +49,8 @@ public class CmdAdminMap extends Subcommand {
 			return;
 		}
 		
+		Region.useTestWorld();
+
 		long startTime = System.currentTimeMillis();
 		Map map = piece == null ? Map.generate(type, numPieces, false) : Map.generate(type, numPieces, piece, false);
 		long genTime = System.currentTimeMillis() - startTime;
@@ -81,6 +80,8 @@ public class CmdAdminMap extends Subcommand {
 		for (MapPieceInstance mpi : map.getPieces()) {
 			potentialSpawns.addAll(mpi.markSpawns(0, 0, ws));
 		}
+
+		Region.useMainWorld();
 		
 		// Choose random teleport location
 		int rand = NeoRogue.gen.nextInt(potentialSpawns.size());

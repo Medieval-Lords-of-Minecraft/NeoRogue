@@ -106,7 +106,7 @@ public class FrozenWastesMap extends Map {
 	@Override
 	protected void generateTerrain(FightInstance fi, int xOff, int zOff) {
 		MountainPathGenerator.generateFrozenWastes(
-			Bukkit.getWorld(Region.WORLD_NAME),
+			Bukkit.getWorld(Region.getActiveWorldName()),
 			xOff, zOff, getMapSize(), getWorldStride(),
 			getShape(), adjacentChunkPairs, chunkHeights,
 			NeoRogue.gen.nextLong()
