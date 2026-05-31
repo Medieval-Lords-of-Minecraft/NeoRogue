@@ -37,6 +37,10 @@ public class CmdAdminPiece extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
+		if (!p.getWorld().getName().equals("TestMap")) {
+			Util.displayError(p, "This command can only be used in the TestMap world!");
+			return;
+		}
 		HashMap<String, MapPiece> pieces = Map.getAllPieces();
 		if (!pieces.containsKey(args[0])) {
 			Util.displayError(p, "Couldn't find a map piece with that name!");

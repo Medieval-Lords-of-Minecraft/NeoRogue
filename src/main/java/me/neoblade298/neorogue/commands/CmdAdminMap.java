@@ -29,9 +29,13 @@ public class CmdAdminMap extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
+		Player p = (Player) s;
+		if (!p.getWorld().getName().equals("TestMap")) {
+			Util.displayError(p, "This command can only be used in the TestMap world!");
+			return;
+		}
 		int numPieces = args.length > 1 ? Integer.parseInt(args[1]) : 5;
 		RegionType type = args.length > 0 ? RegionType.valueOf(args[0]) : RegionType.LOW_DISTRICT;
-		Player p = (Player) s;
 
 		MapPiece piece = null;
 		if (args.length > 2) {
