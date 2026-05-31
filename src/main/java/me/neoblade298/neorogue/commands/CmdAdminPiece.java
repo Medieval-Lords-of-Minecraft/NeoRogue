@@ -6,9 +6,6 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +21,6 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
@@ -70,31 +66,8 @@ public class CmdAdminPiece extends Subcommand {
 		// Paste the piece using the same method as /nra map
 		inst.instantiate(null, xOff, zOff);
 
-		// Mark spawn locations with terracotta (same as /nra map)
-		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
-		if (inst.getSpawns() != null) {
-			for (Coordinates c : inst.getSpawns()) {
-				Location l = c.clone().applySettings(inst).toLocation();
-				l.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
-						MapPieceInstance.Y_OFFSET,
-						MapPieceInstance.Z_FIGHT_OFFSET + zOff);
-				l.setX(-l.getX());
-
-				Block b = l.getBlock();
-				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-				Directional bmeta = (Directional) b.getBlockData();
-
-				// Apparently terracotta blocks point the direction opposite they're facing
-				switch (c.getDirection()) {
-				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
-				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
-				case EAST: bmeta.setFacing(BlockFace.WEST); break;
-				case WEST: bmeta.setFacing(BlockFace.EAST); break;
-				}
-				b.setBlockData(bmeta);
-				potentialSpawns.add(l);
-			}
-		}
+		// Mark spawn locations with terracotta
+		ArrayList<Location> potentialSpawns = inst.markSpawns(xOff, zOff);
 
 		if (!potentialSpawns.isEmpty()) {
 			p.teleport(potentialSpawns.get(0));

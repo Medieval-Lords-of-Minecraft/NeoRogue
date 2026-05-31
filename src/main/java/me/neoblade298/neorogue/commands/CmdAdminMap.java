@@ -3,10 +3,6 @@ package me.neoblade298.neorogue.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +11,6 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
@@ -80,35 +75,7 @@ public class CmdAdminMap extends Subcommand {
 		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
 		int ws = map.getWorldStride();
 		for (MapPieceInstance mpi : map.getPieces()) {
-			if (mpi.getSpawns() == null) break;
-			for (Coordinates c : mpi.getSpawns()) {
-				Location l = c.clone().applySettings(mpi).toLocation();
-				if (ws > 1) {
-					l.add(mpi.getX() * 16 * (ws - 1), 0,
-							mpi.getZ() * 16 * (ws - 1));
-				}
-				l.add(0 + MapPieceInstance.X_FIGHT_OFFSET,
-						MapPieceInstance.Y_OFFSET,
-						MapPieceInstance.Z_FIGHT_OFFSET + 0);
-				l.setX(-l.getX());
-				
-				Block b = l.getBlock();
-				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-	            Directional bmeta = (Directional) b.getBlockData();
-	            
-	            // Apparently terracotta blocks point the direction opposite they're facing
-	            switch (c.getDirection()) {
-	            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
-	            break;
-	            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
-	            break;
-	            case EAST: bmeta.setFacing(BlockFace.WEST);
-	            break;
-	            case WEST: bmeta.setFacing(BlockFace.EAST);
-	            }
-	            b.setBlockData(bmeta);
-	            potentialSpawns.add(l);
-			}
+			potentialSpawns.addAll(mpi.markSpawns(0, 0, ws));
 		}
 		
 		// Choose random teleport location

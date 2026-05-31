@@ -1,12 +1,12 @@
 package me.neoblade298.neorogue.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.Masks;
 import com.sk89q.worldedit.function.mask.SolidBlockMask;
 import com.sk89q.worldedit.function.operation.Operation;
@@ -31,6 +30,9 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public static final int Z_FIGHT_OFFSET = 0, Y_OFFSET = 64, X_FIGHT_OFFSET = 49;
@@ -338,89 +340,109 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 	
-	public void testPaste(Player p, World world, int xOff, int zOff) {
-		updateSchematic();
-		/*
-		 * this.x is the chunk coordinates within the fighting area
-		 * xOff is the offset of the plot
-		 * X/Y/Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
-		 * x is negative because south is +z and right of south is -x
-		 * x/zLocal is the offset due to the player choosing the chunk to paste it in
-		 */
-		
-		int xLocal = 1;
-		int zLocal = -16;
-		int x = -(rotateOffset[0] + flipOffset[0] + xOff + xLocal);
-		int y = 1 + this.y;
-		int z = rotateOffset[1] + flipOffset[1] + zOff + zLocal;
-		
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
-		    Operation pasteSolid = schematic.createPaste(editSession)
-		    		.maskSource(new SolidBlockMask(BukkitAdapter.adapt(world)))
-		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(false)
-		            .build();
-		    
-		    Operation pasteRemaining = schematic.createPaste(editSession)
-		    		.maskSource(Masks.negate(new SolidBlockMask(BukkitAdapter.adapt(world))))
-		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(false)
-		            .build();
-		    try {
-				Operations.complete(pasteSolid);
-				Operations.complete(pasteRemaining);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
+	
+	public MapEntrance getEntrance() {
+		return entrance;
+	}
+	
+	public MapEntrance getAvailableEntrance() {
+		return available;
+	}
+	
+	public Coordinates[] getSpawns() { 
+		return spawns;
+	}
+	
+	// Places or appends colored text to a sign at the given location, tracking line usage
+	private void placeOrAppendSign(Location signLoc, Direction dir, String text, TextColor color, HashMap<Location, Integer> signLines) {
+		Location key = signLoc.toBlockLocation();
+		int line = signLines.getOrDefault(key, 0);
+		if (line > 3) return; // Already overflowed
+		if (line == 3) {
+			// Sign is full, write overflow indicator
+			Sign sign = (Sign) signLoc.getBlock().getState();
+			sign.getSide(org.bukkit.block.sign.Side.FRONT).line(3, Component.text("...").color(NamedTextColor.GRAY));
+			sign.update();
+			signLines.put(key, line + 1);
+			return;
 		}
-		
-		// Spawners
-		HashSet<Location> locs = new HashSet<Location>();
+
+		if (line == 0) {
+			// First time placing at this location
+			Block signBlock = signLoc.getBlock();
+			signBlock.setType(Material.OAK_SIGN);
+			Rotatable signData = (Rotatable) signBlock.getBlockData();
+			switch (dir) {
+			case NORTH: signData.setRotation(BlockFace.NORTH); break;
+			case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
+			case EAST: signData.setRotation(BlockFace.EAST); break;
+			case WEST: signData.setRotation(BlockFace.WEST); break;
+			}
+			signBlock.setBlockData(signData);
+		}
+
+		Sign sign = (Sign) signLoc.getBlock().getState();
+		sign.getSide(org.bukkit.block.sign.Side.FRONT).line(line, Component.text(text).color(color));
+		sign.update();
+		signLines.put(key, line + 1);
+	}
+
+	// Marks spawn locations with directional terracotta and returns the player spawn locations
+	public ArrayList<Location> markSpawns(Player p, int xOff, int zOff, int worldStride) {
+		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
+		HashMap<Location, Integer> signLines = new HashMap<>();
+
+		// Mark spawners with orange wool
+		HashSet<Location> spawnerLocs = new HashSet<>();
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
 			for (MapSpawner spawner : list) {
 				Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
-				loc.setWorld(world);
-				loc.add(-x - rotateOffset[0] - flipOffset[0],
-						y,
-						z - rotateOffset[1] - flipOffset[1]);
+				if (worldStride > 1) {
+					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
+				}
+				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
-				if (loc.getBlock().getType().isSolid()) {
-					Util.msg(p, "<red>A spawner appears to be inside a block.");
-					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				if (p != null) {
+					if (loc.getBlock().getType().isSolid()) {
+						Util.msg(p, "<red>A spawner appears to be inside a block.");
+						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+					}
+					if (loc.clone().add(0, -1, 0).getBlock().getType().isAir()) {
+						Util.msg(p, "<red>A spawner appears to be floating or off map.");
+						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					}
 				}
-				if (loc.add(0, -1, 0).getBlock().getType().isAir()) {
-					Util.msg(p, "<red>A spawner appears to be floating or off map.");
-					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-				}
-				locs.add(loc);
+				spawnerLocs.add(loc);
 			}
 		}
-		for (Location loc : locs) {
+		for (Location loc : spawnerLocs) {
 			loc.getBlock().setType(Material.ORANGE_WOOL);
 		}
-		
+
+		// Mark initial spawns
 		if (piece.getInitialSpawns() != null) {
 			for (MapSpawner initialSpawner : piece.getInitialSpawns()) {
 				Coordinates coords = initialSpawner.getCoordinates().clone().applySettings(this);
 				Location loc = coords.toLocation();
-				loc.setWorld(world);
-				loc.add(-x - rotateOffset[0] - flipOffset[0],
-						y,
-						z - rotateOffset[1] - flipOffset[1]);
-				loc.setX(-loc.getX());
-				if (loc.getBlock().getType().isSolid()) {
-					Util.msg(p, "<red>An initial spawn appears to be inside a block.");
-					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				if (worldStride > 1) {
+					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				if (loc.add(0, -1, 0).getBlock().getType().isAir()) {
-					Util.msg(p, "<red>An initial spawn appears to be floating or off map.");
-					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				loc.setX(-loc.getX());
+				if (p != null) {
+					if (loc.getBlock().getType().isSolid()) {
+						Util.msg(p, "<red>An initial spawn appears to be inside a block.");
+						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+					}
+					if (loc.clone().add(0, -1, 0).getBlock().getType().isAir()) {
+						Util.msg(p, "<red>An initial spawn appears to be floating or off map.");
+						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					}
 				}
 				Block b = loc.getBlock();
 				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-
 				Directional bmeta = (Directional) b.getBlockData();
 				switch (coords.getDirection()) {
 				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
@@ -430,136 +452,91 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 				b.setBlockData(bmeta);
 
-				loc.add(0, 1, 0);
-				Block signBlock = loc.getBlock();
-				signBlock.setType(Material.OAK_SIGN);
-				Rotatable signData = (Rotatable) signBlock.getBlockData();
-				switch (coords.getDirection()) {
-				case NORTH: signData.setRotation(BlockFace.NORTH); break;
-				case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
-				case EAST: signData.setRotation(BlockFace.EAST); break;
-				case WEST: signData.setRotation(BlockFace.WEST); break;
+				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), "Initial Spawn", NamedTextColor.GREEN, signLines);
+			}
+		}
+
+		// Mark player spawns
+		if (spawns != null) {
+			for (Coordinates c : spawns) {
+				Coordinates coords = c.clone().applySettings(this);
+				Location l = coords.toLocation();
+				if (worldStride > 1) {
+					l.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				signBlock.setBlockData(signData);
-				Sign sign = (Sign) signBlock.getState();
-				sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text("Initial Spawn"));
-				sign.update();
+				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				l.setX(-l.getX());
+				if (p != null) {
+					Location lookAbove = l.clone().add(0, 1, 0);
+					if (lookAbove.getBlock().getType().isSolid()) {
+						Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
+						Util.msg(p, "<red>Coords: " + Util.locToString(l, false, false));
+						Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
+					}
+				}
+
+				Block b = l.getBlock();
+				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+				Directional bmeta = (Directional) b.getBlockData();
+				switch (coords.getDirection()) {
+				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
+				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
+				case EAST: bmeta.setFacing(BlockFace.WEST); break;
+				case WEST: bmeta.setFacing(BlockFace.EAST); break;
+				}
+				b.setBlockData(bmeta);
+
+				placeOrAppendSign(l.clone().add(0, 1, 0), coords.getDirection(), "Player Spawn", NamedTextColor.YELLOW, signLines);
+				playerSpawnLocs.add(l);
 			}
 		}
-		
-		// Spawns
-		for (Coordinates spawn : spawns) {
-			Coordinates coords = spawn.clone().applySettings(this);
-			Location loc = coords.toLocation();
-			loc.setWorld(world);
-			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					y - 1,
-					z - rotateOffset[1] - flipOffset[1]);
-			loc.setX(-loc.getX());
-			Block b = loc.getBlock();
-			Location lookAbove = loc.clone().add(0, 1, 0);
-			if (lookAbove.getBlock().getType().isSolid()) {
-				Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
-				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-				Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
-			}
-			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
 
-            Directional bmeta = (Directional) b.getBlockData();
-            
-            // Apparently terracotta blocks point the direction opposite they're facing
-            switch (coords.getDirection()) {
-            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
-            break;
-            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
-            break;
-            case EAST: bmeta.setFacing(BlockFace.WEST);
-            break;
-            case WEST: bmeta.setFacing(BlockFace.EAST);
-            }
-            b.setBlockData(bmeta);
-
-			loc.add(0, 1, 0);
-			Block signBlock = loc.getBlock();
-			signBlock.setType(Material.OAK_SIGN);
-			Rotatable signData = (Rotatable) signBlock.getBlockData();
-			switch (coords.getDirection()) {
-			case NORTH: signData.setRotation(BlockFace.NORTH); break;
-			case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
-			case EAST: signData.setRotation(BlockFace.EAST); break;
-			case WEST: signData.setRotation(BlockFace.WEST); break;
-			}
-			signBlock.setBlockData(signData);
-			Sign sign = (Sign) signBlock.getState();
-			sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text("Player Spawn"));
-			sign.update();
-		}
-		
-		// Mythic Locations
+		// Mark mythic locations
 		for (Entry<String, Coordinates> entry : mythicLocations.entrySet()) {
 			Coordinates coords = entry.getValue().clone().applySettings(this);
 			Location loc = coords.toLocation();
-			loc.setWorld(world);
-			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					y - 1,
-					z - rotateOffset[1] - flipOffset[1]);
+			if (worldStride > 1) {
+				loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
+			}
+			loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 			loc.setX(-loc.getX());
+			if (p != null) {
+				Location lookAbove = loc.clone().add(0, 1, 0);
+				if (lookAbove.getBlock().getType().isSolid()) {
+					Util.msg(p, "<red>A mythic location appears to be inside a block.");
+					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
+				}
+			}
 			Block b = loc.getBlock();
-			Location lookAbove = loc.clone().add(0, 1, 0);
-			if (lookAbove.getBlock().getType().isSolid()) {
-				Util.msg(p, "<red>A mythic location appears to be inside a block.");
-				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-				Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
-			}
 			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-
-            Directional bmeta = (Directional) b.getBlockData();
-            
-            // Apparently terracotta blocks point the direction opposite they're facing
-            switch (coords.getDirection()) {
-            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
-            break;
-            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
-            break;
-            case EAST: bmeta.setFacing(BlockFace.WEST);
-            break;
-            case WEST: bmeta.setFacing(BlockFace.EAST);
-            }
-            b.setBlockData(bmeta);
-
-			loc.add(0, 1, 0);
-			Block signBlock = loc.getBlock();
-			signBlock.setType(Material.OAK_SIGN);
-			Rotatable signData = (Rotatable) signBlock.getBlockData();
+			Directional bmeta = (Directional) b.getBlockData();
 			switch (coords.getDirection()) {
-			case NORTH: signData.setRotation(BlockFace.NORTH); break;
-			case SOUTH: signData.setRotation(BlockFace.SOUTH); break;
-			case EAST: signData.setRotation(BlockFace.EAST); break;
-			case WEST: signData.setRotation(BlockFace.WEST); break;
+			case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
+			case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
+			case EAST: bmeta.setFacing(BlockFace.WEST); break;
+			case WEST: bmeta.setFacing(BlockFace.EAST); break;
 			}
-			signBlock.setBlockData(signData);
-			Sign sign = (Sign) signBlock.getState();
-			sign.getSide(org.bukkit.block.sign.Side.FRONT).line(1, net.kyori.adventure.text.Component.text(entry.getKey()));
-			sign.update();
+			b.setBlockData(bmeta);
+
+			placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), entry.getKey(), NamedTextColor.AQUA, signLines);
 		}
 
+		// Mark entrances
 		if (piece.getEntrances() != null) {
-			for (MapEntrance entrance : piece.getEntrances()) {
-				MapEntrance coords = entrance.clone().applySettings(this);
+			for (MapEntrance ent : piece.getEntrances()) {
+				MapEntrance coords = ent.clone().applySettings(this);
 				Location loc = coords.getEntrance().toLocation();
 				loc.setX(loc.getX() * 16);
 				loc.setZ(loc.getZ() * 16);
-				loc.add(-x - rotateOffset[0] - flipOffset[0],
-						y,
-						z - rotateOffset[1] - flipOffset[1]);
+				if (worldStride > 1) {
+					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
+				}
+				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
-				loc.setWorld(world);
-				
+
 				double entx = loc.getX();
 				double entz = loc.getZ();
-				// Loc is currently on the northeast of the entrance
-				
-				// Iterate through the 4 entrance blocks based on entrance direction
 				switch (coords.getDirection()) {
 				case NORTH:
 					loc.setZ(entz + 15);
@@ -594,19 +571,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 			}
 		}
+
+		return playerSpawnLocs;
+	}
+
+	public ArrayList<Location> markSpawns(int xOff, int zOff, int worldStride) {
+		return markSpawns(null, xOff, zOff, worldStride);
 	}
 	
-	
-	public MapEntrance getEntrance() {
-		return entrance;
-	}
-	
-	public MapEntrance getAvailableEntrance() {
-		return available;
-	}
-	
-	public Coordinates[] getSpawns() { 
-		return spawns;
+	public ArrayList<Location> markSpawns(int xOff, int zOff) {
+		return markSpawns(null, xOff, zOff, 1);
 	}
 	
 	public Coordinates getMythicLocation(String key) {
