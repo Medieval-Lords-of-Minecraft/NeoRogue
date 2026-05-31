@@ -392,6 +392,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
 		HashMap<Location, Integer> signLines = new HashMap<>();
 
+		// Correction for fencepost error between WorldEdit schematic rotation pivot and Coordinates mirroring
+		int xCorr = (numRotations < 2) != flipZ ? 1 : 0;
+		int zCorr = (numRotations == 1 || numRotations == 2) != flipX ? 1 : 0;
+
 		// Mark spawners with orange wool
 		HashSet<Location> spawnerLocs = new HashSet<>();
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
@@ -400,7 +404,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				if (worldStride > 1) {
 					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				loc.add(xOff + X_FIGHT_OFFSET - xCorr, Y_OFFSET, Z_FIGHT_OFFSET + zOff + zCorr);
 				loc.setX(-loc.getX());
 				if (p != null) {
 					if (loc.getBlock().getType().isSolid()) {
@@ -428,7 +432,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				if (worldStride > 1) {
 					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				loc.add(xOff + X_FIGHT_OFFSET - xCorr, Y_OFFSET, Z_FIGHT_OFFSET + zOff + zCorr);
 				loc.setX(-loc.getX());
 				if (p != null) {
 					if (loc.getBlock().getType().isSolid()) {
@@ -464,7 +468,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				if (worldStride > 1) {
 					l.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				l.add(xOff + X_FIGHT_OFFSET - xCorr, Y_OFFSET, Z_FIGHT_OFFSET + zOff + zCorr);
 				l.setX(-l.getX());
 				if (p != null) {
 					Location lookAbove = l.clone().add(0, 1, 0);
@@ -498,7 +502,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			if (worldStride > 1) {
 				loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 			}
-			loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+			loc.add(xOff + X_FIGHT_OFFSET - xCorr, Y_OFFSET, Z_FIGHT_OFFSET + zOff + zCorr);
 			loc.setX(-loc.getX());
 			if (p != null) {
 				Location lookAbove = loc.clone().add(0, 1, 0);
@@ -532,7 +536,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				if (worldStride > 1) {
 					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
 				}
-				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				loc.add(xOff + X_FIGHT_OFFSET - xCorr, Y_OFFSET, Z_FIGHT_OFFSET + zOff + zCorr);
 				loc.setX(-loc.getX());
 
 				double entx = loc.getX();

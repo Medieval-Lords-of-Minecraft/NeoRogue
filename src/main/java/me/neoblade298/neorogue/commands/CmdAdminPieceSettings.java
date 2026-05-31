@@ -72,7 +72,7 @@ public class CmdAdminPieceSettings extends Subcommand {
 				e.printStackTrace();
 			}
 		}
-
+		
 		ArrayList<Location> potentialSpawns = new ArrayList<>();
 		if (pasteAll) {
 			for (int i = 0; i < 4; i++) {
