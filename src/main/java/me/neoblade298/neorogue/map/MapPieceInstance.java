@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -527,17 +528,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			int entranceIdx = 0;
 			for (MapEntrance ent : piece.getEntrances()) {
 				MapEntrance coords = ent.clone().applySettings(this);
-				Location loc = coords.getEntrance().toLocation();
-				loc.setX(loc.getX() * 16);
-				loc.setZ(loc.getZ() * 16);
-				if (worldStride > 1) {
-					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
-				}
+				Coordinates entCoords = coords.getEntrance();
+				// Use getX()/getZ() directly (already includes piece offset) * worldStride * 16
+				// Do NOT use toLocation() here — it's designed for block-level coords, not chunk-level
+				double ex = entCoords.getX() * worldStride * 16;
+				double ez = entCoords.getZ() * worldStride * 16;
+				Location loc = new Location(Bukkit.getWorld(Region.getActiveWorldName()), ex, 0, ez);
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
 
 				// Place sign at entrance origin showing coordinates and direction
-				Coordinates entCoords = coords.getEntrance();
 				String label = (int) entCoords.getX() + ", " + (int) entCoords.getY() + ", " + (int) entCoords.getZ() + ", " + coords.getDirection().name().charAt(0);
 				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
 				entranceIdx++;

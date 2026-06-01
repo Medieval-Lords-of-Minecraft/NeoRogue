@@ -273,9 +273,53 @@ public class MountainPathGenerator {
 	}
 
 	/**
+	 * Generate terrain for the FROZEN_WASTES region using entrance-based path connections.
+	 * Computes path anchors from entrance directions, then delegates to the main implementation.
+	 */
+	public static void generateFrozenWastes(World world, int xOff, int zOff,
+			int mapSize, int worldStride,
+			boolean[][] logicalShape,
+			List<MapEntrance[]> entrancePairs,
+			HashMap<String, Integer> chunkHeights,
+			long seed) {
+
+		// Compute path segments directly from entrance anchors with Y offsets
+		// We need startTX/startTZ to convert to local coords, so compute bounding box first
+		int minGX = mapSize, maxGX = 0, minGZ = mapSize, maxGZ = 0;
+		for (int gx = 0; gx < mapSize; gx++) {
+			for (int gz = 0; gz < mapSize; gz++) {
+				if (!logicalShape[gx][gz]) continue;
+				minGX = Math.min(minGX, gx);
+				maxGX = Math.max(maxGX, gx);
+				minGZ = Math.min(minGZ, gz);
+				maxGZ = Math.max(maxGZ, gz);
+			}
+		}
+		if (minGX > maxGX) return;
+		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * worldStride * 16);
+		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * worldStride * 16);
+
+		List<int[]> pathSegments = new ArrayList<>();
+		for (MapEntrance[] pair : entrancePairs) {
+			int[] a1 = getPathAnchor(pair[0], worldStride);
+			int[] a2 = getPathAnchor(pair[1], worldStride);
+			int yA = chunkHeights.getOrDefault((int) pair[0].getX() + "," + (int) pair[0].getZ(), 0);
+			int yB = chunkHeights.getOrDefault((int) pair[1].getX() + "," + (int) pair[1].getZ(), 0);
+			pathSegments.add(new int[] {
+				a1[0] - startTX, a1[1] - startTZ,
+				a2[0] - startTX, a2[1] - startTZ,
+				yA, yB
+			});
+		}
+
+		generateFrozenWastesWithSegments(world, xOff, zOff, mapSize, worldStride,
+				logicalShape, pathSegments, chunkHeights, seed);
+	}
+
+	/**
 	 * Generate terrain for the FROZEN_WASTES region.
 	 * Flat 16x16 platforms are placed at each piece chunk at the specified height offsets.
-	 * Paths are carved between adjacent chunk pairs (chunks 1 apart in logical space).
+	 * Paths are carved between pre-computed path segments.
 	 * Mountainous terrain fills the remainder.
 	 *
 	 * @param world              Target world
@@ -284,14 +328,14 @@ public class MountainPathGenerator {
 	 * @param mapSize            Logical grid size (e.g. 12)
 	 * @param worldStride        Stride multiplier (e.g. 2 = 1 chunk gap between pieces)
 	 * @param logicalShape       logicalShape[x][z] = true if that logical chunk has a piece
-	 * @param adjacentChunkPairs List of int[]{ax, az, bx, bz} pairs of logically adjacent piece chunks
+	 * @param pathSegments       Pre-computed path segments: int[]{sx1, sz1, sx2, sz2, yOffA, yOffB}
 	 * @param chunkHeights       Map from "x,z" logical chunk key to Y offset above baseY
 	 * @param seed               Noise seed
 	 */
-	public static void generateFrozenWastes(World world, int xOff, int zOff,
+	private static void generateFrozenWastesWithSegments(World world, int xOff, int zOff,
 			int mapSize, int worldStride,
 			boolean[][] logicalShape,
-			List<int[]> adjacentChunkPairs,
+			List<int[]> pathSegments,
 			HashMap<String, Integer> chunkHeights,
 			long seed) {
 
@@ -328,14 +372,15 @@ public class MountainPathGenerator {
 		int[][] pieceHeightMap = new int[width][depth];
 		for (int[] row : pieceHeightMap) Arrays.fill(row, Integer.MIN_VALUE);
 
+		int cellSize = worldStride * 16; // Full stride-cell size in blocks
 		for (int gx = 0; gx < mapSize; gx++) {
 			for (int gz = 0; gz < mapSize; gz++) {
 				if (!logicalShape[gx][gz]) continue;
 				int yOff = chunkHeights.getOrDefault(gx + "," + gz, 0);
-				int csx = gx * worldStride * 16 - startTX;
-				int csz = gz * worldStride * 16 - startTZ;
-				for (int dx = 0; dx < 16; dx++) {
-					for (int dz = 0; dz < 16; dz++) {
+				int csx = gx * cellSize - startTX;
+				int csz = gz * cellSize - startTZ;
+				for (int dx = 0; dx < cellSize; dx++) {
+					for (int dz = 0; dz < cellSize; dz++) {
 						int px = csx + dx;
 						int pz = csz + dz;
 						if (px >= 0 && px < width && pz >= 0 && pz < depth) {
@@ -346,12 +391,7 @@ public class MountainPathGenerator {
 			}
 		}
 
-		// 3. Compute path segments from adjacent chunk pairs
-		// Segment format: int[]{sx1, sz1, sx2, sz2, yOffA, yOffB}
-		List<int[]> pathSegments = computePathSegmentsFromChunkPairs(
-				adjacentChunkPairs, worldStride, startTX, startTZ, chunkHeights);
-
-		// 4. Pre-compute distance to nearest piece or path for every terrain block
+		// 3. Pre-compute distance to nearest piece or path for every terrain block
 		double[][] nearestDist = new double[width][depth];
 		double[][] pieceDist = new double[width][depth]; // Distance to nearest piece edge only
 		double[][] pathDistArr = new double[width][depth]; // Distance to nearest path centerline only
@@ -512,14 +552,16 @@ public class MountainPathGenerator {
 					} catch (Exception ignored) {}
 				}
 			}
-		}
 
-		long barrierTime = System.currentTimeMillis() - phaseStart;
-		Bukkit.getLogger().info("[MountainPath/FW] Barriers: " + barrierTime + "ms");
+			long barrierTime = System.currentTimeMillis() - phaseStart;
+			Bukkit.getLogger().info("[MountainPath/FW] Barriers: " + barrierTime + "ms");
+			phaseStart = System.currentTimeMillis();
+		}
+		long flushTime = System.currentTimeMillis() - phaseStart;
+		Bukkit.getLogger().info("[MountainPath/FW] EditSession flush: " + flushTime + "ms");
 		long duration = System.currentTimeMillis() - startTime;
 		Bukkit.getLogger().info("[MountainPath/FW] Total: " + blocksPlaced + " blocks in " + duration + "ms"
-				+ " (" + width + "x" + depth + " area, " + pathSegments.size() + " paths, "
-				+ adjacentChunkPairs.size() + " chunk pairs)");
+				+ " (" + width + "x" + depth + " area, " + pathSegments.size() + " paths)");
 	}
 
 	/**

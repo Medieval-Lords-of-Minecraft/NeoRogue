@@ -75,11 +75,13 @@ public class CmdAdminMap extends Subcommand {
 		}
 		
 		// Mark down spawn location blocks
+		long markStart = System.currentTimeMillis();
 		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
 		int ws = map.getWorldStride();
 		for (MapPieceInstance mpi : map.getPieces()) {
 			potentialSpawns.addAll(mpi.markSpawns(0, 0, ws));
 		}
+		Util.msg(p, "Mark spawns: " + (System.currentTimeMillis() - markStart) + "ms");
 
 		Region.useMainWorld();
 		
