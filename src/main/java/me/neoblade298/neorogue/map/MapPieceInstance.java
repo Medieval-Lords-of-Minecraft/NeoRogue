@@ -524,6 +524,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 
 		// Mark entrances
 		if (piece.getEntrances() != null) {
+			int entranceIdx = 0;
 			for (MapEntrance ent : piece.getEntrances()) {
 				MapEntrance coords = ent.clone().applySettings(this);
 				Location loc = coords.getEntrance().toLocation();
@@ -534,6 +535,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
+
+				// Place sign at entrance origin showing coordinates and direction
+				Coordinates entCoords = coords.getEntrance();
+				String label = (int) entCoords.getX() + ", " + (int) entCoords.getY() + ", " + (int) entCoords.getZ() + ", " + coords.getDirection().name().charAt(0);
+				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
+				entranceIdx++;
 
 				double entx = loc.getX();
 				double entz = loc.getZ();
