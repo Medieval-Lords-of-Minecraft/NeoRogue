@@ -951,7 +951,7 @@ public abstract class FightInstance extends Instance {
 						s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff()
 				);
-				spawn.setX(-spawn.getX());
+				spawn.setX(-spawn.getX() + (spawn.getX() % 1 != 0 ? 1 : 0));
 				
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);

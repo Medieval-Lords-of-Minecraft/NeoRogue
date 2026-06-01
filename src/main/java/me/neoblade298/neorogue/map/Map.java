@@ -485,7 +485,7 @@ public class Map {
 					loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
 							MapPieceInstance.Y_OFFSET,
 							MapPieceInstance.Z_FIGHT_OFFSET + zOff);
-					loc.setX(-loc.getX());
+					loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 					fi.addMythicLocation(ent.getKey(), loc);
 				}
 			}

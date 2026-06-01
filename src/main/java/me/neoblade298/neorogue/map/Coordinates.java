@@ -31,8 +31,8 @@ public class Coordinates extends Rotatable {
 		this.z = Double.parseDouble(parsed[2]);
 		this.xlen = usesMinecraftCoords ? piece.getShape().getBaseLength() * 16 - 1: piece.getShape().getBaseLength() - 1;
 		this.zlen = usesMinecraftCoords ? piece.getShape().getBaseHeight() * 16 - 1: piece.getShape().getBaseHeight() - 1;
-		this.xp = xlen - x;
-		this.zp = zlen - z;
+		this.xp = x % 1 != 0 ? xlen + 1 - x : xlen - x;
+		this.zp = z % 1 != 0 ? zlen + 1 - z : zlen - z;
 		this.ogDir = parsed.length > 3 ? Direction.getFromCharacter(parsed[3].charAt(0)) : Direction.NORTH;
 		this.dir = ogDir;
 		if (parsed.length > 4) this.tags = parseTags(parsed[4]);
@@ -60,8 +60,8 @@ public class Coordinates extends Rotatable {
 		this.z = z;
 		this.xlen = xlen;
 		this.zlen = zlen;
-		this.xp = xlen - x;
-		this.zp = zlen - z;
+		this.xp = x % 1 != 0 ? xlen + 1 - x : xlen - x;
+		this.zp = z % 1 != 0 ? zlen + 1 - z : zlen - z;
 		this.ogDir = ogDir;
 		this.dir = dir;
 	}
