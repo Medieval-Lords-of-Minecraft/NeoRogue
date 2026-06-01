@@ -615,6 +615,12 @@ public class Map {
 	public static LinkedList<MapPiece> getPieces(RegionType type) {
 		return standardPieces.get(type);
 	}
+
+	public static boolean hasPiecesForRegion(RegionType type) {
+		LinkedList<MapPiece> standard = standardPieces.get(type);
+		LinkedList<MapPiece> used = usedPieces.get(type);
+		return (standard != null && !standard.isEmpty()) || (used != null && !used.isEmpty());
+	}
 	
 	public AbstractMap<Mob, ArrayList<MobModifier>> getMobs() {
 		return customMobs.isEmpty() ? mobs : customMobs;

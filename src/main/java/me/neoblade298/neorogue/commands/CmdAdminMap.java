@@ -44,7 +44,7 @@ public class CmdAdminMap extends Subcommand {
 			}
 		}
 		
-		if (Map.getPieces(type) == null || Map.getPieces(type).isEmpty()) {
+		if (!Map.hasPiecesForRegion(type)) {
 			Util.displayError(p, "No map pieces loaded for region " + type + "!");
 			return;
 		}
@@ -56,7 +56,7 @@ public class CmdAdminMap extends Subcommand {
 		long genTime = System.currentTimeMillis() - startTime;
 		Util.msg(p, "Piece generation: " + genTime + "ms");
 		long instantiateStart = System.currentTimeMillis();
-		int xOff = 0, zOff = 0;
+		int xOff = -MapPieceInstance.X_FIGHT_OFFSET, zOff = 0;
 		map.instantiate(null, xOff, zOff);
 		long instantiateTime = System.currentTimeMillis() - instantiateStart;
 		Util.msg(p, "Instantiate (clear + schedule): " + instantiateTime + "ms");

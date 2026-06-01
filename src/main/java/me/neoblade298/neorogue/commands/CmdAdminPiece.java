@@ -46,7 +46,7 @@ public class CmdAdminPiece extends Subcommand {
 		MapPiece piece = pieces.get(args[0]);
 		
 		MapPieceInstance inst = piece.getInstance();
-		int xOff = 0, zOff = 0;
+		int xOff = -MapPieceInstance.X_FIGHT_OFFSET, zOff = 0;
 
 		Region.useTestWorld();
 
@@ -76,9 +76,9 @@ public class CmdAdminPiece extends Subcommand {
 		if (!potentialSpawns.isEmpty()) {
 			p.teleport(potentialSpawns.get(0));
 		} else {
-			// Teleport to the fight offset origin
+			// Teleport to the origin
 			org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-			p.teleport(new Location(w, -(xOff + MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET + zOff));
+			p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
 		}
 	}
 }

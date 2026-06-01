@@ -525,7 +525,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 
 		// Mark entrances
 		if (piece.getEntrances() != null) {
-			int entranceIdx = 0;
 			for (MapEntrance ent : piece.getEntrances()) {
 				MapEntrance coords = ent.clone().applySettings(this);
 				Coordinates entCoords = coords.getEntrance();
@@ -534,13 +533,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				double ex = entCoords.getX() * worldStride * 16;
 				double ez = entCoords.getZ() * worldStride * 16;
 				Location loc = new Location(Bukkit.getWorld(Region.getActiveWorldName()), ex, 0, ez);
-				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET + (int) entCoords.getY() - 1, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
 
 				// Place sign at entrance origin showing coordinates and direction
 				String label = (int) entCoords.getX() + ", " + (int) entCoords.getY() + ", " + (int) entCoords.getZ() + ", " + coords.getDirection().name().charAt(0);
-				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
-				entranceIdx++;
 
 				double entx = loc.getX();
 				double entz = loc.getZ();
@@ -552,6 +549,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Block b = loc.getBlock();
 						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
+					loc.setX(entx - 8);
+					placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
 					break;
 				case SOUTH:
 					for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
@@ -559,6 +558,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Block b = loc.getBlock();
 						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
+					loc.setX(entx - 8);
+					placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
 					break;
 				case EAST:
 					loc.setX(entx - 15);
@@ -567,6 +568,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Block b = loc.getBlock();
 						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
+					loc.setZ(entz + 8);
+					placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
 					break;
 				case WEST:
 					for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
@@ -574,6 +577,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Block b = loc.getBlock();
 						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
+					loc.setZ(entz + 8);
+					placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), label, NamedTextColor.RED, signLines);
 					break;
 				}
 			}

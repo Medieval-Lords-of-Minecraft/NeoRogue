@@ -565,61 +565,6 @@ public class MountainPathGenerator {
 	}
 
 	/**
-	 * Compute path segments from adjacent chunk pairs.
-	 * Each pair {ax, az, bx, bz} produces a segment running from the touching edge of A
-	 * to the touching edge of B.
-	 */
-	private static List<int[]> computePathSegmentsFromChunkPairs(List<int[]> pairs,
-			int worldStride, int startTX, int startTZ, HashMap<String, Integer> chunkHeights) {
-		List<int[]> segments = new ArrayList<>();
-		for (int[] pair : pairs) {
-			int ax = pair[0], az = pair[1];
-			int bx = pair[2], bz = pair[3];
-
-			int anchorAX, anchorAZ, anchorBX, anchorBZ;
-			// cxA / czA = terrain-space origin of chunk A; cxB / czB for chunk B
-			int cxA = chunkTerrainOrigin(ax, worldStride);
-			int czA = chunkTerrainOrigin(az, worldStride);
-			int cxB = chunkTerrainOrigin(bx, worldStride);
-			int czB = chunkTerrainOrigin(bz, worldStride);
-
-			if (bx > ax) {
-				// B is east of A
-				anchorAX = cxA + 16; anchorAZ = czA + 8;
-				anchorBX = cxB - 1;  anchorBZ = czB + 8;
-			} else if (bx < ax) {
-				// B is west of A
-				anchorAX = cxA - 1;  anchorAZ = czA + 8;
-				anchorBX = cxB + 16; anchorBZ = czB + 8;
-			} else if (bz > az) {
-				// B is north of A (higher Z)
-				anchorAX = cxA + 8; anchorAZ = czA + 16;
-				anchorBX = cxB + 8; anchorBZ = czB - 1;
-			} else {
-				// B is south of A (lower Z)
-				anchorAX = cxA + 8; anchorAZ = czA - 1;
-				anchorBX = cxB + 8; anchorBZ = czB + 16;
-			}
-
-			segments.add(new int[] {
-					anchorAX - startTX, anchorAZ - startTZ,
-					anchorBX - startTX, anchorBZ - startTZ,
-					chunkHeights.getOrDefault(ax + "," + az, 0),
-					chunkHeights.getOrDefault(bx + "," + bz, 0)
-			});
-		}
-		return segments;
-	}
-
-	/**
-	 * Returns the terrain-space block origin of a logical chunk coordinate.
-	 * e.g. logical chunk 5 with stride 2 → block 5*2*16 = 160
-	 */
-	private static int chunkTerrainOrigin(int chunkCoord, int stride) {
-		return chunkCoord * stride * 16;
-	}
-
-	/**
 	 * Place a vertical column of terrain blocks using WorldEdit EditSession.
 	 * Fills full column from base to surface.
 	 * Returns number of blocks placed.
@@ -632,18 +577,21 @@ public class MountainPathGenerator {
 
 		try {
 			if (elevation < 0.5) {
-				// Path zone: flat surface
-				editSession.setBlock(BlockVector3.at(worldX, baseY, worldZ), WE_PACKED_ICE);
-				placed++;
+				// Path zone: flat surface with solid foundation below
+				for (int y = baseY - 4; y <= baseY; y++) {
+					editSession.setBlock(BlockVector3.at(worldX, y, worldZ), WE_PACKED_ICE);
+					placed++;
+				}
 				// Railing/wall if right at edge of corridor
 				if (distToPath > CORRIDOR_HALF_WIDTH - 0.5 && distToPath <= CORRIDOR_HALF_WIDTH) {
 					editSession.setBlock(BlockVector3.at(worldX, baseY + 1, worldZ), WE_SNOW_BLOCK);
 					placed++;
 				}
 			} else {
-				// Fill full column from base to surface
+				// Fill full column from below base to surface (ensures no gaps at transitions)
+				int fillStart = Math.min(baseY - 4, surfaceY);
 				double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
-				for (int y = baseY; y <= surfaceY; y++) {
+				for (int y = fillStart; y <= surfaceY; y++) {
 					BaseBlock block;
 					if (y == surfaceY) {
 						block = WE_SNOW_BLOCK;
