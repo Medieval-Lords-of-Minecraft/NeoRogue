@@ -40,7 +40,7 @@ public class AvalonianAnchor extends Artifact {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			// Apparently standing still is roughly -0.078 downward velocity
 			Player p = data.getPlayer();
-			if (p.getVelocity().getY() < 0.1) {
+			if (p.getVelocity().getY() < -0.1) {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Sounds.crit.play(p, p);

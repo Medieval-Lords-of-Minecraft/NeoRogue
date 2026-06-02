@@ -63,6 +63,6 @@ public class Quake extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DIRT,
 				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
-						+ "enemies in the radius and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
+						+ "nearby enemies and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }
