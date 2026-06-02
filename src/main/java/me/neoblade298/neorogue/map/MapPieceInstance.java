@@ -453,7 +453,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 				b.setBlockData(bmeta);
 
-				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), "Initial Spawn", NamedTextColor.GREEN, signLines);
+				String isLabel = "IS " + (int) coords.getX() + ", " + (int) coords.getY() + ", " + (int) coords.getZ() + ", " + coords.getDirection().flip(false).name().charAt(0);
+				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), isLabel, NamedTextColor.GREEN, signLines);
 			}
 		}
 
@@ -468,11 +469,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
-					Location lookAbove = l.clone().add(0, 1, 0);
-					if (lookAbove.getBlock().getType().isSolid()) {
+					if (l.getBlock().getType().isSolid()) {
 						Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
 						Util.msg(p, "<red>Coords: " + Util.locToString(l, false, false));
-						Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
+						Util.msg(p, "<red>Block: " + l.getBlock().getType());
 					}
 				}
 
@@ -487,7 +487,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 				b.setBlockData(bmeta);
 
-				placeOrAppendSign(l.clone().add(0, 1, 0), coords.getDirection(), "Player Spawn", NamedTextColor.YELLOW, signLines);
+				String psLabel = "PS " + (int) coords.getX() + ", " + (int) coords.getY() + ", " + (int) coords.getZ() + ", " + coords.getDirection().flip(false).name().charAt(0);
+				placeOrAppendSign(l.clone().add(0, 1, 0), coords.getDirection(), psLabel, NamedTextColor.YELLOW, signLines);
 				playerSpawnLocs.add(l);
 			}
 		}
@@ -502,11 +503,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 			loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 			if (p != null) {
-				Location lookAbove = loc.clone().add(0, 1, 0);
-				if (lookAbove.getBlock().getType().isSolid()) {
+				if (loc.getBlock().getType().isSolid()) {
 					Util.msg(p, "<red>A mythic location appears to be inside a block.");
 					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-					Util.msg(p, "<red>Block: " + lookAbove.getBlock().getType());
+					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
 				}
 			}
 			Block b = loc.getBlock();
@@ -520,7 +520,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			}
 			b.setBlockData(bmeta);
 
-			placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), entry.getKey(), NamedTextColor.AQUA, signLines);
+			String mlLabel = "ML " + entry.getKey();
+			placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), mlLabel, NamedTextColor.AQUA, signLines);
 		}
 
 		// Mark entrances
@@ -536,8 +537,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET + (int) entCoords.getY() - 1, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
 
-				// Place sign at entrance origin showing coordinates and direction
-				String label = (int) entCoords.getX() + ", " + (int) entCoords.getY() + ", " + (int) entCoords.getZ() + ", " + coords.getDirection().name().charAt(0);
+				// Place sign at entrance origin showing coordinates and direction (invert to match config)
+				String label = "ME " + (int) entCoords.getX() + ", " + (int) entCoords.getY() + ", " + (int) entCoords.getZ() + ", " + coords.getDirection().invert().name().charAt(0);
 
 				double entx = loc.getX();
 				double entz = loc.getZ();

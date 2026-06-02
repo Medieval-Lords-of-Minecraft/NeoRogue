@@ -46,7 +46,7 @@ public class CmdAdminPiece extends Subcommand {
 		MapPiece piece = pieces.get(args[0]);
 		
 		MapPieceInstance inst = piece.getInstance();
-		int xOff = -MapPieceInstance.X_FIGHT_OFFSET, zOff = 0;
+		int xOff = -MapPieceInstance.X_FIGHT_OFFSET + 1, zOff = 0;
 
 		Region.useTestWorld();
 
