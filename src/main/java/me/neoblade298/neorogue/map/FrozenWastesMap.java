@@ -112,14 +112,15 @@ public class FrozenWastesMap extends Map {
 		MapPieceInstance[] arr = potentialPlacements.toArray(new MapPieceInstance[0]);
 		MapPieceInstance chosen = arr[NeoRogue.gen.nextInt(Math.min(arr.length, 5))];
 
-		// Use same Y as the neighboring piece (find from the entrance it connects to)
+		// Combine the neighbor's base Y with the entrance Y-delta already stored in chosen.getY()
 		int neighborY = getNeighborY(chosen);
-		chosen.setY(neighborY);
+		int finalY = neighborY + chosen.getY();
+		chosen.setY(finalY);
 
 		placePiece(chosen, false);
-		recordChunkHeights(chosen, neighborY);
+		recordChunkHeights(chosen, finalY);
 		Bukkit.getLogger().info("[FrozenWastes] Piece: " + piece.getId()
-				+ " at (" + chosen.getX() + "," + chosen.getZ() + ") Y=" + neighborY + " [direct]");
+				+ " at (" + chosen.getX() + "," + chosen.getZ() + ") Y=" + finalY + " [direct]");
 		return true;
 	}
 
@@ -306,5 +307,13 @@ public class FrozenWastesMap extends Map {
 	@Override
 	protected boolean shouldBlockEntrances() {
 		return false;
+	}
+
+	@Override
+	protected void postDeserialize() {
+		for (MapPieceInstance inst : getPieces()) {
+			recordChunkHeights(inst, inst.getY());
+		}
+		scanUnusedEntrancesForPaths();
 	}
 }

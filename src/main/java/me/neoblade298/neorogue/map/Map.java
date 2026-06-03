@@ -411,6 +411,9 @@ public class Map {
 		}
 	}
 
+	protected void postDeserialize() {
+	}
+
 	// Used to calculate rough chunk size of the map
 	public int getEffectiveSize() {
 		return effectiveSize;
@@ -714,6 +717,7 @@ public class Map {
 			map.addTargets(mpi.getPiece().getTargets());
 		}
 		map.recalculateEntrances();
+		map.postDeserialize();
 		return map;
 	}
 }

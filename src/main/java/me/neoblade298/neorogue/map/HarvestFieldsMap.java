@@ -39,7 +39,7 @@ public class HarvestFieldsMap extends Map {
 		}
 
 		// Only have harvest fields borders for standard maps
-		if (getPieces().getFirst().getType().equals("STANDARD")) {
+		if (MapPiece.HARVESTBORDER != null && getPieces().getFirst().getType().equals("STANDARD")) {
 			for (int[] coords : set) {
 				MapPieceInstance inst = MapPiece.HARVESTBORDER.getInstance();
 				MapShape ms = inst.getPiece().getShape();
