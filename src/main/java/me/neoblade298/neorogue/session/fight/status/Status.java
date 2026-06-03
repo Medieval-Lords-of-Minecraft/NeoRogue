@@ -69,12 +69,14 @@ public abstract class Status {
 		case REND: return new RendStatus(target);
 		case BURN: return new BurnStatus(target);
 		case FROST: return new FrostStatus(target);
+		case FROSTBITE: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE);
 		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case CONCUSSED: return new ConcussedStatus(target);
 		case CORRUPTION: return new CorruptionStatus(target);
 		case INSANITY: return new InsanityStatus(target);
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case THORNS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case WEAKENED: return new WeakenedStatus(target);
 		case REFLECT: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case BERSERK: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case STRENGTH: return new StrengthStatus(target);
@@ -149,6 +151,7 @@ public abstract class Status {
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
 		FROST("<blue>Frost</blue>", "&9Frost"),
+		FROSTBITE("<aqua>Frostbite</aqua>", "&bFrostbite"),
 		INJURY("<dark_red>Injury</dark_red>", "&4Injury"),
 		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
 		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
@@ -161,6 +164,7 @@ public abstract class Status {
 		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
+		WEAKENED("<gray>Weakened</gray>", "&7Weakened"),
 		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible", true),
 		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced", true), // disallows casting abilities
 		STOPPED("<dark_gray>Stopped</dark_gray>", "&8Stopped", true), // disallows casting abilities and slot-based triggers (weapons usually)

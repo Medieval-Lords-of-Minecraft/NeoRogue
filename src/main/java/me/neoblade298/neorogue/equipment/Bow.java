@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 
 public abstract class Bow extends Equipment {
@@ -50,6 +51,14 @@ public abstract class Bow extends Equipment {
 			Player p = data.getPlayer();
 
 			// Play smoke slightly in front of player
+			Sounds.extinguish.play(p, p);
+			smoke.play(p, p.getLocation().add(p.getLocation().getDirection().multiply(0.5)));
+			return false;
+		}
+
+		// Frostbite requires max draw
+		if (data.hasStatus(StatusType.FROSTBITE) && arrowVelocity.length() < 2.9) {
+			Player p = data.getPlayer();
 			Sounds.extinguish.play(p, p);
 			smoke.play(p, p.getLocation().add(p.getLocation().getDirection().multiply(0.5)));
 			return false;

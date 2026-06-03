@@ -983,6 +983,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void setBasicAttackCooldown(EquipSlot slot, double attackSpeed) {
+		if (hasStatus(StatusType.FROSTBITE)) attackSpeed *= 0.5;
 		long attackCooldown = (long) (1000 / attackSpeed) - 50; // Subtract 50 for tick differentials
 
 		if (slot == EquipSlot.HOTBAR)
