@@ -6,12 +6,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,10 +24,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Dread extends Equipment {
+public class Dread extends Equipment implements Power {
 	private static final String ID = "Dread";
 	private int stealthGained, thres = 10;
 	private double damageIncrease;
@@ -45,33 +43,36 @@ public class Dread extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment eq = this;
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			Player p = data.getPlayer();
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						// Apply permanent stealth
-						data.applyStatus(StatusType.STEALTH, data, stealthGained, -1);
-
-						// Apply permanent Speed 1
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 0));
-
-						// Apply permanent damage buff
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-								new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(id + slot, eq)));
-						Sounds.wither.play(p, p);
-						Util.msg(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-					}
-				}.runTaskLater(NeoRogue.inst(), 1));
-				return TriggerResult.remove();
+				if (activatePower(data, slot, es)) return TriggerResult.remove();
 			}
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		Equipment eq = this;
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				Player p = data.getPlayer();
+				// Apply permanent stealth
+				data.applyStatus(StatusType.STEALTH, data, stealthGained, -1);
+
+				// Apply permanent Speed 1
+				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 0));
+
+				// Apply permanent damage buff
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(id + slot, eq)));
+				Sounds.wither.play(p, p);
+			}
+		}.runTaskLater(NeoRogue.inst(), 1));
 	}
 
 	@Override

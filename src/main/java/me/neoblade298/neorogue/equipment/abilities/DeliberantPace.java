@@ -7,12 +7,12 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -24,10 +24,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class DeliberantPace extends Equipment {
+public class DeliberantPace extends Equipment implements Power {
 	private static final String ID = "DeliberantPace";
 	private int seconds;
 	private double damagePerStack;
@@ -52,60 +50,62 @@ public class DeliberantPace extends Equipment {
 			if (!p.isSneaking()) return TriggerResult.keep();
 			if (count.addCount(1) < 3) return TriggerResult.keep();
 
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			String buffId = UUID.randomUUID().toString();
-			ActionMeta am = new ActionMeta();
-			am.setCount(0);
-
-			// Reset counter when player starts sprinting
-			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				if (p2.isSprinting()) {
-					am.setCount(0);
-				}
-				return TriggerResult.keep();
-			});
-
-			// Track ticks without sprinting
-			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				if (p2.isSprinting()) {
-					am.setCount(0);
-					return TriggerResult.keep();
-				}
-
-				// Increment counter for not sprinting
-				am.addCount(1);
-
-				// Every ticksRequired ticks without sprinting, grant a stack of focus
-				if (am.getCount() >= seconds) {
-					am.setCount(0);
-					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					pc.play(p2, p2);
-					Sounds.enchant.play(p2, p2);
-				}
-
-				return TriggerResult.keep();
-			});
-
-			// Add damage buff based on focus stacks
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
-				if (focusStacks <= 0)
-					return TriggerResult.keep();
-
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
-
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		ActionMeta am = new ActionMeta();
+		am.setCount(0);
+
+		// Reset counter when player starts sprinting
+		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			if (p2.isSprinting()) {
+				am.setCount(0);
+			}
+			return TriggerResult.keep();
+		});
+
+		// Track ticks without sprinting
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			if (p2.isSprinting()) {
+				am.setCount(0);
+				return TriggerResult.keep();
+			}
+
+			// Increment counter for not sprinting
+			am.addCount(1);
+
+			// Every ticksRequired ticks without sprinting, grant a stack of focus
+			if (am.getCount() >= seconds) {
+				am.setCount(0);
+				data.applyStatus(StatusType.FOCUS, data, 1, -1);
+				pc.play(p2, p2);
+				Sounds.enchant.play(p2, p2);
+			}
+
+			return TriggerResult.keep();
+		});
+
+		// Add damage buff based on focus stacks
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
+			if (focusStacks <= 0)
+				return TriggerResult.keep();
+
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

@@ -6,13 +6,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -25,10 +25,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Disappear extends Equipment {
+public class Disappear extends Equipment implements Power {
 	private static final String ID = "Disappear";
 	private int damage;
 	
@@ -49,32 +47,8 @@ public class Disappear extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.PIERCING)) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ItemStack baseIcon = item.clone();
-			ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
-			EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
-			DisappearInstance inst = new DisappearInstance(id, data, slot, this, eqInst, baseIcon, primedIcon);
-			data.addTrigger(ID, Trigger.KILL, inst);
-			
-			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata2, in2) -> {
-				inst.cancelPrime();
-				return TriggerResult.keep();
-			});
-			
-			data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				inst.cancelPrime();
-				return TriggerResult.keep();
-			});
-			
-			data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
-				inst.handleAttack((PreBasicAttackEvent) in2);
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -125,6 +99,31 @@ public class Disappear extends Equipment {
 			eqInst.setIcon(baseIcon);
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ItemStack baseIcon = item.clone();
+		ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
+		EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
+		DisappearInstance inst = new DisappearInstance(id, data, slot, this, eqInst, baseIcon, primedIcon);
+		data.addTrigger(ID, Trigger.KILL, inst);
+
+		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata2, in2) -> {
+			inst.cancelPrime();
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			inst.cancelPrime();
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+			inst.handleAttack((PreBasicAttackEvent) in2);
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

@@ -7,12 +7,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -27,10 +27,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Tempest extends Equipment {
+public class Tempest extends Equipment implements Power {
 	private static final String ID = "Tempest";
 	private int damage, electrified;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK)
@@ -60,29 +58,30 @@ public class Tempest extends Equipment {
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			am.addCount(1);
 			if (am.getCount() < 5) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent dealEv = (DealDamageEvent) in2;
-				if (!dealEv.getMeta().containsType(DamageType.ELECTRIFIED)) return TriggerResult.keep();
-				LivingEntity originalTarget = dealEv.getTarget();
-				Location targetLoc = originalTarget.getLocation();
-				Player p2 = data.getPlayer();
-				pc.play(p2, targetLoc);
-				Sounds.levelup.play(p2, targetLoc);
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, targetLoc, tp)) {
-					if (ent.getUniqueId().equals(originalTarget.getUniqueId())) continue;
-					FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, ent, DamageStatTracker.of(id + slot, this));
-					FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
-				}
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			DealDamageEvent dealEv = (DealDamageEvent) in2;
+			if (!dealEv.getMeta().containsType(DamageType.ELECTRIFIED)) return TriggerResult.keep();
+			LivingEntity originalTarget = dealEv.getTarget();
+			Location targetLoc = originalTarget.getLocation();
+			Player p2 = data.getPlayer();
+			pc.play(p2, targetLoc);
+			Sounds.levelup.play(p2, targetLoc);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, targetLoc, tp)) {
+				if (ent.getUniqueId().equals(originalTarget.getUniqueId())) continue;
+				FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, ent, DamageStatTracker.of(id + slot, this));
+				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

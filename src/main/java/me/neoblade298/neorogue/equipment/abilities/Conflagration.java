@@ -10,13 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -38,10 +38,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreKillEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Conflagration extends Equipment {
+public class Conflagration extends Equipment implements Power {
 	private static final String ID = "Conflagration";
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
@@ -73,45 +71,8 @@ public class Conflagration extends Equipment {
 			count.addCount(1);
 			if (count.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTrigger(id, Trigger.PRE_KILL, (pdata2, in2) -> {
-				PreKillEvent ev2 = (PreKillEvent) in2;
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-
-				// Check if killed by burn damage
-				if (!fd.hasStatus(StatusType.BURN)) {
-					return TriggerResult.keep();
-				}
-
-				Player p2 = data.getPlayer();
-				LivingEntity killed = ev2.getTarget();
-				Location killedLoc = killed.getLocation().add(0, 1, 0);
-
-				// Get the burn stacks the killed enemy had
-				int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
-
-				// Find nearest enemy from killed location
-				LivingEntity nearest = TargetHelper.getNearest(killed, tp);
-				if (nearest == null) return TriggerResult.keep();
-
-				// Calculate direction from killed enemy to nearest enemy
-				Vector direction = nearest.getLocation().toVector()
-						.subtract(killedLoc.toVector()).normalize();
-
-				// Fire projectile
-				ProjectileGroup proj = new ProjectileGroup(
-						new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
-				proj.start(data, killedLoc, direction);
-
-				Sounds.fire.play(p2, killedLoc);
-
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -163,6 +124,44 @@ public class Conflagration extends Equipment {
 			proj.setHomingTarget(homingTarget);
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.PRE_KILL, (pdata2, in2) -> {
+			PreKillEvent ev2 = (PreKillEvent) in2;
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+
+			// Check if killed by burn damage
+			if (!fd.hasStatus(StatusType.BURN)) {
+				return TriggerResult.keep();
+			}
+
+			Player p2 = data.getPlayer();
+			LivingEntity killed = ev2.getTarget();
+			Location killedLoc = killed.getLocation().add(0, 1, 0);
+
+			// Get the burn stacks the killed enemy had
+			int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
+
+			// Find nearest enemy from killed location
+			LivingEntity nearest = TargetHelper.getNearest(killed, tp);
+			if (nearest == null) return TriggerResult.keep();
+
+			// Calculate direction from killed enemy to nearest enemy
+			Vector direction = nearest.getLocation().toVector()
+					.subtract(killedLoc.toVector()).normalize();
+
+			// Fire projectile
+			ProjectileGroup proj = new ProjectileGroup(
+					new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
+			proj.start(data, killedLoc, direction);
+
+			Sounds.fire.play(p2, killedLoc);
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

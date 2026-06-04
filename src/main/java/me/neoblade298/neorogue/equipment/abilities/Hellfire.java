@@ -6,7 +6,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -14,6 +13,7 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -38,10 +38,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Hellfire extends Equipment {
+public class Hellfire extends Equipment implements Power {
 	private static final String ID = "Hellfire";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
@@ -82,25 +80,26 @@ public class Hellfire extends Equipment {
 		// Poll both conditions
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (projCount.getCount() < 5 || burnCount.getCount() < 3) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
-				ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
-				LivingEntity target = ev.getTarget();
-				if (target == null) return TriggerResult.keep();
-				FightData fd = FightInstance.getFightData(target);
-				if (fd.hasStatus(StatusType.BURN)) {
-					data.addExtraShot(group);
-				}
-				return TriggerResult.keep();
-			});
-			
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+			BasicAttackEvent ev = (BasicAttackEvent) in2;
+			ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
+			LivingEntity target = ev.getTarget();
+			if (target == null) return TriggerResult.keep();
+			FightData fd = FightInstance.getFightData(target);
+			if (fd.hasStatus(StatusType.BURN)) {
+				data.addExtraShot(group);
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

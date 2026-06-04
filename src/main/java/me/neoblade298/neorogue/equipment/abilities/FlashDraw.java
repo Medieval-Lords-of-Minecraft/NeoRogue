@@ -4,13 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -19,10 +18,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class FlashDraw extends Equipment {
+public class FlashDraw extends Equipment implements Power {
 	private static final String ID = "FlashDraw";
 	private int thres;
 	
@@ -47,42 +44,43 @@ public class FlashDraw extends Equipment {
 			count.addCount(ev.getStacks());
 			if (count.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ActionMeta md = new ActionMeta();
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-rend", Trigger.APPLY_STATUS, (pdata2, in2) -> {
-						ApplyStatusEvent e = (ApplyStatusEvent) in2;
-						if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
-						md.addCount(e.getStacks());
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			data.addTrigger(id + "-draw", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
-				LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
-				Player p2 = data.getPlayer();
-				if (!p2.isSneaking()) return TriggerResult.keep();
-				if (!e.isBasicAttack()) return TriggerResult.keep();
-				data.addExtraShot(e.getGroup());
-				if (md.getCount() >= thres) {
-					md.addCount(-thres);
-					data.addTask(new BukkitRunnable() {
-						public void run() {
-							data.addExtraShot(e.getGroup());
-						}
-					}.runTaskLater(NeoRogue.inst(), 10L));
-				}
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta md = new ActionMeta();
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-rend", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+					ApplyStatusEvent e = (ApplyStatusEvent) in2;
+					if (!e.isStatus(StatusType.REND)) return TriggerResult.keep();
+					md.addCount(e.getStacks());
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+
+		data.addTrigger(id + "-draw", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
+			LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
+			Player p2 = data.getPlayer();
+			if (!p2.isSneaking()) return TriggerResult.keep();
+			if (!e.isBasicAttack()) return TriggerResult.keep();
+			data.addExtraShot(e.getGroup());
+			if (md.getCount() >= thres) {
+				md.addCount(-thres);
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						data.addExtraShot(e.getGroup());
+					}
+				}.runTaskLater(NeoRogue.inst(), 10L));
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

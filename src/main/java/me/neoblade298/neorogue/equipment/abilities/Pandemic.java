@@ -10,13 +10,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -39,10 +39,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Pandemic extends Equipment {
+public class Pandemic extends Equipment implements Power {
 	private static final String ID = "Pandemic";
 	private double bonusDamage;
 	private int bonusPoison, areaPoison;
@@ -71,70 +69,73 @@ public class Pandemic extends Equipment {
 			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 			am.addCount((int) ev.getTotalDamage());
 			if (am.getCount() < 300) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			String statusName = p.getName() + "-pandemic";
-
-			// Mark enemies on basic attack
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev2 = (BasicAttackEvent) in2;
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-				if (fd == null) return TriggerResult.keep();
-				
-				// Apply 3 second mark to primary target
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 60);
-				
-				return TriggerResult.keep();
-			});
-			
-			// Bonus damage when dealing poison damage to marked enemies
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
-				if (!ev2.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
-				
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
-				
-				// Add bonus damage
-				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-					Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
-				
-				return TriggerResult.keep();
-			});
-			
-			// Increase poison application to marked enemies and spread poison in area
-			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
-				PreApplyStatusEvent ev2 = (PreApplyStatusEvent) in2;
-				if (!ev2.isStatus(StatusType.POISON)) return TriggerResult.keep();
-				if (ev2.isSecondary()) return TriggerResult.keep();
-				
-				FightData fd = ev2.getTarget();
-				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
-				
-				// Add bonus poison stacks
-				ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
-				
-				// Spread poison in area around marked target
-				Player p2 = data.getPlayer();
-				LivingEntity target = fd.getEntity();
-				pc.play(p2, target.getLocation());
-				Sounds.water.play(p2, p2);
-				LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p2, target.getLocation(), tp);
-				for (LivingEntity ent : list) {
-					if (ent == ev2.getTarget().getEntity()) continue;
-					FightData targetFd = FightInstance.getFightData(ent);
-					if (targetFd == null) continue;
-					targetFd.applyStatus(StatusType.POISON, data, areaPoison, -1, null, true);
-				}
-				
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		Player p = data.getPlayer();
+		String statusName = p.getName() + "-pandemic";
+
+		// Mark enemies on basic attack
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+			BasicAttackEvent ev2 = (BasicAttackEvent) in2;
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+			if (fd == null) return TriggerResult.keep();
+
+			// Apply 3 second mark to primary target
+			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+			fd.applyStatus(s, data, 1, 60);
+
+			return TriggerResult.keep();
+		});
+
+		// Bonus damage when dealing poison damage to marked enemies
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+			if (!ev2.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+
+			// Add bonus damage
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+				Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+
+			return TriggerResult.keep();
+		});
+
+		// Increase poison application to marked enemies and spread poison in area
+		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
+			PreApplyStatusEvent ev2 = (PreApplyStatusEvent) in2;
+			if (!ev2.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			if (ev2.isSecondary()) return TriggerResult.keep();
+
+			FightData fd = ev2.getTarget();
+			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+
+			// Add bonus poison stacks
+			ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
+
+			// Spread poison in area around marked target
+			Player p2 = data.getPlayer();
+			LivingEntity target = fd.getEntity();
+			pc.play(p2, target.getLocation());
+			Sounds.water.play(p2, p2);
+			LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p2, target.getLocation(), tp);
+			for (LivingEntity ent : list) {
+				if (ent == ev2.getTarget().getEntity()) continue;
+				FightData targetFd = FightInstance.getFightData(ent);
+				if (targetFd == null) continue;
+				targetFd.applyStatus(StatusType.POISON, data, areaPoison, -1, null, true);
+			}
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

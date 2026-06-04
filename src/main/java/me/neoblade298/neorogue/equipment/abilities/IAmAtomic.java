@@ -7,11 +7,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -25,10 +25,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class IAmAtomic extends Equipment {
+public class IAmAtomic extends Equipment implements Power {
 	private static final String ID = "IAmAtomic";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);
 	private static final ParticleContainer atomicEffect = new ParticleContainer(Particle.ELECTRIC_SPARK).count(20).spread(0.5, 0.5).speed(0.3);
@@ -51,7 +49,6 @@ public class IAmAtomic extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		int[] riftHitCount = {0};
-		String buffId = UUID.randomUUID().toString();
 		boolean[] activated = {false};
 		
 		// Power: activates after dealing rift damage 3 times
@@ -67,40 +64,44 @@ public class IAmAtomic extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);
 			atomicEffect.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			
-			// After activation: gain intellect on rift damage, damage increase from mana
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev2 = (DealDamageEvent) in2;
-				if (!hasRiftDamage(ev2)) return TriggerResult.keep();
-				
-				Player p2 = data.getPlayer();
-				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-				Sounds.enchant.play(p2, p2);
-				pc.play(p2, p2);
-				return TriggerResult.keep();
-			});
-			
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
-				
-				int manaThresholds = (int) (data.getMana() / manaThreshold);
-				if (manaThresholds <= 0) return TriggerResult.keep();
-				
-				double damageMultiplier = manaThresholds * DAMAGE_INCREASE_PER_THRESHOLD;
-				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.multiplier(data, damageMultiplier, StatTracker.damageBuffAlly(buffId, this)));
-				
-				return TriggerResult.keep();
-			});
-			
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
 	private boolean hasRiftDamage(DealDamageEvent ev) {
 		return ev.getMeta().hasOrigin(DamageOrigin.RIFT);
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		// After activation: gain intellect on rift damage, damage increase from mana
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			DealDamageEvent ev2 = (DealDamageEvent) in2;
+			if (!hasRiftDamage(ev2)) return TriggerResult.keep();
+
+			Player p2 = data.getPlayer();
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			Sounds.enchant.play(p2, p2);
+			pc.play(p2, p2);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+
+			int manaThresholds = (int) (data.getMana() / manaThreshold);
+			if (manaThresholds <= 0) return TriggerResult.keep();
+
+			double damageMultiplier = manaThresholds * DAMAGE_INCREASE_PER_THRESHOLD;
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					Buff.multiplier(data, damageMultiplier, StatTracker.damageBuffAlly(buffId, this)));
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

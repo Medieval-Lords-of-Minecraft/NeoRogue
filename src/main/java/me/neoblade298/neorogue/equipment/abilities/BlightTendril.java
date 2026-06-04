@@ -9,16 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -39,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
-public class BlightTendril extends Equipment {
+public class BlightTendril extends Equipment implements Power {
 	private static final String ID = "BlightTendril";
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
@@ -62,8 +60,6 @@ public class BlightTendril extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = data.getPlayer().getName() + "-blighttendril";
-		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
@@ -71,50 +67,8 @@ public class BlightTendril extends Equipment {
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
 			am.addCount(1);
 			if (am.getCount() < 3) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					Player p = data.getPlayer();
-					// Find nearest enemy
-					LivingEntity nearest = TargetHelper.getNearest(p, tp);
-					if (nearest == null) return;
-
-					// Fire projectile
-					ProjectileGroup proj = new ProjectileGroup(
-							new BlightTendrilProjectile(data, eq, slot, statusName));
-					proj.start(data, p.getLocation().add(0, 1, 0),
-							nearest.getEyeLocation().toVector().subtract(p.getLocation().toVector()).normalize());
-
-					Sounds.shoot.play(p, p);
-				}
-			}.runTaskTimer(NeoRogue.inst(), 0, 80));
-
-			// Consume mark on basic attack and triple poison
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in2;
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-
-				if (fd.hasStatus(statusName)) {
-					// Target is marked - consume mark and triple poison
-					Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-					fd.applyStatus(s, data, -1, -1);
-
-					// Apply 2x the existing poison stacks (resulting in 3x total)
-					if (fd.hasStatus(StatusType.POISON)) {
-						int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-						FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
-						pc.play(p2, ev2.getTarget());
-					}
-				}
-
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -162,10 +116,54 @@ public class BlightTendril extends Equipment {
 	}
 
 	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String statusName = data.getPlayer().getName() + "-blighttendril";
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				Player p = data.getPlayer();
+				// Find nearest enemy
+				LivingEntity nearest = TargetHelper.getNearest(p, tp);
+				if (nearest == null) return;
+
+				// Fire projectile
+				ProjectileGroup proj = new ProjectileGroup(
+						new BlightTendrilProjectile(data, BlightTendril.this, slot, statusName));
+				proj.start(data, p.getLocation().add(0, 1, 0),
+						nearest.getEyeLocation().toVector().subtract(p.getLocation().toVector()).normalize());
+
+				Sounds.shoot.play(p, p);
+			}
+		}.runTaskTimer(NeoRogue.inst(), 0, 80));
+
+		// Consume mark on basic attack and triple poison
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in2;
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+
+			if (fd.hasStatus(statusName)) {
+				// Target is marked - consume mark and triple poison
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+				fd.applyStatus(s, data, -1, -1);
+
+				// Apply 2x the existing poison stacks (resulting in 3x total)
+				if (fd.hasStatus(StatusType.POISON)) {
+					int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
+					FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
+					pc.play(p2, ev2.getTarget());
+				}
+			}
+
+			return TriggerResult.keep();
+		});
+	}
+
+
+	@Override
 	public void setupItem() {
-		item = createItem(Material.VINE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
-				"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
+	item = createItem(Material.VINE,
+			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
+			"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
 				"Basic attacks consume the mark and apply an additional " + DescUtil.white((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }

@@ -3,14 +3,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -26,10 +24,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Electrolysis extends Equipment {
+public class Electrolysis extends Equipment implements Power {
 	private static final String ID = "Electrolysis";
 	private double mult;
 	private int mana, multStr;
@@ -57,23 +53,24 @@ public class Electrolysis extends Equipment {
 			am.addCount(1);
 			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			String buffId = UUID.randomUUID().toString();
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-				if (!ev2.getMeta().containsType(DamageType.LIGHTNING) || !fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
-				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(buffId, this)));
-				data.addMana(mana);
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+			if (!ev2.getMeta().containsType(DamageType.LIGHTNING) || !fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(buffId, this)));
+			data.addMana(mana);
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

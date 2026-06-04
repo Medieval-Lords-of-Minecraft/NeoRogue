@@ -1,16 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -22,10 +20,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class ChosenOfTheLight extends Equipment {
+public class ChosenOfTheLight extends Equipment implements Power {
 	private static final String ID = "ChosenOfTheLight";
 	private double mult;
 	private int heal, multStr;
@@ -53,31 +49,31 @@ public class ChosenOfTheLight extends Equipment {
 			am.addCount(1);
 			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
-						ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
-						if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
-						data.addHealth(heal);
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), 200);
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+					ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+					if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
+					data.addHealth(heal);
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), 200);
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+	}
+
+	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_ORE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
-				DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
+	item = createItem(Material.IRON_ORE,
+			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
+			DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
 				DescUtil.yellow(multStr + "%") + " [<white>10s</white>], stackable.");
 	}
 }

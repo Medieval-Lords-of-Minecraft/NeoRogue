@@ -6,12 +6,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -25,10 +25,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class OdinsDecree extends Equipment {
+public class OdinsDecree extends Equipment implements Power {
 	private static final String ID = "OdinsDecree";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK)
 			.count(100)
@@ -57,31 +55,32 @@ public class OdinsDecree extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.LIGHTNING)) return TriggerResult.keep();
 			if (data.getMana() < data.getMaxMana() * 0.5) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ActionMeta am = new ActionMeta();
-			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
-				am.addCount(1);
-				if (am.getCount() >= 2) {
-					Player p2 = data.getPlayer();
-					am.setCount(0);
-					if (Math.random() >= chance) return TriggerResult.keep();
-					LivingEntity target = TargetHelper.getNearest(p2, tp);
-					if (target == null) return TriggerResult.keep();
-					pc.play(p2, target.getLocation());
-					Sounds.thunder.play(p2, target.getLocation());
-					FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, target, 
-							DamageStatTracker.of(id + slot, this));
-					FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1);
-				}
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta am = new ActionMeta();
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+			am.addCount(1);
+			if (am.getCount() >= 2) {
+				Player p2 = data.getPlayer();
+				am.setCount(0);
+				if (Math.random() >= chance) return TriggerResult.keep();
+				LivingEntity target = TargetHelper.getNearest(p2, tp);
+				if (target == null) return TriggerResult.keep();
+				pc.play(p2, target.getLocation());
+				Sounds.thunder.play(p2, target.getLocation());
+				FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, target, 
+						DamageStatTracker.of(id + slot, this));
+				FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1);
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

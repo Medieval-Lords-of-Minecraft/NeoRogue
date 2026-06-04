@@ -3,14 +3,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -25,10 +23,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class PointBlank extends Equipment {
+public class PointBlank extends Equipment implements Power {
 	private static final String ID = "PointBlank";
 	private int thres, damage;
 	
@@ -53,24 +49,25 @@ public class PointBlank extends Equipment {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
 			if (am.addCount(1) < 2) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			String buffId = UUID.randomUUID().toString();
-			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
-				DamageMeta dm = ev2.getMeta();
-				if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
-				IProjectileInstance ip = dm.getProjectile();
-				if (ip.getOrigin().distanceSquared(ev2.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
-				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
+			DamageMeta dm = ev2.getMeta();
+			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+			IProjectileInstance ip = dm.getProjectile();
+			if (ip.getOrigin().distanceSquared(ev2.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

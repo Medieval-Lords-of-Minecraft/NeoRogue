@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -35,10 +35,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class NightSurge extends Equipment {
+public class NightSurge extends Equipment implements Power {
 	private static final String ID = "NightSurge";
 	private static final ParticleContainer projectileParticle = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(40, 0, 80), 1.2F))
@@ -79,55 +77,8 @@ public class NightSurge extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (insanityCount.getCount() < 3 || darkCount.getCount() < 3) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			String cooldownStatus = p.getName() + "-nightsurge";
-
-			data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev = (DealDamageEvent) in2;
-				
-				// Check if damage contains dark damage type
-				if (!ev.getMeta().containsType(DamageType.DARK)) return TriggerResult.keep();
-				
-				// Get target fight data
-				FightData targetFd = FightInstance.getFightData(ev.getTarget());
-				if (targetFd == null) return TriggerResult.keep();
-				
-				// Check if target has insanity
-				if (!targetFd.hasStatus(StatusType.INSANITY)) return TriggerResult.keep();
-				
-				// Check cooldown (2 seconds per enemy)
-				if (targetFd.hasStatus(cooldownStatus)) return TriggerResult.keep();
-				
-				// Apply cooldown marker
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, cooldownStatus, targetFd, true);
-				targetFd.applyStatus(s, data, 1, 40); // 40 ticks = 2 seconds
-				
-				// Get target entity and location
-				if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, NightSurge.this)));
-				LivingEntity targetEntity = (LivingEntity) ev.getTarget();
-				Location targetLoc = targetEntity.getLocation();
-				
-				// Fire projectile from the target, opposite direction they're facing
-				Vector targetDirection = targetEntity.getLocation().getDirection();
-				Vector projectileDirection = targetDirection.clone().multiply(-1).normalize();
-				
-				// Spawn location slightly behind
-				Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
-				
-				Player p2 = data.getPlayer();
-				ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, NightSurge.this));
-				proj.start(data, spawnLoc, projectileDirection);
-				
-				Sounds.fire.play(p2, spawnLoc);
-				
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -160,6 +111,55 @@ public class NightSurge extends Equipment {
 			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		Player p = data.getPlayer();
+		String cooldownStatus = p.getName() + "-nightsurge";
+
+		data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			DealDamageEvent ev = (DealDamageEvent) in2;
+
+			// Check if damage contains dark damage type
+			if (!ev.getMeta().containsType(DamageType.DARK)) return TriggerResult.keep();
+
+			// Get target fight data
+			FightData targetFd = FightInstance.getFightData(ev.getTarget());
+			if (targetFd == null) return TriggerResult.keep();
+
+			// Check if target has insanity
+			if (!targetFd.hasStatus(StatusType.INSANITY)) return TriggerResult.keep();
+
+			// Check cooldown (2 seconds per enemy)
+			if (targetFd.hasStatus(cooldownStatus)) return TriggerResult.keep();
+
+			// Apply cooldown marker
+			Status s = Status.createByGenericType(GenericStatusType.BASIC, cooldownStatus, targetFd, true);
+			targetFd.applyStatus(s, data, 1, 40); // 40 ticks = 2 seconds
+
+			// Get target entity and location
+			if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, NightSurge.this)));
+			LivingEntity targetEntity = (LivingEntity) ev.getTarget();
+			Location targetLoc = targetEntity.getLocation();
+
+			// Fire projectile from the target, opposite direction they're facing
+			Vector targetDirection = targetEntity.getLocation().getDirection();
+			Vector projectileDirection = targetDirection.clone().multiply(-1).normalize();
+
+			// Spawn location slightly behind
+			Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
+
+			Player p2 = data.getPlayer();
+			ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, NightSurge.this));
+			proj.start(data, spawnLoc, projectileDirection);
+
+			Sounds.fire.play(p2, spawnLoc);
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

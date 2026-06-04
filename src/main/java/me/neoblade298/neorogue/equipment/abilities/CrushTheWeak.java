@@ -4,12 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -24,10 +23,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class CrushTheWeak extends Equipment {
+public class CrushTheWeak extends Equipment implements Power {
 	private static final String ID = "CrushTheWeak";
 	private static final int SHIELDS = 10;
 	private int threshold;
@@ -68,50 +65,51 @@ public class CrushTheWeak extends Equipment {
 		// Poll both conditions
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (damageCount.getDouble() < 500 || injuryCount.getCount() < 5) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-			
-			ActionMeta am = new ActionMeta();
-			
-			// Track injury applied and grant permanent shields when threshold is reached
-			data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
-				
-				am.addCount(ev.getStacks());
-				if (am.getCount() >= threshold) {
-					Player p2 = data.getPlayer();
-					data.addPermanentShield(p2.getUniqueId(), SHIELDS * (am.getCount() / threshold));
-					am.setCount(am.getCount() % threshold);
-				}
-				return TriggerResult.keep();
-			});
-			
-			// Deal additional damage to injured enemies based on current shields
-			data.addTrigger(id + "-bonus", Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
-				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
-				LivingEntity target = ev.getTarget();
-				FightData fd = FightInstance.getFightData(target);
-				
-				// Check if target has injury
-				if (fd == null || !fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
-				
-				// Get current shields amount
-				double currentShields = data.getShields().getAmount();
-				if (currentShields <= 0) return TriggerResult.keep();
-				
-				// Deal additional blunt damage equal to % of current shields
-				double bonusDamage = currentShields * damagePercent;
-				ev.getMeta().addDamageSlice(new DamageSlice(data, bonusDamage, DamageType.BLUNT, 
-						DamageStatTracker.of(id + slot, this)));
-				
-				return TriggerResult.keep();
-			});
-			
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta am = new ActionMeta();
+
+		// Track injury applied and grant permanent shields when threshold is reached
+		data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+
+			am.addCount(ev.getStacks());
+			if (am.getCount() >= threshold) {
+				Player p2 = data.getPlayer();
+				data.addPermanentShield(p2.getUniqueId(), SHIELDS * (am.getCount() / threshold));
+				am.setCount(am.getCount() % threshold);
+			}
+			return TriggerResult.keep();
+		});
+
+		// Deal additional damage to injured enemies based on current shields
+		data.addTrigger(id + "-bonus", Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+			LivingEntity target = ev.getTarget();
+			FightData fd = FightInstance.getFightData(target);
+
+			// Check if target has injury
+			if (fd == null || !fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
+
+			// Get current shields amount
+			double currentShields = data.getShields().getAmount();
+			if (currentShields <= 0) return TriggerResult.keep();
+
+			// Deal additional blunt damage equal to % of current shields
+			double bonusDamage = currentShields * damagePercent;
+			ev.getMeta().addDamageSlice(new DamageSlice(data, bonusDamage, DamageType.BLUNT, 
+					DamageStatTracker.of(id + slot, this)));
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

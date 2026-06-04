@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -36,10 +36,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Ricochet extends Equipment {
+public class Ricochet extends Equipment implements Power {
 	private static final String ID = "Ricochet";
 	private static final int DISTANCE = 5;
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
@@ -68,46 +66,8 @@ public class Ricochet extends Equipment {
 			am.addDouble(ev.getTotalDamage());
 			if (am.getDouble() < 300) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev2 = (BasicAttackEvent) in2;
-				
-				if (!ev2.isProjectile()) return TriggerResult.keep();
-				
-				Player p2 = data.getPlayer();
-				LivingEntity target = ev2.getTarget();
-				if (target == null) return TriggerResult.keep();
-				
-				// Check if target is within 5 blocks of the projectile origin
-				if (ev2.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
-					return TriggerResult.keep();
-				}
-				
-				// Find nearest enemy from the target's location
-				Location targetLoc = target.getEyeLocation();
-				LivingEntity nearest = TargetHelper.getNearest(target, tp);
-				
-				// Don't ricochet if there's no other enemy
-				if (nearest == null || nearest == target) return TriggerResult.keep();
-				
-				// Calculate direction from hit target to nearest enemy
-				Vector direction = nearest.getEyeLocation().toVector()
-						.subtract(targetLoc.toVector()).normalize();
-				
-				// Fire ricochet projectile
-				ProjectileGroup proj = new ProjectileGroup(
-						new RicochetProjectile(data, Ricochet.this, slot, target));
-				proj.start(data, targetLoc, direction);
-				
-				Sounds.shoot.play(p2, targetLoc);
-				
-				return TriggerResult.keep();
-			});
-			
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -158,6 +118,45 @@ public class Ricochet extends Equipment {
 			}
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+			BasicAttackEvent ev2 = (BasicAttackEvent) in2;
+
+			if (!ev2.isProjectile()) return TriggerResult.keep();
+
+			Player p2 = data.getPlayer();
+			LivingEntity target = ev2.getTarget();
+			if (target == null) return TriggerResult.keep();
+
+			// Check if target is within 5 blocks of the projectile origin
+			if (ev2.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
+				return TriggerResult.keep();
+			}
+
+			// Find nearest enemy from the target's location
+			Location targetLoc = target.getEyeLocation();
+			LivingEntity nearest = TargetHelper.getNearest(target, tp);
+
+			// Don't ricochet if there's no other enemy
+			if (nearest == null || nearest == target) return TriggerResult.keep();
+
+			// Calculate direction from hit target to nearest enemy
+			Vector direction = nearest.getEyeLocation().toVector()
+					.subtract(targetLoc.toVector()).normalize();
+
+			// Fire ricochet projectile
+			ProjectileGroup proj = new ProjectileGroup(
+					new RicochetProjectile(data, Ricochet.this, slot, target));
+			proj.start(data, targetLoc, direction);
+
+			Sounds.shoot.play(p2, targetLoc);
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

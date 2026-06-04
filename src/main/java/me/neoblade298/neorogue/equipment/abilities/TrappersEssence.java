@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -28,10 +28,8 @@ import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class TrappersEssence extends Equipment {
+public class TrappersEssence extends Equipment implements Power {
 	private static final String ID = "TrappersEssence";
 	private static final int TRAP_DURATION = 200; // 10 seconds
 	private static final int SHIELD_DURATION = 100; // 5 seconds
@@ -58,26 +56,8 @@ public class TrappersEssence extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
-						KillEvent ev = (KillEvent) in2;
-						Location deathLoc = ev.getTarget().getLocation();
-						data.addTask(new BukkitRunnable() {
-							public void run() {
-								initTrap(deathLoc, data, TrappersEssence.this, slot);
-							}
-						}.runTaskLater(NeoRogue.inst(), 5));
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -106,6 +86,25 @@ public class TrappersEssence extends Equipment {
 			}
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+					KillEvent ev = (KillEvent) in2;
+					Location deathLoc = ev.getTarget().getLocation();
+					data.addTask(new BukkitRunnable() {
+						public void run() {
+							initTrap(deathLoc, data, TrappersEssence.this, slot);
+						}
+					}.runTaskLater(NeoRogue.inst(), 5));
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+	}
+
 
 	@Override
 	public void setupItem() {

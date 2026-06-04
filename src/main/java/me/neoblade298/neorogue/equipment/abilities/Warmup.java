@@ -1,23 +1,19 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Warmup extends Equipment {
+public class Warmup extends Equipment implements Power {
 	private static final String ID = "Warmup";
 	private int timer, shields;
 
@@ -39,11 +35,8 @@ public class Warmup extends Equipment {
 		inst.setAction((pdata, in) -> {
 			inst.addCount(-1);
 			if (inst.getCount() <= 0) {
-				Player p = data.getPlayer();
-				Sounds.fire.play(p, p);
-				Util.msgRaw(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
-				data.addStaminaRegen(1);
-				return TriggerResult.remove();
+				if (activatePower(data, slot, es)) return TriggerResult.remove();
+				inst.setCount(1); // reset so it tries again next tick if cancelled
 			}
 			return TriggerResult.keep();
 		});
@@ -53,6 +46,11 @@ public class Warmup extends Equipment {
 			if (inst.getCount() < -5) return TriggerResult.remove();
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addStaminaRegen(1);
 	}
 
 	@Override

@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,10 +24,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class TargetAcquisition extends Equipment {
+public class TargetAcquisition extends Equipment implements Power {
 	private static final String ID = "TargetAcquisition";
 	private int damage, shields;
 	private static final ParticleContainer part = new ParticleContainer(Particle.LARGE_SMOKE).offsetY(1).count(25).spread(0.5, 0.5).speed(0.01),
@@ -53,35 +51,36 @@ public class TargetAcquisition extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			am.addCount((int) ev.getTotalDamage());
 			if (am.getCount() < 300) return TriggerResult.keep();
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			StandardPriorityAction inst = new StandardPriorityAction(ID);
-			inst.setAction((pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				sc.play(p2, p2);
-				part.play(p2, p2);
-				inst.addCount(1);
-				data.addSimpleShield(p2.getUniqueId(), shields, 100);
-				return TriggerResult.keep();
-			});
-			data.addTrigger(id, Trigger.KILL, inst);
-
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
-				Player p3 = data.getPlayer();
-				PreBasicAttackEvent ev3 = (PreBasicAttackEvent) in3;
-				if (inst.getCount() <= 0) return TriggerResult.keep();
-				inst.addCount(-1);
-				ev3.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
-				Sounds.anvil.play(p3, p3);
-				hit.play(p3, ev3.getTarget());
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		inst.setAction((pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			sc.play(p2, p2);
+			part.play(p2, p2);
+			inst.addCount(1);
+			data.addSimpleShield(p2.getUniqueId(), shields, 100);
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.KILL, inst);
+
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+			Player p3 = data.getPlayer();
+			PreBasicAttackEvent ev3 = (PreBasicAttackEvent) in3;
+			if (inst.getCount() <= 0) return TriggerResult.keep();
+			inst.addCount(-1);
+			ev3.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
+			Sounds.anvil.play(p3, p3);
+			hit.play(p3, ev3.getTarget());
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

@@ -8,13 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -26,10 +26,8 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Scavenger extends Equipment {
+public class Scavenger extends Equipment implements Power {
 	private static final String ID = "Scavenger";
 	private static final ParticleContainer stackParticle = new ParticleContainer(Particle.END_ROD)
 			.count(30).spread(0.2, 0.2).offsetY(0.5);
@@ -58,25 +56,8 @@ public class Scavenger extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ItemStack icon = item.clone();
-			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
-						Player p2 = data.getPlayer();
-						KillEvent ev = (KillEvent) in2;
-						Location deathLoc = ev.getTarget().getLocation();
-						data.addMarker(new ScavengerStack(data, deathLoc, p2, slot, stamina, damageBuff, Scavenger.this, inst, icon));
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -138,6 +119,24 @@ public class Scavenger extends Equipment {
 			// Optional: Play expiration effect if stack despawns without being collected
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ItemStack icon = item.clone();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
+					Player p2 = data.getPlayer();
+					KillEvent ev = (KillEvent) in2;
+					Location deathLoc = ev.getTarget().getLocation();
+					data.addMarker(new ScavengerStack(data, deathLoc, p2, slot, stamina, damageBuff, Scavenger.this, inst, icon));
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+	}
+
 
 	@Override
 	public void setupItem() {

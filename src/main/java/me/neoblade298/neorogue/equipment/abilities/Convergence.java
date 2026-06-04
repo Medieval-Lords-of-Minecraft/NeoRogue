@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -34,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
-public class Convergence extends Equipment {
+public class Convergence extends Equipment implements Power {
 	private static final String ID = "Convergence";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);
 	private static final int PROJECTILE_DAMAGE = 30;
@@ -76,7 +77,6 @@ public class Convergence extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		int[] killCount = {0};
-		ActionMeta lastDamageType = new ActionMeta();
 		boolean[] activated = {false};
 		
 		// Power: activates after 2 kills
@@ -89,44 +89,8 @@ public class Convergence extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);
 			pc.play(p, p);
-			me.neoblade298.neocore.bukkit.util.Util.msgRaw(p, net.kyori.adventure.text.Component.text("").append(hoverable).append(net.kyori.adventure.text.Component.text(" was activated", net.kyori.adventure.text.format.NamedTextColor.GRAY)));
-			
-			// After activation: gain intellect on kill, fire projectiles on type change
-			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-				Sounds.enchant.play(p2, p2);
-				pc.play(p2, p2);
-				return TriggerResult.keep();
-			});
-			
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev = (DealDamageEvent) in2;
-				Player p2 = data.getPlayer();
-				
-				if (ev.getMeta().getSlices().isEmpty()) return TriggerResult.keep();
-				DamageSlice primarySlice = ev.getMeta().getSlices().getFirst();
-				DamageType currentType = primarySlice.getPostBuffType();
-				
-				DamageType lastType = (DamageType) lastDamageType.getObject();
-				if (lastType == null || currentType != lastType) {
-					FightInstance.giveHeal(p2, heal, p2);
-					
-					HashSet<UUID> enemiesHit = new HashSet<>();
-					ProjectileGroup proj = new ProjectileGroup();
-					for (int angle : new int[] { -15, 0, 15 }) {
-						proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType, enemiesHit));
-					}
-					proj.start(data);
-					Sounds.shoot.play(p2, p2);
-					
-					lastDamageType.setObject(currentType);
-				}
-				
-				return TriggerResult.keep();
-			});
-			
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -177,6 +141,46 @@ public class Convergence extends Equipment {
 				DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta lastDamageType = new ActionMeta();
+		// After activation: gain intellect on kill, fire projectiles on type change
+		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			Sounds.enchant.play(p2, p2);
+			pc.play(p2, p2);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			DealDamageEvent ev = (DealDamageEvent) in2;
+			Player p2 = data.getPlayer();
+
+			if (ev.getMeta().getSlices().isEmpty()) return TriggerResult.keep();
+			DamageSlice primarySlice = ev.getMeta().getSlices().getFirst();
+			DamageType currentType = primarySlice.getPostBuffType();
+
+			DamageType lastType = (DamageType) lastDamageType.getObject();
+			if (lastType == null || currentType != lastType) {
+				FightInstance.giveHeal(p2, heal, p2);
+
+				HashSet<UUID> enemiesHit = new HashSet<>();
+				ProjectileGroup proj = new ProjectileGroup();
+				for (int angle : new int[] { -15, 0, 15 }) {
+					proj.add(new ConvergenceProjectile(data, angle, this, slot, currentType, enemiesHit));
+				}
+				proj.start(data);
+				Sounds.shoot.play(p2, p2);
+
+				lastDamageType.setObject(currentType);
+			}
+
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

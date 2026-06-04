@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -36,10 +36,8 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Setup extends Equipment {
+public class Setup extends Equipment implements Power {
 	private static final String ID = "Setup";
 	private int time, inc, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1),
@@ -68,36 +66,8 @@ public class Setup extends Equipment {
 			am.addDouble(ev.getTotalDamage());
 			if (am.getDouble() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			String buffId = UUID.randomUUID().toString();
-			StandardPriorityAction act = new StandardPriorityAction(id);
-			ItemStack icon = item.clone();
-			act.setAction((pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				if (!p2.isSneaking()) return TriggerResult.keep();
-				act.addCount(1);
-				if (act.getCount() >= time) {
-					pc.play(p2, p2);
-					Sounds.enchant.play(p2, p2);
-					initTrap(p2, data, Setup.this, slot);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
-					act.addCount(-time);
-					if (act.getBool()) {
-						icon.setAmount(icon.getAmount() + 1);
-					}
-					else {
-						act.setBool(true);
-					}
-					p2.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
-				}
-				return TriggerResult.keep();
-			});
-			data.addTrigger(id, Trigger.PLAYER_TICK, act);
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 
@@ -117,6 +87,35 @@ public class Setup extends Equipment {
 			}
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		StandardPriorityAction act = new StandardPriorityAction(id);
+		ItemStack icon = item.clone();
+		act.setAction((pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			if (!p2.isSneaking()) return TriggerResult.keep();
+			act.addCount(1);
+			if (act.getCount() >= time) {
+				pc.play(p2, p2);
+				Sounds.enchant.play(p2, p2);
+				initTrap(p2, data, Setup.this, slot);
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+				act.addCount(-time);
+				if (act.getBool()) {
+					icon.setAmount(icon.getAmount() + 1);
+				}
+				else {
+					act.setBool(true);
+				}
+				p2.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
+			}
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+	}
+
 
 	@Override
 	public void setupItem() {

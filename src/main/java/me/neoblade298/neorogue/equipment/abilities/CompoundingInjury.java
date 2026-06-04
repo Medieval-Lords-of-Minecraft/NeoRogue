@@ -1,16 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -28,10 +26,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class CompoundingInjury extends Equipment {
+public class CompoundingInjury extends Equipment implements Power {
 	private static final String ID = "CompoundingInjury";
 	private int multStr, thres;
 	private double mult;
@@ -59,41 +55,41 @@ public class CompoundingInjury extends Equipment {
 			am.addCount(ev.getStacks());
 			if (am.getCount() < ACTIVATION_THRES) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
+		});
+	}
 
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-				DealDamageEvent ev2 = (DealDamageEvent) in2;
-				FightData fd = FightInstance.getFightData(ev2.getTarget());
-				if (ev2.getMeta().isSecondary())
-					return TriggerResult.keep();
-				if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev2.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
-					DamageMeta dm = ev2.getMeta().clone();
-					dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
-							BuffStatTracker.ignored(this)));
-					dm.isSecondary(true);
-
-					for (DamageSlice slice : dm.getSlices()) {
-						slice.setTracker(DamageStatTracker.of(id + slot, this));
-					}
-					data.addTask(new BukkitRunnable() {
-						public void run() {
-							FightInstance.dealDamage(dm, ev2.getTarget());
-						}
-					}.runTaskLater(NeoRogue.inst(), 20));
-				}
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			DealDamageEvent ev2 = (DealDamageEvent) in2;
+			FightData fd = FightInstance.getFightData(ev2.getTarget());
+			if (ev2.getMeta().isSecondary())
 				return TriggerResult.keep();
-			});
+			if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev2.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
+				DamageMeta dm = ev2.getMeta().clone();
+				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
+						BuffStatTracker.ignored(this)));
+				dm.isSecondary(true);
 
-			return TriggerResult.remove();
+				for (DamageSlice slice : dm.getSlices()) {
+					slice.setTracker(DamageStatTracker.of(id + slot, this));
+				}
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						FightInstance.dealDamage(dm, ev2.getTarget());
+					}
+				}.runTaskLater(NeoRogue.inst(), 20));
+			}
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_ORE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(ACTIVATION_THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
-				+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
+	item = createItem(Material.REDSTONE_ORE,
+			GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(ACTIVATION_THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
+			+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
 	}
 }

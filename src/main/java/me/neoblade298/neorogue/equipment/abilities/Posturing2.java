@@ -5,12 +5,12 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -25,10 +25,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Posturing2 extends Equipment {
+public class Posturing2 extends Equipment implements Power {
 	private static final String ID = "Posturing2";
 	private int time, inc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1);
@@ -52,41 +50,42 @@ public class Posturing2 extends Equipment {
 			if (!ev.isStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (count.addCount(ev.getStacks()) < 2) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			StandardPriorityAction act = new StandardPriorityAction(id);
-			act.setAction((pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				if (!p2.isSneaking()) return TriggerResult.keep();
-				act.addCount(1);
-				if (act.getCount() >= time) {
-					pc.play(p2, p2);
-					Sounds.enchant.play(p2, p2);
-					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					act.addCount(-time);
-				}
-				return TriggerResult.keep();
-			});
-			data.addTrigger(id, Trigger.PLAYER_TICK, act);
-
-			data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
-				Player p3 = data.getPlayer();
-				LaunchProjectileGroupEvent ev3 = (LaunchProjectileGroupEvent) in3;
-				for (IProjectileInstance ipi : ev3.getInstances()) {
-					if (ipi instanceof ProjectileInstance) {
-						ProjectileInstance inst = (ProjectileInstance) ipi;
-						double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
-						inst.getMeta().addDamageSlice(new DamageSlice(data, p3.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
-					}
-				}
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		StandardPriorityAction act = new StandardPriorityAction(id);
+		act.setAction((pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			if (!p2.isSneaking()) return TriggerResult.keep();
+			act.addCount(1);
+			if (act.getCount() >= time) {
+				pc.play(p2, p2);
+				Sounds.enchant.play(p2, p2);
+				data.applyStatus(StatusType.FOCUS, data, 1, -1);
+				act.addCount(-time);
+			}
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+
+		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
+			Player p3 = data.getPlayer();
+			LaunchProjectileGroupEvent ev3 = (LaunchProjectileGroupEvent) in3;
+			for (IProjectileInstance ipi : ev3.getInstances()) {
+				if (ipi instanceof ProjectileInstance) {
+					ProjectileInstance inst = (ProjectileInstance) ipi;
+					double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
+					inst.getMeta().addDamageSlice(new DamageSlice(data, p3.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
+				}
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

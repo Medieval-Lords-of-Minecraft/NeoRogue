@@ -1,24 +1,20 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class FlowState2 extends Equipment {
+public class FlowState2 extends Equipment implements Power {
 	private static final String ID = "FlowState2";
 	private int thres;
 	private double inc, dmgInc;
@@ -40,23 +36,24 @@ public class FlowState2 extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.PLAYER_TICK, (pdata2, in2) -> {
-						if (data.getStamina() < thres) return TriggerResult.keep();
-						data.addStamina(inc);
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.PLAYER_TICK, (pdata2, in2) -> {
+					if (data.getStamina() < thres) return TriggerResult.keep();
+					data.addStamina(inc);
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+	}
+
 
 	@Override
 	public void setupItem() {

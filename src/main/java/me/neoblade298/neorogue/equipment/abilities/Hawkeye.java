@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -34,10 +34,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Hawkeye extends Equipment {
+public class Hawkeye extends Equipment implements Power {
 	private static final String ID = "Hawkeye";
 	private int threshold, damage;
 	private static final int DAMAGE_REDUCTION = 30;
@@ -63,32 +61,8 @@ public class Hawkeye extends Equipment {
 			if (!ev.isStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (count.addCount(ev.getStacks()) < 6) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
-				ReceiveDamageEvent rev = (ReceiveDamageEvent) in2;
-				int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
-				if (focusStacks <= threshold) return TriggerResult.keep();
-				Player p2 = data.getPlayer();
-				rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
-				data.applyStatus(StatusType.FOCUS, data, -1, -1);
-				if (rev.getDamager() != null) {
-					LivingEntity damager = rev.getDamager().getEntity();
-					Location playerLoc = p2.getLocation().add(0, 1, 0);
-					Location damagerLoc = damager.getEyeLocation();
-					Vector direction = damagerLoc.toVector().subtract(playerLoc.toVector()).normalize();
-					HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
-					proj.start(data, playerLoc, direction);
-					Sounds.fire.play(p2, p2);
-					pc.play(p2, playerLoc);
-				}
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -122,6 +96,31 @@ public class Hawkeye extends Equipment {
 				DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
+			ReceiveDamageEvent rev = (ReceiveDamageEvent) in2;
+			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
+			if (focusStacks <= threshold) return TriggerResult.keep();
+			Player p2 = data.getPlayer();
+			rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
+			data.applyStatus(StatusType.FOCUS, data, -1, -1);
+			if (rev.getDamager() != null) {
+				LivingEntity damager = rev.getDamager().getEntity();
+				Location playerLoc = p2.getLocation().add(0, 1, 0);
+				Location damagerLoc = damager.getEyeLocation();
+				Vector direction = damagerLoc.toVector().subtract(playerLoc.toVector()).normalize();
+				HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
+				proj.start(data, playerLoc, direction);
+				Sounds.fire.play(p2, p2);
+				pc.play(p2, playerLoc);
+			}
+			return TriggerResult.keep();
+		});
+	}
+
 
 	@Override
 	public void setupItem() {

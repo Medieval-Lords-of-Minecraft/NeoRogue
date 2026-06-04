@@ -16,13 +16,13 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -37,10 +37,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class DyingStar extends Equipment {
+public class DyingStar extends Equipment implements Power {
 	private static final String ID = "DyingStar";
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);
@@ -81,6 +79,59 @@ public class DyingStar extends Equipment {
 	}
 
 	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		// Create a rift on activation (delayed to avoid ConcurrentModificationException
+		// from re-entering CREATE_RIFT triggers while the list is being iterated)
+		new BukkitRunnable() {
+			public void run() {
+				data.addRift(new Rift(data, data.getPlayer().getLocation(), 100));
+			}
+		}.runTaskLater(NeoRogue.inst(), 1L);
+
+		// Handle rift expiration - pull enemies and explode
+		data.addTrigger(id, Trigger.REMOVE_RIFT, (pdata2, in2) -> {
+			Player p2 = data.getPlayer();
+			Rift rift = (Rift) in2;
+			Location riftLoc = rift.getLocation();
+
+			// Pull enemies toward rift
+			pullSound.play(p2, riftLoc);
+			data.runAnimation(id, p2, pullAnim, riftLoc);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, riftLoc, tp)) {
+				Vector direction = riftLoc.toVector().subtract(ent.getLocation().toVector());
+				if (!direction.isZero()) {
+					direction = direction.normalize().setY(0.3);
+					ent.setVelocity(direction);
+				}
+			}
+
+			// Explode 1 second later
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Player p3 = data.getPlayer();
+					Sounds.explode.play(p3, riftLoc);
+					circ.play(explodeEdge, riftLoc, LocalAxes.xz(), null);
+					explodeBurst.play(p3, riftLoc);
+
+					boolean riftCreated = false;
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p3, riftLoc, tp)) {
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK,
+							DamageStatTracker.of(id + slot, DyingStar.this), DamageOrigin.RIFT), ent);
+						if (!riftCreated && ent.getHealth() <= 0) {
+							riftCreated = true;
+							Sounds.equip.play(p3, riftLoc);
+							data.addRift(new Rift(data, riftLoc.clone(), 200));
+						}
+					}
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L));
+
+			return TriggerResult.keep();
+		});
+	}
+
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.POWER.tag(this) + ". Activates after creating " + DescUtil.white(2) + " " + GlossaryTag.RIFT.tagPlural(this) + ". Create a " + GlossaryTag.RIFT.tag(this) + ". Afterwards, when any " + GlossaryTag.RIFT.tag(this) +
@@ -100,60 +151,8 @@ public class DyingStar extends Equipment {
 			if (riftCount[0] > ACTIVATION_THRES) return TriggerResult.remove();
 			System.out.println(riftCount[0]);
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			// Create a rift on activation (delayed to avoid ConcurrentModificationException
-			// from re-entering CREATE_RIFT triggers while the list is being iterated)
-			new BukkitRunnable() {
-				public void run() {
-					data.addRift(new Rift(data, data.getPlayer().getLocation(), 100));
-				}
-			}.runTaskLater(NeoRogue.inst(), 1L);
-
-			// Handle rift expiration - pull enemies and explode
-			data.addTrigger(id, Trigger.REMOVE_RIFT, (pdata2, in2) -> {
-				Player p2 = data.getPlayer();
-				Rift rift = (Rift) in2;
-				Location riftLoc = rift.getLocation();
-
-				// Pull enemies toward rift
-				pullSound.play(p2, riftLoc);
-				data.runAnimation(id, p2, pullAnim, riftLoc);
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, riftLoc, tp)) {
-					Vector direction = riftLoc.toVector().subtract(ent.getLocation().toVector());
-					if (!direction.isZero()) {
-						direction = direction.normalize().setY(0.3);
-						ent.setVelocity(direction);
-					}
-				}
-
-				// Explode 1 second later
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						Player p3 = data.getPlayer();
-						Sounds.explode.play(p3, riftLoc);
-						circ.play(explodeEdge, riftLoc, LocalAxes.xz(), null);
-						explodeBurst.play(p3, riftLoc);
-
-						boolean riftCreated = false;
-						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p3, riftLoc, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK,
-								DamageStatTracker.of(id + slot, DyingStar.this), DamageOrigin.RIFT), ent);
-							if (!riftCreated && ent.getHealth() <= 0) {
-								riftCreated = true;
-								Sounds.equip.play(p3, riftLoc);
-								data.addRift(new Rift(data, riftLoc.clone(), 200));
-							}
-						}
-					}
-				}.runTaskLater(NeoRogue.inst(), 20L));
-
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 }

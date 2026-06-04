@@ -5,13 +5,12 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -23,10 +22,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class DangerClose extends Equipment {
+public class DangerClose extends Equipment implements Power {
 	private static final String ID = "DangerClose";
 	private double damageIncrease;
 	
@@ -47,29 +44,31 @@ public class DangerClose extends Equipment {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
 			am.addCount(1);
 			if (am.getCount() < 1) return TriggerResult.keep();
-			Sounds.fire.play(data.getPlayer(), data.getPlayer());
-			Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
+		});
+	}
 
-			String buffId = UUID.randomUUID().toString();
-			ActionMeta stacks = new ActionMeta();
-			ItemStack icon = item.clone();
-			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-			data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata2, in2) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
-				if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
-				
-				// Increase stack counter
-				stacks.addCount(1);
-				icon.setAmount(stacks.getCount());
-				inst.setIcon(icon);
-				
-				// Add permanent damage buff
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), 
-						Buff.multiplier(data, damageIncrease, StatTracker.damageBuffAlly(buffId, this, true)));
-				
-				return TriggerResult.keep();
-			});
-			return TriggerResult.remove();
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		String buffId = UUID.randomUUID().toString();
+		ActionMeta stacks = new ActionMeta();
+		ItemStack icon = item.clone();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata2, in2) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+			if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
+			
+			// Increase stack counter
+			stacks.addCount(1);
+			icon.setAmount(stacks.getCount());
+			inst.setIcon(icon);
+			
+			// Add permanent damage buff
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), 
+					Buff.multiplier(data, damageIncrease, StatTracker.damageBuffAlly(buffId, this, true)));
+			
+			return TriggerResult.keep();
 		});
 	}
 

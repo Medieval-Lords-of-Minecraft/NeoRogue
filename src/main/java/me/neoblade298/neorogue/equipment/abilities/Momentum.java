@@ -4,13 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -23,10 +22,8 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Momentum extends Equipment {
+public class Momentum extends Equipment implements Power {
 	private static final String ID = "Momentum";
 	private static final int DISTANCE = 5;
 	private int damage, dur;
@@ -49,33 +46,34 @@ public class Momentum extends Equipment {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
 			if (count.addCount(1) < 5) return TriggerResult.keep();
 
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
-
-			ActionMeta am = new ActionMeta();
-			double distSq = DISTANCE * DISTANCE;
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
-						Player p2 = data.getPlayer();
-						if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
-							LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
-							for (IProjectileInstance ipi : ev.getInstances()) {
-								if (!(ipi instanceof ProjectileInstance)) continue;
-								ProjectileInstance pi = (ProjectileInstance) ipi;
-								pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
-							}
-						}
-						am.setLocation(p2.getLocation());
-						return TriggerResult.keep();
-					});
-				}
-			}.runTask(NeoRogue.inst()));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta am = new ActionMeta();
+		double distSq = DISTANCE * DISTANCE;
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
+					Player p2 = data.getPlayer();
+					if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
+						LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
+						for (IProjectileInstance ipi : ev.getInstances()) {
+							if (!(ipi instanceof ProjectileInstance)) continue;
+							ProjectileInstance pi = (ProjectileInstance) ipi;
+							pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
+						}
+					}
+					am.setLocation(p2.getLocation());
+					return TriggerResult.keep();
+				});
+			}
+		}.runTask(NeoRogue.inst()));
+	}
+
 
 	@Override
 	public void setupItem() {

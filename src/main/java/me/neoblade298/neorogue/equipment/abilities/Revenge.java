@@ -5,11 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -20,10 +20,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Revenge extends Equipment {
+public class Revenge extends Equipment implements Power {
 	private static final String ID = "Revenge";
 	private int strength, heal;
 	private static final int CUTOFF = 20;
@@ -43,37 +41,37 @@ public class Revenge extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
-			Player p = data.getPlayer();
-			Sounds.fire.play(p, p);
-			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
+		});
+	}
 
-			StandardPriorityAction inst = new StandardPriorityAction(id);
-			inst.setAction((pdata2, in2) -> {
-				if (!inst.canUse()) return TriggerResult.keep();
-				data.applyStatus(StatusType.STRENGTH, data, strength, 200);
-				inst.setNextUse(System.currentTimeMillis() + 2000);
-				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
-					data.applyStatus(StatusType.BERSERK, data, 1, -1);
-				}
-				else {
-					Player p2 = data.getPlayer();
-					data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
-					Sounds.fire.play(p2, p2);
-					pc.play(p2, p2);
-					return TriggerResult.keep();
-				}
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		StandardPriorityAction inst = new StandardPriorityAction(id);
+		inst.setAction((pdata2, in2) -> {
+			if (!inst.canUse()) return TriggerResult.keep();
+			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
+			inst.setNextUse(System.currentTimeMillis() + 2000);
+			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
+				data.applyStatus(StatusType.BERSERK, data, 1, -1);
+			}
+			else {
+				Player p2 = data.getPlayer();
+				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
+				Sounds.fire.play(p2, p2);
+				pc.play(p2, p2);
 				return TriggerResult.keep();
-			});
-			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, inst);
+			}
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, inst);
 
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
-				if (!data.hasStatus("Revenge")) return TriggerResult.keep();
-				Player p3 = data.getPlayer();
-				FightInstance.giveHeal(p3, heal, p3);
-				return TriggerResult.keep();
-			});
-
-			return TriggerResult.remove();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+			if (!data.hasStatus("Revenge")) return TriggerResult.keep();
+			Player p3 = data.getPlayer();
+			FightInstance.giveHeal(p3, heal, p3);
+			return TriggerResult.keep();
 		});
 	}
 
