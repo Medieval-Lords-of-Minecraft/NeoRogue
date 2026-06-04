@@ -91,6 +91,7 @@ public abstract class Status {
 		case STOPPED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
 		case INVINCIBLE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE, true);
+		case WITHERED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target, StatusClass.NONE);
@@ -165,6 +166,7 @@ public abstract class Status {
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
 		WEAKENED("<gray>Weakened</gray>", "&7Weakened"),
+		WITHERED("<dark_gray>Withered</dark_gray>", "&8Withered"),
 		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible", true),
 		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced", true), // disallows casting abilities
 		STOPPED("<dark_gray>Stopped</dark_gray>", "&8Stopped", true), // disallows casting abilities and slot-based triggers (weapons usually)

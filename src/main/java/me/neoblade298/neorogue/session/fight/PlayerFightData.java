@@ -797,7 +797,22 @@ public class PlayerFightData extends FightData {
 
 	private void updateStamina() {
 		this.stamina = Math.min(this.stamina, this.maxStamina);
-		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
+		if (hasStatus(StatusType.WITHERED)) {
+			p.setFoodLevel(0);
+			// Disable jump with a separate key so it doesn't conflict with charge
+			NamespacedKey key = NamespacedKey.fromString("withered", NeoRogue.inst());
+			if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) == null) {
+				AttributeModifier mod = new AttributeModifier(key, -0.42, Operation.ADD_NUMBER);
+				entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
+			}
+		} else {
+			p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
+			// Remove withered jump modifier if present
+			NamespacedKey key = NamespacedKey.fromString("withered", NeoRogue.inst());
+			if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) {
+				entity.getAttribute(Attribute.JUMP_STRENGTH).removeModifier(key);
+			}
+		}
 		updateActionBar();
 		updateBoardLines();
 	}
@@ -964,10 +979,12 @@ public class PlayerFightData extends FightData {
 			addMana(manaRegen);
 
 			double staminaChange = staminaRegen;
-			if (p.isSprinting() && tick > 2) // Sprint cost only applies 2 seconds of the fight starting
-				staminaChange -= sprintCost;
-			else if (hasSprinted && tick > 2) // Player sprinted this tick, but is not currently sprinting
-				staminaChange -= sprintCost / 2;
+			if (!hasStatus(StatusType.WITHERED)) {
+				if (p.isSprinting() && tick > 2) // Sprint cost only applies 2 seconds of the fight starting
+					staminaChange -= sprintCost;
+				else if (hasSprinted && tick > 2) // Player sprinted this tick, but is not currently sprinting
+					staminaChange -= sprintCost / 2;
+			}
 			addStamina(staminaChange);
 			hasSprinted = false;
 

@@ -70,6 +70,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Upon the affected entity receiving physical damage, even if it is absorbed by shields, return 1 thorns damage as physical damage per stack."),
 	WEAKENED(Material.FEATHER, StatusType.WEAKENED.tag,
 			"Reduces the affected entity's damage dealt by 50%. 1 stack is removed every second."),
+	WITHERED(Material.WITHER_ROSE, StatusType.WITHERED.tag,
+			"Prevents the affected entity from sprinting and jumping."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
 			"Upon the affected entity receiving magical damage, even if it is absorbed by shields, return 1 reflect damage as magical damage per stack."),
 	SHIELDS(Material.SHIELD, "<yellow>Shields</yellow>",
