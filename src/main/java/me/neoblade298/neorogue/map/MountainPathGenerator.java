@@ -303,8 +303,9 @@ public class MountainPathGenerator {
 		for (MapEntrance[] pair : entrancePairs) {
 			int[] a1 = getPathAnchor(pair[0], worldStride);
 			int[] a2 = getPathAnchor(pair[1], worldStride);
-			int yA = chunkHeights.getOrDefault((int) pair[0].getX() + "," + (int) pair[0].getZ(), 0);
-			int yB = chunkHeights.getOrDefault((int) pair[1].getX() + "," + (int) pair[1].getZ(), 0);
+			// Use entrance's full Y (local height within piece + piece placement offset)
+			int yA = (int) pair[0].getY();
+			int yB = (int) pair[1].getY();
 			pathSegments.add(new int[] {
 				a1[0] - startTX, a1[1] - startTZ,
 				a2[0] - startTX, a2[1] - startTZ,
@@ -491,7 +492,7 @@ public class MountainPathGenerator {
 					int yOffset;
 					if (pathDist <= CORRIDOR_HALF_WIDTH) {
 						double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
-						yOffset = (int) Math.round(pathYOff + bump) + 2;
+						yOffset = (int) Math.round(pathYOff + bump);
 					} else {
 						yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
 					}
