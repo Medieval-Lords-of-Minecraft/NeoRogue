@@ -492,7 +492,7 @@ public class MountainPathGenerator {
 					int yOffset;
 					if (pathDist <= CORRIDOR_HALF_WIDTH) {
 						double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
-						yOffset = (int) Math.round(pathYOff + bump);
+						yOffset = (int) Math.round(pathYOff + bump) - 1;
 					} else {
 						yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
 					}
