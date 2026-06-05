@@ -21,7 +21,6 @@ public class FrozenWastesMap extends Map {
 
 	public FrozenWastesMap(RegionType type) {
 		super(type);
-		setWorldStride(1);
 	}
 
 	/**
@@ -298,7 +297,7 @@ public class FrozenWastesMap extends Map {
 	protected void generateTerrain(FightInstance fi, int xOff, int zOff) {
 		MountainPathGenerator.generateFrozenWastes(
 			Bukkit.getWorld(Region.getActiveWorldName()),
-			xOff, zOff, getMapSize(), getWorldStride(),
+			xOff, zOff, getMapSize(),
 			getShape(), pathConnectedEntrances, chunkHeights,
 			NeoRogue.gen.nextLong()
 		);
