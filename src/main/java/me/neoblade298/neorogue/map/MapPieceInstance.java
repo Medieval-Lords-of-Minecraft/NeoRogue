@@ -279,21 +279,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	// Pastes the map piece and sets up its spawners
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
-		instantiate(fi, xOff, zOff, 1);
-	}
-	
-	public void instantiate(FightInstance fi, int xOff, int zOff, int worldStride) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
 		 * xOff is the offset of the plot
 		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
 		 * x is negative because south is +z and right of south is -x
-		 * worldStride spaces pieces apart (1 = adjacent, 2 = 1 chunk gap between pieces)
 		 */
-		int x = -((this.x * worldStride * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET); // So that it's flush with minecraft chunks
+		int x = -((this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET);
 		int y = Y_OFFSET + this.y;
-		int z = (this.z * worldStride * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
+		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 		    Operation pasteSolid = schematic.createPaste(editSession)
@@ -318,24 +313,24 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Session s = fi.getSession();
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff, worldStride));
+					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff));
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff, worldStride));
+					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff));
 				}
 			}
 		}
 		else {
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					spawner.instantiate(null, this, xOff, zOff, worldStride);
+					spawner.instantiate(null, this, xOff, zOff);
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					spawner.instantiate(null, this, xOff, zOff, worldStride);
+					spawner.instantiate(null, this, xOff, zOff);
 				}
 			}
 		}
@@ -389,7 +384,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 
 	// Marks spawn locations with directional terracotta and returns the player spawn locations
-	public ArrayList<Location> markSpawns(Player p, int xOff, int zOff, int worldStride) {
+	public ArrayList<Location> markSpawns(Player p, int xOff, int zOff) {
 		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
 		HashMap<Location, Integer> signLines = new HashMap<>();
 
@@ -398,9 +393,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
 			for (MapSpawner spawner : list) {
 				Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
-				if (worldStride > 1) {
-					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
-				}
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
@@ -426,9 +418,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			for (MapSpawner initialSpawner : piece.getInitialSpawns()) {
 				Coordinates coords = initialSpawner.getCoordinates().clone().applySettings(this);
 				Location loc = coords.toLocation();
-				if (worldStride > 1) {
-					loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
-				}
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
@@ -463,9 +452,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			for (Coordinates c : spawns) {
 				Coordinates coords = c.clone().applySettings(this);
 				Location l = coords.toLocation();
-				if (worldStride > 1) {
-					l.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
-				}
 				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
@@ -497,9 +483,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		for (Entry<String, Coordinates> entry : mythicLocations.entrySet()) {
 			Coordinates coords = entry.getValue().clone().applySettings(this);
 			Location loc = coords.toLocation();
-			if (worldStride > 1) {
-				loc.add(this.x * 16 * (worldStride - 1), 0, this.z * 16 * (worldStride - 1));
-			}
 			loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 			loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 			if (p != null) {
@@ -529,10 +512,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			for (MapEntrance ent : piece.getEntrances()) {
 				MapEntrance coords = ent.clone().applySettings(this);
 				Coordinates entCoords = coords.getEntrance();
-				// Use getX()/getZ() directly (already includes piece offset) * worldStride * 16
+				// Use getX()/getZ() directly (already includes piece offset) * 16
 				// Do NOT use toLocation() here — it's designed for block-level coords, not chunk-level
-				double ex = entCoords.getX() * worldStride * 16;
-				double ez = entCoords.getZ() * worldStride * 16;
+				double ex = entCoords.getX() * 16;
+				double ez = entCoords.getZ() * 16;
 				Location loc = new Location(Bukkit.getWorld(Region.getActiveWorldName()), ex, 0, ez);
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET + (int) entCoords.getY() - 1, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
@@ -588,12 +571,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		return playerSpawnLocs;
 	}
 
-	public ArrayList<Location> markSpawns(int xOff, int zOff, int worldStride) {
-		return markSpawns(null, xOff, zOff, worldStride);
-	}
-	
 	public ArrayList<Location> markSpawns(int xOff, int zOff) {
-		return markSpawns(null, xOff, zOff, 1);
+		return markSpawns(null, xOff, zOff);
 	}
 	
 	public Coordinates getMythicLocation(String key) {

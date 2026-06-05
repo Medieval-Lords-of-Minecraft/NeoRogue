@@ -47,13 +47,12 @@ public class MountainPathGenerator {
 	 * @param xOff           Plot X offset
 	 * @param zOff           Plot Z offset
 	 * @param mapSize        Logical grid size (e.g. 12)
-	 * @param worldStride    Stride multiplier (e.g. 2 = 1 chunk gap between pieces)
 	 * @param logicalShape   logicalShape[x][z] = true if that logical chunk is occupied by a piece
 	 * @param connectedPairs Connected entrance pairs for path generation
 	 * @param seed           Noise seed
 	 */
 	public static void generate(World world, int xOff, int zOff,
-			int mapSize, int worldStride,
+			int mapSize,
 			boolean[][] logicalShape,
 			List<MapEntrance[]> connectedPairs,
 			long seed) {
@@ -76,10 +75,10 @@ public class MountainPathGenerator {
 		if (minGX > maxGX) return; // No pieces placed
 
 		// Convert to terrain-space block bounds with padding
-		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * worldStride * 16);
-		int endTX = Math.min(mapSize * worldStride * 16, (maxGX + 1 + PADDING_CHUNKS) * worldStride * 16);
-		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * worldStride * 16);
-		int endTZ = Math.min(mapSize * worldStride * 16, (maxGZ + 1 + PADDING_CHUNKS) * worldStride * 16);
+		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * 16);
+		int endTX = Math.min(mapSize * 16, (maxGX + 1 + PADDING_CHUNKS) * 16);
+		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * 16);
+		int endTZ = Math.min(mapSize * 16, (maxGZ + 1 + PADDING_CHUNKS) * 16);
 		int width = endTX - startTX;
 		int depth = endTZ - startTZ;
 
@@ -88,8 +87,8 @@ public class MountainPathGenerator {
 		for (int gx = 0; gx < mapSize; gx++) {
 			for (int gz = 0; gz < mapSize; gz++) {
 				if (!logicalShape[gx][gz]) continue;
-				int csx = gx * worldStride * 16 - startTX;
-				int csz = gz * worldStride * 16 - startTZ;
+				int csx = gx * 16 - startTX;
+				int csz = gz * 16 - startTZ;
 				for (int dx = 0; dx < 16; dx++) {
 					for (int dz = 0; dz < 16; dz++) {
 						int px = csx + dx;
@@ -103,7 +102,7 @@ public class MountainPathGenerator {
 		}
 
 		// 3. Compute path segments (each is [x1,z1,x2,z2] in terrain space)
-		List<int[]> pathSegments = computePathSegments(connectedPairs, worldStride, startTX, startTZ);
+		List<int[]> pathSegments = computePathSegments(connectedPairs, startTX, startTZ);
 
 		// 4. Pre-compute distance-to-nearest-path for every terrain block
 		// Use squared distance to avoid sqrt in inner loop, compute actual distance only when needed
@@ -159,12 +158,12 @@ public class MountainPathGenerator {
 	 * Each entrance's direction (stored inverted) tells us which edge of the piece the doorway is on.
 	 * The path anchor is at the edge of the piece's world-space chunk.
 	 */
-	private static List<int[]> computePathSegments(List<MapEntrance[]> pairs, int worldStride,
+	private static List<int[]> computePathSegments(List<MapEntrance[]> pairs,
 			int startTX, int startTZ) {
 		List<int[]> segments = new ArrayList<>();
 		for (MapEntrance[] pair : pairs) {
-			int[] a1 = getPathAnchor(pair[0], worldStride);
-			int[] a2 = getPathAnchor(pair[1], worldStride);
+			int[] a1 = getPathAnchor(pair[0]);
+			int[] a2 = getPathAnchor(pair[1]);
 			// Convert to local coordinates relative to our generation area
 			segments.add(new int[] {
 					a1[0] - startTX, a1[1] - startTZ,
@@ -178,9 +177,9 @@ public class MountainPathGenerator {
 	 * Get the terrain-space path anchor point for an entrance.
 	 * The anchor is at the edge of the entrance's chunk, centered on the perpendicular axis.
 	 */
-	private static int[] getPathAnchor(MapEntrance entrance, int worldStride) {
-		int cx = (int) entrance.getX() * worldStride * 16;
-		int cz = (int) entrance.getZ() * worldStride * 16;
+	private static int[] getPathAnchor(MapEntrance entrance) {
+		int cx = (int) entrance.getX() * 16;
+		int cz = (int) entrance.getZ() * 16;
 		int anchorX, anchorZ;
 
 		// The stored direction is inverted from the YAML direction.
@@ -277,7 +276,7 @@ public class MountainPathGenerator {
 	 * Computes path anchors from entrance directions, then delegates to the main implementation.
 	 */
 	public static void generateFrozenWastes(World world, int xOff, int zOff,
-			int mapSize, int worldStride,
+			int mapSize,
 			boolean[][] logicalShape,
 			List<MapEntrance[]> entrancePairs,
 			HashMap<String, Integer> chunkHeights,
@@ -296,15 +295,16 @@ public class MountainPathGenerator {
 			}
 		}
 		if (minGX > maxGX) return;
-		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * worldStride * 16);
-		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * worldStride * 16);
+		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * 16);
+		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * 16);
 
 		List<int[]> pathSegments = new ArrayList<>();
 		for (MapEntrance[] pair : entrancePairs) {
-			int[] a1 = getPathAnchor(pair[0], worldStride);
-			int[] a2 = getPathAnchor(pair[1], worldStride);
-			int yA = chunkHeights.getOrDefault((int) pair[0].getX() + "," + (int) pair[0].getZ(), 0);
-			int yB = chunkHeights.getOrDefault((int) pair[1].getX() + "," + (int) pair[1].getZ(), 0);
+			int[] a1 = getPathAnchor(pair[0]);
+			int[] a2 = getPathAnchor(pair[1]);
+			// Use entrance's full Y (local height within piece + piece placement offset)
+			int yA = (int) pair[0].getY();
+			int yB = (int) pair[1].getY();
 			pathSegments.add(new int[] {
 				a1[0] - startTX, a1[1] - startTZ,
 				a2[0] - startTX, a2[1] - startTZ,
@@ -312,7 +312,7 @@ public class MountainPathGenerator {
 			});
 		}
 
-		generateFrozenWastesWithSegments(world, xOff, zOff, mapSize, worldStride,
+		generateFrozenWastesWithSegments(world, xOff, zOff, mapSize,
 				logicalShape, pathSegments, chunkHeights, seed);
 	}
 
@@ -326,14 +326,13 @@ public class MountainPathGenerator {
 	 * @param xOff               Plot X offset
 	 * @param zOff               Plot Z offset
 	 * @param mapSize            Logical grid size (e.g. 12)
-	 * @param worldStride        Stride multiplier (e.g. 2 = 1 chunk gap between pieces)
 	 * @param logicalShape       logicalShape[x][z] = true if that logical chunk has a piece
 	 * @param pathSegments       Pre-computed path segments: int[]{sx1, sz1, sx2, sz2, yOffA, yOffB}
 	 * @param chunkHeights       Map from "x,z" logical chunk key to Y offset above baseY
 	 * @param seed               Noise seed
 	 */
 	private static void generateFrozenWastesWithSegments(World world, int xOff, int zOff,
-			int mapSize, int worldStride,
+			int mapSize,
 			boolean[][] logicalShape,
 			List<int[]> pathSegments,
 			HashMap<String, Integer> chunkHeights,
@@ -361,10 +360,10 @@ public class MountainPathGenerator {
 		if (minGX > maxGX) return;
 
 		// Convert to terrain-space block bounds with padding
-		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * worldStride * 16);
-		int endTX = Math.min(mapSize * worldStride * 16, (maxGX + 1 + PADDING_CHUNKS) * worldStride * 16);
-		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * worldStride * 16);
-		int endTZ = Math.min(mapSize * worldStride * 16, (maxGZ + 1 + PADDING_CHUNKS) * worldStride * 16);
+		int startTX = Math.max(0, (minGX - PADDING_CHUNKS) * 16);
+		int endTX = Math.min(mapSize * 16, (maxGX + 1 + PADDING_CHUNKS) * 16);
+		int startTZ = Math.max(0, (minGZ - PADDING_CHUNKS) * 16);
+		int endTZ = Math.min(mapSize * 16, (maxGZ + 1 + PADDING_CHUNKS) * 16);
 		int width = endTX - startTX;
 		int depth = endTZ - startTZ;
 
@@ -372,7 +371,7 @@ public class MountainPathGenerator {
 		int[][] pieceHeightMap = new int[width][depth];
 		for (int[] row : pieceHeightMap) Arrays.fill(row, Integer.MIN_VALUE);
 
-		int cellSize = worldStride * 16; // Full stride-cell size in blocks
+		int cellSize = 16;
 		for (int gx = 0; gx < mapSize; gx++) {
 			for (int gz = 0; gz < mapSize; gz++) {
 				if (!logicalShape[gx][gz]) continue;
@@ -491,7 +490,7 @@ public class MountainPathGenerator {
 					int yOffset;
 					if (pathDist <= CORRIDOR_HALF_WIDTH) {
 						double bump = noise.noise(tx * 0.15, tz * 0.15) * 1.5;
-						yOffset = (int) Math.round(pathYOff + bump) + 2;
+						yOffset = (int) Math.round(pathYOff + bump) - 1;
 					} else {
 						yOffset = (int) Math.round(nearestPieceY[lx][lz]) + 2;
 					}

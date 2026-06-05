@@ -142,7 +142,15 @@ public class FightStatistics {
 	public HashMap<StatusType, Integer> getStatusesApplied() {
 		return statusesApplied;
 	}
-	
+
+	public double getShieldsApplied() {
+		return shieldsApplied;
+	}
+
+	public double getDamageBarriered() {
+		return damageBarriered;
+	}
+
 	public Component getStatLine() {
 		Component line = Component.text("").append(getNameplateComponent())
 				.append(getDamageDealtComponent()).append(separator)

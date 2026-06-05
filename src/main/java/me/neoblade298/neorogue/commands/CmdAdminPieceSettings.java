@@ -79,17 +79,17 @@ public class CmdAdminPieceSettings extends Subcommand {
 				inst.setRotations(i);
 				inst.setFlip(false, false);
 				inst.instantiate(null, PADDING * i, 0);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, 0, 1));
+				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, 0));
 				placeVariantSign(PADDING * i, 0, "rot=" + i, "no flip");
 
 				inst.setFlip(true, false);
 				inst.instantiate(null, PADDING * i, PADDING);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING, 1));
+				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING));
 				placeVariantSign(PADDING * i, PADDING, "rot=" + i, "flipX");
 
 				inst.setFlip(false, true);
 				inst.instantiate(null, PADDING * i, PADDING * 2);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING * 2, 1));
+				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING * 2));
 				placeVariantSign(PADDING * i, PADDING * 2, "rot=" + i, "flipZ");
 			}
 		}
@@ -100,7 +100,7 @@ public class CmdAdminPieceSettings extends Subcommand {
 			inst.setRotations(rotations);
 			inst.setFlip(flipX, flipZ);
 			inst.instantiate(null, 0, 0);
-			potentialSpawns.addAll(inst.markSpawns(p, 0, 0, 1));
+			potentialSpawns.addAll(inst.markSpawns(p, 0, 0));
 		}
 
 		Region.useMainWorld();

@@ -57,7 +57,6 @@ public class Map {
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	private int effectiveSize;
-	private int worldStride = 1;
 	private ArrayList<MapEntrance[]> connectedEntrances = new ArrayList<>();
 	
 	public Map(RegionType type) {
@@ -445,10 +444,10 @@ public class Map {
 		maxGX = Math.min(MAP_SIZE - 1, maxGX + padding);
 		minGZ = Math.max(0, minGZ - padding);
 		maxGZ = Math.min(MAP_SIZE - 1, maxGZ + padding);
-		int clearStartX = minGX * worldStride * 16;
-		int clearEndX = (maxGX + 1) * worldStride * 16;
-		int clearStartZ = minGZ * worldStride * 16;
-		int clearEndZ = (maxGZ + 1) * worldStride * 16;
+		int clearStartX = minGX * 16;
+		int clearEndX = (maxGX + 1) * 16;
+		int clearStartZ = minGZ * 16;
+		int clearEndZ = (maxGZ + 1) * 16;
 
 		// First clear the board (only the used region)
 		// Clear Y range: pieces at Y_OFFSET (64) with offsets -4 to +4, mountains up to +35, barriers above that
@@ -481,10 +480,6 @@ public class Map {
 				// Setup mythic locations first before spawning anything
 				for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
 					Location loc = ent.getValue().applySettings(inst).toLocation();
-					if (worldStride > 1) {
-						loc.add(inst.getX() * 16 * (worldStride - 1), 0,
-								inst.getZ() * 16 * (worldStride - 1));
-					}
 					loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
 							MapPieceInstance.Y_OFFSET,
 							MapPieceInstance.Z_FIGHT_OFFSET + zOff);
@@ -496,7 +491,7 @@ public class Map {
 
 		long pieceStart = System.currentTimeMillis();
 		for (MapPieceInstance inst : pieces) {
-			inst.instantiate(fi, xOff, zOff, worldStride);
+			inst.instantiate(fi, xOff, zOff);
 		}
 		long pieceTime = System.currentTimeMillis() - pieceStart;
 
@@ -522,14 +517,6 @@ public class Map {
 	 * Base implementation generates entrance-based mountain paths for spaced maps.
 	 */
 	protected void generateTerrain(FightInstance fi, int xOff, int zOff) {
-		if (worldStride > 1) {
-			MountainPathGenerator.generate(
-				Bukkit.getWorld(Region.getActiveWorldName()),
-				xOff, zOff, MAP_SIZE, worldStride,
-				shape, connectedEntrances,
-				NeoRogue.gen.nextLong()
-			);
-		}
 	}
 	
 	/**
@@ -676,14 +663,6 @@ public class Map {
 	public Coordinates getRandomSpawn() {
 		int rand = NeoRogue.gen.nextInt(spawns.size());
 		return spawns.get(rand);
-	}
-	
-	public int getWorldStride() {
-		return worldStride;
-	}
-	
-	protected void setWorldStride(int stride) {
-		this.worldStride = stride;
 	}
 	
 	protected static LinkedList<MapPiece> getStandardPieces(RegionType type) {
