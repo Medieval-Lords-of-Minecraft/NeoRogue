@@ -75,7 +75,6 @@ public class Session {
 	private HashMap<UUID, MapViewer> spectators = new HashMap<UUID, MapViewer>();
 	private Instance inst;
 	private Node curr;
-	private SessionStatistics stats;
 	private int saveSlot, xOff, zOff, nodesVisited, regionsCompleted, potionChance = 25;
 	private Plot plot;
 	private SessionType sessionType;
@@ -789,10 +788,6 @@ public class Session {
 
 	public UUID getHost() {
 		return host;
-	}
-	
-	public SessionStatistics getStats() {
-		return stats;
 	}
 	
 	public int getRegionsCompleted() {

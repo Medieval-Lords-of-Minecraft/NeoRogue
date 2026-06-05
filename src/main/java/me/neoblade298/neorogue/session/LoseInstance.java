@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -76,6 +79,15 @@ public class LoseInstance extends EditInventoryInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
+		if (e.getHand() == EquipmentSlot.HAND && e.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& e.getClickedBlock().getType() == Material.LECTERN) {
+			Player p = e.getPlayer();
+			PlayerSessionData data = s.getData(p.getUniqueId());
+			if (data != null) {
+				data.getSessionStats().sendTo(p);
+			}
+			return;
+		}
 		super.handleInteractEvent(e);
 	}
 

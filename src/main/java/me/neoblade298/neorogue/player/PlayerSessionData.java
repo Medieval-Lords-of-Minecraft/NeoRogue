@@ -47,6 +47,7 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
@@ -68,6 +69,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
 	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 1, accessorySlots = 2;
 	private String instanceData;
+	private SessionStatistics sessionStats = new SessionStatistics();
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
 
@@ -102,6 +104,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.armorSlots = rs.getInt("armorSlots");
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
+		sessionStats.load(rs);
 		initialize();
 	}
 
@@ -385,6 +388,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public PlayerData getData() {
 		return data;
+	}
+
+	public SessionStatistics getSessionStats() {
+		return sessionStats;
 	}
 
 	public double getMaxHealth() {
@@ -932,7 +939,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories))
 					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
 					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
-					.addValue(armorSlots).addValue(accessorySlots).addValue(coins).addString(instanceData);
+					.addValue(armorSlots).addValue(accessorySlots).addValue(coins).addString(instanceData)
+					.addValue(sessionStats.getDamageDealt()).addValue(sessionStats.getDamageTakenHealth())
+					.addValue(sessionStats.getDamageTakenShields()).addValue(sessionStats.getShieldsApplied())
+					.addValue(sessionStats.getHealingDone()).addValue(sessionStats.getDamageBarriered())
+					.addValue(sessionStats.getFightsCompleted()).addValue(sessionStats.getDeaths())
+					.addValue(sessionStats.getStatusesApplied());
 			stmt.execute(sql.build());
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "

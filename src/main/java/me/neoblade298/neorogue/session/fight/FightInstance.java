@@ -1079,6 +1079,7 @@ public abstract class FightInstance extends Instance {
 			PlayerSessionData data = pdata.getSessionData();
 			Player p = pdata.getPlayer();
 			if (pdata != null) {
+				data.getSessionStats().aggregate(pdata.getStats());
 				pdata.cleanup();
 				if (p != null) {
 					if (pdata.isDead()) {
