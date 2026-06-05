@@ -64,6 +64,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Increases the affected entity's magical damage taken by 50%. 1 stack is removed every second."),
 	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,
 			"Increases the affected entity's damage taken by 50%. Each time the affected entity receives damage, 1 stack is removed."),
+	DAMPENED(Material.SPONGE, StatusType.DAMPENED.tag,
+			"While active, all power activations are cancelled."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
 			"Upon the affected entity receiving light damage, grant the attacker 5 shields for 5 seconds. 1 stack is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,

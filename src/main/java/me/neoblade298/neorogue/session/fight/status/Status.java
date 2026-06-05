@@ -87,6 +87,7 @@ public abstract class Status {
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case INJURY: return new InjuryStatus(target);
+		case DAMPENED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case STOPPED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
@@ -147,6 +148,7 @@ public abstract class Status {
 		BURN("<gold>Burn</gold>", "&6Burn"),
 		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
 		CORRUPTION("<dark_purple>Corruption</dark_purple>", "&5Corruption"),
+		DAMPENED("<gray>Dampened</gray>", "&7Dampened"),
 		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
