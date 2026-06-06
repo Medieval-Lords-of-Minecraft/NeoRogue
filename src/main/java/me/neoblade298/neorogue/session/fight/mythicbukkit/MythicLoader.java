@@ -97,6 +97,9 @@ public class MythicLoader implements Listener {
 		case "nrcooldown":
 			mechanic = new MechanicCooldown(cfg);
 			break;
+		case "nrclearprojectiles":
+			mechanic = new MechanicClearProjectiles();
+			break;
 		}
 		if (mechanic != null) {
 			event.register(mechanic);

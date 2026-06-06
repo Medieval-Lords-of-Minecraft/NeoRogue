@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.mechanics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -45,6 +46,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ProjectileInstance extends IProjectileInstance {
 	private static final HashMap<EntityType, BoundingBox> entityBounds = new HashMap<EntityType, BoundingBox>();
+	private static final HashSet<ProjectileInstance> activeInstances = new HashSet<ProjectileInstance>();
 
 	private FightInstance inst;
 	private FightData owner;
@@ -138,11 +140,13 @@ public class ProjectileInstance extends IProjectileInstance {
 		task = new BukkitRunnable() {
 			public void run() {
 				if (tick()) {
+					activeInstances.remove(ProjectileInstance.this);
 					cancel();
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, settings.getTickSpeed());
 		owner.addTask(task);
+		activeInstances.add(this);
 	}
 
 	public DamageMeta getMeta() {
@@ -337,7 +341,19 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	public void cancel() {
+		activeInstances.remove(this);
 		task.cancel();
+	}
+
+	public static void cancelAll(FightInstance inst) {
+		Iterator<ProjectileInstance> iter = activeInstances.iterator();
+		while (iter.hasNext()) {
+			ProjectileInstance pi = iter.next();
+			if (pi.inst == inst) {
+				iter.remove();
+				pi.task.cancel();
+			}
+		}
 	}
 
 	public Vector getVelocity() {
