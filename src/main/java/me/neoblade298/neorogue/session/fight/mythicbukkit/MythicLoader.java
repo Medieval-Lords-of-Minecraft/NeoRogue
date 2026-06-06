@@ -100,6 +100,9 @@ public class MythicLoader implements Listener {
 		case "nrclearprojectiles":
 			mechanic = new MechanicClearProjectiles();
 			break;
+		case "nrpowersignal":
+			mechanic = new MechanicPowerSignal(cfg);
+			break;
 		}
 		if (mechanic != null) {
 			event.register(mechanic);
