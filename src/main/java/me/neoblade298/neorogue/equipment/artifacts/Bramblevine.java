@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Bramblevine extends Artifact {
 	private static final String ID = "Bramblevine";
-	private static final int shield = 10;
+	private static final int shield = 5;
 
 	public Bramblevine() {
 		super(ID, "Bramblevine", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
@@ -33,7 +33,7 @@ public class Bramblevine extends Artifact {
 			Player p = data.getPlayer();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.THORNS)) {
-				data.addSimpleShield(p.getUniqueId(), shield, 100);
+				data.addSimpleShield(p.getUniqueId(), shield, 60);
 			}
 			return TriggerResult.keep();
 		});
@@ -52,6 +52,6 @@ public class Bramblevine extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.VINE, "Dealing " + GlossaryTag.THORNS.tag(this) + " damage grants you "
-				+ GlossaryTag.SHIELDS.tag(this, shield, false) + " [<white>5s</white>].");
+				+ GlossaryTag.SHIELDS.tag(this, shield, false) + " [<white>3s</white>].");
 	}
 }

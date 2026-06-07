@@ -60,7 +60,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private ActionMeta am = new ActionMeta();
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
-	private double distance = 0, distancePerPoint; // Estimated distance traveled, not exact, doesn't factor in gravity
+	private double distance = 0, distancePerPoint, blocksPerTick; // Estimated distance traveled, not exact, doesn't factor in gravity
 	private int maxRangeMod, pierceMod;
 	private LivingEntity homingTarget;
 	private HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
@@ -103,6 +103,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
+		this.blocksPerTick = settings.getBlocksPerTick();
 		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE).setProjectileInstance(this);
 		meta.addOrigin(DamageOrigin.NORMAL);
 
@@ -111,17 +112,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		if (settings.initialY() != 0)
 			origin.add(0, settings.initialY(), 0);
 
-		// Slow projectile, no interpolation needed
-		if (settings.getWidth() > settings.getBlocksPerTick() * settings.getTickSpeed()) {
-			v = v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
-			interpolationPoints = 1;
-		}
-		// Fast projectile, need interpolation
-		else {
-			v = v.multiply(settings.getWidth());
-			interpolationPoints = (int) (settings.getBlocksPerTick() / settings.getWidth()) + 1;
-		}
-		distancePerPoint = v.length();
+		setBlocksPerTick(blocksPerTick);
 		loc = origin.clone().add(v.clone().multiply(0.5)); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		// Loose bounds, this is because current bounds don't check for libsdisguises so
@@ -147,6 +138,23 @@ public class ProjectileInstance extends IProjectileInstance {
 		}.runTaskTimer(NeoRogue.inst(), 0L, settings.getTickSpeed());
 		owner.addTask(task);
 		activeInstances.add(this);
+	}
+
+	public double getBlocksPerTick() {
+		return blocksPerTick;
+	}
+
+	public void setBlocksPerTick(double blocksPerTick) {
+		this.blocksPerTick = blocksPerTick;
+		Vector dir = v.clone().normalize();
+		if (settings.getWidth() > blocksPerTick * settings.getTickSpeed()) {
+			v = dir.multiply(blocksPerTick * settings.getTickSpeed());
+			interpolationPoints = 1;
+		} else {
+			v = dir.multiply(settings.getWidth());
+			interpolationPoints = (int) (blocksPerTick / settings.getWidth()) + 1;
+		}
+		distancePerPoint = v.length();
 	}
 
 	public DamageMeta getMeta() {

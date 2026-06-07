@@ -21,7 +21,6 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -73,7 +72,6 @@ public class SadisticNature extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 12, range));
 		bonusDamage = isUpgraded ? 300 : 200;
 		trapDamage = isUpgraded ? 500 : 300;
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 
 	public static Equipment get() {
@@ -207,6 +205,6 @@ public class SadisticNature extends Equipment {
 				DescUtil.yellow(bonusDamage) + " damage. " +
 				"Additionally, spawn a " + GlossaryTag.TRAP.tag(this) + " [<white>5s</white>] on the block that deals " +
 				DescUtil.yellow(trapDamage) + " damage and increases your " + GlossaryTag.TRAP.tag(this) + 
-				" damage by " + DescUtil.yellow((int)(TRAP_DAMAGE_INC * 100) + "%") + " when it's set off.");
+				" damage by " + DescUtil.white((int)(TRAP_DAMAGE_INC * 100) + "%") + " when it's set off.");
 	}
 }

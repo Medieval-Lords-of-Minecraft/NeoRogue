@@ -1156,24 +1156,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 		equipment.put(id, this);
 	}
 
-	// For materials
-	public Equipment(String id, String display, Rarity rarity, EquipmentClass ec) {
-		this.id = id;
-		this.rarity = rarity;
-		this.isUpgraded = false;
-		this.ecs = new EquipmentClass[] { ec };
-		this.type = EquipmentType.MATERIAL;
-		this.display = rarity.applyDecorations(SharedUtil.color(display));
-		this.properties = EquipmentProperties.none();
-		this.canDrop = false;
-
-		if (equipment.containsKey(id)) {
-			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
-		}
-
-		equipment.put(id, this);
-	}
-
 	public static boolean canReforge(Equipment eq, Equipment eqed) {
 		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
 		boolean hasCurse = eq.isCursed() || eqed.isCursed();
@@ -1640,7 +1622,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 				new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.KEYBIND }),
 		CONSUMABLE("Consumable", "me.neoblade298.neorogue.equipment.consumables",
 				new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.KEYBIND }),
-		MATERIAL("Material", "me.neoblade298.neorogue.equipment.materials", new EquipSlot[0]),
 		ARTIFACT("Artifact", "me.neoblade298.neorogue.equipment.artifacts", new EquipSlot[0]);
 
 		private String display, pkg;
