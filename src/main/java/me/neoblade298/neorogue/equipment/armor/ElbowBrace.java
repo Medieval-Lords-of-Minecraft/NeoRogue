@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -39,9 +38,8 @@ public class ElbowBrace extends Equipment {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(buffId, this)));
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
-			for (IProjectileInstance inst : ev.getInstances()) {
-				((ProjectileInstance) inst).addMaxRange(-2);
+			for (ProjectileInstance inst : ev.getInstances()) {
+				inst.addMaxRange(-2);
 			}
 			return TriggerResult.keep();
 		});

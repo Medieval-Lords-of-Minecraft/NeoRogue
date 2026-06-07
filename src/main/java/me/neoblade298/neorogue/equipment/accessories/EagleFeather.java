@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -30,9 +29,8 @@ public class EagleFeather extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
-			for (IProjectileInstance inst : ev.getInstances()) {
-				((ProjectileInstance) inst).addMaxRange(buff);
+			for (ProjectileInstance inst : ev.getInstances()) {
+				inst.addMaxRange(buff);
 			}
 			return TriggerResult.keep();
 		});

@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -75,12 +74,9 @@ public class Posturing2 extends Equipment implements Power {
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
 			Player p3 = data.getPlayer();
 			LaunchProjectileGroupEvent ev3 = (LaunchProjectileGroupEvent) in3;
-			for (IProjectileInstance ipi : ev3.getInstances()) {
-				if (ipi instanceof ProjectileInstance) {
-					ProjectileInstance inst = (ProjectileInstance) ipi;
-					double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
-					inst.getMeta().addDamageSlice(new DamageSlice(data, p3.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
-				}
+			for (ProjectileInstance inst : ev3.getInstances()) {
+				double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
+				inst.getMeta().addDamageSlice(new DamageSlice(data, p3.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 			}
 			return TriggerResult.keep();
 		});

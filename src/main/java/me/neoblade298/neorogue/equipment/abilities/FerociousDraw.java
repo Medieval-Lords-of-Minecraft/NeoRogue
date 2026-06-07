@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -63,10 +62,9 @@ public class FerociousDraw extends Equipment implements Power {
 			if (!meta.isBasicAttack()) return TriggerResult.keep();
 			LivingEntity target2 = ev2.getTarget();
 			if (target2 == null) return TriggerResult.keep();
-			IProjectileInstance iProj = meta.getProjectile();
-			if (iProj == null || !(iProj instanceof ProjectileInstance)) return TriggerResult.keep();
+			ProjectileInstance inst = meta.getProjectile();
+			if (inst == null) return TriggerResult.keep();
 			if (p2.getLocation().distance(target2.getLocation()) <= range) {
-				ProjectileInstance inst = (ProjectileInstance) iProj;
 				meta.addDamageSlice(
 						new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
 				inst.addPierce(1);

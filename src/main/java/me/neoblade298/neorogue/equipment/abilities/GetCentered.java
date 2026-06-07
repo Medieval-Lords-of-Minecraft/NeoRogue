@@ -18,7 +18,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -81,7 +80,7 @@ public class GetCentered extends Equipment implements Power {
 				Sounds.enchant.play(p2, p2);
 			}
 
-			for (IProjectileInstance pi : ev2.getInstances()) {
+			for (ProjectileInstance pi : ev2.getInstances()) {
 				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, GetCentered.this)));
 			}

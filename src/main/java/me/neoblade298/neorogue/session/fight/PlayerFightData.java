@@ -37,7 +37,6 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -192,11 +191,9 @@ public class PlayerFightData extends FightData {
 						return;
 					}
 					ProjectileGroup pg = finalExtraShots.removeFirst();
-					List<IProjectileInstance> projs = pg.start(fd);
-					for (IProjectileInstance proj : projs) {
-						if (proj instanceof ProjectileInstance) {
-							((ProjectileInstance) proj).getMeta().addTag(EXTRA_SHOT_TAG);
-						}
+					List<ProjectileInstance> projs = pg.start(fd);
+					for (ProjectileInstance proj : projs) {
+						proj.getMeta().addTag(EXTRA_SHOT_TAG);
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, period));

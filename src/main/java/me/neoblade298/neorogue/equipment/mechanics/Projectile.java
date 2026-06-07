@@ -2,12 +2,14 @@ package me.neoblade298.neorogue.equipment.mechanics;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
-public abstract class Projectile extends IProjectile {
+public abstract class Projectile {
 	// Arc: y-angle of projectile
 	// yRotate: rotation of projectile around y-axis (left and right of source)
 	private double gravity, yRotate, arc, blocksPerTick, initialY, maxRange, homing;
@@ -136,9 +138,18 @@ public abstract class Projectile extends IProjectile {
 		return ignoreEntities;
 	}
 	
-	@Override
-	protected ProjectileInstance create(FightData owner, Location source, Vector direction) {
-		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction);
+	protected ProjectileInstance start(FightData owner, Location source, Vector direction, PreLaunchProjectileGroupEvent event) {
+		return create(owner, source.clone(), direction, event);
+	}
+	public ProjectileInstance start(FightData owner, Location source, Vector direction) {
+		return create(owner, source.clone(), direction, null);
+	}
+	public ProjectileInstance start(FightData owner) {
+		Player p = (Player) owner.getEntity();
+		return start(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.4, 0), p.getEyeLocation().getDirection());
+	}
+	protected ProjectileInstance create(FightData owner, Location source, Vector direction, PreLaunchProjectileGroupEvent event) {
+		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction, event);
 		onStart(proj);
 		return proj;
 	}

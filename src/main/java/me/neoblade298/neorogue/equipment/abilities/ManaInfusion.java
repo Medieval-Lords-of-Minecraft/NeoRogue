@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -64,7 +63,7 @@ public class ManaInfusion extends Equipment {
 			if (!ev.isBowProjectile())
 				return TriggerResult.keep();
 			if (inst.getCount() == 1 && pdata.getMana() >= mana) {
-				for (IProjectileInstance pi : ev.getInstances()) {
+				for (ProjectileInstance pi : ev.getInstances()) {
 					ProjectileInstance proj = (ProjectileInstance) pi;
 					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 							new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));

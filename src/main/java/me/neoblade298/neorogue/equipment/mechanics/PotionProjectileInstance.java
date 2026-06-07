@@ -16,14 +16,13 @@ import org.bukkit.potion.PotionType;
 
 import me.neoblade298.neorogue.NeoRogue;
 
-public class PotionProjectileInstance extends IProjectileInstance {
+public class PotionProjectileInstance {
 	private static final HashMap<UUID, PotionProjectileInstance> insts = new HashMap<UUID, PotionProjectileInstance>();
 	
 	private PotionProjectile potion;
 	private UUID uuid;
 	
 	public PotionProjectileInstance(PotionProjectile potion, ThrownPotion thrown, Location origin) {
-		super(origin);
 		uuid = UUID.randomUUID();
 		insts.put(uuid, this);
 		this.potion = potion;
@@ -38,7 +37,6 @@ public class PotionProjectileInstance extends IProjectileInstance {
         thrown.getPersistentDataContainer().set(key, PersistentDataType.STRING, uuid.toString());
 	}
 
-	@Override
 	public PotionProjectile getParent() {
 		return this.potion;
 	}

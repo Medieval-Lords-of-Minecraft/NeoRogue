@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -61,7 +61,7 @@ public class PointBlank extends Equipment implements Power {
 			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
 			DamageMeta dm = ev2.getMeta();
 			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
-			IProjectileInstance ip = dm.getProjectile();
+			ProjectileInstance ip = dm.getProjectile();
 			if (ip.getOrigin().distanceSquared(ev2.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();

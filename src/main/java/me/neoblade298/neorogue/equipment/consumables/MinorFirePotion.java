@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -42,10 +41,9 @@ public class MinorFirePotion extends Consumable {
 			}
 			Sounds.explode.play(p, loc);
 		});
-		ProjectileGroup grp = new ProjectileGroup(pot);
 		
 		Sounds.threw.play(p, p);
-		grp.start(data);
+		pot.launch(data);
 		return TriggerResult.remove();
 	}
 

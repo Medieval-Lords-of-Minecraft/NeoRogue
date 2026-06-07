@@ -10,7 +10,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -53,7 +52,7 @@ public class DarkShroud extends Equipment implements Power {
 				data.addTrigger(id + "-active", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in2) -> {
 					LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
 					
-					for (IProjectileInstance pi : ev.getInstances()) {
+					for (ProjectileInstance pi : ev.getInstances()) {
 						ProjectileInstance proj = (ProjectileInstance) pi;
 						proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, 
 								DamageStatTracker.of(id + slot, DarkShroud.this)));

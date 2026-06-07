@@ -8,72 +8,66 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
 public class ProjectileGroup {
-	private LinkedList<IProjectile> group = new LinkedList<IProjectile>();
+	private LinkedList<Projectile> group = new LinkedList<Projectile>();
 	
-	public ProjectileGroup(IProjectile... projs) {
-		for (IProjectile proj : projs) {
+	public ProjectileGroup(Projectile... projs) {
+		for (Projectile proj : projs) {
 			group.add(proj);
 		}
 	}
 
-	public LinkedList<IProjectile> list() {
+	public LinkedList<Projectile> list() {
 		return group;
 	}
 
-	public IProjectile getFirst() {
+	public Projectile getFirst() {
 		return group.getFirst();
 	}
 	
-	public void add(IProjectile... projs) {
-		for (IProjectile proj : projs) {
+	public void add(Projectile... projs) {
+		for (Projectile proj : projs) {
 			group.add(proj);
 		}
 	}
 	
-	public LinkedList<IProjectileInstance> startWithoutEvent(FightData owner) {
-		LinkedList<IProjectileInstance> projs = new LinkedList<IProjectileInstance>();
-		for (IProjectile proj : group) {
+	public LinkedList<ProjectileInstance> startWithoutEvent(FightData owner) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
+		for (Projectile proj : group) {
 			projs.add(proj.start(owner));
 		}
 		return projs;
 	}
 	
-	public LinkedList<IProjectileInstance> startWithoutEvent(FightData owner, Location origin, Vector direction) {
-		LinkedList<IProjectileInstance> projs = new LinkedList<IProjectileInstance>();
-		for (IProjectile proj : group) {
+	public LinkedList<ProjectileInstance> startWithoutEvent(FightData owner, Location origin, Vector direction) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
+		for (Projectile proj : group) {
 			projs.add(proj.start(owner, origin, direction));
 		}
 		return projs;
 	}
 	
-	public LinkedList<IProjectileInstance> start(FightData owner) {
+	public LinkedList<ProjectileInstance> start(FightData owner) {
 		Player p = (Player) owner.getEntity();
 		return start(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.4, 0), p.getEyeLocation().getDirection());
 	}
 	
-	public LinkedList<IProjectileInstance> start(FightData owner, Location origin, Vector direction) {
-		BuffList velocityBuff = null;
+	public LinkedList<ProjectileInstance> start(FightData owner, Location origin, Vector direction) {
+		PreLaunchProjectileGroupEvent event = null;
 		if (owner.getEntity() instanceof Player) {
 			Player p = (Player) owner.getEntity();
-			PreLaunchProjectileGroupEvent event = new PreLaunchProjectileGroupEvent(this);
+			event = new PreLaunchProjectileGroupEvent(this);
 			if (FightInstance.trigger(p, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, event)) return null;
-			velocityBuff = event.getVelocityBuffList();
 		}
 
 		direction.normalize();
-		LinkedList<IProjectileInstance> projs = new LinkedList<IProjectileInstance>();
-		for (IProjectile proj : group) {
-			IProjectileInstance inst = proj.startWithoutEvent(owner, origin, direction);
-			if (velocityBuff != null && inst instanceof ProjectileInstance pi) {
-				pi.setBlocksPerTick(velocityBuff.apply(pi.getBlocksPerTick()));
-			}
-			projs.add(inst);
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
+		for (Projectile proj : group) {
+			projs.add(proj.start(owner, origin, direction, event));
 		}
 
 		if (owner.getEntity() instanceof Player) {

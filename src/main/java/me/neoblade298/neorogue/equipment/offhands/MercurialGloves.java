@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -54,22 +53,19 @@ public class MercurialGloves extends Equipment {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			
-			for (IProjectileInstance inst : ev.getInstances()) {
-				if (inst instanceof ProjectileInstance) {
-					ProjectileInstance pi = (ProjectileInstance) inst;
-					pi.addHitBlockAction((proj, b) -> {
-						hitLocations.addFirst(b.getLocation().clone());
-						if (hitLocations.size() > maxLocations) {
-							hitLocations.removeLast();
-						}
-					});
-					pi.addHitAction((hit, hitBarrier, meta, proj) -> {
-						hitLocations.addFirst(hit.getEntity().getLocation().clone());
-						if (hitLocations.size() > maxLocations) {
-							hitLocations.removeLast();
-						}
-					});
-				}
+			for (ProjectileInstance pi : ev.getInstances()) {
+				pi.addHitBlockAction((proj, b) -> {
+					hitLocations.addFirst(b.getLocation().clone());
+					if (hitLocations.size() > maxLocations) {
+						hitLocations.removeLast();
+					}
+				});
+				pi.addHitAction((hit, hitBarrier, meta, proj) -> {
+					hitLocations.addFirst(hit.getEntity().getLocation().clone());
+					if (hitLocations.size() > maxLocations) {
+						hitLocations.removeLast();
+					}
+				});
 			}
 			
 			return TriggerResult.keep();

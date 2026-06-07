@@ -26,7 +26,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
@@ -170,7 +169,7 @@ public class DamageMeta {
 		return this;
 	}
 
-	public IProjectileInstance getProjectile() {
+	public ProjectileInstance getProjectile() {
 		return proj;
 	}
 	

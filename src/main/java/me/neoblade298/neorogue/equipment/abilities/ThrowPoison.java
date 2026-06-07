@@ -12,7 +12,6 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -42,11 +41,10 @@ public class ThrowPoison extends Equipment {
 				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, -1);
 			}
 		});
-		ProjectileGroup grp = new ProjectileGroup(pot);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.threw.play(p, p);
-			grp.start(data);
+			pot.launch(data);
 			return TriggerResult.keep();
 		}));
 	}

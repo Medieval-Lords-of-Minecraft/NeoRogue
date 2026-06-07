@@ -17,7 +17,6 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -56,11 +55,10 @@ public class Blind extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 60));
 		});
-		ProjectileGroup grp = new ProjectileGroup(pot);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.threw.play(p, p);
-			grp.start(data);
+			pot.launch(data);
 			return TriggerResult.keep();
 		}));
 

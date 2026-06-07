@@ -17,7 +17,6 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -69,10 +68,9 @@ public class Firebomb extends Equipment {
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 		});
-		ProjectileGroup grp = new ProjectileGroup(pot);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.threw.play(p, p);
-			grp.start(data);
+			pot.launch(data);
 			return TriggerResult.keep();
 		}));
 	}

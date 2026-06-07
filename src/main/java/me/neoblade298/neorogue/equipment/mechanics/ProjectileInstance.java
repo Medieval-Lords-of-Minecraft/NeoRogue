@@ -43,11 +43,13 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
-public class ProjectileInstance extends IProjectileInstance {
+public class ProjectileInstance {
 	private static final HashMap<EntityType, BoundingBox> entityBounds = new HashMap<EntityType, BoundingBox>();
 	private static final HashSet<ProjectileInstance> activeInstances = new HashSet<ProjectileInstance>();
 
+	private Location origin;
 	private FightInstance inst;
 	private FightData owner;
 	private HashSet<UUID> targetsHit = new HashSet<UUID>();
@@ -95,15 +97,18 @@ public class ProjectileInstance extends IProjectileInstance {
 
 	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1.5, 0),
-				owner.getEntity().getLocation().getDirection());
+				owner.getEntity().getLocation().getDirection(), null);
 	}
 
-	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
-		super(origin);
+	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction, PreLaunchProjectileGroupEvent event) {
+		this.origin = origin;
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
 		this.blocksPerTick = settings.getBlocksPerTick();
+		if (event != null) {
+			this.blocksPerTick = event.getVelocityBuffList().apply(this.blocksPerTick);
+		}
 		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE).setProjectileInstance(this);
 		meta.addOrigin(DamageOrigin.NORMAL);
 
@@ -211,7 +216,14 @@ public class ProjectileInstance extends IProjectileInstance {
 				props.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
 	}
 
-	@Override
+	public Location getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(Location origin) {
+		this.origin = origin;
+	}
+
 	public Projectile getParent() {
 		return this.settings;
 	}

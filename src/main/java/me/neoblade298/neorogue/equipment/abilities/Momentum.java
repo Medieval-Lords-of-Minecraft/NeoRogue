@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -61,9 +60,7 @@ public class Momentum extends Equipment implements Power {
 					Player p2 = data.getPlayer();
 					if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
 						LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
-						for (IProjectileInstance ipi : ev.getInstances()) {
-							if (!(ipi instanceof ProjectileInstance)) continue;
-							ProjectileInstance pi = (ProjectileInstance) ipi;
+						for (ProjectileInstance pi : ev.getInstances()) {
 							pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
 						}
 					}
