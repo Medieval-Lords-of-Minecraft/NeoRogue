@@ -86,6 +86,7 @@ public abstract class Status {
 		case STEALTH: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case IMPEDED: return new ImpededStatus(target);
 		case INJURY: return new InjuryStatus(target);
 		case DAMPENED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
@@ -155,6 +156,7 @@ public abstract class Status {
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
 		FROST("<blue>Frost</blue>", "&9Frost"),
 		FROSTBITE("<aqua>Frostbite</aqua>", "&bFrostbite"),
+		IMPEDED("<gray>Impeded</gray>", "&7Impeded"),
 		INJURY("<dark_red>Injury</dark_red>", "&4Injury"),
 		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
 		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
