@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -21,6 +24,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.ascension.Upgrade;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -36,7 +40,9 @@ public class PlayerData {
 	private String display;
 	private HashMap<String, Upgrade> upgrades = new HashMap<String, Upgrade>();
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
+	private HashSet<String> unlockNodes = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
+	private boolean equipmentDroptableDirty;
 	private int slotsAvailable, upgradePoints, maxNotoriety;
 	// Something that holds ascension tree skills
 	
@@ -61,6 +67,7 @@ public class PlayerData {
 		else {
 			slotsAvailable = 1;
 		}
+		unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
 		initializeEquipmentDroptable();
 	}
 	
@@ -81,6 +88,14 @@ public class PlayerData {
 				Upgrade up = Upgrade.get(tree.getString("upgrade"));
 				upgrades.put(up.getId(), up);
 			}
+
+			ResultSet unlocks = stmt.executeQuery("SELECT * FROM neorogue_unlocknodes WHERE uuid = '" + uuid + "';");
+			while (unlocks.next()) {
+				unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
+			}
+			if (unlockNodes.isEmpty()) {
+				unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
+			}
 			
 			// Load snapshots
 			ResultSet saves = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + uuid + "';");
@@ -90,6 +105,8 @@ public class PlayerData {
 						"' AND slot = " + slot + ";");
 				snapshots.put(slot, new SessionSnapshot(saves, party));
 			}
+			markEquipmentDroptableDirty();
+			initializeEquipmentDroptable();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -107,11 +124,17 @@ public class PlayerData {
 	}
 
 	public void initializeEquipmentDroptable() {
-		equipmentDroptable = Equipment.copyDropSet();
+		equipmentDroptable = UnlockRegistry.buildEquipmentDroptable(this);
+		equipmentDroptableDirty = false;
+		Bukkit.getLogger().info("[NeoRogue] Rebuilt equipment droptable for " + uuid + " (" + unlockNodes.size() + " unlock nodes)");
+	}
+
+	private void markEquipmentDroptableDirty() {
+		equipmentDroptableDirty = true;
 	}
 
 	public DropTableSet<Equipment> getEquipmentDroptable() {
-		if (equipmentDroptable == null) {
+		if (equipmentDroptable == null || equipmentDroptableDirty) {
 			initializeEquipmentDroptable();
 		}
 		else if (equipmentDroptable.isEmpty()) {
@@ -172,6 +195,20 @@ public class PlayerData {
 			}
 			stmts.add(upSql.build(con));
 		}
+
+		PreparedStatement clearUnlocks = con.prepareStatement("DELETE FROM neorogue_unlocknodes WHERE uuid = ?;");
+		clearUnlocks.setString(1, uuid.toString());
+		stmts.add(clearUnlocks);
+
+		if (!unlockNodes.isEmpty()) {
+			SQLInsertBuilder unlockSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_unlocknodes");
+			for (String nodeId : unlockNodes) {
+				unlockSql.addValue("uuid", uuid.toString())
+						.addValue("node", nodeId)
+						.addRow();
+			}
+			stmts.add(unlockSql.build(con));
+		}
 	}
 	
 	// Should only ever be displayed to the owner
@@ -210,6 +247,39 @@ public class PlayerData {
 	
 	public boolean hasUpgrade(String id) {
 		return upgrades.containsKey(id);
+	}
+
+	public Set<String> getUnlockNodes() {
+		return Collections.unmodifiableSet(unlockNodes);
+	}
+
+	public boolean hasUnlockNode(String id) {
+		return unlockNodes.contains(UnlockRegistry.normalizeNodeId(id));
+	}
+
+	public boolean grant(String id) {
+		String nodeId = UnlockRegistry.normalizeNodeId(id);
+		if (!UnlockRegistry.hasNode(nodeId)) {
+			return false;
+		}
+		boolean added = unlockNodes.add(nodeId);
+		if (added) {
+			Bukkit.getLogger().info("[NeoRogue] Unlock node granted: " + nodeId + " -> " + uuid);
+			markEquipmentDroptableDirty();
+			initializeEquipmentDroptable();
+		}
+		return added;
+	}
+
+	public boolean revoke(String id) {
+		String nodeId = UnlockRegistry.normalizeNodeId(id);
+		boolean removed = unlockNodes.remove(nodeId);
+		if (removed) {
+			Bukkit.getLogger().info("[NeoRogue] Unlock node revoked: " + nodeId + " -> " + uuid);
+			markEquipmentDroptableDirty();
+			initializeEquipmentDroptable();
+		}
+		return removed;
 	}
 	
 	public void addUpgrade(Upgrade up) {

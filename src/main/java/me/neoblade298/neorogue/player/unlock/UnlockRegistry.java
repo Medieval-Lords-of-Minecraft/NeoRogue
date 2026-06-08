@@ -1,0 +1,163 @@
+package me.neoblade298.neorogue.player.unlock;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
+
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.PlayerData;
+
+public class UnlockRegistry {
+	private static final LinkedHashMap<String, UnlockNode> nodes = new LinkedHashMap<String, UnlockNode>();
+	private static final HashMap<String, HashSet<String>> equipmentToNodes = new HashMap<String, HashSet<String>>();
+	private static final HashMap<EquipmentClass, HashSet<String>> classToNodes = new HashMap<EquipmentClass, HashSet<String>>();
+	private static final HashMap<String, HashSet<String>> nodeEquipmentTargets = new HashMap<String, HashSet<String>>();
+	private static DropTableSet<Equipment> baseEquipmentDroptable = new DropTableSet<Equipment>();
+
+	static {
+		reload();
+	}
+
+	private UnlockRegistry() {
+	}
+
+	public static synchronized void reload() {
+		nodes.clear();
+		equipmentToNodes.clear();
+		classToNodes.clear();
+		nodeEquipmentTargets.clear();
+		registerDefaults();
+
+		baseEquipmentDroptable = Equipment.copyDropSet();
+		for (UnlockNode node : nodes.values()) {
+			switch (node.getTargetType()) {
+			case EQUIPMENT:
+				HashSet<String> equipmentIds = new HashSet<String>();
+				for (String targetId : node.getTargetIds()) {
+					String normalizedId = targetId.toLowerCase(Locale.ROOT);
+					equipmentIds.add(normalizedId);
+					equipmentToNodes.computeIfAbsent(normalizedId, key -> new HashSet<String>()).add(node.getId());
+					Equipment eq = Equipment.get(targetId, false);
+					if (eq == null) {
+						Bukkit.getLogger().warning("[NeoRogue] Unlock node " + node.getId()
+								+ " references unknown equipment id " + targetId);
+						continue;
+					}
+					baseEquipmentDroptable.remove(eq);
+				}
+				nodeEquipmentTargets.put(node.getId(), equipmentIds);
+				break;
+			case PLAYER_CLASS:
+				for (String targetId : node.getTargetIds()) {
+					try {
+						EquipmentClass ec = EquipmentClass.valueOf(targetId.toUpperCase(Locale.ROOT));
+						classToNodes.computeIfAbsent(ec, key -> new HashSet<String>()).add(node.getId());
+					}
+					catch (IllegalArgumentException e) {
+						Bukkit.getLogger().warning("[NeoRogue] Unlock node " + node.getId()
+								+ " references unknown class " + targetId);
+					}
+				}
+				break;
+			case OTHER:
+			default:
+				break;
+			}
+		}
+	}
+
+	private static void registerDefaults() {
+		// Intentionally empty for backward compatibility rollout.
+		// Add node registrations here as content is moved behind unlocks.
+	}
+
+	public static synchronized void register(UnlockNode node) {
+		nodes.put(node.getId(), node);
+	}
+
+	public static String normalizeNodeId(String nodeId) {
+		return nodeId == null ? "" : nodeId.toLowerCase(Locale.ROOT);
+	}
+
+	public static boolean hasNode(String nodeId) {
+		return nodes.containsKey(normalizeNodeId(nodeId));
+	}
+
+	public static Set<String> getNodeIds() {
+		return Collections.unmodifiableSet(nodes.keySet());
+	}
+
+	public static Set<String> getDefaultUnlockNodes() {
+		HashSet<String> defaults = new HashSet<String>();
+		for (UnlockNode node : nodes.values()) {
+			if (node.isDefaultUnlocked()) {
+				defaults.add(node.getId());
+			}
+		}
+		return defaults;
+	}
+
+	public static boolean isEquipmentUnlockedFor(PlayerData data, String equipmentId) {
+		if (equipmentId == null) return false;
+		HashSet<String> requiredNodes = equipmentToNodes.get(equipmentId.toLowerCase(Locale.ROOT));
+		if (requiredNodes == null || requiredNodes.isEmpty()) return true;
+		if (data == null) return false;
+		for (String nodeId : requiredNodes) {
+			if (data.hasUnlockNode(nodeId)) return true;
+		}
+		return false;
+	}
+
+	public static boolean isClassUnlockedFor(PlayerData data, EquipmentClass equipmentClass) {
+		if (equipmentClass == EquipmentClass.CLASSLESS || equipmentClass == EquipmentClass.SHOP) return true;
+		HashSet<String> requiredNodes = classToNodes.get(equipmentClass);
+		if (requiredNodes == null || requiredNodes.isEmpty()) return true;
+		if (data == null) return false;
+		for (String nodeId : requiredNodes) {
+			if (data.hasUnlockNode(nodeId)) return true;
+		}
+		return false;
+	}
+
+	public static DropTableSet<Equipment> buildEquipmentDroptable(PlayerData data) {
+		DropTableSet<Equipment> derived = baseEquipmentDroptable.clone();
+		if (data != null) {
+			for (String unlockNode : data.getUnlockNodes()) {
+				HashSet<String> nodeTargets = nodeEquipmentTargets.get(normalizeNodeId(unlockNode));
+				if (nodeTargets == null || nodeTargets.isEmpty()) continue;
+				for (String equipmentId : nodeTargets) {
+					if (!isEquipmentUnlockedFor(data, equipmentId)) continue;
+					Equipment eq = Equipment.get(equipmentId, false);
+					if (eq == null) continue;
+					derived.add(eq.getEquipmentClasses(), eq);
+				}
+			}
+		}
+
+		if (derived.isEmpty()) {
+			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; falling back to full droptable");
+			return Equipment.copyDropSet();
+		}
+		return derived;
+	}
+
+	public static Map<String, UnlockNode> getNodes() {
+		return Collections.unmodifiableMap(nodes);
+	}
+
+	public static ArrayList<String> getSortedNodeIds() {
+		ArrayList<String> ids = new ArrayList<String>(new LinkedHashSet<String>(nodes.keySet()));
+		Collections.sort(ids);
+		return ids;
+	}
+}

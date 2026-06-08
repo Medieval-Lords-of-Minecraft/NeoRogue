@@ -21,7 +21,10 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -35,6 +38,7 @@ public class NewLobbyInstance extends LobbyInstance {
 			maxSizeError = Component.text("This lobby is full as it has a max of " + LobbyInstance.MAX_SIZE + " players!",
 					NamedTextColor.RED);
     private static final TextComponent hostKickSelf = Component.text("The host cannot kick themselves!", NamedTextColor.RED);
+	private static final TextComponent classLocked = Component.text("That class is locked for you!", NamedTextColor.RED);
     private static final Comparator<Player> comp = new Comparator<Player>() {
         @Override
         public int compare(Player p1, Player p2) {
@@ -48,7 +52,7 @@ public class NewLobbyInstance extends LobbyInstance {
     public NewLobbyInstance(Player host, Session s) {
         super(host, s, SPAWN_X, SPAWN_Z);
 
-		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
+		players.put(host.getUniqueId(), getDefaultClass(host.getUniqueId()));
 
 		// Setup hologram
 		Component text = Component.text("Invite players with /nr invite {name/all}").appendNewline()
@@ -103,7 +107,7 @@ public class NewLobbyInstance extends LobbyInstance {
         inLobby.add(p.getUniqueId());
 		invited.remove(p.getUniqueId());
 		p.setGameMode(GameMode.SURVIVAL);
-		players.put(p.getUniqueId(), EquipmentClass.WARRIOR);
+		players.put(p.getUniqueId(), getDefaultClass(p.getUniqueId()));
 		SessionManager.addToSession(p.getUniqueId(), this.s);
 		p.teleport(spawn);
 		displayInfo(p);
@@ -249,6 +253,11 @@ public class NewLobbyInstance extends LobbyInstance {
             Util.msgRaw(Bukkit.getPlayer(uuid), gameGenerating);
             return;
         }
+		PlayerData data = PlayerManager.getPlayerData(uuid);
+		if (data != null && !UnlockRegistry.isClassUnlockedFor(data, pc)) {
+			Util.msgRaw(Bukkit.getPlayer(uuid), classLocked);
+			return;
+		}
 
         TextComponent tc = Component.text().content(Bukkit.getPlayer(uuid).getName()).color(NamedTextColor.YELLOW)
                 .append(Component.text(" switched to class ", NamedTextColor.GRAY))
@@ -257,6 +266,16 @@ public class NewLobbyInstance extends LobbyInstance {
         players.put(uuid, pc);
         updateBoardLines();
     }
+
+	private EquipmentClass getDefaultClass(UUID uuid) {
+		PlayerData data = PlayerManager.getPlayerData(uuid);
+		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
+			if (data == null || UnlockRegistry.isClassUnlockedFor(data, ec)) {
+				return ec;
+			}
+		}
+		return EquipmentClass.WARRIOR;
+	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
