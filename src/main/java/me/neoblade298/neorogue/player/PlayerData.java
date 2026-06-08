@@ -111,6 +111,9 @@ public class PlayerData {
 	}
 
 	public DropTableSet<Equipment> getEquipmentDroptable() {
+		if (equipmentDroptable == null || equipmentDroptable.isEmpty()) {
+			initializeEquipmentDroptable();
+		}
 		return equipmentDroptable;
 	}
 	

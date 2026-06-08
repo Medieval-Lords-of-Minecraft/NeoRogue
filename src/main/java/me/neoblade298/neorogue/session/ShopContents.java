@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
@@ -60,15 +61,10 @@ public class ShopContents {
 
 	private void generateEquips(Session s, PlayerSessionData data, EquipmentClass ec, int value, double discountMult) {
 		// Create shop contents
+		DropTableSet<Equipment> dropTable = data == null ? Equipment.copyDropSet() : data.getData().getEquipmentDroptable();
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
-		if (data == null) {
-			equips.addAll(Equipment.getDrop(value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-			equips.addAll(Equipment.getDrop(value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		}
-		else {
-			equips.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-			equips.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		}
+		equips.addAll(Equipment.getDrop(dropTable, value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		equips.addAll(Equipment.getDrop(dropTable, value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		if (s != null) s.rollUpgrades(equips, 0); // Ignore session for debugging
 		
 		// Generate 2 random unique sale slots

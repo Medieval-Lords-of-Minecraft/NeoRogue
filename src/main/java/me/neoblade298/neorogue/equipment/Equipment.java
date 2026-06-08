@@ -1786,6 +1786,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 
+		public boolean isEmpty() {
+			for (ArrayList<DropTable<E>> list : droptables.values()) {
+				for (DropTable<E> table : list) {
+					if (table.size() > 0) return false;
+				}
+			}
+			return true;
+		}
+
 		public void remove(E drop) {
 			for (ArrayList<DropTable<E>> list : droptables.values()) {
 				for (DropTable<E> table : list) {
