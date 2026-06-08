@@ -269,7 +269,8 @@ public class NewLobbyInstance extends LobbyInstance {
 
 	private EquipmentClass getDefaultClass(UUID uuid) {
 		PlayerData data = PlayerManager.getPlayerData(uuid);
-		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
+		for (EquipmentClass ec : EquipmentClass.values()) {
+			if (ec == EquipmentClass.CLASSLESS || ec == EquipmentClass.SHOP) continue;
 			if (data == null || UnlockRegistry.isClassUnlockedFor(data, ec)) {
 				return ec;
 			}

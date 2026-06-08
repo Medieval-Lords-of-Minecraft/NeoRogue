@@ -93,9 +93,7 @@ public class PlayerData {
 			while (unlocks.next()) {
 				unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
 			}
-			if (unlockNodes.isEmpty()) {
-				unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
-			}
+			unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
 			
 			// Load snapshots
 			ResultSet saves = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + uuid + "';");
@@ -126,7 +124,7 @@ public class PlayerData {
 	public void initializeEquipmentDroptable() {
 		equipmentDroptable = UnlockRegistry.buildEquipmentDroptable(this);
 		equipmentDroptableDirty = false;
-		Bukkit.getLogger().info("[NeoRogue] Rebuilt equipment droptable for " + uuid + " (" + unlockNodes.size() + " unlock nodes)");
+		Bukkit.getLogger().fine("[NeoRogue] Rebuilt equipment droptable for " + uuid + " (" + unlockNodes.size() + " unlock nodes)");
 	}
 
 	private void markEquipmentDroptableDirty() {

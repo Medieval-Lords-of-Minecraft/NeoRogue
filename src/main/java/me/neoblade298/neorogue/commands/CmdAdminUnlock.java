@@ -49,7 +49,7 @@ public class CmdAdminUnlock extends Subcommand {
 				Util.msg(s, "<yellow>No unlock nodes are currently registered.");
 				return;
 			}
-			Util.msg(s, "<yellow>Registered unlock nodes:</yellow> " + String.join("<gray>, </gray>", nodes));
+			Util.msg(s, "<yellow>Registered unlock nodes:</yellow> " + String.join(", ", nodes));
 			return;
 		}
 
@@ -85,7 +85,7 @@ public class CmdAdminUnlock extends Subcommand {
 			}
 			ArrayList<String> list = new ArrayList<String>(unlockNodes);
 			Collections.sort(list);
-			Util.msg(s, "<yellow>" + target.getName() + " unlock nodes:</yellow> " + String.join("<gray>, </gray>", list));
+			Util.msg(s, "<yellow>" + target.getName() + " unlock nodes:</yellow> " + String.join(", ", list));
 			return;
 		case GRANT:
 		case REVOKE:

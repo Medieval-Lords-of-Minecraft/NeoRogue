@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -136,7 +135,6 @@ public class UnlockRegistry {
 				HashSet<String> nodeTargets = nodeEquipmentTargets.get(normalizeNodeId(unlockNode));
 				if (nodeTargets == null || nodeTargets.isEmpty()) continue;
 				for (String equipmentId : nodeTargets) {
-					if (!isEquipmentUnlockedFor(data, equipmentId)) continue;
 					Equipment eq = Equipment.get(equipmentId, false);
 					if (eq == null) continue;
 					derived.add(eq.getEquipmentClasses(), eq);
@@ -156,7 +154,7 @@ public class UnlockRegistry {
 	}
 
 	public static ArrayList<String> getSortedNodeIds() {
-		ArrayList<String> ids = new ArrayList<String>(new LinkedHashSet<String>(nodes.keySet()));
+		ArrayList<String> ids = new ArrayList<String>(nodes.keySet());
 		Collections.sort(ids);
 		return ids;
 	}
