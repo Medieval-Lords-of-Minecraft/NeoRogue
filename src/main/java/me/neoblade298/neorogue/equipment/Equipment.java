@@ -1788,6 +1788,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 		public boolean isEmpty() {
 			for (ArrayList<DropTable<E>> list : droptables.values()) {
+				if (list == null) continue;
 				for (DropTable<E> table : list) {
 					if (table.size() > 0) return false;
 				}

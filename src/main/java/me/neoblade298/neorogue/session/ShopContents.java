@@ -61,7 +61,7 @@ public class ShopContents {
 
 	private void generateEquips(Session s, PlayerSessionData data, EquipmentClass ec, int value, double discountMult) {
 		// Create shop contents
-		DropTableSet<Equipment> dropTable = data == null ? Equipment.copyDropSet() : data.getData().getEquipmentDroptable();
+		DropTableSet<Equipment> dropTable = data == null || data.getData() == null ? Equipment.copyDropSet() : data.getData().getEquipmentDroptable();
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
 		equips.addAll(Equipment.getDrop(dropTable, value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		equips.addAll(Equipment.getDrop(dropTable, value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));

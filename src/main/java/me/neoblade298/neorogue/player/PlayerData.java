@@ -111,7 +111,11 @@ public class PlayerData {
 	}
 
 	public DropTableSet<Equipment> getEquipmentDroptable() {
-		if (equipmentDroptable == null || equipmentDroptable.isEmpty()) {
+		if (equipmentDroptable == null) {
+			initializeEquipmentDroptable();
+		}
+		else if (equipmentDroptable.isEmpty()) {
+			Bukkit.getLogger().warning("[NeoRogue] Reinitializing empty equipment droptable for " + uuid);
 			initializeEquipmentDroptable();
 		}
 		return equipmentDroptable;
