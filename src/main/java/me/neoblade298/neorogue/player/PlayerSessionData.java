@@ -52,6 +52,7 @@ import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -176,6 +177,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		setupArtifacts();
 		updateEquipmentLimits();
 		updateBoardLines();
+		TutorialManager.registerSessionTutorials(s, this);
 	}
 
 	public void updateEquipmentLimits() {
