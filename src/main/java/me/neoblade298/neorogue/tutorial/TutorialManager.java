@@ -22,15 +22,15 @@ public class TutorialManager {
 			TutorialTriggerType.class
 	);
 	private static final Map<PlayerSessionData, Set<String>> registeredSessionTutorials = Collections.synchronizedMap(
-			new WeakHashMap<PlayerSessionData, Set<String>>()
+			new WeakHashMap<>()
 	);
 	private static final Map<PlayerFightData, Set<String>> registeredFightTutorials = Collections.synchronizedMap(
-			new WeakHashMap<PlayerFightData, Set<String>>()
+			new WeakHashMap<>()
 	);
 	
 	static {
 		for (TutorialTriggerType triggerType : TutorialTriggerType.values()) {
-			tutorialsByTrigger.put(triggerType, new ArrayList<Tutorial>());
+			tutorialsByTrigger.put(triggerType, new ArrayList<>());
 		}
 		
 		for (Tutorial tutorial : tutorials) {
@@ -70,7 +70,7 @@ public class TutorialManager {
 		synchronized (registrations) {
 			Set<String> registered = registrations.get(key);
 			if (registered == null) {
-				registered = new HashSet<String>();
+				registered = new HashSet<>();
 				registrations.put(key, registered);
 			}
 			return registered.add(tutorialId);
