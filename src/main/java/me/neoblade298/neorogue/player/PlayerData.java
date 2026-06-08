@@ -74,34 +74,48 @@ public class PlayerData {
 	public PlayerData(Player p, Statement stmt) {
 		this(p);
 		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
-				Statement scnd = con.createStatement();){
-			// Need a second statement since I have a nested query
+				PreparedStatement baseStmt = con.prepareStatement("SELECT * FROM neorogue_playerdata WHERE uuid = ?;");
+				PreparedStatement treeStmt = con.prepareStatement("SELECT * FROM neorogue_upgrades WHERE uuid = ?;");
+				PreparedStatement unlockStmt = con.prepareStatement("SELECT * FROM neorogue_unlocknodes WHERE uuid = ?;");
+				PreparedStatement savesStmt = con.prepareStatement("SELECT * FROM neorogue_sessions WHERE host = ?;");
+				PreparedStatement partyStmt = con.prepareStatement("SELECT * FROM neorogue_playersessiondata WHERE host = ? AND slot = ?;")) {
 			UUID uuid = p.getUniqueId();
-			ResultSet base = stmt.executeQuery("SELECT * FROM neorogue_playerdata WHERE uuid = '" + uuid + "';");
-			if (!base.next()) return;
-			this.level = base.getInt("level");
-			this.exp = base.getInt("exp");
-			this.upgradePoints = base.getInt("points");
+			String uuidStr = uuid.toString();
+			baseStmt.setString(1, uuidStr);
+			try (ResultSet base = baseStmt.executeQuery()) {
+				if (!base.next()) return;
+				this.level = base.getInt("level");
+				this.exp = base.getInt("exp");
+				this.upgradePoints = base.getInt("points");
+			}
 			
-			ResultSet tree = stmt.executeQuery("SELECT * FROM neorogue_upgrades WHERE uuid = '" + uuid + "';");
-			while (tree.next()) {
-				Upgrade up = Upgrade.get(tree.getString("upgrade"));
-				upgrades.put(up.getId(), up);
+			treeStmt.setString(1, uuidStr);
+			try (ResultSet tree = treeStmt.executeQuery()) {
+				while (tree.next()) {
+					Upgrade up = Upgrade.get(tree.getString("upgrade"));
+					upgrades.put(up.getId(), up);
+				}
 			}
 
-			ResultSet unlocks = stmt.executeQuery("SELECT * FROM neorogue_unlocknodes WHERE uuid = '" + uuid + "';");
-			while (unlocks.next()) {
-				unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
+			unlockStmt.setString(1, uuidStr);
+			try (ResultSet unlocks = unlockStmt.executeQuery()) {
+				while (unlocks.next()) {
+					unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
+				}
 			}
 			unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
 			
 			// Load snapshots
-			ResultSet saves = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + uuid + "';");
-			while (saves.next()) {
-				int slot = saves.getInt("slot");
-				ResultSet party = scnd.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + uuid + 
-						"' AND slot = " + slot + ";");
-				snapshots.put(slot, new SessionSnapshot(saves, party));
+			savesStmt.setString(1, uuidStr);
+			try (ResultSet saves = savesStmt.executeQuery()) {
+				while (saves.next()) {
+					int slot = saves.getInt("slot");
+					partyStmt.setString(1, uuidStr);
+					partyStmt.setInt(2, slot);
+					try (ResultSet party = partyStmt.executeQuery()) {
+						snapshots.put(slot, new SessionSnapshot(saves, party));
+					}
+				}
 			}
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
@@ -262,7 +276,7 @@ public class PlayerData {
 		}
 		boolean added = unlockNodes.add(nodeId);
 		if (added) {
-			Bukkit.getLogger().info("[NeoRogue] Unlock node granted: " + nodeId + " -> " + uuid);
+			Bukkit.getLogger().fine("[NeoRogue] Unlock node granted: " + nodeId + " -> " + display);
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
 		}
@@ -273,7 +287,7 @@ public class PlayerData {
 		String nodeId = UnlockRegistry.normalizeNodeId(id);
 		boolean removed = unlockNodes.remove(nodeId);
 		if (removed) {
-			Bukkit.getLogger().info("[NeoRogue] Unlock node revoked: " + nodeId + " -> " + uuid);
+			Bukkit.getLogger().fine("[NeoRogue] Unlock node revoked: " + nodeId + " -> " + display);
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
 		}

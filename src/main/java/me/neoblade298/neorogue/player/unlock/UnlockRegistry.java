@@ -143,8 +143,12 @@ public class UnlockRegistry {
 		}
 
 		if (derived.isEmpty()) {
-			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; falling back to full droptable");
-			return Equipment.copyDropSet();
+			if (nodes.isEmpty()) {
+				Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty with no unlock nodes; using full droptable");
+				return Equipment.copyDropSet();
+			}
+			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; using base unlock droptable");
+			return baseEquipmentDroptable.clone();
 		}
 		return derived;
 	}
