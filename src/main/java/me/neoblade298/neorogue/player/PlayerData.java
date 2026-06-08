@@ -19,6 +19,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.ascension.Upgrade;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -34,6 +36,7 @@ public class PlayerData {
 	private String display;
 	private HashMap<String, Upgrade> upgrades = new HashMap<String, Upgrade>();
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
+	private DropTableSet<Equipment> equipmentDroptable;
 	private int slotsAvailable, upgradePoints, maxNotoriety;
 	// Something that holds ascension tree skills
 	
@@ -58,6 +61,7 @@ public class PlayerData {
 		else {
 			slotsAvailable = 1;
 		}
+		initializeEquipmentDroptable();
 	}
 	
 	public PlayerData(Player p, Statement stmt) {
@@ -100,6 +104,21 @@ public class PlayerData {
 	
 	public void updatePlayer() {
 		p = Bukkit.getPlayer(uuid);
+	}
+
+	public void initializeEquipmentDroptable() {
+		equipmentDroptable = Equipment.copyDropSet();
+	}
+
+	public DropTableSet<Equipment> getEquipmentDroptable() {
+		if (equipmentDroptable == null) {
+			initializeEquipmentDroptable();
+		}
+		else if (equipmentDroptable.isEmpty()) {
+			Bukkit.getLogger().warning("[NeoRogue] Reinitializing empty equipment droptable for " + uuid);
+			initializeEquipmentDroptable();
+		}
+		return equipmentDroptable;
 	}
 	
 	public String getDisplay() {

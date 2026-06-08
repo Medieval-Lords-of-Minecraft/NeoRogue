@@ -95,7 +95,7 @@ public class FaerieGroveChance extends ChanceSet {
 			EquipmentMetadata chosen = eligible.get(NeoRogue.gen.nextInt(eligible.size()));
 			String chosenSerialized = chosen.getEquipment().serialize();
 
-			Equipment reward = Equipment.getDrop(s.getBaseDropValue() + 1, data.getPlayerClass(), EquipmentClass.CLASSLESS);
+			Equipment reward = Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, data.getPlayerClass(), EquipmentClass.CLASSLESS);
 			reward = s.rollUpgrade(reward, 0);
 			String rewardSerialized = reward.serialize();
 

@@ -1467,6 +1467,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return set.getMultiple(value, numDrops, ec);
 	}
 
+	public static ArrayList<Equipment> getDrop(DropTableSet<Equipment> set, int value, int numDrops, EquipmentClass... ec) {
+		return set.getMultiple(value, numDrops, ec);
+	}
+
+	public static ArrayList<Equipment> getDrop(DropTableSet<Equipment> set, int value, int numDrops, ArrayList<Equipment> exclusions,
+			EquipmentClass... ec) {
+		return set.getMultiple(value, numDrops, true, exclusions, ec);
+	}
+
 	public static ArrayList<Consumable> getConsumable(int value, int numDrops, EquipmentClass... ec) {
 		return consumables.getMultiple(value, numDrops, ec);
 	}
@@ -1481,6 +1490,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, ArrayList<Equipment> exclusions, EquipmentClass... ec) {
 		return droptables.getMultiple(value, numDrops, true, exclusions, ec);
+	}
+
+	public static Equipment getDrop(DropTableSet<Equipment> set, int value, EquipmentClass... ec) {
+		return getDrop(set, value, 1, ec).get(0);
 	}
 
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
@@ -1657,6 +1670,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return artifacts.clone(ecs);
 	}
 
+	public static DropTableSet<Equipment> copyDropSet(EquipmentClass... ecs) {
+		return droptables.clone(ecs);
+	}
+
 	public static enum EquipSlot {
 		ARMOR("Armor"), ACCESSORY("Accessory"), OFFHAND("Offhand"), HOTBAR("Hotbar"), KEYBIND("Keybind"), // Hotbar +
 		// other
@@ -1767,6 +1784,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 				}
 				droptables.put(ec, tables);
 			}
+		}
+
+		public boolean isEmpty() {
+			for (ArrayList<DropTable<E>> list : droptables.values()) {
+				if (list == null) continue;
+				for (DropTable<E> table : list) {
+					if (table.size() > 0) return false;
+				}
+			}
+			return true;
 		}
 
 		public void remove(E drop) {
