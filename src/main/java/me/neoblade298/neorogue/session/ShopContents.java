@@ -26,7 +26,7 @@ public class ShopContents {
 	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
 		int value = s.getBaseDropValue();
 		EquipmentClass ec = data.getPlayerClass();
-		generateEquips(s, ec, value, discountMult); // 0-9
+		generateEquips(s, data, ec, value, discountMult); // 0-9
 		generateConsumables(ec, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(data, value, discountMult); // 16-18
@@ -50,19 +50,25 @@ public class ShopContents {
 		Session s = null;
 		Random rand = new Random();
 		for (int i = 0; i < 1000; i++) {
-			sc.generateEquips(s, EquipmentClass.WARRIOR, rand.nextInt(4), 1.0);
-			sc.generateEquips(s, EquipmentClass.THIEF, rand.nextInt(4), 1.0);
-			sc.generateEquips(s, EquipmentClass.ARCHER, rand.nextInt(4), 1.0);
-			sc.generateEquips(s, EquipmentClass.MAGE, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, null, EquipmentClass.WARRIOR, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, null, EquipmentClass.THIEF, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, null, EquipmentClass.ARCHER, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, null, EquipmentClass.MAGE, rand.nextInt(4), 1.0);
 			sc.generateConsumables(EquipmentClass.CLASSLESS, rand.nextInt(4), 1.0);
 		}
 	}
 
-	private void generateEquips(Session s, EquipmentClass ec, int value, double discountMult) {
+	private void generateEquips(Session s, PlayerSessionData data, EquipmentClass ec, int value, double discountMult) {
 		// Create shop contents
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
-		equips.addAll(Equipment.getDrop(value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		equips.addAll(Equipment.getDrop(value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		if (data == null) {
+			equips.addAll(Equipment.getDrop(value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+			equips.addAll(Equipment.getDrop(value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		}
+		else {
+			equips.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+			equips.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		}
 		if (s != null) s.rollUpgrades(equips, 0); // Ignore session for debugging
 		
 		// Generate 2 random unique sale slots

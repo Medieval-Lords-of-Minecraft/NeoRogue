@@ -124,6 +124,7 @@ public class NeoRogue extends JavaPlugin {
 		mythicMobs = MythicBukkit.inst().getMobManager();
 		Region.initialize();
 		Equipment.load();
+		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces

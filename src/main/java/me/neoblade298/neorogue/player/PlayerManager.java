@@ -37,6 +37,12 @@ public class PlayerManager implements IOComponent {
 	public static boolean hasPlayerData(UUID uuid) {
 		return data.containsKey(uuid);
 	}
+
+	public static void initializeEquipmentDroptables() {
+		for (PlayerData pd : data.values()) {
+			pd.initializeEquipmentDroptable();
+		}
+	}
 	
 	public static String getDisplay(UUID uuid) {
 		return data.get(uuid).getDisplay();
