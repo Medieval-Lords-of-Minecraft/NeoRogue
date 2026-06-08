@@ -1,11 +1,13 @@
 package me.neoblade298.neorogue.player;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -132,19 +134,24 @@ public class PlayerData {
 		maxNotoriety += amount;
 	}
 	
-	public void save(Statement stmt) {
+	public void save(Connection con, List<PreparedStatement> stmts) throws Exception {
 		// Only saves player data and ascension tree, session saving is handled elsewhere
-		try {
-			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerdata")
-					.addString(uuid.toString()).addValue(level).addValue(exp).addValue(upgradePoints)
-					.addString(display);
-			stmt.addBatch(sql.build());
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerdata")
+				.addValue("uuid", uuid.toString())
+				.addValue("level", level)
+				.addValue("exp", exp)
+				.addValue("points", upgradePoints)
+				.addValue("display", display);
+		stmts.add(sql.build(con));
+
+		if (!upgrades.isEmpty()) {
+			SQLInsertBuilder upSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_upgrades");
 			for (String upgrade : upgrades.keySet()) {
-				stmt.addBatch("REPLACE INTO neorogue_upgrades "
-						+ "VALUES ('" + uuid + "','" + upgrade + "');");
+				upSql.addValue("uuid", uuid.toString())
+					.addValue("upgrade", upgrade)
+					.addRow();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			stmts.add(upSql.build(con));
 		}
 	}
 	

@@ -1,8 +1,9 @@
 package me.neoblade298.neorogue.player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -925,27 +926,50 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return boardLines;
 	}
 
-	public void save(Statement stmt) {
+	public void save(Connection con) {
 		UUID host = s.getHost();
 		String uuid = data.getPlayer().getUniqueId().toString();
 		int saveSlot = s.getSaveSlot();
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
-					.addString(host.toString()).addValue(saveSlot).addString(uuid)
-					.addString(((TextComponent) data.getPlayer().displayName()).content()).addString(ec.name())
-					.addValue(maxHealth).addValue(maxMana).addValue(maxStamina).addValue(health).addValue(startingMana)
-					.addValue(startingStamina).addValue(manaRegen).addValue(staminaRegen)
-					.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
-					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories))
-					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
-					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
-					.addValue(armorSlots).addValue(accessorySlots).addValue(coins).addString(instanceData)
-					.addValue(sessionStats.getDamageDealt()).addValue(sessionStats.getDamageTakenHealth())
-					.addValue(sessionStats.getDamageTakenShields()).addValue(sessionStats.getShieldsApplied())
-					.addValue(sessionStats.getHealingDone()).addValue(sessionStats.getDamageBarriered())
-					.addValue(sessionStats.getFightsCompleted()).addValue(sessionStats.getDeaths())
-					.addValue(sessionStats.getStatusesApplied());
-			stmt.execute(sql.build());
+					.addValue("host", host.toString())
+					.addValue("slot", saveSlot)
+					.addValue("uuid", uuid)
+					.addValue("display", ((TextComponent) data.getPlayer().displayName()).content())
+					.addValue("playerClass", ec.name())
+					.addValue("maxHealth", maxHealth)
+					.addValue("maxMana", maxMana)
+					.addValue("maxStamina", maxStamina)
+					.addValue("health", health)
+					.addValue("startingMana", startingMana)
+					.addValue("startingStamina", startingStamina)
+					.addValue("manaRegen", manaRegen)
+					.addValue("staminaRegen", staminaRegen)
+					.addValue("hotbar", Equipment.serialize(hotbar))
+					.addValue("armors", Equipment.serialize(armors))
+					.addValue("offhand", Equipment.serialize(offhand))
+					.addValue("accessories", Equipment.serialize(accessories))
+					.addValue("storage", Equipment.serialize(storage))
+					.addValue("otherBinds", Equipment.serialize(otherBinds))
+					.addValue("artifacts", ArtifactInstance.serialize(artifacts))
+					.addValue("maxAbilities", maxAbilities)
+					.addValue("maxStorage", maxStorage)
+					.addValue("armorSlots", armorSlots)
+					.addValue("accessorySlots", accessorySlots)
+					.addValue("coins", coins)
+					.addValue("instanceData", instanceData)
+					.addValue("statDamageDealt", sessionStats.getDamageDealt())
+					.addValue("statDamageTakenHealth", sessionStats.getDamageTakenHealth())
+					.addValue("statDamageTakenShields", sessionStats.getDamageTakenShields())
+					.addValue("statShieldsApplied", sessionStats.getShieldsApplied())
+					.addValue("statHealingDone", sessionStats.getHealingDone())
+					.addValue("statDamageBarriered", sessionStats.getDamageBarriered())
+					.addValue("statFightsCompleted", sessionStats.getFightsCompleted())
+					.addValue("statDeaths", sessionStats.getDeaths())
+					.addValue("statStatusesApplied", sessionStats.getStatusesApplied());
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
 					+ host + " to slot " + saveSlot);

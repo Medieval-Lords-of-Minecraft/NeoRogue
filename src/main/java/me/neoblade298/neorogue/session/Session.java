@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -270,33 +271,46 @@ public class Session {
 		}
 	}
 	
-	public void save(Statement insert, Statement delete) {
+	public void save(Connection con) {
 		if (inst instanceof FightInstance || inst instanceof LoseInstance || inst instanceof LobbyInstance)
 			return;
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-					.addString(host.toString()).addValue(saveSlot).addString(region.getType().name())
-					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(regionsCompleted).addValue(potionChance)
-					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(coinReduction).addValue(fightTimeReduction)
-					.addValue(endless ? 1 : 0)
-					.addValue(System.currentTimeMillis()).addString(inst.serialize(party))
-					.addString(sessionType.name()).addString(lastMiniboss);
-			insert.execute(sql.build());
+					.addValue("host", host.toString())
+					.addValue("slot", saveSlot)
+					.addValue("regionType", region.getType().name())
+					.addValue("position", curr.getRow())
+					.addValue("lane", curr.getLane())
+					.addValue("nodesVisited", nodesVisited)
+					.addValue("regionsCompleted", regionsCompleted)
+					.addValue("potionChance", potionChance)
+					.addValue("enemyHealthScale", enemyHealthScale)
+					.addValue("enemyDamageScale", enemyDamageScale)
+					.addValue("goldReduction", coinReduction)
+					.addValue("fightTimeReduction", fightTimeReduction)
+					.addValue("endless", endless ? 1 : 0)
+					.addValue("lastSaved", System.currentTimeMillis())
+					.addValue("instanceData", inst.serialize(party))
+					.addValue("sessionType", sessionType.name())
+					.addValue("lastMiniboss", lastMiniboss);
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 		
 		// Only save the nodes near the player and the boss
-		region.saveRelevant(insert, delete);
+		region.saveRelevant(con);
 		
-		try {
+		try (Statement delete = con.createStatement()) {
 			delete.execute(
 					"DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 			);
 			for (PlayerSessionData psd : party.values()) {
-				psd.save(insert);
+				psd.save(con);
 			}
 		} catch (SQLException ex) {
 			Bukkit.getLogger()
@@ -566,10 +580,8 @@ public class Session {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				try (Connection con = SQLManager.getConnection("NeoRogue");
-						Statement insert = con.createStatement();
-						Statement delete = con.createStatement()) {
-					save(insert, delete);
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					save(con);
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning(
 							"[NeoRogue] Failed to acquire connection to save session hosted by " + host + " to slot "

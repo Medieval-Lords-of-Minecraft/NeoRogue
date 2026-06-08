@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.region;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -168,10 +169,8 @@ public class Region {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				try (Connection con = NeoCore.getConnection("NeoRogue-Area");
-						Statement insert = con.createStatement();
-						Statement delete = con.createStatement()) {
-					saveAll(insert, delete);
+				try (Connection con = NeoCore.getConnection("NeoRogue-Area")) {
+					saveAll(con);
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
@@ -705,24 +704,32 @@ public class Region {
 		return nodes;
 	}
 
-	public void saveAll(Statement insert, Statement delete) {
+	public void saveAll(Connection con) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
-		try {
+		try (Statement delete = con.createStatement()) {
 			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes");
 			for (int row = 0; row < rowCount; row++) {
 				for (int lane = 0; lane < LANE_COUNT; lane++) {
 					Node node = nodes[row][lane];
 					if (node == null)
 						continue;
-					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
-							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
-							.addValue(node.getRow()).addValue(node.getLane()).addString(node.serializeDestinations())
-							.addString(node.serializeInstanceData());
-					insert.addBatch(sql.build());
+					sql.addValue("host", host.toString())
+							.addValue("slot", saveSlot)
+							.addValue("type", node.toString())
+							.addValue("position", node.getRow())
+							.addValue("lane", node.getLane())
+							.addValue("destinations", node.serializeDestinations())
+							.addValue("instanceData", node.serializeInstanceData())
+							.addRow();
 				}
 			}
-			insert.executeBatch();
+			if (sql.getRowCount() > 0) {
+				PreparedStatement ps = sql.build(con);
+				ps.executeBatch();
+				ps.close();
+			}
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
@@ -730,33 +737,40 @@ public class Region {
 	}
 
 	// Only re-save nodes that need saving (the ones within reach)
-	public void saveRelevant(Statement insert, Statement delete) {
+	public void saveRelevant(Connection con) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
 		try {
 			int row = s.getNode().getRow() + 1;
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_nodes");
+			boolean hasRows = false;
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				// Saves up to two rows ahead
 				for (int i = 0; i < 1 && row + i < rowCount; i++) {
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;
-					saveNode(insert, node, saveSlot, host);
+					sql.addValue("host", host.toString())
+							.addValue("slot", saveSlot)
+							.addValue("type", node.toString())
+							.addValue("position", node.getRow())
+							.addValue("lane", node.getLane())
+							.addValue("destinations", node.serializeDestinations())
+							.addValue("instanceData", node.serializeInstanceData())
+							.addRow();
+					hasRows = true;
 				}
 			}
-			insert.executeBatch();
+			if (hasRows) {
+				PreparedStatement ps = sql.build(con);
+				ps.executeBatch();
+				ps.close();
+			}
 		} catch (SQLException ex) {
 			Bukkit.getLogger()
 					.warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
-	}
-
-	private void saveNode(Statement insert, Node node, int saveSlot, UUID host) throws SQLException {
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_nodes").addString(host.toString())
-				.addValue(saveSlot).addString(node.toString()).addValue(node.getRow()).addValue(node.getLane())
-				.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
-		insert.addBatch(sql.build());
 	}
 
 	public void instantiate() {

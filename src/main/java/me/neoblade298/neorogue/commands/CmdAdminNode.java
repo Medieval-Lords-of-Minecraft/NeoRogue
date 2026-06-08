@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.commands;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -99,10 +98,8 @@ public class CmdAdminNode extends Subcommand {
 				sess.getRegion().update(node, (NodeSelectInstance) sess.getInstance());
 				Util.msg(s, "Set " + name + "'s node to [" + row + "][" + lane + "]");
 
-				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager");
-						Statement insert = con.createStatement();
-						Statement delete = con.createStatement()) {
-					sess.save(insert, delete);
+				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager")) {
+					sess.save(con);
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}

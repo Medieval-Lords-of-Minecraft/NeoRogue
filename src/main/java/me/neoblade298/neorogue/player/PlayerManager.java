@@ -1,9 +1,11 @@
 package me.neoblade298.neorogue.player;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -41,7 +43,7 @@ public class PlayerManager implements IOComponent {
 	}
 
 	@Override
-	public void cleanup(Statement p, Statement stmt) {
+	public void cleanup(Connection con, List<PreparedStatement> stmts) {
 		
 	}
 
@@ -69,8 +71,8 @@ public class PlayerManager implements IOComponent {
 	}
 
 	@Override
-	public void savePlayer(Player p, Statement insert, Statement delete) {
-		data.get(p.getUniqueId()).save(insert);
+	public void savePlayer(Player p, Connection con, List<PreparedStatement> stmts) throws Exception {
+		data.get(p.getUniqueId()).save(con, stmts);
 	}
 
 }

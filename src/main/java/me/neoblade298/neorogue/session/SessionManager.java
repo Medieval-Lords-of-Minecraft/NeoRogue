@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.session;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -708,10 +707,8 @@ public class SessionManager implements Listener {
 
 		new BukkitRunnable() {
 			public void run() {
-				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager");
-						Statement insert = con.createStatement();
-						Statement delete = con.createStatement()) {
-					s.save(insert, delete);
+				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager")) {
+					s.save(con);
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
