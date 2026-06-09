@@ -41,6 +41,7 @@ public class PlayerData {
 	private HashMap<String, Upgrade> upgrades = new HashMap<String, Upgrade>();
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
 	private HashSet<String> unlockNodes = new HashSet<String>();
+	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private boolean equipmentDroptableDirty;
 	private int slotsAvailable, upgradePoints, maxNotoriety;
@@ -77,6 +78,7 @@ public class PlayerData {
 				PreparedStatement baseStmt = con.prepareStatement("SELECT * FROM neorogue_playerdata WHERE uuid = ?;");
 				PreparedStatement treeStmt = con.prepareStatement("SELECT * FROM neorogue_upgrades WHERE uuid = ?;");
 				PreparedStatement unlockStmt = con.prepareStatement("SELECT * FROM neorogue_unlocknodes WHERE uuid = ?;");
+				PreparedStatement flagsStmt = con.prepareStatement("SELECT * FROM neorogue_playerflags WHERE uuid = ?;");
 				PreparedStatement savesStmt = con.prepareStatement("SELECT * FROM neorogue_sessions WHERE host = ?;");
 				PreparedStatement partyStmt = con.prepareStatement("SELECT * FROM neorogue_playersessiondata WHERE host = ? AND slot = ?;")) {
 			UUID uuid = p.getUniqueId();
@@ -104,6 +106,13 @@ public class PlayerData {
 				}
 			}
 			unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
+
+			flagsStmt.setString(1, uuidStr);
+			try (ResultSet flagsRs = flagsStmt.executeQuery()) {
+				while (flagsRs.next()) {
+					flags.add(flagsRs.getString("flag"));
+				}
+			}
 			
 			// Load snapshots
 			savesStmt.setString(1, uuidStr);
@@ -221,6 +230,20 @@ public class PlayerData {
 			}
 			stmts.add(unlockSql.build(con));
 		}
+
+		PreparedStatement clearFlags = con.prepareStatement("DELETE FROM neorogue_playerflags WHERE uuid = ?;");
+		clearFlags.setString(1, uuid.toString());
+		stmts.add(clearFlags);
+
+		if (!flags.isEmpty()) {
+			SQLInsertBuilder flagsSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerflags");
+			for (String flag : flags) {
+				flagsSql.addValue("uuid", uuid.toString())
+						.addValue("flag", flag)
+						.addRow();
+			}
+			stmts.add(flagsSql.build(con));
+		}
 	}
 	
 	// Should only ever be displayed to the owner
@@ -292,6 +315,18 @@ public class PlayerData {
 			initializeEquipmentDroptable();
 		}
 		return removed;
+	}
+
+	public boolean hasFlag(String flag) {
+		return flags.contains(flag);
+	}
+
+	public void addFlag(String flag) {
+		flags.add(flag);
+	}
+
+	public void removeFlag(String flag) {
+		flags.remove(flag);
 	}
 	
 	public void addUpgrade(Upgrade up) {

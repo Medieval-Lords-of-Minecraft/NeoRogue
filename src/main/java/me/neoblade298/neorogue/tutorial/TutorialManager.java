@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -16,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class TutorialManager {
 	private static final List<Tutorial> tutorials = List.of(
-			// Register tutorial definitions here
+			new FirstAbilityCastTutorial()
 	);
 	private static final EnumMap<TutorialTriggerType, List<Tutorial>> tutorialsByTrigger = new EnumMap<TutorialTriggerType, List<Tutorial>>(
 			TutorialTriggerType.class
@@ -52,9 +53,15 @@ public class TutorialManager {
 		return tutorialsByTrigger.getOrDefault(triggerType, List.of());
 	}
 	
+	public static String getTutorialFlag(Tutorial tutorial) {
+		return "tutorial_" + tutorial.getId();
+	}
+
 	public static void registerSessionTutorials(Session session, PlayerSessionData data) {
 		for (Tutorial tutorial : getTutorials(TutorialTriggerType.SESSION)) {
 			if (!tryRegister(registeredSessionTutorials, data, tutorial.getId())) continue;
+			PlayerData pdata = data.getData();
+			if (pdata != null && pdata.hasFlag(getTutorialFlag(tutorial))) continue;
 			tutorial.registerSession(session, data);
 		}
 	}
@@ -62,6 +69,8 @@ public class TutorialManager {
 	public static void registerFightTutorials(FightInstance fight, PlayerFightData data) {
 		for (Tutorial tutorial : getTutorials(TutorialTriggerType.FIGHT)) {
 			if (!tryRegister(registeredFightTutorials, data, tutorial.getId())) continue;
+			PlayerData pdata = data.getSessionData().getData();
+			if (pdata != null && pdata.hasFlag(getTutorialFlag(tutorial))) continue;
 			tutorial.registerFight(fight, data);
 		}
 	}
