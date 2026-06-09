@@ -88,6 +88,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
+import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -942,7 +943,9 @@ public abstract class FightInstance extends Instance {
 				// Setup triggers
 				ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 				for (Player p : s.getOnlinePlayers()) {
-					fdata.add(setup(p, s.getData(p.getUniqueId())));
+					PlayerFightData pdata = setup(p, s.getData(p.getUniqueId()));
+					TutorialManager.registerFightTutorials(fi, pdata);
+					fdata.add(pdata);
 				}
 				
 				// Choose random teleport location
