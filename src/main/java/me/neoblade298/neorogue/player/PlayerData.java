@@ -21,7 +21,6 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
-import me.neoblade298.neorogue.ascension.Upgrade;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
@@ -38,14 +37,12 @@ public class PlayerData {
 	private UUID uuid;
 	private Player p;
 	private String display;
-	private HashMap<String, Upgrade> upgrades = new HashMap<String, Upgrade>();
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
 	private HashSet<String> unlockNodes = new HashSet<String>();
 	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private boolean equipmentDroptableDirty;
-	private int slotsAvailable, upgradePoints, maxNotoriety;
-	// Something that holds ascension tree skills
+	private int slotsAvailable, maxNotoriety;
 	
 	// Create new one if one doesn't exist
 	public PlayerData(Player p) {
@@ -55,7 +52,6 @@ public class PlayerData {
 		
 		this.level = 1;
 		this.exp = 0;
-		this.upgradePoints = 0;
 		if (p.hasPermission("donator.diamond")) {
 			slotsAvailable = 5;
 		}
@@ -76,7 +72,6 @@ public class PlayerData {
 		this(p);
 		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
 				PreparedStatement baseStmt = con.prepareStatement("SELECT * FROM neorogue_playerdata WHERE uuid = ?;");
-				PreparedStatement treeStmt = con.prepareStatement("SELECT * FROM neorogue_upgrades WHERE uuid = ?;");
 				PreparedStatement unlockStmt = con.prepareStatement("SELECT * FROM neorogue_unlocknodes WHERE uuid = ?;");
 				PreparedStatement flagsStmt = con.prepareStatement("SELECT * FROM neorogue_playerflags WHERE uuid = ?;");
 				PreparedStatement savesStmt = con.prepareStatement("SELECT * FROM neorogue_sessions WHERE host = ?;");
@@ -88,15 +83,6 @@ public class PlayerData {
 				if (!base.next()) return;
 				this.level = base.getInt("level");
 				this.exp = base.getInt("exp");
-				this.upgradePoints = base.getInt("points");
-			}
-			
-			treeStmt.setString(1, uuidStr);
-			try (ResultSet tree = treeStmt.executeQuery()) {
-				while (tree.next()) {
-					Upgrade up = Upgrade.get(tree.getString("upgrade"));
-					upgrades.put(up.getId(), up);
-				}
 			}
 
 			unlockStmt.setString(1, uuidStr);
@@ -203,19 +189,8 @@ public class PlayerData {
 				.addValue("uuid", uuid.toString())
 				.addValue("level", level)
 				.addValue("exp", exp)
-				.addValue("points", upgradePoints)
 				.addValue("display", display);
 		stmts.add(sql.build(con));
-
-		if (!upgrades.isEmpty()) {
-			SQLInsertBuilder upSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_upgrades");
-			for (String upgrade : upgrades.keySet()) {
-				upSql.addValue("uuid", uuid.toString())
-					.addValue("upgrade", upgrade)
-					.addRow();
-			}
-			stmts.add(upSql.build(con));
-		}
 
 		PreparedStatement clearUnlocks = con.prepareStatement("DELETE FROM neorogue_unlocknodes WHERE uuid = ?;");
 		clearUnlocks.setString(1, uuid.toString());
@@ -280,10 +255,6 @@ public class PlayerData {
 		return saveSlot >= 1 && saveSlot <= slotsAvailable;
 	}
 	
-	public boolean hasUpgrade(String id) {
-		return upgrades.containsKey(id);
-	}
-
 	public Set<String> getUnlockNodes() {
 		return Collections.unmodifiableSet(unlockNodes);
 	}
@@ -329,19 +300,7 @@ public class PlayerData {
 		flags.remove(flag);
 	}
 	
-	public void addUpgrade(Upgrade up) {
-		upgrades.put(up.getId(), up);
-	}
-	
-	public int getPoints() {
-		return upgradePoints;
-	}
-	
-	public void initialize(Session s, PlayerSessionData data) {
-		for (Upgrade up : upgrades.values()) {
-			up.initialize(s, data);
-		}
-	}
+
 	
 	public ArrayList<String> getBoardLines() {
 		Session s = SessionManager.getSession(p);
