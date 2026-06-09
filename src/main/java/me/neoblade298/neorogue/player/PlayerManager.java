@@ -19,6 +19,15 @@ public class PlayerManager implements IOComponent {
 	private static HashMap<UUID, PlayerData> data = new HashMap<UUID, PlayerData>();
 	
 	public PlayerManager() {
+		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+				Statement stmt = con.createStatement()) {
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_unlocknodes (uuid VARCHAR(36) NOT NULL, node VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, node));");
+			stmt.execute("CREATE INDEX IF NOT EXISTS idx_neorogue_unlocknodes_uuid ON neorogue_unlocknodes (uuid);");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		// Strictly for debug
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");

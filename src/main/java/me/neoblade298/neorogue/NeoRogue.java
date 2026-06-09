@@ -52,6 +52,7 @@ import me.neoblade298.neorogue.commands.CmdAdminStatus;
 import me.neoblade298.neorogue.commands.CmdAdminTest;
 import me.neoblade298.neorogue.commands.CmdAdminTestHF;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
+import me.neoblade298.neorogue.commands.CmdAdminUnlock;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
 import me.neoblade298.neorogue.commands.CmdInvite;
@@ -66,6 +67,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
@@ -124,6 +126,7 @@ public class NeoRogue extends JavaPlugin {
 		mythicMobs = MythicBukkit.inst().getMobManager();
 		Region.initialize();
 		Equipment.load();
+		UnlockRegistry.reload();
 		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
@@ -182,6 +185,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminTest("test", "Used for testing various things", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDrop("drop", "Roll equipment from the droptable", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDropArtifact("dropartifact", "Roll artifacts from the droptable", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminUnlock("unlock", "Manage player unlock nodes", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	
