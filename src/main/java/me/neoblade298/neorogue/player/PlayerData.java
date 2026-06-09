@@ -64,7 +64,6 @@ public class PlayerData {
 		else {
 			slotsAvailable = 1;
 		}
-		unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
 		initializeEquipmentDroptable();
 	}
 	
@@ -91,7 +90,6 @@ public class PlayerData {
 					unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
 				}
 			}
-			unlockNodes.addAll(UnlockRegistry.getDefaultUnlockNodes());
 
 			flagsStmt.setString(1, uuidStr);
 			try (ResultSet flagsRs = flagsStmt.executeQuery()) {

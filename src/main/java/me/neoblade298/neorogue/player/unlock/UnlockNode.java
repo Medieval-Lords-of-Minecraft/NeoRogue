@@ -2,7 +2,10 @@ package me.neoblade298.neorogue.player.unlock;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import me.neoblade298.neocore.shared.io.Section;
 
 public class UnlockNode {
 	public static enum TargetType {
@@ -12,17 +15,15 @@ public class UnlockNode {
 	private final String id;
 	private final TargetType targetType;
 	private final Set<String> targetIds;
-	private final boolean defaultUnlocked;
+	private final Set<String> requirements;
 
-	public UnlockNode(String id, TargetType targetType, Set<String> targetIds) {
-		this(id, targetType, targetIds, false);
-	}
-
-	public UnlockNode(String id, TargetType targetType, Set<String> targetIds, boolean defaultUnlocked) {
-		this.id = UnlockRegistry.normalizeNodeId(id);
-		this.targetType = targetType;
-		this.targetIds = Collections.unmodifiableSet(new HashSet<String>(targetIds));
-		this.defaultUnlocked = defaultUnlocked;
+	public UnlockNode(Section sec) {
+		this.id = UnlockRegistry.normalizeNodeId(sec.getName());
+		this.targetType = TargetType.valueOf(sec.getString("type", "EQUIPMENT").toUpperCase());
+		List<String> targets = sec.getStringList("targets");
+		this.targetIds = targets != null ? Collections.unmodifiableSet(new HashSet<String>(targets)) : Collections.emptySet();
+		List<String> reqs = sec.getStringList("requirements");
+		this.requirements = reqs != null ? Collections.unmodifiableSet(new HashSet<String>(reqs)) : Collections.emptySet();
 	}
 
 	public String getId() {
@@ -37,7 +38,7 @@ public class UnlockNode {
 		return targetIds;
 	}
 
-	public boolean isDefaultUnlocked() {
-		return defaultUnlocked;
+	public Set<String> getRequirements() {
+		return requirements;
 	}
 }

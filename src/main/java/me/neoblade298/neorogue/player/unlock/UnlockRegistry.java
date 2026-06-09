@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player.unlock;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,9 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.shared.io.Section;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -35,7 +39,7 @@ public class UnlockRegistry {
 		equipmentToNodes.clear();
 		classToNodes.clear();
 		nodeEquipmentTargets.clear();
-		registerDefaults();
+		loadNodes();
 
 		baseEquipmentDroptable = Equipment.copyDropSet();
 		for (UnlockNode node : nodes.values()) {
@@ -75,9 +79,19 @@ public class UnlockRegistry {
 		}
 	}
 
-	private static void registerDefaults() {
-		// Intentionally empty for backward compatibility rollout.
-		// Add node registrations here as content is moved behind unlocks.
+	private static void loadNodes() {
+		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "unlocks"), (yml, file) -> {
+			for (String key : yml.getKeys()) {
+				try {
+					Section sec = yml.getSection(key);
+					UnlockNode node = new UnlockNode(sec);
+					register(node);
+				} catch (Exception e) {
+					e.printStackTrace();
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load unlock node " + key + " in file " + file.getName());
+				}
+			}
+		});
 	}
 
 	public static synchronized void register(UnlockNode node) {
@@ -94,16 +108,6 @@ public class UnlockRegistry {
 
 	public static Set<String> getNodeIds() {
 		return Collections.unmodifiableSet(nodes.keySet());
-	}
-
-	public static Set<String> getDefaultUnlockNodes() {
-		HashSet<String> defaults = new HashSet<String>();
-		for (UnlockNode node : nodes.values()) {
-			if (node.isDefaultUnlocked()) {
-				defaults.add(node.getId());
-			}
-		}
-		return defaults;
 	}
 
 	public static boolean isEquipmentUnlockedFor(PlayerData data, String equipmentId) {
