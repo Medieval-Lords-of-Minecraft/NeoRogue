@@ -103,6 +103,6 @@ public class WandOfIgnition extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD, "Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit. Applies "
-		+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to you every " + DescUtil.white(corrThres) + " uses.");
+		+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to you every " + DescUtil.yellow(corrThres) + " uses.");
 	}
 }

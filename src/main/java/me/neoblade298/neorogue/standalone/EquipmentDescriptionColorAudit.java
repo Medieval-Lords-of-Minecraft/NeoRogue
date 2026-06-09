@@ -85,7 +85,7 @@ public class EquipmentDescriptionColorAudit {
         }
 
         Path projectRoot = Paths.get("..").toAbsolutePath().normalize();
-        Path srcRoot = projectRoot.resolve("src");
+        Path srcRoot = projectRoot.resolve(Paths.get("src", "main", "java"));
         Path equipmentRoot = srcRoot.resolve(Paths.get("me", "neoblade298", "neorogue", "equipment"));
 
         List<String> equipmentClassNames = parseEquipmentLoad(equipmentRoot.resolve("Equipment.java"));

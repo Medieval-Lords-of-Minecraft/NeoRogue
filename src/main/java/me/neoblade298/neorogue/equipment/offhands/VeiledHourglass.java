@@ -57,7 +57,7 @@ public class VeiledHourglass extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CLOCK,
-				"If not in " + GlossaryTag.STEALTH.tag(this) + ", gain " + DescUtil.yellow(1) + " " + GlossaryTag.STEALTH.tag(this) + " [<white>10s</white>]. "
+				"If not in " + GlossaryTag.STEALTH.tag(this) + ", gain " + DescUtil.white(1) + " " + GlossaryTag.STEALTH.tag(this) + " [<white>10s</white>]. "
 				+ "If in " + GlossaryTag.STEALTH.tag(this) + ", reduce all castable cooldowns by " + DescUtil.yellow(cdr) + ".");
 	}
 }

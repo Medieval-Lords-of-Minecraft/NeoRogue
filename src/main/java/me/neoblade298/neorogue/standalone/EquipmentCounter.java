@@ -84,8 +84,8 @@ public class EquipmentCounter {
 		System.out.println("=== NeoRogue Equipment Counter (Interactive) ===\n");
 		
 		// Find Equipment.java source file
-		String equipmentFile = "../src/me/neoblade298/neorogue/equipment/Equipment.java";
-		String equipmentDir = "../src/me/neoblade298/neorogue/equipment/";
+		String equipmentFile = "../src/main/java/me/neoblade298/neorogue/equipment/Equipment.java";
+		String equipmentDir = "../src/main/java/me/neoblade298/neorogue/equipment/";
 		
 		try {
 			List<String> equipmentNames = parseEquipmentFile(equipmentFile);
