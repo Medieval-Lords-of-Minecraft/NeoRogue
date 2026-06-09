@@ -25,7 +25,6 @@ public class UnlockRegistry {
 	private static final HashMap<String, HashSet<String>> equipmentToNodes = new HashMap<String, HashSet<String>>();
 	private static final HashMap<EquipmentClass, HashSet<String>> classToNodes = new HashMap<EquipmentClass, HashSet<String>>();
 	private static final HashMap<String, HashSet<String>> nodeEquipmentTargets = new HashMap<String, HashSet<String>>();
-	private static DropTableSet<Equipment> baseEquipmentDroptable = new DropTableSet<Equipment>();
 
 	static {
 		reload();
@@ -41,7 +40,6 @@ public class UnlockRegistry {
 		nodeEquipmentTargets.clear();
 		loadNodes();
 
-		baseEquipmentDroptable = Equipment.copyDropSet();
 		for (UnlockNode node : nodes.values()) {
 			switch (node.getTargetType()) {
 			case EQUIPMENT:
@@ -56,7 +54,7 @@ public class UnlockRegistry {
 								+ " references unknown equipment id " + targetId);
 						continue;
 					}
-					baseEquipmentDroptable.remove(eq);
+					Equipment.removeFromDroptable(eq);
 				}
 				nodeEquipmentTargets.put(node.getId(), equipmentIds);
 				break;
@@ -133,7 +131,7 @@ public class UnlockRegistry {
 	}
 
 	public static DropTableSet<Equipment> buildEquipmentDroptable(PlayerData data) {
-		DropTableSet<Equipment> derived = baseEquipmentDroptable.clone();
+		DropTableSet<Equipment> derived = Equipment.copyDropSet();
 		if (data != null) {
 			for (String unlockNode : data.getUnlockNodes()) {
 				HashSet<String> nodeTargets = nodeEquipmentTargets.get(normalizeNodeId(unlockNode));
@@ -147,12 +145,8 @@ public class UnlockRegistry {
 		}
 
 		if (derived.isEmpty()) {
-			if (nodes.isEmpty()) {
-				Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty with no unlock nodes; using full droptable");
-				return Equipment.copyDropSet();
-			}
-			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; using base unlock droptable");
-			return baseEquipmentDroptable.clone();
+			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; using base droptable");
+			return Equipment.copyDropSet();
 		}
 		return derived;
 	}

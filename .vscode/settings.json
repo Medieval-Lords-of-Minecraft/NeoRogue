@@ -5,6 +5,7 @@
     "sarif-viewer.connectToGithubCodeScanning": "off",
     "chat.tools.terminal.autoApprove": {
         "mvn compile": true,
-        "mvn package": true
+        "mvn package": true,
+        "mvn clean": true
     }
 }
