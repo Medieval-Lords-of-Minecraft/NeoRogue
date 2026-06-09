@@ -1065,7 +1065,11 @@ public abstract class FightInstance extends Instance {
 		);
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 		
-		s.broadcast(FightStatistics.getStatsHeader(timer));
+		s.broadcast(FightStatistics.getStatsHeader(timer, getFightScore()));
+	}
+
+	protected FightScore getFightScore() {
+		return null;
 	}
 	
 	@Override

@@ -65,6 +65,11 @@ public class StandardFightInstance extends FightInstance {
 		super(s, players);
 		this.map = map;
 	}
+
+	@Override
+	protected FightScore getFightScore() {
+		return fightScore;
+	}
 	
 	@Override
 	protected void setupInstance(Session s) {

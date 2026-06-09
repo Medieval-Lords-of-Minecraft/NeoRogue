@@ -82,9 +82,10 @@ public class FightStatistics {
 		buffStats.put(stat, amt + amount);
 	}
 
-	public static Component getStatsHeader(String timer) {
+	public static Component getStatsHeader(String timer, FightScore score) {
+		String scoreText = score != null ? " | Rating: " + score.getDisplay() : "";
 		return SharedUtil.color(
-			"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
+			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + " (Hover for more info!)\n=====\n"
 					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "
 					+ "</dark_red>/ <gold>Statuses</gold> / <blue>Buffs</blue>]"
 		);
