@@ -55,6 +55,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.Node;
@@ -737,6 +738,37 @@ public class Session {
 	public void addNotoriety(int amount) {
 		notoriety += amount;
 	}
+
+	public double getRegionXpMultiplier() {
+		if (region == null) return 1.0;
+		switch (region.getType()) {
+		case LOW_DISTRICT:
+		case LOW_DISTRICT_DEBUG:
+			return 1.0;
+		case HARVEST_FIELDS:
+		case HARVEST_FIELDS_DEBUG:
+			return 1.1;
+		case FROZEN_WASTES:
+		case FROZEN_WASTES_DEBUG:
+			return 1.2;
+		default:
+			return 1.0;
+		}
+	}
+
+	public double getNotorietyXpMultiplier() {
+		return 1.0 + notoriety * 0.05;
+	}
+
+	public void awardXp(int baseXp) {
+		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
+		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
+			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
+			if (pdata == null) continue;
+			EquipmentClass ec = entry.getValue().getPlayerClass();
+			pdata.addExp(ec, finalXp);
+		}
+	}
 	
 	public void generateRegion(RegionType type) {
 		this.region = new Region(type, xOff, zOff, this);
@@ -792,6 +824,7 @@ public class Session {
 		}
 		this.curr = node;
 		nodesVisited++;
+		awardXp(1);
 	}
 	
 	public String getName() {

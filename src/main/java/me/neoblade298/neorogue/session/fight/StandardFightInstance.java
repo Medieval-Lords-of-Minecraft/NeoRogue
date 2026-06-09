@@ -132,6 +132,7 @@ public class StandardFightInstance extends FightInstance {
 		if (score >= scoreRequired) {
 			timeBar.removeAll();
 			scoreBar.removeAll();
+			s.awardXp(fightScore.getXp());
 			Title title = Title.title(Component.text("Victory"),
 				Component.text("Your ranking: ").append(fightScore.getComponentDisplay()));
 			handleWin(title, new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));

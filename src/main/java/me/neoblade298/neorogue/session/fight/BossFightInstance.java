@@ -64,6 +64,7 @@ public class BossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
+			s.awardXp(20);
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
 			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
 			

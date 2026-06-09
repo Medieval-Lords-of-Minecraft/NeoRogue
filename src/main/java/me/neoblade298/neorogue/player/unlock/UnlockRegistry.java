@@ -160,4 +160,31 @@ public class UnlockRegistry {
 		Collections.sort(ids);
 		return ids;
 	}
+
+	public static UnlockNode getNode(String nodeId) {
+		return nodes.get(normalizeNodeId(nodeId));
+	}
+
+	public static boolean canAfford(PlayerData data, UnlockNode node) {
+		if (data == null || node == null) return false;
+		return data.getPoints(node.getNodeClass()) >= node.getCost();
+	}
+
+	/**
+	 * Attempts to grant a node to a player, deducting points.
+	 * Returns true if successful, false if cannot afford or already unlocked.
+	 */
+	public static boolean grantWithCost(PlayerData data, String nodeId) {
+		String normalized = normalizeNodeId(nodeId);
+		UnlockNode node = nodes.get(normalized);
+		if (node == null) return false;
+		if (data.hasUnlockNode(normalized)) return false;
+		if (!canAfford(data, node)) return false;
+		// Check requirements
+		for (String req : node.getRequirements()) {
+			if (!data.hasUnlockNode(req)) return false;
+		}
+		data.addPoints(node.getNodeClass(), -node.getCost());
+		return data.grant(normalized);
+	}
 }

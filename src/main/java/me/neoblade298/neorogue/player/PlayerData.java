@@ -23,6 +23,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
@@ -31,9 +32,18 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 
 public class PlayerData {
-	private int exp, level;
+	private static final String[] CLASS_KEYS = { "GLOBAL", "WARRIOR", "THIEF", "MAGE", "ARCHER" };
+
+	private static class ClassProgression {
+		int level = 1;
+		int exp = 0;
+		int points = 0;
+	}
+
+	private HashMap<EquipmentClass, ClassProgression> progression = new HashMap<>();
 	private UUID uuid;
 	private Player p;
 	private String display;
@@ -50,8 +60,11 @@ public class PlayerData {
 		this.p = p;
 		this.display = p.getName();
 		
-		this.level = 1;
-		this.exp = 0;
+		progression.put(null, new ClassProgression());
+		progression.put(EquipmentClass.WARRIOR, new ClassProgression());
+		progression.put(EquipmentClass.THIEF, new ClassProgression());
+		progression.put(EquipmentClass.MAGE, new ClassProgression());
+		progression.put(EquipmentClass.ARCHER, new ClassProgression());
 		if (p.hasPermission("donator.diamond")) {
 			slotsAvailable = 5;
 		}
@@ -80,8 +93,22 @@ public class PlayerData {
 			baseStmt.setString(1, uuidStr);
 			try (ResultSet base = baseStmt.executeQuery()) {
 				if (!base.next()) return;
-				this.level = base.getInt("level");
-				this.exp = base.getInt("exp");
+			}
+
+			// Load class progression from separate table
+			try (PreparedStatement classStmt = con.prepareStatement("SELECT * FROM neorogue_playerclass WHERE uuid = ?;")) {
+				classStmt.setString(1, uuidStr);
+				try (ResultSet classRs = classStmt.executeQuery()) {
+					while (classRs.next()) {
+						String classKey = classRs.getString("class");
+						EquipmentClass ec = classKey.equals("GLOBAL") ? null : EquipmentClass.valueOf(classKey);
+						ClassProgression prog = progression.get(ec);
+						if (prog == null) continue;
+						prog.level = classRs.getInt("level");
+						prog.exp = classRs.getInt("exp");
+						prog.points = classRs.getInt("points");
+					}
+				}
 			}
 
 			unlockStmt.setString(1, uuidStr);
@@ -154,17 +181,94 @@ public class PlayerData {
 	}
 	
 	public int getLevel() {
-		return level;
+		return progression.get(null).level;
 	}
 	
 	public int getExp() {
-		return exp;
+		return progression.get(null).exp;
 	}
 	
 	public int getSlots() {
 		return slotsAvailable;
 	}
-	
+
+	public int getLevel(EquipmentClass ec) {
+		ClassProgression prog = progression.get(ec);
+		return prog != null ? prog.level : 1;
+	}
+
+	public int getExp(EquipmentClass ec) {
+		ClassProgression prog = progression.get(ec);
+		return prog != null ? prog.exp : 0;
+	}
+
+	public int getPoints(EquipmentClass ec) {
+		ClassProgression prog = progression.get(ec);
+		return prog != null ? prog.points : 0;
+	}
+
+	public void setLevel(EquipmentClass ec, int value) {
+		ClassProgression prog = progression.get(ec);
+		if (prog != null) prog.level = value;
+	}
+
+	public void setExp(EquipmentClass ec, int value) {
+		ClassProgression prog = progression.get(ec);
+		if (prog != null) prog.exp = value;
+	}
+
+	public void setPoints(EquipmentClass ec, int value) {
+		ClassProgression prog = progression.get(ec);
+		if (prog != null) prog.points = value;
+	}
+
+	public void addPoints(EquipmentClass ec, int amount) {
+		ClassProgression prog = progression.get(ec);
+		if (prog != null) prog.points += amount;
+	}
+
+	public static int getXpRequired(int currentLevel) {
+		if (currentLevel >= 50) return 2500;
+		if (currentLevel < 5) return 20 * currentLevel * currentLevel;
+		return 200 * currentLevel - 500;
+	}
+
+	public void addExp(EquipmentClass ec, int amount) {
+		// Add to class
+		addExpInternal(ec, amount);
+		// Add to global
+		if (ec != null) {
+			addExpInternal(null, amount);
+		}
+	}
+
+	private void addExpInternal(EquipmentClass ec, int amount) {
+		int currentExp = getExp(ec) + amount;
+		int currentLevel = getLevel(ec);
+		int required = getXpRequired(currentLevel);
+		while (currentExp >= required) {
+			currentExp -= required;
+			currentLevel++;
+			onLevelUp(ec, currentLevel);
+			required = getXpRequired(currentLevel);
+		}
+		setExp(ec, currentExp);
+		setLevel(ec, currentLevel);
+	}
+
+	private void onLevelUp(EquipmentClass ec, int newLevel) {
+		addPoints(ec, 1);
+		Player player = getPlayer();
+		if (player == null || !player.isOnline()) return;
+		String category = ec == null ? "Global" : ec.getDisplay();
+		Title title = Title.title(
+			Component.text("Level Up!", NamedTextColor.GOLD),
+			Component.text(category + " Level " + newLevel, NamedTextColor.YELLOW)
+		);
+		player.showTitle(title);
+		player.playSound(player, org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
+	}
+
 	public void updateSnapshot(Session s, int saveSlot) {
 		snapshots.put(saveSlot, new SessionSnapshot(s));
 	}
@@ -185,10 +289,26 @@ public class PlayerData {
 		// Only saves player data and ascension tree, session saving is handled elsewhere
 		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerdata")
 				.addValue("uuid", uuid.toString())
-				.addValue("level", level)
-				.addValue("exp", exp)
 				.addValue("display", display);
 		stmts.add(sql.build(con));
+
+		// Save class progression
+		PreparedStatement clearClass = con.prepareStatement("DELETE FROM neorogue_playerclass WHERE uuid = ?;");
+		clearClass.setString(1, uuid.toString());
+		stmts.add(clearClass);
+
+		SQLInsertBuilder classSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerclass");
+		for (var entry : progression.entrySet()) {
+			String classKey = entry.getKey() == null ? "GLOBAL" : entry.getKey().name();
+			ClassProgression prog = entry.getValue();
+			classSql.addValue("uuid", uuid.toString())
+					.addValue("class", classKey)
+					.addValue("level", prog.level)
+					.addValue("exp", prog.exp)
+					.addValue("points", prog.points)
+					.addRow();
+		}
+		stmts.add(classSql.build(con));
 
 		PreparedStatement clearUnlocks = con.prepareStatement("DELETE FROM neorogue_unlocknodes WHERE uuid = ?;");
 		clearUnlocks.setString(1, uuid.toString());
