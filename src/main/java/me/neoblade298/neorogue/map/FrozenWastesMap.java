@@ -182,7 +182,7 @@ public class FrozenWastesMap extends Map {
 				chosen.setX(pieceX);
 				chosen.setZ(pieceZ);
 
-				int yOffset = NeoRogue.gen.nextInt(9) - 4;
+				int yOffset = NeoRogue.gen.nextInt(5) - 2;
 				chosen.setY(yOffset);
 
 				placePiece(chosen, false);
