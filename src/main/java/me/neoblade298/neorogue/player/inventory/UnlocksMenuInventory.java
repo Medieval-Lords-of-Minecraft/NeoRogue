@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -48,11 +49,19 @@ public class UnlocksMenuInventory extends CoreInventory {
 
 		switch (e.getSlot()) {
 		case WARRIOR:
+			new UnlockClassInventory(p, EquipmentClass.WARRIOR);
+			break;
 		case THIEF:
+			new UnlockClassInventory(p, EquipmentClass.THIEF);
+			break;
 		case ARCHER:
+			new UnlockClassInventory(p, EquipmentClass.ARCHER);
+			break;
 		case MAGE:
+			new UnlockClassInventory(p, EquipmentClass.MAGE);
+			break;
 		case GLOBAL:
-			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);
+			new UnlockClassInventory(p, null);
 			break;
 		case BACK:
 			new MainMenuInventory(p);

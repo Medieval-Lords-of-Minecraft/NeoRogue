@@ -141,8 +141,10 @@ public class MapPiece {
 				spawner.reloadMythicMob();
 			}
 		}
-		for (MapSpawner spawner : initialSpawns) {
-			spawner.reloadMythicMob();
+		if (initialSpawns != null) {
+			for (MapSpawner spawner : initialSpawns) {
+				spawner.reloadMythicMob();
+			}
 		}
 	}
 	

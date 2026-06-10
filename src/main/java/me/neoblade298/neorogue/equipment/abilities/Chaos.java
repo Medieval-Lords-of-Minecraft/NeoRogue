@@ -105,8 +105,8 @@ public class Chaos extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
 				"On cast, fire a bolt of magic that deals random " + GlossaryTag.FIRE.tag(this) + ", " +
-				GlossaryTag.ELECTRIFIED.tag(this) + ", " + GlossaryTag.DARK.tag(this) + ", or " +
-				GlossaryTag.CONCUSSED.tag(this) + " damage for " +
+				GlossaryTag.LIGHTNING.tag(this) + ", " + GlossaryTag.DARK.tag(this) + ", or " +
+				GlossaryTag.EARTHEN.tag(this) + " damage for " +
 				DescUtil.yellow(damage) + " and applies " + DescUtil.yellow(stacks) + " of that element's status.");
 	}
 }

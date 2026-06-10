@@ -165,6 +165,16 @@ public class UnlockRegistry {
 		return nodes.get(normalizeNodeId(nodeId));
 	}
 
+	public static ArrayList<UnlockNode> getNodesForClass(EquipmentClass ec) {
+		ArrayList<UnlockNode> result = new ArrayList<UnlockNode>();
+		for (UnlockNode node : nodes.values()) {
+			if (node.getNodeClass() == ec) {
+				result.add(node);
+			}
+		}
+		return result;
+	}
+
 	public static boolean canAfford(PlayerData data, UnlockNode node) {
 		if (data == null || node == null) return false;
 		return data.getPoints(node.getNodeClass()) >= node.getCost();
