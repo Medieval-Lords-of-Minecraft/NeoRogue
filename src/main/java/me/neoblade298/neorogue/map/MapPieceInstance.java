@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -388,11 +387,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
 		HashMap<Location, Integer> signLines = new HashMap<>();
 
-		// Mark spawners with orange wool
-		HashSet<Location> spawnerLocs = new HashSet<>();
+		// Mark spawners with orange wool and signs
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
 			for (MapSpawner spawner : list) {
-				Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
+				Coordinates coords = spawner.getCoordinates().clone().applySettings(this);
+				Location loc = coords.toLocation();
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
@@ -406,11 +405,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					}
 				}
-				spawnerLocs.add(loc);
+				loc.getBlock().setType(Material.ORANGE_WOOL);
+				Location signLoc = loc.clone().add(0, 1, 0);
+				if (!signLines.containsKey(signLoc.toBlockLocation())) {
+					Coordinates origCoords = spawner.getCoordinates();
+					String coordLabel = "MS " + (int) origCoords.getX() + ", " + (int) origCoords.getY() + ", " + (int) origCoords.getZ();
+					placeOrAppendSign(signLoc, coords.getDirection(), coordLabel, NamedTextColor.GOLD, signLines);
+				}
+				placeOrAppendSign(signLoc, coords.getDirection(), spawner.getMobId(), NamedTextColor.GOLD, signLines);
 			}
-		}
-		for (Location loc : spawnerLocs) {
-			loc.getBlock().setType(Material.ORANGE_WOOL);
 		}
 
 		// Mark initial spawns
