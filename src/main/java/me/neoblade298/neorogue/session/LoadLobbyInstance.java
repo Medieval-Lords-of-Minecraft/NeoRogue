@@ -49,6 +49,11 @@ public class LoadLobbyInstance extends LobbyInstance {
     // Used by Session to set the instance to start after loading
     public void completeLoad(Instance startInstance) {
         this.startInstance = startInstance;
+        // If host disconnected during load, end the session
+        if (hostLeft) {
+            SessionManager.endSession(s);
+            return;
+        }
         updateBoardLines();
         invitePlayers();
     }
@@ -192,6 +197,18 @@ public class LoadLobbyInstance extends LobbyInstance {
 
     @Override
     public void startGame() {
+        if (startInstance == null) {
+            Util.displayError(Bukkit.getPlayer(host), "Failed to load game data. Please try again.");
+            SessionManager.endSession(s);
+            return;
+        }
+
+        // Verify host is still online
+        if (Bukkit.getPlayer(host) == null) {
+            SessionManager.endSession(s);
+            return;
+        }
+
         // First remove players that weren't in lobby
         ArrayList<UUID> toRemove = new ArrayList<UUID>();
         for (UUID uuid : session.getParty().keySet()) {
@@ -209,6 +226,8 @@ public class LoadLobbyInstance extends LobbyInstance {
 		Util.msgRaw(Bukkit.getPlayer(host), Component.text("Finished loading.", NamedTextColor.GRAY));
 
 		for (PlayerSessionData psd : s.getParty().values()) {
+			Player p = psd.getPlayer();
+			if (p == null) continue;
 			psd.setupInventory();
 			psd.syncHealth();
 		}

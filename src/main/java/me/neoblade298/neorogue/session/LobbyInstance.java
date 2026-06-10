@@ -23,6 +23,8 @@ public abstract class LobbyInstance extends Instance {
 
 	protected Session session;
 	protected HashSet<UUID> invited = new HashSet<UUID>(), inLobby = new HashSet<UUID>();
+	protected HashSet<UUID> pendingRemovals = new HashSet<UUID>();
+	protected boolean hostLeft = false;
 	protected UUID host;
 	protected Component partyInfoHeader;
 	protected TextDisplay holo;
@@ -66,7 +68,14 @@ public abstract class LobbyInstance extends Instance {
 
 	public void leavePlayer(Player p) {
 		if (s.isBusy()) {
-			Util.msgRaw(p, gameGenerating);
+			// Session is loading — mark for deferred cleanup
+			UUID uuid = p.getUniqueId();
+			pendingRemovals.add(uuid);
+			inLobby.remove(uuid);
+			SessionManager.removeFromSession(uuid);
+			if (uuid.equals(host)) {
+				hostLeft = true;
+			}
 			return;
 		}
 
@@ -106,6 +115,10 @@ public abstract class LobbyInstance extends Instance {
 
 	public HashSet<UUID> getInLobby() {
 		return inLobby;
+	}
+
+	public boolean hasHostLeft() {
+		return hostLeft;
 	}
 
 	public HashSet<UUID> getInvited() {

@@ -176,6 +176,19 @@ public class Session {
 	private void load(int saveSlot, UUID host, int xOff, int zOff, LoadLobbyInstance lobby) {
 		Session s = this;
 		busy = true;
+
+		// Safety net: if load takes longer than 10 seconds, force-end the session
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (busy) {
+					Bukkit.getLogger().warning("[NeoRogue] Session load timed out for host " + host + " slot " + saveSlot + ". Forcing end.");
+					busy = false;
+					SessionManager.endSession(s);
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 200L); // 10 seconds = 200 ticks
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -192,7 +205,9 @@ public class Session {
 					ResultSet sessSet = stmt.executeQuery(
 							"SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 					);
-					sessSet.next();
+					if (!sessSet.next()) {
+						throw new SQLException("No session data found for host " + host + " slot " + saveSlot);
+					}
 					sessionType = getSessionTypeFromRow(sessSet);
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
@@ -215,11 +230,23 @@ public class Session {
 					);
 					curr = region.getNodes()[pos][lane];
 
-					lobby.completeLoad(inst);
-				} catch (SQLException e) {
+					// Complete load on main thread for thread safety
+					Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+						busy = false;
+						lobby.completeLoad(inst);
+					});
+				} catch (Exception e) {
 					e.printStackTrace();
-				} finally {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load session for host " + host + " slot " + saveSlot);
 					busy = false;
+					// End session on main thread
+					Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+						Player p = Bukkit.getPlayer(host);
+						if (p != null) {
+							Util.displayError(p, "Failed to load your saved game. The session has been ended.");
+						}
+						SessionManager.endSession(s);
+					});
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
@@ -567,8 +594,10 @@ public class Session {
 		Bukkit.getLogger()
 				.info("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited + ", regions completed " + regionsCompleted);
 		for (PlayerSessionData psd : party.values()) {
+			Player p = psd.getPlayer();
+			if (p == null) continue;
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
-			Bukkit.getLogger().info("Serialization for " + psd.getPlayer().getName());
+			Bukkit.getLogger().info("Serialization for " + p.getName());
 			Bukkit.getLogger().info(psd.serialize());
 			Bukkit.getLogger().info("Abilities: " + psd.getAbilitiesEquipped() + " / " + psd.getMaxAbilities());
 			Bukkit.getLogger().info("Accessories: " + psd.getAccessoriesEquipped() + " / " + psd.getAccessorySlots());
