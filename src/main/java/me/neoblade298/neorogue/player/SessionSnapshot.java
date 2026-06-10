@@ -108,4 +108,20 @@ public class SessionSnapshot {
 	public HashMap<UUID, String> getPartyIds() {
 		return partyIds;
 	}
+
+	public long getLastSaved() {
+		return lastSaved;
+	}
+
+	public RegionType getRegionType() {
+		return regionType;
+	}
+
+	public int getNodesVisited() {
+		return nodesVisited;
+	}
+
+	public HashMap<String, EquipmentClass> getParty() {
+		return party;
+	}
 }

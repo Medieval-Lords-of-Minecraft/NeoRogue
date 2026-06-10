@@ -35,8 +35,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 
 public class PlayerData {
-	private static final String[] CLASS_KEYS = { "GLOBAL", "WARRIOR", "THIEF", "MAGE", "ARCHER" };
-
 	private static class ClassProgression {
 		int level = 1;
 		int exp = 0;

@@ -60,6 +60,7 @@ import me.neoblade298.neorogue.commands.CmdAdminTestHF;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdAdminUnlock;
 import me.neoblade298.neorogue.commands.CmdGlossary;
+import me.neoblade298.neorogue.commands.CmdHelp;
 import me.neoblade298.neorogue.commands.CmdInfo;
 import me.neoblade298.neorogue.commands.CmdInvite;
 import me.neoblade298.neorogue.commands.CmdJoin;
@@ -67,6 +68,7 @@ import me.neoblade298.neorogue.commands.CmdKick;
 import me.neoblade298.neorogue.commands.CmdLeave;
 import me.neoblade298.neorogue.commands.CmdList;
 import me.neoblade298.neorogue.commands.CmdLoad;
+import me.neoblade298.neorogue.commands.CmdMenu;
 import me.neoblade298.neorogue.commands.CmdNew;
 import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -152,6 +154,8 @@ public class NeoRogue extends JavaPlugin {
 	
 	private void initCommands() {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
+		mngr.register(new CmdMenu("", "Open the main menu", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdHelp("help", "View command list", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.PLAYER_ONLY));
@@ -162,7 +166,6 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));
