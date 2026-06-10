@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.map;
 
 import java.util.Optional;
 
+import org.bukkit.Bukkit;
+
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
@@ -27,7 +29,11 @@ public class MapSpawner {
 	}
 	
 	public void reloadMythicMob() {
-		mythicMob = NeoRogue.mythicApi.getMythicMob(mythicMob.getInternalName());
+		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
+		mythicMob = opt.isPresent() ? opt.get() : null;
+		if (mythicMob == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to reload MythicMob for spawner id '" + id + "'");
+		}
 	}
 
 	public MythicMob getMythicMob() {

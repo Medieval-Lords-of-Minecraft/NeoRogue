@@ -57,7 +57,7 @@ public class NewGameSlotInventory extends CoreInventory {
 				meta.displayName(Component.text("Slot " + i + " (Overwrite)", NamedTextColor.YELLOW));
 				List<Component> lore = new ArrayList<>();
 				lore.add(Component.text("Last saved: " + sdf.format(new Date(snap.getLastSaved())), NamedTextColor.GRAY));
-				lore.add(Component.text("Area: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
+				lore.add(Component.text("Region: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
 				lore.add(Component.text("Nodes visited: " + snap.getNodesVisited(), NamedTextColor.GRAY));
 				lore.add(Component.text("Party:", NamedTextColor.GRAY));
 				for (Entry<String, EquipmentClass> ent : snap.getParty().entrySet()) {

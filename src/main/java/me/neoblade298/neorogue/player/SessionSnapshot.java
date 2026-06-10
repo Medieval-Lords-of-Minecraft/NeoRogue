@@ -90,7 +90,7 @@ public class SessionSnapshot {
 	}
 	
 	private Component createHoverText() {
-		Builder b = Component.text().content("Area: ").color(NamedTextColor.GRAY)
+		Builder b = Component.text().content("Region: ").color(NamedTextColor.GRAY)
 				.append(Component.text(regionType.getDisplay(), NamedTextColor.GOLD))
 				.append(Component.text("\nNodes visited: ", NamedTextColor.GRAY))
 				.append(Component.text(nodesVisited, NamedTextColor.GOLD))
