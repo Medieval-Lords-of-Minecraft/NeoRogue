@@ -27,8 +27,9 @@ public class CmdAdminUnlock extends Subcommand {
 		for (Action action : Action.values()) {
 			actions.add(action.name().toLowerCase());
 		}
-		args.add(new Arg("action").setTabOptions(actions), new Arg("player", false),
-				new Arg("node", false).setTabOptions(UnlockRegistry.getSortedNodeIds()));
+		args.add(new Arg("action").setTabOptions(actions),
+				new Arg("node").setTabOptions(UnlockRegistry.getSortedNodeIds()),
+				new Arg("player", false));
 		this.enableTabComplete();
 	}
 
@@ -54,8 +55,8 @@ public class CmdAdminUnlock extends Subcommand {
 		}
 
 		Player target;
-		if (args.length > 1) {
-			target = Bukkit.getPlayer(args[1]);
+		if (args.length > 2) {
+			target = Bukkit.getPlayer(args[2]);
 		}
 		else if (s instanceof Player) {
 			target = (Player) s;
@@ -89,13 +90,13 @@ public class CmdAdminUnlock extends Subcommand {
 			return;
 		case GRANT:
 		case REVOKE:
-			if (args.length < 3) {
-				Util.msg(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <player> <node>");
+			if (args.length < 2) {
+				Util.msg(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <node> [player]");
 				return;
 			}
-			String nodeId = UnlockRegistry.normalizeNodeId(args[2]);
+			String nodeId = UnlockRegistry.normalizeNodeId(args[1]);
 			if (!UnlockRegistry.hasNode(nodeId)) {
-				Util.msg(s, "<red>Unknown unlock node: " + args[2]);
+				Util.msg(s, "<red>Unknown unlock node: " + args[1]);
 				return;
 			}
 
