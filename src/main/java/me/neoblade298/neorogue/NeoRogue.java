@@ -214,8 +214,8 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(host, 1);
 		s.generateRegion(regionType);
 		s.addPlayer(host.getUniqueId(), ec);
-		s.setNodesVisited(regionType == RegionType.HARVEST_FIELDS ? 16 : 0);
-		s.setRegionsCompleted(regionType == RegionType.HARVEST_FIELDS ? 1 : 0);
+		s.setNodesVisited(regionType == RegionType.FROZEN_WASTES ? 32 : regionType == RegionType.HARVEST_FIELDS ? 16 : 0);
+		s.setRegionsCompleted(regionType == RegionType.FROZEN_WASTES ? 2 : regionType == RegionType.HARVEST_FIELDS ? 1 : 0);
 
 		s.setNode(s.getRegion().getNodes()[0][2]);
 		for (Player pl : others == null ? Bukkit.getOnlinePlayers() : others) {
