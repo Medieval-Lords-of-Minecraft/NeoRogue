@@ -6,10 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -32,6 +28,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -74,22 +71,24 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	protected void setupInstance(Session s) {
 		scoreRequired = SCORE_REQUIRED.getOrDefault(s.getParty().size(), SCORE_REQUIRED.get(4));
-		scoreBar = Bukkit.createBossBar("Objective: Kill Enemies", BarColor.RED, BarStyle.SEGMENTED_6);
-		timeBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.WHITE, BarStyle.SOLID);
-		timeBar.addFlag(BarFlag.CREATE_FOG);
+		scoreBar = BossBar.bossBar(Component.text("Objective: Kill Enemies"), 0f, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6);
+		timeBar = BossBar.bossBar(Component.text("Current Rating: ").append(fightScore.getComponentDisplay()),
+				0f, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
+		timeBar.addFlag(BossBar.Flag.CREATE_WORLD_FOG);
 		bars.add(scoreBar);
 		bars.add(timeBar);
-		scoreBar.setProgress(0);
 
 		for (Player p : s.getOnlinePlayers()) {
-			timeBar.addPlayer(p);
-			scoreBar.addPlayer(p);
+			p.showBossBar(timeBar);
+			p.showBossBar(scoreBar);
 		}
 
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			timeBar.addPlayer(p);
-			scoreBar.addPlayer(p);
+			if (p != null) {
+				p.showBossBar(timeBar);
+				p.showBossBar(scoreBar);
+			}
 		}
 
 		tasks.add(new BukkitRunnable() {
@@ -97,7 +96,7 @@ public class StandardFightInstance extends FightInstance {
 			public void run() {
 				time++;
 				double fightTimeMult = (1 - (s.getFightTimeReduction() * Session.FIGHT_TIME_REDUCTION_PER_LEVEL));
-				timeBar.setProgress(time / (fightScore.getThreshold() * fightTimeMult));
+				timeBar.progress((float) (time / (fightScore.getThreshold() * fightTimeMult)));
 
 				if (time >= fightScore.getThreshold() * fightTimeMult) {
 					if (fightScore.getNext() == null) {
@@ -105,7 +104,7 @@ public class StandardFightInstance extends FightInstance {
 					} else {
 						fightScore = fightScore.getNext();
 						time = 0;
-						timeBar.setTitle("Current Rating: " + fightScore.getDisplay());
+						timeBar.name(Component.text("Current Rating: ").append(fightScore.getComponentDisplay()));
 					}
 				}
 			}
@@ -128,10 +127,10 @@ public class StandardFightInstance extends FightInstance {
 		}
 			
 		score += mob.getKillValue();
-		scoreBar.setProgress(Math.min(1, score / scoreRequired));
+		scoreBar.progress((float) Math.min(1, score / scoreRequired));
 		if (score >= scoreRequired) {
-			timeBar.removeAll();
-			scoreBar.removeAll();
+			hideBarFromAll(timeBar);
+			hideBarFromAll(scoreBar);
 			s.awardXp(fightScore.getXp());
 			Title title = Title.title(Component.text("Victory"),
 				Component.text("Your ranking: ").append(fightScore.getComponentDisplay()));
@@ -230,8 +229,8 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
-		timeBar.removeAll();
-		scoreBar.removeAll();
+		hideBarFromAll(timeBar);
+		hideBarFromAll(scoreBar);
 	}
 
 	@Override

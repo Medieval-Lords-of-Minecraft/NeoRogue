@@ -83,7 +83,7 @@ public class FightStatistics {
 	}
 
 	public static Component getStatsHeader(String timer, FightScore score) {
-		String scoreText = score != null ? " | Rating: " + score.getDisplay() : "";
+		String scoreText = score != null ? " | Rating: " + score.getMiniMessageDisplay() : "";
 		return SharedUtil.color(
 			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + " (Hover for more info!)\n=====\n"
 					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "

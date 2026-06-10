@@ -19,9 +19,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Entity;
@@ -89,7 +86,9 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 
 public abstract class FightInstance extends Instance {
@@ -119,6 +118,34 @@ public abstract class FightInstance extends Instance {
 	private ArrayList<String> spectatorLines;
 	protected boolean isActive = true;
 	protected ArrayList<BossBar> bars = new ArrayList<BossBar>();
+
+	protected void showBar(Player p, BossBar bar) {
+		p.showBossBar(bar);
+	}
+
+	protected void hideBar(Player p, BossBar bar) {
+		p.hideBossBar(bar);
+	}
+
+	protected void showBarToAll(BossBar bar) {
+		for (Player p : s.getOnlinePlayers()) {
+			p.showBossBar(bar);
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null) p.showBossBar(bar);
+		}
+	}
+
+	protected void hideBarFromAll(BossBar bar) {
+		for (Player p : s.getOnlinePlayers()) {
+			p.hideBossBar(bar);
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null) p.hideBossBar(bar);
+		}
+	}
 	private boolean isCleaned;
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
@@ -165,14 +192,14 @@ public abstract class FightInstance extends Instance {
 	@Override
 	public void handleSpectatorJoin(Player p) {
 		for (BossBar bar : bars) {
-			bar.addPlayer(p);
+			p.showBossBar(bar);
 		}
 	}
 
 	@Override
 	public void handleSpectatorLeave(Player p) {
 		for (BossBar bar : bars) {
-			bar.removePlayer(p);
+			p.hideBossBar(bar);
 		}
 	}
 
@@ -278,9 +305,9 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
-		if (p instanceof Player) {
+		if (p instanceof Player pl) {
 			for (BossBar bar : bars) {
-				bar.removePlayer((Player) p);
+				pl.hideBossBar(bar);
 			}
 		}
 		userData.remove(p.getUniqueId()).cleanup();
@@ -355,7 +382,7 @@ public abstract class FightInstance extends Instance {
 		}
 
 		for (BossBar bar : bars) {
-			bar.addPlayer(p);
+			p.showBossBar(bar);
 		}
 	}
 	
@@ -547,22 +574,18 @@ public abstract class FightInstance extends Instance {
 		);
 		dead.teleport(corpse.corpseDisplay);
 
-		BossBar reviveBar = Bukkit
-				.createBossBar("§e" + p.getName() + " §fReviving §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
+		BossBar reviveBar = BossBar.bossBar(
+				Component.text(p.getName() + " ", NamedTextColor.YELLOW)
+					.append(Component.text("Reviving ", NamedTextColor.WHITE))
+					.append(Component.text(dead.getName(), NamedTextColor.YELLOW)),
+				0f, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
 		bars.add(reviveBar);
-		for (Player party : s.getOnlinePlayers()) {
-			reviveBar.addPlayer(party);
-		}
-		for (UUID uuid : s.getSpectators().keySet()) {
-			Player spec = Bukkit.getPlayer(uuid);
-			if (p != null)
-				reviveBar.addPlayer(spec);
-		}
+		showBarToAll(reviveBar);
 		corpse.bar = reviveBar;
 		cleanupTasks.add(new BukkitRunnable() {
 			@Override
 			public void run() {
-				reviveBar.removeAll();
+				hideBarFromAll(reviveBar);
 				bars.remove(reviveBar);
 			}
 		});
@@ -578,7 +601,7 @@ public abstract class FightInstance extends Instance {
 						return;
 					}
 
-					reviveBar.setProgress(progress);
+					reviveBar.progress((float) progress);
 					reviveSounds[count].play(p, p, Audience.ORIGIN);
 					reviveSounds[count].play(dead, dead, Audience.ORIGIN);
 					reviveCircle.play(reviveCirclePart, corpse.corpseDisplay.getLocation(), LocalAxes.xz(), null);
@@ -616,7 +639,7 @@ public abstract class FightInstance extends Instance {
 		Sounds.error.play(p, p, Audience.ORIGIN);
 		revivers.remove(p);
 		corpse.reviver = null;
-		corpse.bar.removeAll();
+		hideBarFromAll(corpse.bar);
 		for (BukkitTask task : corpse.tasks) {
 			task.cancel();
 		}
@@ -640,7 +663,7 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				corpse.bar.removeAll();
+				hideBarFromAll(corpse.bar);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
@@ -1352,9 +1375,6 @@ public abstract class FightInstance extends Instance {
 			for (Entity ent : hitbox) {
 				ent.remove();
 			}
-
-			if (bar != null)
-				bar.removeAll();
 		}
 
 		public boolean hitCorpse(Entity e) {

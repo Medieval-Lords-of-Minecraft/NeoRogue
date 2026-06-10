@@ -22,6 +22,7 @@ public enum RegionType {
 	private static HashMap<RegionType, RegionType> nextRegion = new HashMap<RegionType, RegionType>();
 	static {
 		nextRegion.put(LOW_DISTRICT, HARVEST_FIELDS);
+		nextRegion.put(HARVEST_FIELDS, FROZEN_WASTES);
 	}
 	
 	private String display;

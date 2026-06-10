@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.region.RegionType;
 
-public class CmdAdminTestHF extends Subcommand {
-	public CmdAdminTestHF(String key, String desc, String perm, SubcommandRunner runner) {
+public class CmdAdminTestFW extends Subcommand {
+	public CmdAdminTestFW(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		args.setMax(-1);
 		args.add(new Arg("Host"), new Arg("Players", false));
@@ -35,6 +35,6 @@ public class CmdAdminTestHF extends Subcommand {
 			others = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 		}
 
-		NeoRogue.debugInitialize(host, others, EquipmentClass.WARRIOR, RegionType.HARVEST_FIELDS);
+		NeoRogue.debugInitialize(host, others, EquipmentClass.WARRIOR, RegionType.FROZEN_WASTES);
 	}
 }

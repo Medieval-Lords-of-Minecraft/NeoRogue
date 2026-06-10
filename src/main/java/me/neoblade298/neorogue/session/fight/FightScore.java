@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.md_5.bungee.api.ChatColor;
 
 public enum FightScore {
 	D(0, 9999, 5, 0.0, 1, null, new Color(255, 140, 90)),
@@ -16,7 +15,7 @@ public enum FightScore {
 	private int value, threshold, coins, xp; // Threshold in seconds
 	private double upgradeModifier;
 	private FightScore next;
-	private String display;
+	private String miniMessageDisplay;
 	private Component comp;
 	private FightScore(int value, int threshold, int coins, double upgradeModifier, int xp, FightScore next, Color color) {
 		this.value = value;
@@ -25,8 +24,12 @@ public enum FightScore {
 		this.coins = coins;
 		this.xp = xp;
 		this.upgradeModifier = upgradeModifier;
-		this.display = ChatColor.of(color) + name();
+		this.miniMessageDisplay = "<color:#" + String.format("%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) + ">" + name() + "</color>";
 		this.comp = Component.text(name(), TextColor.color(color.getRed(), color.getGreen(), color.getBlue()));
+	}
+	
+	public String getMiniMessageDisplay() {
+		return miniMessageDisplay;
 	}
 	
 	public int getValue() {
@@ -47,10 +50,6 @@ public enum FightScore {
 	
 	public FightScore getNext() {
 		return next;
-	}
-	
-	public String getDisplay() {
-		return display;
 	}
 	
 	public Component getComponentDisplay() {
