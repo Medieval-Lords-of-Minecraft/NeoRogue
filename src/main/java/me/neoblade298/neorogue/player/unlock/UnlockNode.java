@@ -33,6 +33,8 @@ public class UnlockNode {
 	private final TargetType targetType;
 	private final EquipmentClass nodeClass; // null = GLOBAL
 	private final int cost;
+	private final boolean isDefault;
+	private final int slot;
 	private final Set<String> targetIds;
 	private final List<String[]> requirements; // outer = AND, inner = OR (pipe-separated)
 	private final Map<String, Integer> achievementRequirements; // achievement ID -> required mastery
@@ -44,6 +46,8 @@ public class UnlockNode {
 		String classStr = sec.getString("class", "GLOBAL").toUpperCase();
 		this.nodeClass = classStr.equals("GLOBAL") ? null : EquipmentClass.valueOf(classStr);
 		this.cost = sec.getInt("cost", 1);
+		this.isDefault = sec.getBoolean("default", false);
+		this.slot = sec.getInt("slot", -1);
 		List<String> targets = sec.getStringList("targets");
 		this.targetIds = targets != null ? Collections.unmodifiableSet(new HashSet<String>(targets)) : Collections.emptySet();
 		List<String> reqs = sec.getStringList("requirements");
@@ -94,6 +98,14 @@ public class UnlockNode {
 
 	public int getCost() {
 		return cost;
+	}
+
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public int getSlot() {
+		return slot;
 	}
 
 	public String getDisplayName() {

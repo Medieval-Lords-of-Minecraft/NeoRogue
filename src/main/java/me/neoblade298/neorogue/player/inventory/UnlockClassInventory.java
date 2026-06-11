@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -73,9 +75,45 @@ public class UnlockClassInventory extends CoreInventory {
 		contents[INFO] = info;
 
 		// Node items (paginated, slots 9-44)
+		// Collect reserved slots (static buttons)
+		Set<Integer> reserved = new HashSet<>();
+		for (int s : new int[] { BACK, INFO, PREVIOUS, NEXT }) {
+			reserved.add(s);
+		}
+		// First pass: place nodes with explicit slot preferences
+		boolean[] occupied = new boolean[54];
+		for (int s : new int[] { BACK, INFO, PREVIOUS, NEXT }) {
+			occupied[s] = true;
+		}
+		List<UnlockNode> unplaced = new ArrayList<>();
 		int start = page * PAGE_SIZE;
-		for (int i = 0; i < PAGE_SIZE && start + i < nodes.size(); i++) {
-			contents[9 + i] = nodes.get(start + i).toItemStack(data);
+		int end = Math.min(start + PAGE_SIZE, nodes.size());
+		for (int i = start; i < end; i++) {
+			UnlockNode node = nodes.get(i);
+			int preferred = node.getSlot();
+			if (preferred >= 0 && preferred < 54) {
+				if (occupied[preferred]) {
+					Bukkit.getLogger().warning("[NeoRogue] Unlock node " + node.getId()
+							+ " has slot " + preferred + " which is already occupied, using next available");
+					unplaced.add(node);
+				} else {
+					contents[preferred] = node.toItemStack(data);
+					occupied[preferred] = true;
+				}
+			} else {
+				unplaced.add(node);
+			}
+		}
+		// Second pass: fill unplaced nodes into first available slots (9-44)
+		int nextSlot = 9;
+		for (UnlockNode node : unplaced) {
+			while (nextSlot <= 44 && occupied[nextSlot]) {
+				nextSlot++;
+			}
+			if (nextSlot > 44) break;
+			contents[nextSlot] = node.toItemStack(data);
+			occupied[nextSlot] = true;
+			nextSlot++;
 		}
 
 		// Navigation row (row 6, slots 45-53)

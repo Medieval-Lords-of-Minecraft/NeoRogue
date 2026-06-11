@@ -25,6 +25,7 @@ public class UnlockRegistry {
 	private static final HashMap<String, HashSet<String>> equipmentToNodes = new HashMap<String, HashSet<String>>();
 	private static final HashMap<EquipmentClass, HashSet<String>> classToNodes = new HashMap<EquipmentClass, HashSet<String>>();
 	private static final HashMap<String, HashSet<String>> nodeEquipmentTargets = new HashMap<String, HashSet<String>>();
+	private static final HashSet<String> defaultNodes = new HashSet<String>();
 
 	static {
 		reload();
@@ -38,6 +39,7 @@ public class UnlockRegistry {
 		equipmentToNodes.clear();
 		classToNodes.clear();
 		nodeEquipmentTargets.clear();
+		defaultNodes.clear();
 		loadNodes();
 
 		for (UnlockNode node : nodes.values()) {
@@ -94,6 +96,13 @@ public class UnlockRegistry {
 
 	public static synchronized void register(UnlockNode node) {
 		nodes.put(node.getId(), node);
+		if (node.isDefault()) {
+			defaultNodes.add(node.getId());
+		}
+	}
+
+	public static Set<String> getDefaultNodes() {
+		return Collections.unmodifiableSet(defaultNodes);
 	}
 
 	public static String normalizeNodeId(String nodeId) {

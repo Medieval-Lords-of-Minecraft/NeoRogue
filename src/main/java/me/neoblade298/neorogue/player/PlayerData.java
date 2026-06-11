@@ -154,6 +154,9 @@ public class PlayerData {
 					}
 				}
 			}
+			for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
+				unlockNodes.add(defaultNode);
+			}
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
 		} catch (SQLException e) {
