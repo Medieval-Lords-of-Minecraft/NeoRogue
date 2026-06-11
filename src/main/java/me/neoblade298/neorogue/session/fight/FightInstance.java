@@ -66,6 +66,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
@@ -968,6 +969,7 @@ public abstract class FightInstance extends Instance {
 				for (Player p : s.getOnlinePlayers()) {
 					PlayerFightData pdata = setup(p, s.getData(p.getUniqueId()));
 					TutorialManager.registerFightTutorials(fi, pdata);
+					AchievementManager.registerFightAchievements(fi, pdata);
 					fdata.add(pdata);
 				}
 				

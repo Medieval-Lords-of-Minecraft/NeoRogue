@@ -190,10 +190,7 @@ public class UnlockRegistry {
 		if (node == null) return false;
 		if (data.hasUnlockNode(normalized)) return false;
 		if (!canAfford(data, node)) return false;
-		// Check requirements
-		for (String req : node.getRequirements()) {
-			if (!data.hasUnlockNode(req)) return false;
-		}
+		if (!node.checkRequirementsMet(data)) return false;
 		data.addPoints(node.getNodeClass(), -node.getCost());
 		return data.grant(normalized);
 	}

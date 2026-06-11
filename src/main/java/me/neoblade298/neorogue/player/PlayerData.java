@@ -21,6 +21,9 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
+import me.neoblade298.neorogue.achievement.Achievement;
+import me.neoblade298.neorogue.achievement.AchievementManager;
+import me.neoblade298.neorogue.achievement.AchievementProgress;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -50,6 +53,7 @@ public class PlayerData {
 	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private boolean equipmentDroptableDirty;
+	private HashMap<String, AchievementProgress> achievements = new HashMap<>();
 	private int slotsAvailable, maxNotoriety;
 	
 	// Create new one if one doesn't exist
@@ -120,6 +124,21 @@ public class PlayerData {
 			try (ResultSet flagsRs = flagsStmt.executeQuery()) {
 				while (flagsRs.next()) {
 					flags.add(flagsRs.getString("flag"));
+				}
+			}
+
+			// Load achievements
+			try (PreparedStatement achStmt = con.prepareStatement("SELECT * FROM neorogue_achievements WHERE uuid = ?;")) {
+				achStmt.setString(1, uuidStr);
+				try (ResultSet achRs = achStmt.executeQuery()) {
+					while (achRs.next()) {
+						String achId = achRs.getString("achievement");
+						int prog = achRs.getInt("progress");
+						Achievement ach = AchievementManager.get(achId);
+						if (ach != null) {
+							achievements.put(achId, new AchievementProgress(ach, prog));
+						}
+					}
 				}
 			}
 			
@@ -335,6 +354,21 @@ public class PlayerData {
 			}
 			stmts.add(flagsSql.build(con));
 		}
+
+		PreparedStatement clearAch = con.prepareStatement("DELETE FROM neorogue_achievements WHERE uuid = ?;");
+		clearAch.setString(1, uuid.toString());
+		stmts.add(clearAch);
+
+		if (!achievements.isEmpty()) {
+			SQLInsertBuilder achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
+			for (var entry : achievements.entrySet()) {
+				achSql.addValue("uuid", uuid.toString())
+						.addValue("achievement", entry.getKey())
+						.addValue("progress", entry.getValue().getProgress())
+						.addRow();
+			}
+			stmts.add(achSql.build(con));
+		}
 	}
 	
 	// Should only ever be displayed to the owner
@@ -414,6 +448,13 @@ public class PlayerData {
 
 	public void removeFlag(String flag) {
 		flags.remove(flag);
+	}
+
+	public AchievementProgress getAchievementProgress(String id) {
+		return achievements.computeIfAbsent(id, k -> {
+			Achievement ach = AchievementManager.get(k);
+			return ach != null ? new AchievementProgress(ach, 0) : null;
+		});
 	}
 	
 

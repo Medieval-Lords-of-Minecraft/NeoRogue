@@ -27,6 +27,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -178,6 +179,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		updateEquipmentLimits();
 		updateBoardLines();
 		TutorialManager.registerSessionTutorials(s, this);
+		AchievementManager.registerSessionAchievements(s, this);
 	}
 
 	public void updateEquipmentLimits() {

@@ -27,6 +27,7 @@ public class PlayerManager implements IOComponent {
 			} catch (SQLException ignore) {
 				// Index already exists
 			}
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_achievements (uuid VARCHAR(36) NOT NULL, achievement VARCHAR(100) NOT NULL, progress INT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, achievement));");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
