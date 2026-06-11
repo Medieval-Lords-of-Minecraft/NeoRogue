@@ -14,10 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.achievement.builtin.AllBossesAchievement;
+import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
+import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -41,7 +44,20 @@ public class AchievementManager {
 					Material.HAY_BLOCK, RegionType.HARVEST_FIELDS),
 			new BeatRegionAchievement("beat_fw", Component.text("Frozen Wastes Victor", NamedTextColor.GOLD),
 					Material.PACKED_ICE, RegionType.FROZEN_WASTES),
-			new FullPartyAchievement()
+			new FullPartyAchievement(),
+			new AllMinibossesAchievement("all_minis_ld", Component.text("LD Mini Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.LOW_DISTRICT),
+			new AllMinibossesAchievement("all_minis_hf", Component.text("HF Mini Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.HARVEST_FIELDS),
+			new AllMinibossesAchievement("all_minis_fw", Component.text("FW Mini Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.FROZEN_WASTES),
+			new AllBossesAchievement("all_bosses_ld", Component.text("LD Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.LOW_DISTRICT),
+			new AllBossesAchievement("all_bosses_hf", Component.text("HF Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.HARVEST_FIELDS),
+			new AllBossesAchievement("all_bosses_fw", Component.text("FW Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.FROZEN_WASTES),
+			new NoHealthLossAchievement()
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();
 	private static final EnumMap<AchievementTriggerType, List<Achievement>> achievementsByTrigger = new EnumMap<>(

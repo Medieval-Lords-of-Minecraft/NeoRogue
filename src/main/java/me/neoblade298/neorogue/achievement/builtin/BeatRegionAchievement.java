@@ -66,7 +66,7 @@ public class BeatRegionAchievement implements Achievement {
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 		data.addTrigger(id, SessionTrigger.WIN_BOSS, (pdata, in) -> {
-			RegionType bossRegion = (RegionType) in;
+			RegionType bossRegion = pdata.getSession().getRegion().getType();
 			if (bossRegion == region || bossRegion == debugRegion) {
 				if (progress.addProgress(1)) {
 					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);

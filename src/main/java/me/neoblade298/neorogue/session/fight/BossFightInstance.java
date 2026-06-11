@@ -68,11 +68,12 @@ public class BossFightInstance extends FightInstance {
 			s.awardXp(20);
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
 
-			RegionType bossRegion = s.getRegion().getType();
+			String bossId = map.getPieces().get(0).getPiece().getId();
 			for (PlayerSessionData psd : s.getParty().values()) {
-				psd.trigger(SessionTrigger.WIN_BOSS, bossRegion);
+				psd.trigger(SessionTrigger.WIN_BOSS, bossId);
 			}
 
+			RegionType bossRegion = s.getRegion().getType();
 			RegionType nextRegion = RegionType.getNextRegion(bossRegion, s.isEndless());
 			if (nextRegion == null) {
 				handleWin(title, new WinInstance(s));
