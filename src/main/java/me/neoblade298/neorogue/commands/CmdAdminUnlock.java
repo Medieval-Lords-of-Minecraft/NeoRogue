@@ -1,8 +1,6 @@
 package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -18,7 +16,7 @@ import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 
 public class CmdAdminUnlock extends Subcommand {
 	private static enum Action {
-		GRANT, REVOKE, LIST, NODES;
+		GRANT, REVOKE;
 	}
 
 	public CmdAdminUnlock(String key, String desc, String perm, SubcommandRunner runner) {
@@ -40,17 +38,12 @@ public class CmdAdminUnlock extends Subcommand {
 			action = Action.valueOf(args[0].toUpperCase());
 		}
 		catch (IllegalArgumentException e) {
-			Util.msg(s, "<red>Invalid action. Use grant/revoke/list/nodes.");
+			Util.msg(s, "<red>Invalid action. Use grant/revoke.");
 			return;
 		}
 
-		if (action == Action.NODES) {
-			ArrayList<String> nodes = UnlockRegistry.getSortedNodeIds();
-			if (nodes.isEmpty()) {
-				Util.msg(s, "<yellow>No unlock nodes are currently registered.");
-				return;
-			}
-			Util.msg(s, "<yellow>Registered unlock nodes:</yellow> " + String.join(", ", nodes));
+		if (args.length < 2) {
+			Util.msg(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <node> [player]");
 			return;
 		}
 
@@ -77,40 +70,18 @@ public class CmdAdminUnlock extends Subcommand {
 			return;
 		}
 
-		switch (action) {
-		case LIST:
-			Set<String> unlockNodes = data.getUnlockNodes();
-			if (unlockNodes.isEmpty()) {
-				Util.msg(s, "<yellow>" + target.getName() + " has no unlock nodes.");
-				return;
-			}
-			ArrayList<String> list = new ArrayList<String>(unlockNodes);
-			Collections.sort(list);
-			Util.msg(s, "<yellow>" + target.getName() + " unlock nodes:</yellow> " + String.join(", ", list));
-			return;
-		case GRANT:
-		case REVOKE:
-			if (args.length < 2) {
-				Util.msg(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <node> [player]");
-				return;
-			}
-			String nodeId = UnlockRegistry.normalizeNodeId(args[1]);
-			if (!UnlockRegistry.hasNode(nodeId)) {
-				Util.msg(s, "<red>Unknown unlock node: " + args[1]);
-				return;
-			}
-
-			boolean changed = action == Action.GRANT ? data.grant(nodeId) : data.revoke(nodeId);
-			if (!changed) {
-				Util.msg(s, "<yellow>No changes made.");
-				return;
-			}
-			String verb = action == Action.GRANT ? "Granted" : "Revoked";
-			Util.msg(s, "<green>" + verb + " unlock node <yellow>" + nodeId + "</yellow> for " + target.getName() + ".");
-			return;
-		case NODES:
-		default:
+		String nodeId = UnlockRegistry.normalizeNodeId(args[1]);
+		if (!UnlockRegistry.hasNode(nodeId)) {
+			Util.msg(s, "<red>Unknown unlock node: " + args[1]);
 			return;
 		}
+
+		boolean changed = action == Action.GRANT ? data.grant(nodeId) : data.revoke(nodeId);
+		if (!changed) {
+			Util.msg(s, "<yellow>No changes made.");
+			return;
+		}
+		String verb = action == Action.GRANT ? "Granted" : "Revoked";
+		Util.msg(s, "<green>" + verb + " unlock node <yellow>" + nodeId + "</yellow> for " + target.getName() + ".");
 	}
 }

@@ -60,6 +60,7 @@ import me.neoblade298.neorogue.commands.CmdAdminTestFW;
 import me.neoblade298.neorogue.commands.CmdAdminTestHF;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdAdminUnlock;
+import me.neoblade298.neorogue.commands.CmdAdminUnlocks;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdHelp;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -197,6 +198,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminDrop("drop", "Roll equipment from the droptable", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDropArtifact("dropartifact", "Roll artifacts from the droptable", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminUnlock("unlock", "Manage player unlock nodes", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminUnlocks("unlocks", "List a player's unlock nodes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminExp("exp", "Add exp to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetExp("setexp", "Set a player's exp", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminLevel("level", "Add levels to a player", null, SubcommandRunner.BOTH));
