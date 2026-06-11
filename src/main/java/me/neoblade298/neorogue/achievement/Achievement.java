@@ -19,6 +19,10 @@ public interface Achievement {
 	List<Component> getDescription(int progress, int mastery);
 	EnumSet<AchievementTriggerType> getTriggerTypes();
 
+	default int getSortPriority() {
+		return 0;
+	}
+
 	default void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 	}
 

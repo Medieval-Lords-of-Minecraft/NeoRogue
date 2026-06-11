@@ -1,0 +1,172 @@
+package me.neoblade298.neorogue.player.inventory;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.achievement.Achievement;
+import me.neoblade298.neorogue.achievement.AchievementManager;
+import me.neoblade298.neorogue.achievement.AchievementProgress;
+import me.neoblade298.neorogue.player.PlayerData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+
+public class AchievementsInventory extends CoreInventory {
+	private static final int BACK = 0;
+	private static final int PROGRESS_START = 2, PROGRESS_END = 8;
+	private static final int ITEMS_START = 18, ITEMS_END = 44;
+	private static final int PAGE_SIZE = ITEMS_END - ITEMS_START + 1; // 27
+	private static final int PREVIOUS = 48, NEXT = 50;
+
+	private PlayerData pd;
+	private int page;
+	private List<AchievementProgress> sorted;
+
+	public AchievementsInventory(Player p, PlayerData pd) {
+		super(p, Bukkit.createInventory(p, 54, buildTitle(pd)));
+		this.pd = pd;
+		this.sorted = buildSortedList(pd);
+		setupInventory();
+	}
+
+	private static Component buildTitle(PlayerData pd) {
+		List<Achievement> all = AchievementManager.getAll();
+		int totalMastery = 0, totalMaxMastery = 0;
+		int completeCount = 0;
+		for (Achievement ach : all) {
+			AchievementProgress prog = pd.getAchievementProgress(ach.getId());
+			totalMastery += prog.getMastery();
+			totalMaxMastery += prog.getMaxMastery();
+			if (prog.isComplete()) completeCount++;
+		}
+		int achievedPct = totalMaxMastery > 0 ? (int) (100.0 * totalMastery / totalMaxMastery) : 0;
+		int masteredPct = all.size() > 0 ? (int) (100.0 * completeCount / all.size()) : 0;
+		return Component.text(achievedPct + "% achieved", NamedTextColor.YELLOW)
+				.append(Component.text(" | ", NamedTextColor.GRAY))
+				.append(Component.text(masteredPct + "% mastered", NamedTextColor.GREEN));
+	}
+
+	private static List<AchievementProgress> buildSortedList(PlayerData pd) {
+		List<Achievement> all = AchievementManager.getAll();
+		List<AchievementProgress> list = new ArrayList<>(all.size());
+		for (Achievement ach : all) {
+			list.add(pd.getAchievementProgress(ach.getId()));
+		}
+		list.sort(Comparator.comparingInt((AchievementProgress ap) -> ap.getAchievement().getSortPriority()).reversed()
+				.thenComparing(ap -> PlainTextComponentSerializer.plainText().serialize(ap.getAchievement().getDisplayName())));
+		return list;
+	}
+
+	private void setupInventory() {
+		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
+		ItemStack[] contents = inv.getContents();
+
+		// Back button
+		contents[BACK] = CoreInventory.createButton(Material.BARRIER,
+				Component.text("Back", NamedTextColor.RED));
+
+		// Progress bar (slots 2-8)
+		fillProgressBar(contents);
+
+		// Achievement items (slots 18-44)
+		int start = page * PAGE_SIZE;
+		for (int i = 0; i < PAGE_SIZE && start + i < sorted.size(); i++) {
+			contents[ITEMS_START + i] = sorted.get(start + i).toItemStack();
+		}
+
+		// Pagination (slots 45-53)
+		int totalPages = Math.max(1, (int) Math.ceil((double) sorted.size() / PAGE_SIZE));
+		if (page > 0) {
+			contents[PREVIOUS] = CoreInventory.createButton(ArtifactsInventory.PREV_HEAD,
+					Component.text("Previous Page", NamedTextColor.YELLOW));
+		}
+		if (page < totalPages - 1) {
+			contents[NEXT] = CoreInventory.createButton(ArtifactsInventory.NEXT_HEAD,
+					Component.text("Next Page", NamedTextColor.YELLOW));
+		}
+
+		inv.setContents(contents);
+	}
+
+	private void fillProgressBar(ItemStack[] contents) {
+		List<Achievement> all = AchievementManager.getAll();
+		int totalMastery = 0, totalMaxMastery = 0;
+		int completeCount = 0;
+		for (Achievement ach : all) {
+			AchievementProgress prog = pd.getAchievementProgress(ach.getId());
+			totalMastery += prog.getMastery();
+			totalMaxMastery += prog.getMaxMastery();
+			if (prog.isComplete()) completeCount++;
+		}
+		double achievedPct = totalMaxMastery > 0 ? (double) totalMastery / totalMaxMastery : 0;
+		double masteredPct = all.size() > 0 ? (double) completeCount / all.size() : 0;
+
+		int paneCount = PROGRESS_END - PROGRESS_START + 1; // 7
+		int achievedSlots = (int) (achievedPct * paneCount);
+		int masteredSlots = (int) (masteredPct * paneCount);
+
+		for (int i = 0; i < paneCount; i++) {
+			Material mat;
+			if (i < masteredSlots) {
+				mat = Material.GREEN_STAINED_GLASS_PANE;
+			} else if (i < achievedSlots) {
+				mat = Material.YELLOW_STAINED_GLASS_PANE;
+			} else {
+				mat = Material.RED_STAINED_GLASS_PANE;
+			}
+			ItemStack pane = new ItemStack(mat);
+			ItemMeta meta = pane.getItemMeta();
+			meta.displayName(Component.text(" ").decoration(TextDecoration.ITALIC, State.FALSE));
+			pane.setItemMeta(meta);
+			contents[PROGRESS_START + i] = pane;
+		}
+	}
+
+	@Override
+	public void handleInventoryClick(InventoryClickEvent e) {
+		e.setCancelled(true);
+		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		if (e.getCurrentItem() == null) return;
+
+		int slot = e.getRawSlot();
+		if (slot == BACK) {
+			new MainMenuInventory(p);
+			return;
+		}
+
+		int totalPages = Math.max(1, (int) Math.ceil((double) sorted.size() / PAGE_SIZE));
+		if (slot == PREVIOUS && page > 0) {
+			inv.clear();
+			page--;
+			setupInventory();
+		} else if (slot == NEXT && page < totalPages - 1) {
+			inv.clear();
+			page++;
+			setupInventory();
+		}
+	}
+
+	@Override
+	public void handleInventoryClose(InventoryCloseEvent e) {
+	}
+
+	@Override
+	public void handleInventoryDrag(InventoryDragEvent e) {
+		e.setCancelled(true);
+	}
+}
