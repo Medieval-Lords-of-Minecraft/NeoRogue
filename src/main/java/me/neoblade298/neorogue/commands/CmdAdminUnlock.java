@@ -25,8 +25,10 @@ public class CmdAdminUnlock extends Subcommand {
 		for (Action action : Action.values()) {
 			actions.add(action.name().toLowerCase());
 		}
+		ArrayList<String> nodeOptions = UnlockRegistry.getSortedNodeIds();
+		nodeOptions.add(0, "all");
 		args.add(new Arg("action").setTabOptions(actions),
-				new Arg("node").setTabOptions(UnlockRegistry.getSortedNodeIds()),
+				new Arg("node").setTabOptions(nodeOptions),
 				new Arg("player", false));
 		this.enableTabComplete();
 	}
@@ -67,6 +69,17 @@ public class CmdAdminUnlock extends Subcommand {
 		PlayerData data = PlayerManager.getPlayerData(target.getUniqueId());
 		if (data == null) {
 			Util.msg(s, "<red>No loaded player data found for " + target.getName() + ".");
+			return;
+		}
+
+		if (args[1].equalsIgnoreCase("all")) {
+			int count = 0;
+			for (String id : UnlockRegistry.getNodeIds()) {
+				boolean changed = action == Action.GRANT ? data.grant(id) : data.revoke(id);
+				if (changed) count++;
+			}
+			String verb = action == Action.GRANT ? "Granted" : "Revoked";
+			Util.msg(s, "<green>" + verb + " <yellow>" + count + "</yellow> unlock nodes for " + target.getName() + ".");
 			return;
 		}
 

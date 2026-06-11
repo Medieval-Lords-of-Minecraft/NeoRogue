@@ -55,7 +55,7 @@ public class AllMinibossesAchievement extends ObjectiveAchievement {
 
 	@Override
 	public AchievementScope getScope() {
-		return AchievementScope.GLOBAL;
+		return AchievementScope.BOTH;
 	}
 
 	@Override

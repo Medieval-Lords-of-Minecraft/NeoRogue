@@ -23,6 +23,7 @@ public class SessionStatistics {
 	private int fightsCompleted;
 	private int deaths;
 	private int statusesApplied;
+	private double damageTakenHealthAtRegionStart;
 
 	public void aggregate(FightStatistics fs) {
 		// Sum all damage dealt
@@ -63,6 +64,7 @@ public class SessionStatistics {
 		fightsCompleted = rs.getInt("statFightsCompleted");
 		deaths = rs.getInt("statDeaths");
 		statusesApplied = rs.getInt("statStatusesApplied");
+		damageTakenHealthAtRegionStart = rs.getDouble("statDmgHealthRegionStart");
 	}
 
 	public double getDamageDealt() { return damageDealt; }
@@ -74,6 +76,11 @@ public class SessionStatistics {
 	public int getFightsCompleted() { return fightsCompleted; }
 	public int getDeaths() { return deaths; }
 	public int getStatusesApplied() { return statusesApplied; }
+	public double getDamageTakenHealthAtRegionStart() { return damageTakenHealthAtRegionStart; }
+
+	public void markRegionStart() {
+		damageTakenHealthAtRegionStart = damageTakenHealth;
+	}
 
 	public void sendTo(Player p) {
 		p.sendMessage(Component.text("=== Session Statistics ===", NamedTextColor.GOLD));

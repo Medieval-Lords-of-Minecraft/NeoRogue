@@ -831,6 +831,9 @@ public class Session {
 			}
 		}
 		
+		for (PlayerSessionData psd : party.values()) {
+			psd.getSessionStats().markRegionStart();
+		}
 		generateRegion(RegionType.getNextRegion(region.getType(), endless));
 	}
 	

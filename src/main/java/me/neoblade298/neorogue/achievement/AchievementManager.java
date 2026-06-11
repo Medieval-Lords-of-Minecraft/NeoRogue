@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
+import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
@@ -57,7 +58,8 @@ public class AchievementManager {
 					Material.DIAMOND_SWORD, RegionType.HARVEST_FIELDS),
 			new AllBossesAchievement("all_bosses_fw", Component.text("FW Boss Slayer", NamedTextColor.GOLD),
 					Material.DIAMOND_SWORD, RegionType.FROZEN_WASTES),
-			new NoHealthLossAchievement()
+			new NoHealthLossAchievement(),
+			new FlawlessRegionAchievement()
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();
 	private static final EnumMap<AchievementTriggerType, List<Achievement>> achievementsByTrigger = new EnumMap<>(
