@@ -16,15 +16,21 @@ public class AchievementProgress {
 	private final Achievement achievement;
 	private final EquipmentClass scope; // null = global
 	private int progress;
+	private String data;
 
 	public AchievementProgress(Achievement achievement, int progress) {
-		this(achievement, progress, null);
+		this(achievement, progress, null, null);
 	}
 
 	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope) {
+		this(achievement, progress, scope, null);
+	}
+
+	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope, String data) {
 		this.achievement = achievement;
 		this.progress = progress;
 		this.scope = scope;
+		this.data = data;
 	}
 
 	public Achievement getAchievement() {
@@ -41,6 +47,14 @@ public class AchievementProgress {
 
 	public int getProgress() {
 		return progress;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 
 	public int getMastery() {
@@ -91,11 +105,7 @@ public class AchievementProgress {
 
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Mastery: " + mastery + "/" + maxMastery, NamedTextColor.GOLD));
-		if (!isComplete()) {
-			lore.add(Component.text("Progress: " + progress + "/" + getCurrentThreshold(), NamedTextColor.GRAY));
-		} else {
-			lore.add(Component.text("Complete!", NamedTextColor.GREEN));
-		}
+		lore.addAll(achievement.getProgressLines(this));
 		lore.add(Component.empty());
 		lore.addAll(achievement.getDescription(progress, mastery));
 

@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.achievement;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public interface Achievement {
 	String getId();
@@ -27,6 +29,20 @@ public interface Achievement {
 
 	default int getSortPriority() {
 		return 0;
+	}
+
+	/**
+	 * Returns the progress display lines for the item tooltip.
+	 * Override this for custom progress display (e.g. objective checklists).
+	 */
+	default List<Component> getProgressLines(AchievementProgress progress) {
+		List<Component> lines = new ArrayList<>();
+		if (!progress.isComplete()) {
+			lines.add(Component.text("Progress: " + progress.getProgress() + "/" + progress.getCurrentThreshold(), NamedTextColor.GRAY));
+		} else {
+			lines.add(Component.text("Complete!", NamedTextColor.GREEN));
+		}
+		return lines;
 	}
 
 	default void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {

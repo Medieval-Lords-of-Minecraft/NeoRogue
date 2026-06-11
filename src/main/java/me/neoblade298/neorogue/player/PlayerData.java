@@ -137,18 +137,19 @@ public class PlayerData {
 						String achId = achRs.getString("achievement");
 						int prog = achRs.getInt("progress");
 						String scope = achRs.getString("scope");
+						String data = achRs.getString("data");
 						Achievement ach = AchievementManager.get(achId);
 						if (ach == null) continue;
 						if (scope == null || scope.equals("GLOBAL")) {
-							globalAchievements.put(achId, new AchievementProgress(ach, prog, null));
+							globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
 						} else {
 							try {
 								EquipmentClass ec = EquipmentClass.valueOf(scope);
 								classAchievements.computeIfAbsent(ec, k -> new HashMap<>())
-										.put(achId, new AchievementProgress(ach, prog, ec));
+										.put(achId, new AchievementProgress(ach, prog, ec, data));
 							} catch (IllegalArgumentException ex) {
 								// Unknown scope, treat as global
-								globalAchievements.put(achId, new AchievementProgress(ach, prog, null));
+								globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
 							}
 						}
 					}
@@ -383,6 +384,7 @@ public class PlayerData {
 						.addValue("achievement", entry.getKey())
 						.addValue("progress", entry.getValue().getProgress())
 						.addValue("scope", "GLOBAL")
+						.addValue("data", entry.getValue().getData())
 						.addRow();
 			}
 		}
@@ -393,6 +395,7 @@ public class PlayerData {
 						.addValue("achievement", entry.getKey())
 						.addValue("progress", entry.getValue().getProgress())
 						.addValue("scope", classEntry.getKey().name())
+						.addValue("data", entry.getValue().getData())
 						.addRow();
 			}
 		}
