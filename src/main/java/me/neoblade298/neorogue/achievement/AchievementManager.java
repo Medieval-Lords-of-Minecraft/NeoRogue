@@ -10,13 +10,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
+import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
+import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,7 +32,16 @@ import net.kyori.adventure.title.Title;
 
 public class AchievementManager {
 	private static final List<Achievement> achievements = List.of(
-			new WinFightsAchievement()
+			new WinFightsAchievement(),
+			new FinishRunAchievement(),
+			new BeatMinibossesAchievement(),
+			new BeatRegionAchievement("beat_ld", Component.text("Low District Victor", NamedTextColor.GOLD),
+					Material.COBBLESTONE, RegionType.LOW_DISTRICT),
+			new BeatRegionAchievement("beat_hf", Component.text("Harvest Fields Victor", NamedTextColor.GOLD),
+					Material.HAY_BLOCK, RegionType.HARVEST_FIELDS),
+			new BeatRegionAchievement("beat_fw", Component.text("Frozen Wastes Victor", NamedTextColor.GOLD),
+					Material.PACKED_ICE, RegionType.FROZEN_WASTES),
+			new FullPartyAchievement()
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();
 	private static final EnumMap<AchievementTriggerType, List<Achievement>> achievementsByTrigger = new EnumMap<>(

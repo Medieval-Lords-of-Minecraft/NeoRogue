@@ -15,6 +15,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -36,6 +37,9 @@ public class LoseInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
+		for (PlayerSessionData data : s.getParty().values()) {
+			data.trigger(SessionTrigger.FINISH_RUN, false);
+		}
 		s.broadcast(Component.text("You lost!", NamedTextColor.RED));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
