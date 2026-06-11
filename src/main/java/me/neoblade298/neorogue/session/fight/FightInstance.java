@@ -1093,7 +1093,7 @@ public abstract class FightInstance extends Instance {
 		s.broadcast(FightStatistics.getStatsHeader(timer, getFightScore()));
 	}
 
-	protected FightScore getFightScore() {
+	public FightScore getFightScore() {
 		return null;
 	}
 	

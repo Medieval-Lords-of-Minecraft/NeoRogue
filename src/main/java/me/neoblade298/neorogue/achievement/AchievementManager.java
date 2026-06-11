@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.achievement.builtin.AcquireRarityAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllBossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
@@ -21,9 +22,15 @@ import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
+import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement;
+import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement.StatType;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SpendCoinsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
@@ -59,7 +66,25 @@ public class AchievementManager {
 			new AllBossesAchievement("all_bosses_fw", Component.text("FW Boss Slayer", NamedTextColor.GOLD),
 					Material.DIAMOND_SWORD, RegionType.FROZEN_WASTES),
 			new NoHealthLossAchievement(),
-			new FlawlessRegionAchievement()
+			new FlawlessRegionAchievement(),
+			new MaxStatAchievement("max_hp_200", Component.text("Beefy", NamedTextColor.GOLD),
+					Material.GOLDEN_APPLE, StatType.HEALTH, 200),
+			new MaxStatAchievement("max_mana_100", Component.text("Arcane Reservoir", NamedTextColor.GOLD),
+					Material.LAPIS_LAZULI, StatType.MANA, 100),
+			new MaxStatAchievement("max_stamina_100", Component.text("Tireless", NamedTextColor.GOLD),
+					Material.FEATHER, StatType.STAMINA, 100),
+			new AcquireRarityAchievement("acquire_rare", Component.text("Rare Find", NamedTextColor.GOLD),
+					Material.GOLD_INGOT, Rarity.RARE),
+			new AcquireRarityAchievement("acquire_epic", Component.text("Epic Discovery", NamedTextColor.GOLD),
+					Material.DIAMOND, Rarity.EPIC),
+			new VisitNodesAchievement(),
+			new SpendCoinsAchievement(),
+			new SRankRegionAchievement("srank_ld", Component.text("LD Speedster", NamedTextColor.GOLD),
+					Material.CLOCK, RegionType.LOW_DISTRICT),
+			new SRankRegionAchievement("srank_hf", Component.text("HF Speedster", NamedTextColor.GOLD),
+					Material.CLOCK, RegionType.HARVEST_FIELDS),
+			new SRankRegionAchievement("srank_fw", Component.text("FW Speedster", NamedTextColor.GOLD),
+					Material.CLOCK, RegionType.FROZEN_WASTES)
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();
 	private static final EnumMap<AchievementTriggerType, List<Achievement>> achievementsByTrigger = new EnumMap<>(

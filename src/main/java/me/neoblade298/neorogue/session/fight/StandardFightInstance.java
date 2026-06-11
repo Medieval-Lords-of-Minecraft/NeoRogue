@@ -64,7 +64,7 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
-	protected FightScore getFightScore() {
+	public FightScore getFightScore() {
 		return fightScore;
 	}
 	
