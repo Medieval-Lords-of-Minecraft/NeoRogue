@@ -34,15 +34,11 @@ public class AchievementsInventory extends CoreInventory {
 	private static final int PAGE_SIZE = ITEMS_END - ITEMS_START + 1; // 27
 	private static final int PREVIOUS = 48, NEXT = 50;
 
-	private PlayerData pd;
-	private EquipmentClass ec; // null = global view
 	private int page;
 	private List<AchievementProgress> sorted;
 
 	public AchievementsInventory(Player p, PlayerData pd, EquipmentClass ec) {
 		super(p, Bukkit.createInventory(p, 54, buildTitle(pd, ec)));
-		this.pd = pd;
-		this.ec = ec;
 		this.sorted = buildSortedList(pd, ec);
 		setupInventory();
 	}

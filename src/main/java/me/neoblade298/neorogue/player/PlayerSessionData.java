@@ -512,6 +512,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// If components null, no broadcast
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
+		trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 		Player p = getPlayer();
 		if (toSelf != null) {
 			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
@@ -788,6 +789,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void addCoins(int amount) {
 		coins += amount;
+		if (amount < 0) {
+			trigger(SessionTrigger.SPEND_COINS, -amount);
+		}
 		String symbol = amount > 0 ? "+" : "";
 		Util.msg(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 		updateCoinsBar();
