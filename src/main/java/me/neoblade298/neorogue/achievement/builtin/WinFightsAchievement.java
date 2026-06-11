@@ -61,7 +61,7 @@ public class WinFightsAchievement implements Achievement {
 		data.addTrigger(ID, Trigger.WIN_FIGHT, (pdata, in) -> {
 			if (progress.addProgress(1)) {
 				Player p = pdata.getPlayer();
-				AchievementManager.sendToast(p, this, progress.getMastery());
+				AchievementManager.notifyMastery(p, this, progress);
 			}
 			return TriggerResult.keep();
 		});

@@ -84,7 +84,7 @@ public class MainMenuInventory extends CoreInventory {
 			new LoadGameSlotInventory(p, pd);
 			break;
 		case ACHIEVEMENTS:
-			new AchievementsInventory(p, pd);
+			new AchievementsMenuInventory(p);
 			break;
 		case STATS:
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);

@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -66,33 +67,105 @@ public class AchievementManager {
 		return achievements;
 	}
 
+	/**
+	 * Returns the list of achievements visible in the given scope.
+	 * If ec is null, returns achievements with scope GLOBAL or BOTH.
+	 * If ec is non-null, returns achievements with scope CLASS or BOTH.
+	 */
+	public static List<Achievement> getForScope(EquipmentClass ec) {
+		List<Achievement> result = new ArrayList<>();
+		for (Achievement ach : achievements) {
+			AchievementScope scope = ach.getScope();
+			if (ec == null) {
+				if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+					result.add(ach);
+				}
+			} else {
+				if (scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) {
+					result.add(ach);
+				}
+			}
+		}
+		return result;
+	}
+
 	public static void registerSessionAchievements(Session session, PlayerSessionData data) {
 		PlayerData pd = data.getData();
 		if (pd == null) return;
+		EquipmentClass ec = data.getPlayerClass();
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.SESSION)) {
-			if (!tryRegister(registeredSession, data, achievement.getId())) continue;
-			AchievementProgress progress = pd.getAchievementProgress(achievement.getId());
-			if (progress.isComplete()) continue;
-			achievement.registerSession(session, data, progress);
+			AchievementScope scope = achievement.getScope();
+			// Register global progress
+			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+				String regKey = achievement.getId() + ":GLOBAL";
+				if (tryRegister(registeredSession, data, regKey)) {
+					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());
+					if (!progress.isComplete()) {
+						achievement.registerSession(session, data, progress);
+					}
+				}
+			}
+			// Register class progress
+			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
+				String regKey = achievement.getId() + ":" + ec.name();
+				if (tryRegister(registeredSession, data, regKey)) {
+					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);
+					if (!progress.isComplete()) {
+						achievement.registerSession(session, data, progress);
+					}
+				}
+			}
 		}
 	}
 
 	public static void registerFightAchievements(FightInstance fight, PlayerFightData data) {
 		PlayerData pd = data.getSessionData().getData();
 		if (pd == null) return;
+		EquipmentClass ec = data.getSessionData().getPlayerClass();
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.FIGHT)) {
-			if (!tryRegister(registeredFight, data, achievement.getId())) continue;
-			AchievementProgress progress = pd.getAchievementProgress(achievement.getId());
-			if (progress.isComplete()) continue;
-			achievement.registerFight(fight, data, progress);
+			AchievementScope scope = achievement.getScope();
+			// Register global progress
+			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+				String regKey = achievement.getId() + ":GLOBAL";
+				if (tryRegister(registeredFight, data, regKey)) {
+					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());
+					if (!progress.isComplete()) {
+						achievement.registerFight(fight, data, progress);
+					}
+				}
+			}
+			// Register class progress
+			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
+				String regKey = achievement.getId() + ":" + ec.name();
+				if (tryRegister(registeredFight, data, regKey)) {
+					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);
+					if (!progress.isComplete()) {
+						achievement.registerFight(fight, data, progress);
+					}
+				}
+			}
 		}
 	}
 
-	public static void sendToast(Player p, Achievement achievement, int mastery) {
+	/**
+	 * Call this when progress.addProgress() returns true (new mastery reached).
+	 * Sends the toast and calls grantReward on the achievement.
+	 */
+	public static void notifyMastery(Player p, Achievement achievement, AchievementProgress progress) {
+		int mastery = progress.getMastery();
+		EquipmentClass ec = progress.getScope();
+		sendToast(p, achievement, mastery, ec);
+		achievement.grantReward(p, mastery, ec);
+	}
+
+	public static void sendToast(Player p, Achievement achievement, int mastery, EquipmentClass ec) {
 		Component title = Component.text("Achievement Unlocked!", NamedTextColor.GREEN);
 		Component subtitle = achievement.getDisplayName().append(
 				Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD)
 		);
+		if (ec != null) {
+			subtitle = subtitle.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
+		}
 		p.showTitle(Title.title(title, subtitle));
 		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
 		p.sendMessage(Component.text("[Achievement] ", NamedTextColor.GREEN).append(subtitle));

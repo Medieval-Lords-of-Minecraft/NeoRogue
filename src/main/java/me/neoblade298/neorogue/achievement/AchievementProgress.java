@@ -7,21 +7,36 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class AchievementProgress {
 	private final Achievement achievement;
+	private final EquipmentClass scope; // null = global
 	private int progress;
 
 	public AchievementProgress(Achievement achievement, int progress) {
+		this(achievement, progress, null);
+	}
+
+	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope) {
 		this.achievement = achievement;
 		this.progress = progress;
+		this.scope = scope;
 	}
 
 	public Achievement getAchievement() {
 		return achievement;
+	}
+
+	/**
+	 * Returns the scope of this progress instance.
+	 * Null means global, non-null means class-specific.
+	 */
+	public EquipmentClass getScope() {
+		return scope;
 	}
 
 	public int getProgress() {

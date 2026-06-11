@@ -19,6 +19,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -34,42 +35,53 @@ public class AchievementsInventory extends CoreInventory {
 	private static final int PREVIOUS = 48, NEXT = 50;
 
 	private PlayerData pd;
+	private EquipmentClass ec; // null = global view
 	private int page;
 	private List<AchievementProgress> sorted;
 
-	public AchievementsInventory(Player p, PlayerData pd) {
-		super(p, Bukkit.createInventory(p, 54, buildTitle(pd)));
+	public AchievementsInventory(Player p, PlayerData pd, EquipmentClass ec) {
+		super(p, Bukkit.createInventory(p, 54, buildTitle(pd, ec)));
 		this.pd = pd;
-		this.sorted = buildSortedList(pd);
+		this.ec = ec;
+		this.sorted = buildSortedList(pd, ec);
 		setupInventory();
 	}
 
-	private static Component buildTitle(PlayerData pd) {
-		List<Achievement> all = AchievementManager.getAll();
+	private static Component buildTitle(PlayerData pd, EquipmentClass ec) {
+		List<Achievement> visible = AchievementManager.getForScope(ec);
 		int totalMastery = 0, totalMaxMastery = 0;
 		int completeCount = 0;
-		for (Achievement ach : all) {
-			AchievementProgress prog = pd.getAchievementProgress(ach.getId());
+		for (Achievement ach : visible) {
+			AchievementProgress prog = getProgress(pd, ach, ec);
 			totalMastery += prog.getMastery();
 			totalMaxMastery += prog.getMaxMastery();
 			if (prog.isComplete()) completeCount++;
 		}
 		int achievedPct = totalMaxMastery > 0 ? (int) (100.0 * totalMastery / totalMaxMastery) : 0;
-		int masteredPct = all.size() > 0 ? (int) (100.0 * completeCount / all.size()) : 0;
-		return Component.text(achievedPct + "% achieved", NamedTextColor.YELLOW)
+		int masteredPct = visible.size() > 0 ? (int) (100.0 * completeCount / visible.size()) : 0;
+		String prefix = ec != null ? ec.getDisplay() + " " : "Global ";
+		return Component.text(prefix, NamedTextColor.WHITE)
+				.append(Component.text(achievedPct + "% achieved", NamedTextColor.YELLOW))
 				.append(Component.text(" | ", NamedTextColor.GRAY))
 				.append(Component.text(masteredPct + "% mastered", NamedTextColor.GREEN));
 	}
 
-	private static List<AchievementProgress> buildSortedList(PlayerData pd) {
-		List<Achievement> all = AchievementManager.getAll();
-		List<AchievementProgress> list = new ArrayList<>(all.size());
-		for (Achievement ach : all) {
-			list.add(pd.getAchievementProgress(ach.getId()));
+	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec) {
+		List<Achievement> visible = AchievementManager.getForScope(ec);
+		List<AchievementProgress> list = new ArrayList<>(visible.size());
+		for (Achievement ach : visible) {
+			list.add(getProgress(pd, ach, ec));
 		}
 		list.sort(Comparator.comparingInt((AchievementProgress ap) -> ap.getAchievement().getSortPriority()).reversed()
 				.thenComparing(ap -> PlainTextComponentSerializer.plainText().serialize(ap.getAchievement().getDisplayName())));
 		return list;
+	}
+
+	private static AchievementProgress getProgress(PlayerData pd, Achievement ach, EquipmentClass ec) {
+		if (ec != null) {
+			return pd.getClassAchievementProgress(ach.getId(), ec);
+		}
+		return pd.getGlobalAchievementProgress(ach.getId());
 	}
 
 	private void setupInventory() {
@@ -104,17 +116,15 @@ public class AchievementsInventory extends CoreInventory {
 	}
 
 	private void fillProgressBar(ItemStack[] contents) {
-		List<Achievement> all = AchievementManager.getAll();
 		int totalMastery = 0, totalMaxMastery = 0;
 		int completeCount = 0;
-		for (Achievement ach : all) {
-			AchievementProgress prog = pd.getAchievementProgress(ach.getId());
+		for (AchievementProgress prog : sorted) {
 			totalMastery += prog.getMastery();
 			totalMaxMastery += prog.getMaxMastery();
 			if (prog.isComplete()) completeCount++;
 		}
 		double achievedPct = totalMaxMastery > 0 ? (double) totalMastery / totalMaxMastery : 0;
-		double masteredPct = all.size() > 0 ? (double) completeCount / all.size() : 0;
+		double masteredPct = sorted.size() > 0 ? (double) completeCount / sorted.size() : 0;
 
 		int paneCount = PROGRESS_END - PROGRESS_START + 1; // 7
 		int achievedSlots = (int) (achievedPct * paneCount);
@@ -145,7 +155,7 @@ public class AchievementsInventory extends CoreInventory {
 
 		int slot = e.getRawSlot();
 		if (slot == BACK) {
-			new MainMenuInventory(p);
+			new AchievementsMenuInventory(p);
 			return;
 		}
 

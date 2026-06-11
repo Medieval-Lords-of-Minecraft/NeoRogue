@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +54,8 @@ public class PlayerData {
 	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private boolean equipmentDroptableDirty;
-	private HashMap<String, AchievementProgress> achievements = new HashMap<>();
+	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
+	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
 	private int slotsAvailable, maxNotoriety;
 	
 	// Create new one if one doesn't exist
@@ -134,9 +136,20 @@ public class PlayerData {
 					while (achRs.next()) {
 						String achId = achRs.getString("achievement");
 						int prog = achRs.getInt("progress");
+						String scope = achRs.getString("scope");
 						Achievement ach = AchievementManager.get(achId);
-						if (ach != null) {
-							achievements.put(achId, new AchievementProgress(ach, prog));
+						if (ach == null) continue;
+						if (scope == null || scope.equals("GLOBAL")) {
+							globalAchievements.put(achId, new AchievementProgress(ach, prog, null));
+						} else {
+							try {
+								EquipmentClass ec = EquipmentClass.valueOf(scope);
+								classAchievements.computeIfAbsent(ec, k -> new HashMap<>())
+										.put(achId, new AchievementProgress(ach, prog, ec));
+							} catch (IllegalArgumentException ex) {
+								// Unknown scope, treat as global
+								globalAchievements.put(achId, new AchievementProgress(ach, prog, null));
+							}
 						}
 					}
 				}
@@ -362,14 +375,28 @@ public class PlayerData {
 		clearAch.setString(1, uuid.toString());
 		stmts.add(clearAch);
 
-		if (!achievements.isEmpty()) {
-			SQLInsertBuilder achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
-			for (var entry : achievements.entrySet()) {
+		SQLInsertBuilder achSql = null;
+		if (!globalAchievements.isEmpty()) {
+			achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
+			for (var entry : globalAchievements.entrySet()) {
 				achSql.addValue("uuid", uuid.toString())
 						.addValue("achievement", entry.getKey())
 						.addValue("progress", entry.getValue().getProgress())
+						.addValue("scope", "GLOBAL")
 						.addRow();
 			}
+		}
+		for (var classEntry : classAchievements.entrySet()) {
+			if (achSql == null) achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
+			for (var entry : classEntry.getValue().entrySet()) {
+				achSql.addValue("uuid", uuid.toString())
+						.addValue("achievement", entry.getKey())
+						.addValue("progress", entry.getValue().getProgress())
+						.addValue("scope", classEntry.getKey().name())
+						.addRow();
+			}
+		}
+		if (achSql != null) {
 			stmts.add(achSql.build(con));
 		}
 	}
@@ -454,9 +481,20 @@ public class PlayerData {
 	}
 
 	public AchievementProgress getAchievementProgress(String id) {
-		return achievements.computeIfAbsent(id, k -> {
+		return getGlobalAchievementProgress(id);
+	}
+
+	public AchievementProgress getGlobalAchievementProgress(String id) {
+		return globalAchievements.computeIfAbsent(id, k -> {
 			Achievement ach = AchievementManager.get(k);
-			return ach != null ? new AchievementProgress(ach, 0) : null;
+			return ach != null ? new AchievementProgress(ach, 0, null) : null;
+		});
+	}
+
+	public AchievementProgress getClassAchievementProgress(String id, EquipmentClass ec) {
+		return classAchievements.computeIfAbsent(ec, k -> new HashMap<>()).computeIfAbsent(id, k -> {
+			Achievement ach = AchievementManager.get(k);
+			return ach != null ? new AchievementProgress(ach, 0, ec) : null;
 		});
 	}
 	
