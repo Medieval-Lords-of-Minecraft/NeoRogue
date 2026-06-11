@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.WinInstance;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
@@ -66,11 +67,15 @@ public class BossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			s.awardXp(20);
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
-			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
-			
-			// Set up next region
-			s.generateNextRegion();
-			s.setNode(s.getRegion().getNodes()[0][2]);
+
+			RegionType nextRegion = RegionType.getNextRegion(s.getRegion().getType(), s.isEndless());
+			if (nextRegion == null) {
+				handleWin(title, new WinInstance(s));
+			} else {
+				handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
+				s.generateNextRegion();
+				s.setNode(s.getRegion().getNodes()[0][2]);
+			}
 		}
 	}
 	
