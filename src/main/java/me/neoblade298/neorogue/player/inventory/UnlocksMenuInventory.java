@@ -29,7 +29,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 		contents[WARRIOR] = CoreInventory.createButton(Material.IRON_SWORD,
 				Component.text("Warrior", NamedTextColor.RED));
 		contents[THIEF] = CoreInventory.createButton(Material.IRON_INGOT,
-				Component.text("Thief", NamedTextColor.DARK_PURPLE));
+				Component.text("Thief", NamedTextColor.YELLOW));
 		contents[ARCHER] = CoreInventory.createButton(Material.BOW,
 				Component.text("Archer", NamedTextColor.GREEN));
 		contents[MAGE] = CoreInventory.createButton(Material.BLAZE_ROD,

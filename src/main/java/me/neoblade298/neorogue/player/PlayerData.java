@@ -483,6 +483,16 @@ public class PlayerData {
 		flags.remove(flag);
 	}
 
+	public void resetAll() {
+		unlockNodes.clear();
+		flags.clear();
+		globalAchievements.clear();
+		classAchievements.clear();
+		progression.clear();
+		markEquipmentDroptableDirty();
+		initializeEquipmentDroptable();
+	}
+
 	public AchievementProgress getAchievementProgress(String id) {
 		return getGlobalAchievementProgress(id);
 	}

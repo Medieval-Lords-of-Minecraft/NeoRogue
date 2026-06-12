@@ -48,6 +48,7 @@ import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminPoints;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
 import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
+import me.neoblade298.neorogue.commands.CmdAdminReset;
 import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
 import me.neoblade298.neorogue.commands.CmdAdminSetExp;
@@ -205,6 +206,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminSetLevel("setlevel", "Set a player's level", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminPoints("points", "Add unlock points to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetPoints("setpoints", "Set a player's unlock points", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminReset("reset", "Reset all progress for a player", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	
