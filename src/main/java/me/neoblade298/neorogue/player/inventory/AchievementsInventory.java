@@ -54,7 +54,7 @@ public class AchievementsInventory extends CoreInventory {
 		for (Achievement ach : visible) {
 			list.add(getProgress(pd, ach, ec));
 		}
-		list.sort(Comparator.comparingInt((AchievementProgress ap) -> ap.getAchievement().getSortPriority()).reversed()
+		list.sort(Comparator.comparingInt((AchievementProgress ap) -> ap.getAchievement().getSortPriority())
 				.thenComparing(ap -> PlainTextComponentSerializer.plainText().serialize(ap.getAchievement().getDisplayName())));
 		return list;
 	}
