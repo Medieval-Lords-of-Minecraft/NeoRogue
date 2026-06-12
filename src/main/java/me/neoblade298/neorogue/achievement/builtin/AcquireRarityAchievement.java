@@ -56,7 +56,7 @@ public class AcquireRarityAchievement implements Achievement {
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		String name = rarity.name().charAt(0) + rarity.name().substring(1).toLowerCase();
-		return List.of(Component.text("Acquire a " + name + " equipment (not artifact/consumable).", NamedTextColor.GRAY));
+		return List.of(Component.text("Acquire a(n) " + name + " equipment (not artifact/consumable).", NamedTextColor.GRAY));
 	}
 
 	@Override
