@@ -43,6 +43,11 @@ public class NoHealthLossAchievement extends ObjectiveAchievement {
 	}
 
 	@Override
+	public int getSortPriority() {
+		return 80;
+	}
+
+	@Override
 	public AchievementScope getScope() {
 		return AchievementScope.BOTH;
 	}

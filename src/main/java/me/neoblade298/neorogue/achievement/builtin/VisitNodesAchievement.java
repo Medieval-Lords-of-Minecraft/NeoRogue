@@ -30,7 +30,7 @@ public class VisitNodesAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 70;
+        return 1;
     }
 
 	@Override

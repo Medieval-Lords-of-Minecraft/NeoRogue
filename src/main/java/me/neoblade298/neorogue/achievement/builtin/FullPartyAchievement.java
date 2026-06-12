@@ -44,6 +44,11 @@ public class FullPartyAchievement implements Achievement {
 	}
 
 	@Override
+	public int getSortPriority() {
+		return 20;
+	}
+
+	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		return List.of(
 				Component.text("Beat a fight, miniboss, and boss as a party of 4.", NamedTextColor.GRAY),

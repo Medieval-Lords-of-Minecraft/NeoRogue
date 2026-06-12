@@ -43,7 +43,7 @@ public class MaxStatAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 100;
+        return 40 + statType.ordinal();
     }
 
 	@Override

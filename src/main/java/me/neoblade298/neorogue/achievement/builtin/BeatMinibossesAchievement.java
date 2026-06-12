@@ -36,7 +36,7 @@ public class BeatMinibossesAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 10;
+        return 5;
     }
 
 	@Override

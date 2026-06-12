@@ -55,7 +55,7 @@ public class AllMinibossesAchievement extends ObjectiveAchievement {
 
     @Override
     public int getSortPriority() {
-        return 30 + region.getDifficulty();
+        return 50 + region.getDifficulty();
     }
 
 	@Override

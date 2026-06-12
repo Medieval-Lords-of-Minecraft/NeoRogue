@@ -55,7 +55,7 @@ public class BeatRegionAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 20 + region.getDifficulty();
+        return 10 + region.getDifficulty();
     }
 
 	@Override

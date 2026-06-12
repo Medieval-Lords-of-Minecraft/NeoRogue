@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.unlock;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +18,13 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class UnlockNode {
 	public static enum TargetType {
@@ -171,7 +174,15 @@ public class UnlockNode {
 
 		// Targets
 		lore.add(Component.text("Unlocks:", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, State.FALSE));
-		for (String targetId : targetIds) {
+		ArrayList<String> sortedTargetIds = new ArrayList<>(targetIds);
+		if (targetType == TargetType.EQUIPMENT) {
+			sortedTargetIds.sort(
+					Comparator.comparingInt(this::getTargetRaritySortValue)
+							.thenComparing(this::getTargetSortName, String.CASE_INSENSITIVE_ORDER));
+		} else {
+			sortedTargetIds.sort(Comparator.comparing(this::getTargetSortName, String.CASE_INSENSITIVE_ORDER));
+		}
+		for (String targetId : sortedTargetIds) {
 			Component targetDisplay;
 			if (targetType == TargetType.EQUIPMENT) {
 				Equipment eq = Equipment.get(targetId, false);
@@ -263,5 +274,24 @@ public class UnlockNode {
 			}
 		}
 		return sb.toString();
+	}
+
+	private String getTargetSortName(String targetId) {
+		if (targetType == TargetType.EQUIPMENT) {
+			Equipment eq = Equipment.get(targetId, false);
+			if (eq != null) {
+				return PlainTextComponentSerializer.plainText().serialize(eq.getDisplay());
+			}
+		}
+		return prettifyId(targetId);
+	}
+
+	private int getTargetRaritySortValue(String targetId) {
+		Equipment eq = Equipment.get(targetId, false);
+		if (eq != null) {
+			Rarity rarity = eq.getRarity();
+			if (rarity != null) return rarity.getValue();
+		}
+		return Integer.MAX_VALUE;
 	}
 }

@@ -55,7 +55,7 @@ public class AcquireRarityAchievement implements Achievement {
 
 	@Override
 	public int getSortPriority() {
-		return 90;
+		return 30;
 	}
 
 	@Override

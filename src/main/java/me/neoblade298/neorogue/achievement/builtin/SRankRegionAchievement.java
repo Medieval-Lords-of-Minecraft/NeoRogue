@@ -53,7 +53,7 @@ public class SRankRegionAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 60 + region.getDifficulty();
+        return 70 + region.getDifficulty();
     }
 
 	@Override

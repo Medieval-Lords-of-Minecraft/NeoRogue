@@ -55,7 +55,7 @@ public class AllBossesAchievement extends ObjectiveAchievement {
 
     @Override
     public int getSortPriority() {
-        return 50 + region.getDifficulty();
+        return 60 + region.getDifficulty();
     }
 
 	@Override

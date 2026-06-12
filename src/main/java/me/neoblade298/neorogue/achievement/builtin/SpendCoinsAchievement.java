@@ -35,7 +35,7 @@ public class SpendCoinsAchievement implements Achievement {
 
     @Override
     public int getSortPriority() {
-        return 8;
+        return 22;
     }
 
 	@Override

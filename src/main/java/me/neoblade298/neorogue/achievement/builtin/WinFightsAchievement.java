@@ -53,7 +53,7 @@ public class WinFightsAchievement implements Achievement {
 
 	@Override
 	public int getSortPriority() {
-		return 10;
+		return 3;
 	}
 
 	@Override
