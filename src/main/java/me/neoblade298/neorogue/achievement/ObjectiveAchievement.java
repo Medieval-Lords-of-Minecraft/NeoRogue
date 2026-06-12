@@ -32,6 +32,15 @@ public abstract class ObjectiveAchievement implements Achievement {
 
 	@Override
 	public List<Component> getProgressLines(AchievementProgress progress) {
+		List<Component> lines = new ArrayList<>();
+		lines.addAll(getProgressSummaryLines(progress));
+		lines.add(Component.empty());
+		lines.addAll(getObjectiveLines(progress));
+		return lines;
+	}
+
+	@Override
+	public List<Component> getProgressSummaryLines(AchievementProgress progress) {
 		Set<String> completed = parseData(progress.getData());
 		List<Component> lines = new ArrayList<>();
 		if (progress.isComplete()) {
@@ -39,7 +48,13 @@ public abstract class ObjectiveAchievement implements Achievement {
 		} else {
 			lines.add(Component.text("Progress: " + completed.size() + "/" + getObjectiveIds().size(), NamedTextColor.GRAY));
 		}
-		lines.add(Component.empty());
+		return lines;
+	}
+
+	@Override
+	public List<Component> getObjectiveLines(AchievementProgress progress) {
+		Set<String> completed = parseData(progress.getData());
+		List<Component> lines = new ArrayList<>();
 		for (String objId : getObjectiveIds()) {
 			boolean done = completed.contains(objId);
 			String name = getObjectiveDisplay(objId);

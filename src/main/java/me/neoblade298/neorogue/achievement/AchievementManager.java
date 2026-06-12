@@ -79,11 +79,11 @@ public class AchievementManager {
 					Material.DIAMOND, Rarity.EPIC),
 			new VisitNodesAchievement(),
 			new SpendCoinsAchievement(),
-			new SRankRegionAchievement("srank_ld", Component.text("LD Speedster", NamedTextColor.GOLD),
+			new SRankRegionAchievement("srank_ld", Component.text("Low District Speedster", NamedTextColor.GOLD),
 					Material.CLOCK, RegionType.LOW_DISTRICT),
-			new SRankRegionAchievement("srank_hf", Component.text("HF Speedster", NamedTextColor.GOLD),
+			new SRankRegionAchievement("srank_hf", Component.text("Harvest Fields Speedster", NamedTextColor.GOLD),
 					Material.CLOCK, RegionType.HARVEST_FIELDS),
-			new SRankRegionAchievement("srank_fw", Component.text("FW Speedster", NamedTextColor.GOLD),
+			new SRankRegionAchievement("srank_fw", Component.text("Frozen Wastes Speedster", NamedTextColor.GOLD),
 					Material.CLOCK, RegionType.FROZEN_WASTES)
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();

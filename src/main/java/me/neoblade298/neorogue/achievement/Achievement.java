@@ -45,6 +45,20 @@ public interface Achievement {
 		return lines;
 	}
 
+	/**
+	 * Returns only the progress summary section used in achievement item lore.
+	 */
+	default List<Component> getProgressSummaryLines(AchievementProgress progress) {
+		return getProgressLines(progress);
+	}
+
+	/**
+	 * Returns only the objective checklist section used in achievement item lore.
+	 */
+	default List<Component> getObjectiveLines(AchievementProgress progress) {
+		return List.of();
+	}
+
 	default void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 	}
 
