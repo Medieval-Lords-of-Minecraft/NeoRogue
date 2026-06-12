@@ -53,6 +53,11 @@ public class BeatRegionAchievement implements Achievement {
 		return THRESHOLDS;
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 20 + region.getDifficulty();
+    }
+
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		return List.of(Component.text("Beat " + region.getDisplay() + ".", NamedTextColor.GRAY));

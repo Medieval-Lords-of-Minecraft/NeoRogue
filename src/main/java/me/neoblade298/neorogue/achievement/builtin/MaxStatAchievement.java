@@ -41,6 +41,11 @@ public class MaxStatAchievement implements Achievement {
 		return id;
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 100;
+    }
+
 	@Override
 	public Component getDisplayName() {
 		return displayName;

@@ -108,7 +108,7 @@ public class PlayerData {
 						EquipmentClass ec = classKey.equals("GLOBAL") ? null : EquipmentClass.valueOf(classKey);
 						ClassProgression prog = progression.get(ec);
 						if (prog == null) continue;
-						prog.level = classRs.getInt("level");
+						prog.level = Math.max(1, classRs.getInt("level"));
 						prog.exp = classRs.getInt("exp");
 						prog.points = classRs.getInt("points");
 					}

@@ -4,16 +4,15 @@ import java.util.HashMap;
 
 public enum RegionType {
 	// Outer Admiratio exists so the Tester chance can exist
-	LOW_DISTRICT("Low District", 16, Layout.STANDARD),
-	HARVEST_FIELDS("Harvest Fields", 16, Layout.STANDARD),
-	FROZEN_WASTES("Frozen Wastes", 16, Layout.STANDARD),
-	MEADOWOOD("Meadowood", 5, Layout.TUTORIAL),
-	OUTER_ADMIRATIO("Outer Admiratio", 16, Layout.STANDARD),
-	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 16, Layout.STANDARD),
-	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, Layout.STANDARD),
-	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 5, Layout.TUTORIAL),
-	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, Layout.STANDARD),
-	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, Layout.STANDARD);
+	LOW_DISTRICT("Low District", 16, 0, Layout.STANDARD),
+	HARVEST_FIELDS("Harvest Fields", 16, 1, Layout.STANDARD),
+	FROZEN_WASTES("Frozen Wastes", 16, 2, Layout.STANDARD),
+	MEADOWOOD("Meadowood", 5, 0, Layout.TUTORIAL),
+	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 0, 16, Layout.STANDARD),
+	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, 1, Layout.STANDARD),
+	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 5, 0, Layout.TUTORIAL),
+	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, 2, Layout.STANDARD),
+	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, Layout.STANDARD);
 	
 	// ARGENT_PLAZA("Argent Plaza"),
 	// CAILIRIC_ARCHIVES("Cailiric Archives"), 
@@ -26,12 +25,13 @@ public enum RegionType {
 	}
 	
 	private String display;
-	private int rowCount;
+	private int rowCount, difficulty;
 	private Layout layout;
 
-	private RegionType(String display, int rowCount, Layout layout) {
+	private RegionType(String display, int rowCount, int difficulty, Layout layout) {
 		this.display = display;
 		this.rowCount = rowCount;
+		this.difficulty = difficulty;
 		this.layout = layout;
 	}
 	
@@ -41,6 +41,10 @@ public enum RegionType {
 
 	public int getRowCount() {
 		return rowCount;
+	}
+
+	public int getDifficulty() {
+		return difficulty;
 	}
 
 	public Layout getLayout() {
@@ -56,7 +60,6 @@ public enum RegionType {
             case LOW_DISTRICT: return LOW_DISTRICT_DEBUG;
             case HARVEST_FIELDS: return HARVEST_FIELDS_DEBUG;
             case MEADOWOOD: return MEADOWOOD_DEBUG;
-            case OUTER_ADMIRATIO: return OUTER_ADMIRATIO_DEBUG;
             case FROZEN_WASTES: return FROZEN_WASTES_DEBUG;
 		default:
 			return type;

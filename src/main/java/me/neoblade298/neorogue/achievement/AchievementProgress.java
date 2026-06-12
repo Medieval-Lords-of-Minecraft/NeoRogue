@@ -105,9 +105,9 @@ public class AchievementProgress {
 
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Mastery: " + mastery + "/" + maxMastery, NamedTextColor.GOLD));
-		lore.addAll(achievement.getProgressLines(this));
-		lore.add(Component.empty());
 		lore.addAll(achievement.getDescription(progress, mastery));
+		lore.add(Component.empty());
+		lore.addAll(achievement.getProgressLines(this));
 
 		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);

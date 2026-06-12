@@ -51,6 +51,11 @@ public class SRankRegionAchievement implements Achievement {
 		return material;
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 60 + region.getDifficulty();
+    }
+
 	@Override
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;

@@ -33,6 +33,11 @@ public class SpendCoinsAchievement implements Achievement {
 		return Material.GOLD_NUGGET;
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 8;
+    }
+
 	@Override
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;

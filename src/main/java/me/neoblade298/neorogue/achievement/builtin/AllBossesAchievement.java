@@ -53,6 +53,11 @@ public class AllBossesAchievement extends ObjectiveAchievement {
 		return List.of(Component.text("Beat all " + region.getDisplay() + " bosses.", NamedTextColor.GRAY));
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 50 + region.getDifficulty();
+    }
+
 	@Override
 	public AchievementScope getScope() {
 		return AchievementScope.BOTH;

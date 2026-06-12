@@ -53,6 +53,11 @@ public class AllMinibossesAchievement extends ObjectiveAchievement {
 		return List.of(Component.text("Beat all " + region.getDisplay() + " minibosses.", NamedTextColor.GRAY));
 	}
 
+    @Override
+    public int getSortPriority() {
+        return 30 + region.getDifficulty();
+    }
+
 	@Override
 	public AchievementScope getScope() {
 		return AchievementScope.BOTH;

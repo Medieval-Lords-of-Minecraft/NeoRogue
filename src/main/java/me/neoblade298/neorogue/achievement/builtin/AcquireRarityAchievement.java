@@ -54,6 +54,11 @@ public class AcquireRarityAchievement implements Achievement {
 	}
 
 	@Override
+	public int getSortPriority() {
+		return 90;
+	}
+
+	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		String name = rarity.name().charAt(0) + rarity.name().substring(1).toLowerCase();
 		return List.of(Component.text("Acquire a(n) " + name + " equipment (not artifact/consumable).", NamedTextColor.GRAY));
