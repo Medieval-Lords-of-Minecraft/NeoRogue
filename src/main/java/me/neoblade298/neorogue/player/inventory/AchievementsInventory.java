@@ -44,22 +44,8 @@ public class AchievementsInventory extends CoreInventory {
 	}
 
 	private static Component buildTitle(PlayerData pd, EquipmentClass ec) {
-		List<Achievement> visible = AchievementManager.getForScope(ec);
-		int totalMastery = 0, totalMaxMastery = 0;
-		int completeCount = 0;
-		for (Achievement ach : visible) {
-			AchievementProgress prog = getProgress(pd, ach, ec);
-			totalMastery += prog.getMastery();
-			totalMaxMastery += prog.getMaxMastery();
-			if (prog.isComplete()) completeCount++;
-		}
-		int achievedPct = totalMaxMastery > 0 ? (int) (100.0 * totalMastery / totalMaxMastery) : 0;
-		int masteredPct = visible.size() > 0 ? (int) (100.0 * completeCount / visible.size()) : 0;
-		String prefix = ec != null ? ec.getDisplay() + " " : "Global ";
-		return Component.text(prefix, NamedTextColor.WHITE)
-				.append(Component.text(achievedPct + "% achieved", NamedTextColor.YELLOW))
-				.append(Component.text(" | ", NamedTextColor.GRAY))
-				.append(Component.text(masteredPct + "% mastered", NamedTextColor.GREEN));
+		String prefix = ec != null ? ec.getDisplay() : "Global";
+		return Component.text(prefix + " Achievements", NamedTextColor.WHITE);
 	}
 
 	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec) {
@@ -126,6 +112,13 @@ public class AchievementsInventory extends CoreInventory {
 		int achievedSlots = (int) (achievedPct * paneCount);
 		int masteredSlots = (int) (masteredPct * paneCount);
 
+		int achievedDisplay = (int) (achievedPct * 100);
+		int masteredDisplay = (int) (masteredPct * 100);
+		Component paneName = Component.text(achievedDisplay + "% achieved", NamedTextColor.YELLOW)
+				.append(Component.text(" | ", NamedTextColor.GRAY))
+				.append(Component.text(masteredDisplay + "% mastered", NamedTextColor.GREEN))
+				.decoration(TextDecoration.ITALIC, State.FALSE);
+
 		for (int i = 0; i < paneCount; i++) {
 			Material mat;
 			if (i < masteredSlots) {
@@ -137,7 +130,7 @@ public class AchievementsInventory extends CoreInventory {
 			}
 			ItemStack pane = new ItemStack(mat);
 			ItemMeta meta = pane.getItemMeta();
-			meta.displayName(Component.text(" ").decoration(TextDecoration.ITALIC, State.FALSE));
+			meta.displayName(paneName);
 			pane.setItemMeta(meta);
 			contents[PROGRESS_START + i] = pane;
 		}

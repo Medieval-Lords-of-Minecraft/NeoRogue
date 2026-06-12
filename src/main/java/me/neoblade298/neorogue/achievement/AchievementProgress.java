@@ -109,6 +109,7 @@ public class AchievementProgress {
 		lore.add(Component.empty());
 		lore.addAll(achievement.getDescription(progress, mastery));
 
+		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
