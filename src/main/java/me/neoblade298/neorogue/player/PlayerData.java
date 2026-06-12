@@ -45,6 +45,18 @@ public class PlayerData {
 		int points = 0;
 	}
 
+	private ClassProgression getOrCreateProgression(EquipmentClass ec) {
+		return progression.computeIfAbsent(ec, k -> new ClassProgression());
+	}
+
+	private void initializeDefaultProgression() {
+		getOrCreateProgression(null);
+		getOrCreateProgression(EquipmentClass.WARRIOR);
+		getOrCreateProgression(EquipmentClass.THIEF);
+		getOrCreateProgression(EquipmentClass.MAGE);
+		getOrCreateProgression(EquipmentClass.ARCHER);
+	}
+
 	private HashMap<EquipmentClass, ClassProgression> progression = new HashMap<>();
 	private UUID uuid;
 	private Player p;
@@ -63,12 +75,8 @@ public class PlayerData {
 		this.uuid = p.getUniqueId();
 		this.p = p;
 		this.display = p.getName();
-		
-		progression.put(null, new ClassProgression());
-		progression.put(EquipmentClass.WARRIOR, new ClassProgression());
-		progression.put(EquipmentClass.THIEF, new ClassProgression());
-		progression.put(EquipmentClass.MAGE, new ClassProgression());
-		progression.put(EquipmentClass.ARCHER, new ClassProgression());
+
+		initializeDefaultProgression();
 		if (p.hasPermission("donator.diamond")) {
 			slotsAvailable = 5;
 		}
@@ -215,11 +223,11 @@ public class PlayerData {
 	}
 	
 	public int getLevel() {
-		return progression.get(null).level;
+		return getOrCreateProgression(null).level;
 	}
 	
 	public int getExp() {
-		return progression.get(null).exp;
+		return getOrCreateProgression(null).exp;
 	}
 	
 	public int getSlots() {
@@ -227,38 +235,31 @@ public class PlayerData {
 	}
 
 	public int getLevel(EquipmentClass ec) {
-		ClassProgression prog = progression.get(ec);
-		return prog != null ? prog.level : 1;
+		return getOrCreateProgression(ec).level;
 	}
 
 	public int getExp(EquipmentClass ec) {
-		ClassProgression prog = progression.get(ec);
-		return prog != null ? prog.exp : 0;
+		return getOrCreateProgression(ec).exp;
 	}
 
 	public int getPoints(EquipmentClass ec) {
-		ClassProgression prog = progression.get(ec);
-		return prog != null ? prog.points : 0;
+		return getOrCreateProgression(ec).points;
 	}
 
 	public void setLevel(EquipmentClass ec, int value) {
-		ClassProgression prog = progression.get(ec);
-		if (prog != null) prog.level = value;
+		getOrCreateProgression(ec).level = value;
 	}
 
 	public void setExp(EquipmentClass ec, int value) {
-		ClassProgression prog = progression.get(ec);
-		if (prog != null) prog.exp = value;
+		getOrCreateProgression(ec).exp = value;
 	}
 
 	public void setPoints(EquipmentClass ec, int value) {
-		ClassProgression prog = progression.get(ec);
-		if (prog != null) prog.points = value;
+		getOrCreateProgression(ec).points = value;
 	}
 
 	public void addPoints(EquipmentClass ec, int amount) {
-		ClassProgression prog = progression.get(ec);
-		if (prog != null) prog.points += amount;
+		getOrCreateProgression(ec).points += amount;
 	}
 
 	public static int getXpRequired(int currentLevel) {
@@ -489,6 +490,7 @@ public class PlayerData {
 		globalAchievements.clear();
 		classAchievements.clear();
 		progression.clear();
+		initializeDefaultProgression();
 		markEquipmentDroptableDirty();
 		initializeEquipmentDroptable();
 	}
