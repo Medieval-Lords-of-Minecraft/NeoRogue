@@ -192,7 +192,8 @@ public class UnlockNode {
 					targetDisplay = Component.text(" - " + targetId, NamedTextColor.GRAY);
 				}
 			} else if (targetType == TargetType.PLAYER_CLASS) {
-				targetDisplay = Component.text(" - " + targetId, NamedTextColor.AQUA);
+				String classDisplay = getPlayerClassDisplayName(targetId);
+				targetDisplay = Component.text(" - " + classDisplay, NamedTextColor.AQUA);
 			} else {
 				targetDisplay = Component.text(" - " + targetId, NamedTextColor.GRAY);
 			}
@@ -282,8 +283,18 @@ public class UnlockNode {
 			if (eq != null) {
 				return PlainTextComponentSerializer.plainText().serialize(eq.getDisplay());
 			}
+		} else if (targetType == TargetType.PLAYER_CLASS) {
+			return getPlayerClassDisplayName(targetId);
 		}
 		return prettifyId(targetId);
+	}
+
+	private String getPlayerClassDisplayName(String targetId) {
+		try {
+			return EquipmentClass.valueOf(targetId.toUpperCase()).getDisplay();
+		} catch (IllegalArgumentException ex) {
+			return prettifyId(targetId);
+		}
 	}
 
 	private int getTargetRaritySortValue(String targetId) {
