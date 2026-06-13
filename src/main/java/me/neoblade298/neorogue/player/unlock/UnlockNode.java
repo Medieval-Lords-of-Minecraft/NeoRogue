@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,8 +41,7 @@ public class UnlockNode {
 	private final int slot;
 	private final Set<String> targetIds;
 	private final List<String[]> requirements; // outer = AND, inner = OR (pipe-separated)
-	private final Map<String, Integer> achievementRequirements; // achievement ID -> required mastery (global)
-	private final Map<String, Integer> classAchievementRequirements; // achievement ID -> required mastery (per class)
+	private final Map<String, Integer> achievementRequirements; // achievement ID -> required mastery; append _<class> for class-specific requirements
 
 	public UnlockNode(Section sec) {
 		this.id = UnlockRegistry.normalizeNodeId(sec.getName());
@@ -77,16 +77,6 @@ public class UnlockNode {
 			this.achievementRequirements = Collections.unmodifiableMap(achReqs);
 		} else {
 			this.achievementRequirements = Collections.emptyMap();
-		}
-		Section classAchSec = sec.getSection("class-achievement-requirements");
-		if (classAchSec != null) {
-			HashMap<String, Integer> classAchReqs = new HashMap<>();
-			for (String key : classAchSec.getKeys()) {
-				classAchReqs.put(key, classAchSec.getInt(key, 1));
-			}
-			this.classAchievementRequirements = Collections.unmodifiableMap(classAchReqs);
-		} else {
-			this.classAchievementRequirements = Collections.emptyMap();
 		}
 	}
 
@@ -128,10 +118,6 @@ public class UnlockNode {
 
 	public Map<String, Integer> getAchievementRequirements() {
 		return achievementRequirements;
-	}
-
-	public Map<String, Integer> getClassAchievementRequirements() {
-		return classAchievementRequirements;
 	}
 
 	/**
@@ -216,7 +202,7 @@ public class UnlockNode {
 		}
 
 		// Requirements
-		if (!requirements.isEmpty() || !achievementRequirements.isEmpty() || !classAchievementRequirements.isEmpty()) {
+		if (!requirements.isEmpty() || !achievementRequirements.isEmpty()) {
 			lore.add(Component.empty());
 			lore.add(Component.text("Requires:", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, State.FALSE));
 			for (String[] orGroup : requirements) {
@@ -240,23 +226,16 @@ public class UnlockNode {
 				}
 			}
 			for (Map.Entry<String, Integer> entry : achievementRequirements.entrySet()) {
-				AchievementProgress progress = data.getAchievementProgress(entry.getKey());
+				EquipmentClass achievementScope = getAchievementRequirementScope(entry.getKey());
+				String achievementId = getAchievementRequirementId(entry.getKey(), achievementScope);
+				AchievementProgress progress = getAchievementRequirementProgress(data, entry.getKey());
 				boolean met = progress != null && progress.getMastery() >= entry.getValue();
-				String achName = progress != null ? progress.getAchievement().getId() : entry.getKey();
+				String achName = progress != null ? progress.getAchievement().getId() : achievementId;
 				NamedTextColor achColor = met ? NamedTextColor.GREEN : NamedTextColor.RED;
-				lore.add(Component.text(" - " + prettifyId(achName) + " (Mastery " + entry.getValue() + ")", achColor)
+				String classLabel = achievementScope != null ? " [" + achievementScope.getDisplay() + "]" : "";
+				lore.add(Component.text(" - " + prettifyId(achName) + classLabel + " (Mastery " + entry.getValue() + ")", achColor)
 						.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
-		for (Map.Entry<String, Integer> entry : classAchievementRequirements.entrySet()) {
-			if (nodeClass == null) continue;
-			AchievementProgress progress = data.getClassAchievementProgress(entry.getKey(), nodeClass);
-			boolean met = progress != null && progress.getMastery() >= entry.getValue();
-			String achName = progress != null ? progress.getAchievement().getId() : entry.getKey();
-			NamedTextColor achColor = met ? NamedTextColor.GREEN : NamedTextColor.RED;
-			String classLabel = " [" + nodeClass.getDisplay() + "]";
-			lore.add(Component.text(" - " + prettifyId(achName) + classLabel + " (Mastery " + entry.getValue() + ")", achColor)
-					.decoration(TextDecoration.ITALIC, State.FALSE));
-		}
 		}
 
 		meta.lore(lore);
@@ -270,6 +249,7 @@ public class UnlockNode {
 
 	/**
 	 * Checks if all requirements (node AND/OR groups + achievement requirements) are met.
+	 * Append _<class> to an achievement ID to require class-specific mastery.
 	 */
 	public boolean checkRequirementsMet(PlayerData data) {
 		for (String[] orGroup : requirements) {
@@ -283,15 +263,39 @@ public class UnlockNode {
 			if (!anyMet) return false;
 		}
 		for (Map.Entry<String, Integer> entry : achievementRequirements.entrySet()) {
-			AchievementProgress progress = data.getAchievementProgress(entry.getKey());
-			if (progress == null || progress.getMastery() < entry.getValue()) return false;
-		}
-		for (Map.Entry<String, Integer> entry : classAchievementRequirements.entrySet()) {
-			if (nodeClass == null) continue;
-			AchievementProgress progress = data.getClassAchievementProgress(entry.getKey(), nodeClass);
+			AchievementProgress progress = getAchievementRequirementProgress(data, entry.getKey());
 			if (progress == null || progress.getMastery() < entry.getValue()) return false;
 		}
 		return true;
+	}
+
+	private AchievementProgress getAchievementRequirementProgress(PlayerData data, String scopedAchievementId) {
+		EquipmentClass achievementScope = getAchievementRequirementScope(scopedAchievementId);
+		String achievementId = getAchievementRequirementId(scopedAchievementId, achievementScope);
+		if (achievementScope != null) {
+			return data.getClassAchievementProgress(achievementId, achievementScope);
+		}
+		return data.getAchievementProgress(achievementId);
+	}
+
+	private EquipmentClass getAchievementRequirementScope(String scopedAchievementId) {
+		String normalizedId = scopedAchievementId.toLowerCase(Locale.ROOT);
+		for (EquipmentClass equipmentClass : EquipmentClass.values()) {
+			if (equipmentClass == EquipmentClass.CLASSLESS || equipmentClass == EquipmentClass.SHOP) continue;
+			String suffix = "_" + equipmentClass.name().toLowerCase(Locale.ROOT);
+			if (normalizedId.endsWith(suffix)) {
+				return equipmentClass;
+			}
+		}
+		return null;
+	}
+
+	private String getAchievementRequirementId(String scopedAchievementId, EquipmentClass achievementScope) {
+		if (achievementScope == null) {
+			return scopedAchievementId;
+		}
+		String suffix = "_" + achievementScope.name().toLowerCase(Locale.ROOT);
+		return scopedAchievementId.substring(0, scopedAchievementId.length() - suffix.length());
 	}
 
 	private static String prettifyId(String id) {
