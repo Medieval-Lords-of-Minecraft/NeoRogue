@@ -30,6 +30,7 @@ public interface Achievement {
 	/**
 	 * Returns the specific class this achievement should track when using CLASS or ALL scope.
 	 * Null means "use the player's active class" and preserves the existing per-class behavior.
+	 * GLOBAL scope achievements ignore this value.
 	 */
 	default EquipmentClass getClassScope() {
 		return null;
