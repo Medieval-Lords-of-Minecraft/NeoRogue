@@ -24,7 +24,15 @@ public interface Achievement {
 	EnumSet<AchievementTriggerType> getTriggerTypes();
 
 	default AchievementScope getScope() {
-		return AchievementScope.BOTH;
+		return AchievementScope.ALL;
+	}
+
+	/**
+	 * Returns the specific class this achievement should track when using CLASS or ALL scope.
+	 * Null means "use the player's active class" and preserves the existing per-class behavior.
+	 */
+	default EquipmentClass getClassScope() {
+		return null;
 	}
 
 	default int getSortPriority() {
@@ -69,7 +77,7 @@ public interface Achievement {
 	 * Called when a new mastery tier is reached.
 	 * @param p the player
 	 * @param mastery the new mastery tier (1-based)
-	 * @param ec the class scope (null = global)
+	 * @param ec the tracked class scope (null = global)
 	 */
 	default void grantReward(Player p, int mastery, EquipmentClass ec) {
 	}

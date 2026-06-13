@@ -42,7 +42,7 @@ public class FlawlessRegionAchievement extends ObjectiveAchievement {
 
 	@Override
 	public AchievementScope getScope() {
-		return AchievementScope.BOTH;
+		return AchievementScope.ALL;
 	}
 
 	@Override

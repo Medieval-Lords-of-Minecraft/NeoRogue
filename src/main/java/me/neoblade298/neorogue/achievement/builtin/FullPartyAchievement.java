@@ -61,7 +61,7 @@ public class FullPartyAchievement implements Achievement {
 
 	@Override
 	public AchievementScope getScope() {
-		return AchievementScope.BOTH;
+		return AchievementScope.ALL;
 	}
 
 	@Override

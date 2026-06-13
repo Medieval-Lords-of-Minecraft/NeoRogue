@@ -127,21 +127,18 @@ public class AchievementManager {
 
 	/**
 	 * Returns the list of achievements visible in the given scope.
-	 * If ec is null, returns achievements with scope GLOBAL or BOTH.
-	 * If ec is non-null, returns achievements with scope CLASS or BOTH.
+	 * If ec is null, returns achievements with scope GLOBAL or ALL.
+	 * If ec is non-null, returns achievements with scope CLASS or ALL that apply to that class.
 	 */
 	public static List<Achievement> getForScope(EquipmentClass ec) {
 		List<Achievement> result = new ArrayList<>();
 		for (Achievement ach : achievements) {
-			AchievementScope scope = ach.getScope();
 			if (ec == null) {
-				if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+				if (hasGlobalScope(ach)) {
 					result.add(ach);
 				}
-			} else {
-				if (scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) {
-					result.add(ach);
-				}
+			} else if (getTrackedClassScope(ach, ec) != null) {
+				result.add(ach);
 			}
 		}
 		return result;
@@ -152,9 +149,8 @@ public class AchievementManager {
 		if (pd == null) return;
 		EquipmentClass ec = data.getPlayerClass();
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.SESSION)) {
-			AchievementScope scope = achievement.getScope();
 			// Register global progress
-			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+			if (hasGlobalScope(achievement)) {
 				String regKey = achievement.getId() + ":GLOBAL";
 				if (tryRegister(registeredSession, data, regKey)) {
 					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());
@@ -164,10 +160,11 @@ public class AchievementManager {
 				}
 			}
 			// Register class progress
-			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
-				String regKey = achievement.getId() + ":" + ec.name();
+			EquipmentClass classScope = getTrackedClassScope(achievement, ec);
+			if (classScope != null) {
+				String regKey = achievement.getId() + ":" + classScope.name();
 				if (tryRegister(registeredSession, data, regKey)) {
-					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);
+					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), classScope);
 					if (!progress.isComplete()) {
 						achievement.registerSession(session, data, progress);
 					}
@@ -181,9 +178,8 @@ public class AchievementManager {
 		if (pd == null) return;
 		EquipmentClass ec = data.getSessionData().getPlayerClass();
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.FIGHT)) {
-			AchievementScope scope = achievement.getScope();
 			// Register global progress
-			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+			if (hasGlobalScope(achievement)) {
 				String regKey = achievement.getId() + ":GLOBAL";
 				if (tryRegister(registeredFight, data, regKey)) {
 					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());
@@ -193,16 +189,31 @@ public class AchievementManager {
 				}
 			}
 			// Register class progress
-			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
-				String regKey = achievement.getId() + ":" + ec.name();
+			EquipmentClass classScope = getTrackedClassScope(achievement, ec);
+			if (classScope != null) {
+				String regKey = achievement.getId() + ":" + classScope.name();
 				if (tryRegister(registeredFight, data, regKey)) {
-					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);
+					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), classScope);
 					if (!progress.isComplete()) {
 						achievement.registerFight(fight, data, progress);
 					}
 				}
 			}
 		}
+	}
+
+	private static boolean hasGlobalScope(Achievement achievement) {
+		AchievementScope scope = achievement.getScope();
+		return scope == AchievementScope.GLOBAL || scope == AchievementScope.ALL;
+	}
+
+	private static EquipmentClass getTrackedClassScope(Achievement achievement, EquipmentClass activeClass) {
+		if (activeClass == null) return null;
+		AchievementScope scope = achievement.getScope();
+		if (scope != AchievementScope.CLASS && scope != AchievementScope.ALL) return null;
+		EquipmentClass scopedClass = achievement.getClassScope();
+		if (scopedClass == null) return activeClass;
+		return scopedClass == activeClass ? scopedClass : null;
 	}
 
 	/**
