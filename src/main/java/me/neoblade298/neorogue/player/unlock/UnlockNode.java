@@ -85,7 +85,7 @@ public class UnlockNode {
 		if (achSec != null) {
 			HashMap<String, Integer> achReqs = new HashMap<>();
 			for (String key : achSec.getKeys()) {
-				achReqs.put(key, achSec.getInt(key, 1));
+				achReqs.put(key.toLowerCase(Locale.ROOT), achSec.getInt(key, 1));
 			}
 			this.achievementRequirements = Collections.unmodifiableMap(achReqs);
 		} else {
@@ -295,11 +295,11 @@ public class UnlockNode {
 			if (normalizedId.endsWith(entry.getValue())) {
 				return new AchievementRequirementRef(
 						entry.getKey(),
-						scopedAchievementId.substring(0, scopedAchievementId.length() - entry.getValue().length())
+						normalizedId.substring(0, normalizedId.length() - entry.getValue().length())
 				);
 			}
 		}
-		return new AchievementRequirementRef(null, scopedAchievementId);
+		return new AchievementRequirementRef(null, normalizedId);
 	}
 
 	private static EnumMap<EquipmentClass, String> createAchievementScopeSuffixes() {
