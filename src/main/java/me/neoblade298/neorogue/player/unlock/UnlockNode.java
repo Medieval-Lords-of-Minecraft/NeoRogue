@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.player.unlock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,18 @@ public class UnlockNode {
 	public static enum TargetType {
 		EQUIPMENT, PLAYER_CLASS, OTHER
 	}
+
+	private static class AchievementRequirementRef {
+		private final EquipmentClass scope;
+		private final String achievementId;
+
+		private AchievementRequirementRef(EquipmentClass scope, String achievementId) {
+			this.scope = scope;
+			this.achievementId = achievementId;
+		}
+	}
+
+	private static final EnumMap<EquipmentClass, String> ACHIEVEMENT_SCOPE_SUFFIXES = createAchievementScopeSuffixes();
 
 	private final String id;
 	private final String displayName;
@@ -226,13 +239,12 @@ public class UnlockNode {
 				}
 			}
 			for (Map.Entry<String, Integer> entry : achievementRequirements.entrySet()) {
-				EquipmentClass achievementScope = getAchievementRequirementScope(entry.getKey());
-				String achievementId = getAchievementRequirementId(entry.getKey(), achievementScope);
+				AchievementRequirementRef requirement = resolveAchievementRequirement(entry.getKey());
 				AchievementProgress progress = getAchievementRequirementProgress(data, entry.getKey());
 				boolean met = progress != null && progress.getMastery() >= entry.getValue();
-				String achName = progress != null ? progress.getAchievement().getId() : achievementId;
+				String achName = progress != null ? progress.getAchievement().getId() : requirement.achievementId;
 				NamedTextColor achColor = met ? NamedTextColor.GREEN : NamedTextColor.RED;
-				String classLabel = achievementScope != null ? " [" + achievementScope.getDisplay() + "]" : "";
+				String classLabel = requirement.scope != null ? " [" + requirement.scope.getDisplay() + "]" : "";
 				lore.add(Component.text(" - " + prettifyId(achName) + classLabel + " (Mastery " + entry.getValue() + ")", achColor)
 						.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
@@ -270,32 +282,33 @@ public class UnlockNode {
 	}
 
 	private AchievementProgress getAchievementRequirementProgress(PlayerData data, String scopedAchievementId) {
-		EquipmentClass achievementScope = getAchievementRequirementScope(scopedAchievementId);
-		String achievementId = getAchievementRequirementId(scopedAchievementId, achievementScope);
-		if (achievementScope != null) {
-			return data.getClassAchievementProgress(achievementId, achievementScope);
+		AchievementRequirementRef requirement = resolveAchievementRequirement(scopedAchievementId);
+		if (requirement.scope != null) {
+			return data.getClassAchievementProgress(requirement.achievementId, requirement.scope);
 		}
-		return data.getAchievementProgress(achievementId);
+		return data.getAchievementProgress(requirement.achievementId);
 	}
 
-	private EquipmentClass getAchievementRequirementScope(String scopedAchievementId) {
+	private AchievementRequirementRef resolveAchievementRequirement(String scopedAchievementId) {
 		String normalizedId = scopedAchievementId.toLowerCase(Locale.ROOT);
-		for (EquipmentClass equipmentClass : EquipmentClass.values()) {
-			if (equipmentClass == EquipmentClass.CLASSLESS || equipmentClass == EquipmentClass.SHOP) continue;
-			String suffix = "_" + equipmentClass.name().toLowerCase(Locale.ROOT);
-			if (normalizedId.endsWith(suffix)) {
-				return equipmentClass;
+		for (Map.Entry<EquipmentClass, String> entry : ACHIEVEMENT_SCOPE_SUFFIXES.entrySet()) {
+			if (normalizedId.endsWith(entry.getValue())) {
+				return new AchievementRequirementRef(
+						entry.getKey(),
+						scopedAchievementId.substring(0, scopedAchievementId.length() - entry.getValue().length())
+				);
 			}
 		}
-		return null;
+		return new AchievementRequirementRef(null, scopedAchievementId);
 	}
 
-	private String getAchievementRequirementId(String scopedAchievementId, EquipmentClass achievementScope) {
-		if (achievementScope == null) {
-			return scopedAchievementId;
+	private static EnumMap<EquipmentClass, String> createAchievementScopeSuffixes() {
+		EnumMap<EquipmentClass, String> suffixes = new EnumMap<>(EquipmentClass.class);
+		for (EquipmentClass equipmentClass : EquipmentClass.values()) {
+			if (equipmentClass == EquipmentClass.CLASSLESS || equipmentClass == EquipmentClass.SHOP) continue;
+			suffixes.put(equipmentClass, "_" + equipmentClass.name().toLowerCase(Locale.ROOT));
 		}
-		String suffix = "_" + achievementScope.name().toLowerCase(Locale.ROOT);
-		return scopedAchievementId.substring(0, scopedAchievementId.length() - suffix.length());
+		return suffixes;
 	}
 
 	private static String prettifyId(String id) {
