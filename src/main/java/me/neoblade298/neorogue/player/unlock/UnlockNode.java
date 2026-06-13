@@ -40,7 +40,8 @@ public class UnlockNode {
 	private final int slot;
 	private final Set<String> targetIds;
 	private final List<String[]> requirements; // outer = AND, inner = OR (pipe-separated)
-	private final Map<String, Integer> achievementRequirements; // achievement ID -> required mastery
+	private final Map<String, Integer> achievementRequirements; // achievement ID -> required mastery (global)
+	private final Map<String, Integer> classAchievementRequirements; // achievement ID -> required mastery (per class)
 
 	public UnlockNode(Section sec) {
 		this.id = UnlockRegistry.normalizeNodeId(sec.getName());
@@ -76,6 +77,16 @@ public class UnlockNode {
 			this.achievementRequirements = Collections.unmodifiableMap(achReqs);
 		} else {
 			this.achievementRequirements = Collections.emptyMap();
+		}
+		Section classAchSec = sec.getSection("class-achievement-requirements");
+		if (classAchSec != null) {
+			HashMap<String, Integer> classAchReqs = new HashMap<>();
+			for (String key : classAchSec.getKeys()) {
+				classAchReqs.put(key, classAchSec.getInt(key, 1));
+			}
+			this.classAchievementRequirements = Collections.unmodifiableMap(classAchReqs);
+		} else {
+			this.classAchievementRequirements = Collections.emptyMap();
 		}
 	}
 
@@ -117,6 +128,10 @@ public class UnlockNode {
 
 	public Map<String, Integer> getAchievementRequirements() {
 		return achievementRequirements;
+	}
+
+	public Map<String, Integer> getClassAchievementRequirements() {
+		return classAchievementRequirements;
 	}
 
 	/**
@@ -201,7 +216,7 @@ public class UnlockNode {
 		}
 
 		// Requirements
-		if (!requirements.isEmpty() || !achievementRequirements.isEmpty()) {
+		if (!requirements.isEmpty() || !achievementRequirements.isEmpty() || !classAchievementRequirements.isEmpty()) {
 			lore.add(Component.empty());
 			lore.add(Component.text("Requires:", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, State.FALSE));
 			for (String[] orGroup : requirements) {
@@ -232,6 +247,16 @@ public class UnlockNode {
 				lore.add(Component.text(" - " + prettifyId(achName) + " (Mastery " + entry.getValue() + ")", achColor)
 						.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
+		for (Map.Entry<String, Integer> entry : classAchievementRequirements.entrySet()) {
+			if (nodeClass == null) continue;
+			AchievementProgress progress = data.getClassAchievementProgress(entry.getKey(), nodeClass);
+			boolean met = progress != null && progress.getMastery() >= entry.getValue();
+			String achName = progress != null ? progress.getAchievement().getId() : entry.getKey();
+			NamedTextColor achColor = met ? NamedTextColor.GREEN : NamedTextColor.RED;
+			String classLabel = " [" + nodeClass.getDisplay() + "]";
+			lore.add(Component.text(" - " + prettifyId(achName) + classLabel + " (Mastery " + entry.getValue() + ")", achColor)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
 		}
 
 		meta.lore(lore);
@@ -259,6 +284,11 @@ public class UnlockNode {
 		}
 		for (Map.Entry<String, Integer> entry : achievementRequirements.entrySet()) {
 			AchievementProgress progress = data.getAchievementProgress(entry.getKey());
+			if (progress == null || progress.getMastery() < entry.getValue()) return false;
+		}
+		for (Map.Entry<String, Integer> entry : classAchievementRequirements.entrySet()) {
+			if (nodeClass == null) continue;
+			AchievementProgress progress = data.getClassAchievementProgress(entry.getKey(), nodeClass);
 			if (progress == null || progress.getMastery() < entry.getValue()) return false;
 		}
 		return true;
