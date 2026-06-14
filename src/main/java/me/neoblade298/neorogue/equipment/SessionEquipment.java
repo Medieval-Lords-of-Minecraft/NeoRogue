@@ -1,0 +1,242 @@
+package me.neoblade298.neorogue.equipment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
+
+/**
+ * A session-scoped wrapper around an Equipment template. Holds a general-purpose
+ * string-keyed metadata store for mutable session-level state (e.g. durability,
+ * enchantments, counters).
+ * 
+ * Serialization format (inline, backward-compatible):
+ *   equipId+|key1=i:5,key2=d:1.5,key3=s:hello
+ * Entries without '|' are treated as legacy (no metadata).
+ */
+public class SessionEquipment {
+	private Equipment equipment;
+	private HashMap<String, Object> metadata;
+
+	public SessionEquipment(Equipment equipment) {
+		this.equipment = equipment;
+		this.metadata = new HashMap<>();
+	}
+
+	private SessionEquipment(Equipment equipment, HashMap<String, Object> metadata) {
+		this.equipment = equipment;
+		this.metadata = metadata;
+	}
+
+	public Equipment getEquipment() {
+		return equipment;
+	}
+
+	/**
+	 * Creates an upgraded SessionEquipment preserving all metadata.
+	 */
+	public SessionEquipment upgrade() {
+		Equipment upgraded = equipment.getUpgraded();
+		if (upgraded == null) return this;
+		return new SessionEquipment(upgraded, new HashMap<>(metadata));
+	}
+
+	// --- Typed Getters ---
+
+	public boolean has(String key) {
+		return metadata.containsKey(key);
+	}
+
+	public int getInt(String key) {
+		Object val = metadata.get(key);
+		if (val instanceof Number) return ((Number) val).intValue();
+		return 0;
+	}
+
+	public int getInt(String key, int defaultValue) {
+		Object val = metadata.get(key);
+		if (val instanceof Number) return ((Number) val).intValue();
+		return defaultValue;
+	}
+
+	public double getDouble(String key) {
+		Object val = metadata.get(key);
+		if (val instanceof Number) return ((Number) val).doubleValue();
+		return 0;
+	}
+
+	public double getDouble(String key, double defaultValue) {
+		Object val = metadata.get(key);
+		if (val instanceof Number) return ((Number) val).doubleValue();
+		return defaultValue;
+	}
+
+	public String getString(String key) {
+		Object val = metadata.get(key);
+		if (val instanceof String) return (String) val;
+		return null;
+	}
+
+	public String getString(String key, String defaultValue) {
+		Object val = metadata.get(key);
+		if (val instanceof String) return (String) val;
+		return defaultValue;
+	}
+
+	// --- Typed Setters ---
+
+	public void setInt(String key, int value) {
+		metadata.put(key, value);
+	}
+
+	public void setDouble(String key, double value) {
+		metadata.put(key, value);
+	}
+
+	public void setString(String key, String value) {
+		metadata.put(key, value);
+	}
+
+	public void remove(String key) {
+		metadata.remove(key);
+	}
+
+	// --- Serialization ---
+
+	/**
+	 * Serializes this SessionEquipment to a string.
+	 * Format: "equipId+" or "equipId+|key1=i:5,key2=d:1.5,key3=s:hello"
+	 */
+	public String serialize() {
+		String base = equipment.serialize();
+		if (metadata.isEmpty()) return base;
+		StringBuilder sb = new StringBuilder(base);
+		sb.append('|');
+		boolean first = true;
+		for (Map.Entry<String, Object> entry : metadata.entrySet()) {
+			if (!first) sb.append(',');
+			first = false;
+			sb.append(entry.getKey()).append('=');
+			Object val = entry.getValue();
+			if (val instanceof Integer) {
+				sb.append("i:").append(val);
+			} else if (val instanceof Double) {
+				sb.append("d:").append(val);
+			} else {
+				sb.append("s:").append(val);
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Deserializes a single SessionEquipment from a string.
+	 * Supports both legacy format ("equipId+") and extended format ("equipId+|metadata").
+	 */
+	public static SessionEquipment deserialize(String str) {
+		if (str == null || str.isBlank()) return null;
+
+		int pipeIdx = str.indexOf('|');
+		String equipPart;
+		String metaPart;
+		if (pipeIdx >= 0) {
+			equipPart = str.substring(0, pipeIdx);
+			metaPart = str.substring(pipeIdx + 1);
+		} else {
+			equipPart = str;
+			metaPart = null;
+		}
+
+		Equipment eq = Equipment.deserialize(equipPart);
+		if (eq == null) return null;
+
+		SessionEquipment se = new SessionEquipment(eq);
+		if (metaPart != null && !metaPart.isEmpty()) {
+			parseMetadata(metaPart, se.metadata);
+		}
+		return se;
+	}
+
+	private static void parseMetadata(String metaStr, HashMap<String, Object> target) {
+		String[] entries = metaStr.split(",");
+		for (String entry : entries) {
+			int eqIdx = entry.indexOf('=');
+			if (eqIdx <= 0) continue;
+			String key = entry.substring(0, eqIdx);
+			String valStr = entry.substring(eqIdx + 1);
+			if (valStr.length() < 2 || valStr.charAt(1) != ':') continue;
+			char type = valStr.charAt(0);
+			String raw = valStr.substring(2);
+			try {
+				switch (type) {
+				case 'i':
+					target.put(key, Integer.parseInt(raw));
+					break;
+				case 'd':
+					target.put(key, Double.parseDouble(raw));
+					break;
+				case 's':
+					target.put(key, raw);
+					break;
+				default:
+					target.put(key, raw);
+					break;
+				}
+			} catch (NumberFormatException e) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to parse metadata entry: " + entry);
+			}
+		}
+	}
+
+	// --- Array Serialization ---
+
+	public static String serialize(SessionEquipment[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == null) {
+				sb.append(' ');
+			} else {
+				sb.append(arr[i].serialize());
+			}
+			sb.append(';');
+		}
+		return sb.toString();
+	}
+
+	public static SessionEquipment[] deserializeAsArray(String str) {
+		String[] separated = str.split(";");
+		SessionEquipment[] arr = new SessionEquipment[separated.length];
+		try {
+			for (int i = 0; i < separated.length; i++) {
+				if (separated[i].isBlank()) continue;
+				arr[i] = SessionEquipment.deserialize(separated[i]);
+			}
+		} catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to deserialize session equipment as array: " + str);
+			e.printStackTrace();
+		}
+		return arr;
+	}
+
+	public static String serialize(ArrayList<SessionEquipment> arr) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < arr.size(); i++) {
+			sb.append(arr.get(i).serialize());
+			sb.append(';');
+		}
+		return sb.toString();
+	}
+
+	public static ArrayList<SessionEquipment> deserializeAsArrayList(String str) {
+		if (str == null || str.isBlank()) return new ArrayList<>();
+		String[] separated = str.split(";");
+		ArrayList<SessionEquipment> arr = new ArrayList<>(separated.length);
+		for (String s : separated) {
+			if (s.isBlank()) continue;
+			SessionEquipment se = SessionEquipment.deserialize(s);
+			if (se != null) arr.add(se);
+		}
+		return arr;
+	}
+}
