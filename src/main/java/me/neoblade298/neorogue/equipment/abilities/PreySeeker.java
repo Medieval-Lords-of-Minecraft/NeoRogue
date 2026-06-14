@@ -58,13 +58,13 @@ public class PreySeeker extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		PreySeekerInstance inst = new PreySeekerInstance(data, this, slot, es);
+		PreySeekerInstance inst = new PreySeekerInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, inst);
 	}
 
 	private class PreySeekerInstance extends AmmoEquipmentInstance {
-		public PreySeekerInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
-			super(data, equip, slot, es);
+		public PreySeekerInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -20,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -57,7 +56,7 @@ public class DarkPulse extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		DarkPulseInstance inst = new DarkPulseInstance(data, this, es, slot);
+		DarkPulseInstance inst = new DarkPulseInstance(data, sessionEq, es, slot);
 		data.addTrigger(id, bind, inst);
 
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -73,8 +72,8 @@ public class DarkPulse extends Equipment {
 		private boolean active = false;
 		private Location loc;
 		private int dealt = 0;
-		public DarkPulseInstance(PlayerFightData data, Equipment eq, EquipSlot es, int slot) {
-			super(data, eq, slot, es);
+		public DarkPulseInstance(PlayerFightData data, SessionEquipment sessionEq, EquipSlot es, int slot) {
+			super(data, sessionEq, slot, es);
 			this.data = data;
 
 			action = (pdata, in) -> {

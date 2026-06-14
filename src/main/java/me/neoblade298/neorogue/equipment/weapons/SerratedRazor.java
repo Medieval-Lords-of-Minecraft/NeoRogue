@@ -38,14 +38,14 @@ public class SerratedRazor extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new RazorInstance(data, this, slot, es));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new RazorInstance(data, sessionEq, slot, es));
 	}
 
 	private class RazorInstance extends EquipmentInstance {
 		private int count = 0;
 
-		public RazorInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public RazorInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (data2, in) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				if (++count >= 3) {

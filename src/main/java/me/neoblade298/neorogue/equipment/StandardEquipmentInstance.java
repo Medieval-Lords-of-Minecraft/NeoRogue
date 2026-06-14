@@ -11,16 +11,16 @@ public class StandardEquipmentInstance extends EquipmentInstance {
 	private int count;
 	private boolean bool;
 
-	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-		super(data, eq, slot, es);
+	public StandardEquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		super(data, sessionEq, slot, es);
 	}
 
-	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
-		super(data, eq, slot, es, action);
+	public StandardEquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, TriggerAction action) {
+		super(data, sessionEq, slot, es, action);
 	}
 	
-	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
-		super(data, eq, slot, es, action, condition);
+	public StandardEquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+		super(data, sessionEq, slot, es, action, condition);
 	}
 	
 	public void setCount(int count) {

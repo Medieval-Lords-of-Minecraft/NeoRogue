@@ -45,14 +45,14 @@ public class LimitBreak extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, bind, new LimitBreakInstance(data, this, slot, es));
+		data.addTrigger(id, bind, new LimitBreakInstance(data, sessionEq, slot, es));
 	}
 	
 	private class LimitBreakInstance extends EquipmentInstance {
 		private int count = 0;
 		private int max;
-		public LimitBreakInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public LimitBreakInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			Player p = data.getPlayer();
 			max = isUpgraded ? 2 : 1;
 			action = (pdata, in) -> {

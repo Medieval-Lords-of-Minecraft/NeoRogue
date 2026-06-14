@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class DangerClose extends Equipment implements Power {
 	private static final String ID = "DangerClose";
+	private SessionEquipment sessionEq;
 	private double damageIncrease;
 	
 	public DangerClose(boolean isUpgraded) {
@@ -40,6 +40,7 @@ public class DangerClose extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		this.sessionEq = sessionEq;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();

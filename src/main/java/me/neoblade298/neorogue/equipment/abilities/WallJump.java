@@ -56,7 +56,7 @@ public class WallJump extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		WallJumpInstance inst = new WallJumpInstance(data, this, slot, es);
+		WallJumpInstance inst = new WallJumpInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 
@@ -64,8 +64,8 @@ public class WallJump extends Equipment {
 		private boolean isInitialCast = true;
 		private Vector direction;
 		
-		public WallJumpInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public WallJumpInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				

@@ -99,13 +99,13 @@ public class InfernalWarden extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		InfernalWardenInstance inst = new InfernalWardenInstance(data, this, slot, es);
+		InfernalWardenInstance inst = new InfernalWardenInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, inst);
 	}
 
 	private class InfernalWardenInstance extends AmmoEquipmentInstance {
-		public InfernalWardenInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
-			super(data, equip, slot, es);
+		public InfernalWardenInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				Sounds.fire.play(p, p);

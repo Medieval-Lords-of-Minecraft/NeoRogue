@@ -48,7 +48,7 @@ public class RapidFire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data, this));
 			for (int i = 0; i * thres <= inst.getCount() && i < MAX; i++) {

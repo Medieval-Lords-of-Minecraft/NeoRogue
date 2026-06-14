@@ -25,7 +25,7 @@ public abstract class Ammunition extends Equipment {
 	public void onStart(ProjectileInstance inst) {}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		if (data.getAmmoInstance() == null) {
 			equip(p, data, new AmmunitionInstance(data, this));

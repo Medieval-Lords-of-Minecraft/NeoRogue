@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -23,6 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Dismantle extends Equipment implements Power {
 	private static final String ID = "Dismantle";
+	private SessionEquipment sessionEq;
 	private int stacks;
 	
 	public Dismantle(boolean isUpgraded) {
@@ -39,6 +39,7 @@ public class Dismantle extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		this.sessionEq = sessionEq;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -52,7 +53,7 @@ public class Dismantle extends Equipment implements Power {
 
 	private class DismantleInstance extends PriorityAction {
 		private LivingEntity target;
-		public DismantleInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
+		public DismantleInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
 			super(ID);
 			action = (pdata, in) -> {
 				DealDamageEvent ev = (DealDamageEvent) in;
@@ -71,7 +72,7 @@ public class Dismantle extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, new DismantleInstance(data, Dismantle.this, slot, es));
+				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, new DismantleInstance(data, sessionEq, slot, es));
 			}
 		}.runTask(NeoRogue.inst()));
 	}

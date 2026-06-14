@@ -58,7 +58,7 @@ public class Pin extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		TackleInstance inst = new TackleInstance(data, this, slot, es);
+		TackleInstance inst = new TackleInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 	
@@ -67,8 +67,8 @@ public class Pin extends Equipment {
 		private boolean posX, posZ; // Which direction is the tackle going
 
 		@SuppressWarnings("deprecation")
-		public TackleInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public TackleInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			
 			action = (pdata, in) -> {
 				Sounds.jump.play(p, p);

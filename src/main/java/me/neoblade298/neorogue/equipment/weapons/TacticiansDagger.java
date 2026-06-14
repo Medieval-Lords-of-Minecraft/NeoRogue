@@ -42,7 +42,7 @@ public class TacticiansDagger extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ItemStack icon = item.clone().withType(Material.WOODEN_SWORD);
 		StandardPriorityAction timer = new StandardPriorityAction(ID);
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		timer.setAction((pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) {

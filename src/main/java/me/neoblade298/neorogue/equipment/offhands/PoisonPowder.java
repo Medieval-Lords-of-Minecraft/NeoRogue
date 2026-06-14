@@ -37,7 +37,7 @@ public class PoisonPowder extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			inst.setCount(1);

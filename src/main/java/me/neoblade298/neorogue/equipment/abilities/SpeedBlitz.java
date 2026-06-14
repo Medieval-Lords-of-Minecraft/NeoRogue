@@ -55,7 +55,7 @@ public class SpeedBlitz extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, bind, new StandardEquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new StandardEquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			// Apply charging effect
 			Location loc = p.getLocation();

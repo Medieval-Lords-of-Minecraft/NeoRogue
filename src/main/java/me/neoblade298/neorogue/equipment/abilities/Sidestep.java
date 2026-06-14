@@ -51,7 +51,7 @@ public class Sidestep extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.teleport.play(p, p);

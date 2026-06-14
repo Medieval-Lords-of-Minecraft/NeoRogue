@@ -32,12 +32,12 @@ import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.LimitedAmmunition;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.ManaBlitz;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
@@ -631,6 +631,32 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	
 	private SessionEquipment[][] getAllEquips() {
 		return new SessionEquipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
+	}
+
+	/**
+	 * Decrements durability on all equipped items that have it.
+	 * Items that reach 0 durability are removed and the player is notified.
+	 * Called centrally on fight win.
+	 */
+	public void tickDurability(Player p) {
+		EquipSlot[] slots = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.KEYBIND };
+		SessionEquipment[][] equipped = new SessionEquipment[][] { hotbar, armors, offhand, accessories, otherBinds };
+		for (int i = 0; i < equipped.length; i++) {
+			SessionEquipment[] arr = equipped[i];
+			for (int slot = 0; slot < arr.length; slot++) {
+				SessionEquipment se = arr[slot];
+				if (se == null || !se.hasDurability()) continue;
+				int dur = se.getDurability() - 1;
+				if (dur <= 0) {
+					removeEquipment(slots[i], slot);
+					Util.msg(p, Component.text("Your ", NamedTextColor.GRAY)
+							.append(se.getEquipment().getHoverable())
+							.append(Component.text(" broke!", NamedTextColor.GRAY)));
+				} else {
+					se.setDurability(dur);
+				}
+			}
+		}
 	}
 
 	private int countOwnedEquipment(Predicate<SessionEquipment> filter, SessionEquipment[] storageOverride) {

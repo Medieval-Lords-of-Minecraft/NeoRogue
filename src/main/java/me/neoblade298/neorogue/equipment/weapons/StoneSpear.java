@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Material;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -59,7 +58,7 @@ public class StoneSpear extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		StoneSpearInstance inst = new StoneSpearInstance(data, this, slot, es);
+		StoneSpearInstance inst = new StoneSpearInstance(data, sessionEq, slot, es);
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (!inst.canTrigger(p, data, in))
@@ -87,8 +86,8 @@ public class StoneSpear extends Equipment {
 	private class StoneSpearInstance extends EquipmentInstance {
 		private ProjectileGroup projs;
 
-		public StoneSpearInstance(PlayerFightData pdata, Equipment eq, int slot, EquipSlot es) {
-			super(pdata, eq, slot, es);
+		public StoneSpearInstance(PlayerFightData pdata, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(pdata, sessionEq, slot, es);
 			projs = new ProjectileGroup(new StoneSpearProjectile(slot, eq));
 			
 			action = (pdata2, in) -> {

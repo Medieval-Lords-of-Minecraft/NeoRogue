@@ -62,7 +62,7 @@ public class FlashfireVolley extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		FlashfireVolleyInstance inst = new FlashfireVolleyInstance(data, this, slot, es);
+		FlashfireVolleyInstance inst = new FlashfireVolleyInstance(data, sessionEq, slot, es);
 		// Can't use PRE_LAUNCH_PROJECTILE because it fizzles on quickdraw
 		data.addTrigger(id, Trigger.VANILLA_PROJECTILE, inst);
 	}
@@ -70,8 +70,8 @@ public class FlashfireVolley extends Equipment {
 	private class FlashfireVolleyInstance extends AmmoEquipmentInstance {
 		private ActionMeta hitEnemies = new ActionMeta();
 		
-		public FlashfireVolleyInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
-			super(data, equip, slot, es);
+		public FlashfireVolleyInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				Sounds.explode.play(p, p);

@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
  * Entries without '|' are treated as legacy (no metadata).
  */
 public class SessionEquipment {
+	public static final String DURABILITY_KEY = "dur";
 	private Equipment equipment;
 	private HashMap<String, Object> metadata;
 
@@ -100,6 +101,20 @@ public class SessionEquipment {
 
 	public void remove(String key) {
 		metadata.remove(key);
+	}
+
+	// --- Durability ---
+
+	public boolean hasDurability() {
+		return metadata.containsKey(DURABILITY_KEY);
+	}
+
+	public int getDurability() {
+		return getInt(DURABILITY_KEY);
+	}
+
+	public void setDurability(int value) {
+		setInt(DURABILITY_KEY, value);
 	}
 
 	// --- Serialization ---

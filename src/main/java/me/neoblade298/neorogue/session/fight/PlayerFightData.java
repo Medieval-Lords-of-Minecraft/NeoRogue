@@ -32,7 +32,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
@@ -216,6 +215,11 @@ public class PlayerFightData extends FightData {
 			}
 		}
 		addTickAction(new PlayerUpdateTickAction());
+
+		addTrigger("durability", Trigger.WIN_FIGHT, (pdata, in) -> {
+			sessdata.tickDurability(getPlayer());
+			return TriggerResult.keep();
+		});
 
 		updateStamina();
 		updateMana();

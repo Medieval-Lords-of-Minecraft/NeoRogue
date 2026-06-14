@@ -46,7 +46,7 @@ public class Atrophy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		AtrophyInstance inst = new AtrophyInstance(data, this, slot, es);
+		AtrophyInstance inst = new AtrophyInstance(data, sessionEq, slot, es);
 		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
@@ -70,8 +70,8 @@ public class Atrophy extends Equipment {
 	private class AtrophyInstance extends EquipmentInstance {
 		private LivingEntity trg;
 		
-		public AtrophyInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public AtrophyInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				trg = TargetHelper.getNearestInSight(p, Atrophy.tp);

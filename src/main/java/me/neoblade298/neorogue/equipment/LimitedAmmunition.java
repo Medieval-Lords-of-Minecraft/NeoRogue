@@ -15,7 +15,7 @@ public abstract class LimitedAmmunition extends Ammunition {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		ItemStack item = p.getInventory().getItem(slot);
 		item.setAmount(uses);
