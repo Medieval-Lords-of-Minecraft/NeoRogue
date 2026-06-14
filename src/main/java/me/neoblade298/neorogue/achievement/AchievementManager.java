@@ -140,6 +140,8 @@ public class AchievementManager {
 				}
 			} else {
 				if (scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) {
+					EquipmentClass req = ach.getRequiredClass();
+					if (req != null && req != ec) continue;
 					result.add(ach);
 				}
 			}
@@ -165,6 +167,8 @@ public class AchievementManager {
 			}
 			// Register class progress
 			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
+				EquipmentClass req = achievement.getRequiredClass();
+				if (req != null && req != ec) continue;
 				String regKey = achievement.getId() + ":" + ec.name();
 				if (tryRegister(registeredSession, data, regKey)) {
 					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);
@@ -194,6 +198,8 @@ public class AchievementManager {
 			}
 			// Register class progress
 			if ((scope == AchievementScope.CLASS || scope == AchievementScope.BOTH) && ec != null) {
+				EquipmentClass req = achievement.getRequiredClass();
+				if (req != null && req != ec) continue;
 				String regKey = achievement.getId() + ":" + ec.name();
 				if (tryRegister(registeredFight, data, regKey)) {
 					AchievementProgress progress = pd.getClassAchievementProgress(achievement.getId(), ec);

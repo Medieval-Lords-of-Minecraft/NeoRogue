@@ -27,6 +27,15 @@ public interface Achievement {
 		return AchievementScope.BOTH;
 	}
 
+	/**
+	 * Returns the required class for this achievement, or null if it applies to all classes.
+	 * When non-null, this achievement will only appear in that class's tab and only track
+	 * progress when playing as that class.
+	 */
+	default EquipmentClass getRequiredClass() {
+		return null;
+	}
+
 	default int getSortPriority() {
 		return 0;
 	}
