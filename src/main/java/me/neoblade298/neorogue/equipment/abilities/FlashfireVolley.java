@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 
@@ -60,7 +61,7 @@ public class FlashfireVolley extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		FlashfireVolleyInstance inst = new FlashfireVolleyInstance(data, this, slot, es);
 		// Can't use PRE_LAUNCH_PROJECTILE because it fizzles on quickdraw
 		data.addTrigger(id, Trigger.VANILLA_PROJECTILE, inst);

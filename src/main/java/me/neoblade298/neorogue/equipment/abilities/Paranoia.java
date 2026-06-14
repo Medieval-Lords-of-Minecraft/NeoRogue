@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -45,12 +46,12 @@ public class Paranoia extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta stacks = new ActionMeta();
 		ActionMeta timeSinceAttack = new ActionMeta(); // Tracks seconds since last basic attack
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.PAPER);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 
 		// Every second (20 ticks), gain a stack if not at max, and apply insanity if no
 		// attack in 2s

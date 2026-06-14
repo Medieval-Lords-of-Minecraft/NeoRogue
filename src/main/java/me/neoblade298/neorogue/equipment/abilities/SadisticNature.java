@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -79,8 +80,8 @@ public class SadisticNature extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		
 		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, in) -> {

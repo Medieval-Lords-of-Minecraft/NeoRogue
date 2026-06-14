@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.armor;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class MagiciansHood extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			double mana = data.getMaxMana();

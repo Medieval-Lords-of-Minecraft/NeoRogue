@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,10 +65,10 @@ public class RisingSun extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Equipment eq = this;
 		DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			HashSet<UUID> entitiesHit = new HashSet<UUID>();
 			data.wandDelay(20).then(new Runnable() {
 				public void run() {

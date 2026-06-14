@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -37,8 +38,8 @@ public class IronBolt extends Ammunition {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		super.initialize(data, bind, es, slot);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		super.initialize(data, bind, es, slot, sessionEq);
 		
 		// Add trigger to increase negative status applications
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {

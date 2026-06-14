@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -47,9 +48,9 @@ public class RedFan extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
-		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance eqi = new EquipmentInstance(data, sessionEq, slot, es);
 		ItemStack charged = item.clone().withType(Material.FIRE_CORAL);
 		ItemStack icon = item.clone();
 		eqi.setAction((pdata, in) -> {	

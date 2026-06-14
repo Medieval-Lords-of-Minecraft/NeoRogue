@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -41,7 +42,7 @@ public class BloodFrenzy extends Equipment implements Power {
 	private static final int ACTIVATION_THRES = 5, ACTIVATION_BERSERK = 3;
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (data.getStatus(StatusType.BERSERK).getStacks() < ACTIVATION_BERSERK) return TriggerResult.keep();

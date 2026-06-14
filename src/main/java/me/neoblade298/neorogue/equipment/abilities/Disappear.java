@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public class Disappear extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			KillEvent ev = (KillEvent) in;
 			if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.PIERCING)) return TriggerResult.keep();
@@ -104,7 +105,7 @@ public class Disappear extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ItemStack baseIcon = item.clone();
 		ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
-		EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance eqInst = new EquipmentInstance(data, sessionEq, slot, es);
 		DisappearInstance inst = new DisappearInstance(id, data, slot, this, eqInst, baseIcon, primedIcon);
 		data.addTrigger(ID, Trigger.KILL, inst);
 

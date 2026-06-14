@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -53,7 +54,7 @@ public class BrightestFlame extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ProjectileGroup proj = new ProjectileGroup();
 		// Fan in a semicircle: left, upper-left, above, upper-right, right
 		double[][] fan = {
@@ -66,7 +67,7 @@ public class BrightestFlame extends Equipment {
 		for (double[] params : fan) {
 			proj.add(new BrightestFlameProjectile(data, params[0], params[1], this, slot));
 		}
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.applyStatus(StatusType.CORRUPTION, data, corr, -1);

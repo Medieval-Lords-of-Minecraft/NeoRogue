@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 
 import org.bukkit.Location;
@@ -50,8 +51,8 @@ public class HerosLanding extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			p.setVelocity(new Vector(0, 0.5, 0));

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,7 +63,7 @@ public class Riftmaker extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta attackCounter = new ActionMeta();
 		ProjectileGroup proj = new ProjectileGroup(new RiftmakerProjectile(data, this, slot, attackCounter, false));
 		ProjectileGroup riftProj = new ProjectileGroup(new RiftmakerProjectile(data, this, slot, attackCounter, true));

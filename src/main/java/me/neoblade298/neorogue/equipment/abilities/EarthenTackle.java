@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -56,8 +57,8 @@ public class EarthenTackle extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		final EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		final EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.jump.play(p, p);

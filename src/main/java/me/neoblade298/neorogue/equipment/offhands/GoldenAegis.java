@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class GoldenAegis extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Use right click for non-archers, left click for archers
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		
@@ -41,7 +42,7 @@ public class GoldenAegis extends Equipment {
 		ActionMeta am = new ActionMeta();
 		am.setCount(uses);
 		
-		data.addTrigger(id, tr, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, tr, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			ShieldHolder shieldHolder = data.getShields();
 			

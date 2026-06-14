@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -50,11 +51,11 @@ public class VoidWarden extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta casts = new ActionMeta();
 		ActionMeta passiveTimer = new ActionMeta();
 		String procId = id + slot;
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			data.applyStatus(StatusType.PROTECT, data, stacks, -1);
 			data.applyStatus(StatusType.SHELL, data, stacks, -1);

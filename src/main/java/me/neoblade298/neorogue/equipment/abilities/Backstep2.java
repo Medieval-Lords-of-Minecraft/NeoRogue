@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public class Backstep2 extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ItemStack icon = item.clone();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		updateIcon(inst, icon);

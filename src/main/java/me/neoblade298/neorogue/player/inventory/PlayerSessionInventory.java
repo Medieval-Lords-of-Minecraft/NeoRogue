@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
@@ -95,8 +96,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				iter++;
 				continue;
 			}
-			Equipment a = data.getEquipment(EquipSlot.ARMOR)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createArmorIcon(iter);
+			SessionEquipment a = data.getSessionEquipment(EquipSlot.ARMOR)[iter];
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getEquipment().getItem(), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
 		}
 
@@ -108,37 +109,37 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				iter++;
 				continue;
 			}
-			Equipment a = data.getEquipment(EquipSlot.ACCESSORY)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createAccessoryIcon(iter);
+			SessionEquipment a = data.getSessionEquipment(EquipSlot.ACCESSORY)[iter];
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getEquipment().getItem(), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
 		}
 
 		for (KeyBind bind : KeyBind.values()) {
 			int i = (bind.getInventorySlot() + offset) % inv.getSize();
 			slotTypes.put(i, EquipSlot.KEYBIND);
-			Equipment eq = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
+			SessionEquipment eq = data.getSessionEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
 				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot(), bind);
 				continue;
 			}
 			contents[i] = eq != null
-					? addNbt(addBindLore(eq.getItem(), i, bind.getDataSlot()), eq.getId(),
-							eq.isUpgraded(), bind.getDataSlot())
+					? addNbt(addBindLore(eq.getEquipment().getItem(), i, bind.getDataSlot()), eq.getEquipment().getId(),
+							eq.getEquipment().isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
-		Equipment o = data.getEquipment(EquipSlot.OFFHAND)[0];
-		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0) : createOffhandIcon();
+		SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
+		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getEquipment().getItem(), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
-			Equipment eq = data.getEquipment(EquipSlot.HOTBAR)[i];
+			SessionEquipment eq = data.getSessionEquipment(EquipSlot.HOTBAR)[i];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
 				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
 				continue;
 			}
-			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getId(), eq.isUpgraded(), i)
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getEquipment().getItem(), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
 

@@ -19,6 +19,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -318,7 +319,7 @@ public class ShopInventory extends CoreInventory {
 		return trySellItem(p, data, cursor, null);
 	}
 
-	public static boolean trySellItem(Player p, PlayerSessionData data, ItemStack cursor, Equipment[] storageSnapshot) {
+	public static boolean trySellItem(Player p, PlayerSessionData data, ItemStack cursor, SessionEquipment[] storageSnapshot) {
 		if (cursor == null || cursor.getType().isAir()) {
 			return false;
 		}
