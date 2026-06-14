@@ -1219,7 +1219,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot);
+	public abstract void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq);
 
 	// Run at the end of a fight if needed
 	public void cleanup(PlayerFightData data) {

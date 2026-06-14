@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,10 +56,10 @@ public class ArcaneBlast extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ItemStack icon = item.clone().withType(Material.TNT_MINECART);
 		ActionMeta am = new ActionMeta();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setCondition((pl, pdata, in) -> {
 			Player p = data.getPlayer();
 			return am.getBool() || p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)) != null;

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class BlackRain extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ProjectileGroup proj = new ProjectileGroup();
 		List<LivingEntity> hitEntities = new ArrayList<>();
 		
@@ -67,7 +68,7 @@ public class BlackRain extends Equipment {
 			proj.add(new BlackRainProjectile(data, angle, this, slot, hitEntities));
 		}
 		
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			hitEntities.clear(); // Reset for new cast
 			Sounds.attackSweep.play(p, p);

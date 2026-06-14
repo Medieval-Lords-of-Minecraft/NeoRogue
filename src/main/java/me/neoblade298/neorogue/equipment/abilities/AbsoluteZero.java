@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -15,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -31,6 +31,7 @@ public class AbsoluteZero extends Equipment implements Power {
 	private static final String ID = "AbsoluteZero";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOWFLAKE).count(100).spread(5, 1).speed(0.3);
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
+	private SessionEquipment sessionEq;
 	private int thres, frost;
 	
 	public AbsoluteZero(boolean isUpgraded) {
@@ -47,7 +48,8 @@ public class AbsoluteZero extends Equipment implements Power {
 	private static final int ACTIVATION_THRES = 5;
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		this.sessionEq = sessionEq;
 		ActionMeta count = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
@@ -66,7 +68,7 @@ public class AbsoluteZero extends Equipment implements Power {
 		ItemStack charged = item.clone().withType(Material.PACKED_ICE);
 		ActionMeta am = new ActionMeta();
 		am.setCount(0);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
 			am.addCount(1);

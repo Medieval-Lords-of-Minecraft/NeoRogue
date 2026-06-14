@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -33,12 +34,12 @@ public class Quicken extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta stacks = new ActionMeta();
 		ActionMeta lastBasicAttackTime = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.FEATHER);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		
 		// Set condition that stacks must be greater than 0 to cast
 		inst.setCondition((pl, pdata, in) -> stacks.getCount() > 0);

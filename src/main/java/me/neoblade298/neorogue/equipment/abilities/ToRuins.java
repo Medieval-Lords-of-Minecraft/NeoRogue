@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -37,15 +38,15 @@ public class ToRuins extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new ToRuinsInstance(data, this, slot, es));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new ToRuinsInstance(data, sessionEq, slot, es));
 	}
 
 	private class ToRuinsInstance extends EquipmentInstance {
 		private LivingEntity target;
 
-		public ToRuinsInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public ToRuinsInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				if (target == null) return TriggerResult.keep();
 				FightData fd = FightInstance.getFightData(target);

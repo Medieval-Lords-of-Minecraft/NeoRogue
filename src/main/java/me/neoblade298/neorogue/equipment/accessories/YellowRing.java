@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -29,7 +30,7 @@ public class YellowRing extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		double max = data.getMaxMana() * 0.5;
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (data.getMana() <= max) {

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -39,8 +40,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
 		
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
@@ -55,8 +56,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	
 	private class SpiritOfTheDragoonInstance extends EquipmentInstance {
 		private long lastCast = -1;
-		public SpiritOfTheDragoonInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public SpiritOfTheDragoonInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -63,7 +64,7 @@ public class PiercingNight extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String statusName = data.getPlayer().getName() + "-piercingnight";
 		ProjectileGroup proj = new ProjectileGroup();
 		boolean[] anyHit = {false}; // Track if any projectile hit
@@ -73,7 +74,7 @@ public class PiercingNight extends Equipment {
 			proj.add(new PiercingNightProjectile(data, angle, this, slot, statusName, anyHit));
 		}
 		
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			anyHit[0] = false;
 			Sounds.attackSweep.play(p, p);

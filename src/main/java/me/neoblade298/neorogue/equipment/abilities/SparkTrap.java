@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -57,8 +58,8 @@ public class SparkTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SparkTrapInstance inst = new SparkTrapInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		SparkTrapInstance inst = new SparkTrapInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 
@@ -66,8 +67,8 @@ public class SparkTrap extends Equipment {
 		private Location trapLocation = null;
 		private boolean isInitialCast = true;
 		
-		public SparkTrapInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public SparkTrapInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				SparkTrapInstance inst = this;

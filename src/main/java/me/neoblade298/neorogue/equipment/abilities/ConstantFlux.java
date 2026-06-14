@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,15 +41,15 @@ public class ConstantFlux extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
 			ActionMeta stacks = new ActionMeta();
 			String taskId = id + "-timer-" + slot;
 			ItemStack noStackIcon = item.clone();
 			ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
-			ConstantFluxInstance inst = new ConstantFluxInstance(data, this, slot, es, stacks, taskId, noStackIcon, stackIcon);
+			ConstantFluxInstance inst = new ConstantFluxInstance(data, sessionEq, slot, es, stacks, taskId, noStackIcon, stackIcon);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					data.addTrigger(id + "-active", bind, inst);
@@ -61,8 +61,8 @@ public class ConstantFlux extends Equipment {
 	}
 
 	private class ConstantFluxInstance extends EquipmentInstance {
-		public ConstantFluxInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, ActionMeta stacks, String taskId, ItemStack noStackIcon, ItemStack stackIcon) {
-			super(data, eq, slot, es);
+		public ConstantFluxInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, ActionMeta stacks, String taskId, ItemStack noStackIcon, ItemStack stackIcon) {
+			super(data, sessionEq, slot, es);
 			
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -46,8 +47,8 @@ public class RapidFire extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data, this));
 			for (int i = 0; i * thres <= inst.getCount() && i < MAX; i++) {

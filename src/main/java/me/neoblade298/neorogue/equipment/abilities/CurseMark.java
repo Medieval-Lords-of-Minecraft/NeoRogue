@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -50,8 +51,8 @@ public class CurseMark extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		InducePanicInstance inst = new InducePanicInstance(data, sessionEq, slot, es);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -64,8 +65,8 @@ public class CurseMark extends Equipment {
 
 	private class InducePanicInstance extends EquipmentInstance	{
 		private LivingEntity mark;
-		public InducePanicInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public InducePanicInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			String buffId = UUID.randomUUID().toString();
 			InducePanicInstance inst = this;
 			action = (pdata, in) -> {

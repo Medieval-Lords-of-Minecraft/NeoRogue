@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -52,8 +53,8 @@ public class SunderingShot extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		Equipment eq = this;
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();

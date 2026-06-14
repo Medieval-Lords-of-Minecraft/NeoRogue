@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,8 +53,8 @@ public class HailCloak extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		HailCloakInstance inst = new HailCloakInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		HailCloakInstance inst = new HailCloakInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -67,8 +68,8 @@ public class HailCloak extends Equipment {
 	private class HailCloakInstance extends EquipmentInstance {
 		boolean active = false;
 
-		public HailCloakInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public HailCloakInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			Player p = data.getPlayer();
 			action = (pdata, in) -> {
 				data.channel(20);

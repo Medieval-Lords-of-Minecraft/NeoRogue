@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -30,7 +31,7 @@ public class RingOfMentalism extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;

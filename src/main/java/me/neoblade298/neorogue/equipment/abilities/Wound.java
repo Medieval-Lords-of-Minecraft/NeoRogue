@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -48,9 +49,9 @@ public class Wound extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
 				Player p = data.getPlayer();

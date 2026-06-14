@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -28,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Disappear extends Equipment implements Power {
 	private static final String ID = "Disappear";
+	private SessionEquipment sessionEq;
 	private int damage;
 	
 	public Disappear(boolean isUpgraded) {
@@ -42,7 +43,8 @@ public class Disappear extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		this.sessionEq = sessionEq;
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			KillEvent ev = (KillEvent) in;
 			if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.PIERCING)) return TriggerResult.keep();
@@ -104,7 +106,7 @@ public class Disappear extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ItemStack baseIcon = item.clone();
 		ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
-		EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance eqInst = new EquipmentInstance(data, sessionEq, slot, es);
 		DisappearInstance inst = new DisappearInstance(id, data, slot, this, eqInst, baseIcon, primedIcon);
 		data.addTrigger(ID, Trigger.KILL, inst);
 

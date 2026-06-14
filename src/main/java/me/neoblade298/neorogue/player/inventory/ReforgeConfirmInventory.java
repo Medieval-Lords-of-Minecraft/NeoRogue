@@ -15,19 +15,21 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeConfirmInventory extends CoreInventory {
 	private PlayerSessionData data;
-	private Equipment toReforge, reforgeWith, result;
+	private SessionEquipment toReforge, reforgeWith;
+	private Equipment result;
 	private CoreInventory prev;
 	private boolean confirmed = false;
 
 	private static final int EQ1_SLOT = 3, EQ2_SLOT = 5, RESULT_SLOT = 13;
 
-	public ReforgeConfirmInventory(PlayerSessionData data, Equipment toReforge, Equipment reforgeWith, Equipment result, CoreInventory prev) {
+	public ReforgeConfirmInventory(PlayerSessionData data, SessionEquipment toReforge, SessionEquipment reforgeWith, Equipment result, CoreInventory prev) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text("Confirm Reforge", NamedTextColor.BLUE)));
 		this.data = data;
 		this.toReforge = toReforge;
@@ -37,8 +39,8 @@ public class ReforgeConfirmInventory extends CoreInventory {
 
 		ItemStack[] contents = inv.getContents();
 
-		contents[EQ1_SLOT] = toReforge.getItem();
-		contents[EQ2_SLOT] = reforgeWith.getItem();
+		contents[EQ1_SLOT] = toReforge.getEquipment().getItem();
+		contents[EQ2_SLOT] = reforgeWith.getEquipment().getItem();
 
 		for (int i = 0; i < 9; i++) {
 			if (contents[i] != null) continue;
@@ -65,8 +67,8 @@ public class ReforgeConfirmInventory extends CoreInventory {
 		// Right-click on items for glossary
 		if (e.isRightClick()) {
 			Equipment eq = null;
-			if (slot == EQ1_SLOT) eq = toReforge;
-			else if (slot == EQ2_SLOT) eq = reforgeWith;
+			if (slot == EQ1_SLOT) eq = toReforge.getEquipment();
+			else if (slot == EQ2_SLOT) eq = reforgeWith.getEquipment();
 			else if (slot == RESULT_SLOT) eq = result;
 			if (eq != null) {
 				final Equipment glossaryEq = eq;
@@ -83,8 +85,8 @@ public class ReforgeConfirmInventory extends CoreInventory {
 		if (slot == RESULT_SLOT) {
 			confirmed = true;
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
-			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());
-			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
+			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getEquipment().getHoverable());
+			if (!toReforge.getEquipment().getId().equals(reforgeWith.getEquipment().getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getEquipment().getHoverable()));
 			cmp = cmp.append(Component.text(" into a(n) ").append(result.getHoverable().append(Component.text("!"))));
 			data.getSession().broadcast(cmp);
 

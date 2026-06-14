@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -53,8 +54,8 @@ public class Energize extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EnergizeInstance inst = new EnergizeInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EnergizeInstance inst = new EnergizeInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -69,8 +70,8 @@ public class Energize extends Equipment {
 	
 	private class EnergizeInstance extends EquipmentInstance {
 		private LivingEntity mark;
-		public EnergizeInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public EnergizeInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				pdata.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 					Player p = data.getPlayer();

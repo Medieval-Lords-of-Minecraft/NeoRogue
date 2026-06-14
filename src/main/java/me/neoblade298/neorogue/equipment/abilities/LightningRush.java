@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -60,8 +61,8 @@ public class LightningRush extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		LightningRushInstance inst = new LightningRushInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		LightningRushInstance inst = new LightningRushInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			Player p = data.getPlayer();
@@ -89,8 +90,8 @@ public class LightningRush extends Equipment {
 		private boolean active = false;
 		private int timer;
 
-		public LightningRushInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public LightningRushInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			Player p = data.getPlayer();
 			action = (pdata, in) -> {
 				active = true;

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -32,7 +33,7 @@ public class EtherealKnife extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();

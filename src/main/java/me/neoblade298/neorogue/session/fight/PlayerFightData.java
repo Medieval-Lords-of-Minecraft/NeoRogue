@@ -32,11 +32,11 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -126,32 +126,32 @@ public class PlayerFightData extends FightData {
 		// Initialize fight data
 		PlayerInventory inv = p.getInventory();
 		int i = 0;
-		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
+		for (SessionEquipment acc : data.getSessionEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null)
 				continue;
-			acc.initialize(this, null, EquipSlot.ACCESSORY, i++);
+			acc.getEquipment().initialize(this, null, EquipSlot.ACCESSORY, i++, acc);
 		}
 		i = 0;
-		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
+		for (SessionEquipment armor : data.getSessionEquipment(EquipSlot.ARMOR)) {
 			if (armor == null)
 				continue;
-			armor.initialize(this, null, EquipSlot.ARMOR, i++);
+			armor.getEquipment().initialize(this, null, EquipSlot.ARMOR, i++, armor);
 		}
 		i = -1;
-		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
+		for (SessionEquipment hotbar : data.getSessionEquipment(EquipSlot.HOTBAR)) {
 			i++;
 			if (hotbar == null) {
 				inv.setItem(i, null);
 			} else {
-				hotbar.initialize(this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
+				hotbar.getEquipment().initialize(this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i, hotbar);
 			}
 		}
 		i = -1;
-		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
+		for (SessionEquipment other : data.getSessionEquipment(EquipSlot.KEYBIND)) {
 			i++;
 			if (other == null)
 				continue;
-			other.initialize(this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i);
+			other.getEquipment().initialize(this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i, other);
 		}
 		i = 0;
 		for (ArtifactInstance art : new ArrayList<>(data.getArtifacts().values())) {
@@ -160,10 +160,10 @@ public class PlayerFightData extends FightData {
 			art.initialize(this, null, null, i++);
 		}
 
-		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
+		SessionEquipment offhand = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
-			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
-			offhand.initialize(this, null, EquipSlot.OFFHAND, 40);
+			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getEquipment().getItem());
+			offhand.getEquipment().initialize(this, null, EquipSlot.OFFHAND, 40, offhand);
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
@@ -215,6 +215,11 @@ public class PlayerFightData extends FightData {
 			}
 		}
 		addTickAction(new PlayerUpdateTickAction());
+
+		addTrigger("durability", Trigger.WIN_FIGHT, (pdata, in) -> {
+			sessdata.tickDurability(getPlayer());
+			return TriggerResult.keep();
+		});
 
 		updateStamina();
 		updateMana();
@@ -487,25 +492,25 @@ public class PlayerFightData extends FightData {
 		}
 
 		// Perform end of fight actions (currently only used for resetting damage ticks)
-		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
+		for (SessionEquipment acc : data.getSessionEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null)
 				continue;
-			acc.cleanup(this);
+			acc.getEquipment().cleanup(this);
 		}
-		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
+		for (SessionEquipment armor : data.getSessionEquipment(EquipSlot.ARMOR)) {
 			if (armor == null)
 				continue;
-			armor.cleanup(this);
+			armor.getEquipment().cleanup(this);
 		}
-		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
+		for (SessionEquipment hotbar : data.getSessionEquipment(EquipSlot.HOTBAR)) {
 			if (hotbar == null)
 				continue;
-			hotbar.cleanup(this);
+			hotbar.getEquipment().cleanup(this);
 		}
-		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
+		for (SessionEquipment other : data.getSessionEquipment(EquipSlot.KEYBIND)) {
 			if (other == null)
 				continue;
-			other.cleanup(this);
+			other.getEquipment().cleanup(this);
 		}
 		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null)
@@ -513,8 +518,8 @@ public class PlayerFightData extends FightData {
 			art.cleanup(this);
 		}
 
-		if (data.getEquipment(EquipSlot.OFFHAND)[0] != null) {
-			data.getEquipment(EquipSlot.OFFHAND)[0].cleanup(this);
+		if (data.getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
+			data.getSessionEquipment(EquipSlot.OFFHAND)[0].getEquipment().cleanup(this);
 		}
 
 		for (Listener l : listeners) {

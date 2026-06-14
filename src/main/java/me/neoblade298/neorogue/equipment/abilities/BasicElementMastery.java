@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,7 +46,7 @@ public class BasicElementMastery extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		data.addPermanentShield(p.getUniqueId(), 5, false);
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {

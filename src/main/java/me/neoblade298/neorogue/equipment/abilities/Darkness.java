@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -56,8 +57,8 @@ public class Darkness extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		DarknessInstance inst = new DarknessInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		DarknessInstance inst = new DarknessInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			Player p = data.getPlayer();
@@ -74,8 +75,8 @@ public class Darkness extends Equipment {
 		private Location loc;
 		private boolean basicAttack = false;
 
-		public DarknessInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public DarknessInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				cast(pdata);
 				return TriggerResult.keep();

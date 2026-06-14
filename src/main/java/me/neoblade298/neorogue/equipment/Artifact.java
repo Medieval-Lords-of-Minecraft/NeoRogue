@@ -18,7 +18,7 @@ public abstract class Artifact extends Equipment {
 	}
 	
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// This is not used, ArtifactInstance instead calls the below abstract initialize
 	}
 	public abstract void initialize(PlayerFightData data, ArtifactInstance ai);

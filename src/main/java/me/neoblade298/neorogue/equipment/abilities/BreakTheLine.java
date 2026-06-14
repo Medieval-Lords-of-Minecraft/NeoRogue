@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -49,8 +50,8 @@ public class BreakTheLine extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		BreakTheLineInstance inst = new BreakTheLineInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		BreakTheLineInstance inst = new BreakTheLineInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 
@@ -62,8 +63,8 @@ public class BreakTheLine extends Equipment {
 	}
 	
 	private class BreakTheLineInstance extends EquipmentInstance {
-		public BreakTheLineInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public BreakTheLineInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, inputs) -> {
 				Player p = data.getPlayer();
 				Sounds.jump.play(p, p);

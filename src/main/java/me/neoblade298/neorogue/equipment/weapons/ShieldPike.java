@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -41,9 +42,9 @@ public class ShieldPike extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment off = data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0];
-		boolean hasShield = off != null && off.getItem().getType() == Material.SHIELD;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		SessionEquipment off = data.getSessionData().getSessionEquipment(EquipSlot.OFFHAND)[0];
+		boolean hasShield = off != null && off.getEquipment().getItem().getType() == Material.SHIELD;
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);

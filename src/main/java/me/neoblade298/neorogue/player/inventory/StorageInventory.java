@@ -17,6 +17,7 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.ShopInventory;
@@ -58,7 +59,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	private void setupInventory() {
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		ItemStack[] contents = inv.getContents();
-		Equipment[] storage = data.getStorage();
+		SessionEquipment[] storage = data.getStorage();
 		int maxStorage = data.getMaxStorage();
 		int controlSlot = contents.length - 1;
 		trashSlot = isShop ? -1 : controlSlot;
@@ -67,7 +68,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		int itemSlot = 0;
 		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) continue;
-			contents[itemSlot++] = storage[i].getItem();
+			contents[itemSlot++] = storage[i].getEquipment().getItem();
 		}
 
 		if (!isShop) {
@@ -250,8 +251,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		if (closeInventory) p.closeInventory();
 	}
 
-	private Equipment[] getLiveStorageSnapshot() {
-		Equipment[] snapshot = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
+	private SessionEquipment[] getLiveStorageSnapshot() {
+		SessionEquipment[] snapshot = new SessionEquipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
 		int controlSlot = contents.length - 1;
@@ -264,7 +265,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (!nbti.hasTag("equipId")) continue;
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
 			if (eq != null) {
-				snapshot[iter++] = eq;
+				snapshot[iter++] = new SessionEquipment(eq);
 			}
 		}
 
@@ -274,7 +275,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	public void handleInventoryClose() {
 		if (spectator != null) return;
 		// Save storage - include overflow items beyond maxStorage
-		Equipment[] newSave = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
+		SessionEquipment[] newSave = new SessionEquipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
 		int controlSlot = contents.length - 1;
@@ -290,7 +291,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				Bukkit.getLogger().warning("[NeoRogue] Failed to save item " + nbti.getString("equipId") + " to storage of " + p.getName());
 				continue;
 			}
-			newSave[iter++] = eq;
+			newSave[iter++] = new SessionEquipment(eq);
 		}
 		data.setStorage(newSave);
 	}
@@ -321,7 +322,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			return;
 		}
 
-		Equipment[] projectedStorage = getLiveStorageSnapshot();
+		SessionEquipment[] projectedStorage = getLiveStorageSnapshot();
 
 		if (eq.getType() == Equipment.EquipmentType.WEAPON && data.countOwnedWeapons(projectedStorage) == 0) {
 			Util.displayError(p, "You can't trash your last weapon!");

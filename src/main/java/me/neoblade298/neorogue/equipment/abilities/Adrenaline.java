@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -53,15 +54,15 @@ public class Adrenaline extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new AdrenalineInstance(data, this, slot, es));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new AdrenalineInstance(data, sessionEq, slot, es));
 	}
 	
 	private class AdrenalineInstance extends EquipmentInstance {
 		private int count = 0;
 		private int max;
-		public AdrenalineInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public AdrenalineInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			Player p = data.getPlayer();
 			max = isUpgraded ? 2 : 1;
 			String id = UUID.randomUUID().toString();

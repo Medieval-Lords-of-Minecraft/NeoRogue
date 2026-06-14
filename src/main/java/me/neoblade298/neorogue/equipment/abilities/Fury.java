@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -12,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -47,14 +47,14 @@ public class Fury extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new FuryInstance(this, data, damage, bind, slot, es));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new FuryInstance(sessionEq, data, damage, bind, slot, es));
 	}
 	
 	private class FuryInstance extends EquipmentInstance {
 		private boolean isBerserk;
-		public FuryInstance(Equipment eq, PlayerFightData data, int damage, Trigger bind, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public FuryInstance(SessionEquipment sessionEq, PlayerFightData data, int damage, Trigger bind, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			
 			this.action = (pdata, in) -> {
 				Player p = data.getPlayer();

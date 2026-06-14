@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -38,7 +39,7 @@ public class AlchemistsPotion extends Consumable {
 		PlayerSessionData sdata = data.getSessionData();
 		Session s = sdata.getSession();
 		int value = s.getBaseDropValue();
-		Equipment[] hotbar = sdata.getEquipment(EquipSlot.HOTBAR);
+		SessionEquipment[] hotbar = sdata.getSessionEquipment(EquipSlot.HOTBAR);
 
 		// Find up to 2 empty hotbar slots (include own slot since this potion is consumed)
 		ArrayList<Integer> emptySlots = new ArrayList<>();
@@ -66,7 +67,7 @@ public class AlchemistsPotion extends Consumable {
 			data.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
-					finalConsumable.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot);
+					finalConsumable.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot, new SessionEquipment(finalConsumable));
 					p.getInventory().setItem(emptySlot, finalConsumable.getItem());
 				}
 			}.runTaskLater(NeoRogue.inst(), 1L));

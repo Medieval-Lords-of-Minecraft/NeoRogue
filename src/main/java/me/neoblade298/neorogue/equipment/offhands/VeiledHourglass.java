@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,8 +31,8 @@ public class VeiledHourglass extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.teleport.play(p, p);

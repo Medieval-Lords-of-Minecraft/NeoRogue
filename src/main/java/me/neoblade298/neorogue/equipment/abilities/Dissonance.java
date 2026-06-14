@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,9 +42,9 @@ public class Dissonance extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta lastDamageType = new ActionMeta(); // Stores the last damage type as an Object
-		DissonanceInstance inst = new DissonanceInstance(data, this, slot, es);
+		DissonanceInstance inst = new DissonanceInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		// Track damage dealt and compare types
@@ -76,8 +77,8 @@ public class Dissonance extends Equipment {
 	private class DissonanceInstance extends EquipmentInstance {
 		private boolean active = false;
 		
-		public DissonanceInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public DissonanceInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			
 			action = (pdata, in) -> {
 				active = true;

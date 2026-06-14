@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -41,8 +42,8 @@ public class Flicker extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		FlickerInstance inst = new FlickerInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		FlickerInstance inst = new FlickerInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
@@ -57,8 +58,8 @@ public class Flicker extends Equipment {
 		private Location loc;
 		private boolean active = false;
 		private HashMap<LivingEntity, Integer> marks = new HashMap<LivingEntity, Integer>();
-		public FlickerInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public FlickerInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				active = true;

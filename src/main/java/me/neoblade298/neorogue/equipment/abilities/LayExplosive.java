@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,8 +47,8 @@ public class LayExplosive extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new LayExplosiveInstance(data, this, slot, es));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new LayExplosiveInstance(data, sessionEq, slot, es));
 	}
 
 
@@ -57,8 +58,8 @@ public class LayExplosive extends Equipment {
 		private boolean active = false;
 		private Trap tr;
 		
-		public LayExplosiveInstance(PlayerFightData data, Equipment e, int slot, EquipSlot es) {
-			super(data, e, slot, es);
+		public LayExplosiveInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pd, in) -> {
 				if (!active) {
 					cast(data);

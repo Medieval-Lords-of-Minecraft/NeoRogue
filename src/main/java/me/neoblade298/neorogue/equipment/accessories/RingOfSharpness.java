@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class RingOfSharpness extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), Buff.multiplier(data, buff * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 	}

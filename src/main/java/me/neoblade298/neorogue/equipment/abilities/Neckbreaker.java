@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -48,8 +49,8 @@ public class Neckbreaker extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		UUID[] firstTargetId = new UUID[1]; // Track first target
 		boolean[] allSameTarget = new boolean[1]; // Track if all attacks hit same target
 		

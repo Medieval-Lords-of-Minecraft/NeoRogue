@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class Tireless extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent cev = (CastUsableEvent) in;
 			if (cev.getInstance().getStaminaCost() < cutoff) return TriggerResult.keep();

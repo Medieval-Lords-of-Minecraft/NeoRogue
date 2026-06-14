@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -48,15 +49,15 @@ public class EscapePlan extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EscapePlanInstance inst = new EscapePlanInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EscapePlanInstance inst = new EscapePlanInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 	
 	private class EscapePlanInstance extends EquipmentInstance {
 		boolean active = false;
-		public EscapePlanInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
+		public EscapePlanInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+			super(data, sessionEq, slot, es);
 			action = (pdata1, in1) -> {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);

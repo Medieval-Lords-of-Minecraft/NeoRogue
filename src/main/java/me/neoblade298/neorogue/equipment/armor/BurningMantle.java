@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.armor;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -37,7 +38,7 @@ public class BurningMantle extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta tracker = new ActionMeta(), damageCount = new ActionMeta();
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(id + slot, this)));
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {

@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.Marker;
@@ -33,6 +33,7 @@ public class Scavenger extends Equipment implements Power {
 			.count(30).spread(0.2, 0.2).offsetY(0.5);
 	private static final ParticleContainer collectParticle = new ParticleContainer(Particle.HAPPY_VILLAGER)
 			.count(30).spread(0.5, 0.5).offsetY(1);
+	private SessionEquipment sessionEq;
 	
 	private int stamina;
 	private double damageBuff;
@@ -54,7 +55,8 @@ public class Scavenger extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		this.sessionEq = sessionEq;
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
@@ -123,7 +125,7 @@ public class Scavenger extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
