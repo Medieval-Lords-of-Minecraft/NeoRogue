@@ -43,7 +43,8 @@ public class WinFightsAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Win fights.", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		return List.of(Component.text("Win " + target + " fights.", NamedTextColor.GRAY));
 	}
 
 	@Override

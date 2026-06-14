@@ -41,7 +41,9 @@ public class FinishRunAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Finish runs (win or lose).", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		String desc = target == 1 ? "Finish a run (win or lose)." : "Finish " + target + " runs (win or lose).";
+		return List.of(Component.text(desc, NamedTextColor.GRAY));
 	}
 
 	@Override

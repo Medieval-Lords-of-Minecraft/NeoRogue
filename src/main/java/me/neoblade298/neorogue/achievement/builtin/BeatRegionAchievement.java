@@ -60,7 +60,10 @@ public class BeatRegionAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Beat " + region.getDisplay() + ".", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		String desc = target == 1 ? "Beat " + region.getDisplay() + "." :
+				"Beat " + region.getDisplay() + " " + target + " times.";
+		return List.of(Component.text(desc, NamedTextColor.GRAY));
 	}
 
 	@Override

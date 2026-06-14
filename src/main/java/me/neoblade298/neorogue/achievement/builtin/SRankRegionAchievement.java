@@ -63,7 +63,10 @@ public class SRankRegionAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Beat a " + region.getDisplay() + " fight with S rank.", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		String desc = target == 1 ? "Beat a " + region.getDisplay() + " fight with S rank." :
+				"Beat " + target + " " + region.getDisplay() + " fights with S rank.";
+		return List.of(Component.text(desc, NamedTextColor.GRAY));
 	}
 
 	@Override

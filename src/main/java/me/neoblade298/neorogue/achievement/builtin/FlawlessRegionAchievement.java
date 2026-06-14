@@ -37,7 +37,7 @@ public class FlawlessRegionAchievement extends ObjectiveAchievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Beat an entire region without losing health.", NamedTextColor.GRAY));
+		return List.of(Component.text("Beat regions without losing health.", NamedTextColor.GRAY));
 	}
 
 	@Override

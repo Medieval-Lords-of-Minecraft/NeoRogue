@@ -46,7 +46,9 @@ public class BeatMinibossesAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Defeat minibosses.", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		String desc = target == 1 ? "Defeat a miniboss." : "Defeat " + target + " minibosses.";
+		return List.of(Component.text(desc, NamedTextColor.GRAY));
 	}
 
 	@Override

@@ -45,7 +45,8 @@ public class VisitNodesAchievement implements Achievement {
 
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Progress through nodes.", NamedTextColor.GRAY));
+		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
+		return List.of(Component.text("Progress through " + target + " nodes.", NamedTextColor.GRAY));
 	}
 
 	@Override
