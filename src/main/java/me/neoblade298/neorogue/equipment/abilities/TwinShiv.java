@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class TwinShiv extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new TwinShivInstance(data, this, slot, es));
 	}
 	

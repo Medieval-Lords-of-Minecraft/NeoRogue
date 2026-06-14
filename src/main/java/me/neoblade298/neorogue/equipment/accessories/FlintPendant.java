@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -28,7 +29,7 @@ public class FlintPendant extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		StandardPriorityAction action = new StandardPriorityAction(id);
 
 		action.setAction((pdata, in) -> {

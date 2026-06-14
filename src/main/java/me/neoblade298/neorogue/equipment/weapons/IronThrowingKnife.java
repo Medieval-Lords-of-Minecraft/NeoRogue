@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,7 +53,7 @@ public class IronThrowingKnife extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta hitCount = new ActionMeta();
 		ProjectileGroup proj = new ProjectileGroup(new IronThrowingKnifeProjectile(data, this, slot, hitCount));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {

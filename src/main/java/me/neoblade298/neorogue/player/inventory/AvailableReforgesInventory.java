@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
 import me.neoblade298.neorogue.player.PlayerSessionData.ReforgePairData;
@@ -214,10 +215,10 @@ public class AvailableReforgesInventory extends CoreInventory {
 		EquipmentMetadata m1 = pair.getMeta1();
 		EquipmentMetadata m2 = pair.getMeta2();
 
-		Equipment[] arr1 = data.getEquipment(m1.getEquipSlot());
-		Equipment[] arr2 = data.getEquipment(m2.getEquipSlot());
+		SessionEquipment[] arr1 = data.getSessionEquipment(m1.getEquipSlot());
+		SessionEquipment[] arr2 = data.getSessionEquipment(m2.getEquipSlot());
 
-		if (arr1[m1.getSlot()] != m1.getEquipment() || arr2[m2.getSlot()] != m2.getEquipment()) {
+		if (arr1[m1.getSlot()] != m1.getSessionEquipment() || arr2[m2.getSlot()] != m2.getSessionEquipment()) {
 			p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1F, 1F);
 			new BukkitRunnable() {
 				public void run() {
@@ -227,8 +228,8 @@ public class AvailableReforgesInventory extends CoreInventory {
 			return;
 		}
 
-		Equipment eq1 = data.removeEquipment(m1.getEquipSlot(), m1.getSlot());
-		Equipment eq2 = data.removeEquipment(m2.getEquipSlot(), m2.getSlot());
+		SessionEquipment eq1 = data.removeEquipment(m1.getEquipSlot(), m1.getSlot());
+		SessionEquipment eq2 = data.removeEquipment(m2.getEquipSlot(), m2.getSlot());
 
 		new BukkitRunnable() {
 			public void run() {

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -30,7 +31,7 @@ public class BasicManaManipulation extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.STEALTH)) {

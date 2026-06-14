@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -111,12 +112,12 @@ public class RockTomb extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
 		Equipment eq = this;
 
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 
 		// Track concussed applications
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {

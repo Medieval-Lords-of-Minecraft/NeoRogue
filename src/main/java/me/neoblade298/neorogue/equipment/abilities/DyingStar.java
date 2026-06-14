@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -143,7 +144,7 @@ public class DyingStar extends Equipment implements Power {
 	private static final int ACTIVATION_THRES = 2;
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		int[] riftCount = {0};
 		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
 			riftCount[0]++;

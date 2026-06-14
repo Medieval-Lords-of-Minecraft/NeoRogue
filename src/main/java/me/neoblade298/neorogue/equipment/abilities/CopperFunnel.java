@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,12 +37,12 @@ public class CopperFunnel extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ItemStack icon = item.clone();
 		icon.setAmount(reps);
 		ActionMeta am = new ActionMeta();
 		am.setCount(reps);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;

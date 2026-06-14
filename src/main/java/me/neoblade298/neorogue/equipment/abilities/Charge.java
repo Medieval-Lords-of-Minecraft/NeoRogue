@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,10 +37,10 @@ public class Charge extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ChargeInstance inst = new ChargeInstance(id);
 		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			if (inst.isActive()) return TriggerResult.remove();
 			inst.activate();
 			pdata.addSprintCost(1);

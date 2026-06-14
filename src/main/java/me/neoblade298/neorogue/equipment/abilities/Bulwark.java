@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public class Bulwark extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		BulwarkInstance inst = new BulwarkInstance(id, data);
 		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		

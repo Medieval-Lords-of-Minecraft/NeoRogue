@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -48,7 +49,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		projs = new ProjectileGroup(new WeaponEnchantmentElectrifiedProjectile(slot, this));
 		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentElectrifiedInstance(id));
 	}

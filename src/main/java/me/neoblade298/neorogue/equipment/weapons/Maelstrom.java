@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -66,7 +67,7 @@ public class Maelstrom extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta armed = new ActionMeta();
 
 		// Arm weapon when player applies electrified

@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -29,6 +30,7 @@ public class EquipmentInstance extends PriorityAction {
 	protected PlayerFightData data;
 	protected int slot, invSlot;
 	protected Equipment eq;
+	protected SessionEquipment sessionEquipment;
 	protected EquipSlot es;
 	protected double staminaCost, manaCost, cooldown; // Base costs
 	protected CastUsableEvent lastCastEvent; // Useful for non-standard cast types that may need to access final mana/stamina cost info for refunds, like Gravity
@@ -61,25 +63,26 @@ public class EquipmentInstance extends PriorityAction {
 		COOLDOWN_MATERIALS.put(40, Material.CANDLE);
 	}
 
-	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-		super(eq.id);
-		init(data, eq, slot, es);
+	public EquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		super(sessionEq.getEquipment().id);
+		init(data, sessionEq, slot, es);
 	}
 
-	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
-		super(eq.id, action);
-		init(data, eq, slot, es);
+	public EquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, TriggerAction action) {
+		super(sessionEq.getEquipment().id, action);
+		init(data, sessionEq, slot, es);
 	}
 
-	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action,
+	public EquipmentInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, TriggerAction action,
 			TriggerCondition condition) {
-		super(eq.id, action, condition);
-		init(data, eq, slot, es);
+		super(sessionEq.getEquipment().id, action, condition);
+		init(data, sessionEq, slot, es);
 	}
 
-	private void init(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+	private void init(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		this.sessionEquipment = sessionEq;
+		this.eq = sessionEq.getEquipment();
 		this.data = data;
-		this.eq = eq;
 		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
 		this.staminaCost = eq.getProperties().get(PropertyType.STAMINA_COST);
 		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
@@ -210,6 +213,10 @@ public class EquipmentInstance extends PriorityAction {
 
 	public Equipment getEquipment() {
 		return eq;
+	}
+
+	public SessionEquipment getSessionEquipment() {
+		return sessionEquipment;
 	}
 
 	public TriggerAction getAction() {

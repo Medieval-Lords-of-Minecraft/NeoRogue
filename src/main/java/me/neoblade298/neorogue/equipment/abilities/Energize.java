@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -53,7 +54,7 @@ public class Energize extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		EnergizeInstance inst = new EnergizeInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		

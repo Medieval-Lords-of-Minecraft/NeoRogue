@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -36,8 +37,8 @@ public class DivergentPiercer extends Ammunition {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		super.initialize(data, bind, es, slot);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		super.initialize(data, bind, es, slot, sessionEq);
 		lastHit = new ActionMeta();
 	}
 

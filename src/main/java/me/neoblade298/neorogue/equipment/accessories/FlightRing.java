@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,7 +34,7 @@ public class FlightRing extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Grant evade at the start of the fight
 		data.applyStatus(StatusType.EVADE, data, evade, -1);
 		

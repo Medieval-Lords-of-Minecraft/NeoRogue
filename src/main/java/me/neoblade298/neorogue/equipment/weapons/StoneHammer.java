@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -73,7 +74,7 @@ public class StoneHammer extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			Player p = data.getPlayer();

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -54,7 +55,7 @@ public class WallJump extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		WallJumpInstance inst = new WallJumpInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 	}

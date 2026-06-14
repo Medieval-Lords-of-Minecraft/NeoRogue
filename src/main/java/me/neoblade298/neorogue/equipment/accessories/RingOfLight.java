@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -31,7 +32,7 @@ public class RingOfLight extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			Player p = data.getPlayer();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {

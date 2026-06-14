@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -48,7 +49,7 @@ public class ConfidenceKill extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
 		data.addTrigger(ID, bind, inst);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {

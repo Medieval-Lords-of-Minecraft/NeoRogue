@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -55,8 +56,8 @@ public class PhantasmalKiller extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		if (data.getSessionData().getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
 			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
@@ -67,7 +68,7 @@ public class PhantasmalKiller extends Equipment {
 		ActionMeta charges = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.NETHERITE_SWORD);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		
 		// Create projectile for basic attacks
 		ProjectileGroup proj = new ProjectileGroup(new PhantasmalKillerProjectile(data, this, slot, attacks, charges, inst, icon, activeIcon));

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,13 +53,13 @@ public class LightningRod extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Equipment eq = this;
 		ActionMeta stacks = new ActionMeta();
 		ActionMeta hitCount = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.LIGHTNING_ROD);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 
 		// Track lightning damage dealt to accumulate casts
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {

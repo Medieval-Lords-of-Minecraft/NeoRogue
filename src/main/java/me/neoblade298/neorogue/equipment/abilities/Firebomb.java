@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -48,7 +49,7 @@ public class Firebomb extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
@@ -68,7 +69,7 @@ public class Firebomb extends Equipment {
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 		});
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
 			Sounds.threw.play(p, p);
 			pot.launch(data);
 			return TriggerResult.keep();

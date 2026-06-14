@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -38,7 +39,7 @@ public class Discharge extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
@@ -49,7 +50,7 @@ public class Discharge extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
 			am.addCount(1);

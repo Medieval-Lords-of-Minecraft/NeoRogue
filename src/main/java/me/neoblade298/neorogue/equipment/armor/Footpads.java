@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.armor;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -24,7 +25,7 @@ public class Footpads extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			data.addStamina(stamina);
 			return TriggerResult.keep();

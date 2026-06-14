@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -57,9 +58,9 @@ public class TomeOfGravity extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			p.swingOffHand();
 			Sounds.enchant.play(p, p);

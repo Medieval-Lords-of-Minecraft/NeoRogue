@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,9 +44,9 @@ public class Volley extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Equipment eq = this;
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (d, inputs) -> {
 			data.channel(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

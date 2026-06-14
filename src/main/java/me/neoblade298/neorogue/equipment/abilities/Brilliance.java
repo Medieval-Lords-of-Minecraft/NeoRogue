@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -47,7 +48,7 @@ public class Brilliance extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		HashSet<DamageType> seenTypes = new HashSet<>();
 		boolean[] activated = {false};
 		

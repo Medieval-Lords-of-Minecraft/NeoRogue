@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -44,8 +45,8 @@ public class SiphoningStrike extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, inputs) -> {
 			Player p = data.getPlayer();

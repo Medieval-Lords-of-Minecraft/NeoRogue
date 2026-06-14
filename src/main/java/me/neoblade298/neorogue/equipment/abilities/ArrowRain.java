@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -57,9 +58,9 @@ public class ArrowRain extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ArrowRain eq = this;
-		data.addTrigger(id, bind, new AmmoEquipmentInstance(data, this, slot, es, (pd, in) -> {
+		data.addTrigger(id, bind, new AmmoEquipmentInstance(data, sessionEq, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.charge(20);

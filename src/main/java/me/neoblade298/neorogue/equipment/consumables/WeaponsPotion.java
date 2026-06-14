@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -37,7 +38,7 @@ public class WeaponsPotion extends Consumable {
 		int value = s.getBaseDropValue() + 2;
 		Equipment weapon = Equipment.getWeapon(value, sdata.getPlayerClass());
 		if (isUpgraded) weapon = weapon.getUpgraded();
-		weapon.initialize(data, null, EquipSlot.HOTBAR, slot);
+		weapon.initialize(data, null, EquipSlot.HOTBAR, slot, new SessionEquipment(weapon));
 		final Equipment finalWeapon = weapon;
 		data.addTask(new BukkitRunnable() {
 			@Override

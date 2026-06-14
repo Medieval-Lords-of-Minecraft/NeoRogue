@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 
@@ -41,8 +42,8 @@ public class Quickfire extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (d, inputs) -> {
 			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data, this, slot));
 			proj.start(data);
 			return TriggerResult.keep();

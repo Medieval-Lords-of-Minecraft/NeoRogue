@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class Blind extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		HashSet<UUID> blinded = new HashSet<UUID>();
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
@@ -55,7 +56,7 @@ public class Blind extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 60));
 		});
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.threw.play(p, p);
 			pot.launch(data);

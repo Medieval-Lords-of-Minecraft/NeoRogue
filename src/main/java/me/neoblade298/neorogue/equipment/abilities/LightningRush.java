@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -60,7 +61,7 @@ public class LightningRush extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		LightningRushInstance inst = new LightningRushInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {

@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -44,12 +45,12 @@ public class RubyArmament extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(ID);
 		ItemStack patienceIcon = item.clone();
 		ItemStack powerIcon = item.clone().withType(Material.RED_NETHER_BRICKS);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setIcon(patienceIcon);
 		
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {

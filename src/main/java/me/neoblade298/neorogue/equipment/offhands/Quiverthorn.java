@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -50,7 +51,7 @@ public class Quiverthorn extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
 		

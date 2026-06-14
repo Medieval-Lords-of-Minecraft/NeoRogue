@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -52,8 +53,8 @@ public class MirrorSickle extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		if (data.getSessionData().getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
 			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
@@ -63,7 +64,7 @@ public class MirrorSickle extends Equipment {
 		StandardPriorityAction stacks = new StandardPriorityAction(ID);
 		ItemStack icon = item.clone();
 		ItemStack chargedIcon = item.clone().withType(Material.PRISMARINE_CRYSTALS);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		Equipment eq = this;
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {

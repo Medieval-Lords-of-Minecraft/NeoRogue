@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 import java.util.UUID;
@@ -64,9 +65,9 @@ public class WarningShot extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ProjectileGroup proj = new ProjectileGroup(new WarningShotProjectile(data, this));
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (d, inputs) -> {
 			data.wandDelay(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

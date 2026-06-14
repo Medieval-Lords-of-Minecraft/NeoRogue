@@ -16,7 +16,7 @@ public abstract class Consumable extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Player p = data.getPlayer();
 			drink.play(p, p);

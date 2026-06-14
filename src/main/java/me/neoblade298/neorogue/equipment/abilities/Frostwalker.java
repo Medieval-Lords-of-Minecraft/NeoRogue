@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -58,10 +59,10 @@ public class Frostwalker extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		FrostwalkerInstance inst = new FrostwalkerInstance(data, this);
 		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
-		EquipmentInstance toggle = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance toggle = new EquipmentInstance(data, sessionEq, slot, es);
 		toggle.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			inst.active = !inst.active;

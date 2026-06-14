@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,11 +44,11 @@ public class Analyze extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.PAPER);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		
 		// Every second (20 ticks), gain a stack if not at max
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {

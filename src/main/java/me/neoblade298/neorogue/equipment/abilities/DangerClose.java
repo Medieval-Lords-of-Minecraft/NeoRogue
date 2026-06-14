@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class DangerClose extends Equipment implements Power {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			if (data.getStamina() < data.getMaxStamina() * 0.5) return TriggerResult.keep();
@@ -54,7 +55,7 @@ public class DangerClose extends Equipment implements Power {
 		String buffId = UUID.randomUUID().toString();
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata2, in2) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in2;
 			if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();

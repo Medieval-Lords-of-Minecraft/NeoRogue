@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -42,8 +43,8 @@ public class Absorb extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg == null) return TriggerResult.keep();

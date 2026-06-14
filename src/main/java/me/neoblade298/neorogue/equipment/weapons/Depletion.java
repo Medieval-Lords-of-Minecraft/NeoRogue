@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import java.util.LinkedList;
 
@@ -62,8 +63,8 @@ public class Depletion extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		ProjectileGroup proj = new ProjectileGroup(new DarkTorrentProjectile(data, slot, this));
 		inst.setAction((pdata, in) -> {
 			data.wandDelay(20);

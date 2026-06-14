@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -42,7 +43,7 @@ public class LeviathanAxe extends Equipment {
 	}
 
 	@Override
-	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ItemStack icon = item.withType(Material.GOLD_INGOT);
 		data.getPlayer().getInventory().setItemInOffHand(icon);
 		ActionMeta am = new ActionMeta();
