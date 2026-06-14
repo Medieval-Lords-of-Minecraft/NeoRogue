@@ -83,11 +83,16 @@ public class UnlockNode {
 					EquipmentClass classScope = EquipmentClass.valueOf(key.substring(atIdx + 1).toUpperCase());
 					achReqs.add(new AchievementRequirement(achId, mastery, classScope));
 				} else {
-					// Auto-resolve: if achievement is CLASS-scope with a requiredClass, use that
+					// Auto-resolve: if achievement is CLASS-scope with a requiredClass, use that;
+					// otherwise fall back to the node's own class for CLASS/BOTH-scoped achievements
 					Achievement ach = AchievementManager.get(key);
 					EquipmentClass autoClass = null;
-					if (ach != null && ach.getScope() == AchievementScope.CLASS && ach.getRequiredClass() != null) {
-						autoClass = ach.getRequiredClass();
+					if (ach != null) {
+						if (ach.getRequiredClass() != null) {
+							autoClass = ach.getRequiredClass();
+						} else if (nodeClass != null && ach.getScope() != AchievementScope.GLOBAL) {
+							autoClass = nodeClass;
+						}
 					}
 					achReqs.add(new AchievementRequirement(key, mastery, autoClass));
 				}
