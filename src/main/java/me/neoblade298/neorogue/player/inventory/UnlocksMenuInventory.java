@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.player.inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -9,11 +12,18 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.unlock.UnlockNode;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class UnlocksMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
@@ -25,20 +35,43 @@ public class UnlocksMenuInventory extends CoreInventory {
 
 	private void setupInventory() {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
+		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
 		ItemStack[] contents = inv.getContents();
-		contents[WARRIOR] = CoreInventory.createButton(Material.IRON_SWORD,
-				Component.text("Warrior", NamedTextColor.RED));
-		contents[THIEF] = CoreInventory.createButton(Material.IRON_INGOT,
-				Component.text("Thief", NamedTextColor.YELLOW));
-		contents[ARCHER] = CoreInventory.createButton(Material.BOW,
-				Component.text("Archer", NamedTextColor.GREEN));
-		contents[MAGE] = CoreInventory.createButton(Material.BLAZE_ROD,
-				Component.text("Mage", NamedTextColor.BLUE));
-		contents[GLOBAL] = CoreInventory.createButton(Material.NETHER_STAR,
-				Component.text("Global", NamedTextColor.GOLD));
+		contents[WARRIOR] = createClassButton(data, Material.IRON_SWORD,
+				Component.text("Warrior", NamedTextColor.RED), EquipmentClass.WARRIOR);
+		contents[THIEF] = createClassButton(data, Material.IRON_INGOT,
+				Component.text("Thief", NamedTextColor.YELLOW), EquipmentClass.THIEF);
+		contents[ARCHER] = createClassButton(data, Material.BOW,
+				Component.text("Archer", NamedTextColor.GREEN), EquipmentClass.ARCHER);
+		contents[MAGE] = createClassButton(data, Material.BLAZE_ROD,
+				Component.text("Mage", NamedTextColor.BLUE), EquipmentClass.MAGE);
+		contents[GLOBAL] = createClassButton(data, Material.NETHER_STAR,
+				Component.text("Global", NamedTextColor.GOLD), null);
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER,
 				Component.text("Back", NamedTextColor.RED));
 		inv.setContents(contents);
+	}
+
+	private ItemStack createClassButton(PlayerData data, Material mat, Component name, EquipmentClass ec) {
+		ItemStack item = CoreInventory.createButton(mat, name);
+		ArrayList<UnlockNode> nodes = UnlockRegistry.getNodesForClass(ec);
+		int available = 0;
+		int points = data.getPoints(ec);
+		for (UnlockNode node : nodes) {
+			if (data.hasUnlockNode(node.getId())) continue;
+			if (node.getCost() <= points && node.checkRequirementsMet(data)) {
+				available++;
+			}
+		}
+		if (available > 0) {
+			ItemMeta meta = item.getItemMeta();
+			meta.lore(List.of(
+					Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",
+							NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, State.FALSE)
+			));
+			item.setItemMeta(meta);
+		}
+		return item;
 	}
 
 	@Override
