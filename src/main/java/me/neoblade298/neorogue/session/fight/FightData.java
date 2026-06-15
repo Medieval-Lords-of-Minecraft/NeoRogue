@@ -16,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -230,7 +229,7 @@ public class FightData {
 		if (am == null || entity == null || !entity.isValid())
 			return;
 
-		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+		if (hasStatus("INVISIBLE")) {
 			if (hologram != null) {
 				hologram.remove();
 				hologram = null;
@@ -295,7 +294,7 @@ public class FightData {
 	public void updateDisplayNameOld() {
 		if (am == null || entity == null) return;
 		
-		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+		if (hasStatus("INVISIBLE")) {
 			am.setShowCustomNameplate(false);
 			return;
 		}
