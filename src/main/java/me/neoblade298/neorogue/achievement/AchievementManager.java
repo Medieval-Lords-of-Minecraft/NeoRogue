@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -225,30 +228,56 @@ public class AchievementManager {
 	public static void notifyMastery(Player p, Achievement achievement, AchievementProgress progress) {
 		int mastery = progress.getMastery();
 		EquipmentClass ec = progress.getScope();
-		sendToast(p, achievement, mastery, ec);
+		sendToast(p, achievement, mastery, ec, progress);
 		achievement.grantReward(p, mastery, ec);
 	}
 
+	private static class ToastEntry {
+		final UUID uuid;
+		final String title, description;
+		final Material icon;
+		ToastEntry(UUID uuid, String title, String description, Material icon) {
+			this.uuid = uuid; this.title = title; this.description = description; this.icon = icon;
+		}
+	}
+
+	private static final HashMap<UUID, Deque<ToastEntry>> toastQueues = new HashMap<>();
+	private static final long TOAST_DURATION_TICKS = 100L; // ~5 seconds, matches client toast display time
+
 	public static void sendToast(Player p, Achievement achievement, int mastery, EquipmentClass ec) {
+		sendToast(p, achievement, mastery, ec, null);
+	}
+
+	public static void sendToast(Player p, Achievement achievement, int mastery, EquipmentClass ec, AchievementProgress progress) {
 		String displayName = PlainTextComponentSerializer.plainText().serialize(achievement.getDisplayName());
 		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		if (ec != null) {
 			description += " [" + ec.getDisplay() + "]";
 		}
-		showAdvancementToast(p, displayName, description, achievement.getMaterial());
-		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+		UUID uuid = p.getUniqueId();
+		Deque<ToastEntry> queue = toastQueues.computeIfAbsent(uuid, k -> new ArrayDeque<>());
+		boolean idle = queue.isEmpty();
+		queue.addLast(new ToastEntry(uuid, displayName, description, achievement.getMaterial()));
+		if (idle) {
+			processToastQueue(uuid);
+		}
 
-		// Build hover text showing achievement details
-		Component hoverText = achievement.getDisplayName()
-				.append(Component.newline())
-				.append(Component.text("Mastery: " + mastery + "/" + achievement.getMasteryThresholds().length, NamedTextColor.GOLD));
+		// Build hover text using the same lore structure as the inventory item
+		Component hoverText = achievement.getDisplayName();
 		if (ec != null) {
 			hoverText = hoverText.append(Component.newline())
 					.append(Component.text("Class: " + ec.getDisplay(), NamedTextColor.YELLOW));
 		}
+		List<Component> loreLines = progress != null
+				? progress.buildLoreLines()
+				: achievement.getDescription(0, mastery - 1);
+		for (Component line : loreLines) {
+			hoverText = hoverText.append(Component.newline()).append(line);
+		}
 		hoverText = hoverText.append(Component.newline()).append(Component.newline())
 				.append(Component.text("Click to view achievements", NamedTextColor.GRAY));
 
+		String scope = ec != null ? ec.name().toLowerCase() : "global";
 		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.GREEN)
 				.append(achievement.getDisplayName())
 				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
@@ -256,8 +285,36 @@ public class AchievementManager {
 			chatMsg = chatMsg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
 		}
 		chatMsg = chatMsg.hoverEvent(HoverEvent.showText(hoverText))
-				.clickEvent(ClickEvent.runCommand("/nr achievements"));
+				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
 		p.sendMessage(chatMsg);
+	}
+
+	private static void processToastQueue(UUID uuid) {
+		Deque<ToastEntry> queue = toastQueues.get(uuid);
+		if (queue == null || queue.isEmpty()) return;
+		ToastEntry entry = queue.peekFirst();
+		Player p = Bukkit.getPlayer(uuid);
+		if (p == null || !p.isOnline()) {
+			// Player offline — drain the queue
+			toastQueues.remove(uuid);
+			return;
+		}
+		showAdvancementToast(p, entry.title, entry.description, entry.icon);
+		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Deque<ToastEntry> q = toastQueues.get(uuid);
+				if (q != null) {
+					q.pollFirst();
+					if (!q.isEmpty()) {
+						processToastQueue(uuid);
+					} else {
+						toastQueues.remove(uuid);
+					}
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), TOAST_DURATION_TICKS);
 	}
 
 	private static final AtomicInteger toastCounter = new AtomicInteger(0);

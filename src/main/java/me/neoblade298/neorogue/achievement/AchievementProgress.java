@@ -94,23 +94,40 @@ public class AchievementProgress {
 		return getMastery() > oldMastery;
 	}
 
-	public ItemStack toItemStack() {
+	public List<Component> buildLoreLines() {
 		int mastery = getMastery();
 		int maxMastery = getMaxMastery();
-		Material mat = isComplete() ? achievement.getMaterial() : Material.GRAY_DYE;
+		List<Component> lines = new ArrayList<>();
+		lines.add(Component.text("Mastery: " + mastery + "/" + maxMastery, NamedTextColor.GOLD));
+		lines.addAll(achievement.getProgressSummaryLines(this));
+		lines.add(Component.empty());
+		lines.addAll(achievement.getDescription(progress, mastery));
+		List<Component> objectiveLines = achievement.getObjectiveLines(this);
+		if (!objectiveLines.isEmpty()) {
+			lines.add(Component.empty());
+			lines.addAll(objectiveLines);
+		}
+		return lines;
+	}
+
+	private static final Material[] MASTERY_DYES = {
+		Material.GRAY_DYE,       // mastery 0 — no progress
+		Material.YELLOW_DYE,     // mastery 1
+		Material.LIME_DYE,       // mastery 2
+		Material.GREEN_DYE,      // mastery 3
+		Material.CYAN_DYE,       // mastery 4+
+	};
+
+	public ItemStack toItemStack() {
+		Material mat = isComplete()
+				? achievement.getMaterial()
+				: MASTERY_DYES[Math.min(getMastery(), MASTERY_DYES.length - 1)];
 
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(achievement.getDisplayName().decoration(TextDecoration.ITALIC, false));
 
-		List<Component> lore = new ArrayList<>();
-		lore.add(Component.text("Mastery: " + mastery + "/" + maxMastery, NamedTextColor.GOLD));
-		lore.addAll(achievement.getProgressSummaryLines(this));
-		lore.add(Component.empty());
-		lore.addAll(achievement.getDescription(progress, mastery));
-		lore.add(Component.empty());
-		lore.addAll(achievement.getObjectiveLines(this));
-
+		List<Component> lore = buildLoreLines();
 		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
 		item.setItemMeta(meta);
