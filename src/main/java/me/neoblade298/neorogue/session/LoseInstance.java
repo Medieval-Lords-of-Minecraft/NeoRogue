@@ -9,10 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -20,7 +22,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
+	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5,
+		HOLO_X = SPAWN_X, HOLO_Y = 3, HOLO_Z = SPAWN_Z + 4;
+	private TextDisplay holo;
 	
 	public LoseInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -36,6 +40,9 @@ public class LoseInstance extends EditInventoryInstance {
 			teleportRandomly(p);
 		}
 		super.setup();
+
+		holo = NeoRogue.createHologram(spawn.getWorld().getBlockAt((int) HOLO_X, (int) HOLO_Y, (int) HOLO_Z).getLocation().add(0.5, 0, 0.5),
+				Component.text("Click to view stats!", NamedTextColor.GOLD));
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, false);
@@ -73,6 +80,7 @@ public class LoseInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
+		holo.remove();
 	}
 
 	@Override
