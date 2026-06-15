@@ -18,7 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AchievementsMenuInventory extends CoreInventory {
-	private static final int WARRIOR = 10, THIEF = 11, ARCHER = 12, MAGE = 13, GLOBAL = 15, BACK = 16;
+	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
 
 	public AchievementsMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Achievements", NamedTextColor.AQUA)));

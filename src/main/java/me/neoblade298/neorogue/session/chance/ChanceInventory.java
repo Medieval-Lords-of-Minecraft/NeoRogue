@@ -93,6 +93,18 @@ public class ChanceInventory extends CoreInventory {
 		if (inst.getNextInstance() instanceof FightInstance) {
 			contents[0] = CoreInventory.createButton(Material.ENCHANTED_BOOK, Component.text("Fight Info", NamedTextColor.BLUE));
 		}
+		
+		// Fill unused slots with description filler
+		ItemStack filler = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, set.getDisplay());
+		ItemMeta fillerMeta = filler.getItemMeta();
+		fillerMeta.lore(stage.description);
+		filler.setItemMeta(fillerMeta);
+		for (int i = 0; i < contents.length; i++) {
+			if (contents[i] == null) {
+				contents[i] = filler;
+			}
+		}
+		
 		inv.setContents(contents);
 	}
 

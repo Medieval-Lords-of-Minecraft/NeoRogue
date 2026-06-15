@@ -38,10 +38,13 @@ import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 3;
+	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 4, HOLO_Z = 6;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_PLING);
 
@@ -144,7 +147,11 @@ public class ChanceInstance extends EditInventoryInstance {
 		super.setup();
 
 		// Setup hologram
-		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
+		if (!set.isIndividual()) {
+			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), buildHologramText(set.getInitialStage()));
+		} else {
+			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
+		}
 		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
 	}
 
@@ -264,10 +271,21 @@ public class ChanceInstance extends EditInventoryInstance {
 				for (UUID id : this.stage.keySet()) {
 					this.stage.put(id, next);
 				}
+				holo.text(buildHologramText(next));
 			} else {
 				this.stage.put(uuid, next);
 			}
 		}
+	}
+	
+	private Component buildHologramText(ChanceStage stg) {
+		Component text = set.getDisplay().append(Component.newline());
+		for (TextComponent line : stg.description) {
+			text = text.append(((TextComponent) line.colorIfAbsent(NamedTextColor.GRAY)
+					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE))).append(Component.newline());
+		}
+		text = text.append(Component.text("Right click the pillar below!", NamedTextColor.GOLD));
+		return text;
 	}
 	
 	public PlayerSessionData chooseRandomPartyMember() {

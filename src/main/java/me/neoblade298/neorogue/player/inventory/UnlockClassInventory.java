@@ -30,14 +30,9 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class UnlockClassInventory extends CoreInventory {
 	private static final int BACK = 0, INFO = 4;
-	private static final int PREVIOUS = 48, NEXT = 50;
-	private static final int PAGE_SIZE = 36; // Slots 9-44
-	private static final String PREV_HEAD = ArtifactsInventory.PREV_HEAD;
-	private static final String NEXT_HEAD = ArtifactsInventory.NEXT_HEAD;
 
 	private final EquipmentClass ec;
 	private final ArrayList<UnlockNode> nodes;
-	private int page;
 
 	public UnlockClassInventory(Player p, EquipmentClass ec) {
 		super(p, Bukkit.createInventory(p, 54,
@@ -74,22 +69,17 @@ public class UnlockClassInventory extends CoreInventory {
 		info.setItemMeta(infoMeta);
 		contents[INFO] = info;
 
-		// Node items (paginated, slots 9-44)
-		// Collect reserved slots (static buttons)
+		// Node items (slots 9-53)
 		Set<Integer> reserved = new HashSet<>();
-		for (int s : new int[] { BACK, INFO, PREVIOUS, NEXT }) {
+		for (int s : new int[] { BACK, INFO }) {
 			reserved.add(s);
 		}
-		// First pass: place nodes with explicit slot preferences
 		boolean[] occupied = new boolean[54];
-		for (int s : new int[] { BACK, INFO, PREVIOUS, NEXT }) {
+		for (int s : new int[] { BACK, INFO }) {
 			occupied[s] = true;
 		}
 		List<UnlockNode> unplaced = new ArrayList<>();
-		int start = page * PAGE_SIZE;
-		int end = Math.min(start + PAGE_SIZE, nodes.size());
-		for (int i = start; i < end; i++) {
-			UnlockNode node = nodes.get(i);
+		for (UnlockNode node : nodes) {
 			int preferred = node.getSlot();
 			if (preferred >= 0 && preferred < 54) {
 				if (occupied[preferred]) {
@@ -104,25 +94,16 @@ public class UnlockClassInventory extends CoreInventory {
 				unplaced.add(node);
 			}
 		}
-		// Second pass: fill unplaced nodes into first available slots (9-44)
+		// Fill unplaced nodes into first available slots (9-53)
 		int nextSlot = 9;
 		for (UnlockNode node : unplaced) {
-			while (nextSlot <= 44 && occupied[nextSlot]) {
+			while (nextSlot < 54 && occupied[nextSlot]) {
 				nextSlot++;
 			}
-			if (nextSlot > 44) break;
+			if (nextSlot >= 54) break;
 			contents[nextSlot] = node.toItemStack(data);
 			occupied[nextSlot] = true;
 			nextSlot++;
-		}
-
-		// Navigation row (row 6, slots 45-53)
-		int totalPages = (int) Math.ceil((double) nodes.size() / PAGE_SIZE);
-		if (page > 0) {
-			contents[PREVIOUS] = CoreInventory.createButton(PREV_HEAD, Component.text("Previous Page"));
-		}
-		if (page < totalPages - 1) {
-			contents[NEXT] = CoreInventory.createButton(NEXT_HEAD, Component.text("Next Page"));
 		}
 
 		inv.setContents(contents);
@@ -141,22 +122,8 @@ public class UnlockClassInventory extends CoreInventory {
 			return;
 		}
 
-		int totalPages = (int) Math.ceil((double) nodes.size() / PAGE_SIZE);
-		if (slot == PREVIOUS && page > 0) {
-			inv.clear();
-			page--;
-			setupInventory();
-			return;
-		}
-		if (slot == NEXT && page < totalPages - 1) {
-			inv.clear();
-			page++;
-			setupInventory();
-			return;
-		}
-
-		// Check if clicking a node item (slots 9-44)
-		if (slot >= 9 && slot <= 44) {
+		// Check if clicking a node item
+		if (slot >= 9) {
 			NBTItem nclicked = new NBTItem(e.getCurrentItem());
 			if (!nclicked.hasTag("unlockNodeId")) return;
 			String nodeId = nclicked.getString("unlockNodeId");
@@ -168,7 +135,6 @@ public class UnlockClassInventory extends CoreInventory {
 			boolean success = UnlockRegistry.grantWithCost(data, nodeId);
 			if (success) {
 				p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1.5F);
-				// Refresh inventory to show updated state
 				inv.clear();
 				setupInventory();
 			} else {
