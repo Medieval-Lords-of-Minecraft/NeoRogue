@@ -1,15 +1,15 @@
 package me.neoblade298.neorogue.achievement;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -233,11 +233,10 @@ public class AchievementManager {
 	}
 
 	private static class ToastEntry {
-		final UUID uuid;
 		final String title, description;
 		final Material icon;
-		ToastEntry(UUID uuid, String title, String description, Material icon) {
-			this.uuid = uuid; this.title = title; this.description = description; this.icon = icon;
+		ToastEntry(String title, String description, Material icon) {
+			this.title = title; this.description = description; this.icon = icon;
 		}
 	}
 
@@ -257,7 +256,7 @@ public class AchievementManager {
 		UUID uuid = p.getUniqueId();
 		Deque<ToastEntry> queue = toastQueues.computeIfAbsent(uuid, k -> new ArrayDeque<>());
 		boolean idle = queue.isEmpty();
-		queue.addLast(new ToastEntry(uuid, displayName, description, achievement.getMaterial()));
+		queue.addLast(new ToastEntry(displayName, description, achievement.getMaterial()));
 		if (idle) {
 			processToastQueue(uuid);
 		}

@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
@@ -53,7 +54,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 	}
 
 	private ItemStack createClassButton(PlayerData data, Material mat, Component name, EquipmentClass ec) {
-		ItemStack item = CoreInventory.createButton(mat, name);
+		ItemStack item = CoreInventory.createButton(mat, (TextComponent) name);
 		ArrayList<UnlockNode> nodes = UnlockRegistry.getNodesForClass(ec);
 		int available = 0;
 		int points = data.getPoints(ec);
