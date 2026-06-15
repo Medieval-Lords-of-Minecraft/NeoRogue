@@ -292,7 +292,7 @@ public class PlayerData {
 	}
 
 	private void onLevelUp(EquipmentClass ec, int newLevel) {
-		addPoints(ec, 1);
+		addPoints(ec, Math.min(newLevel, 10));
 		Player player = getPlayer();
 		if (player == null || !player.isOnline()) return;
 		String category = ec == null ? "Global" : ec.getDisplay();
