@@ -44,7 +44,6 @@ public class GlossaryViewInventory extends GlossaryInventory {
 		}.runTask(NeoRogue.inst());
 	}
 
-    @Override
 	protected static int calculateSize(int numItems) {
 		int size = numItems + (9 - numItems % 9);
 		if (size < 9) size = 9;
