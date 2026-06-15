@@ -18,10 +18,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
+import me.neoblade298.neorogue.player.unlock.UnlockNode.TargetType;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -128,6 +130,21 @@ public class UnlockClassInventory extends CoreInventory {
 			if (!nclicked.hasTag("unlockNodeId")) return;
 			String nodeId = nclicked.getString("unlockNodeId");
 			PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+			UnlockNode node = UnlockRegistry.getNode(nodeId);
+
+			// Right-click: view equipment in glossary
+			if (e.isRightClick() && node != null && node.getTargetType() == TargetType.EQUIPMENT) {
+				ArrayList<Equipment> equips = new ArrayList<>();
+				for (String targetId : node.getTargetIds()) {
+					Equipment eq = Equipment.get(targetId, false);
+					if (eq != null) equips.add(eq);
+				}
+				if (!equips.isEmpty()) {
+					new GlossaryViewInventory(p, equips, Component.text(node.getDisplayName()), this);
+				}
+				return;
+			}
+
 			if (data.hasUnlockNode(nodeId)) {
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 				return;
