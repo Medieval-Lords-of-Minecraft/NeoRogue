@@ -9,11 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.builtin.AcquireRarityAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllBossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
@@ -39,7 +45,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.title.Title;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class AchievementManager {
 	private static final List<Achievement> achievements = List.of(
@@ -223,16 +229,62 @@ public class AchievementManager {
 	}
 
 	public static void sendToast(Player p, Achievement achievement, int mastery, EquipmentClass ec) {
-		Component title = Component.text("Achievement Unlocked!", NamedTextColor.GREEN);
-		Component subtitle = achievement.getDisplayName().append(
-				Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD)
-		);
+		String displayName = PlainTextComponentSerializer.plainText().serialize(achievement.getDisplayName());
+		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		if (ec != null) {
-			subtitle = subtitle.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
+			description += " [" + ec.getDisplay() + "]";
 		}
-		p.showTitle(Title.title(title, subtitle));
+		showAdvancementToast(p, displayName, description, achievement.getMaterial());
 		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
-		p.sendMessage(Component.text("[Achievement] ", NamedTextColor.GREEN).append(subtitle));
+		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.GREEN)
+				.append(achievement.getDisplayName())
+				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
+		if (ec != null) {
+			chatMsg = chatMsg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
+		}
+		p.sendMessage(chatMsg);
+	}
+
+	private static final AtomicInteger toastCounter = new AtomicInteger(0);
+
+	@SuppressWarnings("deprecation")
+	private static void showAdvancementToast(Player p, String title, String description, Material icon) {
+		NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + toastCounter.incrementAndGet());
+		String json = "{" +
+				"\"display\":{" +
+				"\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"}," +
+				"\"title\":\"" + escapeJson(title) + "\"," +
+				"\"description\":\"" + escapeJson(description) + "\"," +
+				"\"frame\":\"challenge\"," +
+				"\"announce_to_chat\":false," +
+				"\"show_toast\":true," +
+				"\"hidden\":true" +
+				"}," +
+				"\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}}" +
+				"}";
+
+		Advancement adv = Bukkit.getUnsafe().loadAdvancement(key, json);
+		if (adv == null) return;
+
+		org.bukkit.advancement.AdvancementProgress progress = p.getAdvancementProgress(adv);
+		for (String criteria : progress.getRemainingCriteria()) {
+			progress.awardCriteria(criteria);
+		}
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				org.bukkit.advancement.AdvancementProgress prog = p.getAdvancementProgress(adv);
+				for (String criteria : prog.getAwardedCriteria()) {
+					prog.revokeCriteria(criteria);
+				}
+				Bukkit.getUnsafe().removeAdvancement(key);
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L);
+	}
+
+	private static String escapeJson(String s) {
+		return s.replace("\\", "\\\\").replace("\"", "\\\"");
 	}
 
 	private static <T> boolean tryRegister(Map<T, Set<String>> registrations, T key, String achievementId) {
