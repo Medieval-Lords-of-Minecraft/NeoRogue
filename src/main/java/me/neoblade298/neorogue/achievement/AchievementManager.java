@@ -250,10 +250,10 @@ public class AchievementManager {
 
 	public static void sendToast(Player p, Achievement achievement, int mastery, EquipmentClass ec, AchievementProgress progress) {
 		String displayName = PlainTextComponentSerializer.plainText().serialize(achievement.getDisplayName());
-		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		if (ec != null) {
-			description += " [" + ec.getDisplay() + "]";
+			displayName += " [" + ec.getDisplay() + "]";
 		}
+		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		UUID uuid = p.getUniqueId();
 		Deque<ToastEntry> queue = toastQueues.computeIfAbsent(uuid, k -> new ArrayDeque<>());
 		boolean idle = queue.isEmpty();

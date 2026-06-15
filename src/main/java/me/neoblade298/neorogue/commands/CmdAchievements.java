@@ -30,8 +30,8 @@ public class CmdAchievements extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		if (args.length > 1) {
-			String scope = args[1].toLowerCase();
+		if (args.length > 0) {
+			String scope = args[0].toLowerCase();
 			PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 			if (pd != null) {
 				EquipmentClass ec = null;
