@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -13,14 +12,11 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class GlossaryViewInventory extends GlossaryInventory {
-	private final ArrayList<Equipment> equips;
 
 	public GlossaryViewInventory(Player p, ArrayList<Equipment> equips, Component title, CoreInventory prev) {
 		super(p, calculateSize(equips.size()), title, prev);
-		this.equips = equips;
 
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < equips.size() && i < contents.length; i++) {
