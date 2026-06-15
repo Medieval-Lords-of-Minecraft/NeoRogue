@@ -162,7 +162,12 @@ public class UnlockNode {
 		} else if (available) {
 			mat = Material.YELLOW_STAINED_GLASS_PANE;
 			color = NamedTextColor.YELLOW;
+		} else if (prereqsMet) {
+			// Soft-locked: prereqs met but can't afford
+			mat = Material.ORANGE_STAINED_GLASS_PANE;
+			color = NamedTextColor.GOLD;
 		} else {
+			// Hard-locked: missing prerequisites
 			mat = Material.RED_STAINED_GLASS_PANE;
 			color = NamedTextColor.RED;
 		}
@@ -190,7 +195,7 @@ public class UnlockNode {
 		} else if (!prereqsMet) {
 			lore.add(Component.text("Locked (missing prerequisites)", NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE));
 		} else {
-			lore.add(Component.text("Locked (not enough points)", NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE));
+			lore.add(Component.text("Locked (not enough points)", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
 
 		// Separator
