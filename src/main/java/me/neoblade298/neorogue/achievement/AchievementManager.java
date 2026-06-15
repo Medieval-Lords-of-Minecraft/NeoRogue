@@ -11,22 +11,12 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.protocol.advancements.Advancement;
-import com.github.retrooper.packetevents.protocol.advancements.AdvancementDisplay;
-import com.github.retrooper.packetevents.protocol.advancements.AdvancementHolder;
-import com.github.retrooper.packetevents.protocol.advancements.AdvancementProgress;
-import com.github.retrooper.packetevents.protocol.advancements.AdvancementProgress.CriterionProgress;
-import com.github.retrooper.packetevents.protocol.advancements.AdvancementType;
-import com.github.retrooper.packetevents.protocol.item.ItemStack;
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes;
-import com.github.retrooper.packetevents.resources.ResourceLocation;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerUpdateAdvancements;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.builtin.AcquireRarityAchievement;
@@ -53,6 +43,8 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -245,57 +237,69 @@ public class AchievementManager {
 		}
 		showAdvancementToast(p, displayName, description, achievement.getMaterial());
 		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+
+		// Build hover text showing achievement details
+		Component hoverText = achievement.getDisplayName()
+				.append(Component.newline())
+				.append(Component.text("Mastery: " + mastery + "/" + achievement.getMasteryThresholds().length, NamedTextColor.GOLD));
+		if (ec != null) {
+			hoverText = hoverText.append(Component.newline())
+					.append(Component.text("Class: " + ec.getDisplay(), NamedTextColor.YELLOW));
+		}
+		hoverText = hoverText.append(Component.newline()).append(Component.newline())
+				.append(Component.text("Click to view achievements", NamedTextColor.GRAY));
+
 		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.GREEN)
 				.append(achievement.getDisplayName())
 				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
 		if (ec != null) {
 			chatMsg = chatMsg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
 		}
+		chatMsg = chatMsg.hoverEvent(HoverEvent.showText(hoverText))
+				.clickEvent(ClickEvent.runCommand("/nr achievements"));
 		p.sendMessage(chatMsg);
 	}
 
 	private static final AtomicInteger toastCounter = new AtomicInteger(0);
 
+	@SuppressWarnings("deprecation")
 	private static void showAdvancementToast(Player p, String title, String description, Material icon) {
-		ResourceLocation key = new ResourceLocation("neorogue", "toast_" + toastCounter.incrementAndGet());
+		int id = toastCounter.incrementAndGet();
+		NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + id);
 
-		// Build display
-		AdvancementDisplay display = new AdvancementDisplay(
-				Component.text(title),
-				Component.text(description),
-				ItemStack.builder().type(ItemTypes.getByName("minecraft:" + icon.getKey().getKey())).build(),
-				AdvancementType.CHALLENGE,
-				null, // no background
-				true, // showToast
-				true, // hidden
-				0f, 0f
-		);
+		// JSON advancement definition - uses impossible criteria so it never triggers naturally
+		String json = "{"
+				+ "\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}},"
+				+ "\"display\":{"
+				+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
+				+ "\"title\":\"" + escapeJson(title) + "\","
+				+ "\"description\":\"" + escapeJson(description) + "\","
+				+ "\"frame\":\"challenge\","
+				+ "\"show_toast\":true,"
+				+ "\"announce_to_chat\":false,"
+				+ "\"hidden\":true"
+				+ "}"
+				+ "}";
 
-		// Build advancement and holder
-		Advancement adv = new Advancement(null, display, List.of(List.of("trigger")), false);
-		AdvancementHolder holder = new AdvancementHolder(key, adv);
-
-		// Build progress marking the criterion as completed
-		Map<ResourceLocation, AdvancementProgress> progressMap = Map.of(
-				key, new AdvancementProgress(Map.of("trigger", new CriterionProgress(System.currentTimeMillis())))
-		);
-
-		// Send the advancement + progress packet (shows the toast)
-		WrapperPlayServerUpdateAdvancements addPacket = new WrapperPlayServerUpdateAdvancements(
-				false, List.of(holder), Set.of(), progressMap, false
-		);
-		PacketEvents.getAPI().getPlayerManager().sendPacket(p, addPacket);
-
-		// Schedule removal so it doesn't persist in the advancement screen
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				WrapperPlayServerUpdateAdvancements removePacket = new WrapperPlayServerUpdateAdvancements(
-						false, List.of(), Set.of(key), Map.of(), false
-				);
-				PacketEvents.getAPI().getPlayerManager().sendPacket(p, removePacket);
+		// Load, grant, then remove the advancement
+		org.bukkit.advancement.Advancement advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
+		if (advancement != null) {
+			org.bukkit.advancement.AdvancementProgress progress = p.getAdvancementProgress(advancement);
+			for (String criteria : progress.getRemainingCriteria()) {
+				progress.awardCriteria(criteria);
 			}
-		}.runTaskLater(NeoRogue.inst(), 20L);
+			// Remove after a tick so the client has time to process the toast
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					Bukkit.getUnsafe().removeAdvancement(key);
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L);
+		}
+	}
+
+	private static String escapeJson(String s) {
+		return s.replace("\\", "\\\\").replace("\"", "\\\"");
 	}
 
 	private static <T> boolean tryRegister(Map<T, Set<String>> registrations, T key, String achievementId) {

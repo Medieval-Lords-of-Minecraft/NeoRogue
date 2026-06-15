@@ -26,6 +26,7 @@ import io.lumine.mythic.bukkit.events.MythicReloadedEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.commands.CmdAchievements;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
@@ -169,6 +170,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));
