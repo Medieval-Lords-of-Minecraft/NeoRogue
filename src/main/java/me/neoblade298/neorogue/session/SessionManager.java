@@ -668,6 +668,7 @@ public class SessionManager implements Listener {
 
 	private void handleLeave(Player p) {
 		UUID uuid = p.getUniqueId();
+		p.clearActivePotionEffects();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 

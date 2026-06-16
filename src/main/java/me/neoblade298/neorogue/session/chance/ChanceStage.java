@@ -20,7 +20,7 @@ public class ChanceStage {
 	public ChanceStage(ChanceSet set, String id, String description) {
 		this.id = id;
 		this.description.add(0, set.isIndividual() ? indivChoice : hostChoice);
-		for (TextComponent c : SharedUtil.addLineBreaks(Component.text(description, NamedTextColor.GRAY), 250)) {
+		for (TextComponent c : SharedUtil.addLineBreaks(Component.text(description, NamedTextColor.WHITE), 250)) {
 			this.description.add((TextComponent) c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		set.addStage(this);
