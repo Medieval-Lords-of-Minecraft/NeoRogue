@@ -286,6 +286,9 @@ public class AchievementManager {
 		if (ec != null) {
 			chatMsg = chatMsg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
 		}
+		else {
+			chatMsg = chatMsg.append(Component.text(" [Global]", NamedTextColor.GRAY));
+		}
 		chatMsg = chatMsg.hoverEvent(HoverEvent.showText(hoverText))
 				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
 		p.sendMessage(chatMsg);
@@ -303,7 +306,7 @@ public class AchievementManager {
 		}
 		showAdvancementToast(p, entry.title, entry.description, entry.icon);
 		if (playSound) {
-			p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+			p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 		}
 		new BukkitRunnable() {
 			@Override
@@ -312,6 +315,7 @@ public class AchievementManager {
 				if (q != null) {
 					q.pollFirst();
 					if (!q.isEmpty()) {
+						System.out.println("Processing no-sound toast");
 						processToastQueue(uuid, false);
 					} else {
 						toastQueues.remove(uuid);
