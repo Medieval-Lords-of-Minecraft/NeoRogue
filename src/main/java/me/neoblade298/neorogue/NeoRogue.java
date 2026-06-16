@@ -34,6 +34,7 @@ import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.commands.CmdAdminDebugMode;
 import me.neoblade298.neorogue.commands.CmdAdminDeserialize;
+import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.commands.CmdAdminDrop;
 import me.neoblade298.neorogue.commands.CmdAdminDropArtifact;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
@@ -139,6 +140,7 @@ public class NeoRogue extends JavaPlugin {
 		Region.initialize();
 		Equipment.load();
 		UnlockRegistry.reload();
+		EquipmentPresets.reload();
 		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
@@ -193,7 +195,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminTestFW("testfw", "Loads in a frozen wastes game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
+		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminNew("new", "Starts a new session with all online players with custom start parameters", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetInstance("setinstance", "Sets the current instance", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminNode("node", "Teleport to a specific node", null, SubcommandRunner.BOTH));
