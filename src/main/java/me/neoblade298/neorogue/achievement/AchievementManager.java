@@ -306,6 +306,7 @@ public class AchievementManager {
 		}
 		showAdvancementToast(p, entry.title, entry.description, entry.icon);
 		if (playSound) {
+			System.out.println("Playing sound");
 			p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 		}
 		new BukkitRunnable() {

@@ -152,7 +152,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		} else {
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
 		}
-		candleBlock = spawn.clone().add(0, 2, 2).getBlock();
+		candleBlock = spawn.clone().add(0, 2, 3).getBlock();
 		System.out.println(candleBlock);
 	}
 
@@ -187,6 +187,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
+		System.out.println("Loc: " + Util.locToString(candleBlock.getLocation()));
 		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(false);
 		candleBlock.setBlockData(candle);

@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int NEW_GAME = 11, LOAD_GAME = 12, ACHIEVEMENTS = 13, STATS = 14, UNLOCKS = 15, LEVELS = 4;
+	private static final int NEW_GAME = 11, LOAD_GAME = 12, ACHIEVEMENTS = 13, SPECTATE = 14, UNLOCKS = 15, LEVELS = 4;
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));
@@ -39,8 +39,8 @@ public class MainMenuInventory extends CoreInventory {
 				Component.text("Load Game", NamedTextColor.GOLD));
 		contents[ACHIEVEMENTS] = CoreInventory.createButton(Material.DIAMOND,
 				Component.text("Achievements", NamedTextColor.AQUA));
-		contents[STATS] = CoreInventory.createButton(Material.PAPER,
-				Component.text("Stats", NamedTextColor.YELLOW));
+		contents[SPECTATE] = CoreInventory.createButton(Material.SPYGLASS,
+				Component.text("Spectate", NamedTextColor.YELLOW));
 		contents[UNLOCKS] = CoreInventory.createButton(Material.ENDER_EYE,
 				Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE));
 		contents[LEVELS] = createLevelsButton(pd);
@@ -86,8 +86,8 @@ public class MainMenuInventory extends CoreInventory {
 		case ACHIEVEMENTS:
 			new AchievementsMenuInventory(p);
 			break;
-		case STATS:
-			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);
+		case SPECTATE:
+			new SpectateMenuInventory(p);
 			break;
 		case UNLOCKS:
 			new UnlocksMenuInventory(p);

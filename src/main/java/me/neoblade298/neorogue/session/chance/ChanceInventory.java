@@ -68,9 +68,6 @@ public class ChanceInventory extends CoreInventory {
 		title.setItemMeta(meta);
 
 		contents[4] = title;
-		for (int i = 9; i < 18; i++) {
-			contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
-		}
 		
 		// Setup choices (currently only supports up to 9)
 		int size = stage.choices.size();

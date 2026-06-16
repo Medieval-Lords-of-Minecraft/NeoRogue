@@ -53,6 +53,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -71,6 +72,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.Instance.PlayerFlags;
@@ -513,8 +515,17 @@ public class SessionManager implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid))
+		if (!sessions.containsKey(uuid)) {
+			if (e.getAction().isRightClick() && e.getItem() != null
+					&& e.getItem().getType() == Material.COMPASS
+					&& e.getItem().hasItemMeta()
+					&& e.getItem().getItemMeta().getPersistentDataContainer()
+							.has(MENU_KEY, PersistentDataType.BYTE)) {
+				e.setCancelled(true);
+				new MainMenuInventory(p);
+			}
 			return;
+		}
 		Session s = sessions.get(uuid);
 
 		PlayerInventory inv = p.getInventory();
@@ -700,6 +711,18 @@ public class SessionManager implements Listener {
 		p.setHealthScaled(false);
 		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+		giveMenuCompass(p);
+	}
+
+	private static final NamespacedKey MENU_KEY = new NamespacedKey(NeoRogue.inst(), "menu_compass");
+
+	public static void giveMenuCompass(Player p) {
+		ItemStack compass = new ItemStack(Material.COMPASS);
+		ItemMeta meta = compass.getItemMeta();
+		meta.displayName(Component.text("Menu", NamedTextColor.GOLD));
+		meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.BYTE, (byte) 1);
+		compass.setItemMeta(meta);
+		p.getInventory().setItem(0, compass);
 	}
 
 	public static void endSession(Session s) {
