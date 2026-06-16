@@ -205,7 +205,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	private void setupArtifacts() {
-		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
+		personalArtifacts = data.getArtifactDroptable().clone(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
 			ai.getArtifact().onInitializeSession(this);
 

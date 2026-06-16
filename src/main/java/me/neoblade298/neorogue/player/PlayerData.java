@@ -20,14 +20,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -68,6 +69,7 @@ public class PlayerData {
 	private HashSet<String> unlockNodes = new HashSet<String>();
 	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
+	private DropTableSet<Artifact> artifactDroptable;
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
@@ -212,6 +214,7 @@ public class PlayerData {
 
 	public void initializeEquipmentDroptable() {
 		equipmentDroptable = UnlockRegistry.buildEquipmentDroptable(this);
+		artifactDroptable = UnlockRegistry.buildArtifactDroptable(this);
 		equipmentDroptableDirty = false;
 		Bukkit.getLogger().fine("[NeoRogue] Rebuilt equipment droptable for " + uuid + " (" + unlockNodes.size() + " unlock nodes)");
 	}
@@ -229,6 +232,13 @@ public class PlayerData {
 			initializeEquipmentDroptable();
 		}
 		return equipmentDroptable;
+	}
+
+	public DropTableSet<Artifact> getArtifactDroptable() {
+		if (artifactDroptable == null || equipmentDroptableDirty) {
+			initializeEquipmentDroptable();
+		}
+		return artifactDroptable;
 	}
 	
 	public String getDisplay() {

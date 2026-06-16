@@ -22,12 +22,13 @@ public class LabChance extends ChanceSet {
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble upon a makeshift lab that has an array of potions brewing.");
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Grab what you can",
-				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to acquire a <red>curse</red> that reduces your armor slots by <white>1</white>.",
+				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to reduce your armor slots by <white>1</white>.",
 				"At least one player doesn't have an armor slot available!",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						int numCurses = data.aggregateEquipment((meta) -> { return meta.getEquipment().getType() == EquipmentType.ARMOR && meta.getEquipment().isCursed(); }).size();
-						if (numCurses >= data.getArmorSlots()) return false;
+						if (data.getArmorSlots() <= 0) {
+							return false;
+						}
 					}
 					return true;
 				},
@@ -35,12 +36,12 @@ public class LabChance extends ChanceSet {
 					for (PlayerSessionData data : s.getParty().values()) {
 						data.giveEquipment(Equipment.getConsumable(s.getBaseDropValue(), 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					}
-					if (NeoRogue.gen.nextDouble() < 0.25) {
+					if (NeoRogue.gen.nextDouble() < 1) {
 						for (PlayerSessionData data : s.getParty().values()) {
 							data.unequip(EquipmentType.ARMOR);
-							data.giveEquipment(Equipment.get("curseOfBurden", false));
+							data.addArmorSlots(-1);
 						}
-						s.broadcast("<red>In your haste to leave, you acquire a curse.");
+						s.broadcast("<red>In your haste to leave, you injure yourself and lose an armor slot.");
 					}
 					else {
 						s.broadcast("Everyone takes what they can get and leaves with <white>3</white> powerful new consumables.");

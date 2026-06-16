@@ -76,7 +76,6 @@ public class AcquireRarityAchievement implements Achievement {
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 		data.addTrigger(id, SessionTrigger.ACQUIRE_EQUIPMENT, (pdata, in) -> {
 			Equipment eq = (Equipment) in;
-			if (eq == null) return;
 			if (eq.getRarity() != rarity) return;
 			EquipmentType type = eq.getType();
 			if (type == EquipmentType.ARTIFACT || type == EquipmentType.CONSUMABLE) return;

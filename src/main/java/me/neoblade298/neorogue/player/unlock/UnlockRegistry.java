@@ -15,9 +15,11 @@ import org.bukkit.Bukkit;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerData;
 
 public class UnlockRegistry {
@@ -56,7 +58,11 @@ public class UnlockRegistry {
 								+ " references unknown equipment id " + targetId);
 						continue;
 					}
-					Equipment.removeFromDroptable(eq);
+					if (eq.getType() == EquipmentType.ARTIFACT) {
+						Equipment.removeFromArtifactDroptable((Artifact) eq);
+					} else {
+						Equipment.removeFromDroptable(eq);
+					}
 				}
 				nodeEquipmentTargets.put(node.getId(), equipmentIds);
 				break;
@@ -148,6 +154,7 @@ public class UnlockRegistry {
 				for (String equipmentId : nodeTargets) {
 					Equipment eq = Equipment.get(equipmentId, false);
 					if (eq == null) continue;
+					if (eq.getType() == EquipmentType.ARTIFACT || eq.getType() == EquipmentType.CONSUMABLE) continue;
 					derived.add(eq.getEquipmentClasses(), eq);
 				}
 			}
@@ -156,6 +163,22 @@ public class UnlockRegistry {
 		if (derived.isEmpty()) {
 			Bukkit.getLogger().warning("[NeoRogue] Derived unlock droptable was empty; using base droptable");
 			return Equipment.copyDropSet();
+		}
+		return derived;
+	}
+
+	public static DropTableSet<Artifact> buildArtifactDroptable(PlayerData data) {
+		DropTableSet<Artifact> derived = Equipment.copyArtifactsDropSet();
+		if (data != null) {
+			for (String unlockNode : data.getUnlockNodes()) {
+				HashSet<String> nodeTargets = nodeEquipmentTargets.get(normalizeNodeId(unlockNode));
+				if (nodeTargets == null || nodeTargets.isEmpty()) continue;
+				for (String equipmentId : nodeTargets) {
+					Equipment eq = Equipment.get(equipmentId, false);
+					if (eq == null || eq.getType() != EquipmentType.ARTIFACT) continue;
+					derived.add(eq.getEquipmentClasses(), (Artifact) eq);
+				}
+			}
 		}
 		return derived;
 	}

@@ -81,6 +81,8 @@ import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
@@ -103,7 +105,7 @@ public class SessionManager implements Listener {
 
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, saveSlot, isNew, sessionType);
-		sessions.put(p.getUniqueId(), s);
+		addToSession(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 
 		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
@@ -721,7 +723,7 @@ public class SessionManager implements Listener {
 	public static void giveMenuCompass(Player p) {
 		ItemStack compass = new ItemStack(Material.COMPASS);
 		ItemMeta meta = compass.getItemMeta();
-		meta.displayName(Component.text("Menu", NamedTextColor.GOLD));
+		meta.displayName(Component.text("Menu", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
 		meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.BYTE, (byte) 1);
 		compass.setItemMeta(meta);
 		p.getInventory().setItem(0, compass);
