@@ -125,6 +125,8 @@ public class SessionManager implements Listener {
 
 	public static void addToSession(UUID uuid, Session s) {
 		sessions.put(uuid, s);
+		Player p = Bukkit.getPlayer(uuid);
+		if (p != null) p.getInventory().clear();
 	}
 
 	public static void removeFromSession(UUID uuid) {

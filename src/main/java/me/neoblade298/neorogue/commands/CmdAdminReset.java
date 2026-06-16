@@ -15,16 +15,25 @@ public class CmdAdminReset extends Subcommand {
 
 	public CmdAdminReset(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("player"));
+		args.add(new Arg("player", false));
 		this.enableTabComplete();
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Player target = Bukkit.getPlayer(args[0]);
-		if (target == null) {
-			Util.msg(s, "<red>That player is not online.");
-			return;
+		Player target;
+		if (args.length == 0) {
+			if (!(s instanceof Player)) {
+				Util.msg(s, "<red>Console must specify a player.");
+				return;
+			}
+			target = (Player) s;
+		} else {
+			target = Bukkit.getPlayer(args[0]);
+			if (target == null) {
+				Util.msg(s, "<red>That player is not online.");
+				return;
+			}
 		}
 
 		PlayerData data = PlayerManager.getPlayerData(target.getUniqueId());
