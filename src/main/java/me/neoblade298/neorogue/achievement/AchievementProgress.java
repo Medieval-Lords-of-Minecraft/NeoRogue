@@ -19,11 +19,11 @@ public class AchievementProgress {
 	private String data;
 
 	public AchievementProgress(Achievement achievement, int progress) {
-		this(achievement, progress, null, null);
+		this(achievement, progress, null, null, null);
 	}
 
 	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope) {
-		this(achievement, progress, scope, null);
+		this(achievement, progress, scope, null, null);
 	}
 
 	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope, String data) {
@@ -54,6 +54,7 @@ public class AchievementProgress {
 	}
 
 	public void setData(String data) {
+		if (this.data == null ? data == null : this.data.equals(data)) return;
 		this.data = data;
 	}
 
@@ -89,6 +90,7 @@ public class AchievementProgress {
 	 * Adds progress and returns true if a new mastery tier was reached.
 	 */
 	public boolean addProgress(int amount) {
+		if (amount == 0) return false;
 		int oldMastery = getMastery();
 		progress += amount;
 		return getMastery() > oldMastery;
