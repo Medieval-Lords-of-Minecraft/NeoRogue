@@ -63,7 +63,7 @@ public class MinibossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			s.awardXp(12);
+			s.awardXp(120);
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
 			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 			for (PlayerSessionData psd : s.getParty().values()) {

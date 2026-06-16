@@ -276,9 +276,9 @@ public class PlayerData {
 	}
 
 	public static int getXpRequired(int currentLevel) {
-		if (currentLevel >= 50) return 2500;
-		if (currentLevel < 5) return 20 * currentLevel * currentLevel;
-		return 200 * currentLevel - 500;
+		if (currentLevel >= 50) return 25000;
+		if (currentLevel < 5) return 200 * currentLevel * currentLevel;
+		return 2000 * currentLevel - 5000;
 	}
 
 	public void addExp(EquipmentClass ec, int amount) {

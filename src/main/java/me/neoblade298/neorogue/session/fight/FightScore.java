@@ -6,11 +6,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 public enum FightScore {
-	D(0, 9999, 5, 0.0, 1, null, new Color(255, 140, 90)),
-	C(1, 50, 10, 0.0, 5, D, new Color(255, 178, 52)),
-	B(2, 45, 15, 0.0, 8, C, new Color(255, 217, 52)),
-	A(3, 40, 20, 0.05, 10, B, new Color(173, 214, 51)),
-	S(4, 80, 25, 0.1, 11, A, new Color(160, 193, 90));
+	D(0, 9999, 5, 0.0, 10, null, new Color(255, 140, 90)),
+	C(1, 50, 10, 0.0, 50, D, new Color(255, 178, 52)),
+	B(2, 45, 15, 0.0, 80, C, new Color(255, 217, 52)),
+	A(3, 40, 20, 0.05, 100, B, new Color(173, 214, 51)),
+	S(4, 80, 25, 0.1, 110, A, new Color(160, 193, 90));
 
 	private int value, threshold, coins, xp; // Threshold in seconds
 	private double upgradeModifier;

@@ -776,10 +776,10 @@ public class Session {
 			return 1.0;
 		case HARVEST_FIELDS:
 		case HARVEST_FIELDS_DEBUG:
-			return 1.1;
+			return 1.2;
 		case FROZEN_WASTES:
 		case FROZEN_WASTES_DEBUG:
-			return 1.2;
+			return 1.5;
 		default:
 			return 1.0;
 		}
@@ -857,7 +857,7 @@ public class Session {
 		}
 		this.curr = node;
 		nodesVisited++;
-		awardXp(1);
+		awardXp(20);
 	}
 	
 	public String getName() {
