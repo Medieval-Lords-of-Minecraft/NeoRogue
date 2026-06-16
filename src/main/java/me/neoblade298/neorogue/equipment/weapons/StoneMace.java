@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -22,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class StoneMace extends Equipment {
 	private static final String ID = "StoneMace";
 	private double damage;
-	private int conc;
+	private int conc, concMult;
 	
 	public StoneMace(boolean isUpgraded) {
 		super(ID, "Stone Mace", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -31,6 +30,7 @@ public class StoneMace extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
 		conc = isUpgraded ? 3 : 2;
+		concMult = 5;
 	}
 	
 	public static Equipment get() {
@@ -44,7 +44,7 @@ public class StoneMace extends Equipment {
 			Player p = data.getPlayer();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, p, conc, -1);
 			weaponSwingAndDamage(p, pdata, ev.getTarget(), damage
-					+ (FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * 2));
+					+ (FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * concMult));
 			return TriggerResult.keep();
 		});
 	}
@@ -52,6 +52,6 @@ public class StoneMace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SHOVEL, "Increases damage dealt by number of " + GlossaryTag.CONCUSSED.tag(this) + " "
-				+ "stacks the enemy has multiplied by " + DescUtil.white(2) + ". Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
+				+ "stacks the enemy has multiplied by " + DescUtil.white(concMult) + ". Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
 	}
 }

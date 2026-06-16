@@ -612,6 +612,7 @@ public class DamageMeta {
 		if (damage + ignoreShieldsDamage > 0) {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
+			double healthBefore = target.getHealth();
 			if (owner instanceof PlayerFightData) {
 				if (target.getHealth() <= finalDamage) {
 					PreKillEvent ev = new PreKillEvent((LivingEntity) target, this);
@@ -632,6 +633,7 @@ public class DamageMeta {
 			else {
 				target.damage(finalDamage);
 			}
+			boolean damageCancelled = target.isValid() && target.getHealth() >= healthBefore;
 
 			// Create damage display
 			if (!(target instanceof Player)) {
@@ -642,7 +644,12 @@ public class DamageMeta {
 				btwn.normalize();
 				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
 				loc = loc.add(btwn).add(x, y, z);
-				recipient.getInstance().createIndicator(Component.text(df.format(damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
+				if (damageCancelled) {
+					recipient.getInstance().createIndicator(Component.text("0", NamedTextColor.GRAY), loc);
+				}
+				else {
+					recipient.getInstance().createIndicator(Component.text(df.format(damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
+				}
 			}
 			// Shields updates
 			else {

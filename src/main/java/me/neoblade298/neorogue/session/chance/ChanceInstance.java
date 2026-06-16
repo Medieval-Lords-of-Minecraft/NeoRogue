@@ -44,7 +44,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 4, HOLO_Z = 6;
+	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_PLING);
 
@@ -152,7 +152,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		} else {
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
 		}
-		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
+		candleBlock = spawn.clone().add(0, 1, 3).getBlock();
 	}
 
 	@Override
