@@ -30,16 +30,19 @@ public class MechanicModifyStat implements ITargetedEntitySkill {
 	@Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
+			System.out.println("1");
 			if (!(target.getBukkitEntity() instanceof Player)) {
 				return SkillResult.INVALID_TARGET;
 			}
 			Player p = (Player) target.getBukkitEntity();
 			PlayerFightData pdata = FightInstance.getUserData(p.getUniqueId());
 			
+			System.out.println("2");
 			if (pdata == null) {
 				return SkillResult.INVALID_TARGET;
 			}
 
+			System.out.println("3 " + stat + " " + operation + " " + value);
 			switch (stat) {
 				case HEALTH:
 					switch (operation) {

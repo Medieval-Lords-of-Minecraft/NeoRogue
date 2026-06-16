@@ -152,7 +152,8 @@ public class ChanceInstance extends EditInventoryInstance {
 		} else {
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
 		}
-		candleBlock = spawn.clone().add(0, 1, 3).getBlock();
+		candleBlock = spawn.clone().add(0, 2, 2).getBlock();
+		System.out.println(candleBlock);
 	}
 
 	@Override
