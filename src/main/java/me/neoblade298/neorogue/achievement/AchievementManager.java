@@ -258,7 +258,7 @@ public class AchievementManager {
 		boolean idle = queue.isEmpty();
 		queue.addLast(new ToastEntry(displayName, description, achievement.getMaterial()));
 		if (idle) {
-			processToastQueue(uuid);
+			processToastQueue(uuid, true);
 		}
 
 		// Build hover text using the same lore structure as the inventory item
@@ -288,7 +288,7 @@ public class AchievementManager {
 		p.sendMessage(chatMsg);
 	}
 
-	private static void processToastQueue(UUID uuid) {
+	private static void processToastQueue(UUID uuid, boolean playSound) {
 		Deque<ToastEntry> queue = toastQueues.get(uuid);
 		if (queue == null || queue.isEmpty()) return;
 		ToastEntry entry = queue.peekFirst();
@@ -299,7 +299,9 @@ public class AchievementManager {
 			return;
 		}
 		showAdvancementToast(p, entry.title, entry.description, entry.icon);
-		p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+		if (playSound) {
+			p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
+		}
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -307,7 +309,7 @@ public class AchievementManager {
 				if (q != null) {
 					q.pollFirst();
 					if (!q.isEmpty()) {
-						processToastQueue(uuid);
+						processToastQueue(uuid, false);
 					} else {
 						toastQueues.remove(uuid);
 					}
