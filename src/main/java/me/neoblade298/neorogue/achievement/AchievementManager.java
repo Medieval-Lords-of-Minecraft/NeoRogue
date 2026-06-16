@@ -258,11 +258,8 @@ public class AchievementManager {
 		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		UUID uuid = p.getUniqueId();
 		Deque<ToastEntry> queue = toastQueues.computeIfAbsent(uuid, k -> new ArrayDeque<>());
-		boolean idle = queue.isEmpty();
 		queue.addLast(new ToastEntry(displayName, description, achievement.getMaterial()));
-		if (idle) {
-			processToastQueue(uuid, true);
-		}
+		processToastQueue(uuid);
 
 		// Build hover text using the same lore structure as the inventory item
 		Component hoverText = achievement.getDisplayName();
@@ -280,7 +277,7 @@ public class AchievementManager {
 				.append(Component.text("Click to view achievements", NamedTextColor.GRAY));
 
 		String scope = ec != null ? ec.name().toLowerCase() : "global";
-		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.GREEN)
+		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.YELLOW)
 				.append(achievement.getDisplayName())
 				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
 		if (ec != null) {
@@ -294,7 +291,7 @@ public class AchievementManager {
 		p.sendMessage(chatMsg);
 	}
 
-	private static void processToastQueue(UUID uuid, boolean playSound) {
+	private static void processToastQueue(UUID uuid) {
 		Deque<ToastEntry> queue = toastQueues.get(uuid);
 		if (queue == null || queue.isEmpty()) return;
 		ToastEntry entry = queue.peekFirst();
@@ -305,10 +302,7 @@ public class AchievementManager {
 			return;
 		}
 		showAdvancementToast(p, entry.title, entry.description, entry.icon);
-		if (playSound) {
-			System.out.println("Playing sound");
-			p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
-		}
+		p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -316,8 +310,7 @@ public class AchievementManager {
 				if (q != null) {
 					q.pollFirst();
 					if (!q.isEmpty()) {
-						System.out.println("Processing no-sound toast");
-						processToastQueue(uuid, false);
+						processToastQueue(uuid);
 					} else {
 						toastQueues.remove(uuid);
 					}
@@ -340,7 +333,7 @@ public class AchievementManager {
 				+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
 				+ "\"title\":\"" + escapeJson(title) + "\","
 				+ "\"description\":\"" + escapeJson(description) + "\","
-				+ "\"frame\":\"challenge\","
+				+ "\"frame\":\"task\","
 				+ "\"show_toast\":true,"
 				+ "\"announce_to_chat\":false,"
 				+ "\"hidden\":true"

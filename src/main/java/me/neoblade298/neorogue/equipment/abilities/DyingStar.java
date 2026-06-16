@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Location;
@@ -25,6 +23,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -150,7 +149,6 @@ public class DyingStar extends Equipment implements Power {
 			riftCount[0]++;
 			if (riftCount[0] < ACTIVATION_THRES) return TriggerResult.keep();
 			if (riftCount[0] > ACTIVATION_THRES) return TriggerResult.remove();
-			System.out.println(riftCount[0]);
 
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
