@@ -169,15 +169,15 @@ public class PlayerData {
 						Achievement ach = AchievementManager.get(achId);
 						if (ach == null) continue;
 						if (scope == null || scope.equals("GLOBAL")) {
-							globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data, this::saveAchievementsRealtime));
+							globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
 						} else {
 							try {
 								EquipmentClass ec = EquipmentClass.valueOf(scope);
 								classAchievements.computeIfAbsent(ec, k -> new HashMap<>())
-										.put(achId, new AchievementProgress(ach, prog, ec, data, this::saveAchievementsRealtime));
+										.put(achId, new AchievementProgress(ach, prog, ec, data));
 							} catch (IllegalArgumentException ex) {
 								// Unknown scope, treat as global
-								globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data, this::saveAchievementsRealtime));
+								globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
 							}
 						}
 					}
@@ -529,15 +529,19 @@ public class PlayerData {
 	public AchievementProgress getGlobalAchievementProgress(String id) {
 		return globalAchievements.computeIfAbsent(id, k -> {
 			Achievement ach = AchievementManager.get(k);
-			return ach != null ? new AchievementProgress(ach, 0, null, null, this::saveAchievementsRealtime) : null;
+			return ach != null ? new AchievementProgress(ach, 0, null, null) : null;
 		});
 	}
 
 	public AchievementProgress getClassAchievementProgress(String id, EquipmentClass ec) {
 		return classAchievements.computeIfAbsent(ec, k -> new HashMap<>()).computeIfAbsent(id, k -> {
 			Achievement ach = AchievementManager.get(k);
-			return ach != null ? new AchievementProgress(ach, 0, ec, null, this::saveAchievementsRealtime) : null;
+			return ach != null ? new AchievementProgress(ach, 0, ec, null) : null;
 		});
+	}
+
+	public void saveAchievementsAfterFight() {
+		saveAchievementsRealtime();
 	}
 
 	private void saveClassProgressionRealtime() {
