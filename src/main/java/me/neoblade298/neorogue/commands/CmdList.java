@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -16,7 +17,10 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -24,7 +28,8 @@ public class CmdList extends Subcommand {
 	private static final ArrayList<String> filterTypes = new ArrayList<String>(),
 			ecs = new ArrayList<String>(), types = new ArrayList<String>(),
 			rarities = new ArrayList<String>(), reforgeFilters = new ArrayList<String>(),
-			tags = new ArrayList<String>(), droppable = new ArrayList<String>();
+			tags = new ArrayList<String>(), droppable = new ArrayList<String>(),
+			unlocked = new ArrayList<String>();
 	
 	private static Comparator<Equipment> sorter = new Comparator<Equipment>() {
 		@Override
@@ -39,7 +44,7 @@ public class CmdList extends Subcommand {
 		super(key, desc, perm, runner);
 		this.overrideTabHandler();
 		args.setOverride("{--type EquipmentType1,2...} {--rarity Rarity1,2...} {--class EquipmentClass1,2...} {--tags GlossaryTag1,2...}"
-				+ " {--reforge Parent/Child/None} {--droppable true/false}");
+				+ " {--reforge Parent/Child/None} {--droppable true/false} {--unlocked true/false}");
 		args.setMax(-1);
 		
 		filterTypes.add("--type");
@@ -48,6 +53,7 @@ public class CmdList extends Subcommand {
 		filterTypes.add("--tags");
 		filterTypes.add("--reforge");
 		filterTypes.add("--droppable");
+		filterTypes.add("--unlocked");
 		for (EquipmentClass ec : EquipmentClass.values()) {
 			ecs.add(ec.name());
 		}
@@ -65,6 +71,8 @@ public class CmdList extends Subcommand {
 		}
 		droppable.add("true");
 		droppable.add("false");
+		unlocked.add("true");
+		unlocked.add("false");
 	}
 	
 	@Override
@@ -95,8 +103,10 @@ public class CmdList extends Subcommand {
 		break;
 		case TAGS: list = tags;
 		break;
-		// This one doesn't need commas appended
-		case DROPPABLE: list = droppable;
+		// These don't need commas appended
+			case DROPPABLE: list = droppable;
+			return list.stream().filter(str -> { return str.toLowerCase().startsWith(currArgSnip.toLowerCase());}).collect(Collectors.toList());
+			case UNLOCKED: list = unlocked;
 		return list.stream().filter(str -> { return str.toLowerCase().startsWith(currArgSnip.toLowerCase());}).collect(Collectors.toList());
 		}
 		if (list == null) return null;
@@ -228,6 +238,13 @@ public class CmdList extends Subcommand {
 						return true;
 					});
 					break;
+				case UNLOCKED:
+					if (!(s instanceof Player)) break;
+					PlayerData pdata = PlayerManager.getPlayerData(((Player) s).getUniqueId());
+					if (pdata == null) break;
+					boolean wantUnlocked = Boolean.parseBoolean(str);
+					stream = stream.filter((eq) -> UnlockRegistry.isEquipmentUnlockedFor(pdata, eq.getId()) == wantUnlocked);
+					break;
 				}
 				filter = null;
 			}
@@ -246,7 +263,8 @@ public class CmdList extends Subcommand {
 		EQUIPMENT_CLASS,
 		TAGS,
 		REFORGE,
-		DROPPABLE;
+		DROPPABLE,
+		UNLOCKED;
 		
 		public static FilterType fromString(String str) {
 			switch (str.toLowerCase()) {
@@ -256,6 +274,7 @@ public class CmdList extends Subcommand {
 			case "--tags": return TAGS;
 			case "--reforge": return REFORGE;
 			case "--droppable": return DROPPABLE;
+			case "--unlocked": return UNLOCKED;
 			}
 			return null;
 		}
