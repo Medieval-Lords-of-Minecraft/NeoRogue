@@ -15,22 +15,28 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class AchievementProgress {
 	private final Achievement achievement;
 	private final EquipmentClass scope; // null = global
+	private final Runnable saveCallback;
 	private int progress;
 	private String data;
 
 	public AchievementProgress(Achievement achievement, int progress) {
-		this(achievement, progress, null, null);
+		this(achievement, progress, null, null, null);
 	}
 
 	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope) {
-		this(achievement, progress, scope, null);
+		this(achievement, progress, scope, null, null);
 	}
 
 	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope, String data) {
+		this(achievement, progress, scope, data, null);
+	}
+
+	public AchievementProgress(Achievement achievement, int progress, EquipmentClass scope, String data, Runnable saveCallback) {
 		this.achievement = achievement;
 		this.progress = progress;
 		this.scope = scope;
 		this.data = data;
+		this.saveCallback = saveCallback;
 	}
 
 	public Achievement getAchievement() {
@@ -54,7 +60,9 @@ public class AchievementProgress {
 	}
 
 	public void setData(String data) {
+		if (this.data == null ? data == null : this.data.equals(data)) return;
 		this.data = data;
+		runSaveCallback();
 	}
 
 	public int getMastery() {
@@ -89,9 +97,17 @@ public class AchievementProgress {
 	 * Adds progress and returns true if a new mastery tier was reached.
 	 */
 	public boolean addProgress(int amount) {
+		if (amount == 0) return false;
 		int oldMastery = getMastery();
 		progress += amount;
+		runSaveCallback();
 		return getMastery() > oldMastery;
+	}
+
+	private void runSaveCallback() {
+		if (saveCallback != null) {
+			saveCallback.run();
+		}
 	}
 
 	public List<Component> buildLoreLines() {

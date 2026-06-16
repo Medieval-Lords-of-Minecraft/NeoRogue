@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
@@ -43,6 +45,16 @@ public class PlayerData {
 		int level = 1;
 		int exp = 0;
 		int points = 0;
+	}
+
+	private static class AchievementSnapshot {
+		final int progress;
+		final String data;
+
+		AchievementSnapshot(int progress, String data) {
+			this.progress = progress;
+			this.data = data;
+		}
 	}
 
 	private ClassProgression getOrCreateProgression(EquipmentClass ec) {
@@ -68,6 +80,14 @@ public class PlayerData {
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
+	private final AtomicInteger classSaveVersion = new AtomicInteger();
+	private final AtomicInteger unlockSaveVersion = new AtomicInteger();
+	private final AtomicInteger flagSaveVersion = new AtomicInteger();
+	private final AtomicInteger achievementSaveVersion = new AtomicInteger();
+	private final Object classSaveLock = new Object();
+	private final Object unlockSaveLock = new Object();
+	private final Object flagSaveLock = new Object();
+	private final Object achievementSaveLock = new Object();
 	private int slotsAvailable, maxNotoriety;
 	
 	// Create new one if one doesn't exist
@@ -149,15 +169,15 @@ public class PlayerData {
 						Achievement ach = AchievementManager.get(achId);
 						if (ach == null) continue;
 						if (scope == null || scope.equals("GLOBAL")) {
-							globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
+							globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data, this::saveAchievementsRealtime));
 						} else {
 							try {
 								EquipmentClass ec = EquipmentClass.valueOf(scope);
 								classAchievements.computeIfAbsent(ec, k -> new HashMap<>())
-										.put(achId, new AchievementProgress(ach, prog, ec, data));
+										.put(achId, new AchievementProgress(ach, prog, ec, data, this::saveAchievementsRealtime));
 							} catch (IllegalArgumentException ex) {
 								// Unknown scope, treat as global
-								globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data));
+								globalAchievements.put(achId, new AchievementProgress(ach, prog, null, data, this::saveAchievementsRealtime));
 							}
 						}
 					}
@@ -275,6 +295,7 @@ public class PlayerData {
 		if (ec != null) {
 			addExpInternal(null, amount);
 		}
+		saveClassProgressionRealtime();
 	}
 
 	private void addExpInternal(EquipmentClass ec, int amount) {
@@ -457,6 +478,7 @@ public class PlayerData {
 			Bukkit.getLogger().fine("[NeoRogue] Unlock node granted: " + nodeId + " -> " + display);
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
+			saveUnlocksRealtime();
 		}
 		return added;
 	}
@@ -468,6 +490,7 @@ public class PlayerData {
 			Bukkit.getLogger().fine("[NeoRogue] Unlock node revoked: " + nodeId + " -> " + display);
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
+			saveUnlocksRealtime();
 		}
 		return removed;
 	}
@@ -477,11 +500,15 @@ public class PlayerData {
 	}
 
 	public void addFlag(String flag) {
-		flags.add(flag);
+		if (flags.add(flag)) {
+			saveFlagsRealtime();
+		}
 	}
 
 	public void removeFlag(String flag) {
-		flags.remove(flag);
+		if (flags.remove(flag)) {
+			saveFlagsRealtime();
+		}
 	}
 
 	public void resetAll() {
@@ -502,14 +529,178 @@ public class PlayerData {
 	public AchievementProgress getGlobalAchievementProgress(String id) {
 		return globalAchievements.computeIfAbsent(id, k -> {
 			Achievement ach = AchievementManager.get(k);
-			return ach != null ? new AchievementProgress(ach, 0, null) : null;
+			return ach != null ? new AchievementProgress(ach, 0, null, null, this::saveAchievementsRealtime) : null;
 		});
 	}
 
 	public AchievementProgress getClassAchievementProgress(String id, EquipmentClass ec) {
 		return classAchievements.computeIfAbsent(ec, k -> new HashMap<>()).computeIfAbsent(id, k -> {
 			Achievement ach = AchievementManager.get(k);
-			return ach != null ? new AchievementProgress(ach, 0, ec) : null;
+			return ach != null ? new AchievementProgress(ach, 0, ec, null, this::saveAchievementsRealtime) : null;
+		});
+	}
+
+	private void saveClassProgressionRealtime() {
+		HashMap<String, int[]> classSnapshot = new HashMap<>();
+		for (var entry : progression.entrySet()) {
+			String classKey = entry.getKey() == null ? "GLOBAL" : entry.getKey().name();
+			ClassProgression prog = entry.getValue();
+			classSnapshot.put(classKey, new int[] { prog.level, prog.exp, prog.points });
+		}
+		UUID playerId = uuid;
+		int saveVersion = classSaveVersion.incrementAndGet();
+		Bukkit.getScheduler().runTaskAsynchronously(NeoRogue.inst(), () -> {
+			synchronized (classSaveLock) {
+				if (saveVersion != classSaveVersion.get()) return;
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+						PreparedStatement clearClass = con.prepareStatement("DELETE FROM neorogue_playerclass WHERE uuid = ?;")) {
+					clearClass.setString(1, playerId.toString());
+					clearClass.executeUpdate();
+
+					SQLInsertBuilder classSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerclass");
+					for (var entry : classSnapshot.entrySet()) {
+						int[] prog = entry.getValue();
+						classSql.addValue("uuid", playerId.toString())
+								.addValue("class", entry.getKey())
+								.addValue("level", prog[0])
+								.addValue("exp", prog[1])
+								.addValue("points", prog[2])
+								.addRow();
+					}
+					try (PreparedStatement classStmt = classSql.build(con)) {
+						classStmt.executeUpdate();
+					}
+				} catch (SQLException e) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save realtime class progression for " + playerId + ": " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void saveUnlocksRealtime() {
+		HashSet<String> unlockSnapshot = new HashSet<>(unlockNodes);
+		UUID playerId = uuid;
+		int saveVersion = unlockSaveVersion.incrementAndGet();
+		Bukkit.getScheduler().runTaskAsynchronously(NeoRogue.inst(), () -> {
+			synchronized (unlockSaveLock) {
+				if (saveVersion != unlockSaveVersion.get()) return;
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+						PreparedStatement clearUnlocks = con.prepareStatement("DELETE FROM neorogue_unlocknodes WHERE uuid = ?;")) {
+					clearUnlocks.setString(1, playerId.toString());
+					clearUnlocks.executeUpdate();
+
+					if (!unlockSnapshot.isEmpty()) {
+						SQLInsertBuilder unlockSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_unlocknodes");
+						for (String nodeId : unlockSnapshot) {
+							unlockSql.addValue("uuid", playerId.toString())
+									.addValue("node", nodeId)
+									.addRow();
+						}
+						try (PreparedStatement unlockStmt = unlockSql.build(con)) {
+							unlockStmt.executeUpdate();
+						}
+					}
+				} catch (SQLException e) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save realtime unlock nodes for " + playerId + ": " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void saveFlagsRealtime() {
+		HashSet<String> flagSnapshot = new HashSet<>(flags);
+		UUID playerId = uuid;
+		int saveVersion = flagSaveVersion.incrementAndGet();
+		Bukkit.getScheduler().runTaskAsynchronously(NeoRogue.inst(), () -> {
+			synchronized (flagSaveLock) {
+				if (saveVersion != flagSaveVersion.get()) return;
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+						PreparedStatement clearFlags = con.prepareStatement("DELETE FROM neorogue_playerflags WHERE uuid = ?;")) {
+					clearFlags.setString(1, playerId.toString());
+					clearFlags.executeUpdate();
+
+					if (!flagSnapshot.isEmpty()) {
+						SQLInsertBuilder flagsSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerflags");
+						for (String flag : flagSnapshot) {
+							flagsSql.addValue("uuid", playerId.toString())
+									.addValue("flag", flag)
+									.addRow();
+						}
+						try (PreparedStatement flagsStmt = flagsSql.build(con)) {
+							flagsStmt.executeUpdate();
+						}
+					}
+				} catch (SQLException e) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save realtime player flags for " + playerId + ": " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void saveAchievementsRealtime() {
+		HashMap<String, AchievementSnapshot> globalSnapshot = new HashMap<>();
+		for (var entry : globalAchievements.entrySet()) {
+			AchievementProgress progress = entry.getValue();
+			globalSnapshot.put(entry.getKey(), new AchievementSnapshot(progress.getProgress(), progress.getData()));
+		}
+		EnumMap<EquipmentClass, HashMap<String, AchievementSnapshot>> classSnapshot = new EnumMap<>(EquipmentClass.class);
+		for (var classEntry : classAchievements.entrySet()) {
+			HashMap<String, AchievementSnapshot> scoped = new HashMap<>();
+			for (var entry : classEntry.getValue().entrySet()) {
+				AchievementProgress progress = entry.getValue();
+				scoped.put(entry.getKey(), new AchievementSnapshot(progress.getProgress(), progress.getData()));
+			}
+			classSnapshot.put(classEntry.getKey(), scoped);
+		}
+		UUID playerId = uuid;
+		int saveVersion = achievementSaveVersion.incrementAndGet();
+		Bukkit.getScheduler().runTaskAsynchronously(NeoRogue.inst(), () -> {
+			synchronized (achievementSaveLock) {
+				if (saveVersion != achievementSaveVersion.get()) return;
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+						PreparedStatement clearAch = con.prepareStatement("DELETE FROM neorogue_achievements WHERE uuid = ?;")) {
+					clearAch.setString(1, playerId.toString());
+					clearAch.executeUpdate();
+
+					SQLInsertBuilder achSql = null;
+					if (!globalSnapshot.isEmpty()) {
+						achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
+						for (var entry : globalSnapshot.entrySet()) {
+							AchievementSnapshot progress = entry.getValue();
+							achSql.addValue("uuid", playerId.toString())
+									.addValue("achievement", entry.getKey())
+									.addValue("progress", progress.progress)
+									.addValue("scope", "GLOBAL")
+									.addValue("data", progress.data)
+									.addRow();
+						}
+					}
+					for (var classEntry : classSnapshot.entrySet()) {
+						if (achSql == null) achSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_achievements");
+						for (var entry : classEntry.getValue().entrySet()) {
+							AchievementSnapshot progress = entry.getValue();
+							achSql.addValue("uuid", playerId.toString())
+									.addValue("achievement", entry.getKey())
+									.addValue("progress", progress.progress)
+									.addValue("scope", classEntry.getKey().name())
+									.addValue("data", progress.data)
+									.addRow();
+						}
+					}
+
+					if (achSql != null) {
+						try (PreparedStatement achStmt = achSql.build(con)) {
+							achStmt.executeUpdate();
+						}
+					}
+				} catch (SQLException e) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save realtime achievements for " + playerId + ": " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
 		});
 	}
 	
