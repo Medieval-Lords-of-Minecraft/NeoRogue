@@ -796,7 +796,7 @@ public class Session {
 			if (pdata == null) continue;
 			EquipmentClass ec = entry.getValue().getPlayerClass();
 			pdata.addExp(ec, finalXp);
-			pdata.saveAchievementsAfterFight();
+			pdata.saveAchievementsAsync();
 		}
 	}
 	

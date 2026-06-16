@@ -540,7 +540,7 @@ public class PlayerData {
 		});
 	}
 
-	public void saveAchievementsAfterFight() {
+	public void saveAchievementsAsync() {
 		saveAchievementsRealtime();
 	}
 
