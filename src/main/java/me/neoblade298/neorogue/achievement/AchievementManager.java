@@ -252,6 +252,9 @@ public class AchievementManager {
 		if (ec != null) {
 			displayName += " [" + ec.getDisplay() + "]";
 		}
+		else {
+			displayName += " [Global]";
+		}
 		String description = "Mastery " + mastery + "/" + achievement.getMasteryThresholds().length;
 		UUID uuid = p.getUniqueId();
 		Deque<ToastEntry> queue = toastQueues.computeIfAbsent(uuid, k -> new ArrayDeque<>());

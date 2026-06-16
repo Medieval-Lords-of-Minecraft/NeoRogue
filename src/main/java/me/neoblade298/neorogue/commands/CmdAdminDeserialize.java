@@ -47,18 +47,18 @@ public class CmdAdminDeserialize extends Subcommand {
 			p = (Player) s;
 			dataStart = 0;
 		} else {
-			Util.displayError(s, "Usage: deserialize [player] <preset-name|raw-data>");
+			Util.msg(s, "<red>Usage: deserialize [player] <preset-name|raw-data>");
 			return;
 		}
 
 		if (dataStart >= args.length) {
-			Util.displayError(s, "You must provide a preset name or raw data.");
+			Util.msg(s, "<red>You must provide a preset name or raw data.");
 			return;
 		}
 
 		Session sess = SessionManager.getSession(p);
 		if (sess == null) {
-			Util.displayError(s, "Player is not currently in a session!");
+			Util.msg(s, "<red>Player is not currently in a session!");
 			return;
 		}
 
