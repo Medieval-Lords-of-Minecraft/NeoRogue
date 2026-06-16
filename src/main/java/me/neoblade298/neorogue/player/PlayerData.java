@@ -541,7 +541,7 @@ public class PlayerData {
 	}
 
 	public void saveAchievementsAsync() {
-		saveAchievementsRealtime();
+		saveAchievementsAsyncInternal();
 	}
 
 	private void saveClassProgressionRealtime() {
@@ -644,7 +644,7 @@ public class PlayerData {
 		});
 	}
 
-	private void saveAchievementsRealtime() {
+	private void saveAchievementsAsyncInternal() {
 		HashMap<String, AchievementSnapshot> globalSnapshot = new HashMap<>();
 		for (var entry : globalAchievements.entrySet()) {
 			AchievementProgress progress = entry.getValue();
