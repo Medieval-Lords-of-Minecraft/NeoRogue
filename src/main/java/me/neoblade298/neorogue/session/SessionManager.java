@@ -194,8 +194,12 @@ public class SessionManager implements Listener {
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid))
+		if (!sessions.containsKey(uuid)) {
+			if (isMenuCompass(e.getCurrentItem()) || isMenuCompass(e.getCursor())) {
+				e.setCancelled(true);
+			}
 			return;
+		}
 		Session s = sessions.get(uuid);
 		if (e.getClickedInventory() == null)
 			return;
@@ -265,8 +269,12 @@ public class SessionManager implements Listener {
 	public void onDrop(PlayerDropItemEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid))
+		if (!sessions.containsKey(uuid)) {
+			if (isMenuCompass(e.getItemDrop().getItemStack())) {
+				e.setCancelled(true);
+			}
 			return;
+		}
 		e.setCancelled(true);
 		if (sessions.get(p.getUniqueId()).isSpectator(uuid))
 			return;
@@ -520,11 +528,7 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) {
-			if (e.getAction().isRightClick() && e.getItem() != null
-					&& e.getItem().getType() == Material.COMPASS
-					&& e.getItem().hasItemMeta()
-					&& e.getItem().getItemMeta().getPersistentDataContainer()
-							.has(MENU_KEY, PersistentDataType.BYTE)) {
+			if (e.getAction().isRightClick() && isMenuCompass(e.getItem())) {
 				e.setCancelled(true);
 				new MainMenuInventory(p);
 			}
@@ -720,13 +724,19 @@ public class SessionManager implements Listener {
 
 	private static final NamespacedKey MENU_KEY = new NamespacedKey(NeoRogue.inst(), "menu_compass");
 
+	private static boolean isMenuCompass(ItemStack item) {
+		return item != null && item.getType() == Material.COMPASS
+				&& item.hasItemMeta()
+				&& item.getItemMeta().getPersistentDataContainer().has(MENU_KEY, PersistentDataType.BYTE);
+	}
+
 	public static void giveMenuCompass(Player p) {
 		ItemStack compass = new ItemStack(Material.COMPASS);
 		ItemMeta meta = compass.getItemMeta();
 		meta.displayName(Component.text("Menu", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
 		meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.BYTE, (byte) 1);
 		compass.setItemMeta(meta);
-		p.getInventory().setItem(0, compass);
+		p.getInventory().setItem(4, compass);
 	}
 
 	public static void endSession(Session s) {
