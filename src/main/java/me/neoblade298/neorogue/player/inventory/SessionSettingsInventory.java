@@ -18,9 +18,9 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.SessionSetting;
+import me.neoblade298.neorogue.session.instances.LobbyInstance;
+import me.neoblade298.neorogue.session.settings.SessionSetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 

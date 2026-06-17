@@ -2,17 +2,8 @@ package me.neoblade298.neorogue.session.settings;
 
 import java.util.ArrayList;
 
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import de.tr7zw.nbtapi.NBTItem;
-import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import net.kyori.adventure.text.Component;
+import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public abstract class NotorietySetting {
     public static ArrayList<NotorietySetting> settings = new ArrayList<NotorietySetting>();

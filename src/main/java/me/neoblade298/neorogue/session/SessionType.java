@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session;
 
 import me.neoblade298.neorogue.region.RegionType;
+import me.neoblade298.neorogue.session.instances.Instance;
 
 public enum SessionType {
 	STANDARD(RegionType.LOW_DISTRICT),

@@ -61,9 +61,16 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
-import me.neoblade298.neorogue.session.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.Instance.PlayerFlags;
+import me.neoblade298.neorogue.session.instances.LoadLobbyInstance;
+import me.neoblade298.neorogue.session.instances.LobbyInstance;
+import me.neoblade298.neorogue.session.instances.LoseInstance;
+import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
+import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -367,8 +374,8 @@ public class Session {
 		SessionManager.addToSession(p.getUniqueId(), this);
 		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
 		p.setGameMode(GameMode.ADVENTURE);
-		p.teleport(inst.spawn);
-		inst.spectatorFlags.applyFlags(p);
+		p.teleport(inst.getSpawn());
+		inst.getSpectatorFlags().applyFlags(p);
 		inst.handleSpectatorJoin(p);
 	}
 	

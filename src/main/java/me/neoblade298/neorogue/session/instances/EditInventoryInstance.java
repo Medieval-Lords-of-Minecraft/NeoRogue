@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.instances;
 
 import java.util.UUID;
 
@@ -21,6 +21,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.shop;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -17,7 +17,6 @@ import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -26,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.settings.IncreaseDamageNotorietySetting;
 
 public class MechanicDamage implements ITargetedEntitySkill {
 	protected final boolean hitBarrier, asParent, debug, ignoreShields;

@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.settings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -51,17 +52,6 @@ public class SessionSetting {
             (s) -> {
                 return s.isEndless() ? 1 : 0;
             }));
-
-        settings.put(18, new SessionNotorietySetting(18, "Enemy Health Scaling",
-                Component.text("Enemy health scales up an additional ", NamedTextColor.GRAY)
-                        .append(Component.text((int) (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * 100) + "%", NamedTextColor.YELLOW))
-                        .append(Component.text(" per level for every node you visit.")),
-                Material.GREEN_DYE, 5, (s, leftClick) -> {
-                    s.setEnemyHealthScale(s.getEnemyHealthScale() + (leftClick ? 1 : -1));
-                },
-                (s) -> {
-                    return s.getEnemyHealthScale();
-                }));
     }
 
     // Used for notoriety settings

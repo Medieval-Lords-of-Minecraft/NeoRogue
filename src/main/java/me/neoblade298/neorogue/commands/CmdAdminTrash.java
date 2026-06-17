@@ -14,9 +14,9 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.TrashInventory;
-import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.instances.LobbyInstance;
 
 public class CmdAdminTrash extends Subcommand {
 	public CmdAdminTrash(String key, String desc, String perm, SubcommandRunner runner) {

@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.ShopInventory;
+import me.neoblade298.neorogue.session.shop.ShopInventory;
 import net.kyori.adventure.text.Component;
 
 public class GlossaryInventory extends CoreInventory {

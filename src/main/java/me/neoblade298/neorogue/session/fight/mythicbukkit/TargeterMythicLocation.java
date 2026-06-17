@@ -2,17 +2,17 @@ package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
 import java.util.HashSet;
 
-
 import org.bukkit.Location;
+
 import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.targeters.ILocationSelector;
-import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.instances.Instance;
 
 public class TargeterMythicLocation extends ILocationSelector {
 

@@ -155,7 +155,7 @@ public class Mob implements Comparable<Mob> {
 			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
 			mhealth *= 1 + (s.getRegionsCompleted()); // 100% health increase per region completed
 		}
-		mhealth *= 1 + (lvl * (0.1 + (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * s.getEnemyHealthScale()))); // Base 10%
+		mhealth *= 1 + (lvl * 0.1); // Base 10%
 																											// increase
 
 		return Math.round(mhealth);

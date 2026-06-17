@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.shop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
@@ -19,6 +19,8 @@ import me.neoblade298.neorogue.equipment.artifacts.Enderchest;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.instances.ShopInstance;
 
 public class ShopContents {
 	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), SapphireCluster.get(), EmeraldCluster.get() };

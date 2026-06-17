@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.instances;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
@@ -134,7 +135,15 @@ public abstract class Instance {
 		double dz = NeoRogue.gen.nextDouble(-1, 1);
 		p.teleport(spawn.clone().add(dx, 0, dz));
 	}
-	
+
+	public PlayerFlags getPlayerFlags() {
+		return playerFlags;
+	}
+
+	public PlayerFlags getSpectatorFlags() {
+		return spectatorFlags;
+	}
+
 	public static Instance deserialize(Session s, ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
 		String data = row.getString("instanceData");
 		
