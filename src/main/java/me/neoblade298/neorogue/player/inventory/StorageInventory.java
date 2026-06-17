@@ -251,7 +251,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		if (closeInventory) p.closeInventory();
 	}
 
-	private SessionEquipment[] getLiveStorageSnapshot() {
+	SessionEquipment[] getLiveStorageSnapshot() {
 		SessionEquipment[] snapshot = new SessionEquipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();

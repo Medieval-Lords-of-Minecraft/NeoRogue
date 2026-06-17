@@ -307,11 +307,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				Util.displayError(p, "You can't trash cursed items!");
 				return;
 			}
-			if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons() == 0) {
+			SessionEquipment[] storageSnapshot = null;
+			CoreInventory upper = InventoryListener.getUpperInventory(p);
+			if (upper instanceof StorageInventory) {
+				storageSnapshot = ((StorageInventory) upper).getLiveStorageSnapshot();
+			}
+			if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons(storageSnapshot) == 0) {
 				Util.displayError(p, "You can't trash your last weapon!");
 				return;
 			}
-			if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition() == 0) {
+			if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(storageSnapshot) == 0) {
 				Util.displayError(p, "You can't trash your last unlimited ammunition!");
 				return;
 			}
