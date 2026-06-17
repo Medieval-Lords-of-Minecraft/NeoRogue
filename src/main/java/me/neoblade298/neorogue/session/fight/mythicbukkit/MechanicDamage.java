@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
-import me.neoblade298.neorogue.session.settings.IncreaseDamageNotorietySetting;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class MechanicDamage implements ITargetedEntitySkill {
 	protected final boolean hitBarrier, asParent, debug, ignoreShields;
@@ -81,8 +81,8 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
-			boolean increaseDamageNotoriety = IncreaseDamageNotorietySetting.getInstance().isActive(fd.getInstance().getSession());
-			final double mult = (1 + (level * 0.03)) * (increaseDamageNotoriety ? IncreaseDamageNotorietySetting.DAMAGE_MULTIPLIER : 1.0);
+			boolean increaseDamageNotoriety = NotorietySetting.INCREASE_DAMAGE.isActive(fd.getInstance().getSession());
+			final double mult = (1 + (level * 0.03)) * (increaseDamageNotoriety ? NotorietySetting.INCREASE_DAMAGE_MULTIPLIER : 1.0);
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), ignoreShields, DamageStatTracker.ignored("MythicDamage1")));
 			}

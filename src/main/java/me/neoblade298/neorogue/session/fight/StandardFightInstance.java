@@ -28,6 +28,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -95,7 +96,8 @@ public class StandardFightInstance extends FightInstance {
 			@Override
 			public void run() {
 				time++;
-				double fightTimeMult = 1;
+				double fightTimeMult = (s.getRegionsCompleted() > 0 && NotorietySetting.REDUCED_SCORE_THRESHOLDS.isActive(s))
+						? NotorietySetting.SCORE_THRESHOLD_MULTIPLIER : 1;
 				timeBar.progress((float) (time / (fightScore.getThreshold() * fightTimeMult)));
 
 				if (time >= fightScore.getThreshold() * fightTimeMult) {
@@ -182,7 +184,11 @@ public class StandardFightInstance extends FightInstance {
 			ArrayList<Reward> list = new ArrayList<Reward>();
 			RewardFightEvent ev = new RewardFightEvent(NodeType.FIGHT);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) fightScore.getCoins() + ev.getBonusGold()));
+			int coins = (int) fightScore.getCoins() + ev.getBonusGold();
+			if (NotorietySetting.REDUCE_COINS.isActive(s)) {
+				coins = (int) (coins * NotorietySetting.REDUCE_COINS_MULTIPLIER);
+			}
+			list.add(new CoinsReward(coins));
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

@@ -71,6 +71,7 @@ import me.neoblade298.neorogue.session.instances.LobbyInstance;
 import me.neoblade298.neorogue.session.instances.LoseInstance;
 import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -559,7 +560,11 @@ public class Session {
 	}
 
 	private boolean rollUpgradeFormula(Equipment eq, double bonusChance) {
-		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + bonusChance + (regionsCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
+		double chance = BASE_UPGRADE_CHANCE + bonusChance + (regionsCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
+		if (NotorietySetting.LOWER_UPGRADE_CHANCE.isActive(this)) {
+			chance *= 0.5;
+		}
+		return NeoRogue.gen.nextDouble() <= chance;
 	}
 	
 	public void setupSpectatorInventory(Player p) {

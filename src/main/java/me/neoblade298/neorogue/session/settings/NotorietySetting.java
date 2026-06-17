@@ -3,25 +3,84 @@ package me.neoblade298.neorogue.session.settings;
 import java.util.ArrayList;
 
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
-public abstract class NotorietySetting {
-    public static ArrayList<NotorietySetting> settings = new ArrayList<NotorietySetting>();
-    private int level; // Should be 1-10, no two settings should have the same level
-    protected TextComponent header, lore;
+public class NotorietySetting {
+    public static final ArrayList<NotorietySetting> settings = new ArrayList<>();
 
-    static {
-        register(IncreaseDamageNotorietySetting.getInstance());
-    }
+    public static final double REDUCE_COINS_MULTIPLIER = 0.7;
+    public static final NotorietySetting REDUCE_COINS = new NotorietySetting(
+        Component.text("Enemies drop ")
+            .color(NamedTextColor.GRAY)
+            .append(Component.text("30%").color(NamedTextColor.YELLOW))
+            .append(Component.text(" less coins").color(NamedTextColor.GRAY)),
+        Component.text("Your caravan is a promising payday for the impoverished.")
+    );
+
+    public static final NotorietySetting LOWER_UPGRADE_CHANCE = new NotorietySetting(
+        Component.text("Equipment has a lower chance to be upgraded")
+            .color(NamedTextColor.GRAY),
+        Component.text("The caravan demands higher quality equipment be sold instead of used.")
+    );
+
+    public static final NotorietySetting BREAKABLE_EQUIPMENT = new NotorietySetting(
+            Component.text("Equipment has a chance to be breakable").color(NamedTextColor.GRAY),
+            Component.text("Enemies strategize towards breaking your gear."));
+
+    public static final double BOSS_HEAL_MULTIPLIER = 0.75;
+    public static final NotorietySetting REDUCED_BOSS_HEAL = new NotorietySetting(
+        Component.text("Only heal ")
+            .color(NamedTextColor.GRAY)
+            .append(Component.text("75%").color(NamedTextColor.YELLOW))
+            .append(Component.text(" of missing health after boss fights").color(NamedTextColor.GRAY)),
+        Component.text("Powerful enemies leave more lasting injuries.")
+    );
+
+    public static final double SCORE_THRESHOLD_MULTIPLIER = 0.8;
+    public static final NotorietySetting REDUCED_SCORE_THRESHOLDS = new NotorietySetting(
+            Component.text("Fight score thresholds reduced by ").color(NamedTextColor.GRAY)
+                    .append(Component.text("20%").color(NamedTextColor.YELLOW))
+                    .append(Component.text(" after first boss").color(NamedTextColor.GRAY)),
+            Component.text("You have tighter deadlines to reach the market."));
+
+    public static final NotorietySetting BOSS_RANDOM_MODIFIER = new NotorietySetting(
+        Component.text("Minibosses and bosses have a random modifier").color(NamedTextColor.GRAY),
+        Component.text("Dangerous enemies put everything on the line to defeat you."));
+   
+    public static final double INCREASE_DAMAGE_MULTIPLIER = 1.2;
+    public static final NotorietySetting INCREASE_DAMAGE = new NotorietySetting(
+            Component.text("Increase enemy damage by ").color(NamedTextColor.GRAY)
+                    .append(Component.text("20%").color(NamedTextColor.YELLOW)),
+            Component.text("Your caravan is attracting more dangerous enemies."));
+
+    public static final double INCREASE_HEALTH_MULTIPLIER = 1.25;
+    public static final NotorietySetting INCREASE_HEALTH = new NotorietySetting(
+            Component.text("Increase enemy health by ").color(NamedTextColor.GRAY)
+                    .append(Component.text("25%").color(NamedTextColor.YELLOW)),
+            Component.text("Enemies prepare better armor as your reputation spreads."));
+
+    public static final NotorietySetting LESS_ACCESSORY_SLOT = new NotorietySetting(
+            Component.text("Start with ").color(NamedTextColor.GRAY)
+                    .append(Component.text("1").color(NamedTextColor.YELLOW))
+                    .append(Component.text(" less accessory slot").color(NamedTextColor.GRAY)),
+            Component.text("The caravan requires you to carry more tradeable items and fewer combat items."));
+
+    public static final NotorietySetting REFORGE_REQUIRES_BOTH = new NotorietySetting(
+        Component.text("Reforges require both materials to be upgraded")
+            .color(NamedTextColor.GRAY),
+        Component.text("Power spent on reforging is instead spent moving the caravan.")
+    );
+
+    private final int level;
+    private final TextComponent header, lore;
 
     public NotorietySetting(TextComponent header, TextComponent lore) {
         this.header = header;
         this.lore = lore;
-    }
-
-    public static void register(NotorietySetting setting) {
-        settings.add(setting);
-        setting.setLevel(settings.size());
+        settings.add(this);
+        this.level = settings.size();
     }
 
     public TextComponent getHeader() {
@@ -32,15 +91,11 @@ public abstract class NotorietySetting {
         return lore;
     }
 
-    protected void setLevel(int level) {
-        this.level = level;
-    }
-
     public int getLevel() {
         return level;
     }
 
     public boolean isActive(Session s) {
-        return getLevel() <= s.getNotoriety();
+        return level <= s.getNotoriety();
     }
 }
