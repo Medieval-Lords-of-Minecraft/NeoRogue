@@ -270,14 +270,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {
 		Session s = data.getSession();
-		TextComponent health = Component.text("Enemy Health Scaling: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getEnemyHealthScale(), NamedTextColor.WHITE));
-		TextComponent dmg = Component.text("Enemy Damage Scaling: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getEnemyDamageScale(), NamedTextColor.WHITE));
-		TextComponent gold = Component.text("Coin reduction: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getCoinReduction(), NamedTextColor.WHITE));
-		TextComponent time = Component.text("Fight Time Reduction: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getFightTimeReduction(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, Component.text("Your Notoriety", NamedTextColor.GOLD), health, dmg, gold, time);
 	}
 

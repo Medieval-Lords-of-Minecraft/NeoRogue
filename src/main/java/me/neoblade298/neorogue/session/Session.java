@@ -91,7 +91,6 @@ public class Session {
 	private boolean endless;
 	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.03, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			COIN_REDUCTION_PER_LEVEL = 0.15, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.05;
-	private int enemyHealthScale, enemyDamageScale, coinReduction, fightTimeReduction;
 	private int notoriety;
 	
 	// Session coordinates
@@ -220,10 +219,7 @@ public class Session {
 
 					// settings
 					endless = sessSet.getBoolean("endless");
-					enemyHealthScale = sessSet.getInt("enemyHealthScale");
-					enemyDamageScale = sessSet.getInt("enemyDamageScale");
-					coinReduction = sessSet.getInt("goldReduction");
-					fightTimeReduction = sessSet.getInt("fightTimeReduction");
+					notoriety = sessSet.getInt("notoriety");
 
 					region = new Region(
 							RegionType.valueOf(sessSet.getString("regionType")), xOff, zOff, host, saveSlot, s, stmt
@@ -313,10 +309,7 @@ public class Session {
 					.addValue("nodesVisited", nodesVisited)
 					.addValue("regionsCompleted", regionsCompleted)
 					.addValue("potionChance", potionChance)
-					.addValue("enemyHealthScale", enemyHealthScale)
-					.addValue("enemyDamageScale", enemyDamageScale)
-					.addValue("goldReduction", coinReduction)
-					.addValue("fightTimeReduction", fightTimeReduction)
+					.addValue("notoriety", notoriety)
 					.addValue("endless", endless ? 1 : 0)
 					.addValue("lastSaved", System.currentTimeMillis())
 					.addValue("instanceData", inst.serialize(party))
@@ -722,38 +715,6 @@ public class Session {
 
 	public void setSessionType(SessionType sessionType) {
 		this.sessionType = sessionType;
-	}
-
-	public void setEnemyHealthScale(int enemyHealthScale) {
-		this.enemyHealthScale = enemyHealthScale;
-	}
-
-	public int getEnemyHealthScale() {
-		return enemyHealthScale;
-	}
-
-	public void setEnemyDamageScale(int enemyDamageScale) {
-		this.enemyDamageScale = enemyDamageScale;
-	}
-
-	public int getEnemyDamageScale() {
-		return enemyDamageScale;
-	}
-
-	public void setCoinReduction(int coinReduction) {
-		this.coinReduction = coinReduction;
-	}
-
-	public int getCoinReduction() {
-		return coinReduction;
-	}
-
-	public void setFightTimeReduction(int fightTimeReduction) {
-		this.fightTimeReduction = fightTimeReduction;
-	}
-
-	public int getFightTimeReduction() {
-		return fightTimeReduction;
 	}
 
 	public int getNotoriety() {
