@@ -8,6 +8,7 @@ import org.bukkit.Material;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
@@ -17,6 +18,7 @@ import me.neoblade298.neorogue.session.chance.ChanceStage;
 import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class StockpileChance extends ChanceSet {
 
@@ -30,8 +32,10 @@ public class StockpileChance extends ChanceSet {
 					s.broadcast("You tell the thief that your party will leave without telling a soul if they give you something for your"
 							+ " troubles. The thief thinks briefly before agreeing, and you leave.");
 					for (PlayerSessionData data : s.getParty().values()) {
-						Equipment eq = Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
-						data.giveEquipment(s.rollUpgrade(eq, 0));
+						SessionEquipment se = new SessionEquipment(Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
+						se = s.rollUpgrade(se, 0);
+						NotorietySetting.rollBreakable(s, se);
+						data.giveEquipment(se);
 					}
 					return null;
 				});
@@ -50,8 +54,9 @@ public class StockpileChance extends ChanceSet {
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.damagePercent(0.25);
 						ArrayList<Reward> rewards = new ArrayList<Reward>();
-						ArrayList<Equipment> equips = Equipment.getDrop(pd.getData().getEquipmentDroptable(), s.getBaseDropValue() + 2, 3, pd.getPlayerClass(), EquipmentClass.CLASSLESS);
+						ArrayList<SessionEquipment> equips = SessionEquipment.wrap(Equipment.getDrop(pd.getData().getEquipmentDroptable(), s.getBaseDropValue() + 2, 3, pd.getPlayerClass(), EquipmentClass.CLASSLESS));
 						s.rollUpgrades(equips, 0);
+						NotorietySetting.rollBreakable(s, equips);
 						rewards.add(new EquipmentChoiceReward(equips));
 						generated.put(pd.getUniqueId(), rewards);
 					}

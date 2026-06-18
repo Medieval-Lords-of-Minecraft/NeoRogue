@@ -6,10 +6,12 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 
 public class ThiefsCacheChance extends ChanceSet {
@@ -33,11 +35,12 @@ public class ThiefsCacheChance extends ChanceSet {
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Equipment eq = Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, data.getPlayerClass());
-					eq = s.rollUpgrade(eq, 0);
-					Util.msgRaw(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
+					SessionEquipment se = s.rollUpgrade(new SessionEquipment(eq), 0);
+					NotorietySetting.rollBreakable(s, se);
+					Util.msgRaw(p, Component.text("You pick up a(n) ").append(se.getDisplay())
 							.append(Component.text(" and go on your way.")));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to receive a random piece of equipment!", p);
-					data.giveEquipment(eq);
+					data.giveEquipment(se);
 					return null;
 				});
 		stage.addChoice(choice);

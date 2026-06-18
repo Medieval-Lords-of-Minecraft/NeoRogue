@@ -54,6 +54,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -555,18 +556,22 @@ public class Session {
 		return rollUpgradeFormula(eq, bonusChance) ? eq.getUpgraded() : eq;
 	}
 
-	public ArrayList<Equipment> rollUpgrades(ArrayList<Equipment> drops, double bonusChance) {
+	public SessionEquipment rollUpgrade(SessionEquipment se, double bonusChance) {
+		return rollUpgradeFormula(se.getEquipment(), bonusChance) ? se.upgrade() : se;
+	}
+
+	public void rollUpgrades(ArrayList<SessionEquipment> drops, double bonusChance) {
 		for (int i = 0; i < drops.size(); i++) {
-			Equipment eq = drops.get(i);
+			SessionEquipment se = drops.get(i);
+			Equipment eq = se.getEquipment();
 			if (!eq.canUpgrade()) {
-				Bukkit.getLogger().warning("Tried to upgrade unupgradeable item: " + drops.get(i).toString());
+				Bukkit.getLogger().warning("Tried to upgrade unupgradeable item: " + eq.toString());
 				continue;
 			}
 			if (rollUpgradeFormula(eq, bonusChance)) {
-				drops.set(i, eq.getUpgraded());
+				drops.set(i, se.upgrade());
 			}
 		}
-		return drops;
 	}
 
 	private boolean rollUpgradeFormula(Equipment eq, double bonusChance) {

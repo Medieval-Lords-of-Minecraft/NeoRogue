@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
@@ -21,6 +22,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
@@ -128,8 +130,10 @@ public class VultureChance extends ChanceSet {
 		}),
 		EQUIPMENT("You find some equipment for your troubles!", (s) -> {
 			for (PlayerSessionData data : s.getParty().values()) {
-				Equipment eq = Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
-				data.giveEquipment(s.rollUpgrade(eq, 0));
+				SessionEquipment se = new SessionEquipment(Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
+				se = s.rollUpgrade(se, 0);
+				NotorietySetting.rollBreakable(s, se);
+				data.giveEquipment(se);
 			}
 		});
 		private String desc;

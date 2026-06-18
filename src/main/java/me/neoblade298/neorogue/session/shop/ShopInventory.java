@@ -205,7 +205,7 @@ public class ShopInventory extends CoreInventory {
 			data.addCoins(-price);
 			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
-					shopItem.getEquipment(),
+					shopItem.getSessionEquipment(),
 					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
 					SharedUtil.color(
 							"<yellow>" + p.getName() + "</yellow> spent <yellow>" + price

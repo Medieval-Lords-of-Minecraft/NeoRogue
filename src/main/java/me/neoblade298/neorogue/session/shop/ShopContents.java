@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
@@ -21,6 +22,7 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class ShopContents {
 	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), SapphireCluster.get(), EmeraldCluster.get() };
@@ -64,10 +66,15 @@ public class ShopContents {
 	private void generateEquips(Session s, PlayerSessionData data, EquipmentClass ec, int value, double discountMult) {
 		// Create shop contents
 		DropTableSet<Equipment> dropTable = data == null || data.getData() == null ? Equipment.copyDropSet() : data.getData().getEquipmentDroptable();
-		ArrayList<Equipment> equips = new ArrayList<Equipment>();
-		equips.addAll(Equipment.getDrop(dropTable, value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		equips.addAll(Equipment.getDrop(dropTable, value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		if (s != null) s.rollUpgrades(equips, 0); // Ignore session for debugging
+		ArrayList<SessionEquipment> equips = new ArrayList<SessionEquipment>();
+		equips.addAll(SessionEquipment.wrap(Equipment.getDrop(dropTable, value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)));
+		ArrayList<Equipment> exclusions = new ArrayList<>(equips.size());
+		for (SessionEquipment se : equips) exclusions.add(se.getEquipment());
+		equips.addAll(SessionEquipment.wrap(Equipment.getDrop(dropTable, value + 2, ShopInstance.NUM_ITEMS / 2, exclusions, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)));
+		if (s != null) {
+			s.rollUpgrades(equips, 0);
+			NotorietySetting.rollBreakable(s, equips);
+		}
 		
 		// Generate 2 random unique sale slots
 		HashSet<Integer> saleSlots = new HashSet<Integer>(2);
@@ -98,7 +105,8 @@ public class ShopContents {
 		int idx = 10;
 		for (Consumable cons : Equipment.getConsumable(value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (30 * discountMult), (int) (60 * discountMult));
-			shopItems.put(idx++, new ShopItem(NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons, price, false));
+			Equipment resolved = NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons;
+			shopItems.put(idx++, new ShopItem(new SessionEquipment(resolved), price, false));
 		}
 	}
 
@@ -106,7 +114,7 @@ public class ShopContents {
 		int idx = 13;
 		for (Equipment gem : GEMS) {
 			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
-			shopItems.put(idx++, new ShopItem(gem, price, false));
+			shopItems.put(idx++, new ShopItem(new SessionEquipment(gem), price, false));
 		}
 	}
 
@@ -114,7 +122,7 @@ public class ShopContents {
 		int idx = 16;
 		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), value, 3, data.getPlayerClass(), EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
-			shopItems.put(idx++, new ShopItem(art, price, false));
+			shopItems.put(idx++, new ShopItem(new SessionEquipment(art), price, false));
 		}
 	}
 
@@ -122,7 +130,7 @@ public class ShopContents {
 		int idx = 19;
 		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) Enderchest.get() }) {
 			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
-			shopItems.put(idx++, new ShopItem(art, price, false));
+			shopItems.put(idx++, new ShopItem(new SessionEquipment(art), price, false));
 		}
 	}
 	

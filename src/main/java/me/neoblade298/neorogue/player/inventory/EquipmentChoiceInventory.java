@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.reward.RewardInventory;
 import net.kyori.adventure.text.Component;
@@ -22,23 +22,23 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class EquipmentChoiceInventory extends CoreInventory {
 	private static final int BACK = 8;
 	private RewardInventory prev;
-	private ArrayList<Equipment> equips;
+	private ArrayList<SessionEquipment> equips;
 	private int prevSlot;
 	private PlayerSessionData data;
 	private Player spectator;
 
-	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
+	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<SessionEquipment> equips, RewardInventory prev, int prevSlot) {
 		super(data.getPlayer(), inv);
 		setup(data, inv, equips, prev, prevSlot);
 	}
 
-	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot, Player spectator) {
+	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<SessionEquipment> equips, RewardInventory prev, int prevSlot, Player spectator) {
 		super(spectator, inv);
 		setup(data, inv, equips, prev, prevSlot);
 		this.spectator = spectator;
 	}
 	
-	private void setup(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
+	private void setup(PlayerSessionData data, Inventory inv, ArrayList<SessionEquipment> equips, RewardInventory prev, int prevSlot) {
 		this.data = data;
 		this.prev = prev;
 		this.prevSlot = prevSlot;
@@ -67,13 +67,13 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		
 		if (slot < equips.size()) {
 			if (e.isRightClick()) {
-				new EquipmentGlossaryInventory(p, equips.get(slot), this);
+				new EquipmentGlossaryInventory(p, equips.get(slot).getEquipment(), this);
 				return;
 			}
 			
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-			Equipment eq = equips.get(slot);
-			data.giveEquipment(eq);
+			SessionEquipment se = equips.get(slot);
+			data.giveEquipment(se);
 			if (prev.claimReward(prevSlot)) {
 				prev.openInventory();
 			}

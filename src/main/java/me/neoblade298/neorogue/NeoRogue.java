@@ -41,6 +41,7 @@ import me.neoblade298.neorogue.commands.CmdAdminExp;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminLevel;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
+import me.neoblade298.neorogue.commands.CmdAdminMeta;
 import me.neoblade298.neorogue.commands.CmdAdminMiniboss;
 import me.neoblade298.neorogue.commands.CmdAdminNew;
 import me.neoblade298.neorogue.commands.CmdAdminNode;
@@ -211,6 +212,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminPoints("points", "Add unlock points to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetPoints("setpoints", "Set a player's unlock points", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReset("reset", "Reset all progress for a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	

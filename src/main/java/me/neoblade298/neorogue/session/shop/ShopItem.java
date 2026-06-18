@@ -11,6 +11,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
@@ -28,17 +29,17 @@ public class ShopItem {
 	private int price;
 	private boolean sale;
 	private boolean isPurchased;
-	private Equipment eq;
+	private SessionEquipment se;
 
-	public ShopItem(Equipment eq, int price, boolean sale) {
-		this.eq = eq;
+	public ShopItem(SessionEquipment se, int price, boolean sale) {
+		this.se = se;
 		this.sale = sale;
 		this.price = price;
 	}
 	
 	// For deserialization
-	public ShopItem(Equipment eq, int price, boolean sale, boolean purchased) {
-		this.eq = eq;
+	public ShopItem(SessionEquipment se, int price, boolean sale, boolean purchased) {
+		this.se = se;
 		this.sale = sale;
 		this.price = price;
 		this.isPurchased = purchased;
@@ -48,7 +49,7 @@ public class ShopItem {
 		if (isPurchased) {
 			return PURCHASED;
 		}
-		ItemStack item = eq.getItem();
+		ItemStack item = se.getItem();
 		update(data, item, true);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("idx", idx);
@@ -56,7 +57,11 @@ public class ShopItem {
 	}
 	
 	public Equipment getEquipment() {
-		return eq;
+		return se == null ? null : se.getEquipment();
+	}
+
+	public SessionEquipment getSessionEquipment() {
+		return se;
 	}
 	
 	public int getPrice() {
@@ -96,7 +101,7 @@ public class ShopItem {
 	public String serialize() {
 		if (isPurchased)
 			return "purchased";
-		return eq.serialize() + ":" + price + ":" + (sale ? 1 : 0) + ":" + (isPurchased ? 1 : 0);
+		return se.serialize() + "#" + price + "#" + (sale ? 1 : 0) + "#" + (isPurchased ? 1 : 0);
 	}
 	
 	public boolean isPurchased() {
@@ -105,24 +110,34 @@ public class ShopItem {
 	
 	public static ShopItem deserialize(String str) {
 		try {
-			String[] split = str.split(":");
-			if (split[0].equals("purchased")) {
-				return new ShopItem(null, 0, false, true);
+			if (str.equals("purchased")) {
+				return new ShopItem((SessionEquipment) null, 0, false, true);
 			}
+			// New format uses # separator (avoids conflict with SessionEquipment metadata ':')
+			if (str.contains("#")) {
+				String[] split = str.split("#");
+				SessionEquipment se = SessionEquipment.deserialize(split[0]);
+				int price = Integer.parseInt(split[1]);
+				boolean sale = split[2].equals("1");
+				boolean isPurchased = split[3].equals("1");
+				return new ShopItem(se, price, sale, isPurchased);
+			}
+			// Legacy format uses : separator
+			String[] split = str.split(":");
 			Equipment eq = Equipment.deserialize(split[0]);
 			int price = Integer.parseInt(split[1]);
 			boolean sale = split[2].equals("1");
 			boolean isPurchased = split[3].equals("1");
-			return new ShopItem(eq, price, sale, isPurchased);
+			return new ShopItem(new SessionEquipment(eq), price, sale, isPurchased);
 		}
 		catch (Exception e) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to deserialize shop item: " + str);
 			e.printStackTrace();
-			return new ShopItem(WoodenSword.get(), 100, false, false);
+			return new ShopItem(new SessionEquipment(WoodenSword.get()), 100, false, false);
 		}
 	}
 
 	public String toString() {
-		return eq.getId() + "-" + price + "-" + (sale ? "sale" : "nosale");
+		return (se == null ? "null" : se.getEquipment().getId()) + "-" + price + "-" + (sale ? "sale" : "nosale");
 	}
 }

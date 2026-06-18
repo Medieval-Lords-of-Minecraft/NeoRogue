@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
@@ -92,7 +93,7 @@ public class BossFightInstance extends FightInstance {
 			rb.upgradeDrops(0);
 			rb.artifacts(value, 3);
 			rb.gems(RubyGem.get(), SapphireGem.get(), EmeraldGem.get());
-			rb.extra(new EquipmentReward(TomeOfWisdom.get()));
+			rb.extra(new EquipmentReward(new SessionEquipment(TomeOfWisdom.get())));
 			if (dropPotion) {
 				rb.consumable(value, 0.1);
 			}

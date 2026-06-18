@@ -2,9 +2,18 @@ package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 /**
  * A session-scoped wrapper around an Equipment template. Holds a general-purpose
@@ -32,6 +41,38 @@ public class SessionEquipment {
 
 	public Equipment getEquipment() {
 		return equipment;
+	}
+
+	// --- Display Methods ---
+
+	public ItemStack getItem() {
+		ItemStack item = equipment.getItem();
+		if (hasDurability()) {
+			ItemMeta meta = item.getItemMeta();
+			List<Component> lore = meta.lore();
+			lore.add(Component.text("Breaks after " + getDurability() + " fights", NamedTextColor.RED)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+			meta.lore(lore);
+			item.setItemMeta(meta);
+		}
+		return item;
+	}
+
+	public Component getDisplay() {
+		Component display = equipment.getDisplay();
+		if (hasDurability()) {
+			display = display.append(Component.text(" (" + getDurability() + " uses)", NamedTextColor.RED));
+		}
+		return display;
+	}
+
+	public Component getHoverable() {
+		if (hasDurability()) {
+			return getDisplay().decorate(TextDecoration.UNDERLINED)
+					.hoverEvent(getItem().asHoverEvent())
+					.clickEvent(ClickEvent.runCommand("/nr glossary " + equipment.getId()));
+		}
+		return equipment.getHoverable();
 	}
 
 	/**
@@ -130,7 +171,7 @@ public class SessionEquipment {
 		sb.append('|');
 		boolean first = true;
 		for (Map.Entry<String, Object> entry : metadata.entrySet()) {
-			if (!first) sb.append(',');
+			if (!first) sb.append('&');
 			first = false;
 			sb.append(entry.getKey()).append('=');
 			Object val = entry.getValue();
@@ -174,7 +215,7 @@ public class SessionEquipment {
 	}
 
 	private static void parseMetadata(String metaStr, HashMap<String, Object> target) {
-		String[] entries = metaStr.split(",");
+		String[] entries = metaStr.split("&");
 		for (String entry : entries) {
 			int eqIdx = entry.indexOf('=');
 			if (eqIdx <= 0) continue;
@@ -202,6 +243,16 @@ public class SessionEquipment {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to parse metadata entry: " + entry);
 			}
 		}
+	}
+
+	// --- Utility ---
+
+	public static ArrayList<SessionEquipment> wrap(ArrayList<? extends Equipment> equips) {
+		ArrayList<SessionEquipment> result = new ArrayList<>(equips.size());
+		for (Equipment eq : equips) {
+			result.add(new SessionEquipment(eq));
+		}
+		return result;
 	}
 
 	// --- Array Serialization ---

@@ -2,6 +2,9 @@ package me.neoblade298.neorogue.session.settings;
 
 import java.util.ArrayList;
 
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -25,8 +28,12 @@ public class NotorietySetting {
         Component.text("The caravan demands higher quality equipment be sold instead of used.")
     );
 
+    public static final double BREAKABLE_CHANCE = 0.2;
+    public static final int BREAKABLE_DURABILITY = 5;
     public static final NotorietySetting BREAKABLE_EQUIPMENT = new NotorietySetting(
-            Component.text("Equipment has a chance to be breakable").color(NamedTextColor.GRAY),
+            Component.text("Equipment has a chance to spawn breakable, meaning it will break after ").color(NamedTextColor.GRAY)
+                    .append(Component.text("5").color(NamedTextColor.YELLOW))
+                    .append(Component.text(" fights").color(NamedTextColor.GRAY)),
             Component.text("Enemies strategize towards breaking your gear."));
 
     public static final double BOSS_HEAL_MULTIPLIER = 0.75;
@@ -97,5 +104,27 @@ public class NotorietySetting {
 
     public boolean isActive(Session s) {
         return level <= s.getNotoriety();
+    }
+
+    /**
+     * Rolls breakable chance for a SessionEquipment if the notoriety setting is active.
+     * Skips artifacts and consumables. Sets durability on the item if successful.
+     */
+    public static void rollBreakable(Session s, SessionEquipment se) {
+        if (!BREAKABLE_EQUIPMENT.isActive(s)) return;
+        EquipmentType type = se.getEquipment().getType();
+        if (type == EquipmentType.ARTIFACT || type == EquipmentType.CONSUMABLE) return;
+        if (NeoRogue.gen.nextDouble() < BREAKABLE_CHANCE) {
+            se.setDurability(BREAKABLE_DURABILITY);
+        }
+    }
+
+    /**
+     * Rolls breakable chance for a list of SessionEquipment.
+     */
+    public static void rollBreakable(Session s, ArrayList<SessionEquipment> equips) {
+        for (SessionEquipment se : equips) {
+            rollBreakable(s, se);
+        }
     }
 }
