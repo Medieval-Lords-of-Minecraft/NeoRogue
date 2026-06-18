@@ -541,6 +541,16 @@ public class Session {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 
+	public boolean rollPotionChance(int incrementOnFail) {
+		if (NeoRogue.gen.nextInt(100) < potionChance) {
+			addPotionChance(-25);
+			return true;
+		} else {
+			addPotionChance(incrementOnFail);
+			return false;
+		}
+	}
+
 	public Equipment rollUpgrade(Equipment eq, double bonusChance) {
 		return rollUpgradeFormula(eq, bonusChance) ? eq.getUpgraded() : eq;
 	}

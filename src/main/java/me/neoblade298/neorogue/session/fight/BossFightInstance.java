@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Consumable;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
@@ -19,15 +15,12 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.instances.WinInstance;
-import me.neoblade298.neorogue.session.reward.CoinsReward;
-import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
-import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -87,48 +80,24 @@ public class BossFightInstance extends FightInstance {
 	}
 	
 	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
-		boolean dropPotion = false;
-		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
-			s.addPotionChance(-25);
-			dropPotion = true;
-		}
-		else {
-			s.addPotionChance(10);
-		}
+		boolean dropPotion = s.rollPotionChance(10);
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
-			ArrayList<Reward> list = new ArrayList<Reward>();
-			RewardFightEvent ev = new RewardFightEvent(NodeType.BOSS);
-			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			int coins = (int) 100 + ev.getBonusGold();
-			if (NotorietySetting.REDUCE_COINS.isActive(s)) {
-				coins = (int) (coins * NotorietySetting.REDUCE_COINS_MULTIPLIER);
-			}
-			list.add(new CoinsReward(coins));
+			RewardBuilder rb = new RewardBuilder(s, data, NodeType.BOSS);
+			int value = s.getBaseDropValue() + 4;
 
-			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getBaseDropValue() + 4 + ev.getBonusRarity();
-			equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
-			s.rollUpgrades(equipDrops, ev.getBonusUpgradeChance());
-			list.add(new EquipmentChoiceReward(equipDrops));
-			
-			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.CLASSLESS));
-			list.add(new EquipmentChoiceReward(equipDrops));
-			
-			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(RubyGem.get());
-			equipDrops.add(SapphireGem.get());
-			equipDrops.add(EmeraldGem.get());
-			list.add(new EquipmentChoiceReward(equipDrops));
-			list.add(new EquipmentReward(TomeOfWisdom.get()));
+			rb.coins(100);
+			rb.equipmentDrops(value, 3);
+			rb.upgradeDrops(0);
+			rb.artifacts(value, 3);
+			rb.gems(RubyGem.get(), SapphireGem.get(), EmeraldGem.get());
+			rb.extra(new EquipmentReward(TomeOfWisdom.get()));
 			if (dropPotion) {
-				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1 + ev.getBonusUpgradeChance())));
+				rb.consumable(value, 0.1);
 			}
-			rewards.put(uuid, list);
+
+			rewards.put(uuid, rb.build());
 		}
 		return rewards;
 	}

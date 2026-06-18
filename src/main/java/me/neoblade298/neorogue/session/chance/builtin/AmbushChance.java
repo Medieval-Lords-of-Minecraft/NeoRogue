@@ -1,10 +1,16 @@
 package me.neoblade298.neorogue.session.chance.builtin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
@@ -22,6 +28,8 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class AmbushChance extends ChanceSet {
@@ -55,7 +63,19 @@ public class AmbushChance extends ChanceSet {
 				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance you start a fight dealing 20% reduced damage.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
-						inst.setNextInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S), NodeType.FIGHT));
+						HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<>();
+						for (UUID uuid : s.getParty().keySet()) {
+							PlayerSessionData pdata = s.getParty().get(uuid);
+							RewardBuilder rb = new RewardBuilder(s, pdata, NodeType.FIGHT);
+							int value = rb.getBaseValue();
+							rb.coins(FightScore.S.getCoins());
+							rb.equipmentDropsRaw(value + 1, 2);
+							rb.equipmentDrops(value, 2, rb.getEquipDrops());
+							rb.upgradeDrops(FightScore.S.getUpgradeModifier());
+							rb.gems(RubyShard.get(), SapphireShard.get(), EmeraldShard.get());
+							rewards.put(uuid, rb.build());
+						}
+						inst.setNextInstance(new RewardInstance(s, rewards, NodeType.FIGHT));
 						s.broadcast("Success! You take your pick of the loot and go on your way.");
 					}
 					else {
