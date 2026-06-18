@@ -756,6 +756,10 @@ public class Session {
 		notoriety += amount;
 	}
 
+	public void setNotoriety(int amount) {
+		notoriety = Math.max(0, Math.min(amount, 10));
+	}
+
 	public double getRegionXpMultiplier() {
 		if (region == null) return 1.0;
 		switch (region.getType()) {

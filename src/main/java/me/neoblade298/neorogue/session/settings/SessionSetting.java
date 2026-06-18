@@ -21,47 +21,44 @@ public class SessionSetting {
     protected SettingValueRetriever valueRetriever;
     private SettingIconUpdater iconUpdater;
 
-    static {
-        settings.put(0, new SessionSetting("Endless Mode", (s, leftClick) -> {
-                s.setEndless(!s.isEndless());
-            },
-            (s) -> {
-                ItemStack icon = new ItemStack(Material.SCULK_CATALYST);
-                ItemMeta meta = icon.getItemMeta();
-                meta.displayName(Component.text("Endless Mode", NamedTextColor.GOLD));
-                ArrayList<Component> lore = new ArrayList<Component>();
-                if (s.isEndless()) {
-                    lore.add(Component.text("Enabled: ", NamedTextColor.WHITE)
-                            .append(Component.text("Yes", NamedTextColor.GREEN)));
-                }
-                else {
-                    lore.add(Component.text("Enabled: ", NamedTextColor.WHITE)
-                            .append(Component.text("No", NamedTextColor.RED)));
-                }
-                lore.add(Component.text("Enable to repeatedly cycle through regions.", NamedTextColor.GRAY));
-                meta.lore(lore);
-                if (s.isEndless()) {
-                    meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-                icon.setItemMeta(meta);
-                NBTItem nbti = new NBTItem(icon);
-                nbti.setInteger("id", 0);
-                return nbti.getItem();
-            },
-            (s) -> {
-                return s.isEndless() ? 1 : 0;
-            }));
-    }
+    public static final SessionSetting ENDLESS_MODE = new SessionSetting(
+        0, "Endless Mode", Material.SCULK_CATALYST,
+        "Enable to repeatedly cycle through regions.",
+        (s, leftClick) -> s.setEndless(!s.isEndless()),
+        s -> s.isEndless() ? 1 : 0
+    );
 
-    // Used for notoriety settings
-    public SessionSetting(String title, SettingEffect effect, SettingValueRetriever valueRetriever) {
+    // Toggle setting with standardized icon (enchant glow when enabled, Yes/No lore)
+    public SessionSetting(int id, String title, Material mat, String description,
+            SettingEffect effect, SettingValueRetriever valueRetriever) {
         this.title = title;
         this.effect = effect;
         this.valueRetriever = valueRetriever;
+        this.iconUpdater = (s) -> {
+            boolean enabled = valueRetriever.get(s) != 0;
+            ItemStack icon = new ItemStack(mat);
+            ItemMeta meta = icon.getItemMeta();
+            meta.displayName(Component.text(title, NamedTextColor.GOLD));
+            ArrayList<Component> lore = new ArrayList<>();
+            lore.add(Component.text("Enabled: ", NamedTextColor.WHITE)
+                    .append(enabled
+                            ? Component.text("Yes", NamedTextColor.GREEN)
+                            : Component.text("No", NamedTextColor.RED)));
+            lore.add(Component.text(description, NamedTextColor.GRAY));
+            meta.lore(lore);
+            if (enabled) {
+                meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            icon.setItemMeta(meta);
+            NBTItem nbti = new NBTItem(icon);
+            nbti.setInteger("id", id);
+            return nbti.getItem();
+        };
+        settings.put(id, this);
     }
 
-    // Used for generic settings
+    // Used for settings with a fully custom icon
     public SessionSetting(String title, SettingEffect effect, SettingIconUpdater iconUpdater, SettingValueRetriever valueRetriever) {
         this.title = title;
         this.effect = effect;
