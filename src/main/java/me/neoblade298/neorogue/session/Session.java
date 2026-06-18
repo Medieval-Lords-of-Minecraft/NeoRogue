@@ -781,6 +781,10 @@ public class Session {
 		return 1.0 + notoriety * 0.05;
 	}
 
+	public int getNotorietyXpBonusPercent() {
+		return notoriety * 5;
+	}
+
 	public void awardXp(int baseXp) {
 		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {

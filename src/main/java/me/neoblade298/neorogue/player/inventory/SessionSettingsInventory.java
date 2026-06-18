@@ -94,9 +94,8 @@ public class SessionSettingsInventory extends CoreInventory {
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
 		ArrayList<Component> lore = new ArrayList<>();
-		int xpBonus = (int) Math.round((s.getNotorietyXpMultiplier() - 1.0) * 100);
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
-				.append(Component.text("+" + xpBonus + "%", NamedTextColor.GREEN)));
+				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN)));
 		lore.add(Component.empty());
 		if (notoriety > 0) {
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD));

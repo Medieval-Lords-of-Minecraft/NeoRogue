@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -270,7 +271,25 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {
 		Session s = data.getSession();
-		return CoreInventory.createButton(Material.ARMOR_STAND, Component.text("Your Notoriety", NamedTextColor.GOLD));
+		int notoriety = s.getNotoriety();
+		ItemStack item = new ItemStack(Material.NETHER_STAR);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
+				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
+		java.util.ArrayList<Component> lore = new java.util.ArrayList<>();
+		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
+				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN)));
+		if (notoriety > 0) {
+			lore.add(Component.empty());
+			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD));
+			for (int i = 0; i < notoriety; i++) {
+				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
+						.append(NotorietySetting.settings.get(i).getHeader()));
+			}
+		}
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	@Override
