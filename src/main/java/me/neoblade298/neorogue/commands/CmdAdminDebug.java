@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.session.ShopContents;
+import me.neoblade298.neorogue.session.shop.ShopContents;
 
 public class CmdAdminDebug extends Subcommand {
 

@@ -10,9 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Consumable;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
 import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
@@ -21,13 +18,10 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.event.RewardFightEvent;
-import me.neoblade298.neorogue.session.event.SessionTrigger;
-import me.neoblade298.neorogue.session.reward.CoinsReward;
-import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
-import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -95,7 +89,8 @@ public class StandardFightInstance extends FightInstance {
 			@Override
 			public void run() {
 				time++;
-				double fightTimeMult = (1 - (s.getFightTimeReduction() * Session.FIGHT_TIME_REDUCTION_PER_LEVEL));
+				double fightTimeMult = (s.getRegionsCompleted() > 0 && NotorietySetting.REDUCED_SCORE_THRESHOLDS.isActive(s))
+						? NotorietySetting.SCORE_THRESHOLD_MULTIPLIER : 1;
 				timeBar.progress((float) (time / (fightScore.getThreshold() * fightTimeMult)));
 
 				if (time >= fightScore.getThreshold() * fightTimeMult) {
@@ -168,60 +163,44 @@ public class StandardFightInstance extends FightInstance {
 		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getKillValue());
 	}
 
-	public static HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
+	private HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
-		boolean dropPotion = false;
-		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
-			s.addPotionChance(-25);
-			dropPotion = true;
-		} else {
-			s.addPotionChance(10);
-		}
+		boolean dropPotion = s.rollPotionChance(10);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
-			ArrayList<Reward> list = new ArrayList<Reward>();
-			RewardFightEvent ev = new RewardFightEvent(NodeType.FIGHT);
-			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
-					* Session.COIN_REDUCTION_PER_LEVEL)) * fightScore.getCoins()) + ev.getBonusGold()));
+			RewardBuilder rb = new RewardBuilder(s, data, NodeType.FIGHT);
+			int value = rb.getBaseValue();
 
-			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getBaseDropValue() + ev.getBonusRarity();
+			rb.coins(fightScore.getCoins());
+
 			switch (fightScore) {
 			case S:
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value + 1, 2, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 2 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
+				rb.equipmentDropsRaw(value + 1, 2);
+				rb.equipmentDrops(value, 2, rb.getEquipDrops());
 				break;
 			case A:
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value + 1, 1, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 3 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
+				rb.equipmentDropsRaw(value + 1, 1);
+				rb.equipmentDrops(value, 3, rb.getEquipDrops());
 				break;
 			case B:
-				equipDrops.add(Equipment.getDrop(data.getData().getEquipmentDroptable(), value + 1, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 2 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
+				rb.equipmentDropsRaw(value + 1, 1);
+				rb.equipmentDrops(value, 2, rb.getEquipDrops());
 				break;
 			case C:
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+				rb.equipmentDrops(value, 3);
 				break;
 			case D:
-				equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 2 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+				rb.equipmentDrops(value, 2);
 				break;
 			}
 
-			s.rollUpgrades(equipDrops, fightScore.getUpgradeModifier() + ev.getBonusUpgradeChance());
-			list.add(new EquipmentChoiceReward(equipDrops));
-			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(RubyShard.get());
-			equipDrops.add(SapphireShard.get());
-			equipDrops.add(EmeraldShard.get());
-			list.add(new EquipmentChoiceReward(equipDrops));
+			rb.upgradeDrops(fightScore.getUpgradeModifier());
+			rb.gems(RubyShard.get(), SapphireShard.get(), EmeraldShard.get());
 			if (dropPotion) {
-				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, fightScore.getUpgradeModifier())));
+				rb.consumable(value, fightScore.getUpgradeModifier());
 			}
 
-			rewards.put(uuid, list);
+			rewards.put(uuid, rb.build());
 		}
 		return rewards;
 	}

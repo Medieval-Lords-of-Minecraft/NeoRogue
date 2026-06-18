@@ -3,10 +3,10 @@ package me.neoblade298.neorogue.session.chance.builtin;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.region.RegionType;
-import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
+import me.neoblade298.neorogue.session.instances.Instance;
 
 public class TestChance extends ChanceSet {
 

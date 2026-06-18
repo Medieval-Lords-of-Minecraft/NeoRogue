@@ -3,14 +3,15 @@ package me.neoblade298.neorogue.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.session.Instance;
-import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.LobbyInstance;
 
 public class CmdKick extends Subcommand {
 

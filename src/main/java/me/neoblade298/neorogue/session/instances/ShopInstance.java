@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.instances;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +23,11 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.GenerateShopEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.shop.ShopContents;
+import me.neoblade298.neorogue.session.shop.ShopInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -32,7 +35,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class ShopInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 4;
-	static final int NUM_ITEMS = 10;
+	public static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ShopContents> shops = new HashMap<UUID, ShopContents>();
 	private HashSet<UUID> ready = new HashSet<UUID>();

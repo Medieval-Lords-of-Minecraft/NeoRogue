@@ -18,12 +18,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.region.NodeType;
-import me.neoblade298.neorogue.session.EditInventoryInstance;
-import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 
 public class RewardInstance extends EditInventoryInstance {
@@ -164,8 +166,14 @@ public class RewardInstance extends EditInventoryInstance {
 
 							// Boss killed, region completed
 							if (previous == NodeType.BOSS) {
+								double healMult = NotorietySetting.REDUCED_BOSS_HEAL.isActive(s)
+										? NotorietySetting.BOSS_HEAL_MULTIPLIER : 1.0;
 								s.getParty().values().forEach(data -> {
-									data.healPercent(100);
+									Player p = data.getPlayer();
+									double missing = data.getMaxHealth() - data.getHealth();
+									data.setHealth(data.getHealth() + (missing * healMult));
+									PlayerSessionData.heal.play(p, p);
+									Sounds.levelup.play(p, p);
 								});
 								s.incrementRegionsCompleted();
 							}

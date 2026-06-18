@@ -35,10 +35,10 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.EditInventoryInstance;
-import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -270,15 +270,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {
 		Session s = data.getSession();
-		TextComponent health = Component.text("Enemy Health Scaling: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getEnemyHealthScale(), NamedTextColor.WHITE));
-		TextComponent dmg = Component.text("Enemy Damage Scaling: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getEnemyDamageScale(), NamedTextColor.WHITE));
-		TextComponent gold = Component.text("Coin reduction: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getCoinReduction(), NamedTextColor.WHITE));
-		TextComponent time = Component.text("Fight Time Reduction: ", NamedTextColor.GOLD)
-				.append(Component.text("Lv " + s.getFightTimeReduction(), NamedTextColor.WHITE));
-		return CoreInventory.createButton(Material.ARMOR_STAND, Component.text("Your Notoriety", NamedTextColor.GOLD), health, dmg, gold, time);
+		return CoreInventory.createButton(Material.ARMOR_STAND, Component.text("Your Notoriety", NamedTextColor.GOLD));
 	}
 
 	@Override

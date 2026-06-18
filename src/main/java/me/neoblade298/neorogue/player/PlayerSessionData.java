@@ -54,6 +54,7 @@ import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -77,7 +78,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
 
-	private static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
+	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 3, ACCESSORY_SIZE = 6;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
@@ -168,6 +169,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		}
 
+		if (NotorietySetting.LESS_ACCESSORY_SLOT.isActive(s)) {
+			accessorySlots = Math.max(0, accessorySlots - 1);
+		}
 		initialize();
 		data.getPlayer().setHealth(maxHealth);
 	}

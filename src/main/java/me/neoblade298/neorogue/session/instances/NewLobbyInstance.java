@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.instances;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,6 +25,8 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

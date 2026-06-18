@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -152,10 +153,13 @@ public class Mob implements Comparable<Mob> {
 	public double getMaxHealthScale(Session s, int lvl) {
 		double mhealth = baseHealth;
 		if (type != MobType.NORMAL) {
-			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
+			mhealth *= 0.75 + (s.getParty().size() * 0.5); // 50% health increase per player, starting from 2 players
 			mhealth *= 1 + (s.getRegionsCompleted()); // 100% health increase per region completed
 		}
-		mhealth *= 1 + (lvl * (0.1 + (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * s.getEnemyHealthScale()))); // Base 10%
+		mhealth *= 1 + (lvl * 0.1); // Base 10%
+		if (NotorietySetting.INCREASE_HEALTH.isActive(s)) {
+			mhealth *= NotorietySetting.INCREASE_HEALTH_MULTIPLIER;
+		}
 																											// increase
 
 		return Math.round(mhealth);

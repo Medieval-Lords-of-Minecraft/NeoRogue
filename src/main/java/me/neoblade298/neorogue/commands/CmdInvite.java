@@ -8,10 +8,10 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.session.Instance;
-import me.neoblade298.neorogue.session.NewLobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 
 public class CmdInvite extends Subcommand {
 

@@ -6,11 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Artifact;
-import me.neoblade298.neorogue.equipment.Consumable;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
@@ -19,12 +14,9 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
-import me.neoblade298.neorogue.session.reward.CoinsReward;
-import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
-import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -74,44 +66,23 @@ public class MinibossFightInstance extends FightInstance {
 	}
 	
 	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
-		boolean dropPotion = false;
-		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
-			s.addPotionChance(-25);
-			dropPotion = true;
-		}
-		else {
-			s.addPotionChance(15);
-		}
-		
+		boolean dropPotion = s.rollPotionChance(15);
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
-			ArrayList<Reward> list = new ArrayList<Reward>();
-			RewardFightEvent ev = new RewardFightEvent(NodeType.MINIBOSS);
-			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
-					* Session.COIN_REDUCTION_PER_LEVEL)) * 50) + ev.getBonusGold()));
-			
-			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getBaseDropValue() + 2 + ev.getBonusRarity();
-			equipDrops.addAll(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
-			s.rollUpgrades(equipDrops, ev.getBonusUpgradeChance());
-			list.add(new EquipmentChoiceReward(equipDrops));
-			
-			Artifact art = Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.CLASSLESS).getFirst();
-			list.add(new EquipmentReward(art));
-			
-			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(RubyCluster.get());
-			equipDrops.add(SapphireCluster.get());
-			equipDrops.add(EmeraldCluster.get());
-			list.add(new EquipmentChoiceReward(equipDrops));
+			RewardBuilder rb = new RewardBuilder(s, data, NodeType.MINIBOSS);
+			int value = s.getBaseDropValue() + 2;
+
+			rb.coins(50);
+			rb.equipmentDrops(value, 3);
+			rb.upgradeDrops(0);
+			rb.artifacts(value, 1);
+			rb.gems(RubyCluster.get(), SapphireCluster.get(), EmeraldCluster.get());
 			if (dropPotion) {
-				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1)));
+				rb.consumable(value, 0.1);
 			}
-			rewards.put(uuid, list);
+
+			rewards.put(uuid, rb.build());
 		}
 		return rewards;
 	}

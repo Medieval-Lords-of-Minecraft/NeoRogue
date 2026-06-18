@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.ShopInstance;
-import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
+import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.ShopInstance;
+import me.neoblade298.neorogue.session.instances.ShrineInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;

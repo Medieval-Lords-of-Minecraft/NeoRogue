@@ -11,9 +11,9 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.instances.LobbyInstance;
 
 public class CmdAdminEquipment extends Subcommand {
 	public CmdAdminEquipment(String key, String desc, String perm, SubcommandRunner runner) {
