@@ -39,10 +39,11 @@ public class WinInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
+		int sessionNotoriety = s.getNotoriety();
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			if (pd != null) {
-				pd.grantNotorietyWin(psd.getPlayerClass());
+			if (pd != null && sessionNotoriety >= pd.getMaxNotoriety(psd.getPlayerClass())) {
+				pd.increaseNotorietyMax(psd.getPlayerClass());
 			}
 		}
 

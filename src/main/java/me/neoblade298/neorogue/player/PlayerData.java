@@ -47,6 +47,7 @@ public class PlayerData {
 		int level = 1;
 		int exp = 0;
 		int points = 0;
+		int notorietyMax = 0;
 	}
 
 	private ClassProgression getOrCreateProgression(EquipmentClass ec) {
@@ -74,7 +75,6 @@ public class PlayerData {
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
 	private int slotsAvailable;
-	private EnumMap<EquipmentClass, Integer> notorietyWins = new EnumMap<>(EquipmentClass.class);
 	public static final int NOTORIETY_HARD_CAP = 10;
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
@@ -131,6 +131,7 @@ public class PlayerData {
 						prog.level = Math.max(1, classRs.getInt("level"));
 						prog.exp = classRs.getInt("exp");
 						prog.points = classRs.getInt("points");
+						prog.notorietyMax = classRs.getInt("notoriety_max");
 					}
 				}
 			}
@@ -191,23 +192,6 @@ public class PlayerData {
 		for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
 			unlockNodes.add(defaultNode);
 		}
-
-			// Load notoriety wins
-			try (PreparedStatement notorietyStmt = con.prepareStatement("SELECT * FROM neorogue_notoriety WHERE uuid = ?;")) {
-				notorietyStmt.setString(1, uuidStr);
-				try (ResultSet notorietyRs = notorietyStmt.executeQuery()) {
-					while (notorietyRs.next()) {
-						String classKey = notorietyRs.getString("class");
-						int wins = notorietyRs.getInt("wins");
-						try {
-							EquipmentClass ec = EquipmentClass.valueOf(classKey);
-							notorietyWins.put(ec, wins);
-						} catch (IllegalArgumentException e) {
-							Bukkit.getLogger().warning("[NeoRogue] Unknown class in notoriety data: " + classKey);
-						}
-					}
-				}
-			}
 
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
@@ -357,49 +341,28 @@ public class PlayerData {
 	}
 
 	public int getMaxNotoriety() {
-		return notorietyWins.values().stream().mapToInt(Integer::intValue).sum();
+		return progression.entrySet().stream()
+				.filter(e -> e.getKey() != null)
+				.mapToInt(e -> e.getValue().notorietyMax)
+				.sum();
 	}
 
 	public int getMaxNotoriety(EquipmentClass ec) {
 		if (ec == null) return 0;
-		return Math.min(notorietyWins.getOrDefault(ec, 0), NOTORIETY_HARD_CAP);
+		ClassProgression prog = progression.get(ec);
+		return prog == null ? 0 : Math.min(prog.notorietyMax, NOTORIETY_HARD_CAP);
 	}
 
-	public void grantNotorietyWin(EquipmentClass ec) {
+	public void increaseNotorietyMax(EquipmentClass ec) {
 		if (ec == null) return;
-		notorietyWins.merge(ec, 1, Integer::sum);
-		saveNotorietyWinsAsync();
+		getOrCreateProgression(ec).notorietyMax++;
+		saveClassProgressionAsync();
 	}
 
-	private void saveNotorietyWinsAsync() {
-		final String uuidStr = uuid.toString();
-		final EnumMap<EquipmentClass, Integer> snapshot = new EnumMap<>(notorietyWins);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
-					try (PreparedStatement clear = con.prepareStatement(
-							"DELETE FROM neorogue_notoriety WHERE uuid = ?;")) {
-						clear.setString(1, uuidStr);
-						clear.executeUpdate();
-					}
-					if (snapshot.isEmpty()) return;
-					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_notoriety");
-					for (var entry : snapshot.entrySet()) {
-						sql.addValue("uuid", uuidStr)
-								.addValue("class", entry.getKey().name())
-								.addValue("wins", entry.getValue())
-								.addRow();
-					}
-					try (PreparedStatement ps = sql.build(con)) {
-						ps.executeBatch();
-					}
-				} catch (SQLException ex) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to save notoriety wins for " + uuidStr);
-					ex.printStackTrace();
-				}
-			}
-		}.runTaskAsynchronously(NeoRogue.inst());
+	public void setNotorietyMax(EquipmentClass ec, int wins) {
+		if (ec == null) return;
+		getOrCreateProgression(ec).notorietyMax = Math.max(0, wins);
+		saveClassProgressionAsync();
 	}
 
 	private void saveDisplayAsync() {
@@ -432,6 +395,7 @@ public class PlayerData {
 			copy.level = orig.level;
 			copy.exp = orig.exp;
 			copy.points = orig.points;
+			copy.notorietyMax = orig.notorietyMax;
 			snapshot.put(entry.getKey(), copy);
 		}
 		new BukkitRunnable() {
@@ -452,6 +416,7 @@ public class PlayerData {
 								.addValue("level", prog.level)
 								.addValue("exp", prog.exp)
 								.addValue("points", prog.points)
+								.addValue("notoriety_max", prog.notorietyMax)
 								.addRow();
 					}
 					try (PreparedStatement ps = sql.build(con)) {

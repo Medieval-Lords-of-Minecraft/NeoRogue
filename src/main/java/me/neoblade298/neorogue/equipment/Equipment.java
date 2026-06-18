@@ -1435,9 +1435,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	 * The returned pair is already in the correct order (primary holds the reforge option map entry).
 	 */
 	public static Equipment[] resolveReforgePair(Equipment eq, Equipment eqed) {
+		if (eq == null || eqed == null) return null;
 		if (eq.containsReforgeOption(eqed.getId())) {
 			return new Equipment[]{eq, eqed};
-		} else if (eqed != null && eqed.containsReforgeOption(eq.getId())) {
+		} else if (eqed.containsReforgeOption(eq.getId())) {
 			return new Equipment[]{eqed, eq};
 		}
 		return null;

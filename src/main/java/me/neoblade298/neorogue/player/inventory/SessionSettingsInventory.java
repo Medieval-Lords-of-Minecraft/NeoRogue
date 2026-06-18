@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.session.settings.SessionSetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class SessionSettingsInventory extends CoreInventory {
 	private static SoundContainer click = new SoundContainer(Sound.UI_BUTTON_CLICK);
@@ -77,7 +78,7 @@ public class SessionSettingsInventory extends CoreInventory {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety", NamedTextColor.GRAY));
 		ArrayList<Component> lore = new ArrayList<>();
-		lore.add(Component.text("Only the host can adjust notoriety", NamedTextColor.DARK_GRAY));
+		lore.add(Component.text("Only the host can adjust notoriety", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
@@ -91,10 +92,10 @@ public class SessionSettingsInventory extends CoreInventory {
 		ArrayList<Component> lore = new ArrayList<>();
 		if (notoriety > 0) {
 			NotorietySetting removing = NotorietySetting.settings.get(notoriety - 1);
-			lore.add(Component.text("Would remove:", NamedTextColor.GRAY));
-			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(removing.getHeader()));
+			lore.add(Component.text("Would remove:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(removing.getHeader()).decoration(TextDecoration.ITALIC, false));
 		} else {
-			lore.add(Component.text("Already at minimum!", NamedTextColor.GRAY));
+			lore.add(Component.text("Already at minimum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
@@ -105,22 +106,24 @@ public class SessionSettingsInventory extends CoreInventory {
 
 	private ItemStack createNotorietyIcon() {
 		int notoriety = s.getNotoriety();
-		ItemStack item = new ItemStack(Material.NETHER_STAR);
+		ItemStack item = new ItemStack(Material.OMINOUS_BOTTLE);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(inst.getHostClass()), NamedTextColor.WHITE)));
 		ArrayList<Component> lore = new ArrayList<>();
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
-				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN)));
-		lore.add(Component.empty());
+				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
+				.decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.empty().decoration(TextDecoration.ITALIC, false));
 		if (notoriety > 0) {
-			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD));
+			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 			for (int i = 0; i < notoriety; i++) {
 				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-						.append(NotorietySetting.settings.get(i).getHeader()));
+						.append(NotorietySetting.settings.get(i).getHeader())
+						.decoration(TextDecoration.ITALIC, false));
 			}
 		} else {
-			lore.add(Component.text("No active effects", NamedTextColor.GRAY));
+			lore.add(Component.text("No active effects", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
@@ -136,10 +139,10 @@ public class SessionSettingsInventory extends CoreInventory {
 		ArrayList<Component> lore = new ArrayList<>();
 		if (notoriety < max) {
 			NotorietySetting adding = NotorietySetting.settings.get(notoriety);
-			lore.add(Component.text("Would add:", NamedTextColor.GRAY));
-			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(adding.getHeader()));
+			lore.add(Component.text("Would add:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(adding.getHeader()).decoration(TextDecoration.ITALIC, false));
 		} else {
-			lore.add(Component.text("Already at maximum!", NamedTextColor.GRAY));
+			lore.add(Component.text("Already at maximum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);

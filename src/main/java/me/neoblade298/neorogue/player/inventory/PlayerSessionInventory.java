@@ -272,7 +272,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {
 		Session s = data.getSession();
 		int notoriety = s.getNotoriety();
-		ItemStack item = new ItemStack(Material.NETHER_STAR);
+		ItemStack item = new ItemStack(Material.OMINOUS_BOTTLE);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
