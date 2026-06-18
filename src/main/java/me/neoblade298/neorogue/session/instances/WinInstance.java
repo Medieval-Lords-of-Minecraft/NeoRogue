@@ -13,6 +13,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -36,6 +38,13 @@ public class WinInstance extends EditInventoryInstance {
 			teleportRandomly(p);
 		}
 		super.setup();
+
+		for (PlayerSessionData psd : s.getParty().values()) {
+			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
+			if (pd != null) {
+				pd.grantNotorietyWin(psd.getPlayerClass());
+			}
+		}
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, true);

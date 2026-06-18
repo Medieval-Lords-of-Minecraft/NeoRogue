@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int NEW_GAME = 11, LOAD_GAME = 12, ACHIEVEMENTS = 13, SPECTATE = 14, UNLOCKS = 15, LEVELS = 4;
+	private static final int NEW_GAME = 11, LOAD_GAME = 12, SPECTATE = 13, ACHIEVEMENTS = 14, UNLOCKS = 15, LEVELS = 4;
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));

@@ -60,11 +60,27 @@ public class SessionSettingsInventory extends CoreInventory {
 		for (int i = 9; i < 18; i++) {
 			contents[i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.empty());
 		}
-		contents[12] = createDownArrow();
 		contents[13] = createNotorietyIcon();
-		contents[14] = createUpArrow();
+		if (isHost) {
+			contents[12] = createDownArrow();
+			contents[14] = createUpArrow();
+		} else {
+			contents[12] = createDisabledArrow();
+			contents[14] = createDisabledArrow();
+		}
 
 		inv.setContents(contents);
+	}
+
+	private ItemStack createDisabledArrow() {
+		ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(Component.text("Notoriety", NamedTextColor.GRAY));
+		ArrayList<Component> lore = new ArrayList<>();
+		lore.add(Component.text("Only the host can adjust notoriety", NamedTextColor.DARK_GRAY));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private ItemStack createDownArrow() {
@@ -92,7 +108,7 @@ public class SessionSettingsInventory extends CoreInventory {
 		ItemStack item = new ItemStack(Material.NETHER_STAR);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
-				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
+				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(inst.getHostClass()), NamedTextColor.WHITE)));
 		ArrayList<Component> lore = new ArrayList<>();
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN)));
@@ -113,7 +129,7 @@ public class SessionSettingsInventory extends CoreInventory {
 
 	private ItemStack createUpArrow() {
 		int notoriety = s.getNotoriety();
-		int max = s.getMaxNotoriety();
+		int max = s.getMaxNotoriety(inst.getHostClass());
 		ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Increase Notoriety", NamedTextColor.GREEN));
@@ -147,7 +163,7 @@ public class SessionSettingsInventory extends CoreInventory {
 			if (action.equals("notoriety-down") && notoriety > 0) {
 				click.play(p, p, Audience.ORIGIN);
 				s.setNotoriety(notoriety - 1);
-			} else if (action.equals("notoriety-up") && notoriety < s.getMaxNotoriety()) {
+			} else if (action.equals("notoriety-up") && notoriety < s.getMaxNotoriety(inst.getHostClass())) {
 				click.play(p, p, Audience.ORIGIN);
 				s.setNotoriety(notoriety + 1);
 			}

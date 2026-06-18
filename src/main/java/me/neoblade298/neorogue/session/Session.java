@@ -749,7 +749,13 @@ public class Session {
 	}
 
 	public int getMaxNotoriety() {
-		return PlayerManager.getPlayerData(host).getMaxNotoriety();
+		PlayerSessionData hostData = party.get(host);
+		EquipmentClass ec = hostData != null ? hostData.getPlayerClass() : null;
+		return PlayerManager.getPlayerData(host).getMaxNotoriety(ec);
+	}
+
+	public int getMaxNotoriety(EquipmentClass ec) {
+		return PlayerManager.getPlayerData(host).getMaxNotoriety(ec);
 	}
 	
 	public void addNotoriety(int amount) {

@@ -73,7 +73,9 @@ public class PlayerData {
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
-	private int slotsAvailable, maxNotoriety;
+	private int slotsAvailable;
+	private EnumMap<EquipmentClass, Integer> notorietyWins = new EnumMap<>(EquipmentClass.class);
+	public static final int NOTORIETY_HARD_CAP = 10;
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
 	
@@ -186,9 +188,27 @@ public class PlayerData {
 					}
 				}
 			}
-			for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
-				unlockNodes.add(defaultNode);
+		for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
+			unlockNodes.add(defaultNode);
+		}
+
+			// Load notoriety wins
+			try (PreparedStatement notorietyStmt = con.prepareStatement("SELECT * FROM neorogue_notoriety WHERE uuid = ?;")) {
+				notorietyStmt.setString(1, uuidStr);
+				try (ResultSet notorietyRs = notorietyStmt.executeQuery()) {
+					while (notorietyRs.next()) {
+						String classKey = notorietyRs.getString("class");
+						int wins = notorietyRs.getInt("wins");
+						try {
+							EquipmentClass ec = EquipmentClass.valueOf(classKey);
+							notorietyWins.put(ec, wins);
+						} catch (IllegalArgumentException e) {
+							Bukkit.getLogger().warning("[NeoRogue] Unknown class in notoriety data: " + classKey);
+						}
+					}
+				}
 			}
+
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
 		} catch (SQLException e) {
@@ -337,11 +357,49 @@ public class PlayerData {
 	}
 
 	public int getMaxNotoriety() {
-		return maxNotoriety;
+		return notorietyWins.values().stream().mapToInt(Integer::intValue).sum();
 	}
 
-	public void addMaxNotoriety(int amount) {
-		maxNotoriety += amount;
+	public int getMaxNotoriety(EquipmentClass ec) {
+		if (ec == null) return 0;
+		return Math.min(notorietyWins.getOrDefault(ec, 0), NOTORIETY_HARD_CAP);
+	}
+
+	public void grantNotorietyWin(EquipmentClass ec) {
+		if (ec == null) return;
+		notorietyWins.merge(ec, 1, Integer::sum);
+		saveNotorietyWinsAsync();
+	}
+
+	private void saveNotorietyWinsAsync() {
+		final String uuidStr = uuid.toString();
+		final EnumMap<EquipmentClass, Integer> snapshot = new EnumMap<>(notorietyWins);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_notoriety WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+					if (snapshot.isEmpty()) return;
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_notoriety");
+					for (var entry : snapshot.entrySet()) {
+						sql.addValue("uuid", uuidStr)
+								.addValue("class", entry.getKey().name())
+								.addValue("wins", entry.getValue())
+								.addRow();
+					}
+					try (PreparedStatement ps = sql.build(con)) {
+						ps.executeBatch();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save notoriety wins for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
 	private void saveDisplayAsync() {

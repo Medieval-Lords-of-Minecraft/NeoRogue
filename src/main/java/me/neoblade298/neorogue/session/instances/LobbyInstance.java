@@ -13,6 +13,7 @@ import org.bukkit.entity.TextDisplay;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -67,6 +68,10 @@ public abstract class LobbyInstance extends Instance {
 	public abstract void startGame();
 
 	public abstract void displayInfo(Player viewer);
+
+	public EquipmentClass getHostClass() {
+		return null;
+	}
 
 	public void leavePlayer(Player p) {
 		if (s.isBusy()) {

@@ -267,7 +267,16 @@ public class NewLobbyInstance extends LobbyInstance {
         broadcast(tc);
         players.put(uuid, pc);
         updateBoardLines();
+        if (uuid.equals(s.getHost()) && data != null) {
+            int newMax = data.getMaxNotoriety(pc);
+            if (s.getNotoriety() > newMax) s.setNotoriety(newMax);
+        }
     }
+
+	@Override
+	public EquipmentClass getHostClass() {
+		return players.get(host);
+	}
 
 	private EquipmentClass getDefaultClass(UUID uuid) {
 		PlayerData data = PlayerManager.getPlayerData(uuid);

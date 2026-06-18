@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.session.shop.ShopInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -196,9 +197,13 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
 				Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
 				// Reforged item check
-				if (eq.containsReforgeOption(eqedId)) {
-					if (!Equipment.canReforge(eq, eqed)) {
-						displayError("At least one of the items must be upgraded to reforge!", true);
+				Equipment[] reforgePair = Equipment.resolveReforgePair(eq, eqed);
+				if (reforgePair != null) {
+					if (!Equipment.canReforge(reforgePair[0], reforgePair[1], data.getSession())) {
+						String msg = NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(data.getSession())
+								? "Both items must be upgraded to reforge!"
+								: "At least one of the items must be upgraded to reforge!";
+						displayError(msg, true);
 						return;
 					}
 					new BukkitRunnable() {
@@ -206,22 +211,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 							p.setItemOnCursor(null);
 							inv.setItem(e.getSlot(), null);
 							handleInventoryClose();
-							new ReforgeOptionsInventory(data, eq, eqed);
-						}
-					}.runTask(NeoRogue.inst());
-					return;
-				}
-				else if (eqed != null && eqed.containsReforgeOption(eqId)) {
-					if (!Equipment.canReforge(eq, eqed)) {
-						displayError("At least one of the items must be upgraded to reforge!", true);
-						return;
-					}
-					new BukkitRunnable() {
-						public void run() {
-							p.setItemOnCursor(null);
-							inv.setItem(e.getSlot(), null);
-							handleInventoryClose();
-							new ReforgeOptionsInventory(data, eqed, eq);
+							new ReforgeOptionsInventory(data, reforgePair[0], reforgePair[1]);
 						}
 					}.runTask(NeoRogue.inst());
 					return;

@@ -250,12 +250,14 @@ import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -1157,6 +1159,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public static boolean canReforge(Equipment eq, Equipment eqed) {
+		return canReforge(eq, eqed, null);
+	}
+
+	public static boolean canReforge(Equipment eq, Equipment eqed, Session session) {
+		if (session != null && NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(session)) {
+			return (eq.isUpgraded() || eq.isCursed()) && (eqed.isUpgraded() || eqed.isCursed());
+		}
 		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
 		boolean hasCurse = eq.isCursed() || eqed.isCursed();
 		return hasUpgrade || hasCurse;
@@ -1419,6 +1428,19 @@ public abstract class Equipment implements Comparable<Equipment> {
 				return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Returns {primary, secondary} if eq and eqed form a valid reforge pair, null otherwise.
+	 * The returned pair is already in the correct order (primary holds the reforge option map entry).
+	 */
+	public static Equipment[] resolveReforgePair(Equipment eq, Equipment eqed) {
+		if (eq.containsReforgeOption(eqed.getId())) {
+			return new Equipment[]{eq, eqed};
+		} else if (eqed != null && eqed.containsReforgeOption(eq.getId())) {
+			return new Equipment[]{eqed, eq};
+		}
+		return null;
 	}
 
 	// Should only ever be called with unupgraded parameters

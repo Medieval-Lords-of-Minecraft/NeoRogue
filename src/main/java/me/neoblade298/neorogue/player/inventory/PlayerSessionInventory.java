@@ -481,20 +481,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
 
 			// Reforged item check
-			if (eq.containsReforgeOption(eqedId)) {
-				if (!Equipment.canReforge(eq, eqed)) {
-					displayError("At least one of the items must be upgraded to reforge!", false);
+			Equipment[] reforgePair = Equipment.resolveReforgePair(eq, eqed);
+			if (reforgePair != null) {
+				if (!Equipment.canReforge(reforgePair[0], reforgePair[1], data.getSession())) {
+					String msg = NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(data.getSession())
+							? "Both items must be upgraded to reforge!"
+							: "At least one of the items must be upgraded to reforge!";
+					displayError(msg, false);
 					return;
 				}
-				handleReforge(e, eq, eqed, slot, nclicked, false);
-				return;
-			}
-			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
-				if (!Equipment.canReforge(eq, eqed)) {
-					displayError("At least one of the items must be upgraded to reforge!", false);
-					return;
-				}
-				handleReforge(e, eq, eqed, slot, nclicked, true);
+				handleReforge(e, reforgePair[0], reforgePair[1], slot, nclicked);
 				return;
 			}
 
@@ -538,7 +534,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 	}
 
-	private void handleReforge(InventoryClickEvent e, Equipment eq, Equipment eqed, int slot, NBTItem nclicked, boolean flipped) {
+	private void handleReforge(InventoryClickEvent e, Equipment primary, Equipment secondary, int slot, NBTItem nclicked) {
 		new BukkitRunnable() {
 			public void run() {
 				p.setItemOnCursor(null);
@@ -546,7 +542,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 				inv.setItem(slot, iconFromEquipSlot(type, slot));
 				handleInventoryClose();
-				new ReforgeOptionsInventory(data, flipped ? eqed : eq, flipped ? eq : eqed);
+				new ReforgeOptionsInventory(data, primary, secondary);
 			}
 		}.runTask(NeoRogue.inst());
 		return;

@@ -791,7 +791,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					for (EquipmentMetadata m2 : partnerInstances) {
 						// For self-reforges, ensure different instances
 						if (m1.getEquipSlot() == m2.getEquipSlot() && m1.getSlot() == m2.getSlot()) continue;
-						if (Equipment.canReforge(m1.getEquipment(), m2.getEquipment())) {
+						if (Equipment.canReforge(m1.getEquipment(), m2.getEquipment(), getSession())) {
 							best1 = m1;
 							best2 = m2;
 							break;
