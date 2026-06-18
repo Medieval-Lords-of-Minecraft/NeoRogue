@@ -3,6 +3,7 @@ package me.neoblade298.neorogue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -101,6 +102,7 @@ public class NeoRogue extends JavaPlugin {
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
+	private static HashSet<String> debugFlags = new HashSet<>();
 	
 	public static File SCHEMATIC_FOLDER = new File("/home/mlmc/dev/plugins/FastAsyncWorldEdit/schematics");
 	
@@ -220,6 +222,18 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static NeoRogue inst() {
 		return inst;
+	}
+	
+	public static boolean toggleDebugFlag(String flag) {
+		if (!debugFlags.add(flag)) {
+			debugFlags.remove(flag);
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isDebugFlag(String flag) {
+		return debugFlags.contains(flag);
 	}
 	
 	public static void debugInitialize(Player host, @Nullable Collection<Player> others, EquipmentClass ec, RegionType regionType) {

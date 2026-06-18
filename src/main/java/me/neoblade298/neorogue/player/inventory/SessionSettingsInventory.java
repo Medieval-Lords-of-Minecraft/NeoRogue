@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -25,8 +26,10 @@ import me.neoblade298.neorogue.session.instances.LobbyInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.session.settings.SessionSetting;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class SessionSettingsInventory extends CoreInventory {
 	private static SoundContainer click = new SoundContainer(Sound.UI_BUTTON_CLICK);
@@ -88,12 +91,15 @@ public class SessionSettingsInventory extends CoreInventory {
 		int notoriety = s.getNotoriety();
 		ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("Decrease Notoriety", NamedTextColor.RED));
+		meta.displayName(Component.text("Decrease Notoriety", NamedTextColor.RED)
+				.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> lore = new ArrayList<>();
 		if (notoriety > 0) {
 			NotorietySetting removing = NotorietySetting.settings.get(notoriety - 1);
 			lore.add(Component.text("Would remove:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(removing.getHeader()).decoration(TextDecoration.ITALIC, false));
+			for (TextComponent line : removing.getHeader()) {
+				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
+			}
 		} else {
 			lore.add(Component.text("Already at minimum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
@@ -109,6 +115,7 @@ public class SessionSettingsInventory extends CoreInventory {
 		ItemStack item = new ItemStack(Material.OMINOUS_BOTTLE);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
+				.decoration(TextDecoration.ITALIC, State.FALSE)
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(inst.getHostClass()), NamedTextColor.WHITE)));
 		ArrayList<Component> lore = new ArrayList<>();
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
@@ -118,14 +125,17 @@ public class SessionSettingsInventory extends CoreInventory {
 		if (notoriety > 0) {
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 			for (int i = 0; i < notoriety; i++) {
-				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-						.append(NotorietySetting.settings.get(i).getHeader())
-						.decoration(TextDecoration.ITALIC, false));
+				for (TextComponent line : NotorietySetting.settings.get(i).getHeader()) {
+					lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
+							.append(line)
+							.decoration(TextDecoration.ITALIC, false));
+				}
 			}
 		} else {
 			lore.add(Component.text("No active effects", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -135,12 +145,19 @@ public class SessionSettingsInventory extends CoreInventory {
 		int max = s.getMaxNotoriety(inst.getHostClass());
 		ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("Increase Notoriety", NamedTextColor.GREEN));
+		meta.displayName(Component.text("Increase Notoriety", NamedTextColor.GREEN)
+			.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> lore = new ArrayList<>();
 		if (notoriety < max) {
 			NotorietySetting adding = NotorietySetting.settings.get(notoriety);
 			lore.add(Component.text("Would add:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-			lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(adding.getHeader()).decoration(TextDecoration.ITALIC, false));
+			for (TextComponent line : adding.getHeader()) {
+				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
+			}
+			lore.add(Component.empty());
+			for (TextComponent line : adding.getLore()) {
+				lore.add(line.decoration(TextDecoration.ITALIC, true));
+			}
 		} else {
 			lore.add(Component.text("Already at maximum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}

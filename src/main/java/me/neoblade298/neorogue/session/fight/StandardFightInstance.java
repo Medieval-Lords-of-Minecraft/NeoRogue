@@ -149,6 +149,10 @@ public class StandardFightInstance extends FightInstance {
 		if (!isActive)
 			return;
 		
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] respawnMob: mob=" + id + " isDespawn=" + isDespawn
+				+ " playerKill=" + playerKill + " killValue=" + mob.getKillValue()
+				+ " spawnCounter=" + spawnCounter + " totalKillValue=" + totalKillValue);
+		
 		if (data.getSpawner() != null) {
 			data.getSpawner().subtractActiveMobs();
 		}

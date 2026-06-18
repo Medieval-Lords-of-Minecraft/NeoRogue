@@ -1001,12 +1001,21 @@ public abstract class FightInstance extends Instance {
 				double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
 				double toActivate = rngBonus + (map.getEffectiveSize() / 2);
 				
+				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn: rngBonus=" + rngBonus
+						+ " mapSize=" + map.getEffectiveSize() + " toActivate=" + toActivate
+						+ " spawners=" + spawners.size() + " initialSpawns=" + fi.initialSpawns.size());
+				
 				// Always spawn one of the closest spawners if it exists (it won't for minibosses and bosses)
-				if (!spawnersByDist.isEmpty()) spawnersByDist.getFirst().spawnMob();
+				if (!spawnersByDist.isEmpty()) {
+					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Spawning closest spawner");
+					spawnersByDist.getFirst().spawnMob();
+				}
+				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Calling activateSpawner(" + toActivate + ")");
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
+					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn entry: " + inst.getMob().getId());
 					inst.spawnMob();
 				}
 			}
@@ -1240,6 +1249,7 @@ public abstract class FightInstance extends Instance {
 			return value;
 		if (value <= 0)
 			return value;
+		int spawnCount = 0;
 		while (current < value) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {
@@ -1247,7 +1257,10 @@ public abstract class FightInstance extends Instance {
 			}
 			spawner.spawnMob();
 			current += spawner.getMob().getSpawnValue();
+			spawnCount++;
 		}
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] activateSpawner: budget=" + value
+				+ " spent=" + current + " spawnCalls=" + spawnCount + " leftover=" + (value - current));
 		return value - current;
 	}
 	

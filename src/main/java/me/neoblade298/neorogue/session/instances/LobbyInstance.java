@@ -91,6 +91,7 @@ public abstract class LobbyInstance extends Instance {
 					.append(Component.text(" disbanded the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);
 			SessionManager.endSession(s);
+			SessionManager.resetPlayer(p);
 			p.teleport(NeoRogue.spawn);
 			return;
 		} else {
@@ -100,6 +101,7 @@ public abstract class LobbyInstance extends Instance {
 			broadcast(tc);
 			inLobby.remove(p.getUniqueId());
 		}
+		SessionManager.resetPlayer(p);
 		p.teleport(NeoRogue.spawn);
 		updateBoardLines();
 	}

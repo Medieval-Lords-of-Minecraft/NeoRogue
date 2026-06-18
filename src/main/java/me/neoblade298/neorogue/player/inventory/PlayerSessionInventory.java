@@ -255,7 +255,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		TextComponent cls = Component.text("Class: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getPlayerClass().getDisplay(), NamedTextColor.WHITE));
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getHealth()) + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getHealth()) + " / " + df.format(data.getMaxHealth()), NamedTextColor.WHITE));
 		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
 				.append(Component.text(df.format(data.getMaxMana()), NamedTextColor.WHITE));
 		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
@@ -283,11 +283,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			lore.add(Component.empty());
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD));
 			for (int i = 0; i < notoriety; i++) {
-				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-						.append(NotorietySetting.settings.get(i).getHeader()));
+				for (net.kyori.adventure.text.TextComponent line : NotorietySetting.settings.get(i).getHeader()) {
+					lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
+							.append(line));
+				}
 			}
 		}
 		meta.lore(lore);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
 		return item;
 	}

@@ -106,6 +106,13 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			e.setCancelled(true);
 			return;
 		}
+
+		// Block hotbar swaps to prevent moving non-equipment items into storage
+		if (e.getAction() == org.bukkit.event.inventory.InventoryAction.HOTBAR_SWAP) {
+			e.setCancelled(true);
+			return;
+		}
+
 		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		
 		// First check for sells

@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.map;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -60,6 +61,9 @@ public class MapSpawnerInstance {
 	}
 	
 	public void spawnMob() {
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] spawnMob() called for " + origin.getMob().getId()
+				+ " amount=" + origin.getMob().getAmount() + " activeMobs=" + activeMobs + "/" + maxMobs
+				+ " at " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
 		for (int i = 0; i < origin.getMob().getAmount(); i++) {
 			Location loc = this.loc;
 			if (origin.getRadius() > 0) {

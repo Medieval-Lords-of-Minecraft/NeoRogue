@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.settings;
 
 import java.util.ArrayList;
 
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
@@ -81,20 +82,20 @@ public class NotorietySetting {
     );
 
     private final int level;
-    private final TextComponent header, lore;
+    private final ArrayList<TextComponent> header, lore;
 
     public NotorietySetting(TextComponent header, TextComponent lore) {
-        this.header = header;
-        this.lore = lore;
+        this.header = SharedUtil.addLineBreaks(header, 250);
+        this.lore = SharedUtil.addLineBreaks(lore, 250);
         settings.add(this);
         this.level = settings.size();
     }
 
-    public TextComponent getHeader() {
+    public ArrayList<TextComponent> getHeader() {
         return header;
     }
 
-    public TextComponent getLore() {
+    public ArrayList<TextComponent> getLore() {
         return lore;
     }
 

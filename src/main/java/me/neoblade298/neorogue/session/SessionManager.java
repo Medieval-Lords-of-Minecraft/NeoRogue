@@ -34,6 +34,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -199,6 +200,10 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) {
 			if (isMenuCompass(e.getCurrentItem()) || isMenuCompass(e.getCursor())) {
+				e.setCancelled(true);
+			}
+			if (e.getAction() == InventoryAction.HOTBAR_SWAP && e.getHotbarButton() >= 0
+					&& isMenuCompass(p.getInventory().getItem(e.getHotbarButton()))) {
 				e.setCancelled(true);
 			}
 			return;
