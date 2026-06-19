@@ -17,6 +17,7 @@ public class WoodenArrow extends Ammunition {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 7 : 2, 0.1, DamageType.PIERCING));
 		properties.addUpgrades(PropertyType.DAMAGE);
+		canDrop = false;
 	}
 
 	@Override

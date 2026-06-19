@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,6 +25,7 @@ public class BasicBow extends Bow {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 45 : 35, 1, 0, 12, 0, 0.6));
 		properties.addUpgrades(PropertyType.DAMAGE);
+		canDrop = false;
 	}
 
 	@Override

@@ -54,8 +54,10 @@ public abstract class ObjectiveAchievement implements Achievement {
 	@Override
 	public List<Component> getObjectiveLines(AchievementProgress progress) {
 		Set<String> completed = parseData(progress.getData());
+		List<String> sortedIds = new ArrayList<>(getObjectiveIds());
+		sortedIds.sort((a, b) -> getObjectiveDisplay(a).compareToIgnoreCase(getObjectiveDisplay(b)));
 		List<Component> lines = new ArrayList<>();
-		for (String objId : getObjectiveIds()) {
+		for (String objId : sortedIds) {
 			boolean done = completed.contains(objId);
 			String name = getObjectiveDisplay(objId);
 			lines.add(Component.text((done ? "\u2714" : "\u2718") + " " + name,

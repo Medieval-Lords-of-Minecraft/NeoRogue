@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -36,6 +35,7 @@ public class ShadowWalk extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, isUpgraded ? 17 : 21, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
+		canDrop = false;
 	}
 	
 	public static Equipment get() {
