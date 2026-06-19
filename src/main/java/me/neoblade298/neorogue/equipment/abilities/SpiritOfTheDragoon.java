@@ -25,8 +25,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	
 	public SpiritOfTheDragoon(boolean isUpgraded) {
 		super(ID, "Spirit of the Dragoon", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, 0));
-		shield = isUpgraded ? 20 : 15;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 3, 0));
+		shield = isUpgraded ? 10 : 5;
 		strength = isUpgraded ? 5 : 3;
 	}
 	
@@ -74,7 +74,7 @@ public class SpiritOfTheDragoon extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Grants the ability to double jump. Passively gain " + GlossaryTag.STRENGTH.tag(this, strength, true)
-						+ " upon falling from a small height. " + "Upon double jump, launch into the air and gain "
+						+ " upon falling from a small height. " + "Upon double jump, gain "
 						+ GlossaryTag.SHIELDS.tag(this, shield, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }
