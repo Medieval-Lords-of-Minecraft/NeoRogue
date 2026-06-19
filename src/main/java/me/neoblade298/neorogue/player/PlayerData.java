@@ -555,6 +555,7 @@ public class PlayerData {
 					.addValue("level", prog.level)
 					.addValue("exp", prog.exp)
 					.addValue("points", prog.points)
+					.addValue("notoriety_max", prog.notorietyMax)
 					.addRow();
 		}
 		stmts.add(classSql.build(con));
