@@ -275,17 +275,22 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		ItemStack item = new ItemStack(Material.OMINOUS_BOTTLE);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Notoriety: ", NamedTextColor.GOLD)
-				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
+				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE))
+				.decoration(TextDecoration.ITALIC, false));
 		java.util.ArrayList<Component> lore = new java.util.ArrayList<>();
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
-				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN)));
+				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
+				.decoration(TextDecoration.ITALIC, false));
 		if (notoriety > 0) {
 			lore.add(Component.empty());
-			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD));
+			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 			for (int i = 0; i < notoriety; i++) {
-				for (net.kyori.adventure.text.TextComponent line : NotorietySetting.settings.get(i).getHeader()) {
-					lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-							.append(line));
+				java.util.ArrayList<net.kyori.adventure.text.TextComponent> headerLines = NotorietySetting.settings.get(i).getHeader();
+				for (int j = 0; j < headerLines.size(); j++) {
+					String prefix = j == 0 ? "- " : "  ";
+					lore.add(Component.text(prefix, NamedTextColor.DARK_GRAY)
+							.append(headerLines.get(j))
+							.decoration(TextDecoration.ITALIC, false));
 				}
 			}
 		}

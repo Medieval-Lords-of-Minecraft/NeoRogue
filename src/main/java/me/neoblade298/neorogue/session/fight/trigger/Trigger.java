@@ -83,6 +83,7 @@ public enum Trigger {
 		case RIGHT_CLICK:
 		case RIGHT_CLICK_HIT:
 		case VANILLA_PROJECTILE:
+		case THROW_TRIDENT:
 			return true;
 		default:
 			return false;

@@ -64,7 +64,6 @@ public class Harpoon extends Equipment {
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, (pdata, in) -> {
 			Player p = data.getPlayer();
-			System.out.println("Here");
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, harpoonHit);
 			weaponSwing(p, data);

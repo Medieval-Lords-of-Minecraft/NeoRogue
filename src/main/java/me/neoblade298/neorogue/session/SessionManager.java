@@ -238,6 +238,7 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 
 		if (isMenuCompass(e.getMainHandItem()) || isMenuCompass(e.getOffHandItem())) {
+			e.setCancelled(true);
 			return;
 		}
 		if (sessions.containsKey(uuid)) {
@@ -268,7 +269,6 @@ public class SessionManager implements Listener {
 		if (sessions.get(p.getUniqueId()).isSpectator(p.getUniqueId()))
 			return;
 		if (e.getEntity() instanceof Trident) {
-			System.out.println("Trident launched by " + p.getName());
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		} else if (e.getEntity() instanceof AbstractArrow) {
 			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
