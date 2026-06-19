@@ -98,7 +98,7 @@ public class SessionSettingsInventory extends CoreInventory {
 			NotorietySetting removing = NotorietySetting.settings.get(notoriety - 1);
 			lore.add(Component.text("Would remove:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			for (TextComponent line : removing.getHeader()) {
-				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
+				lore.add(Component.text(" ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
 			}
 		} else {
 			lore.add(Component.text("Already at minimum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
@@ -125,9 +125,11 @@ public class SessionSettingsInventory extends CoreInventory {
 		if (notoriety > 0) {
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 			for (int i = 0; i < notoriety; i++) {
-				for (TextComponent line : NotorietySetting.settings.get(i).getHeader()) {
-					lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-							.append(line)
+				ArrayList<TextComponent> headerLines = NotorietySetting.settings.get(i).getHeader();
+				for (int j = 0; j < headerLines.size(); j++) {
+					String prefix = j == 0 ? "- " : "  ";
+					lore.add(Component.text(prefix, NamedTextColor.DARK_GRAY)
+							.append(headerLines.get(j))
 							.decoration(TextDecoration.ITALIC, false));
 				}
 			}
@@ -152,11 +154,11 @@ public class SessionSettingsInventory extends CoreInventory {
 			NotorietySetting adding = NotorietySetting.settings.get(notoriety);
 			lore.add(Component.text("Would add:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			for (TextComponent line : adding.getHeader()) {
-				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
+				lore.add(Component.text(" ", NamedTextColor.DARK_GRAY).append(line).decoration(TextDecoration.ITALIC, false));
 			}
 			lore.add(Component.empty());
 			for (TextComponent line : adding.getLore()) {
-				lore.add(line.decoration(TextDecoration.ITALIC, true));
+				lore.add(line.decoration(TextDecoration.ITALIC, true).color(NamedTextColor.GRAY));
 			}
 		} else {
 			lore.add(Component.text("Already at maximum!", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));

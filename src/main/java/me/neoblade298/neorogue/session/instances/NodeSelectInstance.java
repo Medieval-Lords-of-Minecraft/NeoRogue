@@ -63,7 +63,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 		// Set up boss hologram and tips
 		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
-		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().append(tips.get(NeoRogue.gen.nextInt(tips.size())));
+		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().appendNewline()
+				.append(Component.text("Tip: ", NamedTextColor.YELLOW).append(tips.get(NeoRogue.gen.nextInt(tips.size()))));
 		Location loc = spawn.clone().add(0, 2.8, 4);
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);

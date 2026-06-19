@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.BasicInfusionMastery;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -50,7 +49,7 @@ public class FencingSword extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			if (am.addCount(1) < 3) {
+			if (am.addCount(1) >= 3) {
 				am.setCount(0);
 				data.addSimpleShield(p.getUniqueId(), shields, 60);
 			}

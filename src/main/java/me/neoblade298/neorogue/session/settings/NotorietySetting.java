@@ -85,8 +85,8 @@ public class NotorietySetting {
     private final ArrayList<TextComponent> header, lore;
 
     public NotorietySetting(TextComponent header, TextComponent lore) {
-        this.header = SharedUtil.addLineBreaks(header, 250);
-        this.lore = SharedUtil.addLineBreaks(lore, 250);
+        this.header = SharedUtil.addLineBreaks(header, 160);
+        this.lore = SharedUtil.addLineBreaks(lore, 160);
         settings.add(this);
         this.level = settings.size();
     }

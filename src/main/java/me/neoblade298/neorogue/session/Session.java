@@ -748,6 +748,12 @@ public class Session {
 		return notoriety;
 	}
 
+	public void updateAllBoards() {
+		for (PlayerSessionData psd : party.values()) {
+			psd.updateBoardLines();
+		}
+	}
+
 	public int getMaxNotoriety() {
 		PlayerSessionData hostData = party.get(host);
 		EquipmentClass ec = hostData != null ? hostData.getPlayerClass() : null;

@@ -175,6 +175,7 @@ public class RewardInstance extends EditInventoryInstance {
 									PlayerSessionData.heal.play(p, p);
 									Sounds.levelup.play(p, p);
 								});
+								s.updateAllBoards();
 								s.incrementRegionsCompleted();
 							}
 						}

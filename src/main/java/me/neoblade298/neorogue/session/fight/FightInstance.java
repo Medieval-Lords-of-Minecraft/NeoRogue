@@ -481,8 +481,10 @@ public abstract class FightInstance extends Instance {
 	public void handleFlightToggle(PlayerToggleFlightEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
+		float fallDistance = p.getFallDistance();
 		trigger(p, Trigger.TOGGLE_FLIGHT, e);
 		p.setAllowFlight(false);
+		p.setFallDistance(fallDistance);
 		FightInstance fight = this;
 		new BukkitRunnable() {
 			public void run() {
