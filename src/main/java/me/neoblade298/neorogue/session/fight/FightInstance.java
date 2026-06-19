@@ -1009,6 +1009,7 @@ public abstract class FightInstance extends Instance {
 				if (!spawnersByDist.isEmpty()) {
 					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Spawning closest spawner");
 					spawnersByDist.getFirst().spawnMob();
+					toActivate -= spawnersByDist.getFirst().getMob().getSpawnValue();
 				}
 				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Calling activateSpawner(" + toActivate + ")");
 				activateSpawner(toActivate);

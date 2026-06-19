@@ -236,6 +236,10 @@ public class SessionManager implements Listener {
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
+
+		if (isMenuCompass(e.getMainHandItem()) || isMenuCompass(e.getOffHandItem())) {
+			return;
+		}
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);

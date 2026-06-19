@@ -53,6 +53,7 @@ public class FaerieGroveChance extends ChanceSet {
 					ArrayList<EquipmentMetadata> matches = data.aggregateEquipment((meta) -> {
 						return meta.getEquipment().serialize().equals(chosen);
 					});
+					Equipment chosenEq = Equipment.deserialize(chosen);
 					if (!matches.isEmpty()) {
 						EquipmentMetadata meta = matches.get(0);
 						data.removeEquipment(meta.getEquipSlot(), meta.getSlot());
@@ -61,7 +62,10 @@ public class FaerieGroveChance extends ChanceSet {
 					Equipment rewardEq = Equipment.deserialize(reward);
 					data.giveEquipment(rewardEq);
 					PlayerSessionInventory.setupInventory(p.getInventory(), data);
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> traded with the faerie!", p);
+					s.broadcastOthers(Component.text(p.getName(), NamedTextColor.YELLOW)
+							.append(Component.text(" traded ", NamedTextColor.WHITE))
+							.append(chosenEq.getHoverable())
+							.append(Component.text(" with the faerie!", NamedTextColor.WHITE)), p);
 					return null;
 				}));
 

@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
 	private static final int NEW_GAME = 11, LOAD_GAME = 12, SPECTATE = 13, ACHIEVEMENTS = 14, UNLOCKS = 15, LEVELS = 4;
@@ -50,17 +51,19 @@ public class MainMenuInventory extends CoreInventory {
 	private ItemStack createLevelsButton(PlayerData pd) {
 		ItemStack item = new ItemStack(Material.EXPERIENCE_BOTTLE);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("Levels", NamedTextColor.GREEN));
+		meta.displayName(Component.text("Stats", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
 		List<Component> lore = new ArrayList<>();
-		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD));
-		lore.add(Component.text("  XP: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY));
+		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.text("  XP: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.empty());
 		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
 			int level = pd.getLevel(ec);
 			int exp = pd.getExp(ec);
 			int required = PlayerData.getXpRequired(level);
-			lore.add(Component.text(ec.getDisplay() + " Level: " + level, NamedTextColor.YELLOW));
-			lore.add(Component.text("  XP: " + exp + "/" + required, NamedTextColor.GRAY));
+			int notoriety = pd.getMaxNotoriety(ec);
+			lore.add(Component.text(ec.getDisplay() + " Level: " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("  XP: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("  Max Notoriety: " + notoriety, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
