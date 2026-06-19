@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FullPartyAchievement implements Achievement {
-	private static final String ID = "full_party";
+	private static final String ID = "strength_in_numbers";
 	private static final int[] THRESHOLDS = { 1, 1, 1 };
 
 	@Override

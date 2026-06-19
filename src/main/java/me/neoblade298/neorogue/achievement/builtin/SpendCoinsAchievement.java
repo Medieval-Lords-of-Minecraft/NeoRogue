@@ -20,7 +20,7 @@ public class SpendCoinsAchievement implements Achievement {
 
 	@Override
 	public String getId() {
-		return "spend_coins";
+		return "big_spender";
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class SpendCoinsAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger("spend_coins", SessionTrigger.SPEND_COINS, (pdata, in) -> {
+		data.addTrigger("big_spender", SessionTrigger.SPEND_COINS, (pdata, in) -> {
 			int amount = (int) in;
 			if (progress.addProgress(amount)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);

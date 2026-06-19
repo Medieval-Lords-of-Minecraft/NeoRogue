@@ -28,6 +28,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.commands.CmdAchievements;
+import me.neoblade298.neorogue.commands.CmdAdminAchievement;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
@@ -217,6 +218,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminSetNotoriety("setnotoriety", "Set a player's max notoriety level per class", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReset("reset", "Reset all progress for a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

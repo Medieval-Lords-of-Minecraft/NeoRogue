@@ -16,7 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BeatMinibossesAchievement implements Achievement {
-	private static final String ID = "beat_minibosses";
+	private static final String ID = "miniboss_slayer";
 	private static final int[] THRESHOLDS = { 1, 5, 20, 100 };
 
 	@Override

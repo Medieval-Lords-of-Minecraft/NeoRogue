@@ -16,7 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FinishRunAchievement implements Achievement {
-	private static final String ID = "finish_run";
+	private static final String ID = "adventurer";
 	private static final int[] THRESHOLDS = { 1 };
 
 	@Override

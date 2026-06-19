@@ -18,7 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FlawlessRegionAchievement extends ObjectiveAchievement {
-	private static final String ID = "flawless_region";
+	private static final String ID = "flawless";
 
 	@Override
 	public String getId() {

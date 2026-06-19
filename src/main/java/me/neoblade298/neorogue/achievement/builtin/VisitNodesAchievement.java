@@ -20,7 +20,7 @@ public class VisitNodesAchievement implements Achievement {
 
 	@Override
 	public String getId() {
-		return "visit_nodes";
+		return "explorer";
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class VisitNodesAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger("visit_nodes", SessionTrigger.VISIT_NODE, (pdata, in) -> {
+		data.addTrigger("explorer", SessionTrigger.VISIT_NODE, (pdata, in) -> {
 			if (progress.addProgress(1)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}

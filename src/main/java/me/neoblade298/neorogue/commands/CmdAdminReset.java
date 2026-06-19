@@ -43,6 +43,6 @@ public class CmdAdminReset extends Subcommand {
 		}
 
 		data.resetAll();
-		Util.msg(s, "<green>Reset all progress for <yellow>" + target.getName() + "</yellow>.");
+		Util.msg(s, "<gray>Reset all progress for <yellow>" + target.getName() + "</yellow>.");
 	}
 }

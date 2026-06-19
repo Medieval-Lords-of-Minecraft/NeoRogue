@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NoHealthLossAchievement extends ObjectiveAchievement {
-	private static final String ID = "no_health_loss";
+	private static final String ID = "untouchable";
 
 	@Override
 	public String getId() {
