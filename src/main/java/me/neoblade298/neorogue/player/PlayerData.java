@@ -86,13 +86,13 @@ public class PlayerData {
 		this.display = p.getName();
 
 		initializeDefaultProgression();
-		if (p.hasPermission("donator.diamond")) {
+		if (p.hasPermission("neorogue.slots.5")) {
 			slotsAvailable = 5;
 		}
-		else if (p.hasPermission("donator.emerald")) {
+		else if (p.hasPermission("neorogue.slots.3")) {
 			slotsAvailable = 3;
 		}
-		else if (p.hasPermission("donator.sapphire")) {
+		else if (p.hasPermission("neorogue.slots.2")) {
 			slotsAvailable = 2;
 		}
 		else {

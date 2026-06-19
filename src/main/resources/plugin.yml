@@ -20,3 +20,12 @@ permissions:
    neorogue.admin:
       description: Allows use of /nradmin commands
       default: op
+   neorogue.slots.2:
+    description: Grants 2 save slots
+    default: false
+   neorogue.slots.3:
+    description: Grants 3 save slots
+    default: false
+   neorogue.slots.5:
+    description: Grants 5 save slots
+    default: false
