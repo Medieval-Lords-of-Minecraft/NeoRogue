@@ -255,6 +255,9 @@ public class Mob implements Comparable<Mob> {
 
 	@Override
 	public int compareTo(Mob o) {
+		// Sort bosses first, then minibosses, then normal mobs
+		int typeCompare = Integer.compare(o.type.ordinal(), this.type.ordinal());
+		if (typeCompare != 0) return typeCompare;
 		return this.id.compareTo(o.id);
 	}
 	
