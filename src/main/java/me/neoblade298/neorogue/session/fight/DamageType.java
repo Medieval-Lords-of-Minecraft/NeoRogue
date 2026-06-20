@@ -31,11 +31,11 @@ public enum DamageType {
 	REND("Rend", StatusType.REND.tag,
 		EnumSet.of(DamageCategory.PIERCING, DamageCategory.PHYSICAL, DamageCategory.GENERAL, DamageCategory.STATUS, DamageCategory.ALL)),
 	ELECTRIFIED("Electrified", StatusType.ELECTRIFIED.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL, DamageCategory.GENERAL, DamageCategory.ALL)),
 	THORNS("Thorns", StatusType.THORNS.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.PHYSICAL, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.PHYSICAL, DamageCategory.GENERAL, DamageCategory.ALL)),
 	REFLECT("Reflect", StatusType.REFLECT.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL,DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL, DamageCategory.GENERAL, DamageCategory.ALL)),
 	FALL("Fall", "<white>Fall</white>",
 		EnumSet.of(DamageCategory.ALL));
 	

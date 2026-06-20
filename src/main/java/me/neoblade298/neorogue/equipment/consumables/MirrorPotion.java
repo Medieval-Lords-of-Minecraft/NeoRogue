@@ -52,8 +52,10 @@ public class MirrorPotion extends Consumable {
 				public void run() {
 					Player p2 = data.getPlayer();
 					Sounds.success.play(p2, p2);
-					inst.trigger(data, ev.getInputs());
-					inst.updateIcon();
+					TriggerResult result = inst.trigger(data, ev.getInputs());
+					if (!result.removeTrigger()) {
+						inst.updateIcon();
+					}
 				}
 			}.runTaskLater(NeoRogue.inst(), DELAY));
 			return --remaining[0] <= 0 ? TriggerResult.remove() : TriggerResult.keep();

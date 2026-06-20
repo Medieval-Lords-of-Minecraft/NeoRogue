@@ -206,6 +206,7 @@ import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MirrorPotion;
+import me.neoblade298.neorogue.equipment.consumables.PowerPotion;
 import me.neoblade298.neorogue.equipment.consumables.SeraphsPotion;
 import me.neoblade298.neorogue.equipment.consumables.ToughnessPotion;
 import me.neoblade298.neorogue.equipment.consumables.WeaponsPotion;
@@ -942,6 +943,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AegisPotion(b);
 			new ForcePotion(b);
 			new MirrorPotion(b);
+			new PowerPotion(b);
 			new DropOfInsanity(b);
 			new SeraphsPotion(b);
 			new ToughnessPotion(b);

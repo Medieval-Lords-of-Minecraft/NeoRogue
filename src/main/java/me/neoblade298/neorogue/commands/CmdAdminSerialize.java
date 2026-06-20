@@ -34,14 +34,14 @@ public class CmdAdminSerialize extends Subcommand {
 		} else if (args.length >= 1) {
 			// First arg is not an online player, treat it as an id
 			if (!(s instanceof Player)) {
-				Util.displayError(s, "Must specify a player when running from console!");
+				s.sendMessage("Must specify a player when running from console!");
 				return;
 			}
 			p = (Player) s;
 			presetId = args[0];
 		} else {
 			if (!(s instanceof Player)) {
-				Util.displayError(s, "Must specify a player when running from console!");
+				s.sendMessage("Must specify a player when running from console!");
 				return;
 			}
 			p = (Player) s;
@@ -50,7 +50,7 @@ public class CmdAdminSerialize extends Subcommand {
 		Session sess = SessionManager.getSession(p);
 
 		if (sess == null) {
-			Util.displayError(s, "Player is not currently in a session!");
+			Util.displayError(p, "Player is not currently in a session!");
 			return;
 		}
 

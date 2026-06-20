@@ -17,7 +17,7 @@ public interface Power {
 
 	default boolean activatePower(PlayerFightData data, int slot, EquipSlot es) {
 		Equipment equip = (Equipment) this;
-		ActivatePowerEvent event = new ActivatePowerEvent(equip);
+		ActivatePowerEvent event = new ActivatePowerEvent(equip, slot, es);
 		if (data.runActions(data, Trigger.PRE_ACTIVATE_POWER, event)) return false;
 		if (data.hasStatus(StatusType.DAMPENED)) return false;
 		Player p = data.getPlayer();
