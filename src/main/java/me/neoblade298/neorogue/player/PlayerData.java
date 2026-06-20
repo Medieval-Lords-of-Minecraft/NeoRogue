@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
 import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -71,6 +72,7 @@ public class PlayerData {
 	private HashSet<String> flags = new HashSet<String>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private DropTableSet<Artifact> artifactDroptable;
+	private DropTableSet<Consumable> consumableDroptable;
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
@@ -219,6 +221,7 @@ public class PlayerData {
 	public void initializeEquipmentDroptable() {
 		equipmentDroptable = UnlockRegistry.buildEquipmentDroptable(this);
 		artifactDroptable = UnlockRegistry.buildArtifactDroptable(this);
+		consumableDroptable = UnlockRegistry.buildConsumableDroptable(this);
 		equipmentDroptableDirty = false;
 		Bukkit.getLogger().fine("[NeoRogue] Rebuilt equipment droptable for " + uuid + " (" + unlockNodes.size() + " unlock nodes)");
 	}
@@ -243,6 +246,13 @@ public class PlayerData {
 			initializeEquipmentDroptable();
 		}
 		return artifactDroptable;
+	}
+
+	public DropTableSet<Consumable> getConsumableDroptable() {
+		if (consumableDroptable == null || equipmentDroptableDirty) {
+			initializeEquipmentDroptable();
+		}
+		return consumableDroptable;
 	}
 	
 	public String getDisplay() {

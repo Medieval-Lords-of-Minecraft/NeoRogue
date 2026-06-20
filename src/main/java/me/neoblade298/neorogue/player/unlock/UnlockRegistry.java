@@ -16,6 +16,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -177,6 +178,22 @@ public class UnlockRegistry {
 					Equipment eq = Equipment.get(equipmentId, false);
 					if (eq == null || eq.getType() != EquipmentType.ARTIFACT) continue;
 					derived.add(eq.getEquipmentClasses(), (Artifact) eq);
+				}
+			}
+		}
+		return derived;
+	}
+
+	public static DropTableSet<Consumable> buildConsumableDroptable(PlayerData data) {
+		DropTableSet<Consumable> derived = Equipment.copyConsumablesDropSet();
+		if (data != null) {
+			for (String unlockNode : data.getUnlockNodes()) {
+				HashSet<String> nodeTargets = nodeEquipmentTargets.get(normalizeNodeId(unlockNode));
+				if (nodeTargets == null || nodeTargets.isEmpty()) continue;
+				for (String equipmentId : nodeTargets) {
+					Equipment eq = Equipment.get(equipmentId, false);
+					if (eq == null || eq.getType() != EquipmentType.CONSUMABLE) continue;
+					derived.add(eq.getEquipmentClasses(), (Consumable) eq);
 				}
 			}
 		}

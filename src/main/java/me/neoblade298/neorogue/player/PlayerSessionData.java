@@ -530,7 +530,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void giveEquipment(SessionEquipment se, Component toSelf, Component toOthers) {
 		Equipment eq = se.getEquipment();
-		trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 		Player p = getPlayer();
 		if (toSelf != null) {
 			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
@@ -579,6 +578,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					}
 				}.runTask(NeoRogue.inst());
 			}
+			trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 		}
 	}
 

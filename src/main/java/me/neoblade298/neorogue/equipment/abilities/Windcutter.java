@@ -47,7 +47,7 @@ public class Windcutter extends Equipment implements Power {
 	
 	public Windcutter(boolean isUpgraded) {
 		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(MANA_COST, 0, 0, 5));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
 		damage = isUpgraded ? 90 : 60;
 	}
 	
@@ -96,7 +96,7 @@ public class Windcutter extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
 				GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ATTACKS_REQUIRED) + " basic attacks with at least " +
-				DescUtil.yellow(MANA_COST) + " mana. Every " + DescUtil.white(ACTIVE_ATTACKS) + " basic attacks, fire five piercing projectiles in a cone that deal " + 
+				DescUtil.white(MANA_COST) + " mana. Every " + DescUtil.white(ACTIVE_ATTACKS) + " basic attacks, fire five piercing projectiles in a cone that deal " + 
 				GlossaryTag.SLASHING.tag(this, damage, true) + " damage.");
 	}
 	

@@ -15,11 +15,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorHealthPotion extends Consumable {
 	private static final String ID = "MinorHealthPotion";
-	private double health;
+	private double healthPct;
 	
 	public MinorHealthPotion(boolean isUpgraded) {
 		super(ID, "Minor Health Potion", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
-		this.health = isUpgraded ? 30 : 20;
+		this.healthPct = isUpgraded ? 0.3 : 0.2;
 	}
 	
 	public static Equipment get() {
@@ -28,13 +28,13 @@ public class MinorHealthPotion extends Consumable {
 	
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		FightInstance.giveHeal(p, health, p);
+		FightInstance.giveHeal(p, data.getMaxHealth() * healthPct, p);
 		return TriggerResult.remove();
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Restores " + DescUtil.yellow(health) + " health. Consumed on first use.");
+		item = createItem(Material.POTION, "Restores " + DescUtil.yellow((int)(healthPct * 100) + "%") + " of max health. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 0, 0));
 		item.setItemMeta(meta);

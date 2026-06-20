@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -34,7 +33,7 @@ public class VengefulShield extends Equipment {
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 8 : 6;
 		damage = isUpgraded ? 250 : 150;
-		thres = isUpgraded ? 30 : 25;
+		thres = isUpgraded ? 20 : 25;
 	}
 	
 	public static Equipment get() {

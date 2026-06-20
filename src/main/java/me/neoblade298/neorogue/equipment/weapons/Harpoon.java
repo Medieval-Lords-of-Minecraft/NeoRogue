@@ -66,13 +66,21 @@ public class Harpoon extends Equipment {
 			Player p = data.getPlayer();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, harpoonHit);
-			weaponSwing(p, data);
+			weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED) / 2);
 			Location start = p.getLocation().add(0, 1, 0);
 			Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(harpoonHit.range);
 			ParticleUtil.drawLine(p, harpoonPart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			FightInstance.dealDamage(new DamageMeta(data, this, true, DamageStatTracker.of(id + slot, this)).setKnockback(-0.5), targets.getFirst());
+			boolean first = true;
+			for (LivingEntity ent : targets) {
+				if (first) {
+					FightInstance.dealDamage(new DamageMeta(data, this, true, DamageStatTracker.of(id + slot, this)), ent);
+					first = false;
+				} else {
+					FightInstance.dealDamage(new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageStatTracker.of(id + slot, this)), ent);
+				}
+			}
 			return TriggerResult.keep();
 		});
 	}
@@ -81,8 +89,8 @@ public class Harpoon extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Throwing the weapon additionally increases its range by " + DescUtil.white(2) + " and pulls enemies towards"
-				+ " the player."
+				"Melee range +1. Throwing the weapon deals damage in a line with increased range of " + DescUtil.white(2)
+				+ ", but at half the attack speed."
 		);
 	}
 }

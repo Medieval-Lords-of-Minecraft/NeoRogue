@@ -19,7 +19,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
@@ -132,7 +131,7 @@ public class ShopInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			
 			if (ready.contains(uuid)) {
-				Util.displayError(p, "You've already been marked as ready! Press the button again to un-ready!");
+				new SpectateSelectInventory(s, p, null, true);
 				return;
 			}
 

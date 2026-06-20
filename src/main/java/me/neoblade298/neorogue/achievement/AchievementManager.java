@@ -320,41 +320,53 @@ new SRankRegionAchievement("low_district_speedster", Component.text("Low Distric
 	}
 
 	private static final AtomicInteger toastCounter = new AtomicInteger(0);
+	private static final HashMap<String, org.bukkit.advancement.Advancement> cachedToasts = new HashMap<>();
 
 	@SuppressWarnings("deprecation")
 	private static void showAdvancementToast(Player p, String title, String description, Material icon) {
-		int id = toastCounter.incrementAndGet();
-		NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + id);
+		// Cache key based on display content — same toast combo reuses one advancement
+		String cacheKey = title + "|" + description + "|" + icon.getKey().getKey();
 
-		// JSON advancement definition - uses impossible criteria so it never triggers naturally
-		String json = "{"
-				+ "\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}},"
-				+ "\"display\":{"
-				+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
-				+ "\"title\":\"" + escapeJson(title) + "\","
-				+ "\"description\":\"" + escapeJson(description) + "\","
-				+ "\"frame\":\"task\","
-				+ "\"show_toast\":true,"
-				+ "\"announce_to_chat\":false,"
-				+ "\"hidden\":true"
-				+ "}"
-				+ "}";
-
-		// Load, grant, then remove the advancement
-		org.bukkit.advancement.Advancement advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
-		if (advancement != null) {
-			org.bukkit.advancement.AdvancementProgress progress = p.getAdvancementProgress(advancement);
-			for (String criteria : progress.getRemainingCriteria()) {
-				progress.awardCriteria(criteria);
-			}
-			// Remove after a tick so the client has time to process the toast
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					Bukkit.getUnsafe().removeAdvancement(key);
-				}
-			}.runTaskLater(NeoRogue.inst(), 20L);
+		org.bukkit.advancement.Advancement advancement = cachedToasts.get(cacheKey);
+		if (advancement == null) {
+			NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + toastCounter.incrementAndGet());
+			String json = "{"
+					+ "\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}},"
+					+ "\"display\":{"
+					+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
+					+ "\"title\":\"" + escapeJson(title) + "\","
+					+ "\"description\":\"" + escapeJson(description) + "\","
+					+ "\"frame\":\"task\","
+					+ "\"show_toast\":true,"
+					+ "\"announce_to_chat\":false,"
+					+ "\"hidden\":true"
+					+ "}"
+					+ "}";
+			advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
+			if (advancement == null) return;
+			cachedToasts.put(cacheKey, advancement);
 		}
+
+		// Award criteria to show the toast (cheap operation)
+		org.bukkit.advancement.AdvancementProgress progress = p.getAdvancementProgress(advancement);
+		for (String criteria : progress.getRemainingCriteria()) {
+			progress.awardCriteria(criteria);
+		}
+
+		// Revoke after a tick so the toast can be re-shown later
+		final org.bukkit.advancement.Advancement adv = advancement;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Player online = Bukkit.getPlayer(p.getUniqueId());
+				if (online != null && online.isOnline()) {
+					org.bukkit.advancement.AdvancementProgress prog = online.getAdvancementProgress(adv);
+					for (String criteria : prog.getAwardedCriteria()) {
+						prog.revokeCriteria(criteria);
+					}
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
 
 	private static String escapeJson(String s) {

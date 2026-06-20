@@ -1693,6 +1693,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return artifacts.clone(ecs);
 	}
 
+	public static DropTableSet<Consumable> copyConsumablesDropSet(EquipmentClass... ecs) {
+		return consumables.clone(ecs);
+	}
+
 	public static DropTableSet<Equipment> copyDropSet(EquipmentClass... ecs) {
 		return droptables.clone(ecs);
 	}
