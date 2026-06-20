@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.armor;
+
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -14,28 +15,37 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
-public class LeatherChestplate extends Equipment {
-	private static final String ID = "LeatherChestplate";
+public class GuardianPlate extends Equipment {
+	private static final String ID = "GuardianPlate";
 	private int damageReduction;
-	
-	public LeatherChestplate(boolean isUpgraded) {
-		super(ID, "Leather Chestplate", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+
+	public GuardianPlate(boolean isUpgraded) {
+		super(ID, "Guardian Plate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 4 : 2;
+		damageReduction = isUpgraded ? 9 : 6;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			if (data.getShields().isEmpty()) return TriggerResult.keep();
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(buffId, this, false)));
+			return TriggerResult.keep();
+		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(damageReduction) + ".");
+		item = createItem(Material.IRON_CHESTPLATE, "Reduce all damage taken by " + DescUtil.yellow(damageReduction) +
+				" while you have " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

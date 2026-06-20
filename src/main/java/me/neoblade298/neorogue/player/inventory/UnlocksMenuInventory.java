@@ -64,15 +64,20 @@ public class UnlocksMenuInventory extends CoreInventory {
 				available++;
 			}
 		}
+		int level = data.getLevel(ec);
+		int exp = data.getExp(ec);
+		int required = PlayerData.getXpRequired(level);
+		List<Component> lore = new ArrayList<>();
+		lore.add(Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
+		lore.add(Component.text("Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 		if (available > 0) {
 			item.setAmount(Math.min(available, 64));
-			ItemMeta meta = item.getItemMeta();
-			meta.lore(List.of(
-					Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",
-							NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, State.FALSE)
-			));
-			item.setItemMeta(meta);
+			lore.add(Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",
+					NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(lore);
+		item.setItemMeta(meta);
 		return item;
 	}
 

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -27,12 +26,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class DarkPact extends Equipment {
 	private static final String ID = "DarkPact";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
-	private int seconds;
+	private int seconds, strength;
 	
 	public DarkPact(boolean isUpgraded) {
 		super(ID, "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		seconds = isUpgraded ? 25 : 40;
+		strength = isUpgraded ? 6 : 5;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
 	
@@ -56,7 +56,7 @@ public class DarkPact extends Equipment {
 				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 				pc.play(p, p);
-				data.applyStatus(StatusType.STRENGTH, data, 2, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 				count = 0;
 			}
 			return TriggerResult.keep();
@@ -66,7 +66,7 @@ public class DarkPact extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Increase your " + GlossaryTag.STRENGTH.tag(this) + " by 2 every 3 basic attacks. In exchange, take "
+				"Increase your " + GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.yellow(strength) + " every 3 basic attacks. In exchange, take "
 				+ DescUtil.white("50%") + " increased damage for the first " + DescUtil.yellow(seconds + "s") + " of a fight.");
 	}
 }
