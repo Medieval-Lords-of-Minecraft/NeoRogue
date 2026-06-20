@@ -21,26 +21,56 @@ public class CmdAdminSerialize extends Subcommand {
 	public CmdAdminSerialize(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		args.add(new Arg("player", false));
+		args.add(new Arg("id", false));
 	}
 
 	public void run(CommandSender s, String[] args) {
-		Player p = args.length >= 1 ? Bukkit.getPlayer(args[0]) : (Player) s;
+		Player p;
+		String presetId = null;
+		
+		if (args.length >= 1 && Bukkit.getPlayer(args[0]) != null) {
+			p = Bukkit.getPlayer(args[0]);
+			if (args.length >= 2) presetId = args[1];
+		} else if (args.length >= 1) {
+			// First arg is not an online player, treat it as an id
+			if (!(s instanceof Player)) {
+				Util.displayError(s, "Must specify a player when running from console!");
+				return;
+			}
+			p = (Player) s;
+			presetId = args[0];
+		} else {
+			if (!(s instanceof Player)) {
+				Util.displayError(s, "Must specify a player when running from console!");
+				return;
+			}
+			p = (Player) s;
+		}
+		
 		Session sess = SessionManager.getSession(p);
 
 		if (sess == null) {
-			Util.displayError(p, "Player is not currently in a session!");
+			Util.displayError(s, "Player is not currently in a session!");
 			return;
 		}
 
 		PlayerSessionData data = sess.getParty().get(p.getUniqueId());
+		String serialized = data.serialize();
+		
+		if (presetId != null) {
+			EquipmentPresets.save(presetId, serialized);
+			Util.msg(s, "Saved " + p.getName() + "'s equipment as preset: " + presetId);
+			return;
+		}
+		
 		Component cmp;
 		if (s instanceof Player) {
 			cmp = Component.text("Click here to copy " + p.getName() + "'s equipment to clipboard")
-				.clickEvent(ClickEvent.copyToClipboard(data.serialize()))
+				.clickEvent(ClickEvent.copyToClipboard(serialized))
 				.hoverEvent(HoverEvent.showText(Component.text("Click to copy").color(NamedTextColor.YELLOW)));
 		}
 		else {
-			cmp = Component.text(p.getName() + "'s Data:").appendNewline().append(Component.text(data.serialize()));
+			cmp = Component.text(p.getName() + "'s Data:").appendNewline().append(Component.text(serialized));
 		}
 		Util.msg(s, cmp);
 	}
