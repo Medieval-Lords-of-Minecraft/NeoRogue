@@ -34,7 +34,7 @@ public class FrozenWastesMap extends Map {
 		LinkedList<MapPiece> avail = getStandardPieces(lookupType);
 		LinkedList<MapPiece> used = getUsedPieces(lookupType);
 
-		int targetCount = 2 + NeoRogue.gen.nextInt(3); // 2, 3, or 4
+		int targetCount = 1 + NeoRogue.gen.nextInt(2); // 2, 3, or 4
 
 		// Place first piece centered
 		MapPiece firstPiece = pollPiece(avail, used, lookupType);
@@ -301,6 +301,11 @@ public class FrozenWastesMap extends Map {
 			getShape(), pathConnectedEntrances, chunkHeights,
 			NeoRogue.gen.nextLong()
 		);
+	}
+
+	@Override
+	protected boolean canPlaceOnEdge() {
+		return false;
 	}
 
 	@Override

@@ -18,6 +18,8 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.unlock.UnlockNode;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,12 +46,15 @@ public class MainMenuInventory extends CoreInventory {
 				Component.text("Spectate", NamedTextColor.YELLOW));
 		contents[UNLOCKS] = CoreInventory.createButton(Material.ENDER_EYE,
 				Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE));
+		int totalAvailable = countAvailableUnlocks(pd);
+		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
 		contents[LEVELS] = createLevelsButton(pd);
 		inv.setContents(contents);
 	}
 
 	private ItemStack createLevelsButton(PlayerData pd) {
 		ItemStack item = new ItemStack(Material.EXPERIENCE_BOTTLE);
+		item.setAmount(Math.min(Math.max(pd.getLevel(), 1), 64));
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Stats", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
 		List<Component> lore = new ArrayList<>();
@@ -68,6 +73,27 @@ public class MainMenuInventory extends CoreInventory {
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
+	}
+
+	private int countAvailableUnlocks(PlayerData data) {
+		int total = 0;
+		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
+			total += countAvailableForClass(data, ec);
+		}
+		total += countAvailableForClass(data, null);
+		return total;
+	}
+
+	private int countAvailableForClass(PlayerData data, EquipmentClass ec) {
+		int available = 0;
+		int points = data.getPoints(ec);
+		for (UnlockNode node : UnlockRegistry.getNodesForClass(ec)) {
+			if (data.hasUnlockNode(node.getId())) continue;
+			if (node.getCost() <= points && node.checkRequirementsMet(data)) {
+				available++;
+			}
+		}
+		return available;
 	}
 
 	@Override

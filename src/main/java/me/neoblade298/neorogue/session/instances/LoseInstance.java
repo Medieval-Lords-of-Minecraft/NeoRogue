@@ -23,8 +23,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5,
-		HOLO_X = SPAWN_X, HOLO_Y = 3, HOLO_Z = SPAWN_Z + 4;
+	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
 	private TextDisplay holo;
 	
 	public LoseInstance(Session s) {
@@ -42,8 +41,8 @@ public class LoseInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
-		holo = NeoRogue.createHologram(spawn.getWorld().getBlockAt((int) HOLO_X, (int) HOLO_Y, (int) HOLO_Z).getLocation().add(0.5, 0, 0.5),
-				Component.text("Click to view stats!", NamedTextColor.GOLD));
+		holo = NeoRogue.createHologram(spawn.clone().add(0, 3, 4),
+				Component.text("Right click to view stats!", NamedTextColor.GOLD));
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, false);

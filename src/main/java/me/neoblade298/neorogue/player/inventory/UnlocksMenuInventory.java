@@ -65,6 +65,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 			}
 		}
 		if (available > 0) {
+			item.setAmount(Math.min(available, 64));
 			ItemMeta meta = item.getItemMeta();
 			meta.lore(List.of(
 					Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",

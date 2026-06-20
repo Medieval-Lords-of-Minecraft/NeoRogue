@@ -9,10 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -23,6 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class WinInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
+	private TextDisplay holo;
 
 	public WinInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -50,7 +53,11 @@ public class WinInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
+		holo = NeoRogue.createHologram(spawn.clone().add(0, 3, 4),
+				Component.text("Right click to view stats!", NamedTextColor.GOLD));
 		s.broadcast(Component.text("Congratulations! You won!", NamedTextColor.GOLD));
+		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
+		s.deleteSave();
 	}
 
 	@Override
@@ -81,6 +88,7 @@ public class WinInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
+		holo.remove();
 	}
 
 	@Override
