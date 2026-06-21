@@ -99,6 +99,7 @@ import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.BurningMantle;
 import me.neoblade298.neorogue.equipment.armor.CalmingHood;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
+import me.neoblade298.neorogue.equipment.armor.ColossusArmor;
 import me.neoblade298.neorogue.equipment.armor.ElbowBrace;
 import me.neoblade298.neorogue.equipment.armor.ElectrostaticVest;
 import me.neoblade298.neorogue.equipment.armor.EnchantedCloak;
@@ -634,6 +635,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpiritOfTheDragoon(b);
 			new Splinterstone(b);
 			new SpeedBlitz(b);
+			new SpotWeakness(b);
 			new StaticSurge(b);
 			new SteadyBleed(b);
 			new Storm(b);
@@ -747,6 +749,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brightcrown(b);
 			new CalmingHood(b);
 			new ClothBindings(b);
+			new ColossusArmor(b);
 			new ElbowBrace(b);
 			new ElectrostaticVest(b);
 			new EnchantedCloak(b);
