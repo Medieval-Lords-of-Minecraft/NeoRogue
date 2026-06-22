@@ -55,6 +55,9 @@ public class UnlocksMenuInventory extends CoreInventory {
 
 	private ItemStack createClassButton(PlayerData data, Material mat, Component name, EquipmentClass ec) {
 		ItemStack item = CoreInventory.createButton(mat, (TextComponent) name);
+		ItemMeta meta = item.getItemMeta();
+		meta.setMaxStackSize(64);
+		item.setItemMeta(meta);
 		ArrayList<UnlockNode> nodes = UnlockRegistry.getNodesForClass(ec);
 		int available = 0;
 		int points = data.getPoints(ec);
