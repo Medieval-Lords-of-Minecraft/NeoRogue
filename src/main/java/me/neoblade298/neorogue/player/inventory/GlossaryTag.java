@@ -12,7 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.status.PoisonStatus;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -47,7 +46,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	LIGHT(Material.END_ROD, DamageType.LIGHT.tag,
 			"A type of magical damage."),
 	POISON(Material.GREEN_DYE, StatusType.POISON.tag,
-			"Deals " + PoisonStatus.POISON_DAMAGE + " poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration. 1 stack is removed every second."),
+			"Deals poison damage per stack applied to the affected entity every second, ignoring shields, for its entire duration."),
 	REND(Material.NETHERITE_SCRAP, StatusType.REND.tag,
 			"Certain abilities become stronger with more stacks of these applied to enemies. 1 stack is removed every second."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
