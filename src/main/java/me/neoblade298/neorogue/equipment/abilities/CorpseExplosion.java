@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +20,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -37,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class CorpseExplosion extends Equipment implements Power {
 	private static final String ID = "CorpseExplosion";
-	private int poisonPerSecond, duration;
+	private int poisonPerSecond, duration, poisonDuration;
 	private static final int radius = 4;
 	private static final ParticleContainer edge = new ParticleContainer(Particle.DUST)
 		.dustOptions(new DustOptions(Color.GREEN, 1F))
@@ -54,8 +53,9 @@ public class CorpseExplosion extends Equipment implements Power {
 	public CorpseExplosion(boolean isUpgraded) {
 		super(ID, "Corpse Explosion", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0, radius));
-		poisonPerSecond = isUpgraded ? 5 : 4;
+		poisonPerSecond = isUpgraded ? 50 : 40;
 		duration = 3;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -122,7 +122,7 @@ public class CorpseExplosion extends Equipment implements Power {
 					
 					// Apply poison to all enemies in radius using TargetHelper
 					for (LivingEntity le : TargetHelper.getEntitiesInRadius(p, center, tp)) {
-						FightInstance.applyStatus(le, StatusType.POISON, data, poisonPerSecond, 20); // 1 second duration
+						FightInstance.applyStatus(le, StatusType.POISON, data, poisonPerSecond, poisonDuration);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L * (second + 1))); // Schedule for each second
@@ -168,6 +168,6 @@ public class CorpseExplosion extends Equipment implements Power {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, 
 			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(5) + " times. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
 			"Each circle lasts " + DescUtil.white(duration) + " seconds and applies " + 
-			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " per second to nearby enemies.");
+			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] per second to nearby enemies.");
 	}
 }

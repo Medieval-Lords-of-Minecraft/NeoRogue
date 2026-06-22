@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -45,14 +44,15 @@ public class BlightTendril extends Equipment implements Power {
 			.dustOptions(new DustOptions(Color.fromRGB(100, 50, 150), 1F))
 			.count(5).spread(0.1, 0.1);
 	
-	private int poison;
+	private int poison, poisonDuration;
 	private double poisonMult;
 
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
-		poison = isUpgraded ? 7 : 5;
+		poison = isUpgraded ? 30 : 20;
 		poisonMult = 0.5;
+		poisonDuration = 60;
 	}
 
 	public static Equipment get() {
@@ -95,7 +95,7 @@ public class BlightTendril extends Equipment implements Power {
 			LivingEntity target = hit.getEntity();
 			
 			// Apply poison
-			FightInstance.applyStatus(target, StatusType.POISON, data, poison, -1);
+			FightInstance.applyStatus(target, StatusType.POISON, data, poison, poisonDuration);
 			
 			// Mark the enemy with custom status
 			FightData fd = FightInstance.getFightData(target);
@@ -150,7 +150,7 @@ public class BlightTendril extends Equipment implements Power {
 				// Apply 2x the existing poison stacks (resulting in 3x total)
 				if (fd.hasStatus(StatusType.POISON)) {
 					int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-					FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), -1);
+					FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), 100);
 					pc.play(p2, ev2.getTarget());
 				}
 			}
@@ -164,7 +164,7 @@ public class BlightTendril extends Equipment implements Power {
 	public void setupItem() {
 	item = createItem(Material.VINE,
 			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
-			"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
+			"applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] and marks them [<white>8s</white>]. " +
 				"Basic attacks consume the mark and apply an additional " + DescUtil.white((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }

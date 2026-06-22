@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -42,13 +41,14 @@ public class AcidBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	private int poison, duration;
+	private int poison, duration, poisonDuration;
 	
 	public AcidBomb(boolean isUpgraded) {
 		super(ID, "Acid Bomb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0, tp.range));
-		poison = isUpgraded ? 3 : 2;
+		poison = isUpgraded ? 40 : 30;
 		duration = 4;
+		poisonDuration = 20;
 	}
 	
 	public static Equipment get() {
@@ -73,7 +73,7 @@ public class AcidBomb extends Equipment {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-								FightInstance.applyStatus(ent, StatusType.POISON, data, poison, 60);
+								FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration);
 							}
 							
 							if (++tick == TICKS) this.cancel();
@@ -90,7 +90,7 @@ public class AcidBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, drop an acid bomb that detonates after " + DescUtil.white(3) + " seconds. After detonation, every second for " + DescUtil.white(duration) + " seconds,"
-				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + ".");
+				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

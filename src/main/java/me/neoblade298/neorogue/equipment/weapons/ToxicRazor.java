@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -28,7 +27,7 @@ public class ToxicRazor extends Equipment {
 		super(ID, "Toxic Razor", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(45, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		threshold = isUpgraded ? 15 : 20;
+		threshold = isUpgraded ? 20 : 30;
 		bonus = 4;
 	}
 	

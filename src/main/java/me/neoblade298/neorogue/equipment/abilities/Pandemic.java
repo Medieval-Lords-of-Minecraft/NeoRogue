@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Color;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -44,7 +43,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class Pandemic extends Equipment implements Power {
 	private static final String ID = "Pandemic";
 	private double bonusDamage;
-	private int bonusPoison, areaPoison;
+	private int bonusPoison, areaPoison, poisonDuration;
 	private static final int radius = 6;
 	private static final TargetProperties tp = TargetProperties.radius(radius, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
@@ -54,8 +53,9 @@ public class Pandemic extends Equipment implements Power {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, radius));
 		bonusDamage = isUpgraded ? 0.9 : 0.6;
-		bonusPoison = isUpgraded ? 7 : 5;
-		areaPoison = isUpgraded ? 5 : 3;
+		bonusPoison = isUpgraded ? 70 : 50;
+		areaPoison = isUpgraded ? 50 : 30;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -130,7 +130,7 @@ public class Pandemic extends Equipment implements Power {
 				if (ent == ev2.getTarget().getEntity()) continue;
 				FightData targetFd = FightInstance.getFightData(ent);
 				if (targetFd == null) continue;
-				targetFd.applyStatus(StatusType.POISON, data, areaPoison, -1, null, true);
+				targetFd.applyStatus(StatusType.POISON, data, areaPoison, poisonDuration, null, true);
 			}
 
 			return TriggerResult.keep();
@@ -145,7 +145,7 @@ public class Pandemic extends Equipment implements Power {
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
 				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +
-				GlossaryTag.POISON.tag(this, bonusPoison, true) + " stacks and spreads " +
-				GlossaryTag.POISON.tag(this, areaPoison, true) + " to nearby enemies.");
+				GlossaryTag.POISON.tag(this, bonusPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] stacks and spreads " +
+				GlossaryTag.POISON.tag(this, areaPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to nearby enemies.");
 	}
 }

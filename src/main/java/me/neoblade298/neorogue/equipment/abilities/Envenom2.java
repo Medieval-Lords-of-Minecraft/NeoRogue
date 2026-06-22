@@ -1,11 +1,11 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -17,12 +17,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Envenom2 extends Equipment {
 	private static final String ID = "Envenom2";
-	private int poison;
+	private int poison, poisonDuration;
 	
 	public Envenom2(boolean isUpgraded) {
 		super(ID, "Envenom II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		poison = isUpgraded ? 2 : 1;
+		poison = isUpgraded ? 25 : 15;
+		poisonDuration = 40;
 	}
 	
 	public static Equipment get() {
@@ -34,7 +35,7 @@ public class Envenom2 extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!DamageCategory.PHYSICAL.hasType(ev.getMeta().getPrimarySlice().getType())) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
 			return TriggerResult.keep();
 		});
 	}
@@ -42,6 +43,6 @@ public class Envenom2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"Passive. All primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + ".");
+				"Passive. All primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
 	}
 }

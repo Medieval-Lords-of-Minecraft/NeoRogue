@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -23,13 +22,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Concoct extends Equipment {
 	private static final String ID = "Concoct";
-	private int poison, duration;
+	private int poison, duration, poisonDuration;
 	
 	public Concoct(boolean isUpgraded) {
 		super(ID, "Concoct", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, 0));
-		poison = isUpgraded ? 4 : 3;
+		poison = isUpgraded ? 25 : 15;
 		duration = 3;
+		poisonDuration = 100;
 	}
 	
 	public static Equipment get() {
@@ -65,7 +65,7 @@ public class Concoct extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			Sounds.extinguish.play(p, p);
 			int mult = (int) ((System.currentTimeMillis() - inst.getTime()) / 1000);
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, poisonDuration);
 			inst.setTime(-1);
 			return TriggerResult.keep();
 		});
@@ -74,7 +74,7 @@ public class Concoct extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRAGON_BREATH,
-				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " "
+				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] "
 						+ "for every second you charged, up to " + DescUtil.white(duration) + " seconds.");
 	}
 }

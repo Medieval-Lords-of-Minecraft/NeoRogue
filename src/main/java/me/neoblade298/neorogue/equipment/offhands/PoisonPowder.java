@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -23,12 +22,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class PoisonPowder extends Equipment {
 	private static final String ID = "PoisonPowder";
-	private int amount;
+	private int amount, poisonDuration;
 	
 	public PoisonPowder(boolean isUpgraded) {
 		super(ID, "Poison Powder", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 15, 0));
-		amount = isUpgraded ? 3 : 2;
+		amount = isUpgraded ? 30 : 20;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -53,14 +53,14 @@ public class PoisonPowder extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, poisonDuration);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " to enemies you"
+		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to enemies you"
 				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next " + DescUtil.white(5) + " seconds.");
 	}
 }

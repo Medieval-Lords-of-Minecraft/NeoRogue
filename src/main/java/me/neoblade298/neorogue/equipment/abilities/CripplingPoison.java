@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -41,7 +40,7 @@ public class CripplingPoison extends Equipment {
 				EquipmentProperties.ofUsable(15, 20, 15, tp.range));
 
 		inc = 12;
-		poisonThreshold = isUpgraded ? 2 : 3;
+		poisonThreshold = isUpgraded ? 10 : 15;
 	}
 
 	public static Equipment get() {

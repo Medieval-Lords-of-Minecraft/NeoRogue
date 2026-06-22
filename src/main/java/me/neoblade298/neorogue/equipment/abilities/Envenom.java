@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -27,14 +26,15 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Envenom extends Equipment {
 	private static final String ID = "Envenom";
-	private int poison;
+	private int poison, poisonDuration;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
 	public Envenom(boolean isUpgraded) {
 		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		poison = isUpgraded ? 2 : 1;
+		poison = isUpgraded ? 15 : 10;
+		poisonDuration = 40;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class Envenom extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
 			return TriggerResult.keep();
 		});
 	}
@@ -74,6 +74,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, for " + DescUtil.white("7s") + " your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + "");
+				"On cast, for " + DescUtil.white("7s") + " your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "]");
 	}
 }

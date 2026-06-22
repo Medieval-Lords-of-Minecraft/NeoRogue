@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Expunge extends Equipment {
 	private static final String ID = "Expunge";
-	private int stacks, bonus;
+	private int stacks, bonus, poisonDuration;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final ParticleContainer circPart = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.GREEN, 1F));
@@ -44,8 +44,9 @@ public class Expunge extends Equipment {
 		super(ID, "Expunge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 7));
 		
-		stacks = isUpgraded ? 6 : 4;
+		stacks = isUpgraded ? 60 : 40;
 		bonus = isUpgraded ? 12 : 8;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -64,7 +65,7 @@ public class Expunge extends Equipment {
 					circ.play(circPart, p.getLocation(), LocalAxes.xz(), null);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightData fd = FightInstance.getFightData(ent);
-						fd.applyStatus(StatusType.POISON, data, stacks, -1);
+						fd.applyStatus(StatusType.POISON, data, stacks, poisonDuration);
 						double dmg = FightInstance.getFightData(ent).getStatus(StatusType.POISON).getStacks() * bonus;
 						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON, DamageStatTracker.of(id + slot, Expunge.this)), ent);
 					}
@@ -77,7 +78,7 @@ public class Expunge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before applying " + GlossaryTag.POISON.tag(this, stacks, true) + " to nearby enemies. "
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before applying " + GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to nearby enemies. "
 				+ "Then, deal damage based on " + GlossaryTag.POISON.tag(this) + " stacks on the enemy multiplied by " + DescUtil.yellow(bonus) + ".");
 	}
 }

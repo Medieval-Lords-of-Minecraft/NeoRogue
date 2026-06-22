@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -32,12 +31,14 @@ public class Contaminate extends Equipment {
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
 	private int damage = 150;
 	private double mult;
+	private int poisonDuration;
 	
 	public Contaminate(boolean isUpgraded) {
 		super(ID, "Contaminate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 18, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		mult = isUpgraded ? 1.6 : 1.4;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -78,7 +79,7 @@ public class Contaminate extends Equipment {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
 				if (toAdd <= 0) return TriggerResult.keep();
-				fd.applyStatus(StatusType.POISON, data, toAdd, -1);
+				fd.applyStatus(StatusType.POISON, data, toAdd, poisonDuration);
 			}
 			return TriggerResult.keep();
 		});

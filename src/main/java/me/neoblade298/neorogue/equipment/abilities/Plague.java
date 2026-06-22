@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -32,7 +31,7 @@ public class Plague extends Equipment implements Power {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		damage = 10;
 		thres = 5;
-		maxThres = isUpgraded ? 5 : 3;
+		maxThres = isUpgraded ? 40 : 30;
 	}
 	
 	public static Equipment get() {

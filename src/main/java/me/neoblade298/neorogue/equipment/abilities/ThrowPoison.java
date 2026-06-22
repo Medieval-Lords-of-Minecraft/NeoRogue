@@ -1,17 +1,17 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -22,12 +22,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ThrowPoison extends Equipment {
 	private static final String ID = "ThrowPoison";
-	private int poison;
+	private int poison, poisonDuration;
 	
 	public ThrowPoison(boolean isUpgraded) {
 		super(ID, "Throw Poison", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
-		poison = isUpgraded ? 9 : 6;
+		poison = isUpgraded ? 60 : 40;
+		poisonDuration = 60;
 	}
 	
 	public static Equipment get() {
@@ -39,7 +40,7 @@ public class ThrowPoison extends Equipment {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, -1);
+				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration);
 			}
 		});
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
@@ -53,7 +54,7 @@ public class ThrowPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + ".");
+				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

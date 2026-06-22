@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -30,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EndlessVenom extends Equipment {
 	private static final String ID = "EndlessVenom";
-	private int poison;
+	private int poison, poisonDuration;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
@@ -40,7 +39,8 @@ public class EndlessVenom extends Equipment {
 				ID, "Endless Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(10, 10, 12, 0)
 		);
-		poison = isUpgraded ? 3 : 2;
+		poison = isUpgraded ? 15 : 10;
+		poisonDuration = 100;
 	}
 
 	public static Equipment get() {
@@ -68,7 +68,7 @@ public class EndlessVenom extends Equipment {
 			if (inst.getCount() == 0)
 				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, "SICKLY", fd, true);
 			fd.applyStatus(s, data, 1, 60);
@@ -80,7 +80,7 @@ public class EndlessVenom extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " " + DescUtil.duration(7, false) + ". Additionally, enemies hit by your basic attacks " +
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] " + DescUtil.duration(7, false) + ". Additionally, enemies hit by your basic attacks " +
 				"stop poison from being reduced " + DescUtil.duration(3, false) + "."
 		);
 	}

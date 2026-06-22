@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -22,7 +21,7 @@ public class MinorPoisonRelic extends Equipment {
 	public MinorPoisonRelic(boolean isUpgraded) {
 		super(ID, "Minor Poison Relic", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		increase = isUpgraded ? 4 : 3;
+		increase = isUpgraded ? 10 : 5;
 	}
 	
 	public static Equipment get() {

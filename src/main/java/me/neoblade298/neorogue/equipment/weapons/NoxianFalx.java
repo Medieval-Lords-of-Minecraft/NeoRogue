@@ -1,13 +1,13 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -20,13 +20,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class NoxianFalx extends Equipment {
 	private static final String ID = "NoxianFalx";
-	private int stacks;
+	private int stacks, poisonDuration;
 	
 	public NoxianFalx(boolean isUpgraded) {
 		super(ID, "Noxian Falx", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1.25, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stacks = isUpgraded ? 3 : 2;
+		poisonDuration = 40;
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
@@ -50,7 +51,7 @@ public class NoxianFalx extends Equipment {
 					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1);
 				}
 				if (fd.hasStatus(StatusType.POISON)) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, stacks, -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, stacks, poisonDuration);
 				}
 			}
 			
@@ -63,6 +64,6 @@ public class NoxianFalx extends Equipment {
 		item = createItem(Material.NETHERITE_SWORD,
 				"Applies " + GlossaryTag.INSANITY.tag(this, stacks, true) + ", " + 
 				GlossaryTag.ELECTRIFIED.tag(this, stacks, true) + ", and " + 
-				GlossaryTag.POISON.tag(this, stacks, true) + " on hit if the enemy already has the respective status.");
+				GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] on hit if the enemy already has the respective status.");
 	}
 }
