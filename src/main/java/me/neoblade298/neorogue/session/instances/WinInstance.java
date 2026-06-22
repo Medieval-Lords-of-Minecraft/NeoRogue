@@ -53,7 +53,7 @@ public class WinInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
-		holo = NeoRogue.createHologram(spawn.clone().add(0, 3, 4),
+		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
 				Component.text("Right click to view stats!", NamedTextColor.GOLD));
 		s.broadcast(Component.text("Congratulations! You won!", NamedTextColor.GOLD));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());

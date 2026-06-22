@@ -1,13 +1,12 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -16,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class PowerThrough extends Equipment {
+public class PowerThrough extends Equipment implements Power {
 	private static final String ID = "PowerThrough";
 	private int cutoff;
 	
@@ -34,23 +33,25 @@ public class PowerThrough extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-
-			StandardPriorityAction inst = new StandardPriorityAction(ID);
-			inst.setAction((pdata2, in2) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
-				if (!ev.getStatusId().equals(StatusType.BERSERK.name())) return TriggerResult.keep();
-				inst.addCount(ev.getStacks());
-				
-				int num = inst.getCount() / cutoff;
-				data.applyStatus(StatusType.PROTECT, data, num, -1);
-				inst.setCount(inst.getCount() % cutoff);
-				return TriggerResult.keep();
-			});
-			data.addTrigger(id, Trigger.APPLY_STATUS, inst);
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		}));
+	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		inst.setAction((pdata2, in2) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+			if (!ev.getStatusId().equals(StatusType.BERSERK.name())) return TriggerResult.keep();
+			inst.addCount(ev.getStacks());
+			
+			int num = inst.getCount() / cutoff;
+			data.applyStatus(StatusType.PROTECT, data, num, -1);
+			inst.setCount(inst.getCount() % cutoff);
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.APPLY_STATUS, inst);
 	}
 
 	@Override

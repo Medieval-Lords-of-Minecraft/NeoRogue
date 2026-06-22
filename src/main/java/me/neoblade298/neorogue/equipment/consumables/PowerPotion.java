@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -15,6 +16,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ActivatePowerEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PowerPotion extends Consumable {
 	private static final String ID = "PowerPotion";
@@ -38,6 +41,8 @@ public class PowerPotion extends Consumable {
 			if (eq instanceof Power power) {
 				Player p2 = data.getPlayer();
 				Sounds.success.play(p2, p2);
+				Util.msg(p2, Component.empty().append(eq.getHoverable())
+						.append(Component.text(" was duplicated by Power Potion", NamedTextColor.GRAY)));
 				power.onPowerActivated(data, ev.getSlot(), ev.getEquipSlot());
 			}
 			return --remaining[0] <= 0 ? TriggerResult.remove() : TriggerResult.keep();

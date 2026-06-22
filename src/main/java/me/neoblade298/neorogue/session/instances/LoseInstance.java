@@ -41,8 +41,8 @@ public class LoseInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
-		holo = NeoRogue.createHologram(spawn.clone().add(0, 3, 4),
-				Component.text("Right click to view stats!", NamedTextColor.GOLD));
+		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
+				Component.text("Right click to view stats!"));
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, false);

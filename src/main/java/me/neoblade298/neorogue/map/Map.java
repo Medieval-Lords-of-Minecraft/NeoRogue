@@ -151,7 +151,7 @@ public class Map {
 	}
 	
 	public static Map generate(RegionType type, int numPieces, MapPiece requiredPiece, boolean debugMode) {
-		Map map = createMap(type);
+		Map map = new Map(type);
 		map.place(requiredPiece);
 		return generate(map, type, numPieces, debugMode);
 	}

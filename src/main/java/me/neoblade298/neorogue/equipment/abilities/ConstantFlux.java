@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -23,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ConstantFlux extends Equipment {
+public class ConstantFlux extends Equipment implements Power {
 	private static final String ID = "ConstantFlux";
 	private static final int MAX_STACKS = 5;
 	
@@ -43,21 +44,24 @@ public class ConstantFlux extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-
-			ActionMeta stacks = new ActionMeta();
-			String taskId = id + "-timer-" + slot;
-			ItemStack noStackIcon = item.clone();
-			ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
-			ConstantFluxInstance inst = new ConstantFluxInstance(data, sessionEq, slot, es, stacks, taskId, noStackIcon, stackIcon);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					data.addTrigger(id + "-active", bind, inst);
-				}
-			}.runTask(NeoRogue.inst()));
-
+			if (!activatePower(data, slot, es)) return TriggerResult.keep();
 			return TriggerResult.remove();
 		}));
+	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		ActionMeta stacks = new ActionMeta();
+		String taskId = id + "-timer-" + slot;
+		ItemStack noStackIcon = item.clone();
+		ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
+		SessionEquipment sessionEq = data.getSessionData().getSessionEquipment(es)[slot];
+		ConstantFluxInstance inst = new ConstantFluxInstance(data, sessionEq, slot, es, stacks, taskId, noStackIcon, stackIcon);
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				data.addTrigger(id + "-active", Trigger.getFromHotbarSlot(slot), inst);
+			}
+		}.runTask(NeoRogue.inst()));
 	}
 
 	private class ConstantFluxInstance extends EquipmentInstance {
