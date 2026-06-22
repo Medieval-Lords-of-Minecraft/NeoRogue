@@ -38,7 +38,6 @@ public class PowerPotion extends Consumable {
 		data.addTrigger(id, Trigger.ACTIVATE_POWER, (pdata, in) -> {
 			ActivatePowerEvent ev = (ActivatePowerEvent) in;
 			Equipment eq = ev.getEquipment();
-			System.out.println("Power on " + eq.getId());
 			if (eq instanceof Power power) {
 				Player p2 = data.getPlayer();
 				Sounds.success.play(p2, p2);
