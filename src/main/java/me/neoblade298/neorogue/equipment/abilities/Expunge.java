@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -35,8 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Expunge extends Equipment {
 	private static final String ID = "Expunge";
-	private int stacks;
-	private double bonus;
+	private int stacks, bonus;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final ParticleContainer circPart = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.GREEN, 1F));
@@ -46,8 +44,8 @@ public class Expunge extends Equipment {
 		super(ID, "Expunge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 7));
 		
-		stacks = isUpgraded ? 5 : 3;
-		bonus = isUpgraded ? 9 : 6;
+		stacks = isUpgraded ? 6 : 4;
+		bonus = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {

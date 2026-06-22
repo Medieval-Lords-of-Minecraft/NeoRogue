@@ -82,7 +82,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
 			boolean increaseDamageNotoriety = NotorietySetting.INCREASE_DAMAGE.isActive(fd.getInstance().getSession());
-			final double mult = (0.8 + (level * 0.05)) * (increaseDamageNotoriety ? NotorietySetting.INCREASE_DAMAGE_MULTIPLIER : 1.0);
+			final double mult = (0.5 + (level * 0.06)) * (increaseDamageNotoriety ? NotorietySetting.INCREASE_DAMAGE_MULTIPLIER : 1.0);
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), ignoreShields, DamageStatTracker.ignored("MythicDamage1")));
 			}
