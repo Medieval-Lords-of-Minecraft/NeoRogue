@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class PoisonStatus extends BasicStatus {
@@ -33,7 +32,7 @@ public class PoisonStatus extends BasicStatus {
 			if (action.isCancelled()) return TickResult.REMOVE;
 			if (stacks <= 0) return TickResult.REMOVE;
 
-			double damagePerStack = holder instanceof PlayerFightData ? 1 : POISON_DAMAGE;
+			double damagePerStack = 1;
 			FightData owner = slices.getSliceOwners().entrySet().iterator().next().getKey();
 			DamageMeta meta = new DamageMeta(owner);
 			meta.isSecondary(true);
