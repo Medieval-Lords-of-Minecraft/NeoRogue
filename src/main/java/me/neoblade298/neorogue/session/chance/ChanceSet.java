@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.session.chance.builtin.CaravanRobberyChance;
 import me.neoblade298.neorogue.session.chance.builtin.FaerieGroveChance;
 import me.neoblade298.neorogue.session.chance.builtin.ForgottenWellChance;
 import me.neoblade298.neorogue.session.chance.builtin.ForkInTheRoadChance;
+import me.neoblade298.neorogue.session.chance.builtin.GoblinHoarderChance;
 import me.neoblade298.neorogue.session.chance.builtin.GreedChance;
 import me.neoblade298.neorogue.session.chance.builtin.LabChance;
 import me.neoblade298.neorogue.session.chance.builtin.LostRelicChance;
@@ -69,6 +70,7 @@ public class ChanceSet {
 		new AmbushChance();
 		new CaravanRobberyChance();
 		new FaerieGroveChance();
+		new GoblinHoarderChance();
 		new StockpileChance();
 		new ForgottenWellChance();
 		new ForkInTheRoadChance();

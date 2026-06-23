@@ -1731,6 +1731,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		artifacts.remove(eq);
 	}
 
+	public static void removeFromConsumablesDroptable(Consumable eq) {
+		consumables.remove(eq);
+	}
+
 	public static enum EquipSlot {
 		ARMOR("Armor"), ACCESSORY("Accessory"), OFFHAND("Offhand"), HOTBAR("Hotbar"), KEYBIND("Keybind"), // Hotbar +
 		// other

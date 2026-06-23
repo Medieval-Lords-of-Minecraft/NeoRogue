@@ -347,7 +347,7 @@ public abstract class FightInstance extends Instance {
 		trans.getScale().set(bigHit ? 3 : 2);
 		td.setBillboard(Billboard.CENTER);
 		td.setTransformation(trans);
-		td.setTeleportDuration(bigHit ? 0 : 40);
+		td.setTeleportDuration(bigHit ? 1 : 40);
 		if (bigHit) {
 			// Perpendicular-to-facing direction for the shake axis
 			Vector rawDir = direction != null ? direction : src.getDirection();
@@ -375,7 +375,6 @@ public abstract class FightInstance extends Instance {
 					td.teleport(td.getLocation().add(right.getX() * dx, dy, right.getZ() * dx));
 					ticks++;
 					// Prime the slow teleport duration one tick before the final float-up
-					if (ticks == 5 ) td.setTeleportDuration(1);
 					if (ticks >= 10) td.setTeleportDuration(30);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 1L, 1L);

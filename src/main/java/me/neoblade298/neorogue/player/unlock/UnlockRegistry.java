@@ -61,6 +61,8 @@ public class UnlockRegistry {
 					}
 					if (eq.getType() == EquipmentType.ARTIFACT) {
 						Equipment.removeFromArtifactDroptable((Artifact) eq);
+					} else if (eq.getType() == EquipmentType.CONSUMABLE) {
+						Equipment.removeFromConsumablesDroptable((Consumable) eq);
 					} else {
 						Equipment.removeFromDroptable(eq);
 					}
