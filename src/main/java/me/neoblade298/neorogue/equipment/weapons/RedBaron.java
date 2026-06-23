@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -51,7 +50,7 @@ public class RedBaron extends Bow {
 	public RedBaron(boolean isUpgraded) {
 		super(ID, "Red Baron", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(50, 1, 0, 12, 1, 1.2).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentProperties.ofBow(30, 1, 0, 12, 1, 1.2).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 4 : 5;
 		canDrop = false;

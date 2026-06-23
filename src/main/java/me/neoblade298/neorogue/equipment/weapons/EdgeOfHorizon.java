@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -36,8 +35,8 @@ public class EdgeOfHorizon extends Bow {
 	public EdgeOfHorizon(boolean isUpgraded) {
 		super(ID, "Edge of Horizon", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 15, 0, 2));
-		basicDamagePerFocus = isUpgraded ? 15 : 10;
+				EquipmentProperties.ofBow(50, 1, 0, 15, 0, 2));
+		basicDamagePerFocus = isUpgraded ? 10 : 5;
 	}
 
 	@Override
