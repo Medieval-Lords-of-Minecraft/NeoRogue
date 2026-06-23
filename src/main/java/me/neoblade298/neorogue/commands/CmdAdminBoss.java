@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.RegionType;
@@ -36,6 +37,7 @@ public class CmdAdminBoss extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player host = (Player) s;
 		Session sess = SessionManager.createSession(host, 1);
+		sess.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
 
 		sess.generateRegion(RegionType.LOW_DISTRICT);
 		sess.setNode(sess.getRegion().getNodes()[0][2]);
