@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,8 +23,19 @@ public class CmdAdminSerialize extends Subcommand {
 
 	public CmdAdminSerialize(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		this.overrideTabHandler();
 		args.add(new Arg("player", false));
 		args.add(new Arg("id", false));
+	}
+
+	@Override
+	public List<String> getTabOptions(CommandSender s, String[] args) {
+		if (!(s instanceof Player) && args.length <= 1) {
+			ArrayList<String> players = new ArrayList<>();
+			for (Player p : Bukkit.getOnlinePlayers()) players.add(p.getName());
+			return players;
+		}
+		return EquipmentPresets.getNames();
 	}
 
 	public void run(CommandSender s, String[] args) {
@@ -58,6 +72,10 @@ public class CmdAdminSerialize extends Subcommand {
 		String serialized = data.serialize();
 		
 		if (presetId != null) {
+			if (EquipmentPresets.get(presetId) != null) {
+				Util.msg(s, "<red>Preset '" + presetId + "' already exists. Use a different name.");
+				return;
+			}
 			EquipmentPresets.save(presetId, serialized);
 			Util.msg(s, "Saved " + p.getName() + "'s equipment as preset: " + presetId);
 			return;

@@ -660,8 +660,9 @@ public class DamageMeta {
 					double maxHp = target.getAttribute(Attribute.MAX_HEALTH).getValue();
 					boolean bigHit = false;
 					if (recipient.getMob() != null) {
-						bigHit = recipient.getMob().getType() == Mob.MobType.NORMAL
-							? totalDmg > maxHp * 0.7
+						Mob mob = recipient.getMob();
+						bigHit = mob.getType() == Mob.MobType.NORMAL
+							? totalDmg > maxHp * (0.7 / mob.getKillValue())
 							: totalDmg > maxHp * 0.08;
 					}
 					if (bigHit) {
