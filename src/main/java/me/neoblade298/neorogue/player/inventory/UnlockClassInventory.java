@@ -35,12 +35,20 @@ public class UnlockClassInventory extends CoreInventory {
 
 	private final EquipmentClass ec;
 	private final ArrayList<UnlockNode> nodes;
+	private Player spectator;
+	private PlayerData targetData;
 
 	public UnlockClassInventory(Player p, EquipmentClass ec) {
-		super(p, Bukkit.createInventory(p, 54,
+		this(p, ec, null);
+	}
+
+	public UnlockClassInventory(Player viewer, EquipmentClass ec, PlayerData targetData) {
+		super(viewer, Bukkit.createInventory(viewer, 54,
 				Component.text((ec != null ? ec.getDisplay() : "Global") + " Unlocks", NamedTextColor.LIGHT_PURPLE)));
 		this.ec = ec;
 		this.nodes = UnlockRegistry.getNodesForClass(ec);
+		this.targetData = targetData;
+		this.spectator = targetData != null ? viewer : null;
 		setupInventory();
 	}
 
@@ -53,7 +61,7 @@ public class UnlockClassInventory extends CoreInventory {
 				Component.text("Back", NamedTextColor.RED));
 
 		// Info item showing class + available points
-		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+		PlayerData data = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 		int points = data.getPoints(ec);
 		String className = ec != null ? ec.getDisplay() : "Global";
 		ItemStack info = new ItemStack(Material.BOOK);
@@ -129,7 +137,7 @@ public class UnlockClassInventory extends CoreInventory {
 			NBTItem nclicked = new NBTItem(e.getCurrentItem());
 			if (!nclicked.hasTag("unlockNodeId")) return;
 			String nodeId = nclicked.getString("unlockNodeId");
-			PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+			PlayerData data = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 			UnlockNode node = UnlockRegistry.getNode(nodeId);
 
 			// Right-click: view equipment in glossary
@@ -142,6 +150,11 @@ public class UnlockClassInventory extends CoreInventory {
 				if (!equips.isEmpty()) {
 					new GlossaryViewInventory(p, equips, Component.text(node.getDisplayName()), this);
 				}
+				return;
+			}
+
+			if (spectator != null) {
+				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 				return;
 			}
 

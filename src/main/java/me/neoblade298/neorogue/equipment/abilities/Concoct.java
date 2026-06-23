@@ -64,7 +64,7 @@ public class Concoct extends Equipment {
 			if (inst.getTime() <= 0) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			Sounds.extinguish.play(p, p);
-			int mult = (int) ((System.currentTimeMillis() - inst.getTime()) / 1000);
+			int mult = Math.min((int) ((System.currentTimeMillis() - inst.getTime()) / 1000), duration);
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, poisonDuration);
 			inst.setTime(-1);
 			return TriggerResult.keep();

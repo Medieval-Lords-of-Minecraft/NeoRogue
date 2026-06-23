@@ -24,15 +24,25 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class AchievementsMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
+	private Player spectator;
+	private PlayerData targetData;
 
 	public AchievementsMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Achievements", NamedTextColor.AQUA)));
 		setupInventory();
 	}
 
+	public AchievementsMenuInventory(Player spectator, PlayerData target) {
+		super(spectator, Bukkit.createInventory(spectator, 27,
+				Component.text(target.getDisplay() + "'s Achievements", NamedTextColor.AQUA)));
+		this.spectator = spectator;
+		this.targetData = target;
+		setupInventory();
+	}
+
 	private void setupInventory() {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+		PlayerData data = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 		ItemStack[] contents = inv.getContents();
 		contents[WARRIOR] = createClassButton(data, Material.IRON_SWORD,
 				Component.text("Warrior", NamedTextColor.RED), EquipmentClass.WARRIOR);
@@ -69,24 +79,24 @@ public class AchievementsMenuInventory extends CoreInventory {
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 
-		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
+		PlayerData pd = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 		if (pd == null) return;
 
 		switch (e.getSlot()) {
 		case WARRIOR:
-			new AchievementsInventory(p, pd, EquipmentClass.WARRIOR);
+			new AchievementsInventory(p, pd, EquipmentClass.WARRIOR, targetData);
 			break;
 		case THIEF:
-			new AchievementsInventory(p, pd, EquipmentClass.THIEF);
+			new AchievementsInventory(p, pd, EquipmentClass.THIEF, targetData);
 			break;
 		case ARCHER:
-			new AchievementsInventory(p, pd, EquipmentClass.ARCHER);
+			new AchievementsInventory(p, pd, EquipmentClass.ARCHER, targetData);
 			break;
 		case MAGE:
-			new AchievementsInventory(p, pd, EquipmentClass.MAGE);
+			new AchievementsInventory(p, pd, EquipmentClass.MAGE, targetData);
 			break;
 		case GLOBAL:
-			new AchievementsInventory(p, pd, null);
+			new AchievementsInventory(p, pd, null, targetData);
 			break;
 		case BACK:
 			new MainMenuInventory(p);

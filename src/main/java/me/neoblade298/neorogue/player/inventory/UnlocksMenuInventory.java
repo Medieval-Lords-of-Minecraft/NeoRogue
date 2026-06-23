@@ -28,15 +28,25 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class UnlocksMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
+	private Player spectator;
+	private PlayerData targetData;
 
 	public UnlocksMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE)));
 		setupInventory();
 	}
 
+	public UnlocksMenuInventory(Player spectator, PlayerData target) {
+		super(spectator, Bukkit.createInventory(spectator, 27,
+				Component.text(target.getDisplay() + "'s Unlocks", NamedTextColor.LIGHT_PURPLE)));
+		this.spectator = spectator;
+		this.targetData = target;
+		setupInventory();
+	}
+
 	private void setupInventory() {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+		PlayerData data = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 		ItemStack[] contents = inv.getContents();
 		contents[WARRIOR] = createClassButton(data, Material.IRON_SWORD,
 				Component.text("Warrior", NamedTextColor.RED), EquipmentClass.WARRIOR);
@@ -78,7 +88,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 			lore.add(Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",
 					NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
-		ItemMeta meta = item.getItemMeta();
+		meta = item.getItemMeta();
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
@@ -92,19 +102,19 @@ public class UnlocksMenuInventory extends CoreInventory {
 
 		switch (e.getSlot()) {
 		case WARRIOR:
-			new UnlockClassInventory(p, EquipmentClass.WARRIOR);
+			new UnlockClassInventory(p, EquipmentClass.WARRIOR, targetData);
 			break;
 		case THIEF:
-			new UnlockClassInventory(p, EquipmentClass.THIEF);
+			new UnlockClassInventory(p, EquipmentClass.THIEF, targetData);
 			break;
 		case ARCHER:
-			new UnlockClassInventory(p, EquipmentClass.ARCHER);
+			new UnlockClassInventory(p, EquipmentClass.ARCHER, targetData);
 			break;
 		case MAGE:
-			new UnlockClassInventory(p, EquipmentClass.MAGE);
+			new UnlockClassInventory(p, EquipmentClass.MAGE, targetData);
 			break;
 		case GLOBAL:
-			new UnlockClassInventory(p, null);
+			new UnlockClassInventory(p, null, targetData);
 			break;
 		case BACK:
 			new MainMenuInventory(p);

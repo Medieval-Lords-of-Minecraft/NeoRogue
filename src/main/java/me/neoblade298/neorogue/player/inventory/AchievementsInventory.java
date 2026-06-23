@@ -36,10 +36,18 @@ public class AchievementsInventory extends CoreInventory {
 
 	private int page;
 	private List<AchievementProgress> sorted;
+	private Player spectator;
+	private PlayerData targetData;
 
 	public AchievementsInventory(Player p, PlayerData pd, EquipmentClass ec) {
-		super(p, Bukkit.createInventory(p, 54, buildTitle(pd, ec)));
+		this(p, pd, ec, null);
+	}
+
+	public AchievementsInventory(Player viewer, PlayerData pd, EquipmentClass ec, PlayerData targetData) {
+		super(viewer, Bukkit.createInventory(viewer, 54, buildTitle(pd, ec)));
 		this.sorted = buildSortedList(pd, ec);
+		this.targetData = targetData;
+		this.spectator = targetData != null ? viewer : null;
 		setupInventory();
 	}
 
