@@ -661,8 +661,8 @@ public class DamageMeta {
 					boolean bigHit = false;
 					if (recipient.getMob() != null) {
 						bigHit = recipient.getMob().getType() == Mob.MobType.NORMAL
-							? totalDmg > maxHp * 0.5
-							: totalDmg > maxHp * 0.06;
+							? totalDmg > maxHp * 0.7
+							: totalDmg > maxHp * 0.08;
 					}
 					if (bigHit) {
 						recipient.getInstance().createIndicator(
