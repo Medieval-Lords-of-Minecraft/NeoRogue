@@ -333,20 +333,25 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public void createIndicator(Component txt, Location src) {
-		createIndicator(txt, src, false);
+		createIndicator(txt, src, false, null);
 	}
 
 	public void createIndicator(Component txt, Location src, boolean bigHit) {
+		createIndicator(txt, src, bigHit, null);
+	}
+
+	public void createIndicator(Component txt, Location src, boolean bigHit, Vector direction) {
 		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
 		td.text(txt);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(bigHit ? 3 : 2);
 		td.setBillboard(Billboard.CENTER);
 		td.setTransformation(trans);
-		td.setTeleportDuration(bigHit ? 1 : 40);
+		td.setTeleportDuration(bigHit ? 0 : 40);
 		if (bigHit) {
 			// Perpendicular-to-facing direction for the shake axis
-			Vector facing = src.getDirection().setY(0);
+			Vector rawDir = direction != null ? direction : src.getDirection();
+			Vector facing = rawDir.clone().setY(0);
 			if (facing.lengthSquared() == 0) facing.setX(1);
 			else facing.normalize();
 			final Vector right = new Vector(0, 1, 0).crossProduct(facing).normalize();
@@ -370,6 +375,7 @@ public abstract class FightInstance extends Instance {
 					td.teleport(td.getLocation().add(right.getX() * dx, dy, right.getZ() * dx));
 					ticks++;
 					// Prime the slow teleport duration one tick before the final float-up
+					if (ticks == 5 ) td.setTeleportDuration(1);
 					if (ticks >= 10) td.setTeleportDuration(30);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 1L, 1L);

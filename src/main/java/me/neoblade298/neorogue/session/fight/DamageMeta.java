@@ -667,7 +667,8 @@ public class DamageMeta {
 					}
 					if (bigHit) {
 						recipient.getInstance().createIndicator(
-							Component.text(df.format(totalDmg) + "!", NamedTextColor.DARK_RED, TextDecoration.BOLD), loc, true);
+						Component.text(df.format(totalDmg) + "!", NamedTextColor.DARK_RED, TextDecoration.BOLD), loc, true,
+						owner.getEntity().getLocation().getDirection());
 					}
 					else {
 						recipient.getInstance().createIndicator(
