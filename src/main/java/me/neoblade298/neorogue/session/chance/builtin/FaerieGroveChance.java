@@ -13,11 +13,12 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
-import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
+import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
@@ -32,7 +33,7 @@ public class FaerieGroveChance extends ChanceSet {
 				+ "A faerie materializes and eyes your belongings with mischief. "
 				+ "\"A trade, perhaps?\"");
 
-		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Trade",
+		ChanceChoice tradeChoice = new ChanceChoice(Material.GOLD_INGOT, "Trade",
 				(s, inst, data) -> {
 					return getTradeDescription(inst, data);
 				},
@@ -61,13 +62,19 @@ public class FaerieGroveChance extends ChanceSet {
 					// Give the reward
 					Equipment rewardEq = Equipment.deserialize(reward);
 					data.giveEquipment(rewardEq);
-					PlayerSessionInventory.setupInventory(p.getInventory(), data);
 					s.broadcastOthers(Component.text(p.getName(), NamedTextColor.YELLOW)
 							.append(Component.text(" traded ", NamedTextColor.WHITE))
 							.append(chosenEq.getHoverable())
 							.append(Component.text(" with the faerie!", NamedTextColor.WHITE)), p);
 					return null;
-				}));
+				});
+		tradeChoice.setOnRightClick((p, prev) -> {
+			ChanceInventory ci = (ChanceInventory) prev;
+			String reward = ci.getInst().getEventData(ci.getData().getUniqueId() + ":reward");
+			if (reward == null) return;
+			new EquipmentGlossaryInventory(p, Equipment.deserialize(reward), prev);
+		});
+		stage.addChoice(tradeChoice);
 
 		stage.addChoice(new ChanceChoice(Material.REDSTONE, "Try to escape",
 				(s, inst, data) -> {

@@ -21,7 +21,7 @@ public class TempestSigil extends Artifact {
 	private static final long COOLDOWN = 3000; // 3 seconds in ms
 
 	public TempestSigil() {
-		super(ID, "Tempest Sigil", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Tempest Sigil", Rarity.RARE, new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.MAGE });
 	}
 
 	public static Equipment get() {

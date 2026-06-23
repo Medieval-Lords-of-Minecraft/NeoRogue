@@ -104,6 +104,9 @@ public class ChanceInventory extends CoreInventory {
 		inv.setContents(contents);
 	}
 
+	public ChanceInstance getInst() { return inst; }
+	public PlayerSessionData getData() { return data; }
+
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);

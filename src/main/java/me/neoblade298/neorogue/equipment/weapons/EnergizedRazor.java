@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -39,28 +38,35 @@ public class EnergizedRazor extends Equipment {
 
 	private class RazorInstance extends EquipmentInstance {
 		private int count = 0;
+		private long windowStart = 0;
 
 		public RazorInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
 			super(data, sessionEq, slot, es);
 			action = (data2, in) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				weaponSwingAndDamage(p, data, ev.getTarget());
-				if (++count >= 3) {
-					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
-					data.addStamina(res);
-					Sounds.extinguish.play(p, p);
-					count = 0;
-					this.setCooldown(1);
+				long now = System.currentTimeMillis();
+				if (count == 0 || now - windowStart > 1500L) {
+					count = 1;
+					windowStart = now;
+				} else {
+					count++;
+					if (count >= 3) {
+						data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
+						data.addStamina(res);
+						Sounds.extinguish.play(p, p);
+						this.setCooldown(1);
+						count = 0;
+					}
 				}
 				return TriggerResult.keep();
 			};
 		}
-		
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every " + DescUtil.white(3) + " basic attacks, gain " + DescUtil.yellow(res) + " stamina"
-						+ " and your attack cooldown is set to " + DescUtil.white(1 + "s") + ".");
+		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.white(3) + " times within " + DescUtil.white("1.5s") + ", gain " + DescUtil.yellow(res) + " stamina"
+						+ " and set your attack cooldown to " + DescUtil.white("1s") + ". Otherwise, the combo resets.");
 	}
 }

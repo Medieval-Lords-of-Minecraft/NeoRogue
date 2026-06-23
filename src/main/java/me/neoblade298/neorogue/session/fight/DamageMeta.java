@@ -654,9 +654,10 @@ public class DamageMeta {
 					recipient.getInstance().createIndicator(Component.text("0", NamedTextColor.GRAY), loc);
 				}
 				else {
-				double totalDmg = rawDamage;
+					double totalDmg = rawDamage;
 					double maxHp = target.getAttribute(Attribute.MAX_HEALTH).getValue();
 					boolean bigHit = false;
+					System.out.println("total damage: " + totalDmg + ", max hp: " + maxHp + ", mob type: " + (recipient.getMob() == null ? "null" : recipient.getMob().getType()));
 					if (recipient.getMob() != null) {
 						bigHit = recipient.getMob().getType() == Mob.MobType.NORMAL
 							? totalDmg > maxHp * 0.5

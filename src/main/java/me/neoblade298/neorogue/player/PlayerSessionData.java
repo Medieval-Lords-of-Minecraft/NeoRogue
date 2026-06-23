@@ -570,6 +570,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			}
 			// If storage is full, open storage GUI
 			else {
+				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 				Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
 				new BukkitRunnable() {
 					@Override

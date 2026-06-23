@@ -156,7 +156,7 @@ public class HuntersEssence extends Equipment implements Power {
 		item = createItem(Material.ENDER_EYE,
 				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina, " + 
-				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage permanently, and has a " +
+				DescUtil.yellow((int)(damageBuff * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage permanently, and has a " +
 				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ".");
 	}
 }
