@@ -63,7 +63,7 @@ public class DamageMeta {
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 	private HashMap<StatTracker, Double> trackerSlices = new HashMap<StatTracker, Double>();
-	private double ignoreShieldsDamage, damage, knockback;
+	private double ignoreShieldsDamage, damage, rawDamage, knockback;
 	private Location source; // Override for knockback source
 	
 	public DamageMeta(FightData data) {
@@ -408,6 +408,7 @@ public class DamageMeta {
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
+			rawDamage += sliceDamage; // Track unclamped damage for hologram display
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
 			}
@@ -504,6 +505,7 @@ public class DamageMeta {
 			pl.getStats().addDamageBarriered(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
+			rawDamage = 0;
 			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
 		}
@@ -514,6 +516,7 @@ public class DamageMeta {
 			pl.getStats().addDamageNullified(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
+			rawDamage = 0;
 			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
 		}
@@ -539,6 +542,7 @@ public class DamageMeta {
 				ignoreShieldsDamage = 0;
 				statSlices.clear(); // Clear these so they don't get counted in stats
 				trackerSlices.clear();
+				rawDamage = 0;
 				pl.getStats().addEvadeMitigated(totalDamage);
 				pl.addStamina(-totalDamage / staminaPerDamage);
 				fullEvade = true;
@@ -596,6 +600,7 @@ public class DamageMeta {
 				if (pdata.runActions(pdata, Trigger.RECEIVE_HEALTH_DAMAGE, ev)) {
 					damage = 0;
 					ignoreShieldsDamage = 0;
+					rawDamage = 0;
 					trackerSlices.clear();
 					statSlices.clear();
 				}
@@ -649,7 +654,7 @@ public class DamageMeta {
 					recipient.getInstance().createIndicator(Component.text("0", NamedTextColor.GRAY), loc);
 				}
 				else {
-					double totalDmg = damage + ignoreShieldsDamage;
+				double totalDmg = rawDamage;
 					double maxHp = target.getAttribute(Attribute.MAX_HEALTH).getValue();
 					boolean bigHit = false;
 					if (recipient.getMob() != null) {
