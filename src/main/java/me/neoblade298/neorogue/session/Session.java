@@ -388,6 +388,8 @@ public class Session {
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		SessionManager.removeFromSession(p.getUniqueId());
+		SessionManager.giveMenuCompass(p);
+		p.teleport(NeoRogue.spawn);
 	}
 	
 	public HashMap<UUID, MapViewer> getSpectators() {

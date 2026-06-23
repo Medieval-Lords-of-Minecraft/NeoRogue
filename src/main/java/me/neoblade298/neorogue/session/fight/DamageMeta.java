@@ -370,6 +370,7 @@ public class DamageMeta {
 		
 		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
 		boolean hasPhysical = false, hasMagical = false;
+		boolean targetDead = false;
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
@@ -409,6 +410,7 @@ public class DamageMeta {
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			rawDamage += sliceDamage; // Track unclamped damage for hologram display
+			if (targetDead) continue; // Remaining slices only contribute to rawDamage
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
 			}
@@ -483,7 +485,7 @@ public class DamageMeta {
 				ignoreShieldsDamage += sliceDamage;
 			}
 
-			// Return damage
+			// Return damage (one trigger per damagemeta)
 			if (recipient.hasStatus(StatusType.THORNS) && DamageCategory.PHYSICAL.hasType(slice.getPostBuffType()) && !hasPhysical) {
 				int stacks = recipient.getStatus(StatusType.THORNS).getStacks();
 				hasPhysical = true;
@@ -495,8 +497,8 @@ public class DamageMeta {
 				hasMagical = true;
 				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT, DamageStatTracker.reflect()));
 			}
-			// Stop counting damage slices after the target is already dead
-			if (damage + ignoreShieldsDamage >= target.getHealth()) break;
+			// Stop dealing damage slices after the target is already dead (rawDamage still accumulates)
+			if (damage + ignoreShieldsDamage >= target.getHealth()) targetDead = true;
 		}
 		
 		// Barrier nullification
@@ -657,15 +659,14 @@ public class DamageMeta {
 					double totalDmg = rawDamage;
 					double maxHp = target.getAttribute(Attribute.MAX_HEALTH).getValue();
 					boolean bigHit = false;
-					System.out.println("total damage: " + totalDmg + ", max hp: " + maxHp + ", mob type: " + (recipient.getMob() == null ? "null" : recipient.getMob().getType()));
 					if (recipient.getMob() != null) {
 						bigHit = recipient.getMob().getType() == Mob.MobType.NORMAL
 							? totalDmg > maxHp * 0.5
-							: totalDmg > maxHp * 0.1;
+							: totalDmg > maxHp * 0.06;
 					}
 					if (bigHit) {
 						recipient.getInstance().createIndicator(
-							Component.text(df.format(totalDmg), NamedTextColor.DARK_RED, TextDecoration.BOLD), loc, true);
+							Component.text(df.format(totalDmg) + "!", NamedTextColor.DARK_RED, TextDecoration.BOLD), loc, true);
 					}
 					else {
 						recipient.getInstance().createIndicator(

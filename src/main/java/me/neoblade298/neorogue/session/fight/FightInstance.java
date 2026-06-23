@@ -348,20 +348,24 @@ public abstract class FightInstance extends Instance {
 			new BukkitRunnable() {
 				int ticks = 0;
 				double totalY = 0;
+				double currentX = 0;
+				// Positions relative to spawn: large first kick, then damped oscillation (~60% decay each half-cycle)
+				final double[] shakeX = { 0.70, -0.42, 0.26, -0.16, 0.10 };
 				@Override
 				public void run() {
-					if (ticks >= 10) {
-						td.setTeleportDuration(30);
-						td.teleport(td.getLocation().add(0, 2 - totalY, 0));
+					if (ticks >= 5) {
+						td.teleport(td.getLocation().add(-currentX, 2 - totalY, 0));
 						this.cancel();
 						return;
 					}
-					double offsetX = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
-					double offsetZ = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
+					double dx = shakeX[ticks] - currentX;
+					currentX = shakeX[ticks];
 					double dy = 0.1;
 					totalY += dy;
-					td.teleport(td.getLocation().add(offsetX, dy, offsetZ));
+					td.teleport(td.getLocation().add(dx, dy, 0));
 					ticks++;
+					// Prime the slow teleport duration one tick before the final float-up
+					if (ticks >= 5) td.setTeleportDuration(30);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 2L, 2L);
 		}
