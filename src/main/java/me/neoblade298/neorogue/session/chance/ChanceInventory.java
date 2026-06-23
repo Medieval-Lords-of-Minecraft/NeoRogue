@@ -21,7 +21,6 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.ChanceGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
@@ -126,10 +125,10 @@ public class ChanceInventory extends CoreInventory {
 		ChanceChoice choice = stage.choices.get(num - 1);
 		ChanceInventory ci = this;
 
-		if (e.isRightClick() && !choice.getTags().isEmpty()) {
+		if (e.isRightClick() && choice.getOnRightClick() != null) {
 			new BukkitRunnable() {
 				public void run() {
-					new ChanceGlossaryInventory(p, choice, ci);
+					choice.getOnRightClick().accept(p, ci);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

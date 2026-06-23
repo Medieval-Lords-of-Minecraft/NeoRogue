@@ -309,10 +309,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			e.setCancelled(true);
 			return;
 		}
-		if (cursor.getType().isAir() && clicked.getType().isAir()) return;
+		if (cursor.getType().isAir() && (clicked == null || clicked.getType().isAir())) return;
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		NBTItem nclicked = !clicked.getType().isAir() ? new NBTItem(clicked) : null;
+		NBTItem nclicked = clicked != null && !clicked.getType().isAir() ? new NBTItem(clicked) : null;
 		Player p = (Player) e.getWhoClicked();
 
 		if (slot == TRASH && !cursor.getType().isAir()) {

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.chance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -32,6 +34,7 @@ public class ChanceChoice {
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private ChanceAction action;
 	private ChanceRequirement req;
+	private BiConsumer<Player, CoreInventory> onRightClick;
 	
 	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceRequirement req, ChanceAction action) {
 		this(mat, title, description, action);
@@ -75,6 +78,17 @@ public class ChanceChoice {
 	
 	public void addTag(GlossaryIcon icon) {
 		tags.add(icon);
+		if (onRightClick == null) {
+			onRightClick = (p, prev) -> new me.neoblade298.neorogue.player.inventory.ChanceGlossaryInventory(p, this, prev);
+		}
+	}
+	
+	public void setOnRightClick(BiConsumer<Player, CoreInventory> onRightClick) {
+		this.onRightClick = onRightClick;
+	}
+	
+	public BiConsumer<Player, CoreInventory> getOnRightClick() {
+		return onRightClick;
 	}
 	
 	// For use in glossary
@@ -94,7 +108,7 @@ public class ChanceChoice {
 				lore.add(text);
 			}
 		}
-		if (!tags.isEmpty()) {
+		if (onRightClick != null) {
 			lore.add((TextComponent) Component.text("Right click for more info", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
@@ -146,7 +160,7 @@ public class ChanceChoice {
 						.colorIfAbsent(NamedTextColor.GRAY));
 			}
 		}
-		if (!tags.isEmpty()) {
+		if (onRightClick != null) {
 			lore.add((TextComponent) Component.text("Right click for more info", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);

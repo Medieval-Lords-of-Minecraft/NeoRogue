@@ -47,6 +47,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class DamageMeta {
 	private static final DecimalFormat df = new DecimalFormat("##.#");
@@ -648,7 +649,22 @@ public class DamageMeta {
 					recipient.getInstance().createIndicator(Component.text("0", NamedTextColor.GRAY), loc);
 				}
 				else {
-					recipient.getInstance().createIndicator(Component.text(df.format(damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
+					double totalDmg = damage + ignoreShieldsDamage;
+					double maxHp = target.getAttribute(Attribute.MAX_HEALTH).getValue();
+					boolean bigHit = false;
+					if (recipient.getMob() != null) {
+						bigHit = recipient.getMob().getType() == Mob.MobType.NORMAL
+							? totalDmg > maxHp * 0.5
+							: totalDmg > maxHp * 0.1;
+					}
+					if (bigHit) {
+						recipient.getInstance().createIndicator(
+							Component.text(df.format(totalDmg), NamedTextColor.DARK_RED, TextDecoration.BOLD), loc, true);
+					}
+					else {
+						recipient.getInstance().createIndicator(
+							Component.text(df.format(totalDmg), NamedTextColor.RED), loc);
+					}
 				}
 			}
 			// Shields updates

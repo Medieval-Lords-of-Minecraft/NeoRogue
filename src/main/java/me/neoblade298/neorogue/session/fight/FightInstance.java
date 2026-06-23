@@ -333,19 +333,46 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public void createIndicator(Component txt, Location src) {
+		createIndicator(txt, src, false);
+	}
+
+	public void createIndicator(Component txt, Location src, boolean bigHit) {
 		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
 		td.text(txt);
 		Transformation trans = td.getTransformation();
-		trans.getScale().set(2);
+		trans.getScale().set(bigHit ? 3 : 2);
 		td.setBillboard(Billboard.CENTER);
 		td.setTransformation(trans);
-		td.setTeleportDuration(40);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				td.teleport(td.getLocation().add(0, 2, 0));
-			}
-		}.runTaskLater(NeoRogue.inst(), 2);
+		td.setTeleportDuration(bigHit ? 2 : 40);
+		if (bigHit) {
+			new BukkitRunnable() {
+				int ticks = 0;
+				double totalY = 0;
+				@Override
+				public void run() {
+					if (ticks >= 10) {
+						td.setTeleportDuration(30);
+						td.teleport(td.getLocation().add(0, 2 - totalY, 0));
+						this.cancel();
+						return;
+					}
+					double offsetX = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
+					double offsetZ = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
+					double dy = 0.1;
+					totalY += dy;
+					td.teleport(td.getLocation().add(offsetX, dy, offsetZ));
+					ticks++;
+				}
+			}.runTaskTimer(NeoRogue.inst(), 2L, 2L);
+		}
+		else {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					td.teleport(td.getLocation().add(0, 2, 0));
+				}
+			}.runTaskLater(NeoRogue.inst(), 2);
+		}
 
 		new BukkitRunnable() {
 			@Override

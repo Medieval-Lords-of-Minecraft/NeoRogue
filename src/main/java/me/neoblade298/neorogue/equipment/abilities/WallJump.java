@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,16 +11,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -38,9 +40,9 @@ public class WallJump extends Equipment {
 		.count(5).spread(0.3, 0.3);
 	private static final ParticleContainer jumpParticle = new ParticleContainer(Particle.FIREWORK)
 		.count(10).spread(0.5, 0.5);
-	private static final ParticleContainer lineParticle = new ParticleContainer(Particle.CRIT)
+	private static final ParticleContainer hitParticle = new ParticleContainer(Particle.CRIT)
 		.count(5).spread(0.2, 0.2);
-	private static final TargetProperties tp = TargetProperties.line(4, 2, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(2, true, TargetType.ENEMY);
 	
 	private int damage;
 
@@ -69,7 +71,7 @@ public class WallJump extends Equipment {
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				
-				// Recast: dash long distance and deal damage in a line
+				// Recast: dash long distance and deal damage in radius around player
 				if (!isInitialCast) {
 					Sounds.jump.play(p, p);
 					
@@ -80,17 +82,10 @@ public class WallJump extends Equipment {
 					dashVec.setY(0.3);
 					p.setVelocity(dashVec);
 					
-					// Deal line damage
-					Location start = p.getLocation().add(0, 1, 0);
-					Location end = start.clone().add(dashVec.clone().multiply(tp.range));
-					
-					ParticleUtil.drawLine(p, lineParticle, start, end, 0.3);
 					jumpParticle.play(p, p.getLocation());
 					
-					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING, 
-							DamageStatTracker.of(id + slot, eq)), ent);
-					}
+					// Deal damage in radius during dash
+					new WallJumpHitChecker(p, data, WallJumpInstance.this, WallJump.this, slot);
 					
 					// Reset state
 					isInitialCast = true;
@@ -164,11 +159,42 @@ public class WallJump extends Equipment {
 			return false;
 		}
 	}
+	
+	private class WallJumpHitChecker {
+		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
+		private HashSet<LivingEntity> alreadyHit = new HashSet<LivingEntity>();
+		
+		protected WallJumpHitChecker(Player p, PlayerFightData data, EquipmentInstance inst, Equipment eq, int slot) {
+			for (long delay = 1; delay <= 10; delay++) {
+				final boolean last = delay == 10;
+				tasks.add(new BukkitRunnable() {
+					public void run() {
+						if (last) data.removeCleanupTask(id);
+						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+							if (alreadyHit.contains(ent)) continue;
+							alreadyHit.add(ent);
+							hitParticle.play(p, ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING, 
+								DamageStatTracker.of(id + slot, eq)), ent);
+						}
+					}
+				}.runTaskLater(NeoRogue.inst(), delay));
+			}
+			
+			data.addCleanupTask(id, () -> { cancelTasks(); });
+		}
+		
+		private void cancelTasks() {
+			for (BukkitTask task : tasks) {
+				task.cancel();
+			}
+		}
+	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				GlossaryTag.DASH.tag(this) + " forward. If you hit a wall, recast to " + GlossaryTag.DASH.tag(this) + " a long distance and deal "
-				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage in a line.");
+				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage to nearby enemies.");
 	}
 }
