@@ -24,7 +24,7 @@ public class Lockbox extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CHEST, "Increases your accessory slots by " + DescUtil.white(1) + ", up to a maximum of " + DescUtil.white(6) + ".");
+		item = createItem(Material.CHEST, "Increases your accessory slots by " + DescUtil.white(1) + ", up to a maximum of " + DescUtil.white(5) + ".");
 	}
 
 	@Override

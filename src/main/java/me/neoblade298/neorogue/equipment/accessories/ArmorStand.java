@@ -24,7 +24,7 @@ public class ArmorStand extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Increases your armor slots by " + DescUtil.white(1) + ", up to a max of " + DescUtil.white(3) + ".");
+		item = createItem(Material.ARMOR_STAND, "Increases your armor slots by " + DescUtil.white(1) + ", up to a max of " + DescUtil.white(4) + ".");
 	}
 
 	@Override
