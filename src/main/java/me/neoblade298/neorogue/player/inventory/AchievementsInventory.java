@@ -152,7 +152,11 @@ public class AchievementsInventory extends CoreInventory {
 
 		int slot = e.getRawSlot();
 		if (slot == BACK) {
-			new AchievementsMenuInventory(p);
+			if (spectator != null) {
+				new AchievementsMenuInventory(spectator, targetData);
+			} else {
+				new AchievementsMenuInventory(p);
+			}
 			return;
 		}
 

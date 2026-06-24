@@ -1,12 +1,11 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -19,7 +18,7 @@ public class ClothBindings extends Equipment {
 	public ClothBindings(boolean isUpgraded) {
 		super(ID, "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		health = isUpgraded ? 12 : 8;
+		health = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

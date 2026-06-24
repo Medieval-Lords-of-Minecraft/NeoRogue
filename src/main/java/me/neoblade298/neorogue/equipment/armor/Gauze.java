@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -17,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEv
 
 public class Gauze extends Equipment {
 	private static final String ID = "Gauze";
-	private int pct, max;
+	private int pct, max, threshold = 3;
 	
 	public Gauze(boolean isUpgraded) {
 		super(ID, "Gauze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
@@ -44,7 +43,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(2) + " seconds of "
+		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(threshold) + " seconds of "
 				+ "taking health damage heals back " + DescUtil.yellow(pct + "%") + " of the last damage taken, with a maximum heal of "
 						+ DescUtil.yellow(max) + ".");
 	}
@@ -64,7 +63,7 @@ public class Gauze extends Equipment {
 		private long timestamp;
 		
 		public void use(PlayerFightData data) {
-			if (timestamp + 2000 >= System.currentTimeMillis()) {
+			if (timestamp + (threshold * 1000) >= System.currentTimeMillis()) {
 				data.addHealth(Math.min(max, damage * pct * 0.01));
 				damage = 0;
 				timestamp = 0;

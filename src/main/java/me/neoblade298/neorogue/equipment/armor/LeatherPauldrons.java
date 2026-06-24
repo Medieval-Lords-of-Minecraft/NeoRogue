@@ -20,8 +20,8 @@ public class LeatherPauldrons extends Equipment {
 	public LeatherPauldrons(boolean isUpgraded) {
 		super(ID, "Leather Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		threshold = isUpgraded ? 10 : 15;
-		shields = isUpgraded ? 20 : 15;
+		threshold = isUpgraded ? 5 : 6;
+		shields = isUpgraded ? 6 : 4;
 	}
 
 	public static Equipment get() {

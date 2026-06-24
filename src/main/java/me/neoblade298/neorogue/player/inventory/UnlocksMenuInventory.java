@@ -28,7 +28,6 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class UnlocksMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
-	private Player spectator;
 	private PlayerData targetData;
 
 	public UnlocksMenuInventory(Player p) {
@@ -36,10 +35,10 @@ public class UnlocksMenuInventory extends CoreInventory {
 		setupInventory();
 	}
 
+	// No different besides inventory title
 	public UnlocksMenuInventory(Player spectator, PlayerData target) {
 		super(spectator, Bukkit.createInventory(spectator, 27,
 				Component.text(target.getDisplay() + "'s Unlocks", NamedTextColor.LIGHT_PURPLE)));
-		this.spectator = spectator;
 		this.targetData = target;
 		setupInventory();
 	}

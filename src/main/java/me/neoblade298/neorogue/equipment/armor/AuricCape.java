@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -21,8 +20,8 @@ public class AuricCape extends Equipment {
 	private int reduc;
 
 	public AuricCape(boolean isUpgraded) {
-		super(ID, "Auric Cape", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ARMOR);
-		reduc = isUpgraded ? 8 : 5;
+		super(ID, "Auric Cape", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ARMOR);
+		reduc = isUpgraded ? 6 : 4;
 	}
 
 	public static Equipment get() {

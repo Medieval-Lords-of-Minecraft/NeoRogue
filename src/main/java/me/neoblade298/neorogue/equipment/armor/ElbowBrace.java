@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -26,7 +25,7 @@ public class ElbowBrace extends Equipment {
 	public ElbowBrace(boolean isUpgraded) {
 		super(ID, "Elbow Brace", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 6 : 4;
+		damageReduction = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

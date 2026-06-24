@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -8,6 +6,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -20,7 +19,7 @@ public class StarlightHood extends Equipment {
 	public StarlightHood(boolean isUpgraded) {
 		super(ID, "Starlight Hood", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		stacks = isUpgraded ? 3 : 2;
+		stacks = isUpgraded ? 5 : 3;
 	}
 
 	public static Equipment get() {

@@ -23,8 +23,8 @@ public class LeatherArmguard extends Equipment {
 	public LeatherArmguard(boolean isUpgraded) {
 		super(ID, "Leather Armguard", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		def = isUpgraded ? 3 : 2;
-		spdef = isUpgraded ? 3 : 2;
+		def = 2;
+		spdef = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {
@@ -43,7 +43,7 @@ public class LeatherArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.yellow(def) + ", increased to "
+		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.white(def) + ", increased to "
 				+ DescUtil.yellow(spdef) + " when in " + GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

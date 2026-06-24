@@ -128,7 +128,11 @@ public class UnlockClassInventory extends CoreInventory {
 		int slot = e.getSlot();
 
 		if (slot == BACK) {
-			new UnlocksMenuInventory(p);
+			if (spectator != null) {
+				new UnlocksMenuInventory(spectator, targetData);
+			} else {
+				new UnlocksMenuInventory(p);
+			}
 			return;
 		}
 
