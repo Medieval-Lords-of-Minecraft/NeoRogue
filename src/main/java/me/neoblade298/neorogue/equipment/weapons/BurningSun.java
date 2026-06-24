@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -54,7 +53,7 @@ public class BurningSun extends Bow {
 	public BurningSun(boolean isUpgraded) {
 		super(ID, "Burning Sun", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 2));
+				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 2));
 		blockDamage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 5 : 3;
 		auraBurn = isUpgraded ? 5 : 3;

@@ -1731,6 +1731,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		artifacts.remove(eq);
 	}
 
+	public static void removeFromConsumablesDroptable(Consumable eq) {
+		consumables.remove(eq);
+	}
+
 	public static enum EquipSlot {
 		ARMOR("Armor"), ACCESSORY("Accessory"), OFFHAND("Offhand"), HOTBAR("Hotbar"), KEYBIND("Keybind"), // Hotbar +
 		// other
@@ -1783,14 +1787,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 6;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 2)] = 4;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 3;
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 5;
 			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 7;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 4)] = 2;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 2;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 5)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 5)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 5)] = 4;
 			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 5)] = 4;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 5)] = 1;
 

@@ -109,7 +109,7 @@ public class ChanceChoice {
 			}
 		}
 		if (onRightClick != null) {
-			lore.add((TextComponent) Component.text("Right click for more info", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+			lore.add((TextComponent) Component.text("Right click for glossary", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -161,7 +161,7 @@ public class ChanceChoice {
 			}
 		}
 		if (onRightClick != null) {
-			lore.add((TextComponent) Component.text("Right click for more info", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+			lore.add((TextComponent) Component.text("Right click for glossary", NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

@@ -333,37 +333,51 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public void createIndicator(Component txt, Location src) {
-		createIndicator(txt, src, false);
+		createIndicator(txt, src, false, null);
 	}
 
 	public void createIndicator(Component txt, Location src, boolean bigHit) {
+		createIndicator(txt, src, bigHit, null);
+	}
+
+	public void createIndicator(Component txt, Location src, boolean bigHit, Vector direction) {
 		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
 		td.text(txt);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(bigHit ? 3 : 2);
 		td.setBillboard(Billboard.CENTER);
 		td.setTransformation(trans);
-		td.setTeleportDuration(bigHit ? 2 : 40);
+		td.setTeleportDuration(bigHit ? 1 : 40);
 		if (bigHit) {
+			// Perpendicular-to-facing direction for the shake axis
+			Vector rawDir = direction != null ? direction : src.getDirection();
+			Vector facing = rawDir.clone().setY(0);
+			if (facing.lengthSquared() == 0) facing.setX(1);
+			else facing.normalize();
+			final Vector right = new Vector(0, 1, 0).crossProduct(facing).normalize();
 			new BukkitRunnable() {
 				int ticks = 0;
 				double totalY = 0;
+				double currentX = 0;
+				// Positions relative to spawn: large first kick, then damped oscillation (~75% decay per step)
+				final double[] shakeX = { 0.70, -0.53, 0.40, -0.30, 0.22, -0.17, 0.13, -0.09, 0.07, -0.05 };
 				@Override
 				public void run() {
 					if (ticks >= 10) {
-						td.setTeleportDuration(30);
-						td.teleport(td.getLocation().add(0, 2 - totalY, 0));
+						td.teleport(td.getLocation().add(right.getX() * -currentX, 2 - totalY, right.getZ() * -currentX));
 						this.cancel();
 						return;
 					}
-					double offsetX = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
-					double offsetZ = (NeoRogue.gen.nextDouble() - 0.5) * 0.2;
+					double dx = shakeX[ticks] - currentX;
+					currentX = shakeX[ticks];
 					double dy = 0.1;
 					totalY += dy;
-					td.teleport(td.getLocation().add(offsetX, dy, offsetZ));
+					td.teleport(td.getLocation().add(right.getX() * dx, dy, right.getZ() * dx));
 					ticks++;
+					// Prime the slow teleport duration one tick before the final float-up
+					if (ticks >= 10) td.setTeleportDuration(30);
 				}
-			}.runTaskTimer(NeoRogue.inst(), 2L, 2L);
+			}.runTaskTimer(NeoRogue.inst(), 1L, 1L);
 		}
 		else {
 			new BukkitRunnable() {

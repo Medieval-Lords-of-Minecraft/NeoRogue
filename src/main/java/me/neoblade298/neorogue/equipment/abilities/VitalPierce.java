@@ -1,16 +1,16 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -29,7 +29,7 @@ public class VitalPierce extends Equipment {
 	public VitalPierce(boolean isUpgraded) {
 		super(ID, "Vital Pierce", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 9, 0));
-		damage = isUpgraded ? 450 : 300;
+		damage = isUpgraded ? 300 : 200;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -49,12 +49,17 @@ public class VitalPierce extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
-				hit.play(p, ev.getTarget());
-				Sounds.anvil.play(p, ev.getTarget());
-				return TriggerResult.remove();
+			data.charge(20).then(new Runnable() {
+				public void run() {
+					data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+						Player p2 = data.getPlayer();
+						PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+						FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, VitalPierce.this));
+						hit.play(p2, ev.getTarget());
+						Sounds.anvil.play(p2, ev.getTarget());
+						return TriggerResult.remove();
+					});
+				}
 			});
 			return TriggerResult.keep();
 		}));
@@ -63,6 +68,6 @@ public class VitalPierce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, true) + ".");
+				"On cast, charge for " + DescUtil.white("1s") + ", then your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, true) + ".");
 	}
 }

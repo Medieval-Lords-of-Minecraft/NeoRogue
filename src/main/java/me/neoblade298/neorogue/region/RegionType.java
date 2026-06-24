@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.region;
 import java.util.HashMap;
 
 public enum RegionType {
-	// Outer Admiratio exists so the Tester chance can exist
 	LOW_DISTRICT("Low District", 16, 0, Layout.STANDARD),
 	HARVEST_FIELDS("Harvest Fields", 16, 1, Layout.STANDARD),
 	FROZEN_WASTES("Frozen Wastes", 16, 2, Layout.STANDARD),

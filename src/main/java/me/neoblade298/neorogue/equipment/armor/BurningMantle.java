@@ -1,12 +1,11 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -24,13 +23,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class BurningMantle extends Equipment {
 	private static final String ID = "BurningMantle";
-	private int reduc, damage = 50, thres = 500, inc;
+	private int reduc, damage = 30, thres = 500, inc;
 	
 	public BurningMantle(boolean isUpgraded) {
 		super(ID, "Burning Mantle", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
 				EquipmentType.ARMOR);
 				reduc = isUpgraded ? 3 : 2;
-			inc = isUpgraded ? 50 : 25;
+			inc = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

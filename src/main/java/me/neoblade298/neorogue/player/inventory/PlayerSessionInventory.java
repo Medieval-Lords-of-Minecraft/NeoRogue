@@ -47,8 +47,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class PlayerSessionInventory extends CorePlayerInventory implements ShiftClickableInventory {
-	private static final int[] ARMOR = new int[] { 18, 19, 20 };
-	private static final int[] ACCESSORIES = new int[] { 21, 22, 23, 24, 25, 26 };
+	private static final int[] ARMOR = new int[] { 18, 19, 20, 21 };
+	private static final int[] ACCESSORIES = new int[] { 22, 23, 24, 25, 26 };
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };

@@ -86,6 +86,7 @@ public class ProjectileInstance {
 		entityBounds.put(EntityType.BLOCK_DISPLAY, createBox(1, 1));
 		entityBounds.put(EntityType.FALLING_BLOCK, createBox(1, 1));
 		entityBounds.put(EntityType.DRAGON_FIREBALL, createBox(0.5, 0.5));
+		entityBounds.put(EntityType.POLAR_BEAR, createBox(1.3, 1.4));
 		entityBounds.put(EntityType.PLAYER, createBox(1, 2));
 	}
 

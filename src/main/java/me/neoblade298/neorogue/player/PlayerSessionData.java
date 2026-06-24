@@ -65,14 +65,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private EquipmentClass ec;
 	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
 	private SessionEquipment[] hotbar = new SessionEquipment[9];
-	private SessionEquipment[] armors = new SessionEquipment[3];
+	private SessionEquipment[] armors = new SessionEquipment[4];
 	private SessionEquipment[] offhand = new SessionEquipment[1];
-	private SessionEquipment[] accessories = new SessionEquipment[6];
+	private SessionEquipment[] accessories = new SessionEquipment[5];
 	private SessionEquipment[] storage = new SessionEquipment[MAX_STORAGE_SIZE];
 	private SessionEquipment[] otherBinds = new SessionEquipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
-	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 1, accessorySlots = 2;
+	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 2, accessorySlots = 2;
 	private String instanceData;
 	private SessionStatistics sessionStats = new SessionStatistics();
 	private DropTableSet<Artifact> personalArtifacts;
@@ -80,7 +80,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
-	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 3, ACCESSORY_SIZE = 6;
+	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -570,6 +570,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			}
 			// If storage is full, open storage GUI
 			else {
+				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 				Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
 				new BukkitRunnable() {
 					@Override

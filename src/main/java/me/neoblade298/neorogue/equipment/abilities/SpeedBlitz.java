@@ -1,7 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -15,11 +12,11 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -38,14 +35,13 @@ public class SpeedBlitz extends Equipment {
 	private static final int ATTACK_INTERVAL = 4; // 20 ticks / 5 attacks = 4 ticks between attacks
 	private static final TargetProperties tp = TargetProperties.radius(20, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SWEEP_ATTACK).count(10).spread(0.5, 0.5);
-	private static final ParticleContainer chargePc = new ParticleContainer(Particle.CRIT).count(20).spread(0.5, 0.5);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP);
 	private int damage;
 	
 	public SpeedBlitz(boolean isUpgraded) {
 		super(ID, "Speed Blitz", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(5, 20, isUpgraded ? 12 : 15, 0));
-		damage = isUpgraded ? 50 : 35;
+				EquipmentProperties.ofUsable(5, 35, isUpgraded ? 12 : 15, 0));
+		damage = isUpgraded ? 75 : 50;
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
@@ -57,45 +53,32 @@ public class SpeedBlitz extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new StandardEquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			// Apply charging effect
-			Location loc = p.getLocation();
-			chargePc.play(p, loc);
-			Sounds.enchant.play(p, loc);
-            data.charge(20).then(new Runnable() {
-                @Override
-                public void run() {
-					p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 1));
-                    // After 1 second charge, start the blitz
-                    data.addTask(new BukkitRunnable() {
-                        int attackCount = 0;
-                        
-                        public void run() {
-                            attackCount++;
-                            if (attackCount >= TOTAL_ATTACKS) {
-                                return;
-                            }
-                            
-                            LivingEntity target = TargetHelper.getNearest(p, tp);
-                            if (target == null) {
-                                return;
-                            }
-                            
-                            // Deal damage
-                            FightInstance.dealDamage(data, DamageType.PIERCING, damage, target, DamageStatTracker.of(id + slot, SpeedBlitz.this));
-                            
-                            // Visual effects
-                            pc.play(p, target);
-                            sc.play(p, target);
-                            
-                            // Apply slowness on first attack
-                            if (attackCount > 5) {
-                                cancel();
-                            }
-                        }
-                    }.runTaskTimer(NeoRogue.inst(), 0, ATTACK_INTERVAL));
-                }
-            });
-			
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 1));
+			data.addTask(new BukkitRunnable() {
+				int attackCount = 0;
+
+				public void run() {
+					attackCount++;
+					if (attackCount >= TOTAL_ATTACKS) {
+						return;
+					}
+
+					Player p2 = data.getPlayer();
+					LivingEntity target = TargetHelper.getNearest(p2, tp);
+					if (target == null) {
+						return;
+					}
+
+					FightInstance.dealDamage(data, DamageType.PIERCING, damage, target, DamageStatTracker.of(id + slot, SpeedBlitz.this));
+					pc.play(p2, target);
+					sc.play(p2, target);
+
+					if (attackCount > 5) {
+						cancel();
+					}
+				}
+			}.runTaskTimer(NeoRogue.inst(), 0, ATTACK_INTERVAL));
+
 			return TriggerResult.keep();
 		}));
 	}
@@ -103,8 +86,8 @@ public class SpeedBlitz extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_SWORD,
-				"On cast, charge for " + DescUtil.white("1s") + ". Then, with " + DescUtil.potion("Slowness", 0, 1) +
-                ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + 
+				"On cast, with " + DescUtil.potion("Slowness", 0, 1) +
+				", deal " + GlossaryTag.PIERCING.tag(this, damage, true) +
 				" damage " + DescUtil.white(5) + " times over " + DescUtil.white("1s") + " to the nearest enemy.");
 	}
 }

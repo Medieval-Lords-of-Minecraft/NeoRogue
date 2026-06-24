@@ -64,6 +64,10 @@ public class SpectateSelectInventory extends CoreInventory {
 			Util.displayError(spectator, "No one to spectate, everyone is done!");
 			spectator.closeInventory();
 		}
+		else if (count == 1) {
+			spectator.closeInventory();
+			selectPlayer(players.values().iterator().next());
+		}
 	}
 
 	private boolean canSpectate(PlayerSessionData data) {
@@ -77,6 +81,25 @@ public class SpectateSelectInventory extends CoreInventory {
 			return ri.getRewards().containsKey(data.getUniqueId());
 		}
 		return true;
+	}
+
+	private void selectPlayer(PlayerSessionData selected) {
+		Instance inst = s.getInstance();
+		if (!selectUnique && inst instanceof EditInventoryInstance) {
+			new PlayerSessionSpectateInventory(selected, p);
+			return;
+		}
+
+		UUID viewed = selected.getUniqueId();
+		if (inst instanceof ChanceInstance) {
+			((ChanceInstance) inst).spectatePlayer(p, viewed);
+		}
+		else if (inst instanceof ShopInstance) {
+			((ShopInstance) inst).spectateShop(p, viewed);
+		}
+		else if (inst instanceof RewardInstance) {
+			((RewardInstance) inst).spectateRewards(p, viewed);
+		}
 	}
 
 	@Override
@@ -94,22 +117,6 @@ public class SpectateSelectInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (e.getCurrentItem() == null) return;
 		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
-		
-		Instance inst = s.getInstance();
-		if (!selectUnique && inst instanceof EditInventoryInstance) {
-			new PlayerSessionSpectateInventory(players.get(e.getSlot()), p);
-			return;
-		}
-		
-		UUID viewed = players.get(e.getSlot()).getUniqueId();
-		if (inst instanceof ChanceInstance) {
-			((ChanceInstance) inst).spectatePlayer(p, viewed);
-		}
-		else if (inst instanceof ShopInstance) {
-			((ShopInstance) inst).spectateShop(p, viewed);
-		}
-		else if (inst instanceof RewardInstance) {
-			((RewardInstance) inst).spectateRewards(p, viewed);
-		}
+		selectPlayer(players.get(e.getSlot()));
 	}
 }

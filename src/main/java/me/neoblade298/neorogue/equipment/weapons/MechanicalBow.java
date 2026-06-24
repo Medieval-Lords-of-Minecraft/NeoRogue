@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -32,8 +31,8 @@ public class MechanicalBow extends Bow {
 	public MechanicalBow(boolean isUpgraded) {
 		super(ID, "Mechanical Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(40, 1, 0, 12, 0, 1.2));
-				damage = isUpgraded ? 50 : 30;
+				EquipmentProperties.ofBow(35, 1, 0, 12, 0, 1.2));
+				damage = isUpgraded ? 20 : 10;
 	}
 
 	@Override

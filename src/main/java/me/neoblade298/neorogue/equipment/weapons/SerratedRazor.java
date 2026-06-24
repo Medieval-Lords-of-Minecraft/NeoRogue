@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -43,33 +42,40 @@ public class SerratedRazor extends Equipment {
 
 	private class RazorInstance extends EquipmentInstance {
 		private int count = 0;
+		private long windowStart = 0;
 
 		public RazorInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
 			super(data, sessionEq, slot, es);
 			action = (data2, in) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
-				if (++count >= 3) {
-					FightData fd = FightInstance.getFightData(ev.getTarget());
-					boolean canBonus = fd.hasStatus(StatusType.POISON) || fd.hasStatus(StatusType.INSANITY);
-					weaponSwingAndDamage(p, data, ev.getTarget(), base + (canBonus ? bonus : 0));
-					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
-					Sounds.extinguish.play(p, p);
-					count = 0;
-					this.setCooldown(1);
-				}
-				else {
+				long now = System.currentTimeMillis();
+				if (count == 0 || now - windowStart > 1500L) {
 					weaponSwingAndDamage(p, data, ev.getTarget());
+					count = 1;
+					windowStart = now;
+				} else {
+					count++;
+					if (count >= 3) {
+						FightData fd = FightInstance.getFightData(ev.getTarget());
+						boolean canBonus = fd.hasStatus(StatusType.POISON) || fd.hasStatus(StatusType.INSANITY);
+						weaponSwingAndDamage(p, data, ev.getTarget(), base + (canBonus ? bonus : 0));
+						data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
+						Sounds.extinguish.play(p, p);
+						this.setCooldown(1);
+						count = 0;
+					} else {
+						weaponSwingAndDamage(p, data, ev.getTarget());
+					}
 				}
 				return TriggerResult.keep();
 			};
 		}
-		
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every " + DescUtil.white(3) + " basic attacks, deal an additional " + DescUtil.yellow(bonus) + ""
+		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.white(3) + " times within " + DescUtil.white("1.5s") + ", deal an additional " + DescUtil.yellow(bonus) + ""
 				+ " damage if the target has " + GlossaryTag.POISON.tag(this) + " or " + GlossaryTag.INSANITY.tag(this) + ", and "
-						+ "your attack cooldown is set to " + DescUtil.white("1s") + ".");
+						+ "set your attack cooldown to " + DescUtil.white("1s") + ". Otherwise, the combo resets.");
 	}
 }

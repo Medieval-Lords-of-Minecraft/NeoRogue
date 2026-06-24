@@ -282,7 +282,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.SPRUCE_LOG; // Change this when interstitials change to regen them
+		Material versionCheck = Material.BLACK_WOOL; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
@@ -388,6 +388,8 @@ public class Session {
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		SessionManager.removeFromSession(p.getUniqueId());
+		SessionManager.giveMenuCompass(p);
+		p.teleport(NeoRogue.spawn);
 	}
 	
 	public HashMap<UUID, MapViewer> getSpectators() {
@@ -780,10 +782,10 @@ public class Session {
 			return 1.0;
 		case HARVEST_FIELDS:
 		case HARVEST_FIELDS_DEBUG:
-			return 1.2;
+			return 1.5;
 		case FROZEN_WASTES:
 		case FROZEN_WASTES_DEBUG:
-			return 1.5;
+			return 2.5;
 		default:
 			return 1.0;
 		}

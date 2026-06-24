@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,10 +28,8 @@ public class CmdAdminChance extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player host = (Player) s;
 		Session sess = SessionManager.createSession(host, 1);
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			SessionManager.addToSession(p.getUniqueId(), sess);
-			sess.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
-		}
+		sess.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
+
 		sess.generateRegion(RegionType.LOW_DISTRICT);
 		sess.setNode(sess.getRegion().getNodes()[0][2]);
 		sess.setInstance(new ChanceInstance(sess, args[0]));
