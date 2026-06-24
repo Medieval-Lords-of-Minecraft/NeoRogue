@@ -746,7 +746,7 @@ public class Region {
 			boolean hasRows = false;
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				// Saves up to two rows ahead
-				for (int i = 0; i < 1 && row + i < rowCount; i++) {
+				for (int i = 0; i < 2 && row + i < rowCount; i++) {
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;

@@ -17,6 +17,7 @@ import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -24,6 +25,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MechanicDisable implements ITargetedEntitySkill {
 	private final double seconds;
@@ -101,6 +104,16 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			// Save original item and set barrier
 			ItemStack original = p.getInventory().getItem(chosen.invSlot);
 			p.getInventory().setItem(chosen.invSlot, new ItemStack(Material.BARRIER));
+
+			// Send disable message
+			Component name;
+			if (chosen.action instanceof EquipmentInstance) {
+				name = ((EquipmentInstance) chosen.action).getEquipment().getHoverable();
+			} else {
+				Equipment eq = Equipment.get(chosen.action.getId(), false);
+				name = eq != null ? eq.getHoverable() : Component.text(chosen.action.getId(), NamedTextColor.RED);
+			}
+			p.sendMessage(name.append(Component.text(" was disabled for " + (int) seconds + "s!", NamedTextColor.RED)));
 
 			// Schedule revert
 			long ticks = (long) (seconds * 20);
