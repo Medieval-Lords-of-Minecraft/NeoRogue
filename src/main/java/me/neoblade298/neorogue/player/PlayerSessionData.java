@@ -560,6 +560,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				if (success) {
 					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					PlayerSessionInventory.setupInventory(p.getInventory(), this);
+					trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 					return;
 				}
 			}
@@ -579,8 +580,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					}
 				}.runTask(NeoRogue.inst());
 			}
-			trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 		}
+		trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 	}
 
 	public boolean sendToStorage(SessionEquipment se) {
