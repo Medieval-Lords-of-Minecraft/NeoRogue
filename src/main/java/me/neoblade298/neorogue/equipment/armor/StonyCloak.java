@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -27,7 +26,7 @@ public class StonyCloak extends Equipment {
 	public StonyCloak(boolean isUpgraded) {
 		super(ID, "Stony Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-				concReduc = isUpgraded ? 4 : 2;
+				concReduc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

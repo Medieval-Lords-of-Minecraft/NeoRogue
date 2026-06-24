@@ -22,7 +22,7 @@ public class LeatherChestplate extends Equipment {
 	public LeatherChestplate(boolean isUpgraded) {
 		super(ID, "Leather Chestplate", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 4 : 2;
+		damageReduction = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

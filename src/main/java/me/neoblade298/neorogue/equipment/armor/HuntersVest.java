@@ -25,7 +25,7 @@ public class HuntersVest extends Equipment {
 	public HuntersVest(boolean isUpgraded) {
 		super(ID, "Hunter's Vest", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		reduc = isUpgraded ? 4 : 3;
+		reduc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

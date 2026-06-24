@@ -1,4 +1,6 @@
 package me.neoblade298.neorogue.equipment.armor;
+import java.util.UUID;
+
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -6,7 +8,11 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -16,13 +22,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEv
 
 public class Gauze extends Equipment {
 	private static final String ID = "Gauze";
-	private int pct, max, threshold = 3;
+	private int pct, max, def, threshold = 3;
 	
 	public Gauze(boolean isUpgraded) {
 		super(ID, "Gauze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
 		pct = isUpgraded ? 60 : 30;
 		max = isUpgraded ? 8 : 5;
+		def = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -31,6 +38,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 		GauzeInstance inst = new GauzeInstance(ID);
 		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
@@ -43,7 +51,8 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(threshold) + " seconds of "
+		item = createItem(Material.WHITE_CARPET, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(def)
+				+ ". Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(threshold) + " seconds of "
 				+ "taking health damage heals back " + DescUtil.yellow(pct + "%") + " of the last damage taken, with a maximum heal of "
 						+ DescUtil.yellow(max) + ".");
 	}

@@ -28,7 +28,7 @@ public class BurningMantle extends Equipment {
 	public BurningMantle(boolean isUpgraded) {
 		super(ID, "Burning Mantle", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
 				EquipmentType.ARMOR);
-				reduc = isUpgraded ? 3 : 2;
+				reduc = isUpgraded ? 2 : 1;
 			inc = isUpgraded ? 15 : 10;
 	}
 	

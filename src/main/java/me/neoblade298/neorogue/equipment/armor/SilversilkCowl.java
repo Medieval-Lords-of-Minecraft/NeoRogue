@@ -1,15 +1,19 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
+import java.util.UUID;
 
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -17,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
 
 public class SilversilkCowl extends Equipment {
 	private static final String ID = "SilversilkCowl";
-	private int evade = 2;
+	private int evade = 2, def = 2;
 	private double mult;
 	
 	public SilversilkCowl(boolean isUpgraded) {
@@ -34,6 +38,7 @@ public class SilversilkCowl extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Grant evade at the start of the fight
 		data.applyStatus(StatusType.EVADE, data, evade, -1);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 		
 		// Increase the damage mitigated per stamina
 		data.addTrigger(id, Trigger.PRE_EVADE, (pdata, in) -> {
@@ -47,7 +52,8 @@ public class SilversilkCowl extends Equipment {
 	public void setupItem() {
 		int pct = (int)(1.0 / (1.0 + mult) * 100);
 		item = createItem(Material.CHAINMAIL_HELMET,
-				"Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
+				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def)
+				+ ". Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
 				+ "The amount of stamina that " + GlossaryTag.EVADE.tag(this) + " consumes per damage mitigated is decreased by " + DescUtil.yellow(pct + "%") + ".");
 	}
 }

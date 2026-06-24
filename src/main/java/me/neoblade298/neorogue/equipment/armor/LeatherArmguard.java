@@ -24,7 +24,7 @@ public class LeatherArmguard extends Equipment {
 		super(ID, "Leather Armguard", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
 		def = 2;
-		spdef = isUpgraded ? 2 : 1;
+		spdef = isUpgraded ? 3 : 1;
 	}
 	
 	public static Equipment get() {

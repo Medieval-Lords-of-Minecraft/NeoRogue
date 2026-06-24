@@ -22,7 +22,7 @@ public class EnchantedCloak extends Equipment {
 	public EnchantedCloak(boolean isUpgraded) {
 		super(ID, "Enchanted Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		reduc = isUpgraded ? 5 : 3;
+		reduc = isUpgraded ? 8 : 5;
 		damage = isUpgraded ? 20 : 10;
 	}
 	

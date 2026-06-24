@@ -25,7 +25,7 @@ public class GuardianPlate extends Equipment {
 	public GuardianPlate(boolean isUpgraded) {
 		super(ID, "Guardian Plate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 6 : 4;
+		damageReduction = isUpgraded ? 8 : 5;
 	}
 
 	public static Equipment get() {

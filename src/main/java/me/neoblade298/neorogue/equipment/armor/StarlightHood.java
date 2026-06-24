@@ -19,7 +19,7 @@ public class StarlightHood extends Equipment {
 	public StarlightHood(boolean isUpgraded) {
 		super(ID, "Starlight Hood", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		stacks = isUpgraded ? 5 : 3;
+		stacks = isUpgraded ? 8 : 5;
 	}
 
 	public static Equipment get() {
