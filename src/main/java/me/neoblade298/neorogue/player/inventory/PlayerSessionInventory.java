@@ -117,7 +117,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		for (KeyBind bind : KeyBind.values()) {
 			int i = (bind.getInventorySlot() + offset) % inv.getSize();
-			slotTypes.put(i, EquipSlot.KEYBIND);
+			slotTypes.put(bind.getInventorySlot(), EquipSlot.KEYBIND);
 			SessionEquipment eq = data.getSessionEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
 				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot(), bind);
