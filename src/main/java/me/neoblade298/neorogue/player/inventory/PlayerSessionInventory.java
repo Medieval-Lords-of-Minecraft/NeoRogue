@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
@@ -72,6 +73,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (data.isViewingMap()) {
 			data.stopViewingMap();
 		}
+		data.trigger(SessionTrigger.OPEN_SESSION_INVENTORY, null);
 	}
 
 	public PlayerSessionInventory(Player viewer, PlayerSessionData data) {

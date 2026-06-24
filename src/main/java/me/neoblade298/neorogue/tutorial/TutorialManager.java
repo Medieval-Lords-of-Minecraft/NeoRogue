@@ -17,7 +17,9 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class TutorialManager {
 	private static final List<Tutorial> tutorials = List.of(
-			new FirstAbilityCastTutorial()
+			new FirstAbilityCastTutorial(),
+			new FirstNodeSelectTutorial(),
+			new FirstReforgeInventoryTutorial()
 	);
 	private static final EnumMap<TutorialTriggerType, List<Tutorial>> tutorialsByTrigger = new EnumMap<TutorialTriggerType, List<Tutorial>>(
 			TutorialTriggerType.class

@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,6 +74,9 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Title title = Title.title(Component.text(region.getType().getDisplay()), Component.text(" "));
 			s.broadcastTitle(title);
 			s.broadcastSound(Sound.UI_TOAST_CHALLENGE_COMPLETE);
+			for (PlayerSessionData psd : s.getParty().values()) {
+				psd.trigger(SessionTrigger.ENTER_NODE_SELECT, null);
+			}
 		}
 		
 		for (Player p : s.getOnlinePlayers()) {

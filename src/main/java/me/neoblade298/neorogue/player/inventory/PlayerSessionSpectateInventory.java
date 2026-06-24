@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,6 +14,8 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -21,7 +24,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerSessionSpectateInventory extends CoreInventory {
 	private static final int ARTIFACTS = convertSlot(PlayerSessionInventory.ARTIFACTS),
 		SEE_OTHERS = convertSlot(PlayerSessionInventory.SEE_OTHERS),
-		STORAGE = convertSlot(PlayerSessionInventory.STORAGE);
+		STORAGE = convertSlot(PlayerSessionInventory.STORAGE),
+		ACHIEVEMENTS = 5,
+		UNLOCKS = 7;
 
 	private PlayerSessionData data;
 	private Player spectator;
@@ -33,6 +38,8 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 		this.spectator = spectator;
 		spectator.playSound(spectator, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		PlayerSessionInventory.setupInventory(inv, data, true);
+		inv.setItem(ACHIEVEMENTS, CoreInventory.createButton(Material.DIAMOND, Component.text("Achievements", NamedTextColor.AQUA)));
+		inv.setItem(UNLOCKS, CoreInventory.createButton(Material.ENDER_EYE, Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE)));
 		Session s = data.getSession();
 		if (s.getParty().containsKey(spectator.getUniqueId())) new PlayerSessionInventory(s.getParty().get(spectator.getUniqueId()));
 	}
@@ -50,6 +57,26 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 			new BukkitRunnable() {
 				public void run() {
 					new ArtifactsInventory(data, spectator);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == ACHIEVEMENTS) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					PlayerData targetData = PlayerManager.getPlayerData(data.getPlayer().getUniqueId());
+					if (targetData != null) new AchievementsMenuInventory(spectator, targetData);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == UNLOCKS) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					PlayerData targetData = PlayerManager.getPlayerData(data.getPlayer().getUniqueId());
+					if (targetData != null) new UnlocksMenuInventory(spectator, targetData);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
