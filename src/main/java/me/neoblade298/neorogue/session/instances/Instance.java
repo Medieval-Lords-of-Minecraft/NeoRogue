@@ -151,7 +151,7 @@ public abstract class Instance {
 			return new ShrineInstance(s, data, party);
 		}
 		else if (data.startsWith("NODESELECT")) {
-			return new NodeSelectInstance(s);
+			return NodeSelectInstance.create(s);
 		}
 		else if (data.startsWith("REWARD")) {
 			String type = data.substring(data.indexOf(":") + 1);

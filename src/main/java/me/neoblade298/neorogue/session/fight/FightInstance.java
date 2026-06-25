@@ -1319,7 +1319,7 @@ public abstract class FightInstance extends Instance {
 	public static FightInstance deserializeInstanceData(Session s, HashMap<UUID, PlayerSessionData> party, String str) {
 		try {
 			if (str.startsWith("STANDARD")) {
-				return new StandardFightInstance(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
+				return StandardFightInstance.create(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
 			} else if (str.startsWith("MINIBOSS")) {
 				return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
 			} else {

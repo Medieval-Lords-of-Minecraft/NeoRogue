@@ -153,7 +153,7 @@ public class RewardInstance extends EditInventoryInstance {
 			if (!rewards.isEmpty()) return false;
 		}
 
-		NodeSelectInstance next = new NodeSelectInstance(s);
+		NodeSelectInstance next = NodeSelectInstance.create(s);
 		new BukkitRunnable() {
 			public void run() {
 				if (!s.isBusy() && s.canSetInstance(next)) {

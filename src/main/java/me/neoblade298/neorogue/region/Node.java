@@ -131,13 +131,13 @@ public class Node {
 		
 		switch (type) {
 		case FIGHT:
-			inst = new StandardFightInstance(s, s.getParty().keySet(), region, s.getNodesVisited());
+			inst = StandardFightInstance.create(s, s.getParty().keySet(), region, s.getNodesVisited());
 			break;
 		case SHRINE:
 			inst = new ShrineInstance(s);
 			break;
 		case CHANCE:
-			inst = new ChanceInstance(s);
+			inst = ChanceInstance.create(s);
 			break;
 		case SHOP:
 			inst = new ShopInstance(s);

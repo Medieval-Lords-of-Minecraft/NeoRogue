@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -51,6 +52,13 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 	public NodeSelectInstance(Session s, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
+	}
+
+	public static NodeSelectInstance create(Session s) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialNodeSelectInstance(s);
+		}
+		return new NodeSelectInstance(s);
 	}
 	
 	@Override

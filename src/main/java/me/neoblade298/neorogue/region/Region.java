@@ -244,11 +244,14 @@ public class Region {
 
 	private void generateTutorialNodes() {
 		nodes = new Node[rowCount][LANE_COUNT];
-		Node previous = createNode(0, CENTER_LANE, NodeType.START);
-		previous = createNode(1, CENTER_LANE, NodeType.FIGHT, previous);
-		previous = createNode(2, CENTER_LANE, NodeType.CHANCE, previous);
-		previous = createNode(3, CENTER_LANE, NodeType.MINIBOSS, previous);
-		createNode(getBossRow(), CENTER_LANE, NodeType.BOSS, previous);
+		Node start = createNode(0, CENTER_LANE, NodeType.START);
+		Node fight1 = createNode(1, CENTER_LANE, NodeType.FIGHT, start);
+		Node fight2 = createNode(2, 1, NodeType.FIGHT, fight1);
+		Node chance = createNode(2, 3, NodeType.CHANCE, fight1);
+		Node shrine1 = createNode(3, CENTER_LANE, NodeType.SHRINE, fight2, chance);
+		Node miniboss = createNode(4, CENTER_LANE, NodeType.MINIBOSS, shrine1);
+		Node shrine2 = createNode(5, CENTER_LANE, NodeType.SHRINE, miniboss);
+		createNode(getBossRow(), CENTER_LANE, NodeType.BOSS, shrine2);
 	}
 
 	private void tryGenerateNodes() {

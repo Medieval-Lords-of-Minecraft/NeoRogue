@@ -159,7 +159,7 @@ public class ShopInstance extends EditInventoryInstance {
 		UUID uuid = p.getUniqueId();
 		if (s.isBusy()) return;
 
-		NodeSelectInstance next = new NodeSelectInstance(s);
+		NodeSelectInstance next = NodeSelectInstance.create(s);
 
 
 		if (allReady) {
@@ -221,7 +221,7 @@ public class ShopInstance extends EditInventoryInstance {
 			s.setBusy(true);
 			new BukkitRunnable() {
 				public void run() {
-					s.setInstance(new NodeSelectInstance(s));
+					s.setInstance(NodeSelectInstance.create(s));
 					s.setBusy(false);
 				}
 			}.runTaskLater(NeoRogue.inst(), 60L);
