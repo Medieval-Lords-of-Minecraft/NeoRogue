@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -60,6 +61,10 @@ public abstract class Instance {
 	
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		
+	}
+
+	public void handleInteractEntityEvent(PlayerInteractEntityEvent e) {
+
 	}
 
 	public void start() {

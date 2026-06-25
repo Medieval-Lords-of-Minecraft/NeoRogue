@@ -6,15 +6,12 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -96,7 +93,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 
 	public void createHologram(Location loc, Node dest) {
-		Component text = Component.text(dest.getType() + " Node", NamedTextColor.WHITE, TextDecoration.BOLD);
+		Component text = Component.text("Click: " + dest.getType(), NamedTextColor.WHITE, TextDecoration.BOLD);
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);
 	}
@@ -122,78 +119,77 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
-		if (e.getHand() != EquipmentSlot.HAND)
-			return;
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
-			e.setCancelled(true);
-			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
-			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), s, null, inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
-		} else {
-			super.handleSpectatorInteractEvent(e);
-		}
+		super.handleSpectatorInteractEvent(e);
 	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getHand() != EquipmentSlot.HAND)
-			return;
+		super.handleInteractEvent(e);
+	}
 
+	@Override
+	public void handleInteractEntityEvent(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
-			Node node = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation());
-			if (node == null)
-				return;
-			if (!p.getUniqueId().equals(s.getHost())) {
-				if (!s.canSuggest())
-					return;
-				s.setSuggestCooldown();
-				String laneString;
-				switch (node.getLane()) {
-				case 0:
-					laneString = " on the far left.";
-					break;
-				case 1:
-					laneString = " on the middle left.";
-					break;
-				case 2:
-					laneString = " in the middle.";
-					break;
-				case 3:
-					laneString = " on the middle right.";
-					break;
-				default:
-					laneString = " on the far right.";
-					break;
-				}
-				s.broadcast(
-						p.name().color(NamedTextColor.YELLOW)
-								.append(Component.text(" suggests the ", NamedTextColor.GRAY))
-								.append(Component.text(node.getType() + " Node", NamedTextColor.YELLOW))
-								.append(Component.text(laneString, NamedTextColor.GRAY))
-				);
-				s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-				return;
-			}
-
-			// Validation
-			if (!s.isEveryoneOnline())
-				return;
-			if (s.setInstance(node.getInstance()))
-				s.visitNode(node);
-			if (node.getInstance() instanceof FightInstance) {
-				s.setBusy(true);
-			}
+		Region region = s.getRegion();
+		Node node = region.getNodeFromEntity(e.getRightClicked());
+		if (node == null)
 			return;
 
-			// Open fight info on lectern right-click
-		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
-			e.setCancelled(true);
-			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
-			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), s, s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
-		} else {
-			super.handleInteractEvent(e);
+		String displayType = Region.getDisplayType(e.getRightClicked());
+
+		// Lectern interaction → open fight info
+		if (displayType.equals("lectern")) {
+			if (node.getInstance() instanceof FightInstance) {
+				FightInstance inst = (FightInstance) node.getInstance();
+				new FightInfoInventory(p, s, s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
+			}
+			return;
+		}
+
+		// Node selection
+		if (!displayType.equals("node"))
+			return;
+
+		if (!p.getUniqueId().equals(s.getHost())) {
+			if (!s.canSuggest())
+				return;
+			s.setSuggestCooldown();
+			String laneString;
+			switch (node.getLane()) {
+			case 0:
+				laneString = " on the far left.";
+				break;
+			case 1:
+				laneString = " on the middle left.";
+				break;
+			case 2:
+				laneString = " in the middle.";
+				break;
+			case 3:
+				laneString = " on the middle right.";
+				break;
+			default:
+				laneString = " on the far right.";
+				break;
+			}
+			s.broadcast(
+					p.name().color(NamedTextColor.YELLOW)
+							.append(Component.text(" suggests the ", NamedTextColor.GRAY))
+							.append(Component.text(node.getType() + " Node", NamedTextColor.YELLOW))
+							.append(Component.text(laneString, NamedTextColor.GRAY))
+			);
+			s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+			return;
+		}
+
+		// Validation
+		if (!s.isEveryoneOnline())
+			return;
+		p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+		if (s.setInstance(node.getInstance()))
+			s.visitNode(node);
+		if (node.getInstance() instanceof FightInstance) {
+			s.setBusy(true);
 		}
 	}
 

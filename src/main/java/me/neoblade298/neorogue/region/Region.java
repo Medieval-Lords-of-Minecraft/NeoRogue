@@ -20,28 +20,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
-import org.bukkit.block.Skull;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.FaceAttachable;
-import org.bukkit.block.data.FaceAttachable.AttachedFace;
-import org.bukkit.block.data.type.Lectern;
-import org.bukkit.block.sign.Side;
-import org.bukkit.block.sign.SignSide;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Interaction;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 
-import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.Effect;
@@ -58,8 +54,6 @@ import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 
 public class Region {
 	public static final int LANE_COUNT = 5, CENTER_LANE = LANE_COUNT / 2;
@@ -69,7 +63,17 @@ public class Region {
 	private static HashMap<Integer, Double> bonusNodeOdds;
 	
 	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
+	private static ParticleContainer nodeAccent = new ParticleContainer(Particle.END_ROD);
 	private HashSet<Node> blackTicks = new HashSet<>();
+
+	// PDC keys for node identification on Interaction entities
+	public static final NamespacedKey PDC_ROW = new NamespacedKey(NeoRogue.inst(), "node_row");
+	public static final NamespacedKey PDC_LANE = new NamespacedKey(NeoRogue.inst(), "node_lane");
+	public static final NamespacedKey PDC_TYPE = new NamespacedKey(NeoRogue.inst(), "node_display_type"); // "node", "lectern"
+
+	// Entity tracking
+	private HashMap<Node, BlockDisplay> nodeDisplayMap = new HashMap<>(); // Permanent node block displays
+	private ArrayList<Entity> activeDisplays = new ArrayList<>(); // Current selectable displays + lecterns + heads
 
 	private RegionType type;
 	private Node[][] nodes;
@@ -95,9 +99,18 @@ public class Region {
 			testWorld = BukkitAdapter.adapt(Bukkit.getWorld(TEST_WORLD_NAME));
 		}
 		
-		// Remove all text_display entities from the world
+		// Remove all display/interaction entities from the world on startup
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(org.bukkit.entity.TextDisplay.class)) {
+			e.remove();
+		}
+		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(BlockDisplay.class)) {
+			e.remove();
+		}
+		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(ItemDisplay.class)) {
+			e.remove();
+		}
+		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(Interaction.class)) {
 			e.remove();
 		}
 		
@@ -106,6 +119,7 @@ public class Region {
 		// Load particles
 		red.count(3).spread(0.1, 0.1).forceVisible(Audience.ALL).dustOptions(new DustOptions(Color.RED, 1F));
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
+		nodeAccent.count(2).spread(0.3, 0.3).speed(0.01).forceVisible(Audience.ALL);
 
 		initialized = true;
 	}
@@ -774,29 +788,22 @@ public class Region {
 	}
 
 	public void instantiate() {
-		// Create nodes
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		for (int lane = 0; lane < LANE_COUNT; lane++) { // x
-			for (int row = 0; row < rowCount; row++) { // z
+		for (int lane = 0; lane < LANE_COUNT; lane++) {
+			for (int row = 0; row < rowCount; row++) {
 				Node node = nodes[row][lane];
 				if (node == null)
 					continue;
 
-				Location loc = getLocationFromRowLane(w, row, lane);
-				loc.getBlock().setType(node.getType().getBlock());
-				loc.add(0, 0, -1);
-				loc.getBlock().setType(Material.OAK_WALL_SIGN);
-				Block b = loc.getBlock();
-				Directional dir = (Directional) b.getBlockData();
-				dir.setFacing(BlockFace.NORTH);
-				b.setBlockData(dir);
-
-				Sign sign = (Sign) b.getState();
-				sign.setWaxed(true);
-				SignSide side = sign.getSide(Side.FRONT);
-				sign.getSide(Side.FRONT).line(1, Component.text(node.getType().toString(), null, TextDecoration.BOLD));
-				side.setGlowingText(true);
-				sign.update();
+				Location loc = nodeToLocation(node, 0);
+				BlockData blockData = node.getType().getBlock().createBlockData();
+				BlockDisplay display = w.spawn(loc, BlockDisplay.class, bd -> {
+					bd.setBlock(blockData);
+					Transformation t = bd.getTransformation();
+					t.getTranslation().set(-0.5f, 0, -0.5f);
+					bd.setTransformation(t);
+				});
+				nodeDisplayMap.put(node, display);
 			}
 		}
 	}
@@ -810,26 +817,40 @@ public class Region {
 		return nodes[row][-lane];
 	}
 
+	// Resolve a node from an Interaction entity's PDC data
+	public Node getNodeFromEntity(Entity entity) {
+		PersistentDataContainer pdc = entity.getPersistentDataContainer();
+		if (!pdc.has(PDC_ROW, PersistentDataType.INTEGER))
+			return null;
+		int row = pdc.get(PDC_ROW, PersistentDataType.INTEGER);
+		int lane = pdc.get(PDC_LANE, PersistentDataType.INTEGER);
+		if (row < 0 || row >= rowCount || lane < 0 || lane >= LANE_COUNT)
+			return null;
+		return nodes[row][lane];
+	}
+
+	// Get the display type from an Interaction entity ("node" or "lectern")
+	public static String getDisplayType(Entity entity) {
+		PersistentDataContainer pdc = entity.getPersistentDataContainer();
+		return pdc.getOrDefault(PDC_TYPE, PersistentDataType.STRING, "");
+	}
+
 	public Location getLocationFromRowLane(org.bukkit.World w, int row, int lane) {
 		return new Location(
 						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y,
 						zOff + Z_EDGE_PADDING + (row * NODE_DIST_BETWEEN));
 	}
 
-	// Remove all blocks from node select when a session ends, leaving it ready for a new session
+	// Remove all display entities when a session ends
 	public void cleanupAll() {
-		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		for (int lane = 0; lane < LANE_COUNT; lane++) {
-			for (int row = 0; row < rowCount; row++) {
-
-				// Sets sign to air first so it doesn't pop off
-				Location loc = getLocationFromRowLane(w, row, lane);
-				loc.add(0, 0, -1);
-				loc.getBlock().setType(Material.AIR);
-				loc.add(0, 0, 1);
-				loc.getBlock().setType(Material.AIR);
-			}
+		for (BlockDisplay bd : nodeDisplayMap.values()) {
+			bd.remove();
 		}
+		nodeDisplayMap.clear();
+		for (Entity e : activeDisplays) {
+			e.remove();
+		}
+		activeDisplays.clear();
 	}
 
 	// Remove old buttons, lecterns, and heads when leaving node select instance
@@ -850,92 +871,88 @@ public class Region {
 		}
 	}
 
-	// Cleans up lecterns and heads for nodes no longer reachable
+	// Cleans up active displays (selectable nodes, lecterns, heads) when leaving node select
 	public void cleanup(Node node, NodeSelectInstance inst) {
-		int row = node.getRow();
-
-		// Clean lecterns all the way to the end including boss node
-		int nextRow = row + 1;
-		if (nextRow < getBossRow()) {
-			for (int lane = 0; lane < LANE_COUNT; lane++) {
-				Node n = nodes[nextRow][lane];
-				if (n != null) {
-					Location loc = nodeToLocation(n, 1);
-					loc.getBlock().setType(Material.AIR); // Button
-					loc.add(0, -2, -1);
-					loc.getBlock()
-							.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
-				}
-			}
+		for (Entity e : activeDisplays) {
+			e.remove();
 		}
-
-		// Fight heads stop one row before the boss row
-		int skipRow = row + 2;
-		if (skipRow < getPreBossRow()) {
-			for (int lane = 0; lane < LANE_COUNT; lane++) {
-				Node n = nodes[skipRow][lane];
-				if (n != null && n.getType() == NodeType.FIGHT) {
-					Location loc = nodeToLocation(n, 1);
-					loc.getBlock().setType(Material.AIR); // Fight head
-				}
-			}
+		activeDisplays.clear();
+		// Remove glow from all node displays
+		for (BlockDisplay bd : nodeDisplayMap.values()) {
+			bd.setGlowing(false);
 		}
 	}
 
 	// Called whenever a player advances to a new node
 	public void update(Node node, NodeSelectInstance inst) {
-		// Add buttons, lecterns, and heads to new paths and generate them
+		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s, type);
 
-			Location loc = nodeToLocation(dest, 1);
-			loc.getBlock().setType(Material.OAK_BUTTON);
-			FaceAttachable face = (FaceAttachable) loc.getBlock().getBlockData();
-			face.setAttachedFace(AttachedFace.FLOOR);
-			loc.getBlock().setBlockData(face);
+			Location loc = nodeToLocation(dest, 0);
 
-			// Add holograms to active nodes
-			loc.add(0, 2, 0);
-			inst.createHologram(loc, dest);
-
-			// Fight nodes
-			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
-					|| dest.getType() == NodeType.BOSS) {
-				loc.add(0, -4, -1);
-				Block b = loc.getBlock();
-				b.setType(Material.LECTERN);
-				Lectern lec = (Lectern) b.getBlockData();
-				lec.setFacing(BlockFace.NORTH);
-				b.setBlockData(lec);
-				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-				BookMeta meta = (BookMeta) book.getItemMeta();
-				meta.setAuthor("MLMC");
-				meta.setTitle("Fight Info");
-				book.setItemMeta(meta);
-				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
-				lc.getInventory().addItem(book);
+			// Make existing node display glow for selectable nodes
+			BlockDisplay existingDisplay = nodeDisplayMap.get(dest);
+			if (existingDisplay != null) {
+				existingDisplay.setGlowing(true);
 			}
 
-			// Heads
+			// Spawn Interaction entity for click detection (centered on the block)
+			Location interLoc = loc.clone();
+			Interaction interact = w.spawn(interLoc, Interaction.class, ia -> {
+				ia.setInteractionWidth(1.0f);
+				ia.setInteractionHeight(1.0f);
+				PersistentDataContainer pdc = ia.getPersistentDataContainer();
+				pdc.set(PDC_ROW, PersistentDataType.INTEGER, dest.getRow());
+				pdc.set(PDC_LANE, PersistentDataType.INTEGER, dest.getLane());
+				pdc.set(PDC_TYPE, PersistentDataType.STRING, "node");
+			});
+			activeDisplays.add(interact);
+
+			// Add holograms to active nodes
+			Location holoLoc = loc.clone().add(0, 2.5, 0);
+			inst.createHologram(holoLoc, dest);
+
+			// Fight nodes: spawn lectern-looking block display + interaction for info
+			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
+					|| dest.getType() == NodeType.BOSS) {
+				Location lecLoc = loc.clone().add(0, 0, -1);
+				BlockData lecData = Material.LECTERN.createBlockData();
+				BlockDisplay lecDisplay = w.spawn(lecLoc, BlockDisplay.class, bd -> {
+					bd.setBlock(lecData);
+					Transformation t = bd.getTransformation();
+					t.getTranslation().set(-0.5f, 0, -0.5f);
+					bd.setTransformation(t);
+				});
+				activeDisplays.add(lecDisplay);
+
+				// Interaction for lectern
+				Location lecInterLoc = lecLoc.clone().add(0, 0.5, 0);
+				Interaction lecInteract = w.spawn(lecInterLoc, Interaction.class, ia -> {
+					ia.setInteractionWidth(1.0f);
+					ia.setInteractionHeight(1.0f);
+					PersistentDataContainer pdc = ia.getPersistentDataContainer();
+					pdc.set(PDC_ROW, PersistentDataType.INTEGER, dest.getRow());
+					pdc.set(PDC_LANE, PersistentDataType.INTEGER, dest.getLane());
+					pdc.set(PDC_TYPE, PersistentDataType.STRING, "lectern");
+				});
+				activeDisplays.add(lecInteract);
+			}
+
+			// Heads: spawn ItemDisplay for mob preview on next-next nodes
 			for (Node destDest : dest.getDestinations()) {
 				if (destDest.getType() == NodeType.FIGHT) {
 					StandardFightInstance ddInst = (StandardFightInstance) destDest.generateInstance(s, type);
 					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
 					Mob chosen = mobs[0];
-					
+
 					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>());
 					Location headLoc = nodeToLocation(destDest, 1);
-					if (headItem.getType() == Material.PLAYER_HEAD) {
-						SkullMeta meta = (SkullMeta) headItem.getItemMeta();
-						headLoc.getBlock().setType(Material.PLAYER_HEAD);
-						Skull skull = (Skull) headLoc.getBlock().getState();
-						skull.setProfile(ResolvableProfile.resolvableProfile(meta.getPlayerProfile()));
-						skull.update(true);
-					}
-					else {
-						headLoc.getBlock().setType(headItem.getType());
-					}
-					
+					ItemDisplay headDisplay = w.spawn(headLoc, ItemDisplay.class, id -> {
+						id.setItemStack(headItem);
+					});
+					activeDisplays.add(headDisplay);
 				}
 			}
 		}
@@ -948,6 +965,10 @@ public class Region {
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
 			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
+			Location accentLoc = nodeToLocation(dest, 0.5);
+			for (Player p : cache) {
+				nodeAccent.play(p, accentLoc);
+			}
 		}
 		
 		// Draw black lines for locations past the immediate nodes
@@ -960,7 +981,7 @@ public class Region {
 		for (Node tick : blackTicks) {
 			cache = Effect.calculateCache(nodeToLocation(tick, 0));
 			for (Node dest : tick.getDestinations()) {
-				ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(tick, 0.5), nodeToLocation(dest, 0.5), 0.5);
+				ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(tick, 0.5), nodeToLocation(dest, 0.5), 1);
 			}
 		}
 	}

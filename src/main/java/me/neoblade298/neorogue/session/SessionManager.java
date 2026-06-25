@@ -17,6 +17,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
@@ -473,9 +474,19 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid))
 			return;
+		Session s = sessions.get(uuid);
+
+		// Route Interaction entity clicks to the current instance
+		if (e.getRightClicked() instanceof Interaction) {
+			e.setCancelled(true);
+			if (!s.isSpectator(uuid)) {
+				s.getInstance().handleInteractEntityEvent(e);
+			}
+			return;
+		}
+
 		if (e.getHand() != EquipmentSlot.OFF_HAND)
 			return;
-		Session s = sessions.get(uuid);
 		if (s.getInstance() instanceof EditInventoryInstance && e.getRightClicked() instanceof Player) {
 			Player viewed = (Player) e.getRightClicked();
 			if (s.getParty().containsKey(viewed.getUniqueId())) {
