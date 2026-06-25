@@ -68,7 +68,7 @@ public class Region {
 	private static int MIN_SHOP_DISTANCE; // min # of PATHS not NODES
 	private static HashMap<Integer, Double> bonusNodeOdds;
 	
-	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
+	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black, button;
 	private HashSet<Node> blackTicks = new HashSet<>();
 
 	private RegionType type;
@@ -106,6 +106,7 @@ public class Region {
 		// Load particles
 		red.count(3).spread(0.1, 0.1).forceVisible(Audience.ALL).dustOptions(new DustOptions(Color.RED, 1F));
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
+		button = new ParticleContainer(Particle.END_ROD).count(2).spread(0.2, 0.1).forceVisible(Audience.ALL);
 
 		initialized = true;
 	}
@@ -797,7 +798,8 @@ public class Region {
 				Sign sign = (Sign) b.getState();
 				sign.setWaxed(true);
 				SignSide side = sign.getSide(Side.FRONT);
-				sign.getSide(Side.FRONT).line(1, Component.text(node.getType().toString(), null, TextDecoration.BOLD));
+				String signLabel = node.getType() == NodeType.START ? "Pick a path!" : node.getType().toString();
+				sign.getSide(Side.FRONT).line(1, Component.text(signLabel, null, TextDecoration.BOLD));
 				side.setGlowingText(true);
 				sign.update();
 			}
@@ -898,7 +900,7 @@ public class Region {
 			loc.getBlock().setBlockData(face);
 
 			// Add holograms to active nodes
-			loc.add(0, 2, 0);
+			loc.add(0, 1, 0);
 			inst.createHologram(loc, dest);
 
 			// Fight nodes
@@ -924,6 +926,7 @@ public class Region {
 				if (destDest.getType() == NodeType.FIGHT) {
 					StandardFightInstance ddInst = (StandardFightInstance) destDest.generateInstance(s, type);
 					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
+					if (mobs.length == 0) continue;
 					Mob chosen = mobs[0];
 					
 					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>());
@@ -951,6 +954,7 @@ public class Region {
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
 			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
+			button.playWithCache(cache, nodeToLocation(dest, 1.5));
 		}
 		
 		// Draw black lines for locations past the immediate nodes
@@ -963,7 +967,7 @@ public class Region {
 		for (Node tick : blackTicks) {
 			cache = Effect.calculateCache(nodeToLocation(tick, 0));
 			for (Node dest : tick.getDestinations()) {
-				ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(tick, 0.5), nodeToLocation(dest, 0.5), 0.5);
+				ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(tick, 0.5), nodeToLocation(dest, 0.5), 1);
 			}
 		}
 	}
