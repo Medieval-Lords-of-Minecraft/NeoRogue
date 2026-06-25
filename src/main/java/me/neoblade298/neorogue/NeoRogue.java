@@ -65,6 +65,7 @@ import me.neoblade298.neorogue.commands.CmdAdminStatus;
 import me.neoblade298.neorogue.commands.CmdAdminTest;
 import me.neoblade298.neorogue.commands.CmdAdminTestFW;
 import me.neoblade298.neorogue.commands.CmdAdminTestHF;
+import me.neoblade298.neorogue.commands.CmdAdminTestMW;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdAdminUnlock;
 import me.neoblade298.neorogue.commands.CmdAdminUnlocks;
@@ -199,6 +200,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestHF("testhf", "Loads in a harvest fields game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminTestFW("testfw", "Loads in a frozen wastes game", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminTestMW("testmw", "Loads in a meadowood game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
@@ -259,7 +261,7 @@ public class NeoRogue extends JavaPlugin {
 		// Required to have delay otherwise the startup save and auto-save happen simultaneously and conflict
 		new BukkitRunnable() {
 			public void run() {
-				s.setInstance(new NodeSelectInstance(s));
+				s.setInstance(NodeSelectInstance.create(s));
 			}
 		}.runTaskLater(NeoRogue.inst(), 1L);
 	}

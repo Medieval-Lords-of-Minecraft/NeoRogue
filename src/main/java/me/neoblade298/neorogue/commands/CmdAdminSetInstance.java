@@ -39,7 +39,7 @@ public class CmdAdminSetInstance extends Subcommand {
 
 		switch (NodeType.valueOf(args[0].toUpperCase())) {
 			case NODE_SELECT:
-				sess.setInstance(new NodeSelectInstance(sess));
+				sess.setInstance(NodeSelectInstance.create(sess));
 				break;
 			case SHOP:
 				sess.setInstance(new ShopInstance(sess));

@@ -40,7 +40,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 					else {
 						PlayerSessionData psd = inst.chooseRandomPartyMember();
 						s.broadcast("You follow <yellow>" + psd.getData().getDisplay() + "'s</yellow> bold instructions to walk along the path straight into an enemy lair.");
-						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited());
+						StandardFightInstance sfi = StandardFightInstance.create(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited());
 						sfi.addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
 								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("forkInTheRoadChance")));

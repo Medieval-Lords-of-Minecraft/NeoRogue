@@ -55,7 +55,7 @@ public class AmbushChance extends ChanceSet {
 				"Skip the fight entirely.",
 				(s, inst, data) -> {
 					s.broadcast("You sneak around the group without issue.");
-					inst.setNextInstance(new NodeSelectInstance(s));
+					inst.setNextInstance(NodeSelectInstance.create(s));
 					return null;
 				}));
 		
@@ -95,6 +95,6 @@ public class AmbushChance extends ChanceSet {
 	
 	@Override
 	public void initialize(Session s, ChanceInstance inst) {
-		inst.setNextInstance(new StandardFightInstance(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited()));
+		inst.setNextInstance(StandardFightInstance.create(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited()));
 	}
 }

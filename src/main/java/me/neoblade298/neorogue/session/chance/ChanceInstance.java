@@ -29,6 +29,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
@@ -70,6 +71,27 @@ public class ChanceInstance extends EditInventoryInstance {
 	public ChanceInstance(Session s, ChanceSet set) {
 		this(s);
 		this.set = set;
+	}
+
+	public static ChanceInstance create(Session s) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialChanceInstance(s);
+		}
+		return new ChanceInstance(s);
+	}
+
+	public static ChanceInstance create(Session s, String setId) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialChanceInstance(s, setId);
+		}
+		return new ChanceInstance(s, setId);
+	}
+
+	public static ChanceInstance create(Session s, ChanceSet set) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialChanceInstance(s, set);
+		}
+		return new ChanceInstance(s, set);
 	}
 
 	// Deserialization
@@ -307,7 +329,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		if (returning)
 			return;
 
-		Instance next = nextInstance == null ? new NodeSelectInstance(s) : nextInstance;
+		Instance next = nextInstance == null ? NodeSelectInstance.create(s) : nextInstance;
 		if (!s.canSetInstance(next)) {
 			return;
 		}

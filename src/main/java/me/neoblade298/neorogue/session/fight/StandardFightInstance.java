@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
+import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardBuilder;
@@ -55,6 +56,20 @@ public class StandardFightInstance extends FightInstance {
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
 		super(s, players);
 		this.map = map;
+	}
+
+	public static StandardFightInstance create(Session s, Set<UUID> players, RegionType type, int nodesVisited) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialFightInstance(s, players, type, nodesVisited);
+		}
+		return new StandardFightInstance(s, players, type, nodesVisited);
+	}
+
+	public static StandardFightInstance create(Session s, Set<UUID> players, Map map) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialFightInstance(s, players, map);
+		}
+		return new StandardFightInstance(s, players, map);
 	}
 
 	@Override

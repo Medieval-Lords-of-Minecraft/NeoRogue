@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -35,7 +36,7 @@ import net.kyori.adventure.title.Title;
 public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
 	private BukkitTask task;
-	private ArrayList<TextDisplay> holograms = new ArrayList<TextDisplay>();
+	protected ArrayList<TextDisplay> holograms = new ArrayList<TextDisplay>();
 	
 	private static final ArrayList<Component> tips = new ArrayList<Component>();
 	
@@ -52,6 +53,13 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public NodeSelectInstance(Session s, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
 	}
+
+	public static NodeSelectInstance create(Session s) {
+		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
+			return new TutorialNodeSelectInstance(s);
+		}
+		return new NodeSelectInstance(s);
+	}
 	
 	@Override
 	public void setup() {
@@ -62,13 +70,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			spawn = region.nodeToLocation(s.getNode(), 1);
 		region.update(s.getNode(), this);
 
-		// Set up boss hologram and tips
-		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
-		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().appendNewline()
-				.append(Component.text("Tip: ", NamedTextColor.YELLOW).append(tips.get(NeoRogue.gen.nextInt(tips.size())).color(NamedTextColor.WHITE)));
-		Location loc = spawn.clone().add(0, 2.8, 4);
-		TextDisplay holo = NeoRogue.createHologram(loc, text);
-		holograms.add(holo);
+		// Set up info hologram
+		createInfoHologram(spawn.clone().add(0, 1.8, 4));
 
 		if (s.getNode().getRow() == 0) {
 			Title title = Title.title(Component.text(region.getType().getDisplay()), Component.text(" "));
@@ -93,6 +96,15 @@ public class NodeSelectInstance extends EditInventoryInstance {
 				region.tickParticles(s.getNode());
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 15L);
+	}
+
+	protected void createInfoHologram(Location loc) {
+		Region region = s.getRegion();
+		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
+		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().appendNewline()
+				.append(Component.text("Tip: ", NamedTextColor.YELLOW).append(tips.get(NeoRogue.gen.nextInt(tips.size())).color(NamedTextColor.WHITE)));
+		TextDisplay holo = NeoRogue.createHologram(loc, text);
+		holograms.add(holo);
 	}
 
 	public void createHologram(Location loc, Node dest) {

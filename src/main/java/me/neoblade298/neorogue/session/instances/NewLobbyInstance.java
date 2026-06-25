@@ -239,7 +239,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
 		new BukkitRunnable() {
 			public void run() {
-				s.setInstance(new NodeSelectInstance(s));
+				s.setInstance(NodeSelectInstance.create(s));
 				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
