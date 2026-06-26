@@ -113,15 +113,28 @@ public class MainMenuInventory extends CoreInventory {
 				pd.addFlag("played_before");
 				p.closeInventory();
 				SessionManager.createTutorialSession(p, 1);
-			} else if (pd.getSlots() == 1) {
+			} else {
 				if (SessionManager.getSession(p) != null) {
 					Util.displayError(p, "You're already in a session!");
 					return;
 				}
-				p.closeInventory();
-				SessionManager.createSession(p, 1, true);
-			} else {
-				new NewGameSlotInventory(p, pd);
+				// Auto-use first empty slot if one exists
+				int emptySlot = -1;
+				for (int i = 1; i <= pd.getSlots(); i++) {
+					if (pd.getSnapshot(i) == null) {
+						emptySlot = i;
+						break;
+					}
+				}
+				if (emptySlot != -1) {
+					p.closeInventory();
+					SessionManager.createSession(p, emptySlot, true);
+				} else if (pd.getSlots() == 1) {
+					p.closeInventory();
+					SessionManager.createSession(p, 1, true);
+				} else {
+					new NewGameSlotInventory(p, pd);
+				}
 			}
 			break;
 		case LOAD_GAME:
