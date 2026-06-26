@@ -20,5 +20,11 @@ public class TutorialFightInstance extends StandardFightInstance {
 	@Override
 	protected void setupInstance(Session s) {
 		super.setupInstance(s);
+		scoreRequired = Math.ceil(scoreRequired / 2);
+	}
+
+	@Override
+	protected double getInitialSpawnBudget() {
+		return 2;
 	}
 }

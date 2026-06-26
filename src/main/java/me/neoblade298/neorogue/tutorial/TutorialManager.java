@@ -19,7 +19,8 @@ public class TutorialManager {
 	private static final List<Tutorial> tutorials = List.of(
 			new FirstAbilityCastTutorial(),
 			new FirstNodeSelectTutorial(),
-			new FirstReforgeInventoryTutorial()
+			new FirstReforgeInventoryTutorial(),
+			new FirstGlossaryOpenTutorial()
 	);
 	private static final EnumMap<TutorialTriggerType, List<Tutorial>> tutorialsByTrigger = new EnumMap<TutorialTriggerType, List<Tutorial>>(
 			TutorialTriggerType.class
@@ -28,6 +29,12 @@ public class TutorialManager {
 			new WeakHashMap<>()
 	);
 	private static final Map<PlayerFightData, Set<String>> registeredFightTutorials = Collections.synchronizedMap(
+			new WeakHashMap<>()
+	);
+	private static final Map<PlayerSessionData, Tutorial> activeSessionTutorial = Collections.synchronizedMap(
+			new WeakHashMap<>()
+	);
+	private static final Map<PlayerFightData, Tutorial> activeFightTutorial = Collections.synchronizedMap(
 			new WeakHashMap<>()
 	);
 	
@@ -85,6 +92,34 @@ public class TutorialManager {
 				registrations.put(key, registered);
 			}
 			return registered.add(tutorialId);
+		}
+	}
+	
+	public static boolean tryActivateSession(Tutorial tutorial, PlayerSessionData data) {
+		synchronized (activeSessionTutorial) {
+			Tutorial active = activeSessionTutorial.get(data);
+			if (active != null) {
+				PlayerData pdata = data.getData();
+				if (pdata == null || !pdata.hasFlag(getTutorialFlag(active))) {
+					return false;
+				}
+			}
+			activeSessionTutorial.put(data, tutorial);
+			return true;
+		}
+	}
+	
+	public static boolean tryActivateFight(Tutorial tutorial, PlayerFightData data) {
+		synchronized (activeFightTutorial) {
+			Tutorial active = activeFightTutorial.get(data);
+			if (active != null) {
+				PlayerData pdata = data.getSessionData().getData();
+				if (pdata == null || !pdata.hasFlag(getTutorialFlag(active))) {
+					return false;
+				}
+			}
+			activeFightTutorial.put(data, tutorial);
+			return true;
 		}
 	}
 }

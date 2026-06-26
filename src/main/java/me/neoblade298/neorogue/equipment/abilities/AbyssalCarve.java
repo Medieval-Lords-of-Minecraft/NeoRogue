@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -44,7 +43,7 @@ public class AbyssalCarve extends Equipment implements Power {
 	public AbyssalCarve(boolean isUpgraded) {
 		super(ID, "Abyssal Carve", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 200 : 150;
+		damage = isUpgraded ? 300 : 200;
 	}
 	
 	public static Equipment get() {
@@ -86,27 +85,34 @@ public class AbyssalCarve extends Equipment implements Power {
 					Vector awayFromEnemy = towardEnemy.clone().multiply(-1);
 					data.dash(awayFromEnemy);
 					
-					// Create cone in direction of attacker
-					cone.play(p, pc, playerLoc.add(0, 1, 0), LocalAxes.usingEyeLocation(p), fill);
-					
-					// Deal damage to enemies in cone
-					for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, towardEnemy, tp)) {
-						FightInstance.dealDamage(pdata2, DamageType.DARK, damage, ent, 
-								DamageStatTracker.of(id + slot, AbyssalCarve.this));
-					}
-					Sounds.attackSweep.play(p, p);
-					
+					carve(data, pdata2, p, towardEnemy);
+					return TriggerResult.keep();
+				});
+				data.addTrigger(id + "-active-dash", Trigger.DASH, (pdata2, in2) -> {
+					Player p = data.getPlayer();
+					Vector dir = p.getLocation().getDirection();
+					carve(data, pdata2, p, dir);
 					return TriggerResult.keep();
 				});
 			}
 		}.runTask(NeoRogue.inst()));
 	}
 
+	private void carve(PlayerFightData data, PlayerFightData pdata, Player p, Vector direction) {
+		Location playerLoc = p.getLocation();
+		cone.play(p, pc, playerLoc.clone().add(0, 1, 0), LocalAxes.usingEyeLocation(p), fill);
+		for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, direction, tp)) {
+			FightInstance.dealDamage(pdata, DamageType.DARK, damage, ent, 
+					DamageStatTracker.of(id + "0", AbyssalCarve.this));
+		}
+		Sounds.attackSweep.play(p, p);
+	}
+
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD,
-				GlossaryTag.POWER.tag(this) + ". Activates after evading once. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
-				GlossaryTag.DARK.tag(this, damage, true) + " damage in a cone toward the attacker and " + 
+				GlossaryTag.POWER.tag(this) + ". Activates after evading once. Upon " + GlossaryTag.EVADE.tag(this) + " or " + GlossaryTag.DASH.tag(this) + ", deal " + 
+				GlossaryTag.DARK.tag(this, damage, true) + " damage in a cone toward the attacker. On " + GlossaryTag.EVADE.tag(this) + ", also " + 
 				GlossaryTag.DASH.tag(this) + " away from them.");
 	}
 }

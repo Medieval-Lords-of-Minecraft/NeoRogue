@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -8,11 +6,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -20,14 +19,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Rushdown extends Equipment {
+public class Rushdown extends Equipment implements Power {
 	private static final String ID = "Rushdown";
 	private int secs;
 	private double inc = 1.5;
 	
 	public Rushdown(boolean isUpgraded) {
 		super(ID, "Rushdown", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		secs = isUpgraded ? 40 : 30;
 	}
 	
@@ -38,19 +37,21 @@ public class Rushdown extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			Sounds.equip.play(data.getPlayer(), data.getPlayer());
-
-			data.addStaminaRegen(inc);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					Player p = data.getPlayer();
-					data.addStaminaRegen(-inc);
-					Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" has expired", NamedTextColor.GRAY)));
-				}
-			}.runTaskLater(NeoRogue.inst(), 20L * secs));
-
-			return TriggerResult.remove();
+			if (activatePower(data, slot, es)) return TriggerResult.remove();
+			return TriggerResult.keep();
 		}));
+	}
+
+	@Override
+	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
+		data.addStaminaRegen(inc);
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				Player p = data.getPlayer();
+				data.addStaminaRegen(-inc);
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" has expired", NamedTextColor.GRAY)));
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L * secs));
 	}
 
 	@Override

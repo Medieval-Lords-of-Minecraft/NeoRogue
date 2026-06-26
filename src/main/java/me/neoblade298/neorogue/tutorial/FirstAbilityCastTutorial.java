@@ -34,6 +34,7 @@ public class FirstAbilityCastTutorial implements Tutorial {
 	public void registerFight(FightInstance fight, PlayerFightData data) {
 		PlayerSessionData sd = data.getSessionData();
 		if (sd.getAbilitiesEquipped() <= 0) return;
+		if (!TutorialManager.tryActivateFight(this, data)) return;
 
 		Player p = data.getPlayer();
 		p.showTitle(Title.title(

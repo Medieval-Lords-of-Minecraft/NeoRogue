@@ -71,7 +71,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		region.update(s.getNode(), this);
 
 		// Set up info hologram
-		createInfoHologram(spawn.clone().add(0, 1.8, 4));
+		createInfoHologram(spawn.clone().add(0, 1.8, 8));
 
 		if (s.getNode().getRow() == 0) {
 			Title title = Title.title(Component.text(region.getType().getDisplay()), Component.text(" "));

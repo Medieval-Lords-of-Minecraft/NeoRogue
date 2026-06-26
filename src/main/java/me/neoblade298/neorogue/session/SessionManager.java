@@ -70,6 +70,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -82,6 +83,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
+import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -114,6 +116,14 @@ public class SessionManager implements Listener {
 
 		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
 		return s;
+	}
+
+	public static void createTutorialSession(Player p, int saveSlot) {
+		Session s = createSession(p, saveSlot, true, SessionType.TUTORIAL);
+		if (s == null) return;
+		NewLobbyInstance lobby = (NewLobbyInstance) s.getInstance();
+		lobby.switchClass(p.getUniqueId(), EquipmentClass.WARRIOR);
+		lobby.startGame();
 	}
 
 	private static Plot findPlot() {

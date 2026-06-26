@@ -15,11 +15,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -107,10 +109,36 @@ public class MainMenuInventory extends CoreInventory {
 
 		switch (e.getSlot()) {
 		case NEW_GAME:
-			new NewGameSlotInventory(p, pd);
+			if (!pd.hasFlag("played_before")) {
+				pd.addFlag("played_before");
+				p.closeInventory();
+				SessionManager.createTutorialSession(p, 1);
+			} else if (pd.getSlots() == 1) {
+				if (SessionManager.getSession(p) != null) {
+					Util.displayError(p, "You're already in a session!");
+					return;
+				}
+				p.closeInventory();
+				SessionManager.createSession(p, 1, true);
+			} else {
+				new NewGameSlotInventory(p, pd);
+			}
 			break;
 		case LOAD_GAME:
-			new LoadGameSlotInventory(p, pd);
+			if (pd.getSlots() == 1) {
+				if (pd.getSnapshot(1) == null) {
+					Util.displayError(p, "No save data in that slot!");
+					return;
+				}
+				if (SessionManager.getSession(p) != null) {
+					Util.displayError(p, "You're already in a session!");
+					return;
+				}
+				p.closeInventory();
+				SessionManager.createSession(p, 1, false);
+			} else {
+				new LoadGameSlotInventory(p, pd);
+			}
 			break;
 		case ACHIEVEMENTS:
 			new AchievementsMenuInventory(p);

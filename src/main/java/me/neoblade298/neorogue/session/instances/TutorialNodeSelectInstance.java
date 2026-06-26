@@ -10,8 +10,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TutorialNodeSelectInstance extends NodeSelectInstance {
 	private static final String[] ROW_TIPS = {
-		"Press a button to go there!",
-		"There's no healing after fights so be careful!\nSprinting also costs stamina!",
+		"Press the sparkly wooden button!",
+		"Pick between the two buttons!",
 		"You can heal or upgrade gear at shrines!",
 		"Get ready to fight a miniboss!",
 		"One last shrine before the boss!",

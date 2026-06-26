@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -35,7 +34,7 @@ public class LeadingKnife extends Equipment {
 	// Todo: Check if I need additional conditions for attack cooldown, add stamina mark
 	public LeadingKnife(boolean isUpgraded) {
 		super(ID, "Leading Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.OFFHAND, EquipmentProperties.ofRangedWeapon(10, 0.5, 0, 10, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentType.OFFHAND, EquipmentProperties.ofRangedWeapon(10, 0.5, 0, 6, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stamina = isUpgraded ? 4 : 3;
 	}
 	

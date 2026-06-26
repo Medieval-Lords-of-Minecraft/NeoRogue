@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -32,8 +31,8 @@ public class BodyDouble extends Equipment {
 	
 	public BodyDouble(boolean isUpgraded) {
 		super(ID, "Body Double", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 20, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
-				dur = isUpgraded ? 5 : 3;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				dur = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {

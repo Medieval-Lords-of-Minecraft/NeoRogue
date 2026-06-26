@@ -1041,11 +1041,9 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
-				double toActivate = rngBonus + (map.getEffectiveSize() / 2);
+				double toActivate = getInitialSpawnBudget();
 				
-				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn: rngBonus=" + rngBonus
-						+ " mapSize=" + map.getEffectiveSize() + " toActivate=" + toActivate
+				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn: toActivate=" + toActivate
 						+ " spawners=" + spawners.size() + " initialSpawns=" + fi.initialSpawns.size());
 				
 				// Always spawn one of the closest spawners if it exists (it won't for minibosses and bosses)
@@ -1284,6 +1282,11 @@ public abstract class FightInstance extends Instance {
 	
 	public void addMythicLocation(String key, Location loc) {
 		mythicLocations.put(key, loc);
+	}
+	
+	protected double getInitialSpawnBudget() {
+		double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
+		return rngBonus + (map.getEffectiveSize() / 2);
 	}
 	
 	// Returns attempted - actual spawns

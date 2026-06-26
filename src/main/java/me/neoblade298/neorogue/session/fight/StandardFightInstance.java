@@ -32,7 +32,8 @@ public class StandardFightInstance extends FightInstance {
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
 	private BossBar timeBar, scoreBar;
-	private double time, score, scoreRequired;
+	private double time, score;
+	protected double scoreRequired;
 	private FightScore fightScore = FightScore.S;
 
 	static {

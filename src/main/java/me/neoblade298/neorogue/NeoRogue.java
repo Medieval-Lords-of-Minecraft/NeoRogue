@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.commands.CmdAdminDrop;
 import me.neoblade298.neorogue.commands.CmdAdminDropArtifact;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminExp;
+import me.neoblade298.neorogue.commands.CmdAdminFlag;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminLevel;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
@@ -223,6 +224,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminFlag("flag", "Add or remove a player flag", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

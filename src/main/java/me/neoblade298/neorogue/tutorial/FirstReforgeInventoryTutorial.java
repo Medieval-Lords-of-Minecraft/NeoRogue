@@ -26,9 +26,10 @@ public class FirstReforgeInventoryTutorial implements Tutorial {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
-		data.addTrigger(ID, SessionTrigger.OPEN_SESSION_INVENTORY, (pdata, in) -> {
+		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
 			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return;
 			if (pdata.computeAvailableReforges().isEmpty()) return;
+			if (!TutorialManager.tryActivateSession(this, pdata)) return;
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(

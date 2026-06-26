@@ -15,6 +15,10 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,6 +34,14 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 	public EquipmentGlossaryInventory(Player viewer, Equipment equip, CoreInventory prev) {
 		super(viewer, calculateSize(equip), equip.getUnupgraded().getDisplay(), prev);
 		this.eq = equip.getUnupgraded();
+
+		Session session = SessionManager.getSession(viewer);
+		if (session != null) {
+			PlayerSessionData sd = session.getData(viewer.getUniqueId());
+			if (sd != null) {
+				sd.trigger(SessionTrigger.OPEN_GLOSSARY, null);
+			}
+		}
 		
 		ItemStack[] contents = inv.getContents();
 		contents[BASIC] = eq.getUnupgraded().getItem();

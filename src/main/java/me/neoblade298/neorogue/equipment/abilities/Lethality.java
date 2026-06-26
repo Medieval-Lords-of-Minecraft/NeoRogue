@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,7 +56,7 @@ public class Lethality extends Equipment implements Power {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();
 			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
-			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -66,7 +65,7 @@ public class Lethality extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.PIERCING.tag(this) + " damage " + DescUtil.white(3) + " times while above " + DescUtil.white("50%") + " stamina. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc)
+				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.PIERCING.tag(this) + " damage " + DescUtil.white(3) + " times while above " + DescUtil.white("50%") + " stamina. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc + "%")
 				+ " while above " + DescUtil.yellow(thres) + " stamina.");
 	}
 }

@@ -900,14 +900,14 @@ public class Region {
 			loc.getBlock().setBlockData(face);
 
 			// Add holograms to active nodes
-			loc.add(0, 1, 0);
-			inst.createHologram(loc, dest);
+			inst.createHologram(loc.clone().add(0, 1, 0), dest);
 
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
 					|| dest.getType() == NodeType.BOSS) {
-				loc.add(0, -4, -1);
+				loc.add(0, -3, -1);
 				Block b = loc.getBlock();
+				Bukkit.getLogger().info("[NeoRogue] Placing lectern at " + b.getX() + ", " + b.getY() + ", " + b.getZ() + " for node " + dest.getType() + " row=" + dest.getRow() + " lane=" + dest.getLane());
 				b.setType(Material.LECTERN);
 				Lectern lec = (Lectern) b.getBlockData();
 				lec.setFacing(BlockFace.NORTH);

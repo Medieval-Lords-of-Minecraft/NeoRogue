@@ -408,7 +408,7 @@ public class DamageMeta {
 			}
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
-			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
+			double sliceDamage = Math.max(slice.getDamage() > 0 ? 1 : 0, (slice.getDamage() * mult) + increase);
 			rawDamage += sliceDamage; // Track unclamped damage for hologram display
 			if (targetDead) continue; // Remaining slices only contribute to rawDamage
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
