@@ -10,6 +10,10 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 public interface Tutorial {
 	public String getId();
 	public EnumSet<TutorialTriggerType> getTriggerTypes();
+
+	public default int getPriority() {
+		return 0;
+	}
 	
 	public default void registerSession(Session session, PlayerSessionData data) {
 		

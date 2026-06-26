@@ -26,13 +26,23 @@ public class FirstGlossaryOpenTutorial implements Tutorial {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
-		data.addTrigger(ID, SessionTrigger.OPEN_GLOSSARY, (pdata, in) -> {
+		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
 			if (!TutorialManager.tryActivateSession(this, pdata)) return;
+			Player p = pdata.getPlayer();
+			p.showTitle(Title.title(
+					Component.text("Tip!", NamedTextColor.GREEN),
+					Component.text("Right-click equipment to view its glossary!", NamedTextColor.YELLOW)
+			));
+		});
+
+		data.addTrigger(ID, SessionTrigger.OPEN_GLOSSARY, (pdata, in) -> {
+			if (!TutorialManager.isActivatedSession(this, pdata)) return;
+			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return;
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(
-					Component.text(""),
-					Component.text("Right-click equipment to view its glossary!", NamedTextColor.YELLOW)
+					Component.text("Nice!", NamedTextColor.GREEN),
+					Component.text("You opened the glossary!", NamedTextColor.YELLOW)
 			));
 		});
 	}

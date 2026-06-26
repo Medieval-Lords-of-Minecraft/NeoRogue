@@ -101,11 +101,19 @@ public class TutorialManager {
 			if (active != null) {
 				PlayerData pdata = data.getData();
 				if (pdata == null || !pdata.hasFlag(getTutorialFlag(active))) {
-					return false;
+					if (tutorial.getPriority() <= active.getPriority()) {
+						return false;
+					}
 				}
 			}
 			activeSessionTutorial.put(data, tutorial);
 			return true;
+		}
+	}
+
+	public static boolean isActivatedSession(Tutorial tutorial, PlayerSessionData data) {
+		synchronized (activeSessionTutorial) {
+			return activeSessionTutorial.get(data) == tutorial;
 		}
 	}
 	
