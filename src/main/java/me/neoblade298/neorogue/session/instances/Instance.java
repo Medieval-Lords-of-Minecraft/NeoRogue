@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session.instances;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,8 +143,7 @@ public abstract class Instance {
 		return spectatorFlags;
 	}
 
-	public static Instance deserialize(Session s, ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
-		String data = row.getString("instanceData");
+	public static Instance deserialize(Session s, String data, HashMap<UUID, PlayerSessionData> party) throws SQLException {
 		
 		if (data.startsWith("SHRINE")) {
 			return new ShrineInstance(s, data, party);

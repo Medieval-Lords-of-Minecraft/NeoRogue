@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -23,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SaboteursRing extends Equipment {
 	private static final String ID = "SaboteursRing";
-	private double inc;
+	private int inc;
 	public SaboteursRing(boolean isUpgraded) {
 		super(ID, "Saboteur's Ring", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);

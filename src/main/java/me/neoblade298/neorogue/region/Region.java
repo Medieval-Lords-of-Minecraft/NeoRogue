@@ -187,6 +187,7 @@ public class Region {
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
 		this.rowCount = type.getRowCount();
+		s.setRegion(this);
 
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
@@ -905,9 +906,8 @@ public class Region {
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
 					|| dest.getType() == NodeType.BOSS) {
-				loc.add(0, -3, -1);
+				loc.add(0, -2, -1);
 				Block b = loc.getBlock();
-				Bukkit.getLogger().info("[NeoRogue] Placing lectern at " + b.getX() + ", " + b.getY() + ", " + b.getZ() + " for node " + dest.getType() + " row=" + dest.getRow() + " lane=" + dest.getLane());
 				b.setType(Material.LECTERN);
 				Lectern lec = (Lectern) b.getBlockData();
 				lec.setFacing(BlockFace.NORTH);

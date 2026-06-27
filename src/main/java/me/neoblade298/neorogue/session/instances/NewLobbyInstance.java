@@ -263,7 +263,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
         TextComponent tc = Component.text().content(Bukkit.getPlayer(uuid).getName()).color(NamedTextColor.YELLOW)
                 .append(Component.text(" switched to class ", NamedTextColor.GRAY))
-                .append(Component.text(pc.getDisplay(), NamedTextColor.RED)).build();
+                .append(Component.text(pc.getDisplay(), getClassColor(pc))).build();
         broadcast(tc);
         players.put(uuid, pc);
         updateBoardLines();
@@ -341,5 +341,15 @@ public class NewLobbyInstance extends LobbyInstance {
             broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
         }
         updateBoardLines();
+    }
+
+    private static NamedTextColor getClassColor(EquipmentClass pc) {
+        return switch (pc) {
+            case WARRIOR -> NamedTextColor.RED;
+            case THIEF -> NamedTextColor.YELLOW;
+            case ARCHER -> NamedTextColor.GREEN;
+            case MAGE -> NamedTextColor.BLUE;
+            default -> NamedTextColor.WHITE;
+        };
     }
 }

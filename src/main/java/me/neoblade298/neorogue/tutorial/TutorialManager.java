@@ -66,6 +66,15 @@ public class TutorialManager {
 		return "tutorial_" + tutorial.getId();
 	}
 
+	public static List<String> getAllFlags() {
+		List<String> flags = new ArrayList<>();
+		flags.add("played_before");
+		for (Tutorial tutorial : tutorials) {
+			flags.add(getTutorialFlag(tutorial));
+		}
+		return flags;
+	}
+
 	public static void registerSessionTutorials(Session session, PlayerSessionData data) {
 		for (Tutorial tutorial : getTutorials(TutorialTriggerType.SESSION)) {
 			if (!tryRegister(registeredSessionTutorials, data, tutorial.getId())) continue;

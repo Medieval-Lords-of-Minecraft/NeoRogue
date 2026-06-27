@@ -34,7 +34,7 @@ public class FrozenWastesMap extends Map {
 		LinkedList<MapPiece> avail = getStandardPieces(lookupType);
 		LinkedList<MapPiece> used = getUsedPieces(lookupType);
 
-		int targetCount = 1 + NeoRogue.gen.nextInt(2); // 2, 3, or 4
+		int targetCount = 2 + NeoRogue.gen.nextInt(2); // 2, 3, or 4
 
 		// Place first piece centered
 		MapPiece firstPiece = pollPiece(avail, used, lookupType);

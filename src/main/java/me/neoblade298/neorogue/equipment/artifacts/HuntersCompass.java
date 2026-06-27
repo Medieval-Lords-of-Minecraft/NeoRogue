@@ -34,7 +34,7 @@ public class HuntersCompass extends Artifact {
 		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.getStatusClass() == StatusClass.NEGATIVE) {
-				ev.getStacksBuffList().add(new Buff(pdata, data.getStatus(StatusType.FOCUS).getStacks() * 10, 0, BuffStatTracker.ignored(this)));
+				ev.getStacksBuffList().add(new Buff(pdata, 0, data.getStatus(StatusType.FOCUS).getStacks() * 0.2, BuffStatTracker.ignored(this)));
 			}
 			return TriggerResult.keep();
 		});
@@ -53,6 +53,6 @@ public class HuntersCompass extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COMPASS, 
-				"Any negative statuses you apply have their stacks increased by " + DescUtil.white(10) + " for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have.");
+				"Any negative statuses you apply have their stacks increased by " + DescUtil.white("20%") + " for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have.");
 	}
 }

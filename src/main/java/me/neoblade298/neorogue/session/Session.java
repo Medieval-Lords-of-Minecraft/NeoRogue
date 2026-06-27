@@ -220,7 +220,6 @@ public class Session {
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
-					Instance inst = Instance.deserialize(s, sessSet, party);
 					potionChance = sessSet.getInt("potionChance");
 					regionsCompleted = sessSet.getInt("regionsCompleted");
 
@@ -230,10 +229,16 @@ public class Session {
 					endless = sessSet.getBoolean("endless");
 					notoriety = sessSet.getInt("notoriety");
 
+					// Read instanceData before Region construction closes the ResultSet
+					String instanceData = sessSet.getString("instanceData");
+					RegionType regionType = RegionType.valueOf(sessSet.getString("regionType"));
+
 					region = new Region(
-							RegionType.valueOf(sessSet.getString("regionType")), xOff, zOff, host, saveSlot, s, stmt
+							regionType, xOff, zOff, host, saveSlot, s, stmt
 					);
 					curr = region.getNodes()[pos][lane];
+
+					Instance inst = Instance.deserialize(s, instanceData, party);
 
 					// Complete load on main thread for thread safety
 					Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
@@ -667,6 +672,10 @@ public class Session {
 		return party.get(uuid);
 	}
 	
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
 	public Region getRegion() {
 		return region;
 	}

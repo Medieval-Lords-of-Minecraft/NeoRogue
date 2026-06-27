@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,11 +13,14 @@ import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.tutorial.TutorialManager;
 
 public class CmdAdminFlag extends Subcommand {
 	public CmdAdminFlag(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("add/remove"), new Arg("flag"), new Arg("player", false));
+		args.add(new Arg("add/remove").setTabOptions(new ArrayList<>(List.of("add", "remove"))),
+				new Arg("flag").setTabOptions(new ArrayList<>(TutorialManager.getAllFlags())),
+				new Arg("player", false));
 		this.enableTabComplete();
 	}
 

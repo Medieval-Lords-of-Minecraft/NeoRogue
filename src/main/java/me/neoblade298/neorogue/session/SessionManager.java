@@ -282,8 +282,25 @@ public class SessionManager implements Listener {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		} else if (e.getEntity() instanceof AbstractArrow) {
 			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
-			if (item.getType() != Material.ARROW)
-				p.getInventory().addItem(item);
+			if (item.getType() != Material.ARROW) {
+				// Try to return the arrow to its original slot
+				PlayerInventory inv = p.getInventory();
+				ItemStack offhand = inv.getItemInOffHand();
+				if (offhand.isSimilar(item)) {
+					offhand.setAmount(offhand.getAmount() + 1);
+				} else {
+					boolean found = false;
+					for (int i = 0; i < inv.getSize(); i++) {
+						ItemStack slot = inv.getItem(i);
+						if (slot != null && slot.isSimilar(item)) {
+							slot.setAmount(slot.getAmount() + 1);
+							found = true;
+							break;
+						}
+					}
+					if (!found) inv.addItem(item);
+				}
+			}
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 		}
 	}
