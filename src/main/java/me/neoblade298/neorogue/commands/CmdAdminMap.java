@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -82,10 +83,14 @@ public class CmdAdminMap extends Subcommand {
 		}
 		Util.msg(p, "Mark spawns: " + (System.currentTimeMillis() - markStart) + "ms");
 
-		Region.useMainWorld();
-		
-		// Choose random teleport location
-		int rand = NeoRogue.gen.nextInt(potentialSpawns.size());
-		p.teleport(potentialSpawns.get(rand));
+		// Choose random teleport location (delayed to let async paste finish)
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Region.useMainWorld();
+				int rand = NeoRogue.gen.nextInt(potentialSpawns.size());
+				p.teleport(potentialSpawns.get(rand));
+			}
+		}.runTaskLater(NeoRogue.inst(), 20);
 	}
 }

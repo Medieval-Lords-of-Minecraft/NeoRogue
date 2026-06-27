@@ -39,7 +39,7 @@ public class ColossusArmor extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			int reduction = (int) (data.getMaxStamina() / threshold);
 			if (reduction <= 0) return TriggerResult.keep();
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
 					Buff.increase(data, reduction, StatTracker.defenseBuffAlly(buffId, this, false)));
 			return TriggerResult.keep();
 		});
@@ -48,7 +48,7 @@ public class ColossusArmor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_CHESTPLATE,
-				"Reduce " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.white(1) +
+				"Reduce " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.white(1) +
 				" for every " + DescUtil.yellow(threshold) + " max stamina you have.");
 	}
 }

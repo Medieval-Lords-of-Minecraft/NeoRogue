@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -21,6 +22,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
@@ -71,14 +73,17 @@ public class CmdAdminPiece extends Subcommand {
 		// Mark spawn locations with terracotta
 		ArrayList<Location> potentialSpawns = inst.markSpawns(xOff, zOff);
 
-		Region.useMainWorld();
-
-		if (!potentialSpawns.isEmpty()) {
-			p.teleport(potentialSpawns.get(0));
-		} else {
-			// Teleport to the origin
-			org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-			p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
-		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Region.useMainWorld();
+				if (!potentialSpawns.isEmpty()) {
+					p.teleport(potentialSpawns.get(0));
+				} else {
+					org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
+					p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 20);
 	}
 }

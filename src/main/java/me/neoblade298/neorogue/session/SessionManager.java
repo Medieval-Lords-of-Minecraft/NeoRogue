@@ -290,6 +290,7 @@ public class SessionManager implements Listener {
 					offhand.setAmount(offhand.getAmount() + 1);
 				} else {
 					boolean found = false;
+					System.out.println("Looking for item..." + item.getType());
 					for (int i = 0; i < inv.getSize(); i++) {
 						ItemStack slot = inv.getItem(i);
 						if (slot != null && slot.isSimilar(item)) {
@@ -298,6 +299,7 @@ public class SessionManager implements Listener {
 							break;
 						}
 					}
+					System.out.println("Item found: " + found);
 					if (!found) inv.addItem(item);
 				}
 			}

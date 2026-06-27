@@ -12,6 +12,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -25,6 +26,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
@@ -103,15 +105,19 @@ public class CmdAdminPieceSettings extends Subcommand {
 			potentialSpawns.addAll(inst.markSpawns(p, 0, 0));
 		}
 
-		Region.useMainWorld();
-
-		if (!potentialSpawns.isEmpty()) {
-			p.teleport(potentialSpawns.get(0));
-		} else {
-			org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-			p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
-		}
-		Util.msg(p, "Successfully pasted piece settings");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Region.useMainWorld();
+				if (!potentialSpawns.isEmpty()) {
+					p.teleport(potentialSpawns.get(0));
+				} else {
+					org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
+					p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
+				}
+				Util.msg(p, "Successfully pasted piece settings");
+			}
+		}.runTaskLater(NeoRogue.inst(), 20);
 	}
 
 	private void placeVariantSign(int xOff, int zOff, String line1, String line2) {

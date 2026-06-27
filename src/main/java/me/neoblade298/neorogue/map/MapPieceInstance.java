@@ -13,6 +13,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -385,7 +386,32 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	// Marks spawn locations with directional terracotta and returns the player spawn locations
 	public ArrayList<Location> markSpawns(Player p, int xOff, int zOff) {
 		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
+
+		// Pre-compute player spawn locations (pure coordinate math)
+		if (spawns != null) {
+			for (Coordinates c : spawns) {
+				Coordinates coords = c.clone().applySettings(this);
+				Location l = coords.toLocation();
+				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
+				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
+				playerSpawnLocs.add(l);
+			}
+		}
+
+		// Delay block placement and error checking to allow async WorldEdit paste to complete
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				markSpawnsDelayed(p, xOff, zOff);
+			}
+		}.runTaskLater(NeoRogue.inst(), 20);
+
+		return playerSpawnLocs;
+	}
+
+	private void markSpawnsDelayed(Player p, int xOff, int zOff) {
 		HashMap<Location, Integer> signLines = new HashMap<>();
+		Bukkit.getLogger().info("[markSpawns] Running delayed markSpawns, activeWorld=" + Region.getActiveWorldName());
 
 		// Mark spawners with orange wool and signs
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
@@ -394,6 +420,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				Location loc = coords.toLocation();
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
+				Bukkit.getLogger().info("[markSpawns] Spawner '" + spawner.getMobId() + "' at " + Util.locToString(loc, false, false) + " world=" + loc.getWorld().getName() + " block=" + loc.getBlock().getType() + " below=" + loc.clone().add(0, -1, 0).getBlock().getType());
 				if (p != null) {
 					if (loc.getBlock().getType().isSolid()) {
 						Util.msg(p, "<red>A spawner appears to be inside a block.");
@@ -478,7 +505,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 
 				String psLabel = "PS " + (int) coords.getX() + ", " + (int) coords.getY() + ", " + (int) coords.getZ() + ", " + coords.getDirection().flip(false).name().charAt(0);
 				placeOrAppendSign(l.clone().add(0, 1, 0), coords.getDirection(), psLabel, NamedTextColor.YELLOW, signLines);
-				playerSpawnLocs.add(l);
 			}
 		}
 
@@ -570,8 +596,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 			}
 		}
-
-		return playerSpawnLocs;
 	}
 
 	public ArrayList<Location> markSpawns(int xOff, int zOff) {

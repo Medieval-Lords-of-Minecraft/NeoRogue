@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 
 import org.bukkit.Material;
@@ -20,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -44,7 +43,7 @@ public class Engulf extends Equipment implements Power {
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0));
-		damage = isUpgraded ? 90 : 60;
+		damage = isUpgraded ? 45 : 30;
 		thres = isUpgraded ? 200 : 300;
 	}
 
@@ -68,12 +67,16 @@ public class Engulf extends Equipment implements Power {
 		});
 	}
 
+	private static final int COOLDOWN_TICKS = 100; // 5 seconds
+
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta am = new ActionMeta();
+		boolean[] onCooldown = new boolean[] { false };
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+					if (onCooldown[0]) return TriggerResult.keep();
 					DealDamageEvent ev2 = (DealDamageEvent) in2;
 					// Don't count Engulf's own damage
 					for (DamageSlice slice : ev2.getMeta().getSlices()) {
@@ -85,6 +88,12 @@ public class Engulf extends Equipment implements Power {
 					am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
 					if (am.getCount() >= thres) {
 						am.addCount(-thres);
+						onCooldown[0] = true;
+						data.addTask(new BukkitRunnable() {
+							public void run() {
+								onCooldown[0] = false;
+							}
+						}.runTaskLater(NeoRogue.inst(), COOLDOWN_TICKS));
 						data.addTask(new BukkitRunnable() {
 							private int count = 0;
 							public void run() {
@@ -113,6 +122,6 @@ public class Engulf extends Equipment implements Power {
 		item = createItem(Material.FIRE_CHARGE,
 				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage from other sources, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
-						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ".");
+						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ". " + DescUtil.white("5s") + " cooldown.");
 	}
 }
