@@ -369,12 +369,7 @@ public class Map {
 		// Add spawns
 		if (inst.getSpawns() != null) {
 			for (Coordinates coords : inst.getSpawns()) {
-				Coordinates applied = coords.clone().applySettings(inst);
-				Bukkit.getLogger().info("[SpawnDebug/placePiece] piece=" + inst.getPiece().getId()
-						+ " pieceY=" + inst.getY() + " rawY=" + coords.getY()
-						+ " appliedGetY=" + applied.getY()
-						+ " toLocY=" + applied.toLocation().getY());
-				spawns.add(applied);
+				spawns.add(coords.clone().applySettings(inst));
 			}
 		}
 		if (!inst.getPiece().ignoreSize()) effectiveSize += inst.getPiece().getShape().getChunkCount();

@@ -457,9 +457,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				Location l = coords.toLocation();
 				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
-				Bukkit.getLogger().info("[SpawnDebug/markSpawns] piece=" + piece.getId()
-						+ " pieceY=" + y + " coordY=" + c.getY() + " toLocY=" + coords.toLocation().getY()
-						+ " finalY=" + l.getBlockY() + " block=" + l.getBlock().getType());
 				if (p != null) {
 					if (l.getBlock().getType().isSolid()) {
 						Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
