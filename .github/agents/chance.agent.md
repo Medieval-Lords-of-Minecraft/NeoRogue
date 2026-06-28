@@ -258,6 +258,28 @@ public void initialize(Session s, ChanceInstance inst) {
 }
 ```
 
+## Per-Player Data Payloads (Important)
+
+For individual choice events that need per-player dynamic offers/costs/state, prefer `PlayerSessionData.instanceData` payloads over UUID-keyed `ChanceInstance.eventData` entries.
+
+Use this format in `instanceData`:
+
+```text
+stageId::payload
+```
+
+- `stageId` is the player's current chance stage (`init`, `outcome`, etc.)
+- `payload` is arbitrary compact data for that player (for example `r1=ArtifactA;c1=ArtifactB;c3=Sword:true`)
+
+Guidelines:
+
+- Keep per-player values in `instanceData` payload so save/load naturally follows that player.
+- Keep shared event-wide values in `ChanceInstance.eventData`.
+- In `initialize(Session s, ChanceInstance inst)`, write payloads to each `PlayerSessionData` using `data.setInstanceData(INIT_ID + "::" + payload)`.
+- In dynamic descriptions/requirements/actions, parse payload from the current player's `instanceData` and read your keys from there.
+- Preserve stage when rewriting payload: always keep the `stageId::` prefix.
+- Use stable keys and compact delimiters (`;` between pairs, `=` between key/value) to avoid parsing ambiguity.
+
 ## Constraints
 
 - DO NOT forget to add `INIT_ID` stage — events will fail silently without it

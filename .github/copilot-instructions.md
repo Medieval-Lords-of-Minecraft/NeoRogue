@@ -58,6 +58,11 @@ Player Action → Trigger Event → Equipment Triggers → Status/Damage/Effects
 - **Weapons/Armor**: Stat modifications + effects
 - **Consumables**: Single-use items
 
+#### Chance Event Data
+- For **per-player chance state** (e.g., individual offers/costs), store data in `PlayerSessionData.instanceData` instead of `ChanceInstance.eventData` UUID-keyed entries.
+- In chance instances, keep stage IDs and payload together in `instanceData` as `stageId::payload` so save/load preserves both stage and player-specific chance data.
+- Reserve `ChanceInstance.eventData` for event-wide/shared values that are not player-specific.
+
 ## Project-Specific Conventions
 
 ### Naming

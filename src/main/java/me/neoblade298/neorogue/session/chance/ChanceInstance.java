@@ -46,6 +46,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
+	private static final String INSTANCE_DATA_SEPARATOR = "::";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_PLING);
 
@@ -124,8 +125,8 @@ public class ChanceInstance extends EditInventoryInstance {
 		}
 		
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			String id = ent.getValue().getInstanceData();
-			if (id.equals("null"))
+			String id = getStageIdFromInstanceData(ent.getValue().getInstanceData());
+			if (id == null)
 				continue;
 			ChanceStage stg = set.getStage(id);
 			stage.put(ent.getKey(), stg);
@@ -169,7 +170,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		super.setup();
 
 		// Setup hologram
-		if (!set.isIndividual()) {
+		if (!set.isIndividual() || set.hasSingleStage()) {
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), buildHologramText(set.getInitialStage()));
 		} else {
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
@@ -396,7 +397,13 @@ public class ChanceInstance extends EditInventoryInstance {
 				continue;
 			}
 			ChanceStage stg = this.stage.get(uuid);
-			data.setInstanceData(stg.getId());
+			String payload = getInstanceDataPayload(data);
+			if (payload != null && !payload.isEmpty()) {
+				data.setInstanceData(stg.getId() + INSTANCE_DATA_SEPARATOR + payload);
+			}
+			else {
+				data.setInstanceData(stg.getId());
+			}
 		}
 		
 		// Build event data section
@@ -416,6 +423,19 @@ public class ChanceInstance extends EditInventoryInstance {
 		return "CHANCE:" + set.getId() + eventDataStr + next;
 	}
 
+	private static String getStageIdFromInstanceData(String raw) {
+		if (raw == null || raw.equals("null")) return null;
+		int sep = raw.indexOf(INSTANCE_DATA_SEPARATOR);
+		return sep == -1 ? raw : raw.substring(0, sep);
+	}
+
+	public static String getInstanceDataPayload(PlayerSessionData data) {
+		String raw = data.getInstanceData();
+		if (raw == null || raw.equals("null")) return null;
+		int sep = raw.indexOf(INSTANCE_DATA_SEPARATOR);
+		if (sep == -1 || sep + INSTANCE_DATA_SEPARATOR.length() >= raw.length()) return null;
+		return raw.substring(sep + INSTANCE_DATA_SEPARATOR.length());
+	}
 	@Override
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		stage.remove(p.getUniqueId());
