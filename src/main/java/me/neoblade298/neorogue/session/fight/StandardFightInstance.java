@@ -28,9 +28,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
 public class StandardFightInstance extends FightInstance {
-	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
+	private static final int KILLS_TO_SCALE = 7; // number of mobs to kill before increasing total mobs by 1
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
+	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private BossBar timeBar, scoreBar;
 	private double time, score;
 	protected double scoreRequired;
@@ -226,7 +227,7 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
-public void cleanup(boolean pluginDisable) {
+	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
 		hideBarFromAll(timeBar);
 		hideBarFromAll(scoreBar);

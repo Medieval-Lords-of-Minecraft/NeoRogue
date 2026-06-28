@@ -24,7 +24,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
-	private TextDisplay holo;
+	private TextDisplay holo, leaveHolo;
 	
 	public LoseInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -43,6 +43,8 @@ public class LoseInstance extends EditInventoryInstance {
 
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
 				Component.text("Right click to view stats!"));
+		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 1, -4),
+				Component.text("Click to leave", NamedTextColor.GOLD));
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, false);
@@ -81,6 +83,7 @@ public class LoseInstance extends EditInventoryInstance {
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
 		holo.remove();
+		leaveHolo.remove();
 	}
 
 	@Override
@@ -91,14 +94,19 @@ public class LoseInstance extends EditInventoryInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
-		if (e.getHand() == EquipmentSlot.HAND && e.getAction() == Action.RIGHT_CLICK_BLOCK
-				&& e.getClickedBlock().getType() == Material.LECTERN) {
+		if (e.getHand() == EquipmentSlot.HAND && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null) {
 			Player p = e.getPlayer();
-			PlayerSessionData data = s.getData(p.getUniqueId());
-			if (data != null) {
-				data.getSessionStats().sendTo(p);
+			if (e.getClickedBlock().getType() == Material.BEACON) {
+				s.leavePlayer(p);
+				return;
 			}
-			return;
+			if (e.getClickedBlock().getType() == Material.LECTERN) {
+				PlayerSessionData data = s.getData(p.getUniqueId());
+				if (data != null) {
+					data.getSessionStats().sendTo(p);
+				}
+				return;
+			}
 		}
 		super.handleInteractEvent(e);
 	}

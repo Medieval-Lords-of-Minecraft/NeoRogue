@@ -16,6 +16,7 @@ public class ArmorStand extends Artifact {
 
 	public ArmorStand() {
 		super(ID, "Armor Stand", Rarity.UNCOMMON, EquipmentClass.SHOP);
+		canDrop = false;
 	}
 	
 	public static Equipment get() {

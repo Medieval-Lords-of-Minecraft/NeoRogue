@@ -23,8 +23,9 @@ public class CaravanRobberyChance extends ChanceSet {
 				(s, inst, data) -> {
 					for (PlayerSessionData pd: s.getParty().values()) {
 						pd.addCoins(300);
-						if (pd.canEquipAbility()) continue;
-						pd.unequip(EquipmentType.ABILITY);
+						if (pd.getAbilitiesEquipped() + 1 >= pd.getMaxAbilities()) {
+							pd.unequip(EquipmentType.ABILITY);
+						}
 						pd.giveEquipment(Exhaustion.get());
 					}
 					s.broadcast("You save the merchants and are rewarded <yellow>300 coins</yellow>, but you feel exhausted.");

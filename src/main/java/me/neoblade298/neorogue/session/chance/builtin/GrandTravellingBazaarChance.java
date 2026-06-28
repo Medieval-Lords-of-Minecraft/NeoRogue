@@ -112,15 +112,6 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					return null;
 				}));
 
-		// Choice 4: Walk away
-		stage.addChoice(new ChanceChoice(Material.BARRIER, "Walk away",
-				"You have no interest in the merchant's wares.",
-				(s, inst, data) -> {
-					Player p = data.getPlayer();
-					Util.msgRaw(p, "You wave the merchant off. They shrug and turn back to rearranging their cart.");
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> declined the merchant's offers.", p);
-					return null;
-				}));
 	}
 
 	@Override

@@ -114,7 +114,6 @@ public abstract class FightInstance extends Instance {
 	protected LinkedList<BukkitRunnable> cleanupTasks = new LinkedList<BukkitRunnable>();
 	protected LinkedList<FightRunnable> initialTasks = new LinkedList<FightRunnable>();
 	protected double spawnCounter; // When above 1, a mob spawns
-	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
 	private ArrayList<String> spectatorLines;
 	protected boolean isActive = true;
@@ -1286,7 +1285,7 @@ public abstract class FightInstance extends Instance {
 	
 	protected double getInitialSpawnBudget() {
 		double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
-		return rngBonus + (map.getEffectiveSize() / 2);
+		return rngBonus + (map.getEffectiveSize() / 2) + 2;
 	}
 	
 	// Returns attempted - actual spawns

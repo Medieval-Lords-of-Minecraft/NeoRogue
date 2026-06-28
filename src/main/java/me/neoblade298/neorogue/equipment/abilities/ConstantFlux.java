@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ConstantFlux extends Equipment implements Power {
+public class ConstantFlux extends Equipment {
 	private static final String ID = "ConstantFlux";
 	private static final int MAX_STACKS = 5;
 	
@@ -33,7 +32,7 @@ public class ConstantFlux extends Equipment implements Power {
 
 	public ConstantFlux(boolean isUpgraded) {
 		super(ID, "Constant Flux", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 0, 0));
 		damagePerStack = isUpgraded ? 12 : 8;
 	}
 
@@ -43,25 +42,12 @@ public class ConstantFlux extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			if (!activatePower(data, slot, es)) return TriggerResult.keep();
-			return TriggerResult.remove();
-		}));
-	}
-
-	@Override
-	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta stacks = new ActionMeta();
 		String taskId = id + "-timer-" + slot;
 		ItemStack noStackIcon = item.clone();
 		ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
-		SessionEquipment sessionEq = data.getSessionData().getSessionEquipment(es)[slot];
 		ConstantFluxInstance inst = new ConstantFluxInstance(data, sessionEq, slot, es, stacks, taskId, noStackIcon, stackIcon);
-		data.addTask(new BukkitRunnable() {
-			public void run() {
-				data.addTrigger(id + "-active", Trigger.getFromHotbarSlot(slot), inst);
-			}
-		}.runTask(NeoRogue.inst()));
+		data.addTrigger(id, bind, inst);
 	}
 
 	private class ConstantFluxInstance extends EquipmentInstance {
@@ -125,7 +111,7 @@ public class ConstantFlux extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				GlossaryTag.POWER.tag(this) + ". On cast, while you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", " + 
+				"On cast, while you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", " + 
 				GlossaryTag.DASH.tag(this) + " forward and increase your " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage by " + DescUtil.yellow(damagePerStack) + ", stacking up to " + DescUtil.white(MAX_STACKS + "x") + ". " +
 				"Not casting this ability for " + DescUtil.white("5s") + " removes all stacks.");

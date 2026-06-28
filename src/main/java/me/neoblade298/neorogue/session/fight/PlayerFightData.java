@@ -798,7 +798,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	private void updateStamina() {
-		this.stamina = Math.min(this.stamina, this.maxStamina);
+		this.stamina = Math.max(0, Math.min(this.stamina, this.maxStamina));
 		if (hasStatus(StatusType.WITHERED)) {
 			p.setFoodLevel(0);
 			// Disable jump with a separate key so it doesn't conflict with charge
@@ -904,7 +904,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	private void updateMana() {
-		this.mana = Math.min(this.mana, this.maxMana);
+		this.mana = Math.max(0, Math.min(this.mana, this.maxMana));
 		updateActionBar();
 		updateBoardLines();
 	}

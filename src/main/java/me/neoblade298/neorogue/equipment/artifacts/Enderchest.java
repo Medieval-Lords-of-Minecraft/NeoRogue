@@ -29,7 +29,7 @@ public class Enderchest extends Artifact {
 	
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.addMaxStorage(1);
+		data.addMaxStorage(2);
 	}
 
 	@Override
@@ -38,6 +38,6 @@ public class Enderchest extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_CHEST, "Increases storage size by " + DescUtil.white(1) + ".");
+		item = createItem(Material.ENDER_CHEST, "Increases storage size by " + DescUtil.white(2) + ".");
 	}
 }
