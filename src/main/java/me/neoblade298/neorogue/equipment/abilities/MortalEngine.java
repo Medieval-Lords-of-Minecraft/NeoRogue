@@ -25,7 +25,7 @@ public class MortalEngine extends Equipment implements Power {
 
 	public MortalEngine(boolean isUpgraded) {
 		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 
 		cutoff = 15;
 		reduc = isUpgraded ? 2 : 1;

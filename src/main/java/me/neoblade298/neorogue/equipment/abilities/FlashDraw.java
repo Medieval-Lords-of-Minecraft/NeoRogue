@@ -26,7 +26,7 @@ public class FlashDraw extends Equipment implements Power {
 	
 	public FlashDraw(boolean isUpgraded) {
 		super(ID, "Flash Draw", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 15 : 20;
 	}
 	

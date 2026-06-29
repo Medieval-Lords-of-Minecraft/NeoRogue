@@ -23,7 +23,7 @@ public class AvatarState extends Equipment implements Power {
 
 	public AvatarState(boolean isUpgraded) {
 		super(ID, "Avatar State", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		mreg = isUpgraded ? 2.5 : 1.5;
 		hreg = isUpgraded ? 1.5 : 1;
 		shields = isUpgraded ? 10 : 5;

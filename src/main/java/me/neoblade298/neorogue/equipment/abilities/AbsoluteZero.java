@@ -36,7 +36,7 @@ public class AbsoluteZero extends Equipment implements Power {
 	
 	public AbsoluteZero(boolean isUpgraded) {
 		super(ID, "Absolute Zero", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 8 : 12;
 		frost = isUpgraded ? 10 : 6;
 	}

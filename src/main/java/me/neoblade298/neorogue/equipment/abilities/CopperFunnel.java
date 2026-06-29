@@ -28,7 +28,7 @@ public class CopperFunnel extends Equipment {
 	
 	public CopperFunnel(boolean isUpgraded) {
 		super(ID, "Copper Funnel", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.OFFHAND, EquipmentProperties.none());
 				reps = isUpgraded ? 3 : 2;
 	}
 	

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Material;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -32,7 +31,7 @@ public class StormweaversPromise extends Equipment implements Power {
 	
 	public StormweaversPromise(boolean isUpgraded) {
 		super(ID, "Stormweaver's Promise", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 2 : 1;
 	}
 	

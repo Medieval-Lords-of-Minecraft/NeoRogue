@@ -30,7 +30,7 @@ public class MindShell extends Equipment implements Power {
 
 	public MindShell(boolean isUpgraded) {
 		super(ID, "Mind Shell", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		regen = 0.3;
 		shell = isUpgraded ? 2 : 1;
 	}

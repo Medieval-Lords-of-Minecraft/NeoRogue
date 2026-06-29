@@ -47,7 +47,7 @@ public class HeadTrauma extends Equipment implements Power {
 	
 	public HeadTrauma(boolean isUpgraded) {
 		super(ID, "Head Trauma", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		reduc = isUpgraded ? 0.6 : 0.4;
 		reducStr = (int) (100 * reduc);
 		damage = isUpgraded ? 300 : 200;

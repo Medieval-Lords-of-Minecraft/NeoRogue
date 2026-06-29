@@ -45,7 +45,7 @@ public class HuntersEssence extends Equipment implements Power {
 	
 	public HuntersEssence(boolean isUpgraded) {
 		super(ID, "Hunter's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		stamina = isUpgraded ? 30 : 20;
 		damageBuff = isUpgraded ? 0.10 : 0.05;
 		focusChance = isUpgraded ? 0.60 : 0.30;

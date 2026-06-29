@@ -27,7 +27,7 @@ public class Entrench extends Equipment implements Power {
 
 	public Entrench(boolean isUpgraded) {
 		super(ID, "Entrench", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 4 : 2;
 	}
 

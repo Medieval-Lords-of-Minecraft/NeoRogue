@@ -30,7 +30,7 @@ public class Momentum extends Equipment implements Power {
 	
 	public Momentum(boolean isUpgraded) {
 		super(ID, "Momentum", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 				damage = isUpgraded ? 20 : 10;
 				dur = 3;
 	}

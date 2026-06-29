@@ -25,7 +25,7 @@ public class PredatorDrive extends Equipment implements Power {
 	
 	public PredatorDrive(boolean isUpgraded) {
 		super(ID, "Predator Drive", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-			EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+			EquipmentType.ABILITY, EquipmentProperties.none());
 		threshold = isUpgraded ? 3 : 4;
 	}
 	

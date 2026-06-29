@@ -47,7 +47,7 @@ public class Hellfire extends Equipment implements Power {
 	
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = isUpgraded ? 100 : 65;
 	}
 	

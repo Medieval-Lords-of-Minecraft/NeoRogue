@@ -42,7 +42,7 @@ public class BitterCold extends Equipment implements Power {
 	
 	public BitterCold(boolean isUpgraded) {
 		super(ID, "Bitter Cold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		stacks = isUpgraded ? 3 : 2;
 		damage = isUpgraded ? 300 : 200;
 	}

@@ -34,7 +34,7 @@ public class Initiator extends Equipment implements Power {
 
 	public Initiator(boolean isUpgraded) {
 		super(ID, "Initiator", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 50 : 30;
 	}
 

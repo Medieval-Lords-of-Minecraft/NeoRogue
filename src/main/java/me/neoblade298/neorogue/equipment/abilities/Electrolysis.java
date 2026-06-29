@@ -33,7 +33,7 @@ public class Electrolysis extends Equipment implements Power {
 	
 	public Electrolysis(boolean isUpgraded) {
 		super(ID, "Electrolysis", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		mult = isUpgraded ? 0.5 : 0.3;
 		mana = isUpgraded ? 10 : 5;
 		multStr = (int) (mult * 100);

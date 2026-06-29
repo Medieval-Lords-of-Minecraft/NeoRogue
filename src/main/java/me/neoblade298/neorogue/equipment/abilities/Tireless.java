@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,7 +25,7 @@ public class Tireless extends Equipment implements Power {
 
 	public Tireless(boolean isUpgraded) {
 		super(ID, "Tireless", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 
 		cutoff = 20;
 		reduc = isUpgraded ? 3 : 2;

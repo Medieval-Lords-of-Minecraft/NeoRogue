@@ -38,7 +38,7 @@ public class IAmAtomic extends Equipment implements Power {
 	
 	public IAmAtomic(boolean isUpgraded) {
 		super(ID, "I Am Atomic", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		intel = 3;
 		manaThreshold = isUpgraded ? 40 : 50;
 	}

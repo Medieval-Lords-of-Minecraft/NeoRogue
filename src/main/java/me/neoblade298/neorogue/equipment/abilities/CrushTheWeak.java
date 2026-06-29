@@ -33,7 +33,7 @@ public class CrushTheWeak extends Equipment implements Power {
 	
 	public CrushTheWeak(boolean isUpgraded) {
 		super(ID, "Crush the Weak", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		threshold = isUpgraded ? 18 : 25;
 		damagePercent = isUpgraded ? 0.5 : 0.35;
 	}

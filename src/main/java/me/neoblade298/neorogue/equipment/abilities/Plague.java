@@ -28,7 +28,7 @@ public class Plague extends Equipment implements Power {
 	
 	public Plague(boolean isUpgraded) {
 		super(ID, "Plague", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = 10;
 		thres = 5;
 		maxThres = isUpgraded ? 40 : 30;

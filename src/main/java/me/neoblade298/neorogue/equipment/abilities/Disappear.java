@@ -33,7 +33,7 @@ public class Disappear extends Equipment implements Power {
 	
 	public Disappear(boolean isUpgraded) {
 		super(ID, "Disappear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		damage = isUpgraded ? 225 : 150;
 	}

@@ -29,7 +29,7 @@ public class Discharge extends Equipment implements Power {
 	
 	public Discharge(boolean isUpgraded) {
 		super(ID, "Discharge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		intel = isUpgraded ? 4 : 3;
 		elec = isUpgraded ? 8 : 5;
 	}

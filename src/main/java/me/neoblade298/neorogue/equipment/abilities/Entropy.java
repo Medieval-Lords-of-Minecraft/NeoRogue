@@ -29,7 +29,7 @@ public class Entropy extends Equipment implements Power {
 	
 	public Entropy(boolean isUpgraded) {
 		super(ID, "Entropy", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		intel = 3;
 		riftThres = isUpgraded ? 3 : 4;
 	}

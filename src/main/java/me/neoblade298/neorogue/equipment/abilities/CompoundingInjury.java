@@ -35,7 +35,7 @@ public class CompoundingInjury extends Equipment implements Power {
 	
 	public CompoundingInjury(boolean isUpgraded) {
 		super(ID, "Compounding Injury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 				thres = isUpgraded ? 20 : 30;
 				mult = isUpgraded ? 1.25 : 0.8;
 				multStr = (int) (mult * 100);

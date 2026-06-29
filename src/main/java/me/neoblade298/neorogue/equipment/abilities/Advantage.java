@@ -26,7 +26,7 @@ public class Advantage extends Equipment implements Power {
 	
 	public Advantage(boolean isUpgraded) {
 		super(ID, "Advantage", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 3 : 2;
 	}
 	

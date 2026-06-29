@@ -27,7 +27,7 @@ public class Overflow extends Equipment {
 
 	public Overflow(boolean isUpgraded) {
 		super(ID, "Overflow", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
 

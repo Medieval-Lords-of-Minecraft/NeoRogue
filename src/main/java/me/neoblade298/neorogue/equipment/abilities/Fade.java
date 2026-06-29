@@ -26,7 +26,7 @@ public class Fade extends Equipment implements Power {
 	
 	public Fade(boolean isUpgraded) {
 		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		duration = 2;
 		stealthDur = isUpgraded ? 5 : 3;
 	}

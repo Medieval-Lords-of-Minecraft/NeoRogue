@@ -25,7 +25,7 @@ public class Frenzy extends Equipment implements Power {
 	
 	public Frenzy(boolean isUpgraded) {
 		super(ID, "Frenzy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		atkSpeed = isUpgraded ? 10 : 7;
 	}
 	

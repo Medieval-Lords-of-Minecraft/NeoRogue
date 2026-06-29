@@ -28,7 +28,7 @@ public class LordOfTheNight extends Equipment implements Power {
 	
 	public LordOfTheNight(boolean isUpgraded) {
 		super(ID, "Lord of the Night", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, 
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damageIncrease = isUpgraded ? 25 : 15;
         damageIncreaseMult = damageIncrease / 100.0;
 	}

@@ -30,7 +30,7 @@ public class BloodFrenzy extends Equipment implements Power {
 	
 	public BloodFrenzy(boolean isUpgraded) {
 		super(ID, "Blood Frenzy", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		strength = isUpgraded ? 17 : 13;
 		atkSpeed = isUpgraded ? 11 : 8;
 	}

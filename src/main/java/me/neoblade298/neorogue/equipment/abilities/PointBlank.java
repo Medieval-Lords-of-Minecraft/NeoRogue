@@ -31,7 +31,7 @@ public class PointBlank extends Equipment implements Power {
 	
 	public PointBlank(boolean isUpgraded) {
 		super(ID, "Point Blank", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 7 : 5;
 		damage = isUpgraded ? 25 : 15;
 	}

@@ -31,7 +31,7 @@ public class Study2 extends Equipment implements Power {
 	
 	public Study2(boolean isUpgraded) {
 		super(ID, "Study II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		intel = 4;
 		regen = isUpgraded ? 0.2 : 0.1;
 	}

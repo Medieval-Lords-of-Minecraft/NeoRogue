@@ -27,7 +27,7 @@ public class Lethality extends Equipment implements Power {
 	
 	public Lethality(boolean isUpgraded) {
 		super(ID, "Lethality", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 30 : 40;
 		inc = isUpgraded ? 40 : 25;
 	}

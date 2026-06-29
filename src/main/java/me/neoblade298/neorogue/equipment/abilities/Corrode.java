@@ -35,7 +35,7 @@ public class Corrode extends Equipment implements Power {
 	
 	public Corrode(boolean isUpgraded) {
 		super(ID, "Corrode", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		bonusDamage = isUpgraded ? 0.6 : 0.4;
 		bonusPoison = isUpgraded ? 25 : 15;
 	}

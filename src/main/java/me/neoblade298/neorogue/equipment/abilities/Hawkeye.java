@@ -45,7 +45,7 @@ public class Hawkeye extends Equipment implements Power {
 	
 	public Hawkeye(boolean isUpgraded) {
 		super(ID, "Hawkeye", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		threshold = isUpgraded ? 8 : 12;
 		damage = isUpgraded ? 425 : 250;
 	}

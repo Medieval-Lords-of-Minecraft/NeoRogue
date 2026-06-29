@@ -61,7 +61,7 @@ public class Convergence extends Equipment implements Power {
 	
 	public Convergence(boolean isUpgraded) {
 		super(ID, "Convergence", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		intel = 3;
 		heal = isUpgraded ? 2 : 1;
 	}

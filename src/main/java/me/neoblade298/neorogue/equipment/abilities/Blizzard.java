@@ -44,7 +44,7 @@ public class Blizzard extends Equipment {
 	
 	public Blizzard(boolean isUpgraded) {
 		super(ID, "Blizzard", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		threshold = isUpgraded ? 700 : 1000;
 		damage = isUpgraded ? 75 : 50;

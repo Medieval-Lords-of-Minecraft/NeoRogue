@@ -29,7 +29,7 @@ public class ChosenOfTheLight extends Equipment implements Power {
 	
 	public ChosenOfTheLight(boolean isUpgraded) {
 		super(ID, "Chosen of the Light", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		heal = 1;
 		mult = isUpgraded ? 0.25 : 0.15;
 		multStr = (int) (mult * 100);

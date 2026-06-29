@@ -69,7 +69,7 @@ public class DyingStar extends Equipment implements Power {
 	
 	public DyingStar(boolean isUpgraded) {
 		super(ID, "Dying Star", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = isUpgraded ? 375 : 250;
 		properties.add(PropertyType.DAMAGE, damage);
 	}

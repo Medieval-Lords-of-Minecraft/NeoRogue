@@ -24,7 +24,7 @@ public class Enlighten extends Equipment implements Power {
 	
 	public Enlighten(boolean isUpgraded) {
 		super(ID, "Enlighten", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		sanct = isUpgraded ? 8 : 5;
 	}

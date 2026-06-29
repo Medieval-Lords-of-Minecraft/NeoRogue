@@ -7,19 +7,15 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Rushdown extends Equipment implements Power {
+public class Rushdown extends Equipment {
 	private static final String ID = "Rushdown";
 	private int secs;
 	private double inc = 1.5;
@@ -36,14 +32,6 @@ public class Rushdown extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			if (activatePower(data, slot, es)) return TriggerResult.remove();
-			return TriggerResult.keep();
-		}));
-	}
-
-	@Override
-	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		data.addStaminaRegen(inc);
 		data.addTask(new BukkitRunnable() {
 			public void run() {
@@ -57,7 +45,7 @@ public class Rushdown extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_BANNER,
-				GlossaryTag.POWER.tag(this) + ". Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
+				"Passive. Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
 				secs + "s") + " of a fight.");
 	}
 }

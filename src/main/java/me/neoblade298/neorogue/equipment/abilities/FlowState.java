@@ -22,7 +22,7 @@ public class FlowState extends Equipment implements Power {
 	
 	public FlowState(boolean isUpgraded) {
 		super(ID, "Flow State", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 40 : 30;
 		inc = isUpgraded ? 0.8 : 0.5;
 	}

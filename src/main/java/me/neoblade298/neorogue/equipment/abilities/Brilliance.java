@@ -39,7 +39,7 @@ public class Brilliance extends Equipment implements Power {
 	
 	public Brilliance(boolean isUpgraded) {
 		super(ID, "Brilliance", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		protectShell = isUpgraded ? 3 : 2;
 	}
 	

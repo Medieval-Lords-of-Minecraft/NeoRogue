@@ -29,7 +29,7 @@ public class PowerOverwhelmingII extends Equipment implements Power {
 
 	public PowerOverwhelmingII(boolean isUpgraded) {
 		super(ID, "Power Overwhelming II", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		manaReduc = isUpgraded ? 30 : 20;
 		shields = isUpgraded ? 6 : 4;
 		shieldDuration = 5;

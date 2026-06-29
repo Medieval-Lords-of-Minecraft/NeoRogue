@@ -22,7 +22,7 @@ public class AfterImage extends Equipment implements Power {
 	
 	public AfterImage(boolean isUpgraded) {
 		super(ID, "After Image", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		shields = isUpgraded ? 6 : 4;
 	}
 	

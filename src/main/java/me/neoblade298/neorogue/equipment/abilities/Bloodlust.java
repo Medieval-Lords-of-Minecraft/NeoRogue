@@ -27,7 +27,7 @@ public class Bloodlust extends Equipment implements Power {
 	
 	public Bloodlust(boolean isUpgraded) {
 		super(ID, "Bloodlust", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		strength = isUpgraded ? 15 : 10;
 	}
 	

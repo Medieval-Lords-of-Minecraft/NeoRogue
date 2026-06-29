@@ -27,7 +27,7 @@ public class DarkShroud extends Equipment implements Power {
 	
 	public DarkShroud(boolean isUpgraded) {
 		super(ID, "Dark Shroud", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ACCESSORY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 60 : 40;
 	}
 	

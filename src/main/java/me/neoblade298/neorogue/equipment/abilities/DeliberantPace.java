@@ -34,7 +34,7 @@ public class DeliberantPace extends Equipment implements Power {
 
 	public DeliberantPace(boolean isUpgraded) {
 		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		seconds = isUpgraded ? 5 : 6;
 		damagePerStack = isUpgraded ? 0.05 : 0.04; // 5% or 4%
 	}

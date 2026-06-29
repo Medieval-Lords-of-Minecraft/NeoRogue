@@ -42,7 +42,7 @@ public class AbyssalCarve extends Equipment implements Power {
 	
 	public AbyssalCarve(boolean isUpgraded) {
 		super(ID, "Abyssal Carve", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 300 : 200;
 	}
 	

@@ -23,7 +23,7 @@ public class ManaGuard extends Equipment implements Power {
 
 	public ManaGuard(boolean isUpgraded) {
 		super(ID, "Mana Guard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		reduc = isUpgraded ? 9 : 6;
 	}
 

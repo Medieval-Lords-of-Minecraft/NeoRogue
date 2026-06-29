@@ -28,7 +28,7 @@ public class FeelNoPain extends Equipment implements Power {
 	
 	public FeelNoPain(boolean isUpgraded) {
 		super(ID, "Feel No Pain", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		reduc = isUpgraded ? 0.07 : 0.04;
 		reducString = (int) (reduc * 100);
 	}

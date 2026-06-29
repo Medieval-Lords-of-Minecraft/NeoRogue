@@ -29,7 +29,7 @@ public class MindGrowth2 extends Equipment implements Power {
 
 	public MindGrowth2(boolean isUpgraded) {
 		super(ID, "Mind Growth II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		regen = isUpgraded ? 0.5 : 0.4;
 		maxMana = isUpgraded ? 10 : 5;
 	}

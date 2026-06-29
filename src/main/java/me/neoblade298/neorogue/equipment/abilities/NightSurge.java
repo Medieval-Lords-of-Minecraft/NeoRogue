@@ -47,7 +47,7 @@ public class NightSurge extends Equipment implements Power {
 
 	public NightSurge(boolean isUpgraded) {
 		super(ID, "Night Surge", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = isUpgraded ? 200 : 150;
 	}
 

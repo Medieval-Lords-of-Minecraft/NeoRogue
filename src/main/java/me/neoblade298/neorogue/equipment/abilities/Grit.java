@@ -36,7 +36,7 @@ public class Grit extends Equipment implements Power {
 	
 	public Grit(boolean isUpgraded) {
 		super(ID, "Grit", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 9 : 6;
 		inc = isUpgraded ? 35 : 25;
 		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);

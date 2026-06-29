@@ -52,7 +52,7 @@ public class Conflagration extends Equipment implements Power {
 
 	public Conflagration(boolean isUpgraded) {
 		super(ID, "Conflagration", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.RANGE, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.none().add(PropertyType.RANGE, tp.range));
 		damage = 125;
 		burnMult = isUpgraded ? 1.2 : 0.8;
 	}

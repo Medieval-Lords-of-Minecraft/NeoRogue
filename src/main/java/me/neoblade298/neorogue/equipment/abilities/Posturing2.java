@@ -33,7 +33,7 @@ public class Posturing2 extends Equipment implements Power {
 	
 	public Posturing2(boolean isUpgraded) {
 		super(ID, "Posturing II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		time = 6;
 		inc = isUpgraded ? 8 : 6;
 	}

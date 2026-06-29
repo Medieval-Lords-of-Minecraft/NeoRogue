@@ -31,7 +31,7 @@ public class Counter extends Equipment implements Power {
 	
 	public Counter(boolean isUpgraded) {
 		super(ID, "Counter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 150 : 100;
 	}
 	

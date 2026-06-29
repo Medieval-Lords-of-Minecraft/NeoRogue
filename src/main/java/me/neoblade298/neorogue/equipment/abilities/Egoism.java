@@ -26,7 +26,7 @@ public class Egoism extends Equipment implements Power {
 	
 	public Egoism(boolean isUpgraded) {
 		super(ID, "Egoism", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		healthRegen = isUpgraded ? 3 : 2;
 		stealth = isUpgraded ? 2 : 1;
 	}

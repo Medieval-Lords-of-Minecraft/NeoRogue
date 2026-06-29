@@ -30,7 +30,7 @@ public class FerociousDraw extends Equipment implements Power {
 
 	public FerociousDraw(boolean isUpgraded) {
 		super(ID, "Ferocious Draw", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		range = 5;
 		damage = isUpgraded ? 65 : 50;
 	}

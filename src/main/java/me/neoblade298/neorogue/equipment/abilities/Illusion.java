@@ -57,7 +57,7 @@ public class Illusion extends Equipment implements Power {
 
 	public Illusion(boolean isUpgraded) {
 		super(ID, "Illusion", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 250 : 150;
 		dur = 3;
 	}

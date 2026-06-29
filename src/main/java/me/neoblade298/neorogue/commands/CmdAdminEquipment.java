@@ -10,7 +10,11 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
@@ -39,6 +43,16 @@ public class CmdAdminEquipment extends Subcommand {
 		}
 		Session sess = SessionManager.getSession(p);
 		String id = args[0];
+
+		// Holder syntax: "HolderId:HeldId" grants a holder artifact (e.g. EchoStone)
+		// holding the specified equipment, e.g. "EchoStone:FlowState" or "EchoStone:FlowState+".
+		String heldSpec = null;
+		int colon = id.indexOf(':');
+		if (colon >= 0) {
+			heldSpec = id.substring(colon + 1);
+			id = id.substring(0, colon);
+		}
+
 		boolean upgrade = false;
 		if (id.endsWith("+")) {
 			id = id.substring(0, id.length() - 1);
@@ -49,6 +63,32 @@ public class CmdAdminEquipment extends Subcommand {
 			Util.displayError(p, "That equipment doesn't exist!");
 			return;
 		}
+
+		if (heldSpec != null) {
+			if (!(eq instanceof Artifact)) {
+				Util.displayError(p, "Only holder artifacts (e.g. EchoStone) can hold equipment!");
+				return;
+			}
+			boolean heldUpgrade = false;
+			String heldId = heldSpec;
+			if (heldId.endsWith("+")) {
+				heldId = heldId.substring(0, heldId.length() - 1);
+				heldUpgrade = true;
+			}
+			Equipment held = Equipment.get(heldId, heldUpgrade);
+			if (held == null) {
+				Util.displayError(p, "The held equipment doesn't exist!");
+				return;
+			}
+			if (sess == null || sess.getInstance() instanceof LobbyInstance) {
+				Util.displayError(p, "You must be in a session to receive a holder artifact!");
+				return;
+			}
+			PlayerSessionData psd = sess.getParty().get(p.getUniqueId());
+			psd.giveArtifact(new ArtifactInstance((Artifact) eq, 1, new SessionEquipment(held)));
+			return;
+		}
+
 		if (sess == null || sess.getInstance() instanceof LobbyInstance) {
 			p.getInventory().addItem(eq.getItem());
 		}

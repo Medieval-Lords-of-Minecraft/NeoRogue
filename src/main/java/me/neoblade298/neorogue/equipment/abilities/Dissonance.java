@@ -26,7 +26,7 @@ public class Dissonance extends Equipment implements Power {
 	
 	public Dissonance(boolean isUpgraded) {
 		super(ID, "Dissonance", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		mana = isUpgraded ? 8 : 5;
 		shields = isUpgraded ? 4 : 2;
 	}

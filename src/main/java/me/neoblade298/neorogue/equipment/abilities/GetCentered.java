@@ -38,7 +38,7 @@ public class GetCentered extends Equipment implements Power {
 	
 	public GetCentered(boolean isUpgraded) {
 		super(ID, "Get Centered", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 6 : 8;
 		damage = isUpgraded ? 15 : 12;
 	}

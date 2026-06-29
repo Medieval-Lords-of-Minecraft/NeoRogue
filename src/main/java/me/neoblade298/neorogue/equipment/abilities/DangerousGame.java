@@ -39,7 +39,7 @@ public class DangerousGame extends Equipment implements Power {
 	
 	public DangerousGame(boolean isUpgraded) {
 		super(ID, "Dangerous Game", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		range = 5;
 		damage = isUpgraded ? 60 : 40;
 	}

@@ -30,7 +30,7 @@ public class DangerClose extends Equipment implements Power {
 	
 	public DangerClose(boolean isUpgraded) {
 		super(ID, "Danger Close", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damageIncrease = isUpgraded ? 0.08 : 0.05;
 	}
 	

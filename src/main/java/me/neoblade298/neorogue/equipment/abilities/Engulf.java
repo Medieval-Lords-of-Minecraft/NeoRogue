@@ -42,7 +42,7 @@ public class Engulf extends Equipment implements Power {
 
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 45 : 30;
 		thres = isUpgraded ? 200 : 300;
 	}

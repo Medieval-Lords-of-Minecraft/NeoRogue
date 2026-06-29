@@ -37,7 +37,7 @@ public class Evanesce extends Equipment implements Power {
 	
 	public Evanesce(boolean isUpgraded) {
 		super(ID, "Evanesce", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentProperties.none());
 		damage = isUpgraded ? 150 : 100;
 		stealthDuration = isUpgraded ? 200 : 120;
 		damageBuff = isUpgraded ? 0.3 : 0.2;

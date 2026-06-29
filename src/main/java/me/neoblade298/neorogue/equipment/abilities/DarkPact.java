@@ -30,7 +30,7 @@ public class DarkPact extends Equipment {
 	
 	public DarkPact(boolean isUpgraded) {
 		super(ID, "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		seconds = isUpgraded ? 25 : 40;
 		strength = isUpgraded ? 6 : 5;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);

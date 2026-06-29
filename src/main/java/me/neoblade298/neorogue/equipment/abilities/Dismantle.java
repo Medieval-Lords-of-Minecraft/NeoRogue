@@ -27,7 +27,7 @@ public class Dismantle extends Equipment implements Power {
 	
 	public Dismantle(boolean isUpgraded) {
 		super(ID, "Dismantle", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		stacks = isUpgraded ? 3 : 2;
 	}
 	

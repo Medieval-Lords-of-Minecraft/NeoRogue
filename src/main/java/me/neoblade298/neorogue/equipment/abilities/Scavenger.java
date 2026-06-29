@@ -40,7 +40,7 @@ public class Scavenger extends Equipment implements Power {
 	
 	public Scavenger(boolean isUpgraded) {
 		super(ID, "Scavenger", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		stamina = isUpgraded ? 25 : 15;
 		damageBuff = isUpgraded ? 0.04 : 0.02;
 	}
