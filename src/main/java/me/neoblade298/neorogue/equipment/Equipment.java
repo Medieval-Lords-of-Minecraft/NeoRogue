@@ -291,7 +291,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	protected String id;
 	protected Component display, hoverable;
-	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop, restrictsOffhand;
+	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop, restrictsOffhand, reforgeWildcard;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass[] ecs;
@@ -665,6 +665,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ToRuins(b);
 			new Torch(b);
 			new TrappersEssence(b);
+			new Transmutation(b);
 			new TreeTrunk(b);
 			new TrinityForce(b);
 			new TwinBolt(b);
@@ -1468,6 +1469,40 @@ public abstract class Equipment implements Comparable<Equipment> {
 			return new Equipment[]{eqed, eq};
 		}
 		return null;
+	}
+
+	// A reforge wildcard can be combined with any equipment to reforge it into any of that
+	// equipment's possible reforge results, ignoring normal reforge pairing rules.
+	public boolean isReforgeWildcard() {
+		return reforgeWildcard;
+	}
+
+	/**
+	 * Returns {target, wildcard} if exactly one of eq/eqed is a reforge wildcard and the other
+	 * (the target) has at least one reforge result, null otherwise.
+	 */
+	public static Equipment[] resolveWildcardReforge(Equipment eq, Equipment eqed) {
+		if (eq == null || eqed == null) return null;
+		boolean w1 = eq.isReforgeWildcard(), w2 = eqed.isReforgeWildcard();
+		if (w1 == w2) return null; // need exactly one wildcard
+		Equipment wildcard = w1 ? eq : eqed;
+		Equipment target = w1 ? eqed : eq;
+		if (target.getAllReforgeResults().isEmpty()) return null;
+		return new Equipment[]{target, wildcard};
+	}
+
+	/**
+	 * Returns the union of all reforge results this equipment can become across every reforge
+	 * partner, deduplicated while preserving insertion order.
+	 */
+	public ArrayList<Equipment> getAllReforgeResults() {
+		java.util.LinkedHashSet<Equipment> set = new java.util.LinkedHashSet<Equipment>();
+		for (Equipment[] options : reforgeOptions.values()) {
+			for (Equipment option : options) {
+				if (option != null) set.add(option);
+			}
+		}
+		return new ArrayList<Equipment>(set);
 	}
 
 	// Should only ever be called with unupgraded parameters

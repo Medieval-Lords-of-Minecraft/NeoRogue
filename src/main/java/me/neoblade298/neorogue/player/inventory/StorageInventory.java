@@ -223,6 +223,20 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 					}.runTask(NeoRogue.inst());
 					return;
 				}
+
+				// Wildcard reforge check (e.g. Transmutation): reforge any item into any of its results
+				Equipment[] wildcardPair = Equipment.resolveWildcardReforge(eq, eqed);
+				if (wildcardPair != null) {
+					new BukkitRunnable() {
+						public void run() {
+							p.setItemOnCursor(null);
+							inv.setItem(e.getSlot(), null);
+							handleInventoryClose();
+							new WildcardReforgeInventory(data, wildcardPair[0], wildcardPair[1]);
+						}
+					}.runTask(NeoRogue.inst());
+					return;
+				}
 				// Prevent stacking
 				else if (e.getCursor().isSimilar(e.getCurrentItem())) {
 					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);

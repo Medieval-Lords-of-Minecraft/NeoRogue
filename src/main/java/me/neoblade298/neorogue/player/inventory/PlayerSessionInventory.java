@@ -504,6 +504,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				return;
 			}
 
+			// Wildcard reforge check (e.g. Transmutation): reforge any item into any of its results
+			Equipment[] wildcardPair = Equipment.resolveWildcardReforge(eq, eqed);
+			if (wildcardPair != null) {
+				handleWildcardReforge(e, wildcardPair[0], wildcardPair[1], slot, nclicked);
+				return;
+			}
+
 			if (!nclicked.hasTag("dataSlot")) return;
 			if (eq.getType() == EquipmentType.ABILITY && (eqed == null || eqed.getType() != EquipmentType.ABILITY)
 					&& !data.canEquipAbility()) {
@@ -553,6 +560,20 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				inv.setItem(slot, iconFromEquipSlot(type, slot));
 				handleInventoryClose();
 				new ReforgeOptionsInventory(data, primary, secondary);
+			}
+		}.runTask(NeoRogue.inst());
+		return;
+	}
+
+	private void handleWildcardReforge(InventoryClickEvent e, Equipment target, Equipment wildcard, int slot, NBTItem nclicked) {
+		new BukkitRunnable() {
+			public void run() {
+				p.setItemOnCursor(null);
+				EquipSlot type = slotTypes.get(slot);
+				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				inv.setItem(slot, iconFromEquipSlot(type, slot));
+				handleInventoryClose();
+				new WildcardReforgeInventory(data, target, wildcard);
 			}
 		}.runTask(NeoRogue.inst());
 		return;
