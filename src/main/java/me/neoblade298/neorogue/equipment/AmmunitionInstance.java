@@ -17,11 +17,9 @@ public class AmmunitionInstance {
 	private Ammunition ammo;
 	private int count = -1, slot;
 	private boolean isLimited = false;
-	private ItemStack icon;
 	public AmmunitionInstance(PlayerFightData owner, Ammunition ammo, int slot) {
 		this.owner = owner;
 		this.ammo = ammo;
-		this.icon = ammo.getItem();
 		this.slot = slot;
 
 		if (ammo instanceof LimitedAmmunition) {
@@ -32,7 +30,9 @@ public class AmmunitionInstance {
 
 	public void use() {
 		if (!isLimited) {
-			owner.getPlayer().getInventory().setItem(slot, icon);
+			// Tried to fix non-wooden ammo breaking but didn't work
+			// This doesn't work when ammo hotbar 8 is selected but ammo hotbar 7 is used by vanilla bow
+			// owner.getPlayer().getInventory().setItem(slot, icon);
 		}
 		else {
 			if (--count == 0) {

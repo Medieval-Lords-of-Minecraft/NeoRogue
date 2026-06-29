@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -30,12 +32,15 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.LimitedAmmunition;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -144,6 +149,17 @@ public class PlayerFightData extends FightData {
 				inv.setItem(i, null);
 			} else {
 				hotbar.getEquipment().initialize(this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i, hotbar);
+				Equipment eq = hotbar.getEquipment();
+
+				// This hotfix is basically just to allow tipped arrows to stay in place in the hotbar
+				// since vanilla minecraft uses them and they get put in the first available slot
+				boolean needsHotfix = (eq instanceof Ammunition) && !(eq instanceof LimitedAmmunition) &&
+						eq.getItem().getType() != Material.ARROW;
+				if (needsHotfix) {
+					ItemStack icon = hotbar.getEquipment().getItem();
+					icon.setAmount(2);
+					inv.setItem(i, icon);
+				}
 			}
 		}
 		i = -1;
@@ -638,6 +654,9 @@ public class PlayerFightData extends FightData {
 				}
 				if (tr.cancelEvent()) {
 					cancel = true;
+					break;
+				}
+				if (tr.breakLoop()) {
 					break;
 				}
 			}

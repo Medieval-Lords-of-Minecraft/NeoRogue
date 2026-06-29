@@ -288,6 +288,9 @@ public class FightData {
 			
 			// Try to mount and verify
 			entity.addPassenger(hologram);
+		} else if (hologram.isValid() && !entity.getPassengers().contains(hologram)) {
+			// Some mobs (e.g. Hoglins) occasionally dismount the hologram; remount it
+			entity.addPassenger(hologram);
 		}
 		hologram.text(fullDisplay);
 	}
