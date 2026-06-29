@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.bukkit.inventory.ItemStack;
@@ -8,6 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 
 // need instance to keep track of things like amount and such which are normally
 // handled by using itemstacks
@@ -65,7 +70,22 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return held == null ? artifact.getId() : artifact.getId() + ":" + held.getEquipment().serialize();
 	}
 	public ItemStack getItem() {
-		ItemStack item = held != null ? held.getItem() : artifact.getItem();
+		ItemStack item;
+		if (held != null) {
+			// Holder artifact (e.g. Echo Stone): show the artifact's name as the display name,
+			// keeping the held equipment's name and description in the lore.
+			item = held.getItem();
+			ItemMeta meta = item.getItemMeta();
+			List<Component> lore = meta.lore() != null ? new ArrayList<Component>(meta.lore()) : new ArrayList<Component>();
+			lore.add(0, Component.empty());
+			lore.add(0, meta.displayName());
+			meta.displayName(artifact.getItem().getItemMeta().displayName());
+			meta.lore(lore);
+			item.setItemMeta(meta);
+		}
+		else {
+			item = artifact.getItem();
+		}
 		if (amount > 1) {
 			ItemMeta meta = item.getItemMeta();
 			meta.setMaxStackSize(amount);
@@ -74,6 +94,19 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		item.setAmount(amount);
 		return item;
 	}
+
+	/**
+	 * The hoverable chat component for this instance. Holder artifacts (those with a held equipment,
+	 * e.g. Echo Stone) override the artifact's hoverable so that hovering shows the held item's details
+	 * and clicking opens the held equipment's glossary.
+	 */
+	public Component getHoverable() {
+		if (held == null) return artifact.getHoverable();
+		return artifact.getDisplay().decorate(TextDecoration.UNDERLINED)
+				.hoverEvent(getItem().asHoverEvent())
+				.clickEvent(ClickEvent.runCommand("/nr glossary " + held.getEquipment().getId()));
+	}
+
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		this.slot = slot;
 		this.artifact.initialize(data, this);

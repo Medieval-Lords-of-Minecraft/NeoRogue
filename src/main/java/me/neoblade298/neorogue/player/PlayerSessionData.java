@@ -501,7 +501,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Player p = data.getPlayer();
 		Component toSelf = SharedUtil.color("You received ");
 		Component toOthers = SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ");
-		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(inst.getArtifact().getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
+		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(inst.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
 		s.broadcastOthers(toOthers.append(body), p);
 		Util.msg(p, toSelf.append(body));
 	}
@@ -707,6 +707,28 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public static boolean isUnlimitedAmmunition(Equipment eq) {
 		return eq instanceof Ammunition && !(eq instanceof LimitedAmmunition);
 	}
+
+	/**
+	 * Returns an error message if the given equipment may not be removed from the player's possession
+	 * (e.g. trashed, sold, or transformed), or null if removal is permitted. An equipment is protected
+	 * if it is the player's last weapon or their last unlimited ammunition.
+	 *
+	 * @param storageOverride optional projected storage contents to count against, or null
+	 * @param stillOwned      true if eq is still present in this data's equipment arrays (e.g. selecting
+	 *                        an in-inventory item to transform); false if it has already been pulled out
+	 *                        onto the cursor (e.g. dragging an item to trash or sell)
+	 * @param verb            the action verb used in the error message (e.g. "trash", "sell", "transform")
+	 */
+	public String getRemovalRestriction(Equipment eq, SessionEquipment[] storageOverride, boolean stillOwned, String verb) {
+		int threshold = stillOwned ? 1 : 0;
+		if (eq.getType() == EquipmentType.WEAPON && !(eq instanceof Ammunition) && countOwnedWeapons(storageOverride) <= threshold) {
+			return "You can't " + verb + " your last weapon!";
+		}
+		if (isUnlimitedAmmunition(eq) && countOwnedUnlimitedAmmunition(storageOverride) <= threshold) {
+			return "You can't " + verb + " your last unlimited ammunition!";
+		}
+		return null;
+	}
 	
 	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<EquipmentMetadata> filter) {
 		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
@@ -815,6 +837,33 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					seen.add(pairKey);
 					result.add(new ReforgePairData(best1, best2, reforgeEntry.getValue()));
 				}
+			}
+		}
+
+		// Wildcard reforges (e.g. Transmutation): a reforge wildcard can be combined with any owned
+		// equipment that has reforge results, producing any of that equipment's possible results.
+		EquipmentMetadata wildcardMeta = null;
+		for (EquipmentMetadata meta : all) {
+			if (meta.getEquipment().isReforgeWildcard()) {
+				wildcardMeta = meta;
+				break;
+			}
+		}
+		if (wildcardMeta != null) {
+			HashSet<String> seenTargets = new HashSet<String>();
+			for (EquipmentMetadata target : all) {
+				if (target == wildcardMeta) continue;
+				Equipment targetEq = target.getEquipment();
+				if (targetEq.isReforgeWildcard()) continue; // can't reforge a wildcard with a wildcard
+				String targetId = targetEq.getId();
+				if (!seenTargets.add(targetId)) continue; // one entry per target id
+
+				Equipment unupgraded = Equipment.get(targetId, false);
+				if (unupgraded == null) continue;
+				ArrayList<Equipment> results = unupgraded.getAllReforgeResults();
+				if (results.isEmpty()) continue;
+
+				result.add(new ReforgePairData(target, wildcardMeta, results.toArray(new Equipment[0])));
 			}
 		}
 

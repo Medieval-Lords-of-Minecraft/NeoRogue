@@ -335,12 +335,9 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 		SessionEquipment[] projectedStorage = getLiveStorageSnapshot();
 
-		if (eq.getType() == Equipment.EquipmentType.WEAPON && data.countOwnedWeapons(projectedStorage) == 0) {
-			Util.displayError(p, "You can't trash your last weapon!");
-			return;
-		}
-		if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(projectedStorage) == 0) {
-			Util.displayError(p, "You can't trash your last unlimited ammunition!");
+		String restriction = data.getRemovalRestriction(eq, projectedStorage, false, "trash");
+		if (restriction != null) {
+			Util.displayError(p, restriction);
 			return;
 		}
 

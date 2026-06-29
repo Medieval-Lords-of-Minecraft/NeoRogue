@@ -339,12 +339,9 @@ public class ShopInventory extends CoreInventory {
 			Util.displayError(p, "Consumables cannot be sold!");
 			return false;
 		}
-		if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons(storageSnapshot) == 0) {
-			Util.displayError(p, "You can't sell your last weapon!");
-			return false;
-		}
-		if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(storageSnapshot) == 0) {
-			Util.displayError(p, "You can't sell your last unlimited ammunition!");
+		String restriction = data.getRemovalRestriction(eq, storageSnapshot, false, "sell");
+		if (restriction != null) {
+			Util.displayError(p, restriction);
 			return false;
 		}
 		data.addCoins(SELL_PRICE);

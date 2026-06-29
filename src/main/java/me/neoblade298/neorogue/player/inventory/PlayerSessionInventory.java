@@ -333,12 +333,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			if (upper instanceof StorageInventory) {
 				storageSnapshot = ((StorageInventory) upper).getLiveStorageSnapshot();
 			}
-			if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons(storageSnapshot) == 0) {
-				Util.displayError(p, "You can't trash your last weapon!");
-				return;
-			}
-			if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(storageSnapshot) == 0) {
-				Util.displayError(p, "You can't trash your last unlimited ammunition!");
+			String restriction = data.getRemovalRestriction(eq, storageSnapshot, false, "trash");
+			if (restriction != null) {
+				Util.displayError(p, restriction);
 				return;
 			}
 			clearHighlights();

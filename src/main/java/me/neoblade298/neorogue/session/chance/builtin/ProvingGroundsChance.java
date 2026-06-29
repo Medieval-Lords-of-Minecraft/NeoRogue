@@ -44,7 +44,7 @@ public class ProvingGroundsChance extends ChanceSet {
 		ChanceChoice adapt = new ChanceChoice(Material.SMITHING_TABLE, "Adapt Your Style",
 				"Spar with the mercenaries to <yellow>transform</yellow> one equipment.",
 				"You have no gear that can be transformed!",
-				(s, inst, data) -> data.aggregateEquipment(ProvingGroundsChance::isTransformable).size() > 0,
+				(s, inst, data) -> data.aggregateEquipment((meta) -> isTransformable(meta, data)).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
 		adapt.setOnInteract((prev, data) -> openAdapt(prev, data, stage));
 		stage.addChoice(adapt);
@@ -79,7 +79,7 @@ public class ProvingGroundsChance extends ChanceSet {
 		UUID uuid = p.getUniqueId();
 
 		new EquipmentSelectInventory(data, Component.text("Adapt Your Style", NamedTextColor.GOLD),
-				data.aggregateEquipment(ProvingGroundsChance::isTransformable),
+				data.aggregateEquipment((meta) -> isTransformable(meta, data)),
 				(meta) -> {
 					Equipment removed = data.removeEquipment(meta.getEquipSlot(), meta.getSlot()).getEquipment();
 					SessionEquipment se = new SessionEquipment(Equipment.getDrop(data.getData().getEquipmentDroptable(),
@@ -104,12 +104,15 @@ public class ProvingGroundsChance extends ChanceSet {
 		return !eq.isCursed() && !eq.isUpgraded() && eq.canUpgrade();
 	}
 
-	// Eligible for transform: a real (non-cursed) piece of equipment, not a consumable or artifact
-	private static boolean isTransformable(EquipmentMetadata meta) {
+	// Eligible for transform: a real (non-cursed) piece of equipment, not a consumable or artifact, and
+	// not protected from removal (i.e. not the player's last weapon or last unlimited ammunition)
+	private static boolean isTransformable(EquipmentMetadata meta, PlayerSessionData data) {
 		Equipment eq = meta.getEquipment();
 		if (eq.isCursed()) return false;
 		EquipmentType type = eq.getType();
-		return type == EquipmentType.WEAPON || type == EquipmentType.ARMOR || type == EquipmentType.ACCESSORY
+		boolean validType = type == EquipmentType.WEAPON || type == EquipmentType.ARMOR || type == EquipmentType.ACCESSORY
 				|| type == EquipmentType.ABILITY || type == EquipmentType.OFFHAND;
+		if (!validType) return false;
+		return data.getRemovalRestriction(eq, null, true, "transform") == null;
 	}
 }

@@ -31,8 +31,7 @@ public class Transmutation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_INGOT,
-				"Drag onto any equipment that has reforge options to reforge it into " + DescUtil.yellow("any") +
-				" of its possible reforge results, ignoring normal reforge pairing rules. " +
-				"Both this and the target item are consumed. Has no effect in combat.");
+				"Can reforge any item with reforge options into " + DescUtil.yellow("any") +
+				" of its possible reforge results.");
 	}
 }
