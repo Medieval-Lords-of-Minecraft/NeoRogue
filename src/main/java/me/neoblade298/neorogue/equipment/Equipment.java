@@ -156,6 +156,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
 import me.neoblade298.neorogue.equipment.artifacts.Enderchest;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
+import me.neoblade298.neorogue.equipment.artifacts.EverlastingHealth;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
 import me.neoblade298.neorogue.equipment.artifacts.FaeriePendant;
@@ -198,6 +199,7 @@ import me.neoblade298.neorogue.equipment.artifacts.StarlightVeil;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TempestSigil;
+import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
@@ -993,6 +995,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DiscountCard();
 		new EarthenTome();
 		new EnergyBattery();
+		new EverlastingHealth();
 		new Exhaustion();
 		new FaerieDust();
 		new FaeriePendant();
@@ -1038,6 +1041,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new StormSigil();
 		new TarotCard();
 		new TempestSigil();
+		new TemporaryHealth();
 		new TomeOfWisdom();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
@@ -1414,6 +1418,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		meta.lore(lore);
 
 		if (item.getType() == Material.BOW) {
+			// Crossbow has its own way of dealing with this, no need for infinity
 			meta.addEnchant(Enchantment.INFINITY, 1, true); // Needed for now
 		}
 

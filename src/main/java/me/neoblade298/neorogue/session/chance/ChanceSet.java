@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.session.chance.builtin.ShiningLightChance;
 import me.neoblade298.neorogue.session.chance.builtin.StockpileChance;
 import me.neoblade298.neorogue.session.chance.builtin.ThiefsCacheChance;
 import me.neoblade298.neorogue.session.chance.builtin.VultureChance;
+import me.neoblade298.neorogue.session.chance.builtin.WitchCaveChance;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -84,6 +85,7 @@ public class ChanceSet {
 		new ShiningLightChance();
 		new ThiefsCacheChance();
 		new VultureChance();
+		new WitchCaveChance();
 		
 		// Validate all chance classes are loaded
 		validateClassInitialization();

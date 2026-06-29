@@ -30,6 +30,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -268,42 +269,77 @@ public class SessionManager implements Listener {
 	}
 
 	@EventHandler
+	public void onShootBow(EntityShootBowEvent e) {
+		if (!(e.getEntity() instanceof Player))
+			return;
+		Player p = (Player) e.getEntity();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid))
+			return;
+		if (sessions.get(uuid).isSpectator(uuid))
+			return;
+		if (!(e.getProjectile() instanceof AbstractArrow))
+			return;
+
+		ItemStack arrow = ((AbstractArrow) e.getProjectile()).getItemStack();
+		// Only restore non-regular arrows (spectral, tipped, etc.)
+		if (arrow.getType() == Material.ARROW)
+			return;
+
+		// Find which slot the fired arrow is in
+		PlayerInventory inv = p.getInventory();
+		int slot = -1;
+		for (int i = 0; i < 9; i++) {
+			ItemStack item = inv.getItem(i);
+			System.out.println("Checking item in slot " + i + ": " + (item != null ? item.getType() : "null"));
+			if (item != null && item.isSimilar(arrow)) {
+				slot = i;
+				System.out.println("Found arrow in slot " + slot);
+				item.setAmount(item.getAmount() + 1);
+				break;
+			}
+		}
+		if (slot == -1)
+			return;
+
+		/*
+		final int restoreSlot = slot;
+		final ItemStack restoreItem = arrow.clone();
+		new BukkitRunnable() {
+			public void run() {
+				ItemStack item = inv.getItem(restoreSlot);
+				if (item != null && item.isSimilar(restoreItem)) {
+					item.setAmount(item.getAmount() + 1);
+					System.out.println("Adding item");
+				} else {
+					inv.setItem(restoreSlot, restoreItem);
+					System.out.println("Setting item");
+				}
+			}
+		}.runTask(NeoRogue.inst());
+		*/
+	}
+
+	@EventHandler
 	public void onLaunchProjectile(ProjectileLaunchEvent e) {
 		if (!(e.getEntity().getShooter() instanceof Player))
 			return;
 		Player p = (Player) e.getEntity().getShooter();
+		UUID uuid = p.getUniqueId();
 
-		if (!sessions.containsKey(p.getUniqueId()))
+		if (!sessions.containsKey(uuid))
 			return;
 		e.setCancelled(true);
-		if (sessions.get(p.getUniqueId()).isSpectator(p.getUniqueId()))
+		if (sessions.get(uuid).isSpectator(uuid))
 			return;
 		if (e.getEntity() instanceof Trident) {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		} else if (e.getEntity() instanceof AbstractArrow) {
+			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
 			if (item.getType() != Material.ARROW) {
-				// Try to return the arrow to its original slot
-				PlayerInventory inv = p.getInventory();
-				ItemStack offhand = inv.getItemInOffHand();
-				if (offhand.isSimilar(item)) {
-					offhand.setAmount(offhand.getAmount() + 1);
-				} else {
-					boolean found = false;
-					System.out.println("Looking for item..." + item.getType());
-					for (int i = 0; i < inv.getSize(); i++) {
-						ItemStack slot = inv.getItem(i);
-						if (slot != null && slot.isSimilar(item)) {
-							slot.setAmount(slot.getAmount() + 1);
-							found = true;
-							break;
-						}
-					}
-					System.out.println("Item found: " + found);
-					if (!found) inv.addItem(item);
-				}
+				p.getInventory().addItem(item);
 			}
-			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 		}
 	}
 

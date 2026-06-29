@@ -17,26 +17,32 @@ public class AmmunitionInstance {
 	private Ammunition ammo;
 	private int count = -1, slot;
 	private boolean isLimited = false;
-	public AmmunitionInstance(PlayerFightData owner, Ammunition ammo) {
+	private ItemStack icon;
+	public AmmunitionInstance(PlayerFightData owner, Ammunition ammo, int slot) {
 		this.owner = owner;
 		this.ammo = ammo;
-	}
-	public AmmunitionInstance(PlayerFightData owner, LimitedAmmunition ammo, int slot) {
-		this.owner = owner;
-		this.ammo = ammo;
-		this.count = ammo.uses;
+		this.icon = ammo.getItem();
 		this.slot = slot;
-		this.isLimited = true;
+
+		if (ammo instanceof LimitedAmmunition) {
+			this.count = ((LimitedAmmunition) ammo).uses;
+			this.isLimited = true;
+		}
 	}
 
 	public void use() {
-		if (!isLimited) return;
-		if (--count == 0) {
-			owner.setAmmoInstance(null);
-			Util.msg(owner.getPlayer(), Component.text("You ran out of ", NamedTextColor.GRAY).append(ammo.getDisplay()));
+		if (!isLimited) {
+			owner.getPlayer().getInventory().setItem(slot, icon);
 		}
-		ItemStack item = owner.getPlayer().getInventory().getItem(slot);
-		item.setAmount(count);
+		else {
+			if (--count == 0) {
+				owner.setAmmoInstance(null);
+				Util.msg(owner.getPlayer(),
+						Component.text("You ran out of ", NamedTextColor.GRAY).append(ammo.getDisplay()));
+			}
+			ItemStack item = owner.getPlayer().getInventory().getItem(slot);
+			item.setAmount(count);
+		}
 	}
 	public void onStart(ProjectileInstance inst) {
 		ammo.onStart(inst);

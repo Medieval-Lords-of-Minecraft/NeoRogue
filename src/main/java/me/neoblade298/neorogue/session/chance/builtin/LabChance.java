@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -15,48 +14,31 @@ import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 
 public class LabChance extends ChanceSet {
-	private static final int HEALTH_LOSS = 20;
+	private static final int HEALTH_LOSS = 30;
 
 	public LabChance() {
 		super(RegionType.LOW_DISTRICT, Material.GOLD_INGOT, "Lab");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble upon a makeshift lab that has an array of potions brewing.");
 
-		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Grab what you can",
-				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to reduce your armor slots by <white>1</white>.",
-				"At least one player doesn't have an armor slot available!",
+		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Drink the health potion",
+				"Everyone heals for <white>25</white>.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						if (data.getArmorSlots() <= 0) {
-							return false;
-						}
+						data.setHealth(data.getHealth() + 25);
 					}
-					return true;
-				},
-				(s, inst, unused) -> {
-					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getBaseDropValue(), 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
-					}
-					if (NeoRogue.gen.nextDouble() < 1) {
-						for (PlayerSessionData data : s.getParty().values()) {
-							data.unequip(EquipmentType.ARMOR);
-							data.addArmorSlots(-1);
-						}
-						s.broadcast("<red>In your haste to leave, you injure yourself and lose an armor slot.");
-					}
-					else {
-						s.broadcast("Everyone takes what they can get and leaves with <white>3</white> powerful new consumables.");
-					}
+					s.broadcast("Everyone drinks a health potion and feels reinvigorated.");
 					return null;
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.GOLD_BLOCK, "Carefully look through the selection",
-				"Everyone receives <white>1</white> consumable.",
+		choice = new ChanceChoice(Material.GOLD_BLOCK, "Loot the place",
+				"Everyone receives a consumable and <white>50</white> coins.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
 						data.giveEquipment(Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						data.addCoins(50);
 					}
-					s.broadcast("Everyone carefully peruses before choosing the coolest-looking potion and booking it.");
+					s.broadcast("You all get to work scouring the place, finding the coolest-looking potion, and picking up spare coins.");
 					return null;
 				});
 		stage.addChoice(choice);

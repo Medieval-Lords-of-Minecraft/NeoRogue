@@ -54,10 +54,10 @@ public class WinInstance extends EditInventoryInstance {
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
-				Component.text("Right click to view stats!", NamedTextColor.GOLD));
-		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 1, -4),
-				Component.text("Click to leave", NamedTextColor.GOLD));
-		s.broadcast(Component.text("Congratulations! You won!", NamedTextColor.GOLD));
+				Component.text("Right click to view stats!", NamedTextColor.WHITE));
+		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
+				Component.text("Right click to leave!", NamedTextColor.WHITE));
+		s.broadcast(Component.text("Congratulations! You won!", NamedTextColor.GREEN));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
 	}

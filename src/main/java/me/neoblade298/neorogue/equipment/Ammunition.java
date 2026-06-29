@@ -28,11 +28,11 @@ public abstract class Ammunition extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		if (data.getAmmoInstance() == null) {
-			equip(p, data, new AmmunitionInstance(data, this));
+			equip(p, data, new AmmunitionInstance(data, this, slot));
 		}
 
 		data.addTrigger(id, bind, (pdata, in) -> {
-			equip(p, data, new AmmunitionInstance(data, this));
+			equip(p, data, new AmmunitionInstance(data, this, slot));
 			return TriggerResult.keep();
 		});
 	}

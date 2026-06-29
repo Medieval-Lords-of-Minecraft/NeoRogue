@@ -54,6 +54,7 @@ import me.neoblade298.neorogue.commands.CmdAdminPoints;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
 import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
 import me.neoblade298.neorogue.commands.CmdAdminReset;
+import me.neoblade298.neorogue.commands.CmdAdminResetInterstitials;
 import me.neoblade298.neorogue.commands.CmdAdminRevokeAchievement;
 import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
@@ -221,6 +222,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminSetPoints("setpoints", "Set a player's unlock points", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetNotoriety("setnotoriety", "Set a player's max notoriety level per class", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReset("reset", "Reset all progress for a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminResetInterstitials("resetinterstitials", "Resets interstitial version-check blocks for initial plots", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
