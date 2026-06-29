@@ -117,7 +117,7 @@ public class InfernalWarden extends Equipment {
 						startOrbit(data.getPlayer(), data, slot);
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L);
-				return TriggerResult.of(false, true);
+				return TriggerResult.cancel();
 			};
 		}
 

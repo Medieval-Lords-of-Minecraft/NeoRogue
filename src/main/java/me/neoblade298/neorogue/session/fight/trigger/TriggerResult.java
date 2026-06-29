@@ -17,20 +17,29 @@ public class TriggerResult {
 		}
 	}
 	
+	// Keep the trigger, don't cancel the event
 	public static TriggerResult keep() {
 		return responses.get(hashCode(false, false));
 	}
 	
+	// Remove the trigger, don't cancel the event
 	public static TriggerResult remove() {
 		return responses.get(hashCode(true, false));
 	}
 	
-	public static TriggerResult of(boolean removeTrigger) {
-		return responses.get(hashCode(removeTrigger, false));
+	// Keep the trigger, cancel the event
+	public static TriggerResult cancel() {
+		return responses.get(hashCode(false, true));
 	}
 	
-	public static TriggerResult of(boolean removeTrigger, boolean cancelEvent) {
-		return responses.get(hashCode(removeTrigger, cancelEvent));
+	// Remove the trigger and cancel the event
+	public static TriggerResult removeAndCancel() {
+		return responses.get(hashCode(true, true));
+	}
+	
+	// Keep the trigger, cancel the event only if the condition is met
+	public static TriggerResult cancelIf(boolean cancelEvent) {
+		return responses.get(hashCode(false, cancelEvent));
 	}
 	
 	private TriggerResult(boolean removeTrigger, boolean cancelEvent) {

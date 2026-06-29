@@ -333,8 +333,10 @@ public class SessionManager implements Listener {
 		if (sessions.get(uuid).isSpectator(uuid))
 			return;
 		if (e.getEntity() instanceof Trident) {
+			FightInstance.triggerSlot(p, Trigger.THROW_TRIDENT, e);
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		} else if (e.getEntity() instanceof AbstractArrow) {
+			FightInstance.triggerSlot(p, Trigger.VANILLA_PROJECTILE, e);
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
 			if (item.getType() != Material.ARROW) {

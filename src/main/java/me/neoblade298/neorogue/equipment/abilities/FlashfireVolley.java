@@ -103,7 +103,7 @@ public class FlashfireVolley extends Equipment {
 					}.runTaskLater(NeoRogue.inst(), 5 + (i + 1) * 3L)); // 3, 6, 9 tick delays
 				}
 				
-				return TriggerResult.of(false, true);
+				return TriggerResult.cancel();
 			};
 		}
 

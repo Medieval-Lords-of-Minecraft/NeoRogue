@@ -89,7 +89,7 @@ public class EscapePlan extends Equipment {
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
 					p.teleport(loc);
-					return TriggerResult.of(true, true);
+					return TriggerResult.removeAndCancel();
 				});
 				return TriggerResult.keep();
 			};

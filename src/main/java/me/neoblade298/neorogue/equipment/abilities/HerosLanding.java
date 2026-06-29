@@ -78,7 +78,7 @@ public class HerosLanding extends Equipment {
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
 			}
 			
-			return TriggerResult.of(false, true);
+			return TriggerResult.cancel();
 		});
 	}
 

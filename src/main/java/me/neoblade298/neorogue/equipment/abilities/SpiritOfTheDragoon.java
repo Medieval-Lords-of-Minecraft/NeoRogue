@@ -50,7 +50,7 @@ public class SpiritOfTheDragoon extends Equipment {
 			Sounds.fire.play(p, p);
 			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 			
-			return TriggerResult.of(false, System.currentTimeMillis() - inst.lastCast < 5000);
+			return TriggerResult.cancelIf(System.currentTimeMillis() - inst.lastCast < 5000);
 		});
 	}
 	

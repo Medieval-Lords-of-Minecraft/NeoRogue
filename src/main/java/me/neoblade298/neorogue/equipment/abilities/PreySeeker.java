@@ -69,7 +69,7 @@ public class PreySeeker extends Equipment {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
 				initTrap(data);
-				return TriggerResult.of(false, true);
+				return TriggerResult.cancel();
 			};
 		}
 

@@ -85,7 +85,7 @@ public class EscapePlan2 extends Equipment {
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
 					p.teleport(loc);
-					return TriggerResult.of(true, true);
+					return TriggerResult.removeAndCancel();
 				});
 				
 				pdata1.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {

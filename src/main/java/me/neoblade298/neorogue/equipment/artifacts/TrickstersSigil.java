@@ -37,7 +37,7 @@ public class TrickstersSigil extends Artifact {
 			ev.setNullified(true);
 			Sounds.breaks.play(p, p);
 			Util.msgRaw(p, hoverable.append(Component.text(" was used", NamedTextColor.GRAY)));
-			return TriggerResult.of(true, true);
+			return TriggerResult.removeAndCancel();
 		});
 		act.setPriority(0);
 		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, act);
