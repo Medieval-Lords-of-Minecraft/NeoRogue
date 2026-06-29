@@ -162,7 +162,7 @@ public class Blizzard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SNOWBALL,
-				"Passive. After applying " + DescUtil.yellow(threshold) + " " + GlossaryTag.FROST.tag(this) + 
+				GlossaryTag.PASSIVE.tag(this) + ". After applying " + DescUtil.yellow(threshold) + " " + GlossaryTag.FROST.tag(this) + 
 				", summon a blizzard that follows enemies " + DescUtil.duration(10, false) + ". " +
 				"It deals " + GlossaryTag.ICE.tag(this, damage, true) + " damage and applies " + 
 				GlossaryTag.FROST.tag(this, frost, true) + " per second. " +

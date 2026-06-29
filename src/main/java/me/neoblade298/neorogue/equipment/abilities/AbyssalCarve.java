@@ -111,7 +111,7 @@ public class AbyssalCarve extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD,
-				GlossaryTag.POWER.tag(this) + ". Activates after evading once. Upon " + GlossaryTag.EVADE.tag(this) + " or " + GlossaryTag.DASH.tag(this) + ", deal " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after evading once. Upon " + GlossaryTag.EVADE.tag(this) + " or " + GlossaryTag.DASH.tag(this) + ", deal " + 
 				GlossaryTag.DARK.tag(this, damage, true) + " damage in a cone toward the attacker. On " + GlossaryTag.EVADE.tag(this) + ", also " + 
 				GlossaryTag.DASH.tag(this) + " away from them.");
 	}

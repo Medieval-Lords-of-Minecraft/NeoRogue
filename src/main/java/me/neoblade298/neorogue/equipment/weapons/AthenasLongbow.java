@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
@@ -78,7 +79,7 @@ public class AthenasLongbow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Passive. Increase non-basic attack damage by " + 
+		item = createItem(Material.BOW, GlossaryTag.PASSIVE.tag(this) + ". Increase non-basic attack damage by " + 
 							DescUtil.yellow((int)(damageBuff * 100) + "%") + ".");
 	}
 }

@@ -105,7 +105,7 @@ public class Hellfire extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(5) + " projectiles and applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.white(3) + " times. Dealing basic attack damage to an enemy with " + GlossaryTag.BURN.tag(this) + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(5) + " projectiles and applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.white(3) + " times. Dealing basic attack damage to an enemy with " + GlossaryTag.BURN.tag(this) + 
 				" causes your next basic attack to fire an additional projectile that deals " + 
 				GlossaryTag.FIRE.tag(this, damage, true) + " damage.");
 	}

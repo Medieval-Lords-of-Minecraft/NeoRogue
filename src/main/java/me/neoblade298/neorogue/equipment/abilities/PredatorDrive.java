@@ -93,7 +93,7 @@ public class PredatorDrive extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
-			GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(4) + " abilities. Every " + DescUtil.yellow(threshold) + " basic attacks" + 
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(4) + " abilities. Every " + DescUtil.yellow(threshold) + " basic attacks" + 
 			" that hit an enemy within " + DescUtil.white(5) + " blocks reduce all cooldowns by " + DescUtil.white("1s") + ".");
 	}
 }

@@ -83,7 +83,7 @@ public class Mastermind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRAIN_CORAL,
-				"Passive. Increase " + GlossaryTag.ELECTRIFIED.tag(this) + " and " + GlossaryTag.POISON.tag(this) + 
+				GlossaryTag.PASSIVE.tag(this) + ". Increase " + GlossaryTag.ELECTRIFIED.tag(this) + " and " + GlossaryTag.POISON.tag(this) + 
 				" application by " + DescUtil.yellow((int)(initialMult * 100) + "%") + ", doubling after " + DescUtil.white("20s") + ". " +
                 "Increase " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(physDamage) + ".");
 	}

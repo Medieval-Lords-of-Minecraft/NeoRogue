@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,7 +46,7 @@ public class Rushdown extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_BANNER,
-				"Passive. Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
+				GlossaryTag.PASSIVE.tag(this) + ". Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
 				secs + "s") + " of a fight.");
 	}
 }

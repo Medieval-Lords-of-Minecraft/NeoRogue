@@ -61,7 +61,7 @@ public class MindBlast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
 						+ DescUtil.white(regen) + " and grants " + GlossaryTag.INTELLECT.tag(this, intel, true) + ".");
 	}
 }

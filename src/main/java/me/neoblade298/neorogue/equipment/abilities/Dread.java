@@ -79,7 +79,7 @@ public class Dread extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(thres) + " " + GlossaryTag.STEALTH.tag(this) + " stacks. " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(thres) + " " + GlossaryTag.STEALTH.tag(this) + " stacks. " +
 				"Gain " + GlossaryTag.STEALTH.tag(this, stealthGained, true) + ", " + DescUtil.white("Speed 1") + ", and " +
 				DescUtil.yellow((int)(damageIncrease * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage permanently.");
 	}

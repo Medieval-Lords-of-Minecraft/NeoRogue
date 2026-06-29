@@ -74,7 +74,7 @@ public class StonePlating extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEEPSLATE,
-				GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.white("50%") + " stamina. Gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.white("50%") + " stamina. Gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
 				+ ". While you have " + GlossaryTag.SHIELDS.tag(this)
 				+ ", deal " + DescUtil.yellow((int) (bonusPercent * 100) + "%")
 				+ " of " + GlossaryTag.MAGICAL.tag(this) + " damage dealt as additional "

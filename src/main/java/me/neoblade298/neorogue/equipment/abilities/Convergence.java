@@ -186,7 +186,7 @@ public class Convergence extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ACTIVATION_THRES) + " kills. " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ACTIVATION_THRES) + " kills. " +
 				"Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. " +
 				"Whenever you deal a different damage type from your previous type, " +
 				"heal for " + DescUtil.yellow(heal) + " and fire " + DescUtil.white(3) + " " +

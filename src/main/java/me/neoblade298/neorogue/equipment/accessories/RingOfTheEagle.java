@@ -1,4 +1,5 @@
 package me.neoblade298.neorogue.equipment.accessories;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 
 import org.bukkit.Material;
@@ -51,7 +52,7 @@ public class RingOfTheEagle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Passive. Every " + DescUtil.yellow(thres + "th") + " time you hit an enemy with a projectile, " +
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.yellow(thres + "th") + " time you hit an enemy with a projectile, " +
 				"decrease all ability cooldowns by " + DescUtil.white("1s") + ".");
 	}
 }

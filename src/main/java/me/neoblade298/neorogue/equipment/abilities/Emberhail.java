@@ -64,7 +64,7 @@ public class Emberhail extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Passive. Any non-basic attack projectiles you fire have their damage increased by " + 
+				GlossaryTag.PASSIVE.tag(this) + ". Any non-basic attack projectiles you fire have their damage increased by " + 
 				DescUtil.yellow(damage) + ". " +
 				GlossaryTag.BURN.tag(this) + " and " + GlossaryTag.FROST.tag(this) + " application are increased by " + 
 				DescUtil.yellow((int)(statusBuff * 100) + "%") + ".");

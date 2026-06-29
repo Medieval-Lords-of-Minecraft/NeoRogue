@@ -73,7 +73,7 @@ public class Discharge extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " and your next basic attack will also apply " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " and your next basic attack will also apply " +
 				GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 }

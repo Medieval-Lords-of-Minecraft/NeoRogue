@@ -115,7 +115,7 @@ public class AbsoluteZero extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ICE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.FROST.tag(this) + " " + DescUtil.white(5) + " times. Every " + DescUtil.yellow(thres) + " times you deal damage, apply " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.FROST.tag(this) + " " + DescUtil.white(5) + " times. Every " + DescUtil.yellow(thres) + " times you deal damage, apply " + 
 				GlossaryTag.FROST.tag(this, frost, true) + " in a wide radius around you and double " +
 				GlossaryTag.FROST.tag(this) + " on all affected enemies.");
 	}

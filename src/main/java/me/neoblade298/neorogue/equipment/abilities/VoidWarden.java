@@ -103,7 +103,7 @@ public class VoidWarden extends Equipment {
 						+ GlossaryTag.SHELL.tag(this, stacks, true) + " to yourself. Base mana cost is "
 						+ DescUtil.white((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
 						+ DescUtil.yellow(manaIncrease) + " each time you cast it. "
-						+ "Passive. Every " + DescUtil.white("5s") + ", gain " + GlossaryTag.SHIELDS.tag(this, 1, false)
+						+ GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("5s") + ", gain " + GlossaryTag.SHIELDS.tag(this, 1, false)
 						+ " [" + DescUtil.white("5s") + "] for every " + DescUtil.yellow(passiveThreshold)
 						+ " combined " + GlossaryTag.PROTECT.tag(this) + " and " + GlossaryTag.SHELL.tag(this) + " you have.");
 	}

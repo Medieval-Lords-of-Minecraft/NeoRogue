@@ -42,7 +42,7 @@ public class ConductiveArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "Passive. Every time you deal " + GlossaryTag.LIGHTNING.tag(this)
+		item = createItem(Material.SHIELD, GlossaryTag.PASSIVE.tag(this) + ". Every time you deal " + GlossaryTag.LIGHTNING.tag(this)
 				+ " damage, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
 	}
 }

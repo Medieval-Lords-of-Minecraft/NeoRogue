@@ -86,7 +86,7 @@ public class HexCurse2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"Passive. Your non-basic attack damage marks enemies " + DescUtil.duration(duration, false) + ". Dealing basic attack damage to marked enemies deals " +
+				GlossaryTag.PASSIVE.tag(this) + ". Your non-basic attack damage marks enemies " + DescUtil.duration(duration, false) + ". Dealing basic attack damage to marked enemies deals " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage and consumes the mark. Marks do not stack.");
 	}
 }

@@ -209,7 +209,7 @@ public class Illusion extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.EVADE.tag(this) + " " + DescUtil.white(3) + " times and dealing " + GlossaryTag.DARK.tag(this) + " damage " + DescUtil.white(3) + " times. Whenever you apply " + GlossaryTag.EVADE.tag(this)
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.EVADE.tag(this) + " " + DescUtil.white(3) + " times and dealing " + GlossaryTag.DARK.tag(this) + " damage " + DescUtil.white(3) + " times. Whenever you apply " + GlossaryTag.EVADE.tag(this)
 						+ ", spawn a body double at your position from "
 						+ DescUtil.white("2s") + " ago that fires projectiles dealing "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies "

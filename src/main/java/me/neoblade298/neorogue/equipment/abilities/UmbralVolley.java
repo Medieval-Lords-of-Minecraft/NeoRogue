@@ -77,7 +77,7 @@ public class UmbralVolley extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"Passive. On a " + DescUtil.white("3s") + " cooldown, on basic attack, fire " + DescUtil.white(5) + " dark needles in a cone in front of you "
+				GlossaryTag.PASSIVE.tag(this) + ". On a " + DescUtil.white("3s") + " cooldown, on basic attack, fire " + DescUtil.white(5) + " dark needles in a cone in front of you "
 						+ DescUtil.white("0.5s") + " later that deal "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage.");
 	}

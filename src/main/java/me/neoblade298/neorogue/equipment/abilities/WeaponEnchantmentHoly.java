@@ -68,7 +68,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"Passive. Your left clicks fire a projectile that deals " + GlossaryTag.LIGHT.tag(this, damage, true)
+				GlossaryTag.PASSIVE.tag(this) + ". Your left clicks fire a projectile that deals " + GlossaryTag.LIGHT.tag(this, damage, true)
 				+ " damage and applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
 	}
 	

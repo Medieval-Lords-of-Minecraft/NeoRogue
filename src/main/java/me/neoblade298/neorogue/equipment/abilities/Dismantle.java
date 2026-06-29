@@ -81,6 +81,6 @@ public class Dismantle extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_PICKAXE,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(200) + " damage. Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(200) + " damage. Dealing consecutive damage to an enemy applies " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
 	}
 }

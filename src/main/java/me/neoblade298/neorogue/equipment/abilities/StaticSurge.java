@@ -85,7 +85,7 @@ public class StaticSurge extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(3) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " enemies. If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(3) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " enemies. If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");
 	}

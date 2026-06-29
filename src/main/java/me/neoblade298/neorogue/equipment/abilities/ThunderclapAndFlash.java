@@ -141,7 +141,7 @@ public class ThunderclapAndFlash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
-				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " toward the attacker, " +
+				GlossaryTag.PASSIVE.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " toward the attacker, " +
 				"deal " + GlossaryTag.LIGHTNING.tag(this, evadeDamage, true) + " damage, and gain a stack " +
 				"(" + DescUtil.white(2) + " stacks if you've applied " + DescUtil.white(ELECTRIFIED_THRESHOLD) + " " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " this fight). On cast, consume a stack to " +

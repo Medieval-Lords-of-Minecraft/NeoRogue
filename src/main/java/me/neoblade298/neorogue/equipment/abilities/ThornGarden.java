@@ -64,7 +64,7 @@ public class ThornGarden extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				GlossaryTag.POWER.tag(this) + ". Activates after receiving shields. For every " + DescUtil.white(CUTOFF) + " " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving shields. For every " + DescUtil.white(CUTOFF) + " " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
 						+ "gain " + DescUtil.yellow(thorns) + " stacks of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

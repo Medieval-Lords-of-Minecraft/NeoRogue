@@ -86,7 +86,7 @@ public class EdgeOfHorizon extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				"Passive. Increases basic projectile range by " + DescUtil.white(4) + " and non-basic damage by " + DescUtil.white("30%") + ". " +
+				GlossaryTag.PASSIVE.tag(this) + ". Increases basic projectile range by " + DescUtil.white(4) + " and non-basic damage by " + DescUtil.white("30%") + ". " +
 				"Every stack of " + GlossaryTag.FOCUS.tag(this) + " increases basic attack damage by " +
 				DescUtil.yellow(basicDamagePerFocus) + " and non-basic damage by " + DescUtil.white("10%") + ", up to " + DescUtil.white(10) + " stacks.");
 	}

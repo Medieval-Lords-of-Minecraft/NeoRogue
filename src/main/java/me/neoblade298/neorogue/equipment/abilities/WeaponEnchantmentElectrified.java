@@ -57,7 +57,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. Your left clicks fire a projectile that deals " + GlossaryTag.LIGHTNING.tag(this, damage, true)
+				GlossaryTag.PASSIVE.tag(this) + ". Your left clicks fire a projectile that deals " + GlossaryTag.LIGHTNING.tag(this, damage, true)
 				+ " damage and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 	

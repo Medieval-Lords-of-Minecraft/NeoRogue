@@ -54,7 +54,7 @@ public class Endurance extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL,
-				"Passive. Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
+				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
 				+ "you lower your shield again. Give yourself " +
 						GlossaryTag.BERSERK.tag(this, berserk, true) + " anytime an enemy hits you with your shield raised.");
 	}

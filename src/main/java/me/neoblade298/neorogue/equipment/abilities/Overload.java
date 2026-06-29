@@ -79,7 +79,7 @@ public class Overload extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.white(5) + " times. On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.white(5) + " times. On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
 				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by " + DescUtil.white(mult) + " in an area.");
 	}
 }

@@ -69,7 +69,7 @@ public class Fade extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " " + DescUtil.white(2) + " times. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " " + DescUtil.white(2) + " times. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
 				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " " + DescUtil.duration(stealthDur, true) + ".");
 	}
 }

@@ -92,7 +92,7 @@ public class Skirmisher extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times. Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times. Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
 				+ " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

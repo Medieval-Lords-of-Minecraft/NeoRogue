@@ -137,7 +137,7 @@ public class MercurialGloves extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
-				"Passive. Save the location of your last " + DescUtil.yellow(maxLocations) + " basic attacks. " +
+				GlossaryTag.PASSIVE.tag(this) + ". Save the location of your last " + DescUtil.yellow(maxLocations) + " basic attacks. " +
 				"On left click, fire your current ammunition from those locations toward you. " +
 				"All projectiles count as basic attacks and deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
 	}

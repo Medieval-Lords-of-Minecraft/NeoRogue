@@ -103,7 +103,7 @@ public class HeadTrauma extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(THRESHOLD) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(THRESHOLD) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
 				" to an enemy will deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage to them and reduce their defense by " + 
 				DescUtil.yellow(reducStr + "%") + " permanently.");
 	}

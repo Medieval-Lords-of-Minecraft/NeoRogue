@@ -63,7 +63,7 @@ public class KeenSenses extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PISTON,
-				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + 
+				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + 
 				" and " + GlossaryTag.FOCUS.tag(this, 1, false) + ". Damage from " + GlossaryTag.TRAP.tagPlural(this) +
 				" is increased by " + DescUtil.yellow(damage + "%") + ".");
 	}

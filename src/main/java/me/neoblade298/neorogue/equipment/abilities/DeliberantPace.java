@@ -112,7 +112,7 @@ public class DeliberantPace extends Equipment implements Power {
 	public void setupItem() {
 		int damagePercent = (int) (damagePerStack * 100);
 		item = createItem(Material.BOOK,
-				GlossaryTag.POWER.tag(this) + ". Activates after crouching for " + DescUtil.white("3s") + ". Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after crouching for " + DescUtil.white("3s") + ". Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
 						+ GlossaryTag.FOCUS.tag(this, 1, false) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
 						+ " increases your general damage by " + DescUtil.yellow(damagePercent + "%") + ".");
 	}

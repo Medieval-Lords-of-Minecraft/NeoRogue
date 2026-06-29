@@ -107,7 +107,7 @@ public class IAmAtomic extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TOTEM_OF_UNDYING,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.RIFT.tag(this) + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.RIFT.tag(this) + 
 				" damage " + DescUtil.white(ACTIVATION_THRES) + " times. " +
 				"Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " every time you deal " +
 				GlossaryTag.RIFT.tag(this) + " damage. Damage dealt is increased by " + 

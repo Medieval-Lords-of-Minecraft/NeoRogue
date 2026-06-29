@@ -79,6 +79,6 @@ public class Enlighten extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				GlossaryTag.POWER.tag(this) + ". Activates after granting shields and dealing " + GlossaryTag.LIGHT.tag(this) + " damage. Every time you apply " + GlossaryTag.SHIELDS.tag(this) + ", your next basic attack applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Does not stack.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after granting shields and dealing " + GlossaryTag.LIGHT.tag(this) + " damage. Every time you apply " + GlossaryTag.SHIELDS.tag(this) + ", your next basic attack applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Does not stack.");
 	}
 }

@@ -166,7 +166,7 @@ public class CorpseExplosion extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, 
-			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(5) + " times. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(5) + " times. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
 			"Each circle lasts " + DescUtil.white(duration) + " seconds and applies " + 
 			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] per second to nearby enemies.");
 	}

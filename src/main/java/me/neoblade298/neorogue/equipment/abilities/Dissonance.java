@@ -38,7 +38,7 @@ public class Dissonance extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.KNOWLEDGE_BOOK,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(ACTIVATION_THRES) +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(ACTIVATION_THRES) +
 				" different damage types. Anytime you deal a damage type that is different from your previous damage type, " +
 				"gain " + DescUtil.yellow(mana) + " mana and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
 				" [" + DescUtil.white("5s") + "].");

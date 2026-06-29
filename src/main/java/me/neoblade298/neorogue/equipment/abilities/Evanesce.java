@@ -94,7 +94,7 @@ public class Evanesce extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Activates after evading once while in " + GlossaryTag.STEALTH.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after evading once while in " + GlossaryTag.STEALTH.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
 				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + DescUtil.yellow(

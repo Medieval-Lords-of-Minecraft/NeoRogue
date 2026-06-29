@@ -41,7 +41,7 @@ public class MirrorBracer extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Passive. Start fights with " + GlossaryTag.REFLECT.tag(this, reflect, true)
+		item = createItem(Material.LEATHER, GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.REFLECT.tag(this, reflect, true)
 				+ ". " + "Also reduces magic damage taken by " + DescUtil.yellow(mr) + ".");
 	}
 }

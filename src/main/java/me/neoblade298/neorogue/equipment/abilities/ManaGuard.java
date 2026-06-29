@@ -52,7 +52,7 @@ public class ManaGuard extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.white("50%") + " mana. Reduces damage taken by " + DescUtil.yellow(reduc)
+		item = createItem(Material.SHIELD, GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.white("50%") + " mana. Reduces damage taken by " + DescUtil.yellow(reduc)
 				+ " but decrease mana regen by " + DescUtil.white(1) + ".");
 	}
 }

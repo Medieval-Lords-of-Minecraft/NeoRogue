@@ -168,7 +168,7 @@ public class Conflagration extends Equipment implements Power {
 	public void setupItem() {
 		String burnMultStr = burnMult == 1.0 ? DescUtil.yellow("1x") : DescUtil.yellow("1.5x");
 		item = createItem(Material.FIRE_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.white(5) + " times. Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.white(5) + " times. Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
 				"at the nearest enemy that deals " + DescUtil.yellow(damage) + " " + GlossaryTag.FIRE.tag(this) + 
 				" damage and applies " + burnMultStr + " of its " + GlossaryTag.BURN.tag(this) + ".");
 	}

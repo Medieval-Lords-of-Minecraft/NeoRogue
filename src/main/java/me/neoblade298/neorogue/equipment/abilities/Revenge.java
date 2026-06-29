@@ -78,7 +78,7 @@ public class Revenge extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				GlossaryTag.POWER.tag(this) + ". Activates after taking damage. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) + ". Additionally, if you're below "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after taking damage. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) + ". Additionally, if you're below "
 				+ GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " stacks, gain " + GlossaryTag.BERSERK.tag(this, 1, false) + ". Otherwise, your basic attacks heal you "
 						+ "for " + DescUtil.yellow(heal) + " " + DescUtil.duration(10, false) + ".");
 	}

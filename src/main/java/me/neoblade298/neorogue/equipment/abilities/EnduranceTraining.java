@@ -45,7 +45,7 @@ public class EnduranceTraining extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
-				"Passive. Increase duration of all applied " + GlossaryTag.SHIELDS.tag(this) + " by " + DescUtil.yellow(dur) + ". " +
+				GlossaryTag.PASSIVE.tag(this) + ". Increase duration of all applied " + GlossaryTag.SHIELDS.tag(this) + " by " + DescUtil.yellow(dur) + ". " +
 				"Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + ".");
 	}
 }

@@ -73,7 +73,7 @@ public class ChosenOfTheLight extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 	item = createItem(Material.IRON_ORE,
-			GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
 			DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
 				DescUtil.yellow(multStr + "%") + " [<white>10s</white>], stackable.");
 	}

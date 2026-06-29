@@ -67,7 +67,7 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"Passive. Every " + DescUtil.white("3rd") + " basic attack launches a slash projectile that deals "
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("3rd") + " basic attack launches a slash projectile that deals "
 						+ DescUtil.yellow(damage) + " " + GlossaryTag.DARK.tag(this) + " damage and pierces.");
 	}
 	

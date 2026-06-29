@@ -53,7 +53,7 @@ public class VoidForm extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				"Passive. For each active " + GlossaryTag.RIFT.tag(this) + ", reduce castable ability mana cost by "
+				GlossaryTag.PASSIVE.tag(this) + ". For each active " + GlossaryTag.RIFT.tag(this) + ", reduce castable ability mana cost by "
 						+ DescUtil.yellow(manaReduc) + " and cooldown by " + DescUtil.yellow(cooldownReduc) + ".");
 	}
 }

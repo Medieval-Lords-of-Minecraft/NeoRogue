@@ -86,7 +86,7 @@ public class FlashDraw extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BEETROOT_SEEDS,
-				GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(30) + " " + GlossaryTag.REND.tag(this) + " stacks. Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(30) + " " + GlossaryTag.REND.tag(this) + " stacks. Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
 				GlossaryTag.REND.tag(this, thres, true) + " to enemies, instead fire thrice.");
 	}
 }

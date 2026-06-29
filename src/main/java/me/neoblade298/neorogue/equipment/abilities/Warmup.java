@@ -57,7 +57,7 @@ public class Warmup extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				GlossaryTag.POWER.tag(this) + ". Activates after surviving " + DescUtil.yellow(timer + "s") + " without taking damage. Gain " + DescUtil.white(1) + " stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields, true) + "."
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after surviving " + DescUtil.yellow(timer + "s") + " without taking damage. Gain " + DescUtil.white(1) + " stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields, true) + "."
 				+ " Taking health damage increases the timer by " + DescUtil.white(1) + ".");
 	}
 }

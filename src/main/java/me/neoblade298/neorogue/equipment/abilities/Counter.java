@@ -95,7 +95,7 @@ public class Counter extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.white("50%") + " stamina. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.white("50%") + " stamina. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them.");
 	}

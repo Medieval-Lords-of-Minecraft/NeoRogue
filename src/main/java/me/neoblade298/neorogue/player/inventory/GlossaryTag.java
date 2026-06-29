@@ -112,7 +112,9 @@ public enum GlossaryTag implements GlossaryIcon {
 	CHANNEL(Material.CLOCK, "<red>Channel</red>",
 			"Become unable to move. You cannot use other abilities during this time."),
 	POWER(Material.ENCHANTED_BOOK, "<aqua>Power</aqua>",
-			"A one-time activation that grants a passive effect for the rest of the fight.");
+			"A one-time activation that grants a passive effect for the rest of the fight."),
+	PASSIVE(Material.GLOW_INK_SAC, "<gray>Passive</gray>",
+			"An effect that is always active for the entire fight and requires no activation.");
 	
 	private ItemStack icon;
 	public String tag, lore;

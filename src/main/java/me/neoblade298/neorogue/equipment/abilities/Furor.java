@@ -34,6 +34,6 @@ public class Furor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT_AND_STEEL,
-				"Passive. Start fights with " + GlossaryTag.STRENGTH.tag(this, strength, false) + " and " + GlossaryTag.BERSERK.tag(this, berserk, true) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.STRENGTH.tag(this, strength, false) + " and " + GlossaryTag.BERSERK.tag(this, berserk, true) + ".");
 	}
 }

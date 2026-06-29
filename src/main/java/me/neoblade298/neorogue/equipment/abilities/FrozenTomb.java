@@ -128,7 +128,7 @@ public class FrozenTomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"Passive. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + 
+				GlossaryTag.PASSIVE.tag(this) + ". All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + 
 				DescUtil.yellow((int)(frostIncrease * 100) + "%") + ". Once per enemy, when you apply " +
 				GlossaryTag.FROST.tag(this) + " to them and they reach over " + DescUtil.yellow(threshold) + 
 				" " + GlossaryTag.FROST.tag(this) + ", deal " + GlossaryTag.ICE.tag(this, DAMAGE, false) + 

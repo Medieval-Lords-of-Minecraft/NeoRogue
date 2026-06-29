@@ -68,6 +68,6 @@ public class DarkShroud extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				GlossaryTag.POWER.tag(this) + ". Activates after launching " + DescUtil.white(3) + " projectile groups. Your projectiles deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after launching " + DescUtil.white(3) + " projectile groups. Your projectiles deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage.");
 	}
 }

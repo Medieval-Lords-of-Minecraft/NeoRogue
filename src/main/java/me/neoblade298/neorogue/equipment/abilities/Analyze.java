@@ -88,7 +88,7 @@ public class Analyze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS) + "). " +
+				GlossaryTag.PASSIVE.tag(this) + ". For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS) + "). " +
 				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " +
 				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, false) + " for " + DescUtil.white("5s") + " per stack.");
 	}

@@ -120,7 +120,7 @@ public class Engulf extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage from other sources, deal "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.white(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage from other sources, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ". " + DescUtil.white("5s") + " cooldown.");
 	}

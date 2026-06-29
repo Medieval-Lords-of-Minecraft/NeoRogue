@@ -106,7 +106,7 @@ public class Frostreaver extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				"Passive. Enemies hit by this weapon with " + GlossaryTag.FROST.tag(this) + " take " +
+				GlossaryTag.PASSIVE.tag(this) + ". Enemies hit by this weapon with " + GlossaryTag.FROST.tag(this) + " take " +
 				DescUtil.white("30%") + " more damage for every " + DescUtil.yellow(frostThreshold) + " " + 
 				GlossaryTag.FROST.tag(this) + " stacks on them.");
 	}

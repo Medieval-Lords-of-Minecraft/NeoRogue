@@ -51,7 +51,7 @@ public class Corruption extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
-				"Passive. Reduce mana cost of all castable abilities by " + DescUtil.yellow(reduc)
+				GlossaryTag.PASSIVE.tag(this) + ". Reduce mana cost of all castable abilities by " + DescUtil.yellow(reduc)
 						+ " for every stack of " + GlossaryTag.CORRUPTION.tag(this) + " you have.");
 	}
 }

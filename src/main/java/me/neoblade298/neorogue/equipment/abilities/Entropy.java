@@ -81,7 +81,7 @@ public class Entropy extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-				GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + DescUtil.yellow(riftThres) + " kills, spawn a " + 
 				GlossaryTag.RIFT.tag(this) + " [<white>8s</white>] at your location.");
 	}
 }
