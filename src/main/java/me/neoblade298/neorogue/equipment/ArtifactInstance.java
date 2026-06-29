@@ -14,6 +14,12 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	private Artifact artifact;
 	private int amount;
+	// Optional equipment "held" by this artifact instance. When present, the artifact
+	// delegates trigger initialization to this equipment (see Artifact#initialize).
+	private SessionEquipment held;
+	// Synthetic slot assigned at fight initialization, used to give a held equipment a
+	// unique trigger/stat namespace so multiple instances don't collide.
+	private int slot;
 	public ArtifactInstance(Artifact artifact, int amount) {
 		this.artifact = artifact;
 		this.amount = amount;
@@ -22,8 +28,27 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		this.artifact = artifact;
 		this.amount = 1;
 	}
+	public ArtifactInstance(Artifact artifact, int amount, SessionEquipment held) {
+		this.artifact = artifact;
+		this.amount = amount;
+		this.held = held;
+	}
+	public ArtifactInstance(Artifact artifact, SessionEquipment held) {
+		this.artifact = artifact;
+		this.amount = 1;
+		this.held = held;
+	}
 	public Artifact getArtifact() {
 		return artifact;
+	}
+	public SessionEquipment getHeld() {
+		return held;
+	}
+	public boolean hasHeld() {
+		return held != null;
+	}
+	public int getSlot() {
+		return slot;
 	}
 	public void add(int amount) {
 		this.amount+= amount;
@@ -31,8 +56,16 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	public int getAmount() {
 		return amount;
 	}
+	/**
+	 * The key used to store this instance in the artifacts map. Holder artifacts (those
+	 * with a held equipment) are keyed by their held equipment so that holders of
+	 * different equipment remain separate entries while holders of the same equipment merge.
+	 */
+	public String getMapKey() {
+		return held == null ? artifact.getId() : artifact.getId() + ":" + held.getEquipment().serialize();
+	}
 	public ItemStack getItem() {
-		ItemStack item = artifact.getItem();
+		ItemStack item = held != null ? held.getItem() : artifact.getItem();
 		if (amount > 1) {
 			ItemMeta meta = item.getItemMeta();
 			meta.setMaxStackSize(amount);
@@ -42,6 +75,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return item;
 	}
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		this.slot = slot;
 		this.artifact.initialize(data, this);
 	}
 	public void cleanup(PlayerFightData data) {
@@ -49,7 +83,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	}
 	@Override
 	public int compareTo(ArtifactInstance o) {
-		return artifact.getId().compareTo(o.getArtifact().getId());
+		return getMapKey().compareTo(o.getMapKey());
 	}
 	@Override
 	public int hashCode() {
@@ -57,6 +91,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		int result = 1;
 		result = prime * result + amount;
 		result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
+		result = prime * result + ((held == null) ? 0 : held.getEquipment().serialize().hashCode());
 		return result;
 	}
 	@Override
@@ -70,11 +105,17 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 			if (other.artifact != null) return false;
 		}
 		else if (!artifact.equals(other.artifact)) return false;
+		if (held == null) {
+			if (other.held != null) return false;
+		}
+		else if (other.held == null || !held.getEquipment().serialize().equals(other.held.getEquipment().serialize())) return false;
 		return true;
 	}
 	
 	public String serialize() {
-		return artifact.getId() + (artifact.isUpgraded ? "+" : "") + "-" + amount;
+		String base = artifact.getId() + (artifact.isUpgraded ? "+" : "") + "-" + amount;
+		if (held != null) base += "-" + held.serialize();
+		return base;
 	}
 	
 	public static String serialize(TreeMap<String, ArtifactInstance> map) {
@@ -91,19 +132,23 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		for (String aiString : separated) {
 			if (aiString.isBlank()) continue;
 			ArtifactInstance inst = deserialize(aiString);
-			map.put(inst.getArtifact().getId(), inst);
+			map.put(inst.getMapKey(), inst);
 		}
 		return map;
 	}
 	
 	public static ArtifactInstance deserialize(String str) {
-		String[] aiPieces = str.split("-");
+		String[] aiPieces = str.split("-", 3);
 		boolean isUpgraded = false;
 		if (aiPieces[0].endsWith("+")) {
 			isUpgraded = true;
 			aiPieces[0] = aiPieces[0].substring(0, aiPieces[0].length() - 1);
 		}
 		Artifact a = (Artifact) Equipment.get(aiPieces[0], isUpgraded);
-		return new ArtifactInstance(a, Integer.parseInt(aiPieces[1]));
+		SessionEquipment held = null;
+		if (aiPieces.length >= 3 && !aiPieces[2].isBlank()) {
+			held = SessionEquipment.deserialize(aiPieces[2]);
+		}
+		return new ArtifactInstance(a, Integer.parseInt(aiPieces[1]), held);
 	}
 }

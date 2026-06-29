@@ -477,14 +477,21 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void giveArtifact(Artifact artifact, int amount) {
+		giveArtifact(new ArtifactInstance(artifact, amount));
+	}
+
+	public void giveArtifact(ArtifactInstance newInst) {
+		Artifact artifact = newInst.getArtifact();
+		int amount = newInst.getAmount();
+		String key = newInst.getMapKey();
 		ArtifactInstance inst;
-		if (artifacts.containsKey(artifact.getId())) {
-			inst = artifacts.get(artifact.getId());
+		if (artifacts.containsKey(key)) {
+			inst = artifacts.get(key);
 			inst.add(amount);
 		}
 		else {
-			inst = new ArtifactInstance(artifact, amount);
-			artifacts.put(artifact.getId(), inst);
+			inst = newInst;
+			artifacts.put(key, inst);
 			inst.getArtifact().onInitializeSession(this);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 		}
@@ -494,20 +501,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Player p = data.getPlayer();
 		Component toSelf = SharedUtil.color("You received ");
 		Component toOthers = SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ");
-		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(artifact.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
+		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(inst.getArtifact().getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
 		s.broadcastOthers(toOthers.append(body), p);
 		Util.msg(p, toSelf.append(body));
 	}
 
 	private void giveArtifact(Artifact artifact) {
+		ArtifactInstance newInst = new ArtifactInstance(artifact);
+		String key = newInst.getMapKey();
 		ArtifactInstance inst;
-		if (artifacts.containsKey(artifact.getId())) {
-			inst = artifacts.get(artifact.getId());
+		if (artifacts.containsKey(key)) {
+			inst = artifacts.get(key);
 			inst.add(1);
 		}
 		else {
-			inst = new ArtifactInstance(artifact);
-			artifacts.put(artifact.getId(), inst);
+			inst = newInst;
+			artifacts.put(key, inst);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 			inst.getArtifact().onInitializeSession(this);
 		}

@@ -151,6 +151,7 @@ import me.neoblade298.neorogue.equipment.artifacts.CrystalFeather;
 import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
 import me.neoblade298.neorogue.equipment.artifacts.DarkArtsTreatise;
 import me.neoblade298.neorogue.equipment.artifacts.EarthenTome;
+import me.neoblade298.neorogue.equipment.artifacts.EchoStone;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
@@ -994,6 +995,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DarkArtsTreatise();
 		new DiscountCard();
 		new EarthenTome();
+		new EchoStone();
 		new EnergyBattery();
 		new EverlastingHealth();
 		new Exhaustion();
