@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.chance.builtin.LabChance;
 import me.neoblade298.neorogue.session.chance.builtin.LostRelicChance;
 import me.neoblade298.neorogue.session.chance.builtin.ManaPoolChance;
 import me.neoblade298.neorogue.session.chance.builtin.OvergrownLibraryChance;
+import me.neoblade298.neorogue.session.chance.builtin.ProvingGroundsChance;
 import me.neoblade298.neorogue.session.chance.builtin.ShiningLightChance;
 import me.neoblade298.neorogue.session.chance.builtin.StockpileChance;
 import me.neoblade298.neorogue.session.chance.builtin.ThiefsCacheChance;
@@ -82,6 +83,7 @@ public class ChanceSet {
 		new LostRelicChance();
 		new ManaPoolChance();
 		new OvergrownLibraryChance();
+		new ProvingGroundsChance();
 		new ShiningLightChance();
 		new ThiefsCacheChance();
 		new VultureChance();

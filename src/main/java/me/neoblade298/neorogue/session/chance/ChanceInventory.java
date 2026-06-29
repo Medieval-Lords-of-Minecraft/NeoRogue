@@ -159,6 +159,18 @@ public class ChanceInventory extends CoreInventory {
 			return;
 		}
 		
+		// Interactive choice: open a UI instead of immediately resolving. The interactive
+		// action owns advancing the stage (or reopening this inventory on cancel).
+		if (choice.getInteractiveAction() != null) {
+			ChanceInteractiveAction ia = choice.getInteractiveAction();
+			new BukkitRunnable() {
+				public void run() {
+					ia.open(ci, data);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		
 		ChanceStage next = set.getStage(choice.choose(s, inst, data));
 		inst.advanceStage(uuid, next);
 		s.getInstance().updateBoardLines();

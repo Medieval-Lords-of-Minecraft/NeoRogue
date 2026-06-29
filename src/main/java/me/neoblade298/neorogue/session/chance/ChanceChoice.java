@@ -35,6 +35,7 @@ public class ChanceChoice {
 	private ChanceAction action;
 	private ChanceRequirement req;
 	private BiConsumer<Player, CoreInventory> onRightClick;
+	private ChanceInteractiveAction interactiveAction;
 	
 	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceRequirement req, ChanceAction action) {
 		this(mat, title, description, action);
@@ -89,6 +90,16 @@ public class ChanceChoice {
 	
 	public BiConsumer<Player, CoreInventory> getOnRightClick() {
 		return onRightClick;
+	}
+	
+	// When set, left-clicking this choice opens an interactive UI instead of immediately
+	// resolving. The interactive action owns advancing the stage (see ChanceInteractiveAction).
+	public void setOnInteract(ChanceInteractiveAction interactiveAction) {
+		this.interactiveAction = interactiveAction;
+	}
+	
+	public ChanceInteractiveAction getInteractiveAction() {
+		return interactiveAction;
 	}
 	
 	// For use in glossary
