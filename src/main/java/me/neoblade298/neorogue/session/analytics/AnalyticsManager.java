@@ -12,6 +12,7 @@ import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot.ChoiceRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.EquipRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.StatusRow;
 import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferRow;
@@ -107,12 +108,34 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (offerId, slotIndex)"
 							+ ");");
 
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_chance_choices ("
+							+ "pickId VARCHAR(36) NOT NULL,"
+							+ "choiceIndex INT NOT NULL,"
+							+ "ts BIGINT NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "host VARCHAR(36) NOT NULL,"
+							+ "slot INT NOT NULL,"
+							+ "setId VARCHAR(64) NOT NULL,"
+							+ "stageId VARCHAR(64) NOT NULL,"
+							+ "regionType VARCHAR(50) NOT NULL,"
+							+ "nodeType VARCHAR(20) NOT NULL,"
+							+ "level INT NOT NULL,"
+							+ "individual TINYINT NOT NULL,"
+							+ "choiceLabel VARCHAR(100) NOT NULL,"
+							+ "valid TINYINT NOT NULL,"
+							+ "picked TINYINT NOT NULL,"
+							+ "PRIMARY KEY (pickId, choiceIndex)"
+							+ ");");
+
 					createIndex(stmt, "idx_fights_balance", "neorogue_fights", "balanceVersion");
 					createIndex(stmt, "idx_fights_region_node", "neorogue_fights", "regionType, nodeType");
 					createIndex(stmt, "idx_fightequip_lookup", "neorogue_fight_equipment", "equipmentId, upgraded, balanceVersion");
 					createIndex(stmt, "idx_fightstatus_lookup", "neorogue_fight_equipment_status", "equipmentId, statusType, balanceVersion");
 					createIndex(stmt, "idx_offers_lookup", "neorogue_equipment_offers", "equipmentId, upgraded, balanceVersion");
 					createIndex(stmt, "idx_offers_source", "neorogue_equipment_offers", "source, balanceVersion");
+					createIndex(stmt, "idx_chance_lookup", "neorogue_chance_choices", "setId, stageId, balanceVersion");
+					createIndex(stmt, "idx_chance_balance", "neorogue_chance_choices", "balanceVersion");
 
 					initialized = true;
 				}
@@ -217,6 +240,51 @@ public class AnalyticsManager {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	public static void recordChanceChoice(ChanceChoiceSnapshot snap) {
+		if (!ENABLED || !initialized || snap == null || snap.rows.isEmpty()) return;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					writeChanceChoices(con, snap);
+				}
+				catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to record chance choice analytics " + snap.pickId);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private static void writeChanceChoices(Connection con, ChanceChoiceSnapshot snap) throws SQLException {
+		if (snap.rows.isEmpty()) return;
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_chance_choices");
+		for (ChoiceRow row : snap.rows) {
+			sql.addValue("pickId", snap.pickId)
+					.addValue("choiceIndex", row.choiceIndex)
+					.addValue("ts", snap.timestamp)
+					.addValue("balanceVersion", snap.balanceVersion)
+					.addValue("playerUuid", snap.playerUuid)
+					.addValue("host", snap.host)
+					.addValue("slot", snap.slot)
+					.addValue("setId", snap.setId)
+					.addValue("stageId", snap.stageId)
+					.addValue("regionType", snap.regionType)
+					.addValue("nodeType", snap.nodeType)
+					.addValue("level", snap.level)
+					.addValue("individual", snap.individual ? 1 : 0)
+					.addValue("choiceLabel", row.label)
+					.addValue("valid", row.valid ? 1 : 0)
+					.addValue("picked", row.picked ? 1 : 0)
+					.addRow();
+		}
+		if (sql.getRowCount() > 0) {
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
+		}
 	}
 
 	private static void writeOffer(Connection con, OfferSnapshot snap) throws SQLException {

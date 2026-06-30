@@ -31,6 +31,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.Instance;
@@ -53,6 +55,9 @@ public class ChanceInstance extends EditInventoryInstance {
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
 	private HashMap<String, String> eventData = new HashMap<String, String>();
+	// Choice snapshots captured at click time, keyed by the picking player. Flushed to analytics
+	// when the commit lands in advanceStage; a cancelled interactive UI never reaches that point.
+	private HashMap<UUID, ChanceChoiceSnapshot> pendingPicks = new HashMap<UUID, ChanceChoiceSnapshot>();
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
 	private TextDisplay holo;
@@ -274,7 +279,18 @@ public class ChanceInstance extends EditInventoryInstance {
 		new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
 	}
 
+	// Stashes a choice snapshot captured at click time; flushed to analytics on the next
+	// advanceStage for this player (i.e. when the pick actually commits).
+	public void setPendingPick(UUID uuid, ChanceChoiceSnapshot snap) {
+		pendingPicks.put(uuid, snap);
+	}
+
 	public void advanceStage(UUID uuid, ChanceStage next) {
+		// Flush the pick captured when this player clicked the choice. Reaching advanceStage means
+		// the choice actually committed (interactive cancels reopen the inventory and never get here).
+		ChanceChoiceSnapshot snap = pendingPicks.remove(uuid);
+		if (snap != null) AnalyticsManager.recordChanceChoice(snap);
+
 		// Finished with chance
 		if (next == null) {
 			if (!set.isIndividual()) {

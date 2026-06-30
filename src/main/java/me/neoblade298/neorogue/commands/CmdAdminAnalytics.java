@@ -35,11 +35,17 @@ public class CmdAdminAnalytics extends Subcommand {
 		if (args.length < 1) {
 			Util.msg(s, "<red>Usage: /nradmin analytics <equipment> [balanceVersion]");
 			Util.msg(s, "<red>       /nradmin analytics pickrate [balanceVersion] [source]");
+			Util.msg(s, "<red>       /nradmin analytics chance [balanceVersion] [setId]");
 			return;
 		}
 
 		if (args[0].equalsIgnoreCase("pickrate")) {
 			runPickrateLeaderboard(s, args);
+			return;
+		}
+
+		if (args[0].equalsIgnoreCase("chance")) {
+			runChanceLeaderboard(s, args);
 			return;
 		}
 
@@ -253,6 +259,84 @@ public class CmdAdminAnalytics extends Subcommand {
 				String line = "  <yellow>" + df.format(rate) + "%</yellow> <white>" + rs.getString("equipmentId")
 						+ (upgraded ? "+" : "") + "</white> <gray>(" + picked + "/" + offered + ")";
 				rows.add(new String[] { line });
+			}
+		}
+	}
+
+	// Leaderboard of chance-event option pick rate, computed as picked / valid so options are only
+	// counted when they were actually selectable for the player.
+	private void runChanceLeaderboard(CommandSender s, String[] args) {
+		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
+		if (args.length > 1) {
+			try {
+				balanceVersion = Integer.parseInt(args[1]);
+			}
+			catch (NumberFormatException ex) {
+				Util.msg(s, "<red>Balance version must be a number.");
+				return;
+			}
+		}
+		final String setId = args.length > 2 ? args[2] : null;
+		final int version = balanceVersion;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ArrayList<String> lines = new ArrayList<String>();
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					queryChanceLeaderboard(con, version, setId, lines);
+				}
+				catch (SQLException ex) {
+					lines.clear();
+					lines.add("<red>Failed to query analytics (see console).");
+					ex.printStackTrace();
+				}
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Util.msg(s, "<gold>=== Chance Pickrate (balance v" + version
+								+ (setId != null ? ", " + setId : "") + ") ===");
+						if (lines.isEmpty()) {
+							Util.msg(s, "<yellow>No chance options recorded with at least " + MIN_OFFERS
+									+ " valid samples.");
+							return;
+						}
+						for (String line : lines) {
+							Util.msg(s, line);
+						}
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private void queryChanceLeaderboard(Connection con, int version, String setId, ArrayList<String> lines)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder("SELECT setId, stageId, choiceIndex, MAX(choiceLabel) AS label,"
+				+ " SUM(valid) AS valid, SUM(picked) AS picked,"
+				+ " (SUM(picked) / SUM(valid)) AS rate FROM neorogue_chance_choices WHERE balanceVersion = ?");
+		if (setId != null) sql.append(" AND setId = ?");
+		sql.append(" GROUP BY setId, stageId, choiceIndex HAVING valid >= ").append(MIN_OFFERS)
+				.append(" ORDER BY setId, stageId, rate DESC;");
+
+		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+			ps.setInt(1, version);
+			if (setId != null) ps.setString(2, setId);
+			try (ResultSet rs = ps.executeQuery()) {
+				String currentSet = null;
+				while (rs.next()) {
+					String set = rs.getString("setId");
+					if (!set.equals(currentSet)) {
+						lines.add("<gold>" + set + ":");
+						currentSet = set;
+					}
+					int valid = rs.getInt("valid");
+					int picked = rs.getInt("picked");
+					double rate = valid > 0 ? (100.0 * picked / valid) : 0;
+					lines.add("  <aqua>" + rs.getString("stageId") + "</aqua> <white>" + rs.getString("label")
+							+ "</white> <yellow>" + df.format(rate) + "%</yellow> <gray>(" + picked + "/" + valid
+							+ " valid)");
+				}
 			}
 		}
 	}

@@ -25,6 +25,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class ChanceChoice {
 	private Component title;
@@ -75,6 +76,11 @@ public class ChanceChoice {
 	
 	public TreeSet<GlossaryIcon> getTags() {
 		return tags;
+	}
+	
+	// Plain-text title, used as a readable label for analytics.
+	public String getPlainTitle() {
+		return PlainTextComponentSerializer.plainText().serialize(title);
 	}
 	
 	public void addTag(GlossaryIcon icon) {

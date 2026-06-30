@@ -24,6 +24,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -159,6 +161,11 @@ public class ChanceInventory extends CoreInventory {
 			return;
 		}
 		
+		// Capture the pick now (before the action mutates state, so option validity reflects what
+		// was presented). It's flushed to analytics when the commit lands in advanceStage; an
+		// interactive choice that gets cancelled never reaches advanceStage, so it isn't counted.
+		recordPendingPick(uuid, num - 1);
+		
 		// Interactive choice: open a UI instead of immediately resolving. The interactive
 		// action owns advancing the stage (or reopening this inventory on cancel).
 		if (choice.getInteractiveAction() != null) {
@@ -196,5 +203,21 @@ public class ChanceInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("choice", num + 1);
 		return nbti.getItem();
+	}
+
+	// Builds a snapshot of the current stage's choices (each flagged valid/picked) and stashes it on
+	// the instance, to be flushed to analytics when this player's pick commits via advanceStage.
+	private void recordPendingPick(UUID uuid, int pickedIndex) {
+		if (!AnalyticsManager.ENABLED) return;
+		ChanceChoiceSnapshot snap = new ChanceChoiceSnapshot(UUID.randomUUID().toString(),
+				System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION, uuid.toString(),
+				s.getHost().toString(), s.getSaveSlot(), set.getId(), stage.getId(),
+				s.getRegion().getType().name(), s.getNode().getType().name(), s.getLevel(),
+				set.isIndividual());
+		for (int i = 0; i < stage.choices.size(); i++) {
+			ChanceChoice c = stage.choices.get(i);
+			snap.addChoice(i, c.getPlainTitle(), c.canChoose(s, inst, data), i == pickedIndex);
+		}
+		inst.setPendingPick(uuid, snap);
 	}
 }
