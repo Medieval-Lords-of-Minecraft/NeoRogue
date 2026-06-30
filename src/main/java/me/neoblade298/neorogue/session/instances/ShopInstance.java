@@ -23,6 +23,9 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferSource;
 import me.neoblade298.neorogue.session.event.GenerateShopEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.shop.ShopContents;
@@ -105,7 +108,26 @@ public class ShopInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
+		if (!pluginDisable) recordPickrates();
 		holo.remove();
+	}
+
+	// Logs each player's equipment shop stock as an offer event, flagging purchased items as picked.
+	private void recordPickrates() {
+		if (!AnalyticsManager.ENABLED) return;
+		long now = System.currentTimeMillis();
+		String host = s.getHost().toString();
+		String regionType = s.getRegion().getType().name();
+		String nodeType = s.getNode().getType().name();
+		int level = s.getLevel();
+		int saveSlot = s.getSaveSlot();
+		for (Entry<UUID, ShopContents> ent : shops.entrySet()) {
+			OfferSnapshot snap = new OfferSnapshot(UUID.randomUUID().toString(), now,
+					AnalyticsManager.BALANCE_VERSION, ent.getKey().toString(), host, saveSlot, OfferSource.SHOP,
+					regionType, nodeType, level);
+			ent.getValue().fillOffers(snap);
+			AnalyticsManager.recordOffer(snap);
+		}
 	}
 
 	@Override

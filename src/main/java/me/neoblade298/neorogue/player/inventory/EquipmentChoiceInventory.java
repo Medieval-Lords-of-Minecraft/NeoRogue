@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,6 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferSource;
 import me.neoblade298.neorogue.session.reward.RewardInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,6 +78,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 			
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			SessionEquipment se = equips.get(slot);
+			recordPickrate(slot);
 			data.giveEquipment(se);
 			if (prev.claimReward(prevSlot)) {
 				prev.openInventory();
@@ -87,6 +93,20 @@ public class EquipmentChoiceInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		
+	}
+
+	// Logs one offer event for pickrate analytics: every offered equipment with the chosen one flagged.
+	private void recordPickrate(int picked) {
+		Session sess = data.getSession();
+		if (sess == null) return;
+		OfferSnapshot snap = new OfferSnapshot(UUID.randomUUID().toString(), System.currentTimeMillis(),
+				AnalyticsManager.BALANCE_VERSION, data.getUniqueId().toString(), sess.getHost().toString(),
+				sess.getSaveSlot(), OfferSource.REWARD, sess.getRegion().getType().name(),
+				sess.getNode().getType().name(), sess.getLevel());
+		for (int i = 0; i < equips.size(); i++) {
+			snap.addOffer(equips.get(i).getEquipment(), i, i == picked, 0);
+		}
+		AnalyticsManager.recordOffer(snap);
 	}
 
 	@Override

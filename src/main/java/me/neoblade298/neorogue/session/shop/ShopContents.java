@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
@@ -48,6 +49,19 @@ public class ShopContents {
 
 	public ShopItem get(int idx) {
 		return shopItems.get(idx);
+	}
+
+	// Adds every equipment-stock slot (0..NUM_ITEMS) to an offer snapshot for pickrate analytics,
+	// flagging purchased items as picked. Non-equipment shop slots (consumables/gems/artifacts) are
+	// intentionally excluded.
+	public void fillOffers(OfferSnapshot snap) {
+		for (int i = 0; i < ShopInstance.NUM_ITEMS; i++) {
+			ShopItem item = shopItems.get(i);
+			if (item == null) continue;
+			Equipment eq = item.getEquipment();
+			if (eq == null) continue;
+			snap.addOffer(eq, i, item.isPurchased(), item.getPrice());
+		}
 	}
 
 	public static void debugGenerateEquips() {

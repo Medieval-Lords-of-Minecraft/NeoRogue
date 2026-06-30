@@ -14,6 +14,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.EquipRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.StatusRow;
+import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferRow;
 
 // Persists per-fight equipment effectiveness analytics into three normalized fact tables on the
 // shared "NeoRogue" session SQL pool. Writes are batched and run asynchronously.
@@ -84,10 +85,34 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (fightId, playerUuid, equipmentId, upgraded, statusType)"
 							+ ");");
 
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_equipment_offers ("
+							+ "offerId VARCHAR(36) NOT NULL,"
+							+ "slotIndex INT NOT NULL,"
+							+ "ts BIGINT NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "host VARCHAR(36) NOT NULL,"
+							+ "slot INT NOT NULL,"
+							+ "source VARCHAR(20) NOT NULL,"
+							+ "regionType VARCHAR(50) NOT NULL,"
+							+ "nodeType VARCHAR(20) NOT NULL,"
+							+ "level INT NOT NULL,"
+							+ "equipmentId VARCHAR(64) NOT NULL,"
+							+ "upgraded TINYINT NOT NULL,"
+							+ "rarity VARCHAR(20) NOT NULL,"
+							+ "equipType VARCHAR(20) NOT NULL,"
+							+ "equipClass VARCHAR(40) NOT NULL,"
+							+ "picked TINYINT NOT NULL,"
+							+ "price INT NOT NULL,"
+							+ "PRIMARY KEY (offerId, slotIndex)"
+							+ ");");
+
 					createIndex(stmt, "idx_fights_balance", "neorogue_fights", "balanceVersion");
 					createIndex(stmt, "idx_fights_region_node", "neorogue_fights", "regionType, nodeType");
 					createIndex(stmt, "idx_fightequip_lookup", "neorogue_fight_equipment", "equipmentId, upgraded, balanceVersion");
 					createIndex(stmt, "idx_fightstatus_lookup", "neorogue_fight_equipment_status", "equipmentId, statusType, balanceVersion");
+					createIndex(stmt, "idx_offers_lookup", "neorogue_equipment_offers", "equipmentId, upgraded, balanceVersion");
+					createIndex(stmt, "idx_offers_source", "neorogue_equipment_offers", "source, balanceVersion");
 
 					initialized = true;
 				}
@@ -169,6 +194,53 @@ public class AnalyticsManager {
 					.addValue("shieldsApplied", row.shieldsApplied)
 					.addValue("healingDone", row.healingDone)
 					.addValue("statusTotal", row.statusTotal)
+					.addRow();
+		}
+		if (sql.getRowCount() > 0) {
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
+		}
+	}
+
+	public static void recordOffer(OfferSnapshot snap) {
+		if (!ENABLED || !initialized || snap == null || snap.rows.isEmpty()) return;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					writeOffer(con, snap);
+				}
+				catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to record offer analytics " + snap.offerId);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private static void writeOffer(Connection con, OfferSnapshot snap) throws SQLException {
+		if (snap.rows.isEmpty()) return;
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_equipment_offers");
+		for (OfferRow row : snap.rows) {
+			sql.addValue("offerId", snap.offerId)
+					.addValue("slotIndex", row.slotIndex)
+					.addValue("ts", snap.timestamp)
+					.addValue("balanceVersion", snap.balanceVersion)
+					.addValue("playerUuid", snap.playerUuid)
+					.addValue("host", snap.host)
+					.addValue("slot", snap.slot)
+					.addValue("source", snap.source)
+					.addValue("regionType", snap.regionType)
+					.addValue("nodeType", snap.nodeType)
+					.addValue("level", snap.level)
+					.addValue("equipmentId", row.equipmentId)
+					.addValue("upgraded", row.upgraded ? 1 : 0)
+					.addValue("rarity", row.rarity)
+					.addValue("equipType", row.equipType)
+					.addValue("equipClass", row.equipClass)
+					.addValue("picked", row.picked ? 1 : 0)
+					.addValue("price", row.price)
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
