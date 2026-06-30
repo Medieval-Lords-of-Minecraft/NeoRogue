@@ -83,7 +83,7 @@ public class IAmAtomic extends Equipment implements Power {
 			if (!hasRiftDamage(ev2)) return TriggerResult.keep();
 
 			Player p2 = data.getPlayer();
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 			Sounds.enchant.play(p2, p2);
 			pc.play(p2, p2);
 			return TriggerResult.keep();

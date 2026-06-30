@@ -50,7 +50,7 @@ public class VengefulShield extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
-			data.applyStatus(StatusType.BERSERK, data, 1, -1);
+			data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			am.addCount(1);
 			return TriggerResult.keep();
 		});

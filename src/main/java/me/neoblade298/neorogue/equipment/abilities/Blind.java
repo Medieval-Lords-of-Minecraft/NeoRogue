@@ -66,7 +66,7 @@ public class Blind extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (blinded.contains(ev.getTarget().getUniqueId())) {
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, injure, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, injure, -1, this);
 			}
 			return TriggerResult.keep();
 		});

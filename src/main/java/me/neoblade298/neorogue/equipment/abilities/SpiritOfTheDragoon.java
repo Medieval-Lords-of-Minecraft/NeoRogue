@@ -48,7 +48,7 @@ public class SpiritOfTheDragoon extends Equipment {
 			Player p = data.getPlayer();
 			strPart.play(p, p);
 			Sounds.fire.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+			data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
 			
 			return TriggerResult.cancelIf(System.currentTimeMillis() - inst.lastCast < 5000);
 		});
@@ -60,7 +60,7 @@ public class SpiritOfTheDragoon extends Equipment {
 			super(data, sessionEq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
-				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
+				pdata.addSimpleShield(p.getUniqueId(), shield, 100, SpiritOfTheDragoon.this);
 				p.setVelocity(p.getVelocity().add(new Vector(0, 0.7, 0)));
 				Sounds.jump.play(p, p);
 				lastCast = System.currentTimeMillis();

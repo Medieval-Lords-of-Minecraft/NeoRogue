@@ -40,12 +40,12 @@ public class HoldTheLine extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			long endTime = System.currentTimeMillis() + 10000;
-			data.addSimpleShield(p.getUniqueId(), shields, 200);
+			data.addSimpleShield(p.getUniqueId(), shields, 200, this);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				if (endTime < System.currentTimeMillis())
 					return TriggerResult.remove();
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
+				FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.CONCUSSED, data, concussed, -1, this);
 				hit.play(p, p);
 				return TriggerResult.keep();
 			});

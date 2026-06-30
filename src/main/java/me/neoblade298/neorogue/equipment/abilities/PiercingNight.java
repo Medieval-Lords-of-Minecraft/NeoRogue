@@ -99,12 +99,12 @@ public class PiercingNight extends Equipment {
 									
 									FightInstance.dealDamage(new DamageMeta(data, lineDamage, DamageType.DARK, 
 										DamageStatTracker.of(id + slot, PiercingNight.this)), ent);
-									FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
+									FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1, PiercingNight.this);
 									
 									// Check if enemy was hit by both projectile and line
 									if (fd.hasStatus(statusName)) {
 										int currInsanity = fd.getStatus(StatusType.INSANITY).getStacks();
-										FightInstance.applyStatus(ent, StatusType.INSANITY, data, currInsanity * 2, -1);
+										FightInstance.applyStatus(ent, StatusType.INSANITY, data, currInsanity * 2, -1, PiercingNight.this);
 									}
 								}
 							}
@@ -148,11 +148,11 @@ public class PiercingNight extends Equipment {
 			FightData fd = FightInstance.getFightData(target);
 			
 			// Apply insanity and mark the enemy
-			FightInstance.applyStatus(target, StatusType.INSANITY, data, insanity, -1);
+			FightInstance.applyStatus(target, StatusType.INSANITY, data, insanity, -1, PiercingNight.this);
 			
 			// Mark with custom status for tracking double-hit
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-			fd.applyStatus(s, data, 1, 60); // 3 seconds duration
+			fd.applyStatus(s, data, 1, 60, PiercingNight.this); // 3 seconds duration
 			
 			Sounds.extinguish.play(data.getPlayer(), target.getLocation());
 		}

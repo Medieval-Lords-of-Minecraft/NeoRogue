@@ -124,7 +124,7 @@ public class EarthenDomain extends Equipment {
 					sc.play(data.getPlayer(), fLoc);
 					for (LivingEntity trg : trgs) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), trg);
-						FightInstance.applyStatus(trg, StatusType.CONCUSSED, data, conc, -1);
+						FightInstance.applyStatus(trg, StatusType.CONCUSSED, data, conc, -1, EarthenDomain.this);
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 20, 20));

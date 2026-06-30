@@ -35,7 +35,7 @@ public class AdaptiveChemvest extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		});
 	}

@@ -90,7 +90,7 @@ public class FrozenTomb extends Equipment {
 			
 			// Mark as triggered for this enemy
 			Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
-			fd.applyStatus(s, data, 1, -1);
+			fd.applyStatus(s, data, 1, -1, this);
 			
 			// Track for potential kill spread
 			tombTriggered.add(fd.getEntity().getUniqueId());
@@ -118,7 +118,7 @@ public class FrozenTomb extends Equipment {
 			// Spread frost to nearby enemies
 			spread.play(p, ev.getTarget().getLocation());
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
-				FightInstance.applyStatus(ent, StatusType.FROST, data, SPREAD_FROST, -1);
+				FightInstance.applyStatus(ent, StatusType.FROST, data, SPREAD_FROST, -1, this);
 			}
 			
 			return TriggerResult.keep();

@@ -56,7 +56,7 @@ public class Smite extends Equipment {
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanctified, -1);
+				FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanctified, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

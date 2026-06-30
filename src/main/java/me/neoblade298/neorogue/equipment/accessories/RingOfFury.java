@@ -43,7 +43,7 @@ public class RingOfFury extends Equipment {
 				am.addDouble(dmg);
 				if (am.getDouble() >= THRES) {
 					am.addDouble(-THRES);
-					data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+					data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
 				}
 			}
 			return TriggerResult.keep();

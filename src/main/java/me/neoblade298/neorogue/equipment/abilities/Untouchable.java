@@ -49,7 +49,7 @@ public class Untouchable extends Equipment {
 				am.addCount(ev.getStacks());
 				if (am.getCount() >= threshold) {
 					Player p = data.getPlayer();
-					FightInstance.applyStatus(p, StatusType.EVADE, data, am.getCount() / threshold, -1);
+					FightInstance.applyStatus(p, StatusType.EVADE, data, am.getCount() / threshold, -1, this);
 					am.setCount(am.getCount() % threshold);
 				}
 				return TriggerResult.keep();

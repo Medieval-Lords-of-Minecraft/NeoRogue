@@ -80,7 +80,7 @@ public class CreateEarth extends Equipment {
 
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq)), ent);
-						FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
+						FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1, CreateEarth.this);
 						FightInstance.knockback(ent, new Vector(0, 2, 0));
 					}
 				}

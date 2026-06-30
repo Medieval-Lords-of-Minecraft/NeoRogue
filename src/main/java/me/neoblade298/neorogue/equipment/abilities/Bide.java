@@ -55,7 +55,7 @@ public class Bide extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (fd, in) -> {
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, duration * 20);
+			data.addSimpleShield(p.getUniqueId(), shields, duration * 20, this);
 			sc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new BideInstance(p, id));
 			return TriggerResult.keep();
@@ -70,7 +70,7 @@ public class Bide extends Equipment {
 			action = (data, inputs) -> {
 				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 				bpc.play(p, p);
-				data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+				data.applyStatus(StatusType.BERSERK, data, berserk, -1, Bide.this);
 				strengthGain.play(p, p);
 				return TriggerResult.keep();
 			};

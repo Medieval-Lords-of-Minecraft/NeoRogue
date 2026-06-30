@@ -50,7 +50,7 @@ public class Quicken extends Equipment {
 			data.dash();
 			
 			// Grant 1 evade for 5 seconds
-			data.applyStatus(StatusType.EVADE, data, 1, 100);
+			data.applyStatus(StatusType.EVADE, data, 1, 100, this);
 			
 			// Reduce stacks by 1 and update icon
 			if (stacks.getCount() > 0) {

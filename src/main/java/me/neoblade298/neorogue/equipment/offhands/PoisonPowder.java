@@ -53,7 +53,7 @@ public class PoisonPowder extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, poisonDuration);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, poisonDuration, this);
 			return TriggerResult.keep();
 		});
 	}

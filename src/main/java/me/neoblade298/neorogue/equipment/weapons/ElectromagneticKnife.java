@@ -53,7 +53,7 @@ public class ElectromagneticKnife extends Equipment {
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				if (fd.hasStatus(StatusType.ELECTRIFIED)) stacks += inc;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, this);
 				return TriggerResult.keep();
 			};
 		}

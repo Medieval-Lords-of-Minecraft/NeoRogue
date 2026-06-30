@@ -74,7 +74,7 @@ public class StaticSurge extends Equipment implements Power {
 					PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in3;
 					ev2.getMeta().addDamageSlice(
 							new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, StaticSurge.this)));
-					FightInstance.applyStatus(ev2.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
+					FightInstance.applyStatus(ev2.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1, StaticSurge.this);
 					return TriggerResult.keep();
 				});
 			}

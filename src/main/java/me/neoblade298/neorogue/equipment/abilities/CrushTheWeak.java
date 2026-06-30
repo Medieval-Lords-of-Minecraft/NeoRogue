@@ -83,7 +83,7 @@ public class CrushTheWeak extends Equipment implements Power {
 			am.addCount(ev.getStacks());
 			if (am.getCount() >= threshold) {
 				Player p2 = data.getPlayer();
-				data.addPermanentShield(p2.getUniqueId(), SHIELDS * (am.getCount() / threshold));
+				data.addPermanentShield(p2.getUniqueId(), SHIELDS * (am.getCount() / threshold), this);
 				am.setCount(am.getCount() % threshold);
 			}
 			return TriggerResult.keep();

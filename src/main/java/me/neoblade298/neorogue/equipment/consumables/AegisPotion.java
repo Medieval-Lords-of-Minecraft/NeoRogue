@@ -32,7 +32,7 @@ public class AegisPotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		// Upfront shields
-		data.addPermanentShield(p.getUniqueId(), upfront);
+		data.addPermanentShield(p.getUniqueId(), upfront, this);
 
 		// Periodic shields every 3 seconds
 		int[] ticks = { 0 };
@@ -41,7 +41,7 @@ public class AegisPotion extends Consumable {
 			if (ticks[0] >= TICK_INTERVAL) {
 				ticks[0] = 0;
 				Player p2 = data.getPlayer();
-				data.addSimpleShield(p2.getUniqueId(), periodic, 60);
+				data.addSimpleShield(p2.getUniqueId(), periodic, 60, this);
 			}
 			return TriggerResult.keep();
 		});

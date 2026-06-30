@@ -33,7 +33,7 @@ public class BluntedArrow extends Ammunition {
 	@Override
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity trg) {
 		FightData fd = FightInstance.getFightData(trg);
-		fd.applyStatus(StatusType.INJURY, inst.getOwner(), stacks, -1);
+		fd.applyStatus(StatusType.INJURY, inst.getOwner(), stacks, -1, this);
 	}
 
 	@Override

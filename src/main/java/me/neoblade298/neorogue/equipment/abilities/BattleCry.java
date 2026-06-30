@@ -57,7 +57,7 @@ public class BattleCry extends Equipment {
 			Player p = data.getPlayer();
 			sc.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 200, this);
 			return TriggerResult.keep();
 		}));
 	}

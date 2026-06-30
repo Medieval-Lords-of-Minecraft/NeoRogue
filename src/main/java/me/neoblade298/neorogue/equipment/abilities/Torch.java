@@ -55,7 +55,7 @@ public class Torch extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
-					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1, Torch.this);
 					circ.play(pc, p.getLocation(), LocalAxes.xz(), pc);
 					Sounds.infect.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {

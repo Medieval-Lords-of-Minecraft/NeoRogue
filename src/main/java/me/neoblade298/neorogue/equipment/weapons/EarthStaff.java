@@ -75,7 +75,7 @@ public class EarthStaff extends Equipment {
 					LinkedList<LivingEntity> closeEnemies = TargetHelper.getEntitiesInRadius(p, innerProps);
 					for (LivingEntity ent : closeEnemies) {
 						weaponDamage(p, data, ent);
-						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0);
+						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0, this);
 					}
 
 					data.addTask(new BukkitRunnable() {
@@ -87,7 +87,7 @@ public class EarthStaff extends Equipment {
 							farEnemies.removeAll(closeEnemies);
 							for (LivingEntity ent : farEnemies) {
 								weaponDamage(p, data, ent);
-								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, conc, 0);
+								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, conc, 0, this);
 							}
 						}
 					}.runTaskLater(NeoRogue.inst(), 5));

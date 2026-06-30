@@ -35,7 +35,7 @@ public class CrystalFeather extends Artifact {
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			Player p = data.getPlayer();
-			data.applyStatus(StatusType.INVINCIBLE, data, 1, dur * 20);
+			data.applyStatus(StatusType.INVINCIBLE, data, 1, dur * 20, this);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, dur * 20, 1));
 			Sounds.glass.play(p, p);
 			p.sendMessage(hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));

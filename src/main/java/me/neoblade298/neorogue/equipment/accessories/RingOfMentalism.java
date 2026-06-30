@@ -39,7 +39,7 @@ public class RingOfMentalism extends Equipment {
 			am.addCount(1);
 			if (am.getCount() >= 3) {
 				am.setCount(0);
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1, this);
 			}
 			return TriggerResult.keep();
 		});

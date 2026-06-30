@@ -49,7 +49,7 @@ public class MindBlast extends Equipment {
 			if (am.getCount() >= THRES) {
 				am.addCount(-THRES);
 				pdata.addManaRegen(regen);
-				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 				Player p = data.getPlayer();
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);

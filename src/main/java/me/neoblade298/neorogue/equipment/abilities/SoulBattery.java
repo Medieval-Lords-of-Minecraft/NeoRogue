@@ -71,7 +71,7 @@ public class SoulBattery extends Equipment {
 			int totalElectrified = data.getStats().getStatusesApplied().getOrDefault(StatusType.ELECTRIFIED, 0);
 			int shields = totalElectrified / threshold;
 			if (shields > 0) {
-				data.addSimpleShield(p.getUniqueId(), shields, SHIELD_DURATION);
+				data.addSimpleShield(p.getUniqueId(), shields, SHIELD_DURATION, this);
 			}
 
 			Location center = p.getLocation().clone();

@@ -84,7 +84,7 @@ public class BitterCold extends Equipment implements Power {
 			if (fd.getStatus(StatusType.FROST).getStacks() < THRESHOLD) return TriggerResult.keep();
 			if (fd.hasStatus(p2.getName() + "-bitterCold")) return TriggerResult.keep();
 			Status s = new BasicStatus(p2.getName() + "-bitterCold", data, StatusClass.NONE, true);
-			fd.applyStatus(s, data, 1, -1);
+			fd.applyStatus(s, data, 1, -1, this);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, this)), fd.getEntity());
 			pc.play(p2, fd.getEntity());
 			sc.play(p2, fd.getEntity());

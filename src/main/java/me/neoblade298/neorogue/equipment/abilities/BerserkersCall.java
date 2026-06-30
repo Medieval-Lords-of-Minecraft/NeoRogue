@@ -56,13 +56,13 @@ public class BerserkersCall extends Equipment {
 			Player p = data.getPlayer();
 			sc.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.BERSERK, data, 1, -1);
+			data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			Status s = data.getStatus(StatusType.BERSERK);
 			if (s != null && s.getStacks() >= BERSERK_CUTOFF) {
-				data.applyStatus(StatusType.STRENGTH, data, berserkStrength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, berserkStrength, -1, this);
 			}
 			else {
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

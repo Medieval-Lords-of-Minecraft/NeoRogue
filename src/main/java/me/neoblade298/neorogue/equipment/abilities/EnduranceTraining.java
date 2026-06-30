@@ -34,7 +34,7 @@ public class EnduranceTraining extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
-		data.addPermanentShield(p.getUniqueId(), shields);
+		data.addPermanentShield(p.getUniqueId(), shields, this);
 		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			ev.getAmountBuff().add(Buff.increase(data, dur, BuffStatTracker.ignored(this)));

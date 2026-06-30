@@ -58,7 +58,7 @@ public class Dismantle extends Equipment implements Power {
 			action = (pdata, in) -> {
 				DealDamageEvent ev = (DealDamageEvent) in;
 				if (ev.getTarget() == target) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1, Dismantle.this);
 				}
 				else {
 					target = ev.getTarget();

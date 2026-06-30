@@ -47,8 +47,8 @@ public class Bulwark extends Equipment {
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
-			data.applyStatus(StatusType.PROTECT, data, prot, 60);
-			data.applyStatus(StatusType.SHELL, data, prot, 60);
+			data.applyStatus(StatusType.PROTECT, data, prot, 60, this);
+			data.applyStatus(StatusType.SHELL, data, prot, 60, this);
 			return TriggerResult.keep();
 		});
 	}
@@ -68,7 +68,7 @@ public class Bulwark extends Equipment {
 			super(id);
 			action = (pdata, inputs) -> {
 				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
-				s = pdata.addPermanentShield(data.getPlayer().getUniqueId(), shields);
+				s = pdata.addPermanentShield(data.getPlayer().getUniqueId(), shields, Bulwark.this);
 				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};

@@ -106,19 +106,19 @@ public class Quiverthorn extends Equipment {
 				
 				if (burnStacks > 0) {
 					int toApply = (int) (burnStacks * statusPercent);
-					FightInstance.applyStatus(target, StatusType.BURN, data, toApply, -1);
+					FightInstance.applyStatus(target, StatusType.BURN, data, toApply, -1, this);
 				}
 				if (frostStacks > 0) {
 					int toApply = (int) (frostStacks * statusPercent);
-					FightInstance.applyStatus(target, StatusType.FROST, data, toApply, -1);
+					FightInstance.applyStatus(target, StatusType.FROST, data, toApply, -1, this);
 				}
 				if (injuryStacks > 0) {
 					int toApply = (int) (injuryStacks * statusPercent);
-					FightInstance.applyStatus(target, StatusType.INJURY, data, toApply, -1);
+					FightInstance.applyStatus(target, StatusType.INJURY, data, toApply, -1, this);
 				}
 				if (rendStacks > 0) {
 					int toApply = (int) (rendStacks * statusPercent);
-					FightInstance.applyStatus(target, StatusType.REND, data, toApply, -1);
+					FightInstance.applyStatus(target, StatusType.REND, data, toApply, -1, this);
 				}
 				
 				pc.play(p, target.getLocation());

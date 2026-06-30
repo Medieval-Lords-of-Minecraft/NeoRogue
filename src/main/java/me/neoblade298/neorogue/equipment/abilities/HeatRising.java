@@ -52,7 +52,7 @@ public class HeatRising extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Sounds.fire.play(p, p);
-					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1, HeatRising.this);
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)), -1);
 				}
 			});

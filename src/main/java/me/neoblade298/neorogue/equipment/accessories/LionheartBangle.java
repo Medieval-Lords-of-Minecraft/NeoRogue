@@ -33,7 +33,7 @@ public class LionheartBangle extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		int str = (int) data.getMaxHealth() / thres;
-		data.applyStatus(StatusType.STRENGTH, data, str, -1);
+		data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 	}
 
 	@Override

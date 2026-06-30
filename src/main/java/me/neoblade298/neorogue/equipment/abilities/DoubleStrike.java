@@ -50,7 +50,7 @@ public class DoubleStrike extends Equipment {
 			pc.play(p, p);
 			data.resetBasicAttackCooldown(EquipSlot.HOTBAR);
 			data.resetBasicAttackCooldown(EquipSlot.OFFHAND);
-			data.addSimpleShield(p.getUniqueId(), shields, 40);
+			data.addSimpleShield(p.getUniqueId(), shields, 40, this);
 			return TriggerResult.keep();
 		}));
 	}

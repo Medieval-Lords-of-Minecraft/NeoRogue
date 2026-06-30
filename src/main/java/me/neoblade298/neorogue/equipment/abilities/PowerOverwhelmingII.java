@@ -78,7 +78,7 @@ public class PowerOverwhelmingII extends Equipment implements Power {
 			Player p = data.getPlayer();
 			if (p == null) return TriggerResult.keep();
 
-			data.addSimpleShield(p.getUniqueId(), shields, shieldDuration * 20);
+			data.addSimpleShield(p.getUniqueId(), shields, shieldDuration * 20, this);
 			return TriggerResult.keep();
 		});
 

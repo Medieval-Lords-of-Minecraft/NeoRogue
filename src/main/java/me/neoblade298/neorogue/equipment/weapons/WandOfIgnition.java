@@ -61,7 +61,7 @@ public class WandOfIgnition extends Equipment {
 			am.addDouble(1);
 			if (am.getDouble() >= corrThres) {
 				am.addDouble(-corrThres);
-				FightInstance.applyStatus(data.getPlayer(), StatusType.CORRUPTION, data, corr, -1);
+				FightInstance.applyStatus(data.getPlayer(), StatusType.CORRUPTION, data, corr, -1, this);
 			}
 			data.wandDelaySecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
@@ -91,7 +91,7 @@ public class WandOfIgnition extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			WandOfIgnitionProjectile.hit.play(data.getPlayer(), loc);
-			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1, this);
 		}
 
 		@Override

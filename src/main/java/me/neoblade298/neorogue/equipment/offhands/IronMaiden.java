@@ -52,7 +52,7 @@ public class IronMaiden extends Equipment {
 			long now = System.currentTimeMillis();
 			if (now - am.getTime() < 1000L) return TriggerResult.keep();
 			am.setTime(now);
-			data.applyStatus(StatusType.THORNS, data, thorns, -1);
+			data.applyStatus(StatusType.THORNS, data, thorns, -1, this);
 			am.addCount(1);
 			return TriggerResult.keep();
 		});

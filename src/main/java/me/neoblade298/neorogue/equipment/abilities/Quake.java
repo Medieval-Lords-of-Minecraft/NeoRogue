@@ -54,7 +54,7 @@ public class Quake extends Equipment {
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
+				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

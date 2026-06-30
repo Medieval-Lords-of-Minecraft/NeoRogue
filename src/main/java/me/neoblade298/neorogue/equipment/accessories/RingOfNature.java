@@ -35,7 +35,7 @@ public class RingOfNature extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.EARTHEN)) {
 				Player p = data.getPlayer();
-				data.addSimpleShield(p.getUniqueId(), shields, dur * 20);
+				data.addSimpleShield(p.getUniqueId(), shields, dur * 20, this);
 			}
 			return TriggerResult.keep();
 		});

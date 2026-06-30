@@ -76,8 +76,8 @@ public class SmokeBomb extends Equipment {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.STEALTH, data, 1, 20);
-								data.addSimpleShield(p.getUniqueId(), shields, 40);
+								data.applyStatus(StatusType.STEALTH, data, 1, 20, SmokeBomb.this);
+								data.addSimpleShield(p.getUniqueId(), shields, 40, SmokeBomb.this);
 							}
 							if (++tick == TICKS) this.cancel();
 						}

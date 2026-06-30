@@ -110,7 +110,7 @@ public class Electrode extends Equipment {
 				boolean marked = enemiesHit.contains(ent.getUniqueId());
 				FightInstance.dealDamage(new DamageMeta(data, marked ? damage * 2 : damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 				if (marked) {
-					FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1);
+					FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1, Electrode.this);
 				}
 			}
 		}

@@ -54,7 +54,7 @@ public class ToRuins extends Equipment {
 					int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
 					int intellect = burnStacks / burnPerIntellect;
 					if (intellect > 0) {
-						data.applyStatus(StatusType.INTELLECT, data, intellect, -1);
+						data.applyStatus(StatusType.INTELLECT, data, intellect, -1, ToRuins.this);
 						Player p = data.getPlayer();
 						Sounds.enchant.play(p, p);
 					}

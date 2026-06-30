@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -78,7 +77,7 @@ public class Frostreaver extends Bow {
 			if (fd != null) {
 				fd.applyStatus(
 					Status.createByGenericType(GenericStatusType.BASIC, "frostreaver-" + p.getName(), fd, true),
-					fd, 1, -1);
+					fd, 1, -1, this);
 			}
 			return TriggerResult.keep();
 		});

@@ -28,7 +28,7 @@ public class MinorShieldsPotion extends Consumable {
 	
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		data.addPermanentShield(p.getUniqueId(), shields);
+		data.addPermanentShield(p.getUniqueId(), shields, this);
 		return TriggerResult.remove();
 	}
 

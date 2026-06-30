@@ -38,7 +38,7 @@ public class StoneSword extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addPermanentShield(data.getPlayer().getUniqueId(), shields);
+		data.addPermanentShield(data.getPlayer().getUniqueId(), shields, this);
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;

@@ -96,7 +96,7 @@ public class Firestarter extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			// Apply burn to hit enemies
-			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1, Firestarter.this);
 		}
 
 		@Override

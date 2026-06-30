@@ -103,7 +103,7 @@ public class ElectricOrb extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			if (!hitEntities.contains(hit.getUniqueId())) return;
 
-			hit.applyStatus(StatusType.ELECTRIFIED, data, elec, -1);
+			hit.applyStatus(StatusType.ELECTRIFIED, data, elec, -1, ElectricOrb.this);
 			hit.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 2));
 		}
 

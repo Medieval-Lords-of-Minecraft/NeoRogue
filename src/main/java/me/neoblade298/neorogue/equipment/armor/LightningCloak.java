@@ -45,7 +45,7 @@ public class LightningCloak extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			ev.getDamager().applyStatus(StatusType.ELECTRIFIED, data, base, -1);
+			ev.getDamager().applyStatus(StatusType.ELECTRIFIED, data, base, -1, this);
 			return TriggerResult.keep();
 		});
 		

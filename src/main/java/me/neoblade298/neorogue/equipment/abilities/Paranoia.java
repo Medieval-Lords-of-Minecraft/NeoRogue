@@ -70,7 +70,7 @@ public class Paranoia extends Equipment {
 			if (timeSinceAttack.getCount() >= 2) {
 				// Haven't attacked in 2+ seconds, apply insanity
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-					FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
+					FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1, this);
 				}
 			}
 
@@ -94,7 +94,7 @@ public class Paranoia extends Equipment {
 
 				// Grant shields
 				int shieldAmount = SHIELDS_PER_STACK * currentStacks;
-				data.addSimpleShield(p.getUniqueId(), shieldAmount, 100); // 5 seconds = 100 ticks
+				data.addSimpleShield(p.getUniqueId(), shieldAmount, 100, this); // 5 seconds = 100 ticks
 
 				// Reset stacks and icon to base
 				stacks.setCount(0);

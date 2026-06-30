@@ -67,7 +67,7 @@ public class ShadowWalk extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			data.applyStatus(StatusType.STEALTH, data, 1, 100, this);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});

@@ -70,7 +70,7 @@ public class BrightestFlame extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+			data.applyStatus(StatusType.CORRUPTION, data, corr, -1, this);
 			data.chargeSecs(1).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		}));
@@ -108,7 +108,7 @@ public class BrightestFlame extends Equipment {
 					DamageStatTracker.of(ID + slot, eq)));
 			
 			// Apply burn
-			FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1);
+			FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1, BrightestFlame.this);
 			
 			Sounds.fire.play(data.getPlayer(), target.getLocation());
 		}

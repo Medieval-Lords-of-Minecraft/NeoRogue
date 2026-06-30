@@ -51,7 +51,7 @@ public class FencingSword extends Equipment {
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (am.addCount(1) >= 3) {
 				am.setCount(0);
-				data.addSimpleShield(p.getUniqueId(), shields, 60);
+				data.addSimpleShield(p.getUniqueId(), shields, 60, this);
 			}
 			return TriggerResult.keep();
 		});

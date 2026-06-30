@@ -79,9 +79,9 @@ public class CollectionHex extends Equipment {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(id, this)));
 				data.addMana(mana);
-				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, -1, -1);
+				fd.applyStatus(s, data, -1, -1, this);
 			}
 			return TriggerResult.keep();
 		});
@@ -97,7 +97,7 @@ public class CollectionHex extends Equipment {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 160);
+				fd.applyStatus(s, data, 1, 160, this);
 			}
 			return TriggerResult.keep();
 		});

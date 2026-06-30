@@ -48,8 +48,8 @@ public class CripplingFencingSword extends Equipment {
 			if (am.addCount(1) < 3) return TriggerResult.keep();
 			am.setCount(0);
 			FightInstance.getFightData(target.getUniqueId())
-					.applyStatus(StatusType.CONCUSSED, data, concussed, -1);
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
+					.applyStatus(StatusType.CONCUSSED, data, concussed, -1, this);
+			data.addSimpleShield(p.getUniqueId(), shields, 60, this);
 			return TriggerResult.keep();
 		});
 	}

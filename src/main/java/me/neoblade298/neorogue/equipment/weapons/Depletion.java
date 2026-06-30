@@ -103,7 +103,7 @@ public class Depletion extends Equipment {
 			Sounds.infect.play(p, loc);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);
-			data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160);
+			data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160, this);
 			for (LivingEntity ent : trgs) {
 				Vector v = loc.toVector().subtract(ent.getLocation().toVector());
 				if (v.isZero()) continue;

@@ -64,7 +64,7 @@ public class Entropy extends Equipment implements Power {
 		data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
 			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 			Sounds.enchant.play(p2, p2);
 			pc.play(p2, p2);
 			if (am.getCount() % riftThres == 0) {

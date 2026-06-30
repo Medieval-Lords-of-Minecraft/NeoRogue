@@ -95,7 +95,7 @@ public class Splinterstone extends Equipment {
 			Vector up = new Vector(0, 1, 0);
 			Vector left = forward.clone().crossProduct(up);
 			LivingEntity ent = hit.getEntity();
-			hit.applyStatus(StatusType.CONCUSSED, data, conc, -1);
+			hit.applyStatus(StatusType.CONCUSSED, data, conc, -1, Splinterstone.this);
 			cone.play(tick, ent.getLocation(), new LocalAxes(left, up, forward), tick);
 			sc.play(data.getPlayer(), ent.getLocation());
 			for (LivingEntity tmp : TargetHelper.getEntitiesInCone(data.getPlayer(), ent.getLocation(), forward, tp)) {

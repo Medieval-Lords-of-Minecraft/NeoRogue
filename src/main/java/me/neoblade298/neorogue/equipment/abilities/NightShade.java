@@ -62,7 +62,7 @@ public class NightShade extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			data.applyStatus(StatusType.STEALTH, data, 1, 100, this);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});
@@ -77,7 +77,7 @@ public class NightShade extends Equipment {
 				Sounds.anvil.play(p, p);
 				ev.getMeta().addDamageSlice(
 						new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
-				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1, this);
 			}
 			return TriggerResult.keep();
 		});

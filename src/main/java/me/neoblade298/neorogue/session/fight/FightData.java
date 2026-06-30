@@ -24,6 +24,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
@@ -415,23 +416,55 @@ public class FightData {
 	
 	// No decay
 	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, boolean isSecondary) {
-		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary);
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary, null);
+	}
+	// No decay
+	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, boolean isSecondary, Equipment source) {
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary, source);
 	}
 	// No decay
 	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks) {
-		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false);
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false, null);
+	}
+	// No decay
+	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, Equipment source) {
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false, source);
+	}
+
+	// Shields attributed to a named (non-equipment) source, e.g. a status effect.
+	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, String sourceKey, Component sourceDisplay) {
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false, sourceKey, sourceDisplay);
 	}
 	
 	public Shield addPermanentShield(UUID applier, double amt, boolean isSecondary) {
-		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary);
+		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary, null);
+	}
+	
+	public Shield addPermanentShield(UUID applier, double amt, boolean isSecondary, Equipment source) {
+		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary, source);
 	}
 	
 	public Shield addPermanentShield(UUID applier, double amt) {
-		return addShield(applier, amt, true, 0, 0, 0, 0, false);
+		return addShield(applier, amt, true, 0, 0, 0, 0, false, null);
+	}
+	
+	public Shield addPermanentShield(UUID applier, double amt, Equipment source) {
+		return addShield(applier, amt, true, 0, 0, 0, 0, false, source);
 	}
 	
 	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
 			int decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
+		return addShield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions, isSecondary, null);
+	}
+	
+	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
+			int decayPeriodTicks, int decayRepetitions, boolean isSecondary, Equipment source) {
+		return addShield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions, isSecondary,
+				source == null ? null : source.getId(), source == null ? null : source.getDisplay());
+	}
+
+	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
+			int decayPeriodTicks, int decayRepetitions, boolean isSecondary, String sourceKey, Component sourceDisplay) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
 		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
@@ -443,7 +476,7 @@ public class FightData {
 		}
 		shield.applyBuffs(ev.getAmountBuff(), ev.getDurationBuff());
 		if (applierData != null) {
-			applierData.getStats().addShieldsApplied(shield.getTotal());
+			applierData.getStats().addShieldsApplied(sourceKey, sourceDisplay, shield.getTotal());
 		}
 		shields.addShield(shield);
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
@@ -513,18 +546,34 @@ public class FightData {
 	}
 	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
-		applyStatus(Status.createByType(type, this), applier, stacks, ticks, null, false);
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, null, false, null);
+	}
+	
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, Equipment source) {
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, null, false, source);
 	}
 	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
-		applyStatus(Status.createByType(type, this), applier, stacks, ticks, meta, isSecondary);
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, meta, isSecondary, null);
+	}
+	
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary, Equipment source) {
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, meta, isSecondary, source);
 	}
 	
 	public void applyStatus(Status status, FightData applier, int stacks, int ticks) {
-		applyStatus(status, applier, stacks, ticks, null, false);
+		applyStatus(status, applier, stacks, ticks, null, false, null);
+	}
+	
+	public void applyStatus(Status status, FightData applier, int stacks, int ticks, Equipment source) {
+		applyStatus(status, applier, stacks, ticks, null, false, source);
 	}
 	
 	public void applyStatus(Status status, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
+		applyStatus(status, applier, stacks, ticks, meta, isSecondary, null);
+	}
+	
+	public void applyStatus(Status status, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary, Equipment source) {
 		if (entity == null || !entity.isValid()) return;
 		String id = status.getId();
 		status = statuses.getOrDefault(id, status); // If status exists, use that, otherwise add the new one
@@ -558,7 +607,7 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
 				StatusType type = StatusType.valueOf(id);
-				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, finalStacks);
+				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, finalStacks);
 			}
 			catch (IllegalArgumentException ex) {
 				// Not a standard status, ignore

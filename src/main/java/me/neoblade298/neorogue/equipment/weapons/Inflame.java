@@ -83,7 +83,7 @@ public class Inflame extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			boolean lvlUp = hit.hasStatus(StatusType.BURN);
-			hit.applyStatus(StatusType.BURN, data, stacks + (growth * lvl), -1);
+			hit.applyStatus(StatusType.BURN, data, stacks + (growth * lvl), -1, this);
 			if (lvlUp) lvl++;
 		}
 

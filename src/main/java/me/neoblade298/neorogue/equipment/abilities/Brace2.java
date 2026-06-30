@@ -40,7 +40,7 @@ public class Brace2 extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			pc.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			equip.play(p, p);
 			return TriggerResult.keep();
 		}));

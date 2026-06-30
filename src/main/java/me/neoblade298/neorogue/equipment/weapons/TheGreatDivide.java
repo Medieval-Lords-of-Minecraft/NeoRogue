@@ -70,7 +70,7 @@ public class TheGreatDivide extends Equipment {
 			
 			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation(), end, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
+				FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1, this);
 				FightInstance.knockback(ent, new Vector(0, 0.4, 0));
 			}
 			return TriggerResult.keep();

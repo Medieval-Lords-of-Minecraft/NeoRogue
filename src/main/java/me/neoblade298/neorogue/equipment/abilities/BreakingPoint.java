@@ -82,7 +82,7 @@ public class BreakingPoint extends Equipment {
 				am.setTask(task);
 				if (am.getDouble() <= 0)
 					return TriggerResult.keep();
-				Shield shield = data.addPermanentShield(data.getPlayer().getUniqueId(), am.getDouble(), true);
+				Shield shield = data.addPermanentShield(data.getPlayer().getUniqueId(), am.getDouble(), true, this);
 				am.setObject(shield);
 			}
 			return TriggerResult.keep();

@@ -78,7 +78,7 @@ public class GrowingHex extends Equipment {
 						Buff.increase(data, damage + am.getCount(), BuffStatTracker.damageBuffAlly(id, this)));
 				am.addCount(growth);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, -1, -1);
+				fd.applyStatus(s, data, -1, -1, this);
 			}
 			return TriggerResult.keep();
 		});
@@ -93,7 +93,7 @@ public class GrowingHex extends Equipment {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 160);
+				fd.applyStatus(s, data, 1, 160, this);
 			}
 			return TriggerResult.keep();
 		});

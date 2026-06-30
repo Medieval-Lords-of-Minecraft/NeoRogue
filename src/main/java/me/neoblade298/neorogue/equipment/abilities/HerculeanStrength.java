@@ -36,7 +36,7 @@ public class HerculeanStrength extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.BERSERK, data, bers, -1);
+		data.applyStatus(StatusType.BERSERK, data, bers, -1, this);
 
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
@@ -47,7 +47,7 @@ public class HerculeanStrength extends Equipment {
 
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, data, conc, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, data, conc, -1, this);
 			return TriggerResult.keep();
 		});
 	}

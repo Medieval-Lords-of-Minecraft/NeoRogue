@@ -40,7 +40,7 @@ public class Nightmare extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(pdata.getPlayer(), data, ev.getTarget());
-			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1, this);
 			return TriggerResult.keep();
 		});
 	}

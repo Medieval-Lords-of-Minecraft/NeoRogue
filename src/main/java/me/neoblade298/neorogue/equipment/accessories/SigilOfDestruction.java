@@ -49,8 +49,8 @@ public class SigilOfDestruction extends Equipment {
 				while (am.getDouble() >= THRES) {
 					am.addDouble(-THRES);
 					Player p = data.getPlayer();
-					data.applyStatus(StatusType.BERSERK, data, 1, -1);
-					data.addSimpleShield(p.getUniqueId(), shields, 100);
+					data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
+					data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 				}
 			}
 			return TriggerResult.keep();

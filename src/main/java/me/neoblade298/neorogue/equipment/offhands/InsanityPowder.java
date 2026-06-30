@@ -42,7 +42,7 @@ public class InsanityPowder extends Equipment {
 			
 			Player p = data.getPlayer();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				FightInstance.applyStatus(ent, StatusType.INSANITY, p, stacks, -1);
+				FightInstance.applyStatus(ent, StatusType.INSANITY, p, stacks, -1, this);
 			}
 			return TriggerResult.keep();
 		});

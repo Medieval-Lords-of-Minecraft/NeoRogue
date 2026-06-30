@@ -101,7 +101,7 @@ public class Stormspike extends Equipment {
 			// If we hit 2 enemies, grant buffs
 			if (am.getCount() == 2) {
 				// Grant shields
-				data.addSimpleShield(p.getUniqueId(), shields, 120);
+				data.addSimpleShield(p.getUniqueId(), shields, 120, Stormspike.this);
 				
 				// Track when empowerment started
 				long startTime = System.currentTimeMillis();
@@ -118,7 +118,7 @@ public class Stormspike extends Equipment {
 					ev.getMeta().addDamageSlice(new DamageSlice(data, basicLightning, DamageType.LIGHTNING,
 						DamageStatTracker.of(triggerId, eq)));
 					Sounds.firework.play(pl, pl);
-					FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, electrified, -1);
+					FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, electrified, -1, Stormspike.this);
 					return TriggerResult.keep();
 				});
 				

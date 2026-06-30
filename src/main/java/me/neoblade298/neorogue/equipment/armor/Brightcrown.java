@@ -46,7 +46,7 @@ public class Brightcrown extends Equipment {
 		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
-			ev.getDamager().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
+			ev.getDamager().applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 	}

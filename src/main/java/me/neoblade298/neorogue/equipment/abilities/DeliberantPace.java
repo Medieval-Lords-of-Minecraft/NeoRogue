@@ -85,7 +85,7 @@ public class DeliberantPace extends Equipment implements Power {
 			// Every ticksRequired ticks without sprinting, grant a stack of focus
 			if (am.getCount() >= seconds) {
 				am.setCount(0);
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
+				data.applyStatus(StatusType.FOCUS, data, 1, -1, this);
 				pc.play(p2, p2);
 				Sounds.enchant.play(p2, p2);
 			}

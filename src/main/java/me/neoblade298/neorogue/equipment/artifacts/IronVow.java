@@ -44,7 +44,7 @@ public class IronVow extends Artifact {
 				ticksNotSprinting[0]++;
 				if (ticksNotSprinting[0] >= 2) {
 					ticksNotSprinting[0] = 0;
-					data.addPermanentShield(p.getUniqueId(), shields);
+					data.addPermanentShield(p.getUniqueId(), shields, this);
 				}
 			} else {
 				ticksNotSprinting[0] = 0;

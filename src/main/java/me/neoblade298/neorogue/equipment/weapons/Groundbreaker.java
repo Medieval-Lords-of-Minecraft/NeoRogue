@@ -70,7 +70,7 @@ public class Groundbreaker extends Equipment {
 					Sounds.explode.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						weaponDamage(p, data, ent);
-						FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
+						FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1, this);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20));

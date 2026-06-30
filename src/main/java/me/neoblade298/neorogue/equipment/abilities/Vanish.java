@@ -46,7 +46,7 @@ public class Vanish extends Equipment {
 				inst.addCount(1);
 				ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 				if (inst.getCount() >= threshold) {
-					data.applyStatus(StatusType.EVADE, data, 1, 100);
+					data.applyStatus(StatusType.EVADE, data, 1, 100, this);
 					data.addStamina(10);
 				}
 				return TriggerResult.keep();

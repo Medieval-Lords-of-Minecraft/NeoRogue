@@ -39,7 +39,7 @@ public class RazorTome extends Equipment {
 			if (am.getCount() >= thres) {
 				am.addCount(-thres);
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, rend, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, rend, -1, this);
 			}
 			return TriggerResult.keep();
 		});

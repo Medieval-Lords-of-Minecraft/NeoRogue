@@ -47,7 +47,7 @@ public class PowerThrough extends Equipment implements Power {
 			inst.addCount(ev.getStacks());
 			
 			int num = inst.getCount() / cutoff;
-			data.applyStatus(StatusType.PROTECT, data, num, -1);
+			data.applyStatus(StatusType.PROTECT, data, num, -1, this);
 			inst.setCount(inst.getCount() % cutoff);
 			return TriggerResult.keep();
 		});

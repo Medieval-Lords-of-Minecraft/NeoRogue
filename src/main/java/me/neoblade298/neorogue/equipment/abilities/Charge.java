@@ -80,7 +80,7 @@ public class Charge extends Equipment implements Power {
 		private void addShield(PlayerFightData pdata) {
 			if (System.currentTimeMillis() - lastUsed < 3000) return;
 			Player p = pdata.getPlayer();
-			pdata.addSimpleShield(p.getUniqueId(), shields, 60);
+			pdata.addSimpleShield(p.getUniqueId(), shields, 60, Charge.this);
 			lastUsed = System.currentTimeMillis();
 		}
 	}

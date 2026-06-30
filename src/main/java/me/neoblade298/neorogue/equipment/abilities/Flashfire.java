@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -59,11 +58,11 @@ public class Flashfire extends Equipment {
 				FightData fd = FightInstance.getFightData(ent);
 				if (fd.hasStatus(StatusType.BURN)) {
 					fd.applyStatus(StatusType.BURN, data,
-							fd.getStatus(StatusType.BURN).getStacks() * (hasBonus ? 2 : 1), slot);
+							fd.getStatus(StatusType.BURN).getStacks() * (hasBonus ? 2 : 1), slot, this);
 				}
 
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
-				fd.applyStatus(StatusType.BURN, data, burn, -1);
+				fd.applyStatus(StatusType.BURN, data, burn, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

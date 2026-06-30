@@ -68,7 +68,7 @@ public class ThriveInChaos extends Equipment implements Power {
 				}
 				int stealthStacks = totalInsanity / insanityPerStack;
 				if (stealthStacks > 0) {
-					data.applyStatus(StatusType.STEALTH, data, stealthStacks, 60);
+					data.applyStatus(StatusType.STEALTH, data, stealthStacks, 60, this);
 				}
 			}
 			return TriggerResult.keep();

@@ -63,7 +63,7 @@ public class Analyze2 extends Equipment {
 				// When we hit threshold stacks, apply stamina regen buff and evade if not already active
 				if (stacks.getCount() == staminaRegenStacks) {
 					data.addStaminaRegen(staminaRegen);
-					data.applyStatus(StatusType.EVADE, data, 1, -1);
+					data.applyStatus(StatusType.EVADE, data, 1, -1, this);
 					Sounds.enchant.play(p, p);
 				}
 			}
@@ -84,7 +84,7 @@ public class Analyze2 extends Equipment {
 			
 			// Grant shields
 			int shieldAmount = SHIELDS_PER_STACK * currentStacks;
-			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100); // 5 seconds = 100 ticks
+			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100, this); // 5 seconds = 100 ticks
 			
 			// Reset stacks and icon to base
 			stacks.setCount(0);

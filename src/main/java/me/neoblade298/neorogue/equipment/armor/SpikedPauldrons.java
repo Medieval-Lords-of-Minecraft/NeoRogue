@@ -32,7 +32,7 @@ public class SpikedPauldrons extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.THORNS, data, thorns, -1);
+		data.applyStatus(StatusType.THORNS, data, thorns, -1, this);
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 

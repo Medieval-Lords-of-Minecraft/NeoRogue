@@ -73,7 +73,7 @@ public class AcidBomb extends Equipment {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-								FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration);
+								FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration, AcidBomb.this);
 							}
 							
 							if (++tick == TICKS) this.cancel();

@@ -62,7 +62,7 @@ public class TollOfTheArcane extends Equipment {
 			activated.setBool(true);
 			Player p = data.getPlayer();
 			Sounds.roar.play(p, p);
-			data.applyStatus(StatusType.CORRUPTION, data, corruption, -1);
+			data.applyStatus(StatusType.CORRUPTION, data, corruption, -1, this);
 			return TriggerResult.remove();
 		}));
 	}

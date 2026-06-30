@@ -62,7 +62,7 @@ public class Contaminate extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 60);
+			data.applyStatus(StatusType.STEALTH, data, 1, 60, this);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});
@@ -79,7 +79,7 @@ public class Contaminate extends Equipment {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
 				if (toAdd <= 0) return TriggerResult.keep();
-				fd.applyStatus(StatusType.POISON, data, toAdd, poisonDuration);
+				fd.applyStatus(StatusType.POISON, data, toAdd, poisonDuration, this);
 			}
 			return TriggerResult.keep();
 		});

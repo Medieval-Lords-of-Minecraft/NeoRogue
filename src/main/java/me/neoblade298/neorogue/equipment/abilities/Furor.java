@@ -27,8 +27,8 @@ public class Furor extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
-		data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+		data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
+		data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
 	}
 
 	@Override

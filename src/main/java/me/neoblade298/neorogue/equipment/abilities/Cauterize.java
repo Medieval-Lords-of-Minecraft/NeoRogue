@@ -75,7 +75,7 @@ public class Cauterize extends Equipment {
 						new Buff(data, -dec, 0, StatTracker.damageBuffAlly(buffId, this)));
 				if (++hits[0] >= hitReq) {
 					hits[0] = 0;
-					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1, this);
 				}
 			}
 			return TriggerResult.keep();
@@ -94,7 +94,7 @@ public class Cauterize extends Equipment {
 				return TriggerResult.keep();
 			int stacks = fd.getStatus(StatusType.INJURY).getStacks();
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * stacks, DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
-			fd.applyStatus(StatusType.INJURY, data, -stacks, -1);
+			fd.applyStatus(StatusType.INJURY, data, -stacks, -1, this);
 			return TriggerResult.keep();
 		});
 	}

@@ -60,7 +60,7 @@ public class Advantage extends Equipment implements Power {
 					if (!ev2.isStatus(StatusType.INJURY)) return TriggerResult.keep();
 					act.addCount(ev2.getStacks());
 					if (act.getCount() >= thres) {
-						data.addPermanentShield(p2.getUniqueId(), shields * (act.getCount() / thres));
+						data.addPermanentShield(p2.getUniqueId(), shields * (act.getCount() / thres), Advantage.this);
 						act.setCount(act.getCount() % thres);
 					}
 					return TriggerResult.keep();

@@ -68,7 +68,7 @@ public class Enlighten extends Equipment implements Power {
 		data.addTrigger(id + "-attack", Trigger.BASIC_ATTACK, (pdata3, in3) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in3;
 			if (am2.getBool()) {
-				FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1, this);
 				am2.setBool(false);
 			}
 			return TriggerResult.keep();

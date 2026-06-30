@@ -76,7 +76,7 @@ public class GetCentered extends Equipment implements Power {
 			inst.addCount(1);
 			if (inst.getCount() >= thres) {
 				inst.addCount(-thres);
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
+				data.applyStatus(StatusType.FOCUS, data, 1, -1, this);
 				pc.play(p2, p2);
 				Sounds.enchant.play(p2, p2);
 			}

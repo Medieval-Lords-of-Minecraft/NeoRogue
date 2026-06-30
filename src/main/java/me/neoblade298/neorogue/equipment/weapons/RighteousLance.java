@@ -58,7 +58,7 @@ public class RighteousLance extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
-			FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
@@ -68,7 +68,7 @@ public class RighteousLance extends Equipment {
 			if (targets.isEmpty())
 				return TriggerResult.keep();
 			weaponSwingAndDamage(p, data, targets.getFirst());
-			FightInstance.applyStatus(targets.getFirst(), StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.applyStatus(targets.getFirst(), StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, (pdata, in) -> {

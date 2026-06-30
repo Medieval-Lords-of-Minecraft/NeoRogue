@@ -60,7 +60,7 @@ public class SiphoningStrike extends Equipment {
 				FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
 				
 				if (ev.getTarget().getHealth() <= 0) {
-					pdata.applyStatus(StatusType.STRENGTH, pdata, buff, -1);
+					pdata.applyStatus(StatusType.STRENGTH, pdata, buff, -1, this);
 					Sounds.success.play(p, p);
 					inst.reduceCooldown(6);
 				}

@@ -60,7 +60,7 @@ public class Sturdy extends Equipment {
 			super(id);
 			action = (pdata, inputs) -> {
 				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
-				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				s = pdata.addPermanentShield(p.getUniqueId(), shields, Sturdy.this);
 				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};

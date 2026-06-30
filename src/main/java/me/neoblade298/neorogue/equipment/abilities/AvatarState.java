@@ -49,7 +49,7 @@ public class AvatarState extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		Player p = data.getPlayer();
 		data.addManaRegen(mreg);
-		data.addSimpleShield(p.getUniqueId(), shields, 200);
+		data.addSimpleShield(p.getUniqueId(), shields, 200, this);
 
 		ActionMeta manaRegenMeta = new ActionMeta();
 		data.addTrigger(ID + "_mana_regen", Trigger.PLAYER_TICK, (pdata2, in2) -> {

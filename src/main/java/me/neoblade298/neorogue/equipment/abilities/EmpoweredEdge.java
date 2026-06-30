@@ -54,7 +54,7 @@ public class EmpoweredEdge extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

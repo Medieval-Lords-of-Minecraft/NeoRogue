@@ -55,7 +55,7 @@ public class Hearth extends Equipment {
 				am.setCount(0);
 				if (data.hasStatus(StatusType.CORRUPTION)) {
 					Player p = data.getPlayer();
-					data.applyStatus(StatusType.CORRUPTION, data, -1, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, -1, -1, this);
 					data.addHealth(heal);
 					healParticles.play(p, p.getLocation().add(0, 1, 0));
 				}

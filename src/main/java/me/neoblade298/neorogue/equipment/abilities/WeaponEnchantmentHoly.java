@@ -103,7 +103,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.SANCTIFIED, proj.getOwner(), sanct, -1);
+			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.SANCTIFIED, proj.getOwner(), sanct, -1, WeaponEnchantmentHoly.this);
 			scHit.play((Player) proj.getOwner().getEntity(), hit.getEntity());
 		}
 

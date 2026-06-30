@@ -35,7 +35,7 @@ public class Envenom2 extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!DamageCategory.PHYSICAL.hasType(ev.getMeta().getPrimarySlice().getType())) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration, this);
 			return TriggerResult.keep();
 		});
 	}

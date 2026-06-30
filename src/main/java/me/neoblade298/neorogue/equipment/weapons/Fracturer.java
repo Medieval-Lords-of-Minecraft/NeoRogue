@@ -129,7 +129,7 @@ public class Fracturer extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, earth, DamageType.EARTHEN,
 						DamageStatTracker.of(id + slot, eq)), lineHit);
 				for (LivingEntity ent : lineHit) {
-					FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
+					FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1, this);
 				}
 			}
 		}

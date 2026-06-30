@@ -37,7 +37,7 @@ public class LeatherPauldrons extends Equipment {
 				count[0] = 0;
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
-				data.addPermanentShield(p.getUniqueId(), shields);
+				data.addPermanentShield(p.getUniqueId(), shields, this);
 			}
 			return TriggerResult.keep();
 		});

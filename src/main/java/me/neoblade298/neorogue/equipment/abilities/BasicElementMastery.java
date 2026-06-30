@@ -48,7 +48,7 @@ public class BasicElementMastery extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
-		data.addPermanentShield(p.getUniqueId(), 5, false);
+		data.addPermanentShield(p.getUniqueId(), 5, false, this);
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
@@ -58,7 +58,7 @@ public class BasicElementMastery extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1, this);
 			return TriggerResult.keep();
 		});
 	}

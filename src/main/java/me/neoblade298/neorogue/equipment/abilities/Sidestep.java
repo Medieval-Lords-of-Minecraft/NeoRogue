@@ -57,8 +57,8 @@ public class Sidestep extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			data.dash();
-			data.applyStatus(StatusType.STEALTH, data, 1, 100);
-			data.applyStatus(StatusType.EVADE, data, evade, 200);
+			data.applyStatus(StatusType.STEALTH, data, 1, 100, this);
+			data.applyStatus(StatusType.EVADE, data, evade, 200, this);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});

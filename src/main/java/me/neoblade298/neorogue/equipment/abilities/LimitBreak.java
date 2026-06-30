@@ -60,7 +60,7 @@ public class LimitBreak extends Equipment {
 				sc.play(p, p);
 				pc.play(p, p);
 				int str = data.getStatus(StatusType.STRENGTH).getStacks();
-				data.applyStatus(StatusType.STRENGTH, data, str, -1);
+				data.applyStatus(StatusType.STRENGTH, data, str, -1, LimitBreak.this);
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);

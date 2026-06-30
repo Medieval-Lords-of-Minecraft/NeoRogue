@@ -347,7 +347,8 @@ public class DamageMeta {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					// Arbitrarily use the first sanct applier as the shield applier
 					if (ent.getKey() instanceof PlayerFightData) {
-						owner.addSimpleShield(ent.getKey().getUniqueId(), 5, 100);
+						owner.addSimpleShield(ent.getKey().getUniqueId(), 5, 100,
+								StatusType.SANCTIFIED.name(), StatusType.SANCTIFIED.ctag);
 						break;
 					}
 				}

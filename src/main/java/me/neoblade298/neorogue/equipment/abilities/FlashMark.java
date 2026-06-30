@@ -104,7 +104,7 @@ public class FlashMark extends Equipment {
 			// Deal damage and apply electrified to all enemies in line
 			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, startLoc, endLoc, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
-				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
+				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1, FlashMark.this);
 			}
 			
 			// Draw line particles from current position to destination

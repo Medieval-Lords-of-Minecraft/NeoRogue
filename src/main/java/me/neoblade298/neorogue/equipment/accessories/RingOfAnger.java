@@ -35,9 +35,9 @@ public class RingOfAnger extends Equipment {
 			public void run() {
 				if (++count < seconds) return;
 				count = 0;
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				data.applyStatus(StatusType.BERSERK, data, 1, -1, RingOfAnger.this);
 				if (!addedStrength && data.getStatus(StatusType.BERSERK).getStacks() >= 3) {
-					data.applyStatus(StatusType.STRENGTH, data, 5, -1 );
+					data.applyStatus(StatusType.STRENGTH, data, 5, -1 , RingOfAnger.this);
 					addedStrength = true;
 				}
 			}

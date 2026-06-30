@@ -24,8 +24,8 @@ public class FaeriePendant extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.applyStatus(StatusType.PROTECT, data, 5, 400);
-		data.applyStatus(StatusType.SHELL, data, 5, 400);
+		data.applyStatus(StatusType.PROTECT, data, 5, 400, this);
+		data.applyStatus(StatusType.SHELL, data, 5, 400, this);
 	}
 
 	@Override

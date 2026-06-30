@@ -157,7 +157,7 @@ public class InfernalWarden extends Equipment {
 						hitCooldowns.put(target, tick);
 						FightInstance.dealDamage(data, DamageType.FIRE, damage, target,
 								DamageStatTracker.of(ID + slot, InfernalWarden.this));
-						FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1);
+						FightInstance.applyStatus(target, StatusType.BURN, data, burn, -1, InfernalWarden.this);
 						Sounds.explode.play(p, target.getLocation());
 						hitPc.play(p, target.getLocation());
 					}

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.fight.buff.StatCategory;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
@@ -17,10 +19,14 @@ public class FightStatistics {
 	private PlayerFightData data;
 	private HashMap<StatTracker, Double> damageDealt = new HashMap<StatTracker, Double>();
 	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
-	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
+	private HashMap<StatusType, HashMap<String, Integer>> statusesApplied = new HashMap<StatusType, HashMap<String, Integer>>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
+	private HashMap<String, Double> shieldsByEquip = new HashMap<String, Double>();
+	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
 	private int deaths, revives;
+
+	private static final String UNATTRIBUTED = "\u0000misc";
 
 	// Etc stats
 	private double evadeMitigated;
@@ -37,8 +43,24 @@ public class FightStatistics {
 		this.damageBarriered += damageBarriered;
 	}
 
-	public void addShieldsApplied(double amount) {
+	public void addShieldsApplied(Equipment source, double amount) {
+		if (source == null) addShieldsApplied((String) null, null, amount);
+		else addShieldsApplied(source.getId(), source.getDisplay(), amount);
+	}
+
+	// Records shields under a named (non-equipment) source, e.g. a status effect.
+	public void addShieldsApplied(String key, Component display, double amount) {
 		this.shieldsApplied += amount;
+		if (key == null) key = UNATTRIBUTED;
+		else if (display != null) sourceNames.putIfAbsent(key, display);
+		shieldsByEquip.merge(key, amount, Double::sum);
+	}
+
+	private String recordSource(Equipment source) {
+		if (source == null) return UNATTRIBUTED;
+		String id = source.getId();
+		sourceNames.putIfAbsent(id, source.getDisplay());
+		return id;
 	}
 
 	public FightStatistics(PlayerFightData data) {
@@ -87,13 +109,13 @@ public class FightStatistics {
 		return SharedUtil.color(
 			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + " (Hoverable stats)\n=====\n"
 					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "
-					+ "</dark_red>/ <gold>Statuses</gold> / <blue>Buffs</blue>]"
+					+ "</dark_red>/ <gold>Statuses</gold>]"
 		);
 	}
 
-	public void addStatusApplied(StatusType type, int amount) {
-		int curr = statusesApplied.getOrDefault(type, 0);
-		statusesApplied.put(type, curr + amount);
+	public void addStatusApplied(StatusType type, Equipment source, int amount) {
+		statusesApplied.computeIfAbsent(type, k -> new HashMap<String, Integer>())
+			.merge(recordSource(source), amount, Integer::sum);
 	}
 
 	public HashMap<StatTracker, Double> getDamageDealt() {
@@ -141,7 +163,13 @@ public class FightStatistics {
 	}
 	
 	public HashMap<StatusType, Integer> getStatusesApplied() {
-		return statusesApplied;
+		HashMap<StatusType, Integer> totals = new HashMap<StatusType, Integer>();
+		for (Entry<StatusType, HashMap<String, Integer>> ent : statusesApplied.entrySet()) {
+			int sum = 0;
+			for (int v : ent.getValue().values()) sum += v;
+			totals.put(ent.getKey(), sum);
+		}
+		return totals;
 	}
 
 	public double getShieldsApplied() {
@@ -156,8 +184,7 @@ public class FightStatistics {
 		Component line = Component.text("").append(getNameplateComponent())
 				.append(getDamageDealtComponent()).append(separator)
 				.append(getDamageTakenComponent()).append(separator)
-				.append(getStatusComponent()).append(separator)
-				.append(getBuffComponent());
+				.append(getStatusComponent());
 		return line;
 	}
 
@@ -173,21 +200,26 @@ public class FightStatistics {
 	
 	public Component getDamageDealtComponent() {
 		NamedTextColor color = NamedTextColor.RED;
-		if (damageDealt.isEmpty()) {
+		Component hover = Component.text("Damage dealt post buff and mitigation:", NamedTextColor.GRAY);
+		double total = 0;
+		boolean any = false;
+		for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
+			StatTracker stat = ent.getKey();
+			if (stat.isIgnored())
+				continue;
+			hover = hover.appendNewline().append(getStatPiece(stat.getDisplay(), ent.getValue()));
+			total += ent.getValue();
+			any = true;
+		}
+		Component buffs = buffSection(StatCategory.DAMAGE_DEALT);
+		if (buffs != null) {
+			hover = hover.appendNewline().append(buffs);
+			any = true;
+		}
+		if (!any) {
 			return Component.text("0", color).hoverEvent(null);
 		}
-		else {
-			Component hover = Component.text("Damage dealt post buff and mitigation:", NamedTextColor.GRAY);
-			double total = 0;
-			for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
-				StatTracker stat = ent.getKey();
-				if (stat.isIgnored())
-					continue;
-				hover = hover.appendNewline().append(getStatPiece(stat.getDisplay(), ent.getValue()));
-				total += ent.getValue();
-			}
-			return Component.text(df.format(total), color).hoverEvent(HoverEvent.showText(hover));
-		}
+		return Component.text(df.format(total), color).hoverEvent(HoverEvent.showText(hover));
 	}
 
 	public Component getDamageTakenComponent() {
@@ -199,62 +231,86 @@ public class FightStatistics {
 		
 		Component hover = Component.text("Damage taken post buff and mitigation:", NamedTextColor.GRAY);
 		double totalDamageTaken = 0;
+		boolean hasDetail = false;
 		for (Entry<String, HashMap<DamageType, Double>> mobMap : damageTaken.entrySet()) {
 			Mob mob = Mob.get(mobMap.getKey());
 			for (Entry<DamageType, Double> ent : mobMap.getValue().entrySet()) {
 				totalDamageTaken += ent.getValue();
 				hover = hover.appendNewline().append(getDamageTakenStatPiece(mob, ent.getKey(), mobMap.getValue()));
+				hasDetail = true;
 			}
 		}
-			
+		if (damageBarriered != 0) { hover = hover.appendNewline().append(getStatPiece("Damage Barriered", damageBarriered)); hasDetail = true; }
+		if (damageNullified != 0) { hover = hover.appendNewline().append(getStatPiece("Damage Nullified", damageNullified)); hasDetail = true; }
+		if (evadeMitigated != 0) { hover = hover.appendNewline().append(getStatPiece("Evade Mitigated", evadeMitigated)); hasDetail = true; }
+
+		Component mitigation = buffSection(StatCategory.DAMAGE_TAKEN);
+		if (mitigation != null) {
+			hover = hover.appendNewline().append(mitigation);
+			hasDetail = true;
+		}
+		if (!shieldsByEquip.isEmpty()) {
+			for (Entry<String, Double> ent : shieldsByEquip.entrySet()) {
+				hover = hover.appendNewline().append(getSourceAction(ent.getKey(), "Shields Applied", ent.getValue()));
+			}
+			hasDetail = true;
+		}
+
 		taken = taken.append(Component.text(df.format(totalDamageTaken - damageShielded) + "♥", NamedTextColor.DARK_RED));
-		if (totalDamageTaken > 0) taken = taken.hoverEvent(hover);
+		if (hasDetail) taken = taken.hoverEvent(hover);
 
 		return taken;
 	}
 
 	public Component getStatusComponent() {
 		double score = 0;
+		boolean any = false;
 		Component hover = Component.text("Statuses applied:", NamedTextColor.GRAY);
-		for (StatusType type : statusesApplied.keySet()) {
+		for (Entry<StatusType, HashMap<String, Integer>> typeEnt : statusesApplied.entrySet()) {
+			StatusType type = typeEnt.getKey();
 			if (type.hidden) continue;
-			if (!statusesApplied.containsKey(type)) continue;
-
-			hover = hover.appendNewline().append(type.ctag.append(Component.text(" Applied: " + df.format(statusesApplied.get(type)), NamedTextColor.WHITE)));
-			score += statusesApplied.get(type);
-			Component extra = getStatusStat(type);
-			if (extra != null) {
-				hover = hover.appendNewline().append(extra);
+			for (Entry<String, Integer> srcEnt : typeEnt.getValue().entrySet()) {
+				Component disp = sourceNames.getOrDefault(srcEnt.getKey(), Component.text("Misc", NamedTextColor.GRAY));
+				hover = hover.appendNewline().append(disp.append(Component.text(" - ", NamedTextColor.GRAY))
+					.append(type.ctag)
+					.append(Component.text(": ", NamedTextColor.YELLOW))
+					.append(Component.text(df.format(srcEnt.getValue()), NamedTextColor.WHITE)));
+				score += srcEnt.getValue();
+				any = true;
 			}
 		}
-		score += evadeMitigated;
+		Component statusBuffs = buffSection(StatCategory.STATUS);
+		if (statusBuffs != null) {
+			hover = hover.appendNewline().append(statusBuffs);
+			any = true;
+		}
 		Component cmp = Component.text(df.format(score), NamedTextColor.GOLD);
-		if (score > 0) cmp = cmp.hoverEvent(hover);
+		if (any) cmp = cmp.hoverEvent(hover);
 		return cmp;
 	}
 
-	public Component getBuffComponent() {
-		double score = 0;
-		Component hover = Component.text("Impact of buffs:", NamedTextColor.GRAY);
+	// Builds a hover section for non-ignored buff trackers in the given category (OTHER folds into
+	// damage dealt). Each line is "<equipment> - <suffix>: value". Returns null if no buffs match.
+	private Component buffSection(StatCategory category) {
+		Component section = null;
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
 			StatTracker stat = ent.getKey();
 			if (stat.isIgnored()) continue;
+			StatCategory c = stat.getCategory();
+			if (c == StatCategory.OTHER) c = StatCategory.DAMAGE_DEALT;
+			if (c != category) continue;
 			double amt = stat.isInverted() ? -ent.getValue() : ent.getValue();
-			hover = hover.appendNewline().append(stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE)));
-			score += amt;
+			Component line = stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE));
+			section = section == null ? line : section.appendNewline().append(line);
 		}
-		Component cmp = Component.text(df.format(score), NamedTextColor.BLUE).hoverEvent(hover);
-		if (score > 0) cmp = cmp.hoverEvent(hover);
-		return cmp;
+		return section;
 	}
 
-	private Component getStatusStat(StatusType type) {
-		switch (type) {
-		case EVADE:
-			return type.ctag.append(Component.text(" Mitigation: " + df.format(evadeMitigated), NamedTextColor.WHITE));
-		default:
-			return null;
-		}
+	// Builds an "<equipment> - <action>: <value>" line attributed to a source.
+	private Component getSourceAction(String key, String action, double amount) {
+		Component disp = sourceNames.getOrDefault(key, Component.text("Misc", NamedTextColor.GRAY));
+		return disp.append(Component.text(" - " + action + ": ", NamedTextColor.GRAY))
+			.append(Component.text(df.format(amount), NamedTextColor.WHITE));
 	}
 
 	public Component getTypedHover(HashMap<DamageType, Double> map, String preamble) {
@@ -267,9 +323,6 @@ public class FightStatistics {
 	
 	private Component getNameHoverComponent() {
 		Component cmp = Component.text("General Stats:");
-		cmp = appendIfNotEmpty(cmp, "Damage Nullified", damageNullified);
-		cmp = appendIfNotEmpty(cmp, "Damage Barriered", damageBarriered);
-		cmp = appendIfNotEmpty(cmp, "Shields Applied", shieldsApplied);
 		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
 		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);

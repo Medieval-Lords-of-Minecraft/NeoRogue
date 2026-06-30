@@ -49,7 +49,7 @@ public class Entrench extends Equipment implements Power {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.LAY_TRAP, (pdata2, in2) -> {
 					Player p2 = data.getPlayer();
-					data.addPermanentShield(p2.getUniqueId(), shields);
+					data.addPermanentShield(p2.getUniqueId(), shields, Entrench.this);
 					Sounds.equip.play(p2, p2);
 					pc.play(p2, p2);
 					return TriggerResult.keep();
@@ -59,7 +59,7 @@ public class Entrench extends Equipment implements Power {
 
 		data.addTrigger(id + "-deactivate", Trigger.DEACTIVATE_TRAP, (pdata3, in3) -> {
 			Player p3 = data.getPlayer();
-			data.addPermanentShield(p3.getUniqueId(), shields);
+			data.addPermanentShield(p3.getUniqueId(), shields, this);
 			Sounds.equip.play(p3, p3);
 			pc.play(p3, p3);
 			return TriggerResult.keep();

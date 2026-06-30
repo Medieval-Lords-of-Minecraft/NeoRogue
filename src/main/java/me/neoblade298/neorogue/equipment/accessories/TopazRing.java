@@ -38,7 +38,7 @@ public class TopazRing extends Equipment {
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			ev.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		});
 	}

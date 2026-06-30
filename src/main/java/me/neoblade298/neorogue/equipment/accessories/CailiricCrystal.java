@@ -41,8 +41,8 @@ public class CailiricCrystal extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.applyStatus(StatusType.STRENGTH, data, str * ai.getAmount(), -1);
-		data.applyStatus(StatusType.INTELLECT, data, intel * ai.getAmount(), -1);
+		data.applyStatus(StatusType.STRENGTH, data, str * ai.getAmount(), -1, this);
+		data.applyStatus(StatusType.INTELLECT, data, intel * ai.getAmount(), -1, this);
 	}
 
 	@Override

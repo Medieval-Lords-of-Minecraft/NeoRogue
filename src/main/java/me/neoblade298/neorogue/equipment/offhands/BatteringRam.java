@@ -112,7 +112,7 @@ public class BatteringRam extends Equipment {
 			cone.play(pc, loc, axes, pc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
+				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1, this);
 			}
 			return TriggerResult.keep();
 		});

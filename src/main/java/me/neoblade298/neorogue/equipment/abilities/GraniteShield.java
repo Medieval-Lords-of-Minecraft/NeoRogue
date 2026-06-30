@@ -49,7 +49,7 @@ public class GraniteShield extends Equipment {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1);
+			ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1, this);
 			return TriggerResult.keep();
 		});
 	}
@@ -69,7 +69,7 @@ public class GraniteShield extends Equipment {
 			super(id);
 			action = (pdata, inputs) -> {
 				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
-				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				s = pdata.addPermanentShield(p.getUniqueId(), shields, GraniteShield.this);
 				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};

@@ -35,7 +35,7 @@ public class GuardingRune extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
-			data.addSimpleShield(p.getUniqueId(), shields, 200);
+			data.addSimpleShield(p.getUniqueId(), shields, 200, this);
 			p.getInventory().setItemInOffHand(null);
 			return TriggerResult.remove();
 		});

@@ -115,7 +115,7 @@ public class ManaArc extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Sounds.firework.play(data.getPlayer(), proj.getLocation());
-			FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, elec, -1);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, elec, -1, ManaArc.this);
 		}
 
 		@Override

@@ -67,9 +67,9 @@ public class PalmBlast extends Equipment {
 					p.setVelocity(v.setX(-v.getX()).setZ(-v.getZ()).setY(0).normalize().setY(0.3));
 					for (LivingEntity ent : trgs) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
-						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
 					}
-					FightInstance.applyStatus(p, StatusType.CORRUPTION, data, corruption, -1);
+					FightInstance.applyStatus(p, StatusType.CORRUPTION, data, corruption, -1, this);
 				}
 			});
 			return TriggerResult.keep();

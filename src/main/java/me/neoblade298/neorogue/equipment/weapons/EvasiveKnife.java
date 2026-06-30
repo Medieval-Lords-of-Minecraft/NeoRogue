@@ -52,7 +52,7 @@ public class EvasiveKnife extends Equipment {
 			act.addCount(1);
 			if (act.getCount() >= hits) {
 				act.setCount(0);
-				data.applyStatus(StatusType.EVADE, data, 1, 60);
+				data.applyStatus(StatusType.EVADE, data, 1, 60, this);
 			}
 			return TriggerResult.keep();
 		});

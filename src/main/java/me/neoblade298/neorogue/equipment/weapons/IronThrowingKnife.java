@@ -93,7 +93,7 @@ public class IronThrowingKnife extends Equipment {
 			hitCount.addCount(1);
 			if (hitCount.getCount() >= 3) {
 				hitCount.setCount(0);
-				FightInstance.applyStatus(data.getPlayer(), StatusType.STEALTH, data, 1, dur * 20);
+				FightInstance.applyStatus(data.getPlayer(), StatusType.STEALTH, data, 1, dur * 20, this);
 			}
 		}
 

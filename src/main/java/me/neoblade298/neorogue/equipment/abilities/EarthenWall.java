@@ -93,7 +93,7 @@ public class EarthenWall extends Equipment {
 			ReceiveDamageBarrierEvent ev = (ReceiveDamageBarrierEvent) in;
 			if (ev.getBarrier().getUniqueId().equals(am.getUniqueId())) {
 				am.addCount(1);
-				ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1);
+				ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1, this);
 				if (am.getCount() >= def) {
 					Sounds.shieldBreak.play(p, ev.getBarrier().getLocation());
 					data.removeBarrier(ev.getBarrier());

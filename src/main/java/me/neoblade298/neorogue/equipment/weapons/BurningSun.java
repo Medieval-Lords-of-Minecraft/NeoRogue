@@ -99,7 +99,7 @@ public class BurningSun extends Bow {
 			
 			// Apply burn to enemies in radius
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, auraTp)) {
-				FightInstance.applyStatus(ent, StatusType.BURN, data, auraBurn, -1);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, auraBurn, -1, this);
 			}
 			return TriggerResult.keep();
 		});
@@ -150,7 +150,7 @@ public class BurningSun extends Bow {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, proj.getLocation(), blockTp)) {
 				FightInstance.dealDamage(new DamageMeta(data, blockDamage, DamageType.FIRE, 
 						DamageStatTracker.of(ID + slot, bow)), ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
 			}
 			
 			// Track wall hits that also hit an enemy

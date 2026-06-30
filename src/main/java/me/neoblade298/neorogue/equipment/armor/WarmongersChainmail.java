@@ -34,7 +34,7 @@ public class WarmongersChainmail extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.BERSERK)) return TriggerResult.keep();
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields * ev.getStacks(), 120);
+			data.addSimpleShield(p.getUniqueId(), shields * ev.getStacks(), 120, this);
 			return TriggerResult.keep();
 		});
 	}

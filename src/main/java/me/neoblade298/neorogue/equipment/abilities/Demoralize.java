@@ -74,7 +74,7 @@ public class Demoralize extends Equipment {
 						circ.play(p, pc, p.getLocation(), LocalAxes.xz(), null);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightData fd = FightInstance.getFightData(ent);
-							fd.applyStatus(StatusType.INJURY, data, injure, -1);
+							fd.applyStatus(StatusType.INJURY, data, injure, -1, Demoralize.this);
 							fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.damageDebuffEnemy(buffId, eq)), 160);
 						}
 					}

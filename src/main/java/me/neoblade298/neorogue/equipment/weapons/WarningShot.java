@@ -110,7 +110,7 @@ public class WarningShot extends Equipment {
 			for (LivingEntity ent : ents) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
-			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1);
+			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1, this);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(buffId, eq)), 160);
 		}
 

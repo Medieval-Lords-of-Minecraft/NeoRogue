@@ -34,7 +34,7 @@ public class MirrorBracer extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
-		data.applyStatus(StatusType.REFLECT, data, reflect, -1);
+		data.applyStatus(StatusType.REFLECT, data, reflect, -1, this);
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
 				Buff.increase(data, mr, BuffStatTracker.defenseBuffAlly(buffId, this)));
 	}

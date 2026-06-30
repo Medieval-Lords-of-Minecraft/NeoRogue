@@ -39,7 +39,7 @@ public class YellowRing extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.LIGHTNING)) {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
-				fd.applyStatus(StatusType.ELECTRIFIED, data, elec, -1);
+				fd.applyStatus(StatusType.ELECTRIFIED, data, elec, -1, this);
 			}
 			return TriggerResult.keep();
 		});

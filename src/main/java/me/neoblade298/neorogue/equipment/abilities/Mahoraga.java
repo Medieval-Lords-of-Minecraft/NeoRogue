@@ -83,7 +83,7 @@ public class Mahoraga extends Equipment {
 
 				if (am.getDouble() <= 0)
 					return TriggerResult.keep();
-				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
+				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true, this);
 				am.setObject(shield);
 			}
 			return TriggerResult.keep();
@@ -96,12 +96,12 @@ public class Mahoraga extends Equipment {
 				return TriggerResult.keep();
 			EnumSet<DamageCategory> categories = ev.getMeta().getPrimarySlice().getPostBuffType().getCategories();
 			if (categories.contains(DamageCategory.PHYSICAL)) {
-				data.applyStatus(StatusType.PROTECT, data, 1, -1);
+				data.applyStatus(StatusType.PROTECT, data, 1, -1, this);
 			} else if (categories.contains(DamageCategory.MAGICAL)) {
-				data.applyStatus(StatusType.SHELL, data, 1, -1);
+				data.applyStatus(StatusType.SHELL, data, 1, -1, this);
 			}
 
-			data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+			data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
 			if (data.getStatus(StatusType.BERSERK).getStacks() >= thres) {
 				Sounds.fire.play(p, p);
 				data.addTask(new BukkitRunnable() {

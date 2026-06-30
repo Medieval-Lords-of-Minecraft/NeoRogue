@@ -64,7 +64,7 @@ public class LayTrap extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), SHIELDS, 100);
+			data.addSimpleShield(p.getUniqueId(), SHIELDS, 100, this);
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

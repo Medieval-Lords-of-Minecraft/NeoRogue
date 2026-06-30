@@ -47,7 +47,7 @@ public class StonePlating extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		Player p = data.getPlayer();
-		data.addPermanentShield(p.getUniqueId(), shields);
+		data.addPermanentShield(p.getUniqueId(), shields, this);
 
 		// Add persistent trigger for bonus blunt damage on magical hits while shielded
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {

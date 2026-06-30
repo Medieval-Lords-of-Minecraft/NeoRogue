@@ -27,7 +27,7 @@ public class RingOfNight extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.STEALTH, data, stealth, -1);
+		data.applyStatus(StatusType.STEALTH, data, stealth, -1, this);
 	}
 
 	@Override

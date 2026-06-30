@@ -79,7 +79,7 @@ public class LightningRush extends Equipment {
 			inst.hit.add(uuid);
 			ev.getMeta().addDamageSlice(
 					new DamageSlice(pdata, damage, DamageType.LIGHTNING, DamageStatTracker.of(ID + slot, this)));
-			FightInstance.applyStatus(trg, StatusType.ELECTRIFIED, pdata, elec, -1);
+			FightInstance.applyStatus(trg, StatusType.ELECTRIFIED, pdata, elec, -1, this);
 			inst.timer += 2;
 			return TriggerResult.keep();
 		});

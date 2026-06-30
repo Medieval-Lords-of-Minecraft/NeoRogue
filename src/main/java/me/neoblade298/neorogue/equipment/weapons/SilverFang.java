@@ -51,7 +51,7 @@ public class SilverFang extends Equipment {
 			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(p, data);
 			FightInstance.dealDamage(dm, ev.getTarget());
-			FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 	}

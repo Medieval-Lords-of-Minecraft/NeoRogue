@@ -34,7 +34,7 @@ public class MoltenCore extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.CORRUPTION)) return TriggerResult.keep();
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 120);
+			data.addSimpleShield(p.getUniqueId(), shields, 120, this);
 			return TriggerResult.keep();
 		});
 	}

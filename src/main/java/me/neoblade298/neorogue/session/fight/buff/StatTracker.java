@@ -12,6 +12,8 @@ public class StatTracker {
     private Component display;
     private String id;
     private boolean invert, ignore; // Quick easy way to invert the stat number
+    protected String equipmentId; // Equipment responsible for this stat (null = no equipment, e.g. status-origin)
+    protected StatCategory category = StatCategory.OTHER;
 
     private static HashMap<StatusType, BuffStatTracker> statusOrigins = new HashMap<StatusType, BuffStatTracker>();
 
@@ -46,17 +48,20 @@ public class StatTracker {
 
     protected StatTracker(String id, Equipment eq) {
         this.id = id;
+        this.equipmentId = eq.getId();
         this.ignore = true;
     }
     
     protected StatTracker(String id, Equipment eq, String sfx) {
         this.id = id;
+        this.equipmentId = eq.getId();
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
     }
     
     // Inverted 
     protected StatTracker(String id, Equipment eq, String sfx, boolean invert) {
         this.id = id;
+        this.equipmentId = eq.getId();
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
         this.invert = invert;
     }
@@ -86,6 +91,19 @@ public class StatTracker {
         return ignore;
     }
 
+    public String getEquipmentId() {
+        return equipmentId;
+    }
+
+    public StatCategory getCategory() {
+        return category;
+    }
+
+    public StatTracker category(StatCategory category) {
+        this.category = category;
+        return this;
+    }
+
     public static StatTracker of(String id, Equipment eq, String statTitle) {
         return new StatTracker(id, eq, statTitle);
     }
@@ -99,67 +117,67 @@ public class StatTracker {
     }
 
     public static BuffStatTracker statusBuff(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Statuses Buffed");
+        return new BuffStatTracker(id, eq, "Statuses Buffed").category(StatCategory.STATUS);
     }
 
     public static BuffStatTracker shield(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Shields Buffed");
+        return new BuffStatTracker(id, eq, "Shields Buffed").category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Buffed", true);
+        return new BuffStatTracker(id, eq, "Damage Buffed", true).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker arrowBuff(Ammunition ammo) {
-        return new BuffStatTracker(ammo.getId(), ammo, "Damage Buffed", true);
+        return new BuffStatTracker(ammo.getId(), ammo, "Damage Buffed", true).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Buffed", shouldCombine);
+        return new BuffStatTracker(id, eq, "Damage Buffed", shouldCombine).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker damageDebuffAlly(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Reduced", true);
+        return new BuffStatTracker(id, eq, "Damage Reduced", true).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker damageDebuffAlly(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Reduced", shouldCombine);
+        return new BuffStatTracker(id, eq, "Damage Reduced", shouldCombine).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker defenseDebuffAlly(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Self Defense Reduced", true);
+        return new BuffStatTracker(id, eq, "Self Defense Reduced", true).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseDebuffAlly(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Self Defense Reduced", shouldCombine);
+        return new BuffStatTracker(id, eq, "Self Defense Reduced", shouldCombine).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseBuffAlly(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true);
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseBuffAlly(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", shouldCombine);
+        return new BuffStatTracker(id, eq, "Damage Mitigated", shouldCombine).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true, true);
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, true).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true, shouldCombine);
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, shouldCombine).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseDebuffEnemy(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Defense Debuffed", true, true);
+        return new BuffStatTracker(id, eq, "Defense Debuffed", true, true).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker defenseDebuffEnemy(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Defense Debuffed", true, shouldCombine);
+        return new BuffStatTracker(id, eq, "Defense Debuffed", true, shouldCombine).category(StatCategory.DAMAGE_DEALT);
     }
 
     public static BuffStatTracker damageBarriered(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Barriered");
+        return new BuffStatTracker(id, eq, "Damage Barriered").category(StatCategory.DAMAGE_TAKEN);
     }
 
     @Override

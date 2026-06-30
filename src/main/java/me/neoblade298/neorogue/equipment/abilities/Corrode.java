@@ -77,7 +77,7 @@ public class Corrode extends Equipment implements Power {
 
 			// Apply 3 second mark
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd2, true);
-			fd2.applyStatus(s, data, 1, 60);
+			fd2.applyStatus(s, data, 1, 60, this);
 
 			return TriggerResult.keep();
 		});

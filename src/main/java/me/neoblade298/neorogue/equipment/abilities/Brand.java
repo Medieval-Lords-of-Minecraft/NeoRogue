@@ -65,7 +65,7 @@ public class Brand extends Equipment {
 			if (trg == null) return TriggerResult.keep();
 			pc.play(p, trg);
 			Sounds.infect.play(p, trg);
-			FightInstance.applyStatus(trg, StatusType.BURN, data, burn, -1);
+			FightInstance.applyStatus(trg, StatusType.BURN, data, burn, -1, this);
 			am.setEntity(trg);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

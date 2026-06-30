@@ -68,7 +68,7 @@ public class EyeOfTheStorm extends Equipment {
 							sc.play(p.getLocation());
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, EyeOfTheStorm.this)), ent);
-								FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1);
+								FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1, EyeOfTheStorm.this);
 							}
 							if (++count >= 3) {
 								cancel();

@@ -76,7 +76,7 @@ public class MarkTarget2 extends Equipment {
 					am.setEntity(null);
 				}
 			}.runTaskLater(NeoRogue.inst(), 160));
-			FightInstance.applyStatus(trg, StatusType.REND, data, rend, -1);
+			FightInstance.applyStatus(trg, StatusType.REND, data, rend, -1, this);
 			return TriggerResult.keep();
 		}));
 

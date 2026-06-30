@@ -63,7 +63,7 @@ public class Firebomb extends Equipment {
 				public void run() {
 					pc.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, Firebomb.this);
 					}
 					if (++tick >= 3) cancel();
 				}

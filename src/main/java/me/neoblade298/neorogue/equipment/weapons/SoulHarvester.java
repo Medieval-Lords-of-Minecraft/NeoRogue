@@ -40,7 +40,7 @@ public class SoulHarvester extends Equipment {
 			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (ev.getTarget().getHealth() <= 0) {
-				data.applyStatus(StatusType.STRENGTH, data, str, -1);
+				data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 				Sounds.fire.play(p, p);
 			}
 			return TriggerResult.keep();

@@ -61,7 +61,7 @@ public class Disorient extends Equipment {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 200);
-				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
+				fd.applyStatus(StatusType.INSANITY, data, insanity, -1, this);
 				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent, DamageStatTracker.of(id + slot, this));
 			}
 			return TriggerResult.keep();

@@ -66,9 +66,9 @@ public class ToAshes extends Equipment {
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.dealDamage(new DamageMeta(data, damage + (inc * am.getCount()), DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
 			}
-			data.applyStatus(StatusType.CORRUPTION, data, 1, -1);
+			data.applyStatus(StatusType.CORRUPTION, data, 1, -1, this);
 
 			Barrier b = Barrier.stationary(p, 4, tp.range, 3, p.getLocation(), LocalAxes.usingEyeLocation(p), null,
 					null, true);

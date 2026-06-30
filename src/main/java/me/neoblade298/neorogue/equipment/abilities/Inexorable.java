@@ -36,7 +36,7 @@ public class Inexorable extends Equipment {
 		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
-		Shield shield = data.addPermanentShield(p.getUniqueId(), shields, true);
+		Shield shield = data.addPermanentShield(p.getUniqueId(), shields, true, this);
 		am.setObject(shield);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			am.addCount(1);
@@ -44,7 +44,7 @@ public class Inexorable extends Equipment {
 				Sounds.equip.play(p, p);
 				Shield s = (Shield) am.getObject();
 				s.remove();
-				s = data.addPermanentShield(p.getUniqueId(), shields, true);
+				s = data.addPermanentShield(p.getUniqueId(), shields, true, this);
 				am.setObject(s);
 				am.setCount(0);
 			}

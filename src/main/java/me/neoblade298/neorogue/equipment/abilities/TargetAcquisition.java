@@ -64,7 +64,7 @@ public class TargetAcquisition extends Equipment implements Power {
 			sc.play(p2, p2);
 			part.play(p2, p2);
 			inst.addCount(1);
-			data.addSimpleShield(p2.getUniqueId(), shields, 100);
+			data.addSimpleShield(p2.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.KILL, inst);

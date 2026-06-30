@@ -69,7 +69,7 @@ public class Initiator extends Equipment implements Power {
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, statusId, fd, true),
-							data, 1, -1, ev2.getMeta(), false);
+							data, 1, -1, ev2.getMeta(), false, Initiator.this);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();

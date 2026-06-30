@@ -34,7 +34,7 @@ public class BlindingCloak extends Equipment {
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 160);
+			data.addSimpleShield(p.getUniqueId(), shields, 160, this);
 			return TriggerResult.keep();
 		});
 	}

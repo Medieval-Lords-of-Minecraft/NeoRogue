@@ -60,7 +60,7 @@ public class GoldenAegis extends Equipment {
 				}
 				
 				// Add permanent shields
-				data.addPermanentShield(p.getUniqueId(), currentShields);
+				data.addPermanentShield(p.getUniqueId(), currentShields, this);
 				
 				// Sound effect
 				Sounds.levelup.play(p, p);
