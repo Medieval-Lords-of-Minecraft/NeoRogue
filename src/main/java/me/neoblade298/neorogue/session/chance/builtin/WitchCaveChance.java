@@ -25,17 +25,21 @@ public class WitchCaveChance extends ChanceSet {
 				"Heal " + DescUtil.white("20%") + " of your max health, but you can no longer gain " + DescUtil.white("shields")
 						+ " after " + DescUtil.white("10s") + " of a fight.",
 				(s, inst, data) -> {
+					data.healPercent(0.2);
 					data.giveArtifact((Artifact) EverlastingHealth.get(), 1);
-					Util.msgRaw(data.getPlayer(), "The witch presses a warm vial into your hand. You feel revitalized, but oddly fragile.");
+					Util.msgRaw(data.getPlayer(), "The witch presses a warm vial into your hand. You feel energized, but oddly fragile.");
 					return null;
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.SPLASH_POTION, "Temporary Health",
 				"Take " + DescUtil.white("10%") + " of your max health as damage, but heal " + DescUtil.white("30%")
 						+ " after winning " + DescUtil.white("2") + " fights.",
+				"You need at least 10% health to drink the brew!",
+				(s, inst, data) -> data.getHealth() / data.getMaxHealth() >= 0.10,
 				(s, inst, data) -> {
+					data.damagePercent(0.10);
 					data.giveArtifact((Artifact) TemporaryHealth.get(), 2);
-					Util.msgRaw(data.getPlayer(), "The bitter brew stings going down, but you sense its strength will bloom later.");
+					Util.msgRaw(data.getPlayer(), "The bitter brew stings going down, but you convince yourself that bitter things are healthier for you in the long run.");
 					return null;
 				}));
 

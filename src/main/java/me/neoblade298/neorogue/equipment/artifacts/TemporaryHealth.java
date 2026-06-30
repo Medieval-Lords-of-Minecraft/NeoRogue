@@ -39,7 +39,7 @@ public class TemporaryHealth extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.damagePercent(0.10);
+		
 	}
 
 	@Override

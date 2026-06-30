@@ -56,6 +56,11 @@ public class ManaPoolChance extends ChanceSet {
 		tables.put(EquipmentClass.MAGE, table);
 	}
 
+	// Returns a random common, highly-reforgeable starter equipment for the given class.
+	public static Equipment getReforgeItem(EquipmentClass ec) {
+		return tables.get(ec).get();
+	}
+
 	public ManaPoolChance() {
 		super(RegionType.LOW_DISTRICT, Material.BLUE_ICE, "ManaPool", "Mana Pool", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "The winding corridors give way to a surprisingly vegetated room. " +

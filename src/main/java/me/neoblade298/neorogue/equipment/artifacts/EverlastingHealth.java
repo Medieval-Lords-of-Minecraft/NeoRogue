@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -29,20 +30,28 @@ public class EverlastingHealth extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
+		PriorityAction pa = new PriorityAction(id, (pfd, in) -> {
+			return TriggerResult.cancel();
+		});
+		pa.setPriority(0);
+
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			am.addCount(1);
 			if (am.getCount() < DELAY) return TriggerResult.keep();
-			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pd, ev) -> {
-				return TriggerResult.cancel();
-			});
+			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, pa);
 			return TriggerResult.remove();
+		});
+
+		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
+			data.addHealth(data.getMaxHealth() * 0.2);
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.healPercent(0.20);
+		
 	}
 
 	@Override
@@ -53,7 +62,7 @@ public class EverlastingHealth extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.HONEY_BOTTLE,
-				"On acquire, heals you for " + DescUtil.white("20%") + " of your max health. Disables your ability to gain "
+				"Disables your ability to gain "
 						+ GlossaryTag.SHIELDS.tag(this) + " after " + DescUtil.white(DELAY + "s") + " of a fight.");
 	}
 }
