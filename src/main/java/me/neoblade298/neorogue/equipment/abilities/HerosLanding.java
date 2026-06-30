@@ -66,7 +66,7 @@ public class HerosLanding extends Equipment {
 			Player p = data.getPlayer();
 			strPart.play(p, p);
 			Sounds.fire.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, data, str, -1);
+			data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 			
 			Location loc = p.getLocation();
 			circ.play(pc, loc, LocalAxes.xz(), null);
@@ -75,7 +75,7 @@ public class HerosLanding extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				FightInstance.dealDamage(
 						new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
-				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
+				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1, this);
 			}
 			
 			return TriggerResult.cancel();

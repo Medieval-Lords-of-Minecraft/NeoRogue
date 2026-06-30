@@ -95,14 +95,14 @@ public class BlightTendril extends Equipment implements Power {
 			LivingEntity target = hit.getEntity();
 			
 			// Apply poison
-			FightInstance.applyStatus(target, StatusType.POISON, data, poison, poisonDuration);
+			FightInstance.applyStatus(target, StatusType.POISON, data, poison, poisonDuration, BlightTendril.this);
 			
 			// Mark the enemy with custom status
 			FightData fd = FightInstance.getFightData(target);
 			if (!fd.hasStatus(statusName)) {
 				Sounds.infect.play(data.getPlayer(), target);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 160); // 8 seconds duration
+				fd.applyStatus(s, data, 1, 160, BlightTendril.this); // 8 seconds duration
 			}
 		}
 
@@ -145,12 +145,12 @@ public class BlightTendril extends Equipment implements Power {
 			if (fd.hasStatus(statusName)) {
 				// Target is marked - consume mark and triple poison
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, -1, -1);
+				fd.applyStatus(s, data, -1, -1, this);
 
 				// Apply 2x the existing poison stacks (resulting in 3x total)
 				if (fd.hasStatus(StatusType.POISON)) {
 					int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-					FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), 100);
+					FightInstance.applyStatus(ev2.getTarget(), StatusType.POISON, data, (int) (existingPoison * poisonMult), 100, this);
 					pc.play(p2, ev2.getTarget());
 				}
 			}

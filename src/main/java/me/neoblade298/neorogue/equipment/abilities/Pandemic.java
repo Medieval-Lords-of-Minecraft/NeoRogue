@@ -88,7 +88,7 @@ public class Pandemic extends Equipment implements Power {
 
 			// Apply 3 second mark to primary target
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-			fd.applyStatus(s, data, 1, 60);
+			fd.applyStatus(s, data, 1, 60, this);
 
 			return TriggerResult.keep();
 		});
@@ -130,7 +130,7 @@ public class Pandemic extends Equipment implements Power {
 				if (ent == ev2.getTarget().getEntity()) continue;
 				FightData targetFd = FightInstance.getFightData(ent);
 				if (targetFd == null) continue;
-				targetFd.applyStatus(StatusType.POISON, data, areaPoison, poisonDuration, null, true);
+				targetFd.applyStatus(StatusType.POISON, data, areaPoison, poisonDuration, null, true, this);
 			}
 
 			return TriggerResult.keep();

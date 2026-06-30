@@ -40,7 +40,7 @@ public class ThrowPoison extends Equipment {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration);
+				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, poisonDuration, this);
 			}
 		});
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, inputs) -> {

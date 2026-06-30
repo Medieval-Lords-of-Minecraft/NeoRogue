@@ -44,7 +44,7 @@ public class Ironskin extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (fd, in) -> {
 			Player p = data.getPlayer();
-			data.addPermanentShield(p.getUniqueId(), shields);
+			data.addPermanentShield(p.getUniqueId(), shields, this);
 			sc.play(p, p);
 			pc.play(p, p);
 			return TriggerResult.keep();

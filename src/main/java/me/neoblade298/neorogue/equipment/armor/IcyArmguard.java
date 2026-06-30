@@ -48,7 +48,7 @@ public class IcyArmguard extends Equipment {
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				data.addSimpleShield(p.getUniqueId(), shields * act.getCount() / thres, 100);
+				data.addSimpleShield(p.getUniqueId(), shields * act.getCount() / thres, 100, this);
 				act.setCount(act.getCount() % thres);
 			}
 			return TriggerResult.keep();

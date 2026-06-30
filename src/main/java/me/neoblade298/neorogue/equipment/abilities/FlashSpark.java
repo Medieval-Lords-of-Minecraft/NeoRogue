@@ -101,7 +101,7 @@ public class FlashSpark extends Equipment {
 			}
 			
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1, this);
 			
 			return TriggerResult.keep();
 		});

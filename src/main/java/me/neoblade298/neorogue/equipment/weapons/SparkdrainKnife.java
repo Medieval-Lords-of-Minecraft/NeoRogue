@@ -45,10 +45,10 @@ public class SparkdrainKnife extends Equipment {
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			
 			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() > thres) {
-				data.addSimpleShield(p.getUniqueId(), shields, 60);
+				data.addSimpleShield(p.getUniqueId(), shields, 60, this);
 			}
 			else {
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1, this);
 			}
 			return TriggerResult.keep();
 		});

@@ -59,7 +59,7 @@ public class Twilight extends Equipment implements Power {
 			if (!ev2.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			ev2.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 			Player p2 = data.getPlayer();
-			FightInstance.applyStatus(p2, StatusType.EVADE, data, evade, 160);
+			FightInstance.applyStatus(p2, StatusType.EVADE, data, evade, 160, this);
 			data.addStamina(8);
 			return TriggerResult.keep();
 		});

@@ -136,7 +136,7 @@ public class NightSurge extends Equipment implements Power {
 
 			// Apply cooldown marker
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, cooldownStatus, targetFd, true);
-			targetFd.applyStatus(s, data, 1, 40); // 40 ticks = 2 seconds
+			targetFd.applyStatus(s, data, 1, 40, this); // 40 ticks = 2 seconds
 
 			// Get target entity and location
 			if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();

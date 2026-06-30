@@ -99,7 +99,7 @@ public class FrigidWind extends Equipment {
 			LivingEntity target = hit.getEntity();
 			
 			// Apply frost
-			hit.applyStatus(StatusType.FROST, data, frost, -1);
+			hit.applyStatus(StatusType.FROST, data, frost, -1, FrigidWind.this);
 			
 			// Track entity for delayed damage
 			hitEntities.add(target.getUniqueId());

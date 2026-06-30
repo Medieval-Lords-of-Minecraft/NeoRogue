@@ -97,7 +97,7 @@ public class EarthenTackle extends Equipment {
 							pc.play(p, ent);
 							dirt.play(p, ent);
 							FightInstance.dealDamage(data, DamageType.EARTHEN, damage, ent, DamageStatTracker.of(id + slot, eq));
-							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
+							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1, EarthenTackle.this);
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));

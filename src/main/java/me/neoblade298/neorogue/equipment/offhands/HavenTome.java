@@ -36,7 +36,7 @@ public class HavenTome extends Equipment {
 		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		},
 		(p2, pdata2, in2) -> {

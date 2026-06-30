@@ -60,7 +60,7 @@ public class Tireless extends Equipment implements Power {
 			if (ev.getInstance().getStaminaCost() < cutoff)
 				return TriggerResult.keep();
 			inst.addCount(reduc);
-			data.addSimpleShield(p2.getUniqueId(), shields, 100);
+			data.addSimpleShield(p2.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);

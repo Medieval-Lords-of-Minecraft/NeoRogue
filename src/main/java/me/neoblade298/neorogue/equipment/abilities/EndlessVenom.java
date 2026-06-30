@@ -68,10 +68,10 @@ public class EndlessVenom extends Equipment {
 			if (inst.getCount() == 0)
 				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration, this);
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, "SICKLY", fd, true);
-			fd.applyStatus(s, data, 1, 60);
+			fd.applyStatus(s, data, 1, 60, this);
 			return TriggerResult.keep();
 		});
 	}

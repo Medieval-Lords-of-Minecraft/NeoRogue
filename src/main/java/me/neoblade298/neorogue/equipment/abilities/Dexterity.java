@@ -35,7 +35,7 @@ public class Dexterity extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		String buffId = UUID.randomUUID().toString();
-		data.applyStatus(StatusType.EVADE, data, 1, -1);
+		data.applyStatus(StatusType.EVADE, data, 1, -1, this);
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(buffId, this)));
 	}
 

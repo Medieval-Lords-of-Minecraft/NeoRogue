@@ -54,12 +54,12 @@ public class Bloodlust extends Equipment implements Power {
 		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			}
 			else {
 				pc.play(p2, p2);
 				Sounds.fire.play(p2, p2);
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
 			}
 			return TriggerResult.keep();
 		});

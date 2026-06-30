@@ -55,7 +55,7 @@ public class PoolOfLight extends Equipment {
 				public void run() {
 					pc.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1);
+						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1, PoolOfLight.this);
 					}
 					if (++count >= 10) cancel();
 				}

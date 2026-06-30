@@ -68,7 +68,7 @@ public class StormweaversPromise extends Equipment implements Power {
 						recentHitTimes.removeFirst();
 					}
 					int duration = recentHitTimes.size() >= 2 ? EXTENDED_DURATION_TICKS : BASE_DURATION_TICKS;
-					data.addSimpleShield(p2.getUniqueId(), shields, duration);
+					data.addSimpleShield(p2.getUniqueId(), shields, duration, StormweaversPromise.this);
 					if (duration == EXTENDED_DURATION_TICKS) {
 						Sounds.levelup.play(p2, p2);
 					}

@@ -87,7 +87,7 @@ public class BeamStaff extends Equipment {
 						List<StatusType> pool = new ArrayList<>(Arrays.asList(STATUS_POOL));
 						Collections.shuffle(pool);
 						for (int i = 0; i < numStatuses; i++) {
-							FightInstance.applyStatus(ent, pool.get(i), data, 1, -1);
+							FightInstance.applyStatus(ent, pool.get(i), data, 1, -1, this);
 						}
 					}
 				}

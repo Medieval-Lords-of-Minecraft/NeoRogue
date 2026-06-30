@@ -42,7 +42,7 @@ public class StoneMace extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			Player p = data.getPlayer();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, p, conc, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, p, conc, -1, this);
 			weaponSwingAndDamage(p, pdata, ev.getTarget(), damage
 					+ (FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * concMult));
 			return TriggerResult.keep();

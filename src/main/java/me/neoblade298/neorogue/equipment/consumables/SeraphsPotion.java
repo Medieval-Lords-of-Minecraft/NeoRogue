@@ -36,7 +36,7 @@ public class SeraphsPotion extends Consumable {
 
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		data.applyStatus(StatusType.INVINCIBLE, data, 1, duration * 20);
+		data.applyStatus(StatusType.INVINCIBLE, data, 1, duration * 20, this);
 		new BukkitRunnable() {
 			@Override
 			public void run() {

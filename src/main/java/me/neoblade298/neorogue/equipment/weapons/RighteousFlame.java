@@ -50,7 +50,7 @@ public class RighteousFlame extends Equipment {
 			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(data.getPlayer(), data);
 			FightInstance.dealDamage(dm, ev.getTarget());
-			FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 	}

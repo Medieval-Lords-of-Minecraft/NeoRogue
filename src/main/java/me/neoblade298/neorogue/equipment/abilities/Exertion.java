@@ -63,7 +63,7 @@ public class Exertion extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				if (ent.getHealth() <= 0) kill = true;
 			}
-			if (!kill) data.applyStatus(StatusType.CORRUPTION, data, corruption, -1);
+			if (!kill) data.applyStatus(StatusType.CORRUPTION, data, corruption, -1, this);
 			return TriggerResult.keep();
 		}));
 	}

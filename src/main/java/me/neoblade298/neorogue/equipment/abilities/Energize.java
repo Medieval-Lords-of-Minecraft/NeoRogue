@@ -63,7 +63,7 @@ public class Energize extends Equipment {
 			if (inst.mark == null || !inst.mark.isValid()) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.LIGHTNING)) return TriggerResult.keep();
-			FightInstance.applyStatus(inst.mark, StatusType.ELECTRIFIED, p, elec, -1);
+			FightInstance.applyStatus(inst.mark, StatusType.ELECTRIFIED, p, elec, -1, this);
 			return TriggerResult.keep();
 		});
 	}

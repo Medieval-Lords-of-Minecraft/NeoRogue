@@ -75,7 +75,7 @@ public class Analyze extends Equipment {
 			
 			// Grant shields
 			int shieldAmount = SHIELDS_PER_STACK * currentStacks;
-			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100); // 5 seconds = 100 ticks
+			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100, this); // 5 seconds = 100 ticks
 			
 			// Reset stacks and icon to base, start at -1 to add a "cooldown"
 			stacks.setCount(-1);

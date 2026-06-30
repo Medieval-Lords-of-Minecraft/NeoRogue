@@ -102,7 +102,7 @@ public class AshenHeadhunter extends Equipment {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.infect.play(data.getPlayer(), loc);
 			if (++hits % 3 == 0) {
-				hit.applyStatus(StatusType.BURN, data, burn, -1);
+				hit.applyStatus(StatusType.BURN, data, burn, -1, this);
 			}
 		}
 

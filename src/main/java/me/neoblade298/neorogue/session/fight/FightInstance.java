@@ -67,6 +67,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.achievement.AchievementManager;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
@@ -921,38 +922,60 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
+		applyStatus(target, id, applier, stacks, seconds, null);
+	}
+
+	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		try {
 			StatusType st = StatusType.valueOf(id);
-			data.applyStatus(st, fdApplier, stacks, seconds);
+			data.applyStatus(st, fdApplier, stacks, seconds, source);
 		} catch (IllegalArgumentException e) {
-			data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds);
+			data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds, source);
 		}
 	}
 	
 	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier) {
+		applyStatus(target, s, stacks, ticks, applier, null);
+	}
+
+	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
-		data.applyStatus(s, applier, stacks, ticks);
+		data.applyStatus(s, applier, stacks, ticks, source);
 	}
 	
 	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int ticks) {
+		applyStatus(target, type, applier, stacks, ticks, (Equipment) null);
+	}
+
+	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
-		data.applyStatus(type, fdApplier, stacks, ticks);
+		data.applyStatus(type, fdApplier, stacks, ticks, source);
 	}
 	
 	public static void applyStatus(Entity target, StatusType type, FightData applier, int stacks, int ticks) {
+		applyStatus(target, type, applier, stacks, ticks, (Equipment) null);
+	}
+
+	public static void applyStatus(Entity target, StatusType type, FightData applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
-		data.applyStatus(type, applier, stacks, ticks);
+		data.applyStatus(type, applier, stacks, ticks, source);
 	}
 	
 	public static void applyStatus(
 			Entity target, GenericStatusType type, String id, Entity applier, int stacks, int ticks
 	) {
+		applyStatus(target, type, id, applier, stacks, ticks, null);
+	}
+
+	public static void applyStatus(
+			Entity target, GenericStatusType type, String id, Entity applier, int stacks, int ticks, Equipment source
+	) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
-		data.applyStatus(Status.createByGenericType(type, id, data), fdApplier, stacks, ticks);
+		data.applyStatus(Status.createByGenericType(type, id, data), fdApplier, stacks, ticks, source);
 	}
 	
 	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target, DamageStatTracker tracker) {

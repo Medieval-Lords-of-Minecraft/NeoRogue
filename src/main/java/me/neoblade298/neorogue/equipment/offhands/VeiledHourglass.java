@@ -47,7 +47,7 @@ public class VeiledHourglass extends Equipment {
 			}
 			else {
 				// If not in stealth, gain stealth
-				data.applyStatus(StatusType.STEALTH, data, 1, 200); // 10 seconds
+				data.applyStatus(StatusType.STEALTH, data, 1, 200, this); // 10 seconds
 			}
 			return TriggerResult.keep();
 		});

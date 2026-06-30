@@ -107,7 +107,7 @@ public class Hawkeye extends Equipment implements Power {
 			Player p2 = data.getPlayer();
 			rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
-			data.applyStatus(StatusType.FOCUS, data, -1, -1);
+			data.applyStatus(StatusType.FOCUS, data, -1, -1, this);
 			if (rev.getDamager() != null) {
 				LivingEntity damager = rev.getDamager().getEntity();
 				Location playerLoc = p2.getLocation().add(0, 1, 0);

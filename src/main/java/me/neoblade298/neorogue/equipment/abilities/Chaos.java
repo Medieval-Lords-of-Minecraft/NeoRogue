@@ -97,7 +97,7 @@ public class Chaos extends Equipment {
 			Location end = target.getLocation().add(0, 1, 0);
 			ParticleUtil.drawLine(p, pc, start, end, 0.3);
 			FightInstance.dealDamage(new DamageMeta(data, damage, type, DamageStatTracker.of(id + slot, eq)), target);
-			FightInstance.applyStatus(target, status, data, stacks, -1);
+			FightInstance.applyStatus(target, status, data, stacks, -1, this);
 			return TriggerResult.keep();
 		}));
 	}

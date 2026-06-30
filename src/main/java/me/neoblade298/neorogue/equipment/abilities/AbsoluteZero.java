@@ -92,7 +92,7 @@ public class AbsoluteZero extends Equipment implements Power {
 
 					// Apply new frost and double existing frost
 					int totalFrostToApply = frost + currentFrost;
-					FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1);
+					FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1, this);
 				}
 			} else {
 				// Update icon count

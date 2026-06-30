@@ -46,7 +46,7 @@ public class Embolden extends Equipment {
 				(pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.addPermanentShield(p.getUniqueId(), shields);
+			data.addPermanentShield(p.getUniqueId(), shields, this);
 			pc.play(p, p);
 			pdata.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;

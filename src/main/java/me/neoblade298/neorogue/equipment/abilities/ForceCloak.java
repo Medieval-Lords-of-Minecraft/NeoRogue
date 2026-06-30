@@ -34,8 +34,8 @@ public class ForceCloak extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.applyStatus(StatusType.PROTECT, data, 1, -1);
-			data.applyStatus(StatusType.SHELL, data, 1, -1);
+			data.applyStatus(StatusType.PROTECT, data, 1, -1, this);
+			data.applyStatus(StatusType.SHELL, data, 1, -1, this);
 			return TriggerResult.keep();
 		}));
 	}

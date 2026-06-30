@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -25,6 +23,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -141,7 +140,7 @@ public class AnchoringEarth2 extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 1));
 				fd.applyStatus(
 						Status.createByGenericType(GenericStatusType.BASIC, "anchoringEarth2-" + p.getName(), fd, true),
-						fd, 1, 160);
+						fd, 1, 160, AnchoringEarth2.this);
 			}
 		}
 	}

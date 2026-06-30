@@ -75,7 +75,7 @@ public class CurseMark extends Equipment {
 						if (mark == null) return;
 						Player p = data.getPlayer();
 						FightData fd = FightInstance.getFightData(mark);
-						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
+						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1, CurseMark.this);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
 						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01, StatTracker.defenseDebuffEnemy(buffId, eq)), 100);

@@ -36,7 +36,7 @@ public class VermillionBelt extends Equipment {
 			if (am.addCount(1) >= thres) {
 				Player p = data.getPlayer();
 				Sounds.fire.play(p, p);
-				data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+				data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
 				am.setCount(0);
 			}
 			return TriggerResult.keep();

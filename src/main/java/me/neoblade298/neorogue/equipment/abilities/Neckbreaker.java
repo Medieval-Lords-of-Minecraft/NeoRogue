@@ -77,7 +77,7 @@ public class Neckbreaker extends Equipment {
 				DamageStatTracker.of(ID + slot, this)));
 			
 			// Apply injury
-			FightInstance.applyStatus(target, StatusType.INJURY, data, injury, -1);
+			FightInstance.applyStatus(target, StatusType.INJURY, data, injury, -1, this);
 			
 			// Track target
 			if (firstTargetId[0] == null) {
@@ -101,10 +101,10 @@ public class Neckbreaker extends Equipment {
 				int currentInjury = fd.getStatus(StatusType.INJURY).getStacks();
 				
 				// Grant shields
-				data.addSimpleShield(player.getUniqueId(), shields, 100);
+				data.addSimpleShield(player.getUniqueId(), shields, 100, this);
 				
 				// Apply multiplied injury
-				FightInstance.applyStatus(target, StatusType.INJURY, data, currentInjury * mult, -1);
+				FightInstance.applyStatus(target, StatusType.INJURY, data, currentInjury * mult, -1, this);
 				
 				// Success effects
 				Sounds.success.play(player, player);

@@ -50,8 +50,8 @@ public class KeenSenses extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		String buffId = UUID.randomUUID().toString();
-		data.addPermanentShield(p.getUniqueId(), shields);
-		data.applyStatus(StatusType.FOCUS, data, 1, -1);
+		data.addPermanentShield(p.getUniqueId(), shields, this);
+		data.applyStatus(StatusType.FOCUS, data, 1, -1, this);
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();

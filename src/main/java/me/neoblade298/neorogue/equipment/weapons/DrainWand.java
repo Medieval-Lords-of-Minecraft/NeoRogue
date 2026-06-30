@@ -85,7 +85,7 @@ public class DrainWand extends Equipment {
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			data.addSimpleShield(data.getPlayer().getUniqueId(), shieldAmount, 40);
+			data.addSimpleShield(data.getPlayer().getUniqueId(), shieldAmount, 40, this);
 			sc.play(data.getPlayer(), hit.getEntity());
 		}
 		

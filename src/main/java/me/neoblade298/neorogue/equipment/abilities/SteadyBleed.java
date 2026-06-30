@@ -81,7 +81,7 @@ public class SteadyBleed extends Equipment {
 			// Grant accumulated shields
 			if (totalShields > 0) {
 				shield.play(p, p.getLocation());
-				data.addSimpleShield(p.getUniqueId(), totalShields, 300); // 15 seconds
+				data.addSimpleShield(p.getUniqueId(), totalShields, 300, this); // 15 seconds
 			}
 			
 			return TriggerResult.keep();

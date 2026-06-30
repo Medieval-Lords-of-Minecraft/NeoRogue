@@ -55,7 +55,7 @@ public class Brightshell extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Player p = data.getPlayer();
@@ -64,7 +64,7 @@ public class Brightshell extends Equipment {
 					aoe.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id, eq)), ent);
-						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
+						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1, Brightshell.this);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 60));

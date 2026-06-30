@@ -69,7 +69,7 @@ public class Crystallize extends Equipment {
 			FightInstance.dealDamage(dm, trg);
 			pc.play(p, trg);
 			for (LivingEntity le : TargetHelper.getEntitiesInRadius(p, aoe)) {
-				FightInstance.applyStatus(le, StatusType.FROST, data, frost, -1);
+				FightInstance.applyStatus(le, StatusType.FROST, data, frost, -1, this);
 			}
 			return TriggerResult.keep();
 		}), (p2, data2, in) -> {

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -70,7 +69,7 @@ public class BlastStep extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 1));
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
 			Sounds.explode.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
@@ -79,7 +78,7 @@ public class BlastStep extends Equipment {
 				FightInstance.knockback(ent, kb);
 				FightData fd = FightInstance.getFightData(ent);
 				fd.applyStatus(
-					Status.createByGenericType(GenericStatusType.BASIC, "blastStep-" + p.getName(), fd, true), data, 1, 60);
+					Status.createByGenericType(GenericStatusType.BASIC, "blastStep-" + p.getName(), fd, true), data, 1, 60, this);
 			}
 			return TriggerResult.keep();
 		}));

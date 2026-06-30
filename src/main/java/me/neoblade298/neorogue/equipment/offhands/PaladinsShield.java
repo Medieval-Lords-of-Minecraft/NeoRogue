@@ -89,7 +89,7 @@ public class PaladinsShield extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
-			ev.getMeta().getOwner().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
+			ev.getMeta().getOwner().applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 	}

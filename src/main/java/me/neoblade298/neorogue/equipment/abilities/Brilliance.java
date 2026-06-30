@@ -103,8 +103,8 @@ public class Brilliance extends Equipment implements Power {
 
 			if (type != lastType[0]) {
 				Player p2 = data.getPlayer();
-				data.applyStatus(StatusType.PROTECT, data, protectShell, RESISTANCE_DURATION);
-				data.applyStatus(StatusType.SHELL, data, protectShell, RESISTANCE_DURATION);
+				data.applyStatus(StatusType.PROTECT, data, protectShell, RESISTANCE_DURATION, this);
+				data.applyStatus(StatusType.SHELL, data, protectShell, RESISTANCE_DURATION, this);
 
 				DamageCategory category = getDamageCategoryFromType(type);
 				if (category != null) {

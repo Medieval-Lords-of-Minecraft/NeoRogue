@@ -149,7 +149,7 @@ public class Convergence extends Equipment implements Power {
 		// After activation: gain intellect on kill, fire projectiles on type change
 		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 			Sounds.enchant.play(p2, p2);
 			pc.play(p2, p2);
 			return TriggerResult.keep();

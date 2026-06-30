@@ -118,7 +118,7 @@ public class DensityOrb extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 2));
 			}
 			data.addRift(new Rift(data, loc.add(0, 1, 0), 300));
-			if (!trgs.isEmpty()) data.addPermanentShield(p.getUniqueId(), shields);
+			if (!trgs.isEmpty()) data.addPermanentShield(p.getUniqueId(), shields, DensityOrb.this);
 		}
 		
 	}

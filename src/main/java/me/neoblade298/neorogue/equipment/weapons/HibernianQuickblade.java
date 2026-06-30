@@ -54,7 +54,7 @@ public class HibernianQuickblade extends Equipment {
 				am.setCount(0);
 				Sounds.flap.play(p, p);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, props)) {
 					Vector v = ent.getLocation().subtract(p.getLocation()).toVector().setY(0).normalize().multiply(0.4).setY(0.3);
 					FightInstance.knockback(ent, v);

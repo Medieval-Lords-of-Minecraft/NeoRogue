@@ -66,7 +66,7 @@ public class Envenom extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, poisonDuration, this);
 			return TriggerResult.keep();
 		});
 	}

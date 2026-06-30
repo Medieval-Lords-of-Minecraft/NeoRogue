@@ -60,7 +60,7 @@ public class Tailwind extends Equipment {
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					if (loc.distanceSquared(p.getLocation()) <= radius * radius) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
-						data.addSimpleShield(p.getUniqueId(), shields, 20);
+						data.addSimpleShield(p.getUniqueId(), shields, 20, Tailwind.this);
 					}
 					if (++tick >= 8) {
 						this.cancel();

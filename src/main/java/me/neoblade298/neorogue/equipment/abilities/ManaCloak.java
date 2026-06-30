@@ -41,9 +41,9 @@ public class ManaCloak extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 200);
-			data.applyStatus(StatusType.PROTECT, data, 1, -1);
-			data.applyStatus(StatusType.SHELL, data, 1, -1);
+			data.addSimpleShield(p.getUniqueId(), shields, 200, this);
+			data.applyStatus(StatusType.PROTECT, data, 1, -1, this);
+			data.applyStatus(StatusType.SHELL, data, 1, -1, this);
 			return TriggerResult.keep();
 		}));
 	}

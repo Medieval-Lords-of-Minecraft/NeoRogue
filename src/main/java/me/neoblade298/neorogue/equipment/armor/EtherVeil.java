@@ -28,7 +28,7 @@ public class EtherVeil extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addPermanentShield(data.getPlayer().getUniqueId(), data.getMaxMana() * def);
+		data.addPermanentShield(data.getPlayer().getUniqueId(), data.getMaxMana() * def, this);
 	}
 
 	@Override

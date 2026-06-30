@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -100,13 +99,13 @@ public class TwinBolt extends Equipment {
 			Player p = data.getPlayer();
 			if (hit.hasStatus("TWINBOLT-" + p.getName())) {
 				// If the hit already has a twinbolt status, apply burn
-				hit.applyStatus(StatusType.BURN, data, burn, -1);
+				hit.applyStatus(StatusType.BURN, data, burn, -1, TwinBolt.this);
 				Sounds.extinguish.play(p, hit.getEntity().getLocation());
 			} else {
 				// If the hit does not have a twinbolt status, create it
 				hit.applyStatus(
 						Status.createByGenericType(GenericStatusType.BASIC, "TWINBOLT-" + p.getName(), hit, true), data,
-						1, 20);
+						1, 20, TwinBolt.this);
 			}
 		}
 

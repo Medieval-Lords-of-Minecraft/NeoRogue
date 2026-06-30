@@ -107,7 +107,7 @@ public class Fireball2 extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, Fireball2.this);
 			}
 		}
 	}

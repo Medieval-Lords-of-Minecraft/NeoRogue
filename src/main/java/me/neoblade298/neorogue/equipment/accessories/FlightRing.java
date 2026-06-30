@@ -36,7 +36,7 @@ public class FlightRing extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Grant evade at the start of the fight
-		data.applyStatus(StatusType.EVADE, data, evade, -1);
+		data.applyStatus(StatusType.EVADE, data, evade, -1, this);
 		
 		// Track the number of evades that should trigger dash
 		ActionMeta dashCount = new ActionMeta();

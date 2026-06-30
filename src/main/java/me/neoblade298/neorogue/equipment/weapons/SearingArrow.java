@@ -38,7 +38,7 @@ public class SearingArrow extends Ammunition {
 	
 	@Override
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity target) {
-		FightInstance.applyStatus(target, StatusType.BURN, inst.getOwner(), burn, -1);
+		FightInstance.applyStatus(target, StatusType.BURN, inst.getOwner(), burn, -1, this);
 	}
 	
 	@Override

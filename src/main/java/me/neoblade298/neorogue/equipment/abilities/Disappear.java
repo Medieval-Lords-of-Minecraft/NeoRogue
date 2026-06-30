@@ -87,7 +87,7 @@ public class Disappear extends Equipment implements Power {
 			if (!primed) return;
 			Player p = data.getPlayer();
 			Sounds.anvil.play(p, p);
-			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			data.applyStatus(StatusType.STEALTH, data, 1, 100, Disappear.this);
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
 			primed = false;
 			eqInst.setIcon(baseIcon);

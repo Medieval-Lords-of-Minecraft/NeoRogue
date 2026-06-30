@@ -65,7 +65,7 @@ public class Expunge extends Equipment {
 					circ.play(circPart, p.getLocation(), LocalAxes.xz(), null);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightData fd = FightInstance.getFightData(ent);
-						fd.applyStatus(StatusType.POISON, data, stacks, poisonDuration);
+						fd.applyStatus(StatusType.POISON, data, stacks, poisonDuration, Expunge.this);
 						double dmg = FightInstance.getFightData(ent).getStatus(StatusType.POISON).getStacks() * bonus;
 						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON, DamageStatTracker.of(id + slot, Expunge.this)), ent);
 					}

@@ -50,7 +50,7 @@ public class Deliberation extends Equipment {
 				public void run() {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
-					data.applyStatus(StatusType.FOCUS, data, 1, -1);
+					data.applyStatus(StatusType.FOCUS, data, 1, -1, Deliberation.this);
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data,
 							damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(
 									buffId, eq)),

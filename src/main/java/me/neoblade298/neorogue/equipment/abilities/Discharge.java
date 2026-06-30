@@ -55,7 +55,7 @@ public class Discharge extends Equipment implements Power {
 		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
 			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 			Sounds.enchant.play(p2, p2);
 			pc.play(p2, p2);
 			icon.setAmount(am.getCount());
@@ -63,7 +63,7 @@ public class Discharge extends Equipment implements Power {
 
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in3;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1, this);
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

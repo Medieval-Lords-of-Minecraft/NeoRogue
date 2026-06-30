@@ -122,7 +122,7 @@ public class CorpseExplosion extends Equipment implements Power {
 					
 					// Apply poison to all enemies in radius using TargetHelper
 					for (LivingEntity le : TargetHelper.getEntitiesInRadius(p, center, tp)) {
-						FightInstance.applyStatus(le, StatusType.POISON, data, poisonPerSecond, poisonDuration);
+						FightInstance.applyStatus(le, StatusType.POISON, data, poisonPerSecond, poisonDuration, CorpseExplosion.this);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L * (second + 1))); // Schedule for each second

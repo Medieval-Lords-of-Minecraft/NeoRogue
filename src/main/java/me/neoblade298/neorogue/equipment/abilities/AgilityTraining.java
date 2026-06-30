@@ -54,7 +54,7 @@ public class AgilityTraining extends Equipment {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, stacks, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, stacks, -1, this);
 			return TriggerResult.keep();
 		});
 	}

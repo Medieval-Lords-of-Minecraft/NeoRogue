@@ -31,12 +31,12 @@ public class BloodyTrinket extends Artifact {
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		Player p = data.getPlayer();
 		if (p.getHealth() <= data.getMaxHealth() * 0.5) {
-			data.applyStatus(StatusType.STRENGTH, data, str, -1);
+			data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 		}
 		else {
 			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 				if (p.getHealth() <= data.getMaxHealth() * 0.5) {
-					data.applyStatus(StatusType.STRENGTH, data, str, -1);
+					data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 					return TriggerResult.remove();
 				}
 				return TriggerResult.keep();

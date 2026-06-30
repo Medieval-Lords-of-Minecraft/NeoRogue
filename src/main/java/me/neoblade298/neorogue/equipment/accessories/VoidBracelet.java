@@ -39,7 +39,7 @@ public class VoidBracelet extends Equipment {
 		}.runTaskLater(NeoRogue.inst(), 100));
 
 		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
-			data.applyStatus(StatusType.INTELLECT, data, inc, -1);
+			data.applyStatus(StatusType.INTELLECT, data, inc, -1, this);
 			return TriggerResult.keep();
 		});
 	}

@@ -92,7 +92,7 @@ public class LightningRod extends Equipment {
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING,
 								DamageStatTracker.of(id + slot, eq)), ent);
-						FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
+						FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1, LightningRod.this);
 					}
 				}
 			});

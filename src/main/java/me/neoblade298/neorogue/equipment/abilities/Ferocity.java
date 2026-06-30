@@ -52,7 +52,7 @@ public class Ferocity extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
-			pdata.applyStatus(StatusType.BERSERK, data, berserk, -1);
+			pdata.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
 			if (pdata.getStatus(StatusType.BERSERK).getStacks() >= cutoff) {
 				Sounds.roar.play(p, p);
 				p.getInventory().setItem(slot, null);

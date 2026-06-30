@@ -74,7 +74,7 @@ public class Dissonance extends Equipment implements Power {
 			DamageType lastType = (DamageType) lastDamageType.getObject();
 			if (lastType == null || currentType != lastType) {
 				data.addMana(mana);
-				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 				lastDamageType.setObject(currentType);
 			}
 			

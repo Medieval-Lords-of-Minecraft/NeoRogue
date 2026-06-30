@@ -54,7 +54,7 @@ public class Parry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			pc.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			Sounds.equip.play(p, p);
 			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ParryBlock(this, slot));
 			return TriggerResult.keep();

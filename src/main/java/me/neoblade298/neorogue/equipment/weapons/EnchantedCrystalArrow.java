@@ -46,7 +46,7 @@ public class EnchantedCrystalArrow extends Ammunition {
 		}
 		
 		// Apply additional frost
-		fd.applyStatus(StatusType.FROST, inst.getOwner(), frost, -1);
+		fd.applyStatus(StatusType.FROST, inst.getOwner(), frost, -1, this);
 	}
 
 	@Override

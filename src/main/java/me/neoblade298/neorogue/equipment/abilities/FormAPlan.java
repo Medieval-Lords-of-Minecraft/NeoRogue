@@ -67,7 +67,7 @@ public class FormAPlan extends Equipment {
 					if (++timer >= 10) {
 						Sounds.fire.play(p, p);
 						pc.play(p, p);
-						data.applyStatus(StatusType.STEALTH, data, 3, 100);
+						data.applyStatus(StatusType.STEALTH, data, 3, 100, FormAPlan.this);
 						Util.msg(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
 						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, eq)));
 						this.cancel();

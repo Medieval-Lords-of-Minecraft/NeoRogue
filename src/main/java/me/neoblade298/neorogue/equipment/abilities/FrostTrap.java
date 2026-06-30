@@ -70,7 +70,7 @@ public class FrostTrap extends Equipment {
 								hit.play(p, trg);
 								DamageMeta dm = new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP);
 								FightInstance.dealDamage(dm, trg);
-								FightInstance.applyStatus(trg, StatusType.FROST, data, frost, -1);
+								FightInstance.applyStatus(trg, StatusType.FROST, data, frost, -1, FrostTrap.this);
 								data.removeTrap(this);
 							}
 						}

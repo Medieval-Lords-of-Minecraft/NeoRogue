@@ -68,13 +68,13 @@ public class Consecrate extends Equipment {
 					Sounds.explode.play(p, p);
 					circ.play(edge, p.getLocation(), LocalAxes.xz(), null);
 					center.play(p, p);
-					data.addSimpleShield(p.getUniqueId(), shields, 160);
+					data.addSimpleShield(p.getUniqueId(), shields, 160, Consecrate.this);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightInstance.dealDamage(
 							new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, Consecrate.this))
 										.setKnockback(1),
 								ent);
-						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
+						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1, Consecrate.this);
 					}
 				}
 			});

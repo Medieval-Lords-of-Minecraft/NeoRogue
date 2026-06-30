@@ -39,7 +39,7 @@ public class RazorCloak extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.THORNS, data, thorns, -1);
+			data.applyStatus(StatusType.THORNS, data, thorns, -1, this);
 			return TriggerResult.keep();
 		}));
 	}

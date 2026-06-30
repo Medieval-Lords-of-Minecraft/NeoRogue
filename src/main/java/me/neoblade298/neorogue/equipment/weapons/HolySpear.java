@@ -74,7 +74,7 @@ public class HolySpear extends Equipment {
 						if (fd.getStatus(StatusType.SANCTIFIED).getStacks() >= thres) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
 						}
-						FightInstance.applyStatus(target, StatusType.SANCTIFIED, data, sanct, -1);
+						FightInstance.applyStatus(target, StatusType.SANCTIFIED, data, sanct, -1, this);
 						FightInstance.dealDamage(dm, target);
 					}
 				}

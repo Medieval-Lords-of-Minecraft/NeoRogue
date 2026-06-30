@@ -44,7 +44,7 @@ public class ManaShell extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		}));
 	}

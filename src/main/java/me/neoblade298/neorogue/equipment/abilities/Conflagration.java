@@ -115,7 +115,7 @@ public class Conflagration extends Equipment implements Power {
 					DamageStatTracker.of(ID + slot, eq)));
 			
 			// Apply burn
-			FightInstance.applyStatus(target, StatusType.BURN, data, burnToApply, -1);
+			FightInstance.applyStatus(target, StatusType.BURN, data, burnToApply, -1, Conflagration.this);
 			
 			Sounds.explode.play(data.getPlayer(), target.getLocation());
 		}

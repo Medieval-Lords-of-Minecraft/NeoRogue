@@ -81,7 +81,7 @@ public class StonyWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			StonyWand.hit.play(data.getPlayer(), loc);
-			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, conc, -1);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, conc, -1, this);
 		}
 
 		@Override

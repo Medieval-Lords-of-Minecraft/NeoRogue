@@ -63,7 +63,7 @@ public class Surprise extends Equipment {
 			p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.7).setY(0.3));
 			Sounds.jump.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		}));
 	}

@@ -58,7 +58,7 @@ public class MarkTarget extends Equipment {
 			if (trg == null) return TriggerResult.keep();
 			taunt.play(p, trg);
 			Sounds.infect.play(p, trg);
-			FightInstance.applyStatus(trg, StatusType.REND, data, rend, -1);
+			FightInstance.applyStatus(trg, StatusType.REND, data, rend, -1, this);
 			return TriggerResult.keep();
 		}));
 

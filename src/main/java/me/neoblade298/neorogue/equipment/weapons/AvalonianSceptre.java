@@ -104,7 +104,7 @@ public class AvalonianSceptre extends Equipment {
 			attackCounter.setInt(count);
 
 			if (count % intellectFreq == 0) {
-				data.applyStatus(StatusType.INTELLECT, data, 1, -1);
+				data.applyStatus(StatusType.INTELLECT, data, 1, -1, this);
 			}
 
 			sc.play(data.getPlayer(), hit.getEntity());

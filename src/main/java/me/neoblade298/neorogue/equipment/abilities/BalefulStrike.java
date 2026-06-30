@@ -88,7 +88,7 @@ public class BalefulStrike extends Equipment {
 				
 				// Apply poison stacks after the attack
 				int stacksToApply = (int) (poisonStacks * applyMultiplier);
-				FightInstance.applyStatus(target, StatusType.POISON, data, stacksToApply, 100); // 5 seconds = 100 ticks
+				FightInstance.applyStatus(target, StatusType.POISON, data, stacksToApply, 100, this); // 5 seconds = 100 ticks
 				
 				// Play green particles and anvil sound on hit
 				pc.play(p, target.getLocation());

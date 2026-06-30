@@ -30,7 +30,7 @@ public class RubyShard extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		Player p = data.getPlayer();
-		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields);
+		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields, this);
 	}
 
 	@Override

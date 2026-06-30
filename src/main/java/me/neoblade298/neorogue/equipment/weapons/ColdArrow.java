@@ -33,7 +33,7 @@ public class ColdArrow extends Ammunition {
 	@Override
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity trg) {
 		FightData fd = FightInstance.getFightData(trg);
-		fd.applyStatus(StatusType.FROST, inst.getOwner(), frost, -1);
+		fd.applyStatus(StatusType.FROST, inst.getOwner(), frost, -1, this);
 	}
 
 	@Override

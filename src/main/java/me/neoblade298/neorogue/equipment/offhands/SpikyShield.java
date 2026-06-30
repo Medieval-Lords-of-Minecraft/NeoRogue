@@ -44,7 +44,7 @@ public class SpikyShield extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
-		data.applyStatus(StatusType.THORNS, data, amount, -1);
+		data.applyStatus(StatusType.THORNS, data, amount, -1, this);
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			if (am.getCount() >= 5) return TriggerResult.remove();
 			Player p = data.getPlayer();

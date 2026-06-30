@@ -103,7 +103,7 @@ public class HailCloak extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				FightInstance.dealDamage(
 						new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq)), ent);
-				FightInstance.applyStatus(ent, StatusType.FROST, data, stacks, -1);
+				FightInstance.applyStatus(ent, StatusType.FROST, data, stacks, -1, HailCloak.this);
 			}
 		}
 	}

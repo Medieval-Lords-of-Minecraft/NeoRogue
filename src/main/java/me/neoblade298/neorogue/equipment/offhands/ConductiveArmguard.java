@@ -35,7 +35,7 @@ public class ConductiveArmguard extends Equipment {
 			if (!ev.getMeta().containsType(DamageCategory.LIGHTNING))
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
+			data.addSimpleShield(p.getUniqueId(), shields, 60, this);
 			return TriggerResult.keep();
 		});
 	}

@@ -43,7 +43,7 @@ public class QuickFeet extends Equipment {
 				public void run() {
 					Sounds.fire.play(p, p);
 					pc.play(p, p);
-					data.applyStatus(StatusType.EVADE, data, ev, -1);
+					data.applyStatus(StatusType.EVADE, data, ev, -1, QuickFeet.this);
 				}
 			});
 			return TriggerResult.keep();

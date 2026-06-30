@@ -82,7 +82,7 @@ public class Fortress extends Equipment {
 				am.setTask(task);
 
 				if (am.getDouble() <= 0) return TriggerResult.keep();
-				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
+				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true, this);
 				am.setObject(shield);
 			}
 			return TriggerResult.keep();

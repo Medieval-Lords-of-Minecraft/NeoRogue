@@ -123,9 +123,9 @@ public class Firewall extends Equipment {
 						}
 						// Apply burn to enemies
 						if (ent == p) {
-							FightInstance.applyStatus(ent, StatusType.CORRUPTION, data, corruption, -1);
+							FightInstance.applyStatus(ent, StatusType.CORRUPTION, data, corruption, -1, Firewall.this);
 						} else {
-							FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
+							FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, Firewall.this);
 						}
 					}
 					// Apply corruption to caster

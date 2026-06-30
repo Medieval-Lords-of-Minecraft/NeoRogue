@@ -63,7 +63,7 @@ public class Dread extends Equipment implements Power {
 			public void run() {
 				Player p = data.getPlayer();
 				// Apply permanent stealth
-				data.applyStatus(StatusType.STEALTH, data, stealthGained, -1);
+				data.applyStatus(StatusType.STEALTH, data, stealthGained, -1, Dread.this);
 
 				// Apply permanent Speed 1
 				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 0));

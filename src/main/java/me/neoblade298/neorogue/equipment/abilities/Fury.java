@@ -72,7 +72,7 @@ public class Fury extends Equipment {
 						FightInstance.giveHeal(p, berserkHeal, p);
 					}
 					else {
-						data.applyStatus(StatusType.BERSERK, data, 1, -1);
+						data.applyStatus(StatusType.BERSERK, data, 1, -1, Fury.this);
 					}
 					return TriggerResult.remove();
 				});

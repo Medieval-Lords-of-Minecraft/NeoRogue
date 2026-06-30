@@ -52,7 +52,7 @@ public class ThornGarden extends Equipment implements Power {
 				data.addTrigger(id + "-active", Trigger.RECEIVE_SHIELDS, (pdata2, in2) -> {
 					GrantShieldsEvent ev = (GrantShieldsEvent) in2;
 					shieldCount[0] += ev.getShield().getAmount();
-					data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1);
+					data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1, ThornGarden.this);
 					shieldCount[0] = shieldCount[0] % CUTOFF;
 					return TriggerResult.keep();
 				});

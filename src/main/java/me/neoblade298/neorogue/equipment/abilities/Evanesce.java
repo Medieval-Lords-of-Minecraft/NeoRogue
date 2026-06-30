@@ -76,7 +76,7 @@ public class Evanesce extends Equipment implements Power {
 					data.dash(awayFromEnemy);
 					FightInstance.dealDamage(pdata2, DamageType.PIERCING, damage, damager, 
 							DamageStatTracker.of(id + slot, Evanesce.this));
-					FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
+					FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration, Evanesce.this);
 					data.addTask(new BukkitRunnable() {
 						public void run() {
 							data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),

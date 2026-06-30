@@ -92,7 +92,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), elec, -1);
+			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), elec, -1, WeaponEnchantmentElectrified.this);
 			scHit.play((Player) proj.getOwner().getEntity(), hit.getEntity());
 		}
 

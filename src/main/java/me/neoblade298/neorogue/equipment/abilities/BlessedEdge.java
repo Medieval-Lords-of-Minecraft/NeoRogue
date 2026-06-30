@@ -54,7 +54,7 @@ public class BlessedEdge extends Equipment {
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
-				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
+				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 				FightInstance.dealDamage(data, DamageType.LIGHT, damage, target, DamageStatTracker.of(id + slot, this));
 				hit.play(p, target.getLocation());
 				hitSound.play(p, target.getLocation());

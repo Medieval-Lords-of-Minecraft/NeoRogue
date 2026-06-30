@@ -68,7 +68,7 @@ public class InducePanic2 extends Equipment {
 					public void run() {
 						if (inst.mark == null) return;
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, radius)) {
-							FightInstance.applyStatus(ent, StatusType.INSANITY, pdata, stacks, -1);
+							FightInstance.applyStatus(ent, StatusType.INSANITY, pdata, stacks, -1, InducePanic2.this);
 							pc.play(p, ent);
 							Sounds.infect.play(p, ent);
 						}

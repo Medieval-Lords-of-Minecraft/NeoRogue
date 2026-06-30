@@ -45,13 +45,13 @@ public class NoxianFalx extends Equipment {
 			if (fd != null) {
 				// Apply stacks if enemy already has the status
 				if (fd.hasStatus(StatusType.INSANITY)) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1, this);
 				}
 				if (fd.hasStatus(StatusType.ELECTRIFIED)) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, this);
 				}
 				if (fd.hasStatus(StatusType.POISON)) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, stacks, poisonDuration);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, stacks, poisonDuration, this);
 				}
 			}
 			

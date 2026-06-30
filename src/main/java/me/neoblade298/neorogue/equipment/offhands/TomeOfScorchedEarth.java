@@ -58,7 +58,7 @@ public class TomeOfScorchedEarth extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 			}
 			if (trgs.size() < 2) {
-				data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+				data.applyStatus(StatusType.CORRUPTION, data, corr, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

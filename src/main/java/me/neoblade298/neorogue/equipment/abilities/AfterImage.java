@@ -47,7 +47,7 @@ public class AfterImage extends Equipment implements Power {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.DASH, (pdata2, inputs) -> {
 					Player p = data.getPlayer();
-					data.addSimpleShield(p.getUniqueId(), shields, 100);
+					data.addSimpleShield(p.getUniqueId(), shields, 100, AfterImage.this);
 					return TriggerResult.keep();
 				});
 			}

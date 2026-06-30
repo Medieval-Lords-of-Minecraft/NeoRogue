@@ -110,7 +110,7 @@ public class HuntersEssence extends Equipment implements Power {
 			
 			// Chance to increase focus by 1
 			if (Math.random() < focusChance) {
-				owner.applyStatus(StatusType.FOCUS, owner, 1, -1);
+				owner.applyStatus(StatusType.FOCUS, owner, 1, -1, HuntersEssence.this);
 			}
 			
 			// Increment icon count using ActionMeta

@@ -78,7 +78,7 @@ public class TrappersEssence extends Equipment implements Power {
 					FightInstance.dealDamage(dm, trg);
 					
 					// Grant shields to player
-					data.addSimpleShield(p.getUniqueId(), shields, SHIELD_DURATION);
+					data.addSimpleShield(p.getUniqueId(), shields, SHIELD_DURATION, TrappersEssence.this);
 					Sounds.equip.play(p, p);
 					
 					data.removeTrap(this);

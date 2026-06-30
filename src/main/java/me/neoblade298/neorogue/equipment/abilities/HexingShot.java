@@ -84,7 +84,7 @@ public class HexingShot extends Equipment {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(buffId, this)));
 				FightData trg = FightInstance.getFightData(ev.getTarget());
-				trg.applyStatus(new BasicStatus(ID + p.getName(), trg, StatusClass.NEGATIVE, true), data, 1, 10);
+				trg.applyStatus(new BasicStatus(ID + p.getName(), trg, StatusClass.NEGATIVE, true), data, 1, 10, this);
 			}
 			return TriggerResult.keep();
 		});

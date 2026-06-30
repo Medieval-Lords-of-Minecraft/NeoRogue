@@ -77,7 +77,7 @@ public class Tempest extends Equipment implements Power {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, targetLoc, tp)) {
 				if (ent.getUniqueId().equals(originalTarget.getUniqueId())) continue;
 				FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, ent, DamageStatTracker.of(id + slot, this));
-				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
+				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1, this);
 			}
 			return TriggerResult.keep();
 		});

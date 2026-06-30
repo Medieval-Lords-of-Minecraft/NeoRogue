@@ -61,7 +61,7 @@ public class Viper extends Equipment {
 				
 				// Apply 3 second mark
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 60);
+				fd.applyStatus(s, data, 1, 60, this);
 				
 				return TriggerResult.keep();
 			});
@@ -79,7 +79,7 @@ public class Viper extends Equipment {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 				
 				// Grant shields and speed
-				data.addSimpleShield(p.getUniqueId(), shields, 40);
+				data.addSimpleShield(p.getUniqueId(), shields, 40, this);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
 				
 				return TriggerResult.keep();

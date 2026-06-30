@@ -48,7 +48,7 @@ public class RecklessSwing extends Equipment {
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 				ev.getMeta().addDamageSlice(new DamageSlice(data, data.getStatus(StatusType.BERSERK).getStacks() * mult, DamageType.BLUNT,
 						DamageStatTracker.of(id + slot, this)));
 				hit.play(p, ev.getTarget());

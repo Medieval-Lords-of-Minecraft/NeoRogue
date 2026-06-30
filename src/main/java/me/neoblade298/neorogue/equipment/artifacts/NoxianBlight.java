@@ -41,11 +41,11 @@ public class NoxianBlight extends Artifact {
 			boolean activated = false;
 			if (ev.getInstance().getManaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.INTELLECT, data, inc, -1);
+				data.applyStatus(StatusType.INTELLECT, data, inc, -1, this);
 			}
 			if (ev.getInstance().getStaminaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.STRENGTH, data, inc, -1);
+				data.applyStatus(StatusType.STRENGTH, data, inc, -1, this);
 			}
 
 			if (activated) {

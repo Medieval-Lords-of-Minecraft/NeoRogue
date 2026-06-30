@@ -95,7 +95,7 @@ public class RighteousHammer extends Equipment {
 		if (enemies.isEmpty()) return;
 		boolean first = true;
 		for (LivingEntity ent : enemies) {
-			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1);
+			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1, this);
 			if (first) {
 				weaponDamage(p, data, ent);
 				Vector v = ent.getVelocity();

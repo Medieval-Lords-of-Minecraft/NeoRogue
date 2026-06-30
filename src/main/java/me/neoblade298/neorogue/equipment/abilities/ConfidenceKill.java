@@ -82,7 +82,7 @@ public class ConfidenceKill extends Equipment {
 					public void run() {
 						if (inst.mark == null) return;
 						Player p = data.getPlayer();
-						FightInstance.applyStatus(inst.mark, StatusType.INSANITY, pdata, stacks, -1);
+						FightInstance.applyStatus(inst.mark, StatusType.INSANITY, pdata, stacks, -1, ConfidenceKill.this);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, inst.mark);
 						toKill = mark;

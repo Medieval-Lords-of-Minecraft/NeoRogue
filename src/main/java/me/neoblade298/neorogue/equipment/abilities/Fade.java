@@ -59,7 +59,7 @@ public class Fade extends Equipment implements Power {
 
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata3, in3) -> {
-			data.applyStatus(StatusType.STEALTH, data, 1, stealthDur * 20);
+			data.applyStatus(StatusType.STEALTH, data, 1, stealthDur * 20, this);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, inst);

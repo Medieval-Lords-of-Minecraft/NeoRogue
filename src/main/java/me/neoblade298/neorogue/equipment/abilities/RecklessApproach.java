@@ -116,7 +116,7 @@ public class RecklessApproach extends Equipment {
 							pc.play(p, p);
 							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent, DamageStatTracker.of(id + slot, eq));
 						}
-						data.addSimpleShield(p.getUniqueId(), shields, 100);
+						data.addSimpleShield(p.getUniqueId(), shields, 100, RecklessApproach.this);
 						inst.setBool(true);
 						data.addTask(new BukkitRunnable() {
 							public void run() {

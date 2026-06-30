@@ -63,7 +63,7 @@ public class Egoism extends Equipment implements Power {
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 			// Gain stealth for 10 seconds
-			data.applyStatus(StatusType.STEALTH, data, stealth, 200);
+			data.applyStatus(StatusType.STEALTH, data, stealth, 200, this);
 			// Gain Speed 1 for 5 seconds
 			Player p = data.getPlayer();
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));

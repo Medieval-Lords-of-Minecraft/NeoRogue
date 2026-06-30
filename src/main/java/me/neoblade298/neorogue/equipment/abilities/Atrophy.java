@@ -52,7 +52,7 @@ public class Atrophy extends Equipment {
 			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this)));
-			fd.applyStatus(StatusType.INSANITY, data, ins, -1);
+			fd.applyStatus(StatusType.INSANITY, data, ins, -1, this);
 			return TriggerResult.keep();
 		});
 		

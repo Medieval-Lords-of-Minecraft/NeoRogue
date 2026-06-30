@@ -45,7 +45,7 @@ public class Rapier extends Equipment {
 			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (am.addCount(1) < 3) {
-				data.addSimpleShield(p.getUniqueId(), shields, 80);
+				data.addSimpleShield(p.getUniqueId(), shields, 80, this);
 				am.setCount(0);
 			}
 			return TriggerResult.keep();

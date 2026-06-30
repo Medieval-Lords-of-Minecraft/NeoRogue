@@ -57,8 +57,8 @@ public class VoidWarden extends Equipment {
 		String procId = id + slot;
 		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			data.applyStatus(StatusType.PROTECT, data, stacks, -1);
-			data.applyStatus(StatusType.SHELL, data, stacks, -1);
+			data.applyStatus(StatusType.PROTECT, data, stacks, -1, this);
+			data.applyStatus(StatusType.SHELL, data, stacks, -1, this);
 			pc.play(p, p);
 			Sounds.enchant.play(p, p);
 			casts.addCount(1);
@@ -88,7 +88,7 @@ public class VoidWarden extends Equipment {
 			int shields = combinedStacks / passiveThreshold;
 			if (shields > 0) {
 				Player p = data.getPlayer();
-				data.addSimpleShield(p.getUniqueId(), shields, PASSIVE_SHIELD_DURATION);
+				data.addSimpleShield(p.getUniqueId(), shields, PASSIVE_SHIELD_DURATION, this);
 			}
 			return TriggerResult.keep();
 		});

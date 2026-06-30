@@ -102,7 +102,7 @@ public class Lightfall extends Equipment {
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 			FightInstance.dealDamage(
 					new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, this)), ent);
-			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1, this);
 		}
 	}
 

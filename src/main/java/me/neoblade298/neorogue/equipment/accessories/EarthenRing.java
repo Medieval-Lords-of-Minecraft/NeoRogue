@@ -31,7 +31,7 @@ public class EarthenRing extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, data, conc, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, data, conc, -1, this);
 			return TriggerResult.keep();
 		});
 	}

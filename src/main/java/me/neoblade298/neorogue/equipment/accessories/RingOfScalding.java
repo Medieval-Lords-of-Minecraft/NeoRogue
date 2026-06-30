@@ -48,7 +48,7 @@ public class RingOfScalding extends Equipment {
 					am.addDouble(dmg);
 					if (am.getDouble() >= thres) {
 						am.addDouble(-thres);
-						FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
+						FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1, this);
 					}
 				}
 			}

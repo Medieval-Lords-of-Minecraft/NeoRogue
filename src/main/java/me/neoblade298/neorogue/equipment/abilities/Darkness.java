@@ -65,7 +65,7 @@ public class Darkness extends Equipment {
 			if (!inst.basicAttack)
 				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, insanity, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, insanity, -1, this);
 			sound.play(p, p);
 			return TriggerResult.keep();
 		});

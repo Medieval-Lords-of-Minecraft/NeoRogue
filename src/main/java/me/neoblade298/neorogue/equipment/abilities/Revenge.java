@@ -51,14 +51,14 @@ public class Revenge extends Equipment implements Power {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata2, in2) -> {
 			if (!inst.canUse()) return TriggerResult.keep();
-			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 200, this);
 			inst.setNextUse(System.currentTimeMillis() + 2000);
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			}
 			else {
 				Player p2 = data.getPlayer();
-				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
+				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200, this);
 				Sounds.fire.play(p2, p2);
 				pc.play(p2, p2);
 				return TriggerResult.keep();

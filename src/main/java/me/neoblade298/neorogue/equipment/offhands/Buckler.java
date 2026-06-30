@@ -37,7 +37,7 @@ public class Buckler extends Equipment {
 				count[0] = 0;
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
-				data.addSimpleShield(p.getUniqueId(), shields, 60);
+				data.addSimpleShield(p.getUniqueId(), shields, 60, this);
 			}
 			return TriggerResult.keep();
 		});

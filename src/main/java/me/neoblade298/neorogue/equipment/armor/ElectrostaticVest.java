@@ -42,7 +42,7 @@ public class ElectrostaticVest extends Equipment {
 			
 			// Grant shields for 5 seconds (100 ticks)
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100);
+			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100, this);
 			
 			// Increment stack counter permanently
 			stackCounter.addCount(1);

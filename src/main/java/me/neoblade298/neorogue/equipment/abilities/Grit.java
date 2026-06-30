@@ -78,7 +78,7 @@ public class Grit extends Equipment implements Power {
 			double dist = ev3.getTarget().getLocation().distanceSquared(p3.getLocation());
 			if (dist <= 25) {
 				pc.play(p3, p3);
-				data.addSimpleShield(p3.getUniqueId(), shields, 160);
+				data.addSimpleShield(p3.getUniqueId(), shields, 160, this);
 				equip.play(p3, p3);
 			}
 			return TriggerResult.keep();

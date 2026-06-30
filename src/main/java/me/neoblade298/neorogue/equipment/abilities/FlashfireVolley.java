@@ -147,7 +147,7 @@ public class FlashfireVolley extends Equipment {
 			@SuppressWarnings("unchecked")
 			HashSet<LivingEntity> hitList = (HashSet<LivingEntity>) hitEnemies.getObject();
 			if (hitList != null && hitList.contains(hit.getEntity())) {
-				FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
+				FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1, FlashfireVolley.this);
 			}
 		}
 

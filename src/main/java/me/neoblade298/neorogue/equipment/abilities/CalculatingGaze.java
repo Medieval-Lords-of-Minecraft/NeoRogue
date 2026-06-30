@@ -40,7 +40,7 @@ public class CalculatingGaze extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		String buffId = UUID.randomUUID().toString();
-		data.addPermanentShield(p.getUniqueId(), shields);
+		data.addPermanentShield(p.getUniqueId(), shields, this);
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (data.getMana() > THRES) {

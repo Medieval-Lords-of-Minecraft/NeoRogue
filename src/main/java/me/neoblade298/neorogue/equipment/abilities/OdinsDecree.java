@@ -76,7 +76,7 @@ public class OdinsDecree extends Equipment implements Power {
 				Sounds.thunder.play(p2, target.getLocation());
 				FightInstance.dealDamage(pdata2, DamageType.LIGHTNING, damage, target, 
 						DamageStatTracker.of(id + slot, this));
-				FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1);
+				FightInstance.applyStatus(target, StatusType.ELECTRIFIED, data, electrified, -1, this);
 			}
 			return TriggerResult.keep();
 		});

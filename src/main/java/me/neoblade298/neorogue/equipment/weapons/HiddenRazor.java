@@ -49,7 +49,7 @@ public class HiddenRazor extends Equipment {
 				if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				if (++count >= 5) {
-					data.applyStatus(StatusType.STEALTH, data, -1, -1);
+					data.applyStatus(StatusType.STEALTH, data, -1, -1, this);
 					Sounds.extinguish.play(p, p);
 					count = 0;
 				}

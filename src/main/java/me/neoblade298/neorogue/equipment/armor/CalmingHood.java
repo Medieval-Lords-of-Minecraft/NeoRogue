@@ -34,7 +34,7 @@ public class CalmingHood extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.FOCUS, data, focus, -1);
+		data.applyStatus(StatusType.FOCUS, data, focus, -1, this);
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 

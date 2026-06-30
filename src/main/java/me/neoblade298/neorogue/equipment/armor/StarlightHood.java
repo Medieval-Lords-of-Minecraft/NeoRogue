@@ -28,8 +28,8 @@ public class StarlightHood extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.PROTECT, data, stacks, 400);
-		data.applyStatus(StatusType.SHELL, data, stacks, 400);
+		data.applyStatus(StatusType.PROTECT, data, stacks, 400, this);
+		data.applyStatus(StatusType.SHELL, data, stacks, 400, this);
 	}
 
 	@Override

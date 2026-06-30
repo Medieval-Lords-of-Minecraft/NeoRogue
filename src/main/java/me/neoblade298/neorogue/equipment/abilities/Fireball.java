@@ -55,7 +55,7 @@ public class Fireball extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
-					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1, Fireball.this);
 					proj.start(data);
 				}
 			});

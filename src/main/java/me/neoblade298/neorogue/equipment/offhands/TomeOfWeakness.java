@@ -51,7 +51,7 @@ public class TomeOfWeakness extends Equipment {
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightData fd = FightInstance.getFightData(ent);
-				fd.applyStatus(StatusType.INJURY, data, inj, -1);
+				fd.applyStatus(StatusType.INJURY, data, inj, -1, this);
 			}
 			return TriggerResult.keep();
 		}));

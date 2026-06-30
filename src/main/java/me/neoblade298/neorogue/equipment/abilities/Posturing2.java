@@ -65,7 +65,7 @@ public class Posturing2 extends Equipment implements Power {
 			if (act.getCount() >= time) {
 				pc.play(p2, p2);
 				Sounds.enchant.play(p2, p2);
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
+				data.applyStatus(StatusType.FOCUS, data, 1, -1, this);
 				act.addCount(-time);
 			}
 			return TriggerResult.keep();

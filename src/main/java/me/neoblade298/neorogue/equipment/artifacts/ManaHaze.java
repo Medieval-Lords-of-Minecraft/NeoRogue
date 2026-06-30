@@ -63,7 +63,7 @@ public class ManaHaze extends Artifact {
 					if (trg != null) {
 						stacks -= thres;
 						am.setTime(System.currentTimeMillis() + 1000); // 1 second cooldown
-						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), ev.getStatus().getStacks() / 2, ev.getTicks(), pdata);
+						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), ev.getStatus().getStacks() / 2, ev.getTicks(), pdata, ManaHaze.this);
 					}
 				}
 				stacks++;

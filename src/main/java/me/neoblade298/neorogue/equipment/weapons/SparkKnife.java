@@ -46,7 +46,7 @@ public class SparkKnife extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(pdata.getPlayer(), data, ev.getTarget());
-			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1, this);
 			return TriggerResult.keep();
 		});
 	}

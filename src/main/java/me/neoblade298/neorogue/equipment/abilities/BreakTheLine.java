@@ -85,7 +85,7 @@ public class BreakTheLine extends Equipment {
 							FightInstance.knockback(p, ent, 0.9);
 							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), ent);
-							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, conc, -1);
+							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, conc, -1, BreakTheLine.this);
 						}
 
 					}

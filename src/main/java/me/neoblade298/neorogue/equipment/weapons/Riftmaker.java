@@ -131,7 +131,7 @@ public class Riftmaker extends Equipment {
 			attackCounter.setInt(count);
 
 			if (count % intellectFreq == 0) {
-				data.applyStatus(StatusType.INTELLECT, data, 1, -1);
+				data.applyStatus(StatusType.INTELLECT, data, 1, -1, this);
 				data.addRift(new Rift(data, data.getPlayer().getLocation(), RIFT_DURATION));
 			}
 

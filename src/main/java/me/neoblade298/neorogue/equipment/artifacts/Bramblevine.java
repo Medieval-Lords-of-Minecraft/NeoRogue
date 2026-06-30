@@ -33,7 +33,7 @@ public class Bramblevine extends Artifact {
 			Player p = data.getPlayer();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.THORNS)) {
-				data.addSimpleShield(p.getUniqueId(), shield, 60);
+				data.addSimpleShield(p.getUniqueId(), shield, 60, this);
 			}
 			return TriggerResult.keep();
 		});

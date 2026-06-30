@@ -78,7 +78,7 @@ public class Zone2 extends Equipment {
 					if (++count >= 8) {
 						this.cancel();
 						if (stayed) {
-							data.applyStatus(StatusType.FOCUS, data, 1, -1);
+							data.applyStatus(StatusType.FOCUS, data, 1, -1, Zone2.this);
 						}
 					}
 				}

@@ -47,8 +47,8 @@ public class DodgeRoll extends Equipment {
 			Player p = data.getPlayer();
 			sc.play(p, p);
 			data.dash();
-			data.applyStatus(StatusType.STEALTH,data, 1, dur * 20);
-			data.applyStatus(StatusType.EVADE,data, 1, dur * 20);
+			data.applyStatus(StatusType.STEALTH,data, 1, dur * 20, this);
+			data.applyStatus(StatusType.EVADE,data, 1, dur * 20, this);
 			return TriggerResult.keep();
 		}));
 	}

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -78,7 +77,7 @@ public class ForceBracer extends Equipment {
 				Sounds.breaks.play(p, p);
 				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id, eq)));
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
 				return TriggerResult.remove();
 			}
 		}

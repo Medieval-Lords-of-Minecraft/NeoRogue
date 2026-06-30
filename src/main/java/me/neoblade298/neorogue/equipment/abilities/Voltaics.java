@@ -130,7 +130,7 @@ public class Voltaics extends Equipment {
 
 			// Apply electrified with increasing stacks
 			int stacks = BASE_ELECTRIFIED_STACKS + (totalElectrifiedApplied.getCount() / stackThreshold * STACKS_INCREASE_PER_HIT);
-			hit.applyStatus(StatusType.ELECTRIFIED, data, stacks, -1);
+			hit.applyStatus(StatusType.ELECTRIFIED, data, stacks, -1, Voltaics.this);
 			totalElectrifiedApplied.addCount(stacks);
 		}
 

@@ -53,7 +53,7 @@ public class Study extends Equipment implements Power {
 			ActionMeta am = new ActionMeta();
 			Player p2 = data.getPlayer();
 			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+			data.applyStatus(StatusType.INTELLECT, data, intel, -1, this);
 			Sounds.enchant.play(p2, p2);
 			pc.play(p2, p2);
 			return TriggerResult.keep();

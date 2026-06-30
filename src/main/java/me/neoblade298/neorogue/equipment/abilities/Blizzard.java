@@ -111,7 +111,7 @@ public class Blizzard extends Equipment {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 							DamageMeta dm = new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, Blizzard.this));
 							FightInstance.dealDamage(dm, ent);
-							FightInstance.applyStatus(ent, StatusType.FROST, data, frost, -1);
+							FightInstance.applyStatus(ent, StatusType.FROST, data, frost, -1, Blizzard.this);
 						}
 						damageParticle.play(p, loc);
 					}

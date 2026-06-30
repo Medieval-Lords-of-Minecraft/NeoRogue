@@ -31,7 +31,7 @@ public class RighteousRing extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
+			FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
 	}

@@ -88,7 +88,7 @@ public class RelentlessHunt extends Equipment {
 			Sounds.infect.play(p, trg);
 			FightData fd = FightInstance.getFightData(trg);
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-			fd.applyStatus(s, data, 1, -1); // Permanent mark
+			fd.applyStatus(s, data, 1, -1, this); // Permanent mark
 			am.setEntity(trg);
 			
 			return TriggerResult.keep();
@@ -103,7 +103,7 @@ public class RelentlessHunt extends Equipment {
 					return;
 				}
 				Player p = data.getPlayer();
-				data.addPermanentShield(p.getUniqueId(), shields);
+				data.addPermanentShield(p.getUniqueId(), shields, RelentlessHunt.this);
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20, 40));
 		

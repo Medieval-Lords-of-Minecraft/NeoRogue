@@ -106,7 +106,7 @@ public class ConsumingFlame extends Equipment {
 					corruptionStacks = data.getStatus(StatusType.CORRUPTION).getStacks();
 				}
 				if (corruptionStacks > 0) {
-					data.applyStatus(StatusType.INTELLECT, data, corruptionStacks, -1);
+					data.applyStatus(StatusType.INTELLECT, data, corruptionStacks, -1, this);
 				}
 			}
 

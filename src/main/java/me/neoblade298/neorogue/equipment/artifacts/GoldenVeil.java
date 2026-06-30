@@ -35,7 +35,7 @@ public class GoldenVeil extends Artifact {
 				am.addCount(1);
 				if (am.getCount() >= 3) {
 					am.addCount(-3);
-					data.addPermanentShield(p.getUniqueId(), 1);
+					data.addPermanentShield(p.getUniqueId(), 1, this);
 				}
 			}
 			return TriggerResult.keep();

@@ -62,7 +62,7 @@ public class MindShell extends Equipment implements Power {
 					if (am.getCount() >= THRES) {
 						am.addCount(-THRES);
 						pdata2.addManaRegen(regen);
-						data.applyStatus(StatusType.SHELL, data, shell, -1);
+						data.applyStatus(StatusType.SHELL, data, shell, -1, MindShell.this);
 						Player p2 = data.getPlayer();
 						pc.play(p2, p2);
 						Sounds.enchant.play(p2, p2);

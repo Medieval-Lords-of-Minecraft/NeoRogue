@@ -48,7 +48,7 @@ public class SaviorsHelm extends Equipment {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(data.getPlayer(), tp)) {
-					FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
+					FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1, SaviorsHelm.this);
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0, 60));

@@ -73,7 +73,7 @@ public class InducePanic extends Equipment {
 				pdata.addTask(new BukkitRunnable() {
 					public void run() {
 						if (inst.mark == null) return;
-						FightInstance.applyStatus(inst.mark, StatusType.INSANITY, pdata, stacks, -1);
+						FightInstance.applyStatus(inst.mark, StatusType.INSANITY, pdata, stacks, -1, InducePanic.this);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, inst.mark);
 					}

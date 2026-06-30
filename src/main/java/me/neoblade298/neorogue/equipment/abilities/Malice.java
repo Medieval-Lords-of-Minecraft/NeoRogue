@@ -85,7 +85,7 @@ public class Malice extends Equipment {
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(am.getId(), this)));
 				if (++hits[0] >= hitReq) {
 					hits[0] = 0;
-					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1, this);
 				}
 			}
 			return TriggerResult.keep();

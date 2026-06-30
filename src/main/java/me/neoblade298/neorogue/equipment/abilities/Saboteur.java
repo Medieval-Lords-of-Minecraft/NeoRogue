@@ -42,7 +42,7 @@ public class Saboteur extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Apply focus at start of fight
-		data.applyStatus(StatusType.FOCUS, data, FOCUS_STACKS, -1);
+		data.applyStatus(StatusType.FOCUS, data, FOCUS_STACKS, -1, this);
 
 		// Combined trap and distance damage buff
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {

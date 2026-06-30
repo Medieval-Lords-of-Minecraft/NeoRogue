@@ -56,7 +56,7 @@ public class Fireblast extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Sounds.fire.play(p, p);
-					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1, Fireblast.this);
 					proj.start(data);
 				}
 			});

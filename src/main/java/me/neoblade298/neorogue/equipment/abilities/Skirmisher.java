@@ -67,7 +67,7 @@ public class Skirmisher extends Equipment implements Power {
 					count = 0;
 					sound.play(p, p);
 					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-					data.addSimpleShield(p.getUniqueId(), shields, 100);
+					data.addSimpleShield(p.getUniqueId(), shields, 100, Skirmisher.this);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, props)) {
 						Vector v = ent.getLocation().subtract(p.getLocation()).toVector().setY(0).normalize().multiply(0.4).setY(0.3);
 						FightInstance.knockback(ent, v);

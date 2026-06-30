@@ -51,8 +51,8 @@ public class WarCry extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, data, strength, 100);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 100, this);
+			data.addSimpleShield(p.getUniqueId(), shields, 100, this);
 			return TriggerResult.keep();
 		}));
 	}

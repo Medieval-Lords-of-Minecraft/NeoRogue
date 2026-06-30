@@ -56,7 +56,7 @@ public class DarkPact extends Equipment {
 				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 				pc.play(p, p);
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1, DarkPact.this);
 				count = 0;
 			}
 			return TriggerResult.keep();

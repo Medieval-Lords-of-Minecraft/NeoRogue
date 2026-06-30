@@ -28,7 +28,7 @@ public class Pumped extends Artifact {
 	
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.applyStatus(StatusType.STRENGTH, data, str, -1);
+		data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 		data.getSessionData().removeArtifact(this);
 	}
 	

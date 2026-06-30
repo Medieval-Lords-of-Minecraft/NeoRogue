@@ -33,7 +33,7 @@ public class LeatherCowl extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.EVADE, data, evade, -1);
+		data.applyStatus(StatusType.EVADE, data, evade, -1, this);
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 
