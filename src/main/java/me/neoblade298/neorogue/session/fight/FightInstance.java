@@ -1213,6 +1213,7 @@ public abstract class FightInstance extends Instance {
 		ArrayList<FightSnapshot.EquipRow> equipRows = new ArrayList<FightSnapshot.EquipRow>();
 		ArrayList<FightSnapshot.StatusRow> statusRows = new ArrayList<FightSnapshot.StatusRow>();
 		LinkedHashSet<String> mobIds = new LinkedHashSet<String>();
+		HashMap<String, HashMap<DamageType, Double>> mobDamage = new HashMap<String, HashMap<DamageType, Double>>();
 		double partyDamageDealt = 0, partyDamageTaken = 0;
 
 		for (UUID uuid : s.getParty().keySet()) {
@@ -1226,6 +1227,13 @@ public abstract class FightInstance extends Instance {
 					partyDamageDealt += fs.getTotalDamageDealt();
 					partyDamageTaken += fs.getTotalDamageTaken();
 					mobIds.addAll(fs.getDamageTaken().keySet());
+					for (Entry<String, HashMap<DamageType, Double>> mobEnt : fs.getDamageTaken().entrySet()) {
+						HashMap<DamageType, Double> agg = mobDamage.computeIfAbsent(mobEnt.getKey(),
+								k -> new HashMap<DamageType, Double>());
+						for (Entry<DamageType, Double> typeEnt : mobEnt.getValue().entrySet()) {
+							agg.merge(typeEnt.getKey(), typeEnt.getValue(), Double::sum);
+						}
+					}
 					gatherContributions(uuid.toString(), fs, equipRows, statusRows);
 				}
 				pdata.cleanup();
@@ -1296,6 +1304,12 @@ public abstract class FightInstance extends Instance {
 					s.getNotoriety(), s.isEndless(), now - startTime, fightWon, partyDamageDealt, partyDamageTaken, mobs);
 			snap.equipRows.addAll(equipRows);
 			snap.statusRows.addAll(statusRows);
+			for (Entry<String, HashMap<DamageType, Double>> mobEnt : mobDamage.entrySet()) {
+				double total = 0;
+				for (double amt : mobEnt.getValue().values()) total += amt;
+				if (total <= 0) continue;
+				snap.mobRows.add(new FightSnapshot.MobRow(mobEnt.getKey(), total, mobEnt.getValue()));
+			}
 			AnalyticsManager.recordFight(snap);
 		}
 	}

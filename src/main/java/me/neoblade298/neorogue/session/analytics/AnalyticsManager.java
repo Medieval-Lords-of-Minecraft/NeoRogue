@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,8 +15,10 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot.ChoiceRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.EquipRow;
+import me.neoblade298.neorogue.session.analytics.FightSnapshot.MobRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.StatusRow;
 import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferRow;
+import me.neoblade298.neorogue.session.fight.DamageType;
 
 // Persists per-fight equipment effectiveness analytics into three normalized fact tables on the
 // shared "NeoRogue" session SQL pool. Writes are batched and run asynchronously.
@@ -108,6 +111,31 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (offerId, slotIndex)"
 							+ ");");
 
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mobs ("
+							+ "fightId VARCHAR(36) NOT NULL,"
+							+ "mobId VARCHAR(64) NOT NULL,"
+							+ "ts BIGINT NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "host VARCHAR(36) NOT NULL,"
+							+ "slot INT NOT NULL,"
+							+ "regionType VARCHAR(50) NOT NULL,"
+							+ "nodeType VARCHAR(20) NOT NULL,"
+							+ "level INT NOT NULL,"
+							+ "outcome TINYINT NOT NULL,"
+							+ "damageDealt DOUBLE NOT NULL,"
+							+ "PRIMARY KEY (fightId, mobId)"
+							+ ");");
+
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mob_damage ("
+							+ "fightId VARCHAR(36) NOT NULL,"
+							+ "mobId VARCHAR(64) NOT NULL,"
+							+ "damageType VARCHAR(30) NOT NULL,"
+							+ "amount DOUBLE NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "outcome TINYINT NOT NULL,"
+							+ "PRIMARY KEY (fightId, mobId, damageType)"
+							+ ");");
+
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_chance_choices ("
 							+ "pickId VARCHAR(36) NOT NULL,"
 							+ "choiceIndex INT NOT NULL,"
@@ -137,6 +165,10 @@ public class AnalyticsManager {
 					createIndex(stmt, "idx_chance_lookup", "neorogue_chance_choices", "setId, stageId, balanceVersion");
 					createIndex(stmt, "idx_chance_balance", "neorogue_chance_choices", "balanceVersion");
 
+					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_fight_mobs", "mobId, balanceVersion");
+					createIndex(stmt, "idx_fightmobs_region", "neorogue_fight_mobs", "regionType, nodeType, balanceVersion");
+					createIndex(stmt, "idx_fightmobdmg_lookup", "neorogue_fight_mob_damage", "mobId, damageType, balanceVersion");
+
 					initialized = true;
 				}
 				catch (SQLException ex) {
@@ -165,6 +197,8 @@ public class AnalyticsManager {
 					writeFight(con, snap);
 					writeEquipment(con, snap);
 					writeStatuses(con, snap);
+					writeMobs(con, snap);
+					writeMobDamage(con, snap);
 				}
 				catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to record fight analytics " + snap.fightId);
@@ -310,6 +344,52 @@ public class AnalyticsManager {
 					.addValue("picked", row.picked ? 1 : 0)
 					.addValue("price", row.price)
 					.addRow();
+		}
+		if (sql.getRowCount() > 0) {
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
+		}
+	}
+
+	private static void writeMobs(Connection con, FightSnapshot snap) throws SQLException {
+		if (snap.mobRows.isEmpty()) return;
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_mobs");
+		for (MobRow row : snap.mobRows) {
+			sql.addValue("fightId", snap.fightId)
+					.addValue("mobId", row.mobId)
+					.addValue("ts", snap.timestamp)
+					.addValue("balanceVersion", snap.balanceVersion)
+					.addValue("host", snap.host)
+					.addValue("slot", snap.slot)
+					.addValue("regionType", snap.regionType)
+					.addValue("nodeType", snap.nodeType)
+					.addValue("level", snap.level)
+					.addValue("outcome", snap.won ? 1 : 0)
+					.addValue("damageDealt", row.damageDealt)
+					.addRow();
+		}
+		if (sql.getRowCount() > 0) {
+			PreparedStatement ps = sql.build(con);
+			ps.executeBatch();
+			ps.close();
+		}
+	}
+
+	private static void writeMobDamage(Connection con, FightSnapshot snap) throws SQLException {
+		if (snap.mobRows.isEmpty()) return;
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_mob_damage");
+		for (MobRow row : snap.mobRows) {
+			for (Entry<DamageType, Double> ent : row.byType.entrySet()) {
+				if (ent.getValue() == null || ent.getValue() <= 0) continue;
+				sql.addValue("fightId", snap.fightId)
+						.addValue("mobId", row.mobId)
+						.addValue("damageType", ent.getKey().name())
+						.addValue("amount", ent.getValue())
+						.addValue("balanceVersion", snap.balanceVersion)
+						.addValue("outcome", snap.won ? 1 : 0)
+						.addRow();
+			}
 		}
 		if (sql.getRowCount() > 0) {
 			PreparedStatement ps = sql.build(con);

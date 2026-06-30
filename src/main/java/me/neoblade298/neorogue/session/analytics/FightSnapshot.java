@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.session.analytics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 // Immutable, Bukkit-free snapshot of a single completed fight, built on the main thread at fight
@@ -27,6 +29,7 @@ public class FightSnapshot {
 
 	public final ArrayList<EquipRow> equipRows = new ArrayList<EquipRow>();
 	public final ArrayList<StatusRow> statusRows = new ArrayList<StatusRow>();
+	public final ArrayList<MobRow> mobRows = new ArrayList<MobRow>();
 
 	public FightSnapshot(String fightId, long timestamp, int balanceVersion, String host, int slot, String regionType,
 			String nodeType, int level, int regionsCompleted, int partySize, int notoriety, boolean endless,
@@ -97,6 +100,20 @@ public class FightSnapshot {
 			this.upgraded = upgraded;
 			this.statusType = statusType;
 			this.stacks = stacks;
+		}
+	}
+
+	// A single mob's aggregated damage dealt to the whole party during this fight. byType holds the
+	// per-damage-type breakdown; damageDealt is the total across all types.
+	public static class MobRow {
+		public final String mobId;
+		public final double damageDealt;
+		public final HashMap<DamageType, Double> byType;
+
+		public MobRow(String mobId, double damageDealt, HashMap<DamageType, Double> byType) {
+			this.mobId = mobId;
+			this.damageDealt = damageDealt;
+			this.byType = byType;
 		}
 	}
 }
