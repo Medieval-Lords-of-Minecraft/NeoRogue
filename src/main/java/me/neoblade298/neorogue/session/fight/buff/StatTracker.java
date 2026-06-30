@@ -48,20 +48,20 @@ public class StatTracker {
 
     protected StatTracker(String id, Equipment eq) {
         this.id = id;
-        this.equipmentId = eq.getId();
+        this.equipmentId = eq.serialize();
         this.ignore = true;
     }
     
     protected StatTracker(String id, Equipment eq, String sfx) {
         this.id = id;
-        this.equipmentId = eq.getId();
+        this.equipmentId = eq.serialize();
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
     }
     
     // Inverted 
     protected StatTracker(String id, Equipment eq, String sfx, boolean invert) {
         this.id = id;
-        this.equipmentId = eq.getId();
+        this.equipmentId = eq.serialize();
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
         this.invert = invert;
     }

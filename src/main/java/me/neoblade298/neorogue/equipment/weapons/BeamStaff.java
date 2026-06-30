@@ -1,9 +1,7 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,6 +23,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -87,7 +86,7 @@ public class BeamStaff extends Equipment {
 						List<StatusType> pool = new ArrayList<>(Arrays.asList(STATUS_POOL));
 						Collections.shuffle(pool);
 						for (int i = 0; i < numStatuses; i++) {
-							FightInstance.applyStatus(ent, pool.get(i), data, 1, -1, this);
+							FightInstance.applyStatus(ent, pool.get(i), data, 1, -1, BeamStaff.this);
 						}
 					}
 				}

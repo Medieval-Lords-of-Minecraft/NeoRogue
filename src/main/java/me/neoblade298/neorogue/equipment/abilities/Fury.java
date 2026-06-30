@@ -69,7 +69,7 @@ public class Fury extends Equipment {
 					if (isBerserk) {
 						Sounds.explode.play(p, target);
 						explode.play(p, target);
-						FightInstance.giveHeal(p, berserkHeal, p);
+						FightInstance.giveHeal(p, berserkHeal, Fury.this, p);
 					}
 					else {
 						data.applyStatus(StatusType.BERSERK, data, 1, -1, Fury.this);

@@ -56,7 +56,7 @@ public class Roar extends Equipment {
 			data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
 			data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			if (data.getStatus(StatusType.BERSERK).getStacks() >= CUTOFF) {
-				FightInstance.giveHeal(p, heal, p);
+				FightInstance.giveHeal(p, heal, this, p);
 				Sounds.levelup.play(p, p);
 			}
 			return TriggerResult.keep();

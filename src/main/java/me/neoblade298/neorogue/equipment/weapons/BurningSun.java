@@ -150,7 +150,7 @@ public class BurningSun extends Bow {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, proj.getLocation(), blockTp)) {
 				FightInstance.dealDamage(new DamageMeta(data, blockDamage, DamageType.FIRE, 
 						DamageStatTracker.of(ID + slot, bow)), ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, BurningSun.this);
 			}
 			
 			// Track wall hits that also hit an enemy

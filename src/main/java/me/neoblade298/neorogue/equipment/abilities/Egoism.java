@@ -55,7 +55,7 @@ public class Egoism extends Equipment implements Power {
 			data.addTask(new BukkitRunnable() {
 				private int count = 0;
 				public void run() {
-					data.addHealth(healthRegen / 10.0);
+					data.addHealth(healthRegen / 10.0, Egoism.this);
 					count++;
 					if (count >= 10) {
 						this.cancel();

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -26,6 +24,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -110,7 +109,7 @@ public class WarningShot extends Equipment {
 			for (LivingEntity ent : ents) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
-			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1, this);
+			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1, WarningShot.this);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(buffId, eq)), 160);
 		}
 

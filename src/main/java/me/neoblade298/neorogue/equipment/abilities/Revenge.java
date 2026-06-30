@@ -70,7 +70,7 @@ public class Revenge extends Equipment implements Power {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
 			if (!data.hasStatus("Revenge")) return TriggerResult.keep();
 			Player p3 = data.getPlayer();
-			FightInstance.giveHeal(p3, heal, p3);
+			FightInstance.giveHeal(p3, heal, this, p3);
 			return TriggerResult.keep();
 		});
 	}

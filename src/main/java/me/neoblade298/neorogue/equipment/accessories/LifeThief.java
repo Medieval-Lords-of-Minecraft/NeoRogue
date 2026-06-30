@@ -54,7 +54,7 @@ public class LifeThief extends Equipment {
 			if (inst.getCount() < cutoff) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
-			data.addHealth(heal);
+			data.addHealth(heal, this);
 			return TriggerResult.remove();
 		});
 	}

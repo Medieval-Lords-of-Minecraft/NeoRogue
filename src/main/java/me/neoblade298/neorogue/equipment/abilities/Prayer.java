@@ -56,7 +56,7 @@ public class Prayer extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		Player p = data.getPlayer();
-		FightInstance.giveHeal(p, heal, p);
+		FightInstance.giveHeal(p, heal, this, p);
 		Sounds.success.play(p, p);
 	}
 

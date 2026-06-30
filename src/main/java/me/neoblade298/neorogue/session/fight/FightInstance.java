@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +79,9 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.EquipmentContribution;
+import me.neoblade298.neorogue.session.analytics.FightSnapshot;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
@@ -119,6 +124,8 @@ public abstract class FightInstance extends Instance {
 	private ArrayList<String> spectatorLines;
 	protected boolean isActive = true;
 	protected ArrayList<BossBar> bars = new ArrayList<BossBar>();
+	// Fight outcome for analytics: null = aborted/unknown, true = win, false = loss
+	private Boolean fightWon = null;
 
 	protected void showBar(Player p, BossBar bar) {
 		p.showBossBar(bar);
@@ -285,6 +292,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void runLoseLogic(FightInstance fi) {
 		fi.isActive = false;
+		fi.fightWon = false;
 		new BukkitRunnable() {
 			public void run() {
 				for (PlayerFightData data : userData.values()) {
@@ -468,6 +476,7 @@ public abstract class FightInstance extends Instance {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
 		isActive = false;
+		fightWon = true;
 
 		broadcastStatistics();
 		s.launchFireworks();
@@ -892,6 +901,10 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void giveHeal(LivingEntity caster, double amount, LivingEntity... targets) {
+		giveHeal(caster, amount, (Equipment) null, targets);
+	}
+
+	public static void giveHeal(LivingEntity caster, double amount, Equipment source, LivingEntity... targets) {
 		for (LivingEntity target : targets) {
 			if (!(target instanceof Attributable))
 				continue;
@@ -907,10 +920,12 @@ public abstract class FightInstance extends Instance {
 			if (caster == target) {
 				if (cfd != null) {
 					cfd.getStats().addSelfHealing(actual);
+					cfd.getStats().addHealingDone(source, actual);
 				}
 			} else {
 				if (cfd != null) {
 					cfd.getStats().addHealingGiven(actual);
+					cfd.getStats().addHealingDone(source, actual);
 				}
 				if (tfd != null) {
 					tfd.getStats().addHealingReceived(actual);
@@ -1192,12 +1207,27 @@ public abstract class FightInstance extends Instance {
 		if (isCleaned) return;
 		isCleaned = true;
 		isActive = false;
+
+		// Analytics: only record fights that resolved to a clear win/loss (not aborted/plugin disable)
+		boolean recordAnalytics = fightWon != null && !pluginDisable && AnalyticsManager.ENABLED;
+		ArrayList<FightSnapshot.EquipRow> equipRows = new ArrayList<FightSnapshot.EquipRow>();
+		ArrayList<FightSnapshot.StatusRow> statusRows = new ArrayList<FightSnapshot.StatusRow>();
+		LinkedHashSet<String> mobIds = new LinkedHashSet<String>();
+		double partyDamageDealt = 0, partyDamageTaken = 0;
+
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
 			PlayerSessionData data = pdata.getSessionData();
 			Player p = pdata.getPlayer();
 			if (pdata != null) {
 				data.getSessionStats().aggregate(pdata.getStats());
+				if (recordAnalytics) {
+					FightStatistics fs = pdata.getStats();
+					partyDamageDealt += fs.getTotalDamageDealt();
+					partyDamageTaken += fs.getTotalDamageTaken();
+					mobIds.addAll(fs.getDamageTaken().keySet());
+					gatherContributions(uuid.toString(), fs, equipRows, statusRows);
+				}
 				pdata.cleanup();
 				if (p != null) {
 					if (pdata.isDead()) {
@@ -1255,6 +1285,52 @@ public abstract class FightInstance extends Instance {
 				}
 			}
 		}
+
+		if (recordAnalytics) {
+			long now = System.currentTimeMillis();
+			String mobs = String.join(",", mobIds);
+			if (mobs.length() > 255) mobs = mobs.substring(0, 255);
+			FightSnapshot snap = new FightSnapshot(UUID.randomUUID().toString(), now, AnalyticsManager.BALANCE_VERSION,
+					s.getHost().toString(), s.getSaveSlot(), s.getRegion().getType().name(),
+					s.getNode().getType().name(), s.getLevel(), s.getRegionsCompleted(), s.getParty().size(),
+					s.getNotoriety(), s.isEndless(), now - startTime, fightWon, partyDamageDealt, partyDamageTaken, mobs);
+			snap.equipRows.addAll(equipRows);
+			snap.statusRows.addAll(statusRows);
+			AnalyticsManager.recordFight(snap);
+		}
+	}
+
+	// Resolves a player's per-equipment contributions into denormalized analytics rows. Variant keys
+	// that do not resolve to a registered Equipment (status-driven damage, misc sources) are dropped.
+	private void gatherContributions(String playerUuid, FightStatistics fs,
+			ArrayList<FightSnapshot.EquipRow> equipRows, ArrayList<FightSnapshot.StatusRow> statusRows) {
+		for (EquipmentContribution ec : fs.exportContributions().values()) {
+			if (!ec.hasContribution()) continue;
+			boolean upgraded = ec.variantKey.endsWith("+");
+			String baseId = upgraded ? ec.variantKey.substring(0, ec.variantKey.length() - 1) : ec.variantKey;
+			Equipment eq = Equipment.get(baseId, upgraded);
+			if (eq == null) continue; // Non-equipment source
+			String rarity = eq.getRarity() != null ? eq.getRarity().name() : "NONE";
+			String type = eq.getType() != null ? eq.getType().name() : "NONE";
+			String eclass = joinEquipmentClasses(eq);
+			equipRows.add(new FightSnapshot.EquipRow(playerUuid, baseId, upgraded, rarity, type, eclass,
+					ec.damageDealt, ec.damageBuffAdded, ec.damageMitigated, ec.shieldsApplied, ec.healingDone,
+					ec.statusTotal()));
+			for (Entry<Status.StatusType, Integer> sEnt : ec.statuses.entrySet()) {
+				if (sEnt.getValue() == 0) continue;
+				statusRows.add(new FightSnapshot.StatusRow(playerUuid, baseId, upgraded, sEnt.getKey(), sEnt.getValue()));
+			}
+		}
+	}
+
+	private static String joinEquipmentClasses(Equipment eq) {
+		if (eq.getEquipmentClasses() == null || eq.getEquipmentClasses().length == 0) return "NONE";
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < eq.getEquipmentClasses().length; i++) {
+			if (i > 0) sb.append(",");
+			sb.append(eq.getEquipmentClasses()[i].name());
+		}
+		return sb.toString();
 	}
 	
 	public static FightData removeFightData(UUID uuid) {

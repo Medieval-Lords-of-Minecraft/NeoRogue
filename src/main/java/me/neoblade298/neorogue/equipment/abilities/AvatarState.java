@@ -65,7 +65,7 @@ public class AvatarState extends Equipment implements Power {
 		data.addTrigger(ID + "_health", Trigger.PLAYER_TICK, (pdata2, in2) -> {
 			healthMeta.addCount(1);
 			if (healthMeta.getCount() > 10) return TriggerResult.remove();
-			data.addHealth(hreg);
+			data.addHealth(hreg, this);
 			return TriggerResult.keep();
 		});
 	}

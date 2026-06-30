@@ -359,6 +359,11 @@ public class FightData {
 		entity.setHealth(after);
 	}
 	
+	// Source-aware overload. Base FightData (mobs) ignore per-equipment attribution.
+	public void addHealth(double amount, Equipment source) {
+		addHealth(amount);
+	}
+	
 	public void addCleanupTask(String id, Runnable runnable) {
 		cleanupTasks.put(id, runnable);
 	}

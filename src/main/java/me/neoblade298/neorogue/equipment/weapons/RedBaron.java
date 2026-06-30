@@ -137,7 +137,7 @@ public class RedBaron extends Bow {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				DamageMeta dm = new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq));
 				FightInstance.dealDamage(dm, ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
+				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, RedBaron.this);
 			}
 		}
 		

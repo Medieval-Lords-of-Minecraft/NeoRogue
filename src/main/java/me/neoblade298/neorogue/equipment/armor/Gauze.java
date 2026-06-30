@@ -73,7 +73,7 @@ public class Gauze extends Equipment {
 		
 		public void use(PlayerFightData data) {
 			if (timestamp + (threshold * 1000) >= System.currentTimeMillis()) {
-				data.addHealth(Math.min(max, damage * pct * 0.01));
+				data.addHealth(Math.min(max, damage * pct * 0.01), Gauze.this);
 				damage = 0;
 				timestamp = 0;
 			}

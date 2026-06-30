@@ -27,7 +27,7 @@ public class CrystallineFlask extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		if (data.getInstance() instanceof StandardFightInstance) return;
-		data.addHealth(data.getMaxHealth() * 0.01 * healthPercent);
+		data.addHealth(data.getMaxHealth() * 0.01 * healthPercent, this);
 	}
 
 	@Override

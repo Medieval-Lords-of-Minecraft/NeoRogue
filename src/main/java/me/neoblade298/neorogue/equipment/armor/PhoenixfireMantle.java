@@ -40,7 +40,7 @@ public class PhoenixfireMantle extends Equipment {
 				if (am.getCount() >= thres) {
 					Player p = data.getPlayer();
 					am.addCount(-thres);
-					data.addHealth(heal);
+					data.addHealth(heal, this);
 					Sounds.success.play(p, p);
 				}
 			}

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -102,7 +101,7 @@ public class AshenHeadhunter extends Equipment {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.infect.play(data.getPlayer(), loc);
 			if (++hits % 3 == 0) {
-				hit.applyStatus(StatusType.BURN, data, burn, -1, this);
+				hit.applyStatus(StatusType.BURN, data, burn, -1, AshenHeadhunter.this);
 			}
 		}
 

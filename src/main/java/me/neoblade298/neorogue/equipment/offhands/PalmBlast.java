@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Material;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -67,9 +66,9 @@ public class PalmBlast extends Equipment {
 					p.setVelocity(v.setX(-v.getX()).setZ(-v.getZ()).setY(0).normalize().setY(0.3));
 					for (LivingEntity ent : trgs) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
-						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, this);
+						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1, PalmBlast.this);
 					}
-					FightInstance.applyStatus(p, StatusType.CORRUPTION, data, corruption, -1, this);
+					FightInstance.applyStatus(p, StatusType.CORRUPTION, data, corruption, -1, PalmBlast.this);
 				}
 			});
 			return TriggerResult.keep();

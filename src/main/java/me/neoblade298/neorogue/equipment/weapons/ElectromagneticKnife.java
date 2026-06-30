@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -53,7 +52,7 @@ public class ElectromagneticKnife extends Equipment {
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				if (fd.hasStatus(StatusType.ELECTRIFIED)) stacks += inc;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, this);
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, ElectromagneticKnife.this);
 				return TriggerResult.keep();
 			};
 		}

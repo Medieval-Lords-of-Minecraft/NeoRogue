@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Material;
@@ -20,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -75,7 +74,7 @@ public class EarthStaff extends Equipment {
 					LinkedList<LivingEntity> closeEnemies = TargetHelper.getEntitiesInRadius(p, innerProps);
 					for (LivingEntity ent : closeEnemies) {
 						weaponDamage(p, data, ent);
-						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0, this);
+						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0, EarthStaff.this);
 					}
 
 					data.addTask(new BukkitRunnable() {
@@ -87,7 +86,7 @@ public class EarthStaff extends Equipment {
 							farEnemies.removeAll(closeEnemies);
 							for (LivingEntity ent : farEnemies) {
 								weaponDamage(p, data, ent);
-								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, conc, 0, this);
+								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, conc, 0, EarthStaff.this);
 							}
 						}
 					}.runTaskLater(NeoRogue.inst(), 5));

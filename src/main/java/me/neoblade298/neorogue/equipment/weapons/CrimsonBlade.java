@@ -64,7 +64,7 @@ public class CrimsonBlade extends Equipment {
 				}
 				if (++count >= 5) {
 					Sounds.enchant.play(p, p);
-					FightInstance.giveHeal(p, heal, p);
+					FightInstance.giveHeal(p, heal, CrimsonBlade.this, p);
 					count = 0;
 				}
 				return TriggerResult.keep();

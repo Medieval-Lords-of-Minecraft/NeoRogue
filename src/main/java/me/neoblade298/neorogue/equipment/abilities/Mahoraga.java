@@ -108,7 +108,7 @@ public class Mahoraga extends Equipment {
 					private int count;
 
 					public void run() {
-						data.addHealth(heal / 5);
+						data.addHealth(heal / 5, Mahoraga.this);
 						if (++count >= 5) {
 							cancel();
 						}

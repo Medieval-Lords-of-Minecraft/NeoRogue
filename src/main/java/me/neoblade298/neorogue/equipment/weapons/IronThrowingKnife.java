@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -93,7 +92,7 @@ public class IronThrowingKnife extends Equipment {
 			hitCount.addCount(1);
 			if (hitCount.getCount() >= 3) {
 				hitCount.setCount(0);
-				FightInstance.applyStatus(data.getPlayer(), StatusType.STEALTH, data, 1, dur * 20, this);
+				FightInstance.applyStatus(data.getPlayer(), StatusType.STEALTH, data, 1, dur * 20, IronThrowingKnife.this);
 			}
 		}
 

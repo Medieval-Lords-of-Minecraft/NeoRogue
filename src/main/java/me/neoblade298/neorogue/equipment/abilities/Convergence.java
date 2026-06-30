@@ -165,7 +165,7 @@ public class Convergence extends Equipment implements Power {
 
 			DamageType lastType = (DamageType) lastDamageType.getObject();
 			if (lastType == null || currentType != lastType) {
-				FightInstance.giveHeal(p2, heal, p2);
+				FightInstance.giveHeal(p2, heal, this, p2);
 
 				HashSet<UUID> enemiesHit = new HashSet<>();
 				ProjectileGroup proj = new ProjectileGroup();

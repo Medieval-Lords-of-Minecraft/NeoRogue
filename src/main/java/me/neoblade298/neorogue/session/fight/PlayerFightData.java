@@ -840,9 +840,16 @@ public class PlayerFightData extends FightData {
 
 	@Override
 	public void addHealth(double amount) {
+		addHealth(amount, null);
+	}
+
+	@Override
+	public void addHealth(double amount, Equipment source) {
 		double curr = p.getHealth();
 		double after = Math.min(this.maxHealth, curr + amount);
-		stats.addSelfHealing(after - curr);
+		double healed = after - curr;
+		stats.addSelfHealing(healed);
+		stats.addHealingDone(source, healed);
 		p.setHealth(after);
 	}
 

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -101,7 +100,7 @@ public class GrendelsStaff extends Equipment {
 
 			// Grant intellect every Nth attack
 			if (count % intellectFreq == 0) {
-				data.applyStatus(StatusType.INTELLECT, data, 1, -1, this);
+				data.applyStatus(StatusType.INTELLECT, data, 1, -1, GrendelsStaff.this);
 			}
 
 			sc.play(data.getPlayer(), hit.getEntity());

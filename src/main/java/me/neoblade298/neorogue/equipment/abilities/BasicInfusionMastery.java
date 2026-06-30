@@ -51,7 +51,7 @@ public class BasicInfusionMastery extends Equipment {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (meta.getBool()) {
-				FightInstance.giveHeal(p, heal, p);
+				FightInstance.giveHeal(p, heal, this, p);
 			}
 			return TriggerResult.keep();
 		});

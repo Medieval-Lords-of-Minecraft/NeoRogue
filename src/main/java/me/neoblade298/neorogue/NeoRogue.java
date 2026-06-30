@@ -29,6 +29,7 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.commands.CmdAchievements;
 import me.neoblade298.neorogue.commands.CmdAdminAchievement;
+import me.neoblade298.neorogue.commands.CmdAdminAnalytics;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
@@ -93,6 +94,7 @@ import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
@@ -121,6 +123,7 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
+		AnalyticsManager.init();
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
 		reload();
@@ -227,6 +230,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminFlag("flag", "Add or remove a player flag", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminAnalytics("analytics", "Report effectiveness analytics for an equipment", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

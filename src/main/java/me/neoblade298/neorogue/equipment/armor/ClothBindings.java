@@ -29,7 +29,7 @@ public class ClothBindings extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			Player p = data.getPlayer();
-			FightInstance.giveHeal(p, health, p);
+			FightInstance.giveHeal(p, health, this, p);
 			return TriggerResult.keep();
 		});
 	}

@@ -87,7 +87,7 @@ public class BoltWand extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			hit.applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), 5, -1, this);
+			hit.applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), 5, -1, BoltWand.this);
 			Location loc = hit.getEntity().getLocation();
 			sc.play(data.getPlayer(), loc);
 		}

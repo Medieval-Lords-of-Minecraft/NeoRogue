@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.analytics.EquipmentContribution;
 import me.neoblade298.neorogue.session.fight.buff.StatCategory;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -22,6 +23,7 @@ public class FightStatistics {
 	private HashMap<StatusType, HashMap<String, Integer>> statusesApplied = new HashMap<StatusType, HashMap<String, Integer>>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
 	private HashMap<String, Double> shieldsByEquip = new HashMap<String, Double>();
+	private HashMap<String, Double> healingByEquip = new HashMap<String, Double>();
 	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
 	private int deaths, revives;
@@ -45,7 +47,7 @@ public class FightStatistics {
 
 	public void addShieldsApplied(Equipment source, double amount) {
 		if (source == null) addShieldsApplied((String) null, null, amount);
-		else addShieldsApplied(source.getId(), source.getDisplay(), amount);
+		else addShieldsApplied(source.serialize(), source.getDisplay(), amount);
 	}
 
 	// Records shields under a named (non-equipment) source, e.g. a status effect.
@@ -58,9 +60,18 @@ public class FightStatistics {
 
 	private String recordSource(Equipment source) {
 		if (source == null) return UNATTRIBUTED;
-		String id = source.getId();
+		String id = source.serialize();
 		sourceNames.putIfAbsent(id, source.getDisplay());
 		return id;
+	}
+
+	// Records per-equipment healing for analytics attribution (totals are tracked separately via
+	// addSelfHealing/addHealingGiven). Null source = unattributed healing, not tracked per-equipment.
+	public void addHealingDone(Equipment source, double amount) {
+		if (source == null || amount <= 0) return;
+		String key = source.serialize();
+		sourceNames.putIfAbsent(key, source.getDisplay());
+		healingByEquip.merge(key, amount, Double::sum);
 	}
 
 	public FightStatistics(PlayerFightData data) {
@@ -178,6 +189,78 @@ public class FightStatistics {
 
 	public double getDamageBarriered() {
 		return damageBarriered;
+	}
+
+	public HashMap<String, Double> getHealingByEquip() {
+		return healingByEquip;
+	}
+
+	public double getTotalDamageDealt() {
+		double total = 0;
+		for (double amt : damageDealt.values()) total += amt;
+		return total;
+	}
+
+	public double getTotalDamageTaken() {
+		double total = 0;
+		for (HashMap<DamageType, Double> mobDmg : damageTaken.values()) {
+			for (double amt : mobDmg.values()) total += amt;
+		}
+		return total;
+	}
+
+	// Aggregates this player's per-equipment value-added contributions for analytics. Keyed by
+	// Equipment.serialize() variant key; non-equipment sources (status-driven damage, unattributed
+	// shields/healing) remain in the map and are dropped by the caller when the key fails to resolve
+	// to a registered Equipment.
+	public HashMap<String, EquipmentContribution> exportContributions() {
+		HashMap<String, EquipmentContribution> map = new HashMap<String, EquipmentContribution>();
+
+		// Direct damage dealt, attributed per equipment (status-driven trackers have null equipmentId)
+		for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
+			String key = ent.getKey().getEquipmentId();
+			if (key == null) continue;
+			map.computeIfAbsent(key, EquipmentContribution::new).damageDealt += ent.getValue();
+		}
+
+		// Buff value-added: damage buffs and mitigation. STATUS-category buffs are intentionally
+		// omitted - the raw status stacks below already capture status effectiveness.
+		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
+			StatTracker stat = ent.getKey();
+			String key = stat.getEquipmentId();
+			if (key == null) continue;
+			StatCategory c = stat.getCategory();
+			if (c == StatCategory.OTHER) c = StatCategory.DAMAGE_DEALT;
+			double amt = stat.isInverted() ? -ent.getValue() : ent.getValue();
+			if (c == StatCategory.DAMAGE_DEALT) {
+				map.computeIfAbsent(key, EquipmentContribution::new).damageBuffAdded += amt;
+			}
+			else if (c == StatCategory.DAMAGE_TAKEN) {
+				map.computeIfAbsent(key, EquipmentContribution::new).damageMitigated += amt;
+			}
+		}
+
+		// Shields applied, per equipment (non-equipment keys resolve to null Equipment later)
+		for (Entry<String, Double> ent : shieldsByEquip.entrySet()) {
+			if (ent.getKey().equals(UNATTRIBUTED)) continue;
+			map.computeIfAbsent(ent.getKey(), EquipmentContribution::new).shieldsApplied += ent.getValue();
+		}
+
+		// Healing done, per equipment
+		for (Entry<String, Double> ent : healingByEquip.entrySet()) {
+			map.computeIfAbsent(ent.getKey(), EquipmentContribution::new).healingDone += ent.getValue();
+		}
+
+		// Status stacks applied, per equipment and status type
+		for (Entry<StatusType, HashMap<String, Integer>> typeEnt : statusesApplied.entrySet()) {
+			StatusType type = typeEnt.getKey();
+			for (Entry<String, Integer> srcEnt : typeEnt.getValue().entrySet()) {
+				if (srcEnt.getKey().equals(UNATTRIBUTED)) continue;
+				map.computeIfAbsent(srcEnt.getKey(), EquipmentContribution::new).addStatus(type, srcEnt.getValue());
+			}
+		}
+
+		return map;
 	}
 
 	public Component getStatLine() {

@@ -1,12 +1,11 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -45,7 +44,7 @@ public class EarthenLeatherGauntlets extends Equipment {
 			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
 			if (++count >= 3) {
 				count = 0;
-				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concuss, 0, this);
+				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concuss, 0, EarthenLeatherGauntlets.this);
 			}
 			return TriggerResult.keep();
 		}

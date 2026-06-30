@@ -62,7 +62,7 @@ public class ChosenOfTheLight extends Equipment implements Power {
 				data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
 					ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
 					if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
-					data.addHealth(heal);
+					data.addHealth(heal, ChosenOfTheLight.this);
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), 200);
 					return TriggerResult.keep();
 				});

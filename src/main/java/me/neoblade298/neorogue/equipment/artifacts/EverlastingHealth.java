@@ -44,7 +44,7 @@ public class EverlastingHealth extends Artifact {
 		});
 
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
-			data.addHealth(data.getMaxHealth() * 0.2);
+			data.addHealth(data.getMaxHealth() * 0.2, this);
 			return TriggerResult.keep();
 		});
 	}

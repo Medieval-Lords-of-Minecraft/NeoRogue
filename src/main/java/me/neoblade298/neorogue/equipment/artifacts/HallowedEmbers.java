@@ -31,7 +31,7 @@ public class HallowedEmbers extends Artifact {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (p.getHealth() <= data.getMaxHealth() * healthThreshold) {
-				data.addHealth(data.getMaxHealth() * healPercent);
+				data.addHealth(data.getMaxHealth() * healPercent, this);
 			}
 			return TriggerResult.keep();
 		});

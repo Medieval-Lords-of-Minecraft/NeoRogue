@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +48,7 @@ public class HiddenRazor extends Equipment {
 				if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				if (++count >= 5) {
-					data.applyStatus(StatusType.STEALTH, data, -1, -1, this);
+					data.applyStatus(StatusType.STEALTH, data, -1, -1, HiddenRazor.this);
 					Sounds.extinguish.play(p, p);
 					count = 0;
 				}

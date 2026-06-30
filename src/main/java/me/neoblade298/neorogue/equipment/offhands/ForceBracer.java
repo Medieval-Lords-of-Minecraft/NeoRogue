@@ -77,7 +77,7 @@ public class ForceBracer extends Equipment {
 				Sounds.breaks.play(p, p);
 				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id, eq)));
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1, this);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1, ForceBracer.this);
 				return TriggerResult.remove();
 			}
 		}

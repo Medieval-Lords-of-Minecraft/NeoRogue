@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Color;
@@ -24,6 +22,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -103,7 +102,7 @@ public class Depletion extends Equipment {
 			Sounds.infect.play(p, loc);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);
-			data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160, this);
+			data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160, Depletion.this);
 			for (LivingEntity ent : trgs) {
 				Vector v = loc.toVector().subtract(ent.getLocation().toVector());
 				if (v.isZero()) continue;
