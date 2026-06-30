@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -24,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class WeaponEnchantmentDarkness extends Equipment {
 	private static final String ID = "WeaponEnchantmentDarkness";
@@ -50,7 +52,9 @@ public class WeaponEnchantmentDarkness extends Equipment {
 		ActionMeta am = new ActionMeta();
 		projs = new ProjectileGroup(new DarknessSlashProjectile(slot, this));
 		
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			am.addCount(1);
 			if (am.getCount() >= 3) {
 				Player p = data.getPlayer();
@@ -67,7 +71,7 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("3rd") + " basic attack launches a slash projectile that deals "
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("3rd") + " time you deal physical damage, launch a slash projectile that deals "
 						+ DescUtil.yellow(damage) + " " + GlossaryTag.DARK.tag(this) + " damage and pierces.");
 	}
 	

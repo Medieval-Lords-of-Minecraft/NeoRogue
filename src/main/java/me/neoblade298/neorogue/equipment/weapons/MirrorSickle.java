@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -95,7 +94,7 @@ public class MirrorSickle extends Equipment {
 				public void run() {
 					LivingEntity ent = TargetHelper.getNearest(p, tp);
 					if (ent == null) return;
-					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq));
+					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq, "Damage dealt dashing"));
 					FightInstance.dealDamage(dm, ent);
 				}
 			}.runTaskLater(NeoRogue.inst(), 4L));

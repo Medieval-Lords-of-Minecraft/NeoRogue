@@ -612,7 +612,8 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
 				StatusType type = StatusType.valueOf(id);
-				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, finalStacks);
+				// Only count genuine applications; negative stacks (e.g. consuming Evade) aren't applied.
+				if (!type.isHidden() && finalStacks > 0) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, finalStacks);
 			}
 			catch (IllegalArgumentException ex) {
 				// Not a standard status, ignore
