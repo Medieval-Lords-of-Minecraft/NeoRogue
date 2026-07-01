@@ -27,10 +27,10 @@ public class CmdAdminDebugMode extends Subcommand {
         
         if(sess.isDebug()) {
             sess.setDebug(false);
-            Util.msg(s, "Debug Mode Disabled");
+            Util.msgRaw(s, "Debug Mode Disabled");
         } else {
             sess.setDebug(true);
-            Util.msg(s, "Debug Mode Enabled");
+            Util.msgRaw(s, "Debug Mode Enabled");
         }
 	}
 }

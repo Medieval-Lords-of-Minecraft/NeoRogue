@@ -114,7 +114,7 @@ public class SessionManager implements Listener {
 		addToSession(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 
-		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
+		Util.msgRaw(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
 		return s;
 	}
 
@@ -746,6 +746,8 @@ public class SessionManager implements Listener {
 		p.setHealthScaled(false);
 		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+		p.getAttribute(Attribute.JUMP_STRENGTH)
+				.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
 		giveMenuCompass(p);
 	}
 

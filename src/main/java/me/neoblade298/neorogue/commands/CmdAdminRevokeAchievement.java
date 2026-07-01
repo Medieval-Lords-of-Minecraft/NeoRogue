@@ -39,13 +39,13 @@ public class CmdAdminRevokeAchievement extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 1) {
-			Util.msg(s, "<red>Usage: /nradmin revokeachievement <id> [scope] [player]");
+			Util.msgRaw(s, "<red>Usage: /nradmin revokeachievement <id> [scope] [player]");
 			return;
 		}
 
 		Achievement ach = AchievementManager.get(args[0]);
 		if (ach == null) {
-			Util.msg(s, "<red>Unknown achievement: " + args[0]);
+			Util.msgRaw(s, "<red>Unknown achievement: " + args[0]);
 			return;
 		}
 
@@ -65,14 +65,14 @@ public class CmdAdminRevokeAchievement extends Subcommand {
 			if (s instanceof Player) {
 				target = (Player) s;
 			} else {
-				Util.msg(s, "<red>You must specify a player from console.");
+				Util.msgRaw(s, "<red>You must specify a player from console.");
 				return;
 			}
 		}
 
 		PlayerData pdata = PlayerManager.getPlayerData(target.getUniqueId());
 		if (pdata == null) {
-			Util.msg(s, "<red>No loaded player data for " + target.getName());
+			Util.msgRaw(s, "<red>No loaded player data for " + target.getName());
 			return;
 		}
 
@@ -81,13 +81,13 @@ public class CmdAdminRevokeAchievement extends Subcommand {
 				: pdata.getClassAchievementProgress(ach.getId(), ec);
 
 		if (progress == null) {
-			Util.msg(s, "<red>Could not get progress for that achievement.");
+			Util.msgRaw(s, "<red>Could not get progress for that achievement.");
 			return;
 		}
 
 		int currentMastery = progress.getMastery();
 		if (currentMastery <= 0) {
-			Util.msg(s, "<red>" + target.getName() + " has no mastery to revoke for " + ach.getId());
+			Util.msgRaw(s, "<red>" + target.getName() + " has no mastery to revoke for " + ach.getId());
 			return;
 		}
 
@@ -98,7 +98,7 @@ public class CmdAdminRevokeAchievement extends Subcommand {
 		progress.addProgress(-reduction);
 
 		String scope = ec == null ? "Global" : ec.getDisplay();
-		Util.msg(s, "<green>Revoked 1 mastery of " + ach.getId() + " [" + scope + "] from " + target.getName()
+		Util.msgRaw(s, "<green>Revoked 1 mastery of " + ach.getId() + " [" + scope + "] from " + target.getName()
 				+ " (" + progress.getMastery() + "/" + progress.getMaxMastery() + ")");
 	}
 

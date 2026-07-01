@@ -42,18 +42,18 @@ public class CmdAdminSetLevel extends Subcommand {
 			ec = parseClass(args[1]);
 		}
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 		PlayerData pdata = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pdata == null) {
-			Util.msg(s, "<red>That player has no data!");
+			Util.msgRaw(s, "<red>That player has no data!");
 			return;
 		}
 		int level = Integer.parseInt(args[0]);
 		pdata.setLevel(ec, level);
 		String category = ec == null ? "Global" : ec.getDisplay();
-		Util.msg(s, "<green>Set " + category + " level to " + level + " for " + p.getName());
+		Util.msgRaw(s, "<green>Set " + category + " level to " + level + " for " + p.getName());
 	}
 
 	private boolean isClassArg(String arg) {

@@ -40,12 +40,12 @@ public class CmdAdminUnlock extends Subcommand {
 			action = Action.valueOf(args[0].toUpperCase());
 		}
 		catch (IllegalArgumentException e) {
-			Util.msg(s, "<red>Invalid action. Use grant/revoke.");
+			Util.msgRaw(s, "<red>Invalid action. Use grant/revoke.");
 			return;
 		}
 
 		if (args.length < 2) {
-			Util.msg(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <node> [player]");
+			Util.msgRaw(s, "<red>Usage: /nradmin unlock " + action.name().toLowerCase() + " <node> [player]");
 			return;
 		}
 
@@ -57,18 +57,18 @@ public class CmdAdminUnlock extends Subcommand {
 			target = (Player) s;
 		}
 		else {
-			Util.msg(s, "<red>You must provide a player from console.");
+			Util.msgRaw(s, "<red>You must provide a player from console.");
 			return;
 		}
 
 		if (target == null) {
-			Util.msg(s, "<red>That player is not online.");
+			Util.msgRaw(s, "<red>That player is not online.");
 			return;
 		}
 
 		PlayerData data = PlayerManager.getPlayerData(target.getUniqueId());
 		if (data == null) {
-			Util.msg(s, "<red>No loaded player data found for " + target.getName() + ".");
+			Util.msgRaw(s, "<red>No loaded player data found for " + target.getName() + ".");
 			return;
 		}
 
@@ -79,22 +79,22 @@ public class CmdAdminUnlock extends Subcommand {
 				if (changed) count++;
 			}
 			String verb = action == Action.GRANT ? "Granted" : "Revoked";
-			Util.msg(s, "<green>" + verb + " <yellow>" + count + "</yellow> unlock nodes for " + target.getName() + ".");
+			Util.msgRaw(s, "<green>" + verb + " <yellow>" + count + "</yellow> unlock nodes for " + target.getName() + ".");
 			return;
 		}
 
 		String nodeId = UnlockRegistry.normalizeNodeId(args[1]);
 		if (!UnlockRegistry.hasNode(nodeId)) {
-			Util.msg(s, "<red>Unknown unlock node: " + args[1]);
+			Util.msgRaw(s, "<red>Unknown unlock node: " + args[1]);
 			return;
 		}
 
 		boolean changed = action == Action.GRANT ? data.grant(nodeId) : data.revoke(nodeId);
 		if (!changed) {
-			Util.msg(s, "<yellow>No changes made.");
+			Util.msgRaw(s, "<yellow>No changes made.");
 			return;
 		}
 		String verb = action == Action.GRANT ? "Granted" : "Revoked";
-		Util.msg(s, "<green>" + verb + " unlock node <yellow>" + nodeId + "</yellow> for " + target.getName() + ".");
+		Util.msgRaw(s, "<green>" + verb + " unlock node <yellow>" + nodeId + "</yellow> for " + target.getName() + ".");
 	}
 }

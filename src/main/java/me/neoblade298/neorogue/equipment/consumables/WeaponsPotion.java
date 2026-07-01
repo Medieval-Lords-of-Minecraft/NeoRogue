@@ -46,7 +46,7 @@ public class WeaponsPotion extends Consumable {
 				p.getInventory().setItem(slot, finalWeapon.getItem());
 			}
 		}.runTaskLater(NeoRogue.inst(), 1L));
-		Util.msg(p, Component.text("You received ", NamedTextColor.GRAY)
+		Util.msgRaw(p, Component.text("You received ", NamedTextColor.GRAY)
 				.append(finalWeapon.getHoverable()));
 		return TriggerResult.remove();
 	}

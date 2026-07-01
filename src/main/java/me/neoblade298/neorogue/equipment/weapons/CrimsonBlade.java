@@ -58,7 +58,7 @@ public class CrimsonBlade extends Equipment {
 				if (System.currentTimeMillis() - start >= DURATION * 1000L) {
 					if (!deactivated) {
 						deactivated = true;
-						Util.msg(p, hoverable.append(Component.text(" was deactivated", NamedTextColor.GRAY)));
+						Util.msgRaw(p, hoverable.append(Component.text(" was deactivated", NamedTextColor.GRAY)));
 					}
 					return TriggerResult.keep();
 				}

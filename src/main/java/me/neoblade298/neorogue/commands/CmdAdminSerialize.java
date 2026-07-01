@@ -73,11 +73,11 @@ public class CmdAdminSerialize extends Subcommand {
 		
 		if (presetId != null) {
 			if (EquipmentPresets.get(presetId) != null) {
-				Util.msg(s, "<red>Preset '" + presetId + "' already exists. Use a different name.");
+				Util.msgRaw(s, "<red>Preset '" + presetId + "' already exists. Use a different name.");
 				return;
 			}
 			EquipmentPresets.save(presetId, serialized);
-			Util.msg(s, "Saved " + p.getName() + "'s equipment as preset: " + presetId);
+			Util.msgRaw(s, "Saved " + p.getName() + "'s equipment as preset: " + presetId);
 			return;
 		}
 		
@@ -90,6 +90,6 @@ public class CmdAdminSerialize extends Subcommand {
 		else {
 			cmp = Component.text(p.getName() + "'s Data:").appendNewline().append(Component.text(serialized));
 		}
-		Util.msg(s, cmp);
+		Util.msgRaw(s, cmp);
 	}
 }

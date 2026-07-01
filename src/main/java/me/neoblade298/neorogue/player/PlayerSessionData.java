@@ -322,7 +322,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 		if (removed != null) {
 			PlayerSessionInventory.setupInventory(getPlayer().getInventory(), this);
-			Util.msg(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(removed.getEquipment().getHoverable()).append(Component.text(", it was sent to storage.")));
+			Util.msgRaw(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(removed.getEquipment().getHoverable()).append(Component.text(", it was sent to storage.")));
 			return true;
 		}
 		return false;
@@ -503,7 +503,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Component toOthers = SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ");
 		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(inst.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
 		s.broadcastOthers(toOthers.append(body), p);
-		Util.msg(p, toSelf.append(body));
+		Util.msgRaw(p, toSelf.append(body));
 	}
 
 	private void giveArtifact(Artifact artifact) {
@@ -547,7 +547,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 		if (eq instanceof Artifact) {
 			if (toSelf != null) {
-				Util.msg(p, toSelf.append(Component.text(".")));
+				Util.msgRaw(p, toSelf.append(Component.text(".")));
 			}
 			giveArtifact((Artifact) eq);
 		}
@@ -567,7 +567,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					}
 				}
 				if (success) {
-					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					if (toSelf != null) Util.msgRaw(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					PlayerSessionInventory.setupInventory(p.getInventory(), this);
 					trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 					return;
@@ -576,11 +576,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			
 			// If unable to, send it to storage
 			if (sendToStorage(se)) {
-				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+				if (toSelf != null) Util.msgRaw(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 			}
 			// If storage is full, open storage GUI
 			else {
-				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+				if (toSelf != null) Util.msgRaw(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 				Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
 				new BukkitRunnable() {
 					@Override
@@ -664,7 +664,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				int dur = se.getDurability() - 1;
 				if (dur <= 0) {
 					removeEquipment(slots[i], slot);
-					Util.msg(p, Component.text("Your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("Your ", NamedTextColor.GRAY)
 							.append(se.getEquipment().getHoverable())
 							.append(Component.text(" broke!", NamedTextColor.GRAY)));
 				} else {
@@ -909,7 +909,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			trigger(SessionTrigger.SPEND_COINS, -amount);
 		}
 		String symbol = amount > 0 ? "+" : "";
-		Util.msg(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
+		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 		updateCoinsBar();
 		updateBoardLines();
 	}

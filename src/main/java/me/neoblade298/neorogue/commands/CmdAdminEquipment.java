@@ -38,7 +38,7 @@ public class CmdAdminEquipment extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player p = args.length > 1 ? Bukkit.getPlayer(args[1]) : (Player) s;
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 		Session sess = SessionManager.getSession(p);

@@ -66,20 +66,20 @@ public class CmdAdminMeta extends Subcommand {
 
 		if (rawValue.equals("remove")) {
 			se.remove(key);
-			Util.msg(p, "Removed metadata key <yellow>" + key + "</yellow>.");
+			Util.msgRaw(p, "Removed metadata key <yellow>" + key + "</yellow>.");
 		} else if (rawValue.startsWith("d:")) {
 			double val = Double.parseDouble(rawValue.substring(2));
 			se.setDouble(key, val);
-			Util.msg(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (double).");
+			Util.msgRaw(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (double).");
 		} else if (rawValue.startsWith("s:")) {
 			String val = rawValue.substring(2);
 			se.setString(key, val);
-			Util.msg(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (string).");
+			Util.msgRaw(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (string).");
 		} else {
 			String numStr = rawValue.startsWith("i:") ? rawValue.substring(2) : rawValue;
 			int val = Integer.parseInt(numStr);
 			se.setInt(key, val);
-			Util.msg(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (int).");
+			Util.msgRaw(p, "Set <yellow>" + key + "</yellow> to <yellow>" + val + "</yellow> (int).");
 		}
 
 		PlayerSessionInventory.setupInventory(p.getInventory(), data);

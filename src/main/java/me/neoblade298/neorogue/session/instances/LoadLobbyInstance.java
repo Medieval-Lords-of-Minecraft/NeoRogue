@@ -68,9 +68,9 @@ public class LoadLobbyInstance extends LobbyInstance {
             if (inLobby.contains(data.getUniqueId()))
                 continue;
             invited.add(data.getUniqueId());
-            Util.msg(data.getPlayer(), Component.text("You've been invited to ")
+            Util.msgRaw(data.getPlayer(), Component.text("You've been invited to ")
                     .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
-            Util.msg(data.getPlayer(),
+            Util.msgRaw(data.getPlayer(),
                     NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
         }
     }

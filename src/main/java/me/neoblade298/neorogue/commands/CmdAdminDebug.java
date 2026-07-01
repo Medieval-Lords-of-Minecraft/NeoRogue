@@ -19,7 +19,7 @@ public class CmdAdminDebug extends Subcommand {
 		if (args.length > 0) {
 			String flag = args[0].toLowerCase();
 			boolean enabled = NeoRogue.toggleDebugFlag(flag);
-			Util.msg(s, "Debug flag '" + flag + "' " + (enabled ? "enabled" : "disabled"));
+			Util.msgRaw(s, "Debug flag '" + flag + "' " + (enabled ? "enabled" : "disabled"));
 			return;
 		}
 	}

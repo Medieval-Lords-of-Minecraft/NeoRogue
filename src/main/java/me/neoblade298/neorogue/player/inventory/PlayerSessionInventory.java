@@ -776,7 +776,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private void displayError(String error, boolean closeInventory) {
 		p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
-		Util.msg(p, error);
+		Util.msgRaw(p, error);
 		if (closeInventory) p.closeInventory();
 	}
 

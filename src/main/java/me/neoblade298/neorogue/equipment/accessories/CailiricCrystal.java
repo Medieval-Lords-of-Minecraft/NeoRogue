@@ -58,7 +58,7 @@ public class CailiricCrystal extends Artifact {
 				new BukkitRunnable() {
 					public void run() {
 						data.giveEquipment(CailiricCrystal.get(), null, null);
-						Util.msg(data.getPlayer(), Component.empty().append(hoverable).append(
+						Util.msgRaw(data.getPlayer(), Component.empty().append(hoverable).append(
 							SharedUtil.color(
 							"<gray> potency has increased!"
 						)).decoration(TextDecoration.UNDERLINED, State.FALSE));

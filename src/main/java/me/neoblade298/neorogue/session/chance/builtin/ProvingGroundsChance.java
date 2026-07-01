@@ -61,7 +61,7 @@ public class ProvingGroundsChance extends ChanceSet {
 				(meta) -> {
 					data.upgradeEquipment(meta.getEquipSlot(), meta.getSlot());
 					Equipment upgraded = data.getSessionEquipment(meta.getEquipSlot())[meta.getSlot()].getEquipment();
-					Util.msg(p, Component.text("You spar with the mercenaries and hone your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("You spar with the mercenaries and hone your ", NamedTextColor.GRAY)
 							.append(upgraded.getHoverable())
 							.append(Component.text("!", NamedTextColor.GRAY)));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> honed their basics!", p);
@@ -86,7 +86,7 @@ public class ProvingGroundsChance extends ChanceSet {
 							s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
 					se = s.rollUpgrade(se, 0);
 					NotorietySetting.rollBreakable(s, se);
-					Util.msg(p, Component.text("You adapt your style, leaving behind your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("You adapt your style, leaving behind your ", NamedTextColor.GRAY)
 							.append(removed.getHoverable())
 							.append(Component.text("...", NamedTextColor.GRAY)));
 					data.giveEquipment(se);

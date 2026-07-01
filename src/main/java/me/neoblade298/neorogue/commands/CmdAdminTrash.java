@@ -57,13 +57,13 @@ public class CmdAdminTrash extends Subcommand {
 				artifactId = args[1];
 				break;
 			default:
-				Util.msg(s, "<red>Too many arguments!");
+				Util.msgRaw(s, "<red>Too many arguments!");
 				return;
 		}
 
 		Session sess = SessionManager.getSession(targetPlayer);
 		if (sess == null || sess.getInstance() instanceof LobbyInstance) {
-			Util.msg(s, "<red>That player isn't in an active session!");
+			Util.msgRaw(s, "<red>That player isn't in an active session!");
 			return;
 		}
 
@@ -73,7 +73,7 @@ public class CmdAdminTrash extends Subcommand {
 		} else {
 			Artifact art = (Artifact) Equipment.get(artifactId, false);
 			data.removeArtifact(art, 1000);
-			Util.msg(s, "Removed artifact " + art.getId() + " from " + targetPlayer.getName() + ".");
+			Util.msgRaw(s, "Removed artifact " + art.getId() + " from " + targetPlayer.getName() + ".");
 		}
 	}
 }

@@ -70,7 +70,7 @@ public class LeviathanAxe extends Equipment {
 		Sounds.fire.play(p, p);
 		pc.play(p, p);
 		p.getInventory().setItemInOffHand(item);
-		Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+		Util.msgRaw(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata2, inputs) -> {
 			RightClickHitEvent ev = (RightClickHitEvent) inputs;
 			if (ev.getTarget() instanceof Player)

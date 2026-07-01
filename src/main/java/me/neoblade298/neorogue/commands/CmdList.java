@@ -117,7 +117,7 @@ public class CmdList extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length > 14) {
-			Util.msg(s, "<red>Too many arguments! Try using commas instead.");
+			Util.msgRaw(s, "<red>Too many arguments! Try using commas instead.");
 			return;
 		}
 		Stream<Equipment> stream = Equipment.getAll().stream();
@@ -125,7 +125,7 @@ public class CmdList extends Subcommand {
 		FilterType filter = null;
 		for (String str : args) {
 			if (str.length() > 40) {
-				Util.msg(s, "<red>Argument is too long! Try reducing the argument size.");
+				Util.msgRaw(s, "<red>Argument is too long! Try reducing the argument size.");
 				return;
 			}
 			if (str.endsWith(",")) str.substring(0, str.length() - 1);
@@ -142,7 +142,7 @@ public class CmdList extends Subcommand {
 								types[i] = EquipmentType.valueOf(typeStr[i]);
 							}
 							catch (IllegalArgumentException ex) {
-								Util.msg(s, "<red>Could not find equipment type " + str);
+								Util.msgRaw(s, "<red>Could not find equipment type " + str);
 								return;
 							}
 						}
@@ -161,7 +161,7 @@ public class CmdList extends Subcommand {
 							clsses[i] = EquipmentClass.valueOf(clsStr[i]);
 						}
 						catch (IllegalArgumentException ex) {
-							Util.msg(s, "<red>Could not find equipment class " + str);
+							Util.msgRaw(s, "<red>Could not find equipment class " + str);
 							return;
 						}
 					}
@@ -182,7 +182,7 @@ public class CmdList extends Subcommand {
 							rarities[i] = Rarity.valueOf(rarStr[i]);
 						}
 						catch (IllegalArgumentException ex) {
-							Util.msg(s, "<red>Could not find rarity " + str);
+							Util.msgRaw(s, "<red>Could not find rarity " + str);
 							return;
 						}
 					}
@@ -206,7 +206,7 @@ public class CmdList extends Subcommand {
 							reforgeTypes[i] = ReforgeType.valueOf(refStr[i]);
 						}
 						catch (IllegalArgumentException ex) {
-							Util.msg(s, "<red>Could not find reforge type " + refStr[i]);
+							Util.msgRaw(s, "<red>Could not find reforge type " + refStr[i]);
 							return;
 						}
 					}
@@ -226,7 +226,7 @@ public class CmdList extends Subcommand {
 							gts[idx++] = GlossaryTag.valueOf(tag);
 						}
 						catch (IllegalArgumentException ex) {
-							Util.msg(s, "<red>Failed to find glossary tag " + tag);
+							Util.msgRaw(s, "<red>Failed to find glossary tag " + tag);
 							return;
 						}
 					}

@@ -43,7 +43,7 @@ public class LifeThief extends Equipment {
 			if (inst.getCount() >= cutoff) {
 				Player p = data.getPlayer();
 				Sounds.success.play(p, p);
-				Util.msg(p, Component.text("").append(hoverable).append(Component.text(" can be activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" can be activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();

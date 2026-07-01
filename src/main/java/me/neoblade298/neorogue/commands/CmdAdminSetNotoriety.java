@@ -29,7 +29,7 @@ public class CmdAdminSetNotoriety extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 2) {
-			Util.msg(s, "<red>Usage: setnotoriety <level> <class> [player]");
+			Util.msgRaw(s, "<red>Usage: setnotoriety <level> <class> [player]");
 			return;
 		}
 		Player p;
@@ -39,30 +39,30 @@ public class CmdAdminSetNotoriety extends Subcommand {
 			p = s instanceof Player ? (Player) s : null;
 		}
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 		EquipmentClass ec;
 		try {
 			ec = EquipmentClass.valueOf(args[1].toUpperCase());
 		} catch (IllegalArgumentException e) {
-			Util.msg(s, "<red>Unknown class: " + args[1] + ". Use WARRIOR, THIEF, MAGE, or ARCHER.");
+			Util.msgRaw(s, "<red>Unknown class: " + args[1] + ". Use WARRIOR, THIEF, MAGE, or ARCHER.");
 			return;
 		}
 		PlayerData pdata = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pdata == null) {
-			Util.msg(s, "<red>That player has no data!");
+			Util.msgRaw(s, "<red>That player has no data!");
 			return;
 		}
 		int level;
 		try {
 			level = Integer.parseInt(args[0]);
 		} catch (NumberFormatException e) {
-			Util.msg(s, "<red>Invalid number: " + args[0]);
+			Util.msgRaw(s, "<red>Invalid number: " + args[0]);
 			return;
 		}
 		pdata.setNotorietyMax(ec, level);
-		Util.msg(s, "<green>Set " + ec.getDisplay() + " max notoriety to " + level + " for " + p.getName()
+		Util.msgRaw(s, "<green>Set " + ec.getDisplay() + " max notoriety to " + level + " for " + p.getName()
 				+ " (current max notoriety: " + pdata.getMaxNotoriety(ec) + ")");
 	}
 }

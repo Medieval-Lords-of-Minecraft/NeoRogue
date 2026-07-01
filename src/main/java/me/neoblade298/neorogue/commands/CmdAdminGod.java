@@ -45,7 +45,7 @@ public class CmdAdminGod extends Subcommand {
 		data.addStamina(10000);
 
 		if (args.length == 0) {
-			Util.msg(s, "All stats maxed.");
+			Util.msgRaw(s, "All stats maxed.");
 			return;
 		}
 		else {
@@ -53,7 +53,7 @@ public class CmdAdminGod extends Subcommand {
 			for (EquipmentInstance ei : data.getActiveEquipment().values()) {
 				ei.setCooldown(0);
 			}
-			Util.msg(s, "All stats maxed and cooldowns ignored.");
+			Util.msgRaw(s, "All stats maxed and cooldowns ignored.");
 		}
 		
 	}

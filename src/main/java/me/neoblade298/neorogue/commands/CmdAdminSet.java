@@ -64,7 +64,7 @@ public class CmdAdminSet extends Subcommand {
 			data.setMaxStamina(value);
 			break;
 		}
-		Util.msg(s, "Set " + type + " to " + value + ".");
+		Util.msgRaw(s, "Set " + type + " to " + value + ".");
 	}
 
 	private static enum SetType {

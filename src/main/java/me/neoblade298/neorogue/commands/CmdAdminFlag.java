@@ -27,13 +27,13 @@ public class CmdAdminFlag extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 2) {
-			Util.msg(s, "<red>Usage: /nradmin flag <add/remove> <flag> [player]");
+			Util.msgRaw(s, "<red>Usage: /nradmin flag <add/remove> <flag> [player]");
 			return;
 		}
 
 		String action = args[0].toLowerCase();
 		if (!action.equals("add") && !action.equals("remove")) {
-			Util.msg(s, "<red>First argument must be 'add' or 'remove'");
+			Util.msgRaw(s, "<red>First argument must be 'add' or 'remove'");
 			return;
 		}
 
@@ -46,26 +46,26 @@ public class CmdAdminFlag extends Subcommand {
 		}
 
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 
 		PlayerData pdata = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pdata == null) {
-			Util.msg(s, "<red>That player has no data!");
+			Util.msgRaw(s, "<red>That player has no data!");
 			return;
 		}
 
 		if (action.equals("add")) {
 			pdata.addFlag(flag);
-			Util.msg(s, "<green>Added flag '<white>" + flag + "<green>' to " + p.getName());
+			Util.msgRaw(s, "<green>Added flag '<white>" + flag + "<green>' to " + p.getName());
 		} else {
 			if (!pdata.hasFlag(flag)) {
-				Util.msg(s, "<red>Player " + p.getName() + " doesn't have flag '" + flag + "'");
+				Util.msgRaw(s, "<red>Player " + p.getName() + " doesn't have flag '" + flag + "'");
 				return;
 			}
 			pdata.removeFlag(flag);
-			Util.msg(s, "<green>Removed flag '<white>" + flag + "<green>' from " + p.getName());
+			Util.msgRaw(s, "<green>Removed flag '<white>" + flag + "<green>' from " + p.getName());
 		}
 	}
 }

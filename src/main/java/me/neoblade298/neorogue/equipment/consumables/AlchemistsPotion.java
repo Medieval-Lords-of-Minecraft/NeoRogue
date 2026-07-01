@@ -72,7 +72,7 @@ public class AlchemistsPotion extends Consumable {
 				}
 			}.runTaskLater(NeoRogue.inst(), 1L));
 		}
-		Util.msg(p, received);
+		Util.msgRaw(p, received);
 		return TriggerResult.remove();
 	}
 

@@ -42,6 +42,6 @@ public abstract class Ammunition extends Equipment {
 		data.runActions(data, Trigger.CHANGE_AMMUNITION, new ChangedAmmunitionEvent(data.getAmmoInstance(), ammo));
 		data.setAmmoInstance(ammo);
 		Sounds.equip.play(p, p);
-		Util.msg(p, Component.text("You equipped ", NamedTextColor.GRAY).append(this.getDisplay()));
+		Util.msgRaw(p, Component.text("You equipped ", NamedTextColor.GRAY).append(this.getDisplay()));
 	}
 }

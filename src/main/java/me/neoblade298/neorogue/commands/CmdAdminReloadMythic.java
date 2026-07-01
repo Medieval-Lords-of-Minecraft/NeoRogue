@@ -15,7 +15,7 @@ public class CmdAdminReloadMythic extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Util.msg(s, "Reloaded mythic configurations.");
+		Util.msgRaw(s, "Reloaded mythic configurations.");
 		NeoRogue.onMythicReload(null);
 	}
 }

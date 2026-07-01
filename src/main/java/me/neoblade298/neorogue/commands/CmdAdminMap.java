@@ -55,20 +55,20 @@ public class CmdAdminMap extends Subcommand {
 		long startTime = System.currentTimeMillis();
 		Map map = piece == null ? Map.generate(type, numPieces, false) : Map.generate(type, numPieces, piece, false);
 		long genTime = System.currentTimeMillis() - startTime;
-		Util.msg(p, "Piece generation: " + genTime + "ms");
+		Util.msgRaw(p, "Piece generation: " + genTime + "ms");
 		long instantiateStart = System.currentTimeMillis();
 		int xOff = -MapPieceInstance.X_FIGHT_OFFSET, zOff = 0;
 		map.instantiate(null, xOff, zOff);
 		long instantiateTime = System.currentTimeMillis() - instantiateStart;
-		Util.msg(p, "Instantiate (clear + schedule): " + instantiateTime + "ms");
+		Util.msgRaw(p, "Instantiate (clear + schedule): " + instantiateTime + "ms");
 		long totalTime = System.currentTimeMillis() - startTime;
-		Util.msg(p, "Total sync time: " + totalTime + "ms (terrain gen runs async)");
+		Util.msgRaw(p, "Total sync time: " + totalTime + "ms (terrain gen runs async)");
 		map.display();
 
 		// List each map piece instance
 		int idx = 0;
 		for (MapPieceInstance mpi : map.getPieces()) {
-			Util.msg(p, "#" + idx + ": " + mpi.getPiece().getId()
+			Util.msgRaw(p, "#" + idx + ": " + mpi.getPiece().getId()
 					+ " rot=" + mpi.getNumRotations()
 					+ " flipX=" + mpi.isFlipX()
 					+ " flipZ=" + mpi.isFlipZ());
@@ -81,7 +81,7 @@ public class CmdAdminMap extends Subcommand {
 		for (MapPieceInstance mpi : map.getPieces()) {
 			potentialSpawns.addAll(mpi.markSpawns(xOff, zOff));
 		}
-		Util.msg(p, "Mark spawns: " + (System.currentTimeMillis() - markStart) + "ms");
+		Util.msgRaw(p, "Mark spawns: " + (System.currentTimeMillis() - markStart) + "ms");
 
 		// Choose random teleport location (delayed to let async paste finish)
 		new BukkitRunnable() {

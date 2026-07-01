@@ -20,14 +20,14 @@ public class CmdAdminReload extends Subcommand {
 		boolean fast = args.length > 0 && args[0].equalsIgnoreCase("fast");
 		if (fast) {
 			NeoRogue.reload();
-			Util.msg(s, "Reloaded configurations (fast, no git pull).");
+			Util.msgRaw(s, "Reloaded configurations (fast, no git pull).");
 		} else {
 			org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
 				gitPull(s, "/home/mlmc/dev/plugins/NeoRogue/mappieces");
 				gitPull(s, "/home/mlmc/dev/plugins/MythicMobs");
 				org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
 					NeoRogue.reload();
-					Util.msg(s, "Reloaded configurations.");
+					Util.msgRaw(s, "Reloaded configurations.");
 				});
 			});
 		}
@@ -35,7 +35,7 @@ public class CmdAdminReload extends Subcommand {
 
 	private void gitPull(CommandSender s, String directory) {
 		try {
-			Util.msg(s, "Running git pull in " + directory);
+			Util.msgRaw(s, "Running git pull in " + directory);
 			ProcessBuilder pb = new ProcessBuilder("git", "pull");
 			pb.directory(new java.io.File(directory));
 			pb.redirectErrorStream(true);
@@ -44,17 +44,17 @@ public class CmdAdminReload extends Subcommand {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				final String msg = line;
-				org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> Util.msg(s, msg));
+				org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> Util.msgRaw(s, msg));
 			}
 			int exitCode = proc.waitFor();
 			final String dir = directory;
 			org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
-				Util.msg(s, "git pull in " + dir + " finished (exit code " + exitCode + ")");
+				Util.msgRaw(s, "git pull in " + dir + " finished (exit code " + exitCode + ")");
 			});
 		}
 		catch (Exception e) {
 			org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
-				Util.msg(s, "git pull in " + directory + " failed: " + e.getMessage());
+				Util.msgRaw(s, "git pull in " + directory + " failed: " + e.getMessage());
 			});
 		}
 	}

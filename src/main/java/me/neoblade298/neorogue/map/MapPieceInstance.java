@@ -423,13 +423,13 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				Bukkit.getLogger().info("[markSpawns] Spawner '" + spawner.getMobId() + "' at " + Util.locToString(loc, false, false) + " world=" + loc.getWorld().getName() + " block=" + loc.getBlock().getType() + " below=" + loc.clone().add(0, -1, 0).getBlock().getType());
 				if (p != null) {
 					if (loc.getBlock().getType().isSolid()) {
-						Util.msg(p, "<red>A spawner appears to be inside a block.");
-						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-						Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+						Util.msgRaw(p, "<red>A spawner appears to be inside a block.");
+						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
 					}
 					if (loc.clone().add(0, -1, 0).getBlock().getType().isAir()) {
-						Util.msg(p, "<red>A spawner appears to be floating or off map.");
-						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msgRaw(p, "<red>A spawner appears to be floating or off map.");
+						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					}
 				}
 				loc.getBlock().setType(Material.ORANGE_WOOL);
@@ -452,13 +452,13 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
 					if (loc.getBlock().getType().isSolid()) {
-						Util.msg(p, "<red>An initial spawn appears to be inside a block.");
-						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-						Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+						Util.msgRaw(p, "<red>An initial spawn appears to be inside a block.");
+						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
 					}
 					if (loc.clone().add(0, -1, 0).getBlock().getType().isAir()) {
-						Util.msg(p, "<red>An initial spawn appears to be floating or off map.");
-						Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+						Util.msgRaw(p, "<red>An initial spawn appears to be floating or off map.");
+						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					}
 				}
 				Block b = loc.getBlock();
@@ -486,9 +486,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
 					if (l.getBlock().getType().isSolid()) {
-						Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
-						Util.msg(p, "<red>Coords: " + Util.locToString(l, false, false));
-						Util.msg(p, "<red>Block: " + l.getBlock().getType());
+						Util.msgRaw(p, "<red>A spawnpoint appears to be inside a block.");
+						Util.msgRaw(p, "<red>Coords: " + Util.locToString(l, false, false));
+						Util.msgRaw(p, "<red>Block: " + l.getBlock().getType());
 					}
 				}
 
@@ -516,9 +516,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 			if (p != null) {
 				if (loc.getBlock().getType().isSolid()) {
-					Util.msg(p, "<red>A mythic location appears to be inside a block.");
-					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
-					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+					Util.msgRaw(p, "<red>A mythic location appears to be inside a block.");
+					Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
 				}
 			}
 			Block b = loc.getBlock();

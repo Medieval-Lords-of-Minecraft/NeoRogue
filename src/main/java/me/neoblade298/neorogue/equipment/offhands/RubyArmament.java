@@ -58,14 +58,14 @@ public class RubyArmament extends Equipment {
 			if (act.getCount() == 0) {
 				act.setCount(1);
 				inst.setIcon(powerIcon);
-				Util.msg(p, "Entered stance <white>Power");
+				Util.msgRaw(p, "Entered stance <white>Power");
 				Sounds.fire.play(p, p);
 				power.play(p, p);
 			}
 			else {
 				act.setCount(0);
 				inst.setIcon(patienceIcon);
-				Util.msg(p, "Entered stance <white>Patience");
+				Util.msgRaw(p, "Entered stance <white>Patience");
 				Sounds.enchant.play(p, p);
 				patience.play(p, p);
 			}

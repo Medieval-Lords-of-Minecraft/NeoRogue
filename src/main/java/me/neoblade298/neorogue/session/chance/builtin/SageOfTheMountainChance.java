@@ -66,7 +66,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 					data.setupInventory();
 					data.setHealth(data.getHealth() * 0.7);
 					data.giveArtifact(new ArtifactInstance((Artifact) EchoStone.get(), 1, held));
-					Util.msg(p, Component.text("The sage's eyes glaze over as he channels your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("The sage's eyes glaze over as he channels your ", NamedTextColor.GRAY)
 							.append(held.getEquipment().getHoverable())
 							.append(Component.text(" into a humming Echo Stone.", NamedTextColor.GRAY)));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> gazed into the beyond.", p);

@@ -47,18 +47,18 @@ public class CmdAdminDeserialize extends Subcommand {
 			p = (Player) s;
 			dataStart = 0;
 		} else {
-			Util.msg(s, "<red>Usage: deserialize [player] <preset-name|raw-data>");
+			Util.msgRaw(s, "<red>Usage: deserialize [player] <preset-name|raw-data>");
 			return;
 		}
 
 		if (dataStart >= args.length) {
-			Util.msg(s, "<red>You must provide a preset name or raw data.");
+			Util.msgRaw(s, "<red>You must provide a preset name or raw data.");
 			return;
 		}
 
 		Session sess = SessionManager.getSession(p);
 		if (sess == null) {
-			Util.msg(s, "<red>Player is not currently in a session!");
+			Util.msgRaw(s, "<red>Player is not currently in a session!");
 			return;
 		}
 
@@ -76,6 +76,6 @@ public class CmdAdminDeserialize extends Subcommand {
 			e.printStackTrace();
 			return;
 		}
-		Util.msg(s, "Loaded equipment data for " + p.getName());
+		Util.msgRaw(s, "Loaded equipment data for " + p.getName());
 	}
 }

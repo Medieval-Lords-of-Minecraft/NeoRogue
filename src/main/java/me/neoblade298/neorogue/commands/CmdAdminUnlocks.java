@@ -33,28 +33,28 @@ public class CmdAdminUnlocks extends Subcommand {
 			target = (Player) s;
 		}
 		else {
-			Util.msg(s, "<red>You must provide a player from console.");
+			Util.msgRaw(s, "<red>You must provide a player from console.");
 			return;
 		}
 
 		if (target == null) {
-			Util.msg(s, "<red>That player is not online.");
+			Util.msgRaw(s, "<red>That player is not online.");
 			return;
 		}
 
 		PlayerData data = PlayerManager.getPlayerData(target.getUniqueId());
 		if (data == null) {
-			Util.msg(s, "<red>No loaded player data found for " + target.getName() + ".");
+			Util.msgRaw(s, "<red>No loaded player data found for " + target.getName() + ".");
 			return;
 		}
 
 		Set<String> unlockNodes = data.getUnlockNodes();
 		if (unlockNodes.isEmpty()) {
-			Util.msg(s, "<yellow>" + target.getName() + " has no unlock nodes.");
+			Util.msgRaw(s, "<yellow>" + target.getName() + " has no unlock nodes.");
 			return;
 		}
 		ArrayList<String> list = new ArrayList<String>(unlockNodes);
 		Collections.sort(list);
-		Util.msg(s, "<yellow>" + target.getName() + " unlock nodes:</yellow> " + String.join(", ", list));
+		Util.msgRaw(s, "<yellow>" + target.getName() + " unlock nodes:</yellow> " + String.join(", ", list));
 	}
 }

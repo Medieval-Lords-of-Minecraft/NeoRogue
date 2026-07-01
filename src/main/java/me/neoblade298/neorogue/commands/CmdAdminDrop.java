@@ -48,13 +48,13 @@ public class CmdAdminDrop extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 2) {
-			Util.msg(s, "<red>Usage: drop <type> [player] <value> [amount] [classes...]");
+			Util.msgRaw(s, "<red>Usage: drop <type> [player] <value> [amount] [classes...]");
 			return;
 		}
 
 		String typeArg = args[0].toLowerCase();
 		if (!TYPES.contains(typeArg)) {
-			Util.msg(s, "<red>Invalid type: " + typeArg + ". Use: equipment, artifact, consumable");
+			Util.msgRaw(s, "<red>Invalid type: " + typeArg + ". Use: equipment, artifact, consumable");
 			return;
 		}
 
@@ -67,12 +67,12 @@ public class CmdAdminDrop extends Subcommand {
 		} else if (s instanceof Player) {
 			target = (Player) s;
 		} else {
-			Util.msg(s, "<red>Must specify a player when running from console!");
+			Util.msgRaw(s, "<red>Must specify a player when running from console!");
 			return;
 		}
 
 		if (args.length <= offset) {
-			Util.msg(s, "<red>Usage: drop <type> [player] <value> [amount] [classes...]");
+			Util.msgRaw(s, "<red>Usage: drop <type> [player] <value> [amount] [classes...]");
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class CmdAdminDrop extends Subcommand {
 		try {
 			value = Integer.parseInt(args[offset]);
 		} catch (NumberFormatException e) {
-			Util.msg(s, "<red>Invalid value: " + args[offset]);
+			Util.msgRaw(s, "<red>Invalid value: " + args[offset]);
 			return;
 		}
 
@@ -103,7 +103,7 @@ public class CmdAdminDrop extends Subcommand {
 				try {
 					ecs[i - classOffset] = EquipmentClass.valueOf(args[i].toUpperCase());
 				} catch (IllegalArgumentException e) {
-					Util.msg(s, "<red>Invalid equipment class: " + args[i]);
+					Util.msgRaw(s, "<red>Invalid equipment class: " + args[i]);
 					return;
 				}
 			}
@@ -113,7 +113,7 @@ public class CmdAdminDrop extends Subcommand {
 
 		PlayerData pd = PlayerManager.getPlayerData(target.getUniqueId());
 		if (pd == null) {
-			Util.msg(s, "<red>No player data found for " + target.getName() + ".");
+			Util.msgRaw(s, "<red>No player data found for " + target.getName() + ".");
 			return;
 		}
 
@@ -138,7 +138,7 @@ public class CmdAdminDrop extends Subcommand {
 				return;
 		}
 
-		Util.msg(s, "<yellow>Rolled " + amount + " " + typeArg + " drop(s) at value " + value + " for " + target.getName() + ":");
+		Util.msgRaw(s, "<yellow>Rolled " + amount + " " + typeArg + " drop(s) at value " + value + " for " + target.getName() + ":");
 		for (Equipment eq : drops) {
 			Util.msgRaw(s, Component.text("- ", NamedTextColor.GRAY).append(eq.getHoverable()));
 		}

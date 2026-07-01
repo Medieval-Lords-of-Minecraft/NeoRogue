@@ -69,7 +69,7 @@ public class FrozenForgeChance extends ChanceSet {
 					SessionEquipment se = s.rollUpgrade(new SessionEquipment(result), 0);
 					NotorietySetting.rollBreakable(s, se);
 					data.giveEquipment(se);
-					Util.msg(p, Component.text("You feed your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("You feed your ", NamedTextColor.GRAY)
 							.append(removed.getHoverable())
 							.append(Component.text(" into the blue flames, reforging it anew.", NamedTextColor.GRAY)));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> used the forge!", p);

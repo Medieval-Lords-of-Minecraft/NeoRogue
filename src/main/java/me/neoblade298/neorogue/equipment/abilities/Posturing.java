@@ -54,7 +54,7 @@ public class Posturing extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 
 			ItemStack icon = item.clone();
 			String buffId = UUID.randomUUID().toString();

@@ -42,7 +42,7 @@ public class SeraphsPotion extends Consumable {
 			public void run() {
 				if (data.hasStatus(StatusType.INVINCIBLE)) return;
 				sc.play(p, p);
-				Util.msg(p, Component.empty().append(hoverable).append(Component.text(" has expired", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.empty().append(hoverable).append(Component.text(" has expired", NamedTextColor.GRAY)));
 			}
 		}.runTaskLater(NeoRogue.inst(), duration * 20 + 1L);
 		return TriggerResult.remove();

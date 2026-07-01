@@ -74,7 +74,7 @@ public class PracticeDummy extends Artifact {
 			if (count == num) {
 				Sounds.success.play(p, p);
 				part.play(p, p);
-				Util.msg(p, "<red>Practice Dummy</red> was activated");
+				Util.msgRaw(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art, false)));

@@ -16,7 +16,7 @@ public class CmdHelp extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Util.msg(s, Component.text("NeoRogue Commands", NamedTextColor.DARK_RED));
+		Util.msgRaw(s, Component.text("NeoRogue Commands", NamedTextColor.DARK_RED));
 		sendLine(s, "/nr", "Open the main menu");
 		sendLine(s, "/nr help", "View this command list");
 		sendLine(s, "/nr new [slot]", "Create a new game");

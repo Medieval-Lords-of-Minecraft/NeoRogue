@@ -33,11 +33,11 @@ public class CmdAdminAnalytics extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 1) {
-			Util.msg(s, "<red>Usage: /nradmin analytics <equipment> [balanceVersion]");
-			Util.msg(s, "<red>       /nradmin analytics pickrate [balanceVersion] [source]");
-			Util.msg(s, "<red>       /nradmin analytics chance [balanceVersion] [setId]");
-			Util.msg(s, "<red>       /nradmin analytics mobs [balanceVersion] [regionType]");
-			Util.msg(s, "<red>       /nradmin analytics mob <mobId> [balanceVersion]");
+			Util.msgRaw(s, "<red>Usage: /nradmin analytics <equipment> [balanceVersion]");
+			Util.msgRaw(s, "<red>       /nradmin analytics pickrate [balanceVersion] [source]");
+			Util.msgRaw(s, "<red>       /nradmin analytics chance [balanceVersion] [setId]");
+			Util.msgRaw(s, "<red>       /nradmin analytics mobs [balanceVersion] [regionType]");
+			Util.msgRaw(s, "<red>       /nradmin analytics mob <mobId> [balanceVersion]");
 			return;
 		}
 
@@ -70,7 +70,7 @@ public class CmdAdminAnalytics extends Subcommand {
 				balanceVersion = Integer.parseInt(args[1]);
 			}
 			catch (NumberFormatException ex) {
-				Util.msg(s, "<red>Balance version must be a number.");
+				Util.msgRaw(s, "<red>Balance version must be a number.");
 				return;
 			}
 		}
@@ -95,13 +95,13 @@ public class CmdAdminAnalytics extends Subcommand {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msg(s, "<gold>=== Analytics: <yellow>" + id + "</yellow> (balance v" + version + ") ===");
+						Util.msgRaw(s, "<gold>=== Analytics: <yellow>" + id + "</yellow> (balance v" + version + ") ===");
 						if (lines.isEmpty()) {
-							Util.msg(s, "<yellow>No recorded contributions for this equipment.");
+							Util.msgRaw(s, "<yellow>No recorded contributions for this equipment.");
 							return;
 						}
 						for (String line : lines) {
-							Util.msg(s, line);
+							Util.msgRaw(s, line);
 						}
 					}
 				}.runTask(NeoRogue.inst());
@@ -196,7 +196,7 @@ public class CmdAdminAnalytics extends Subcommand {
 				balanceVersion = Integer.parseInt(args[1]);
 			}
 			catch (NumberFormatException ex) {
-				Util.msg(s, "<red>Balance version must be a number.");
+				Util.msgRaw(s, "<red>Balance version must be a number.");
 				return;
 			}
 		}
@@ -218,14 +218,14 @@ public class CmdAdminAnalytics extends Subcommand {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msg(s, "<gold>=== Pickrate Leaderboard (balance v" + version
+						Util.msgRaw(s, "<gold>=== Pickrate Leaderboard (balance v" + version
 								+ (source != null ? ", " + source : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msg(s, "<yellow>No offers recorded with at least " + MIN_OFFERS + " samples.");
+							Util.msgRaw(s, "<yellow>No offers recorded with at least " + MIN_OFFERS + " samples.");
 							return;
 						}
 						for (String line : lines) {
-							Util.msg(s, line);
+							Util.msgRaw(s, line);
 						}
 					}
 				}.runTask(NeoRogue.inst());
@@ -284,7 +284,7 @@ public class CmdAdminAnalytics extends Subcommand {
 				balanceVersion = Integer.parseInt(args[1]);
 			}
 			catch (NumberFormatException ex) {
-				Util.msg(s, "<red>Balance version must be a number.");
+				Util.msgRaw(s, "<red>Balance version must be a number.");
 				return;
 			}
 		}
@@ -306,15 +306,15 @@ public class CmdAdminAnalytics extends Subcommand {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msg(s, "<gold>=== Chance Pickrate (balance v" + version
+						Util.msgRaw(s, "<gold>=== Chance Pickrate (balance v" + version
 								+ (setId != null ? ", " + setId : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msg(s, "<yellow>No chance options recorded with at least " + MIN_OFFERS
+							Util.msgRaw(s, "<yellow>No chance options recorded with at least " + MIN_OFFERS
 									+ " valid samples.");
 							return;
 						}
 						for (String line : lines) {
-							Util.msg(s, line);
+							Util.msgRaw(s, line);
 						}
 					}
 				}.runTask(NeoRogue.inst());
@@ -331,7 +331,7 @@ public class CmdAdminAnalytics extends Subcommand {
 				balanceVersion = Integer.parseInt(args[1]);
 			}
 			catch (NumberFormatException ex) {
-				Util.msg(s, "<red>Balance version must be a number.");
+				Util.msgRaw(s, "<red>Balance version must be a number.");
 				return;
 			}
 		}
@@ -353,14 +353,14 @@ public class CmdAdminAnalytics extends Subcommand {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msg(s, "<gold>=== Mob Damage Leaderboard (balance v" + version
+						Util.msgRaw(s, "<gold>=== Mob Damage Leaderboard (balance v" + version
 								+ (regionType != null ? ", " + regionType : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msg(s, "<yellow>No mobs recorded in at least " + MIN_OFFERS + " fights.");
+							Util.msgRaw(s, "<yellow>No mobs recorded in at least " + MIN_OFFERS + " fights.");
 							return;
 						}
 						for (String line : lines) {
-							Util.msg(s, line);
+							Util.msgRaw(s, line);
 						}
 					}
 				}.runTask(NeoRogue.inst());
@@ -412,7 +412,7 @@ public class CmdAdminAnalytics extends Subcommand {
 	// type breakdown for a single mob id.
 	private void runMobDetail(CommandSender s, String[] args) {
 		if (args.length < 2) {
-			Util.msg(s, "<red>Usage: /nradmin analytics mob <mobId> [balanceVersion]");
+			Util.msgRaw(s, "<red>Usage: /nradmin analytics mob <mobId> [balanceVersion]");
 			return;
 		}
 		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
@@ -421,7 +421,7 @@ public class CmdAdminAnalytics extends Subcommand {
 				balanceVersion = Integer.parseInt(args[2]);
 			}
 			catch (NumberFormatException ex) {
-				Util.msg(s, "<red>Balance version must be a number.");
+				Util.msgRaw(s, "<red>Balance version must be a number.");
 				return;
 			}
 		}
@@ -444,14 +444,14 @@ public class CmdAdminAnalytics extends Subcommand {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msg(s, "<gold>=== Mob Analytics: <yellow>" + mobId + "</yellow> (balance v" + version
+						Util.msgRaw(s, "<gold>=== Mob Analytics: <yellow>" + mobId + "</yellow> (balance v" + version
 								+ ") ===");
 						if (lines.isEmpty()) {
-							Util.msg(s, "<yellow>No recorded damage for this mob.");
+							Util.msgRaw(s, "<yellow>No recorded damage for this mob.");
 							return;
 						}
 						for (String line : lines) {
-							Util.msg(s, line);
+							Util.msgRaw(s, line);
 						}
 					}
 				}.runTask(NeoRogue.inst());

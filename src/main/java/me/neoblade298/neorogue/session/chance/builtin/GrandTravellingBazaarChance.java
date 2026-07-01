@@ -52,7 +52,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					Artifact reward = (Artifact) Equipment.get(r1, false);
 					Player p = data.getPlayer();
 					data.removeArtifact(cost);
-					Util.msg(p, Component.text("You hand over your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("You hand over your ", NamedTextColor.GRAY)
 							.append(cost.getDisplay())
 							.append(Component.text(". The merchant eyes it greedily before sliding over a new artifact.", NamedTextColor.GRAY)));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> traded an artifact with the merchant.", p);
@@ -97,14 +97,14 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					});
 
 					if (candidates.isEmpty()) {
-						Util.msg(p, "<red>The merchant can't find that item on you anymore!");
+						Util.msgRaw(p, "<red>The merchant can't find that item on you anymore!");
 						return null;
 					}
 
 					EquipmentMetadata target = candidates.get(0);
 					Equipment traded = data.removeEquipment(target.getEquipSlot(), target.getSlot()).getEquipment();
 					data.setupInventory();
-					Util.msg(p, Component.text("You hand over your ", NamedTextColor.GRAY)
+					Util.msgRaw(p, Component.text("You hand over your ", NamedTextColor.GRAY)
 							.append(traded.getDisplay())
 							.append(Component.text(". The merchant inspects it with a grin and shoves an artifact in your pocket.", NamedTextColor.GRAY)));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> traded equipment with the merchant.", p);

@@ -68,7 +68,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		Util.msg(s, text, false);
+		Util.msgRaw(s, text);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
@@ -77,7 +77,7 @@ public class SessionSnapshot {
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
-		Util.msg(s, text, false);
+		Util.msgRaw(s, text);
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
@@ -86,7 +86,7 @@ public class SessionSnapshot {
 				.append(Component.text(sdf.format(new Date(lastSaved)), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr load " + saveSlot))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		Util.msg(s, text, false);
+		Util.msgRaw(s, text);
 	}
 	
 	private Component createHoverText() {

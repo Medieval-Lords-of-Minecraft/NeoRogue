@@ -24,25 +24,25 @@ public class CmdAdminReset extends Subcommand {
 		Player target;
 		if (args.length == 0) {
 			if (!(s instanceof Player)) {
-				Util.msg(s, "<red>Console must specify a player.");
+				Util.msgRaw(s, "<red>Console must specify a player.");
 				return;
 			}
 			target = (Player) s;
 		} else {
 			target = Bukkit.getPlayer(args[0]);
 			if (target == null) {
-				Util.msg(s, "<red>That player is not online.");
+				Util.msgRaw(s, "<red>That player is not online.");
 				return;
 			}
 		}
 
 		PlayerData data = PlayerManager.getPlayerData(target.getUniqueId());
 		if (data == null) {
-			Util.msg(s, "<red>No loaded player data found for " + target.getName() + ".");
+			Util.msgRaw(s, "<red>No loaded player data found for " + target.getName() + ".");
 			return;
 		}
 
 		data.resetAll();
-		Util.msg(s, "<gray>Reset all progress for <yellow>" + target.getName() + "</yellow>.");
+		Util.msgRaw(s, "<gray>Reset all progress for <yellow>" + target.getName() + "</yellow>.");
 	}
 }

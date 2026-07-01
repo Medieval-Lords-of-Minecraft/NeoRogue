@@ -618,10 +618,10 @@ public abstract class FightInstance extends Instance {
 
 		revivers.put(p, corpse);
 		corpse.reviver = data;
-		Util.msg(
+		Util.msgRaw(
 				p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!"
 		);
-		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
+		Util.msgRaw(dead, "You are being revived by <yellow>" + p.getName());
 		s.broadcastOthers(
 				SharedUtil.color(
 						"<yellow>" + p.getName() + "</yellow> is reviving <yellow>" + dead.getName() + "</yellow>!"
@@ -672,12 +672,12 @@ public abstract class FightInstance extends Instance {
 
 	private boolean canRevive(Corpse corpse, Player p, Player dead) {
 		if (!corpse.isNear(p)) {
-			Util.msg(p, "<red>Revival failed! You got too far away!");
+			Util.msgRaw(p, "<red>Revival failed! You got too far away!");
 			return false;
 		}
 
 		if (dead == null || !dead.isOnline()) {
-			Util.msg(p, "<red>Revival failed! Dead player logged off!");
+			Util.msgRaw(p, "<red>Revival failed! Dead player logged off!");
 			return false;
 		}
 
@@ -687,10 +687,10 @@ public abstract class FightInstance extends Instance {
 	private void cancelRevive(Corpse corpse, Player p) {
 		Player dead = corpse.data.getPlayer();
 		if (dead != null) {
-			Util.msg(dead, "<red>Revival failed!");
+			Util.msgRaw(dead, "<red>Revival failed!");
 			Sounds.error.play(dead, dead, Audience.ORIGIN);
 		}
-		Util.msg(p, "<red>Revival failed!");
+		Util.msgRaw(p, "<red>Revival failed!");
 		Sounds.error.play(p, p, Audience.ORIGIN);
 		revivers.remove(p);
 		corpse.reviver = null;

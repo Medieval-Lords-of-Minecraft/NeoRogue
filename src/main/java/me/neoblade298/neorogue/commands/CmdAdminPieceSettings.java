@@ -115,7 +115,7 @@ public class CmdAdminPieceSettings extends Subcommand {
 					org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
 					p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
 				}
-				Util.msg(p, "Successfully pasted piece settings");
+				Util.msgRaw(p, "Successfully pasted piece settings");
 			}
 		}.runTaskLater(NeoRogue.inst(), 20);
 	}

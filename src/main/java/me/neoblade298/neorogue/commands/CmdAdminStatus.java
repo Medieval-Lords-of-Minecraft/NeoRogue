@@ -52,6 +52,6 @@ public class CmdAdminStatus extends Subcommand {
 		FightData data = trg != null ? FightInstance.getFightData(trg) : user;
 		StatusType type = StatusType.valueOf(args[0].toUpperCase());
 		data.applyStatus(type, user, Integer.parseInt(args[1]), args.length > 2 ? Integer.parseInt(args[2]) : -1);
-		Util.msg(s, "Applied status " + type + " with " + args[1] + " stacks.");
+		Util.msgRaw(s, "Applied status " + type + " with " + args[1] + " stacks.");
 	}
 }

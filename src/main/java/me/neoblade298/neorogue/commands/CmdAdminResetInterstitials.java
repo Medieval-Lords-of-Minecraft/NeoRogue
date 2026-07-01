@@ -21,7 +21,7 @@ public class CmdAdminResetInterstitials extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		World world = Bukkit.getWorld(Region.WORLD_NAME);
 		if (world == null) {
-			Util.msg(s, "<red>Could not find world " + Region.WORLD_NAME + ".");
+			Util.msgRaw(s, "<red>Could not find world " + Region.WORLD_NAME + ".");
 			return;
 		}
 
@@ -35,6 +35,6 @@ public class CmdAdminResetInterstitials extends Subcommand {
 			}
 		}
 
-		Util.msg(s, "Reset interstitial version checks for first " + cleared + " plots.");
+		Util.msgRaw(s, "Reset interstitial version checks for first " + cleared + " plots.");
 	}
 }

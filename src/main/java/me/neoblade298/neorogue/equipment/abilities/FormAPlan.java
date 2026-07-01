@@ -68,7 +68,7 @@ public class FormAPlan extends Equipment {
 						Sounds.fire.play(p, p);
 						pc.play(p, p);
 						data.applyStatus(StatusType.STEALTH, data, 3, 100, FormAPlan.this);
-						Util.msg(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
+						Util.msgRaw(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
 						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, eq)));
 						this.cancel();
 					}

@@ -40,7 +40,7 @@ public class AmuletOfOffering extends Artifact {
 			data.addMana(1000);
 			data.addStamina(1000);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, 0.5, StatTracker.damageBuffAlly(buffId, this)), 300);
-			Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});
 	}

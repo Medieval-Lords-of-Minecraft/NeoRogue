@@ -88,9 +88,9 @@ public class NewLobbyInstance extends LobbyInstance {
 		TextComponent tc = Component.text().content(recipient.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" was invited to the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
-		Util.msg(recipient, Component.text("You've been invited to ")
+		Util.msgRaw(recipient, Component.text("You've been invited to ")
 				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
-        Util.msg(recipient,
+        Util.msgRaw(recipient,
                 NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
 	}
     

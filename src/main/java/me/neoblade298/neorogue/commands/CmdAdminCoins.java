@@ -23,12 +23,12 @@ public class CmdAdminCoins extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player p = args.length > 1 ? Bukkit.getPlayer(args[1]) : (Player) s;
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 		Session sess = SessionManager.getSession(p);
 		if (sess == null || sess.getInstance() instanceof LobbyInstance) {
-			Util.msg(s, "<red>That player isn't in an active session!");
+			Util.msgRaw(s, "<red>That player isn't in an active session!");
 			return;
 		}
 		sess.getParty().get(p.getUniqueId()).addCoins(Integer.parseInt(args[0]));

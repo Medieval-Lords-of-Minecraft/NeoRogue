@@ -32,7 +32,7 @@ public class CmdAdminDropArtifact extends Subcommand {
 		try {
 			value = Integer.parseInt(args[0]);
 		} catch (NumberFormatException e) {
-			Util.msg(s, "<red>Invalid value: " + args[0]);
+			Util.msgRaw(s, "<red>Invalid value: " + args[0]);
 			return;
 		}
 
@@ -41,7 +41,7 @@ public class CmdAdminDropArtifact extends Subcommand {
 			try {
 				amount = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				Util.msg(s, "<red>Invalid amount: " + args[1]);
+				Util.msgRaw(s, "<red>Invalid amount: " + args[1]);
 				return;
 			}
 		}
@@ -53,7 +53,7 @@ public class CmdAdminDropArtifact extends Subcommand {
 				try {
 					ecs[i - 2] = EquipmentClass.valueOf(args[i].toUpperCase());
 				} catch (IllegalArgumentException e) {
-					Util.msg(s, "<red>Invalid equipment class: " + args[i]);
+					Util.msgRaw(s, "<red>Invalid equipment class: " + args[i]);
 					return;
 				}
 			}
@@ -63,7 +63,7 @@ public class CmdAdminDropArtifact extends Subcommand {
 
 		DropTableSet<Artifact> artifactSet = Equipment.copyArtifactsDropSet(ecs);
 		ArrayList<Artifact> drops = Equipment.getArtifact(artifactSet, value, amount, ecs);
-		Util.msg(s, "<yellow>Rolled " + amount + " artifact(s) at value " + value + ":");
+		Util.msgRaw(s, "<yellow>Rolled " + amount + " artifact(s) at value " + value + ":");
 		for (Artifact art : drops) {
 			Util.msgRaw(s, Component.text("- ", NamedTextColor.GRAY).append(art.getHoverable()));
 		}

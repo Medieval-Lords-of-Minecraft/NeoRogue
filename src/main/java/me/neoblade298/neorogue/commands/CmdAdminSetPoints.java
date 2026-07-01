@@ -42,18 +42,18 @@ public class CmdAdminSetPoints extends Subcommand {
 			ec = parseClass(args[1]);
 		}
 		if (p == null) {
-			Util.msg(s, "<red>That player isn't online!");
+			Util.msgRaw(s, "<red>That player isn't online!");
 			return;
 		}
 		PlayerData pdata = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pdata == null) {
-			Util.msg(s, "<red>That player has no data!");
+			Util.msgRaw(s, "<red>That player has no data!");
 			return;
 		}
 		int amount = Integer.parseInt(args[0]);
 		pdata.setPoints(ec, amount);
 		String category = ec == null ? "Global" : ec.getDisplay();
-		Util.msg(s, "<green>Set " + category + " points to " + amount + " for " + p.getName());
+		Util.msgRaw(s, "<green>Set " + category + " points to " + amount + " for " + p.getName());
 	}
 
 	private boolean isClassArg(String arg) {

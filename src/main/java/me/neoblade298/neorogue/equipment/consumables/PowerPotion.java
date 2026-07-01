@@ -41,7 +41,7 @@ public class PowerPotion extends Consumable {
 			if (eq instanceof Power power) {
 				Player p2 = data.getPlayer();
 				Sounds.success.play(p2, p2);
-				Util.msg(p2, Component.empty().append(eq.getHoverable())
+				Util.msgRaw(p2, Component.empty().append(eq.getHoverable())
 						.append(Component.text(" was duplicated by Power Potion", NamedTextColor.GRAY)));
 				power.onPowerActivated(data, ev.getSlot(), ev.getEquipSlot());
 			}

@@ -46,17 +46,17 @@ public class CmdAdminNode extends Subcommand {
 		Session sess = SessionManager.getSession(p);
 		
 		if (sess == null) {
-			Util.msg(s, p.getName() + " is not in a session!");
+			Util.msgRaw(s, p.getName() + " is not in a session!");
 			return;
 		}
 		
 		if (sess.getRegion() == null) {
-			Util.msg(s, "No region has been generated yet!");
+			Util.msgRaw(s, "No region has been generated yet!");
 			return;
 		}
 		
 		if (args.length < laneArg + 1) {
-			Util.msg(s, "Usage: /nradmin setnode [player] <row> <lane>");
+			Util.msgRaw(s, "Usage: /nradmin setnode [player] <row> <lane>");
 			return;
 		}
 		
@@ -65,29 +65,29 @@ public class CmdAdminNode extends Subcommand {
 			row = Integer.parseInt(args[rowArg]);
 			lane = Integer.parseInt(args[laneArg]);
 		} catch (NumberFormatException e) {
-			Util.msg(s, "Row and lane must be numbers!");
+			Util.msgRaw(s, "Row and lane must be numbers!");
 			return;
 		}
 		
 		Node[][] nodes = sess.getRegion().getNodes();
 		
 		if (row < 0 || row >= nodes.length) {
-			Util.msg(s, "Invalid row! Must be between 0 and " + (nodes.length - 1));
+			Util.msgRaw(s, "Invalid row! Must be between 0 and " + (nodes.length - 1));
 			return;
 		}
 		
 		if (lane < 0 || lane >= nodes[row].length) {
-			Util.msg(s, "Invalid lane! Must be between 0 and " + (nodes[row].length - 1));
+			Util.msgRaw(s, "Invalid lane! Must be between 0 and " + (nodes[row].length - 1));
 			return;
 		}
 		
 		Node node = nodes[row][lane];
 		if (node == null) {
-			Util.msg(s, "No node exists at [" + row + "][" + lane + "]!");
+			Util.msgRaw(s, "No node exists at [" + row + "][" + lane + "]!");
 			return;
 		}
 		
-		Util.msg(s, "Setting node...");
+		Util.msgRaw(s, "Setting node...");
 		sess.getInstance().cleanup(false);
 		String name = p.getName();
 
@@ -96,7 +96,7 @@ public class CmdAdminNode extends Subcommand {
 				sess.setNode(node);
 				sess.getInstance().setup();
 				sess.getRegion().update(node, (NodeSelectInstance) sess.getInstance());
-				Util.msg(s, "Set " + name + "'s node to [" + row + "][" + lane + "]");
+				Util.msgRaw(s, "Set " + name + "'s node to [" + row + "][" + lane + "]");
 
 				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager")) {
 					sess.save(con);

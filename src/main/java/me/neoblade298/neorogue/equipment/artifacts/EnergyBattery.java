@@ -82,7 +82,7 @@ public class EnergyBattery extends Artifact {
 			if (ev.hasTag(id)) {
 				Sounds.success.play(p, p);
 				part.play(p, p);
-				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				if (++count >= 5) {
 					return TriggerResult.remove();
 				}

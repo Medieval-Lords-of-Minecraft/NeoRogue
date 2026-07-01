@@ -98,6 +98,6 @@ public class CmdAdminDamage extends Subcommand {
 
 	private void dealDamage(CommandSender s, DamageMeta dm, int damage, DamageType type, LivingEntity trg) {
 		dm.dealDamage(trg);
-		Util.msg(s, "Dealt " + damage + " " + type + " damage");
+		Util.msgRaw(s, "Dealt " + damage + " " + type + " damage");
 	}
 }
