@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -72,7 +71,7 @@ public class BitterCold extends Equipment implements Power {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
 			PreApplyStatusEvent ev2 = (PreApplyStatusEvent) in2;
 			if (!ev2.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			ev2.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
+			ev2.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.statusBuff(id + slot, this)));
 			return TriggerResult.keep();
 		});
 

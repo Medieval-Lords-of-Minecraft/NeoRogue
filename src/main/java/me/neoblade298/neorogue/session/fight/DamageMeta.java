@@ -438,10 +438,26 @@ public class DamageMeta {
 				* highest effective change to lowest
 				*/
 				if (sliceDamage > 0) {
+					// Damage after only the increasing buffs — the amount debuffs actually mitigated down from.
+					double preMitigation = base, incUp = 0, multUp = 1;
+					for (Buff b : buffs) {
+						incUp += b.getIncrease();
+						multUp += b.getMultiplier();
+					}
+					preMitigation = (preMitigation * multUp) + incUp;
+
+					// Credit mitigation in priority order, capped so the total never exceeds the damage
+					// actually prevented (preMitigation - sliceDamage). Otherwise flat/percent reducers on
+					// over-mitigated hits would each claim their full theoretical value.
+					debuffs.sort(comp);
+					double mitigationPool = preMitigation - sliceDamage;
 					for (Buff b : debuffs) {
+						if (mitigationPool <= 0) break;
 						if (b.getStatTracker() == null) continue;
 						if (!(b.getApplier() instanceof PlayerFightData)) continue;
-						((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(base));
+						double change = b.getEffectiveChange(base);
+						((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(mitigationPool, change));
+						mitigationPool -= change;
 					}
 
 					double temp = sliceDamage - base;

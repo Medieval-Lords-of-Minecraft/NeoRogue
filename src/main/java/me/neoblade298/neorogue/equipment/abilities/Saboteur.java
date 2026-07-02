@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -64,7 +63,7 @@ public class Saboteur extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
-			ev.getStacksBuffList().add(Buff.multiplier(data, injuryBuff, BuffStatTracker.ignored(this)));
+			ev.getStacksBuffList().add(Buff.multiplier(data, injuryBuff, BuffStatTracker.statusBuff(id + slot, this)));
 			return TriggerResult.keep();
 		});
 	}

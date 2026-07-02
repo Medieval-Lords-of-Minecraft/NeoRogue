@@ -34,7 +34,7 @@ public class HuntersCompass extends Artifact {
 		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.getStatusClass() == StatusClass.NEGATIVE) {
-				ev.getStacksBuffList().add(new Buff(pdata, 0, data.getStatus(StatusType.FOCUS).getStacks() * 0.2, BuffStatTracker.ignored(this)));
+				ev.getStacksBuffList().add(new Buff(pdata, 0, data.getStatus(StatusType.FOCUS).getStacks() * 0.2, BuffStatTracker.statusBuff(ID, this)));
 			}
 			return TriggerResult.keep();
 		});

@@ -80,7 +80,7 @@ public class Brand extends Equipment {
 			if (!ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!ev.getTarget().getUniqueId().equals(am.getEntity().getUniqueId())) return TriggerResult.keep();
-			ev.getStacksBuffList().add(new Buff(data, 0, 1, BuffStatTracker.ignored(this)));
+			ev.getStacksBuffList().add(new Buff(data, 0, 1, BuffStatTracker.statusBuff(id + slot, this)));
 			return TriggerResult.keep();
 		});
 

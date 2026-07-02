@@ -33,7 +33,7 @@ public class ForgemastersMark extends Artifact {
 		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.remove();
-			ev.getAmountBuff().add(Buff.multiplier(data, buff, BuffStatTracker.ignored(this)));
+			ev.getAmountBuff().add(Buff.multiplier(data, buff, BuffStatTracker.shield(id, this)));
 			ev.getDurationBuff().add(Buff.multiplier(data, buff, BuffStatTracker.ignored(this)));
 			return TriggerResult.remove();
 		});

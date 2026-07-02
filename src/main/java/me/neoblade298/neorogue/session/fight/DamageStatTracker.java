@@ -23,7 +23,7 @@ public class DamageStatTracker extends StatTracker {
     }
 
     public static DamageStatTracker of(String id, Equipment eq) {
-        return new DamageStatTracker(id, eq, "Damage dealt");
+        return new DamageStatTracker(id, eq, "Damage Dealt");
     }
 
     public static DamageStatTracker thorns() {

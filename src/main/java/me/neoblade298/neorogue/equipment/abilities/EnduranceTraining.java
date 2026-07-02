@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -37,7 +36,7 @@ public class EnduranceTraining extends Equipment {
 		data.addPermanentShield(p.getUniqueId(), shields, this);
 		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
-			ev.getAmountBuff().add(Buff.increase(data, dur, BuffStatTracker.ignored(this)));
+			ev.getDurationBuff().add(Buff.increase(data, dur, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}

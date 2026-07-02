@@ -94,7 +94,7 @@ public class MirrorSickle extends Equipment {
 				public void run() {
 					LivingEntity ent = TargetHelper.getNearest(p, tp);
 					if (ent == null) return;
-					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq, "Damage dealt dashing"));
+					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq, "Damage Dealt Dashing"));
 					FightInstance.dealDamage(dm, ent);
 				}
 			}.runTaskLater(NeoRogue.inst(), 4L));

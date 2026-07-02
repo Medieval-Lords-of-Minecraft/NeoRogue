@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -21,7 +20,7 @@ public class MinorShieldingRelic extends Equipment {
 	public MinorShieldingRelic(boolean isUpgraded) {
 		super(ID, "Minor Shielding Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		shields = isUpgraded ? 5 : 3;
+		shields = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {
@@ -33,7 +32,7 @@ public class MinorShieldingRelic extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			ev.getAmountBuff().add(Buff.increase(data, shields, BuffStatTracker.ignored(this)));
+			ev.getAmountBuff().add(Buff.increase(data, shields, BuffStatTracker.shield(id + slot, this)));
 			return TriggerResult.keep();
 		});
 	}

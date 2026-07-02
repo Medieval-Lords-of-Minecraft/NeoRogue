@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -40,7 +39,7 @@ public class BasicInfusionMastery extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.CONCUSSED)) {
-				ev.getStacksBuffList().add(Buff.increase(data, conc, BuffStatTracker.ignored(this)));
+				ev.getStacksBuffList().add(Buff.increase(data, conc, BuffStatTracker.statusBuff(id + slot, this)));
 			}
 			else if (ev.isStatus(StatusType.SANCTIFIED)) {
 				meta.setBool(true);

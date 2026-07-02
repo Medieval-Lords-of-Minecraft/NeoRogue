@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -35,7 +34,7 @@ public class MajorShieldingRelic extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			ev.getAmountBuff().add(Buff.increase(data, data.getMaxHealth() * mult, BuffStatTracker.ignored(this)));
+			ev.getAmountBuff().add(Buff.increase(data, data.getMaxHealth() * mult, BuffStatTracker.shield(id + slot, this)));
 			return TriggerResult.keep();
 		});
 	}

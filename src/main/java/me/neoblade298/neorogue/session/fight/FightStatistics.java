@@ -362,6 +362,13 @@ public class FightStatistics {
 				any = true;
 			}
 		}
+		// Buffer contributions are credited to the buffing equipment; include them in the headline total
+		// so it still reflects the full amount applied (base + buffs).
+		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
+			StatTracker stat = ent.getKey();
+			if (stat.isIgnored() || stat.getCategory() != StatCategory.STATUS) continue;
+			score += stat.isInverted() ? -ent.getValue() : ent.getValue();
+		}
 		Component statusBuffs = buffSection(StatCategory.STATUS);
 		if (statusBuffs != null) {
 			hover = hover.appendNewline().append(statusBuffs);

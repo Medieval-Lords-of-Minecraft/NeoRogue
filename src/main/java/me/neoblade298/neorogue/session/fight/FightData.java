@@ -479,9 +479,20 @@ public class FightData {
 		if (this instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
+		// Record the base shield amount (pre-buff) against its own source, then attribute each amount
+		// buff to the equipment that provided it. Buff application on shields is linear, so each buff's
+		// effective change on the base sums exactly to the total added.
+		double baseTotal = shield.getTotal();
 		shield.applyBuffs(ev.getAmountBuff(), ev.getDurationBuff());
 		if (applierData != null) {
-			applierData.getStats().addShieldsApplied(sourceKey, sourceDisplay, shield.getTotal());
+			applierData.getStats().addShieldsApplied(sourceKey, sourceDisplay, baseTotal);
+			for (Buff b : ev.getAmountBuff().getBuffs()) {
+				if (b.getStatTracker() == null) continue;
+				if (!(b.getApplier() instanceof PlayerFightData)) continue;
+				double change = b.getEffectiveChange(baseTotal);
+				if (change == 0) continue;
+				((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), change);
+			}
 		}
 		shields.addShield(shield);
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
@@ -613,7 +624,8 @@ public class FightData {
 			try {
 				StatusType type = StatusType.valueOf(id);
 				// Only count genuine applications; negative stacks (e.g. consuming Evade) aren't applied.
-				if (!type.isHidden() && finalStacks > 0) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, finalStacks);
+				// The source is credited only the base stacks; buffs are credited to their own equipment above.
+				if (!type.isHidden() && finalStacks > 0 && stacks > 0) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, stacks);
 			}
 			catch (IllegalArgumentException ex) {
 				// Not a standard status, ignore

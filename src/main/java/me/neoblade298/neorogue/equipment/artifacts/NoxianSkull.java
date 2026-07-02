@@ -48,7 +48,7 @@ public class NoxianSkull extends Artifact {
 					int extra = total / 6;
 					total = total % 6;
 					map.put(ev.getStatusId(), total);
-					ev.getStacksBuffList().add(Buff.increase(pdata, extra, BuffStatTracker.ignored(eq)));
+					ev.getStacksBuffList().add(Buff.increase(pdata, extra, BuffStatTracker.statusBuff(id, eq)));
 				}
 				return TriggerResult.keep();
 			};

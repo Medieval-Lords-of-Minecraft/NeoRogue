@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.weapons.ColdArrow;
 import me.neoblade298.neorogue.equipment.weapons.LitArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
@@ -52,7 +51,7 @@ public class BasicElementMastery extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			ev.getStacksBuffList().add(new Buff(data, frost, 0, BuffStatTracker.ignored(this)));
+			ev.getStacksBuffList().add(new Buff(data, frost, 0, BuffStatTracker.statusBuff(id + slot, this)));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
