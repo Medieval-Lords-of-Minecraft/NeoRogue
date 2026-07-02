@@ -439,7 +439,6 @@ public abstract class FightInstance extends Instance {
 		Player p = e.getPlayer();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		triggerSlot(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK, null);
 		if (!(e.getAttacked() instanceof LivingEntity))
 			return;
@@ -456,7 +455,6 @@ public abstract class FightInstance extends Instance {
 		
 		if (!data.canBasicAttack())
 			return;
-		triggerSlot(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getAttacked()));
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getAttacked()));
 	}
 
@@ -597,7 +595,6 @@ public abstract class FightInstance extends Instance {
 			return;
 		if (!((LivingEntity) e.getRightClicked()).isValid())
 			return;
-		triggerSlot(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 
@@ -733,7 +730,6 @@ public abstract class FightInstance extends Instance {
 		// Trigger case 2. Right click offhand when mainhand has nothing in it
 		if ((p.getInventory().getItemInMainHand() != null && e.getHand() == EquipmentSlot.HAND)
 				|| p.getInventory().getItemInMainHand() == null && e.getHand() == EquipmentSlot.OFF_HAND) {
-			triggerSlot(p, Trigger.RIGHT_CLICK, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
 
 			double y = p.getEyeLocation().getDirection().normalize().getY();
@@ -785,12 +781,9 @@ public abstract class FightInstance extends Instance {
 			return;
 		}
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
-		triggerSlot(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
-		triggerSlot(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			trigger(e.getPlayer(), Trigger.LEFT_CLICK_BLOCK, e);
-			triggerSlot(e.getPlayer(), Trigger.LEFT_CLICK_BLOCK, e);
 		}
 	}
 	
@@ -838,7 +831,8 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	// Method that's called by all listeners and is directly connected to events
-	// Returns true if the event should be cancelled
+	// Runs both the general actions and, if the held slot has slot-based actions
+	// bound to this trigger, those too. Returns true if the event should be cancelled
 	public static boolean trigger(Player p, Trigger trigger, Object obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null)
@@ -848,21 +842,12 @@ public abstract class FightInstance extends Instance {
 		if (data.hasStatus(StatusType.STOPPED))
 			return true;
 		
-		return data.runActions(data, trigger, obj);
-	}
-	
-	// Slot-based variant: runs only the actions tied to the held slot
-	// Returns true if the event should be cancelled
-	public static boolean triggerSlot(Player p, Trigger trigger, Object obj) {
-		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null)
-			return false;
-		if (data.isDead())
-			return false;
-		if (data.hasStatus(StatusType.STOPPED))
-			return true;
-		
-		return data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+		boolean cancel = data.runActions(data, trigger, obj);
+		int slot = p.getInventory().getHeldItemSlot();
+		if (trigger.isSlotBased()) {
+			cancel = data.runSlotBasedActions(data, trigger, slot, obj) || cancel;
+		}
+		return cancel;
 	}
 
 	public static FightData getFightData(Entity ent) {
