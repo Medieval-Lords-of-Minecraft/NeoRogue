@@ -33,7 +33,7 @@ public class LightningCloak extends Equipment {
 				EquipmentType.ARMOR);
 		base = isUpgraded ? 12 : 8;
 		threshold = isUpgraded ? 60 : 90;
-		def = 4;
+		def = 2;
 	}
 	
 	public static Equipment get() {

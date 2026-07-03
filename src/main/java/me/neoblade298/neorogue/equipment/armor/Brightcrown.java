@@ -26,7 +26,7 @@ public class Brightcrown extends Equipment {
 	public Brightcrown(boolean isUpgraded) {
 		super(ID, "Brightcrown", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		def = isUpgraded ? 6 : 4;
+		def = isUpgraded ? 3 : 2;
 		sanct = isUpgraded ? 5 : 3;
 	}
 	

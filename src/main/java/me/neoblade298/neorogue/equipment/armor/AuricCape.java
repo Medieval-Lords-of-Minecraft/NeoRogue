@@ -21,7 +21,7 @@ public class AuricCape extends Equipment {
 
 	public AuricCape(boolean isUpgraded) {
 		super(ID, "Auric Cape", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ARMOR);
-		reduc = isUpgraded ? 6 : 4;
+		reduc = isUpgraded ? 4 : 3;
 	}
 
 	public static Equipment get() {

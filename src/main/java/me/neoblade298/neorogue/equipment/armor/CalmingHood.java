@@ -25,7 +25,7 @@ public class CalmingHood extends Equipment {
 		super(ID, "Calming Hood", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
 		focus = isUpgraded ? 2 : 1;
-		def = isUpgraded ? 2 : 1;
+		def = 1;
 	}
 	
 	public static Equipment get() {
@@ -41,6 +41,6 @@ public class CalmingHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.FOCUS.tag(this, focus, true)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(def) + ".");
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + ".");
 	}
 }

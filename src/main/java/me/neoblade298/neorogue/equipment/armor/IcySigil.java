@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -27,7 +26,7 @@ public class IcySigil extends Equipment {
 	public IcySigil(boolean isUpgraded) {
 		super(ID, "Icy Sigil", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-				def = isUpgraded ? 5 : 3;
+				def = isUpgraded ? 2 : 1;
 		thres = 12;
 	}
 	

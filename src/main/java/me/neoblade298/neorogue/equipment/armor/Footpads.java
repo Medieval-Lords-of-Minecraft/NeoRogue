@@ -24,7 +24,7 @@ public class Footpads extends Equipment {
 		super(ID, "Footpads", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF },
 				EquipmentType.ARMOR);
 		stamina = isUpgraded ? 15 : 10;
-		def = isUpgraded ? 2 : 1;
+		def = 1;
 	}
 	
 	public static Equipment get() {
@@ -42,7 +42,7 @@ public class Footpads extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(def)
+		item = createItem(Material.LEATHER_BOOTS, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def)
 				+ ". Receiving damage grants you " + DescUtil.yellow(stamina) + " stamina.");
 	}
 }

@@ -25,7 +25,7 @@ public class ColossusArmor extends Equipment {
 	public ColossusArmor(boolean isUpgraded) {
 		super(ID, "Colossus Armor", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		threshold = isUpgraded ? 15 : 20;
+		threshold = isUpgraded ? 20 : 30;
 	}
 
 	public static Equipment get() {

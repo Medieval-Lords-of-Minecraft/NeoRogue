@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -27,7 +26,7 @@ public class EngineersCap extends Equipment {
 				EquipmentType.ARMOR);
 		damage = isUpgraded ? 30 : 20;
 		damageActual = damage * 0.01;
-		dec = isUpgraded ? 4 : 3;
+		dec = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

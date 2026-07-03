@@ -25,7 +25,7 @@ public class ElbowBrace extends Equipment {
 	public ElbowBrace(boolean isUpgraded) {
 		super(ID, "Elbow Brace", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 5 : 3;
+		damageReduction = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

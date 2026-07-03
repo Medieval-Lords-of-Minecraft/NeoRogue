@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -24,7 +23,7 @@ public class NullifyingCloak extends Equipment {
 	public NullifyingCloak(boolean isUpgraded) {
 		super(ID, "Nullifying Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		def = isUpgraded ? 3 : 2;
+		def = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

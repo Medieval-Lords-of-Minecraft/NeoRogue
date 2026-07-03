@@ -26,7 +26,7 @@ public class ArcheryGlove extends Equipment {
 		super(ID, "Archery Glove", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 			EquipmentType.ARMOR);
 		thres = isUpgraded ? 4 : 6;
-		dec = isUpgraded ? 5 : 3;
+		dec = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

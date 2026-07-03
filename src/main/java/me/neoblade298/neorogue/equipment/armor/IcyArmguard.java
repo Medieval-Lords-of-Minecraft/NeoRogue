@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -9,6 +7,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -28,7 +27,7 @@ public class IcyArmguard extends Equipment {
 	public IcyArmguard(boolean isUpgraded) {
 		super(ID, "Icy Armguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		damageReduction = 4;
+		damageReduction = 2;
 		shields = isUpgraded ? 3 : 2;
 		thres = isUpgraded ? 40 : 60;
 	}

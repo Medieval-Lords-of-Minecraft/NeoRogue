@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -33,7 +32,7 @@ public class SaviorsHelm extends Equipment {
 	public SaviorsHelm(boolean isUpgraded) {
 		super(ID, "Savior's Helm", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR, EquipmentProperties.none().add(PropertyType.RANGE, tp.range));
-		def = isUpgraded ? 8 : 6;
+		def = isUpgraded ? 5 : 4;
 		sanct = isUpgraded ? 5 : 3;
 	}
 	

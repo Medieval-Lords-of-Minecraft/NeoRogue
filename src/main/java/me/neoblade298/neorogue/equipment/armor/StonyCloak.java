@@ -21,12 +21,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class StonyCloak extends Equipment {
 	private static final String ID = "StonyCloak";
-	private int baseReduc = 2, concReduc;
+	private int baseReduc = 1, concReduc;
 	
 	public StonyCloak(boolean isUpgraded) {
 		super(ID, "Stony Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-				concReduc = isUpgraded ? 5 : 3;
+				concReduc = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

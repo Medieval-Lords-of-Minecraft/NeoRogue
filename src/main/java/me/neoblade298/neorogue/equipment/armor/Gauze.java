@@ -29,7 +29,7 @@ public class Gauze extends Equipment {
 				EquipmentType.ARMOR);
 		pct = isUpgraded ? 60 : 30;
 		max = isUpgraded ? 8 : 5;
-		def = isUpgraded ? 3 : 2;
+		def = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

@@ -24,7 +24,7 @@ public class LeatherCowl extends Equipment {
 		super(ID, "Leather Cowl", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
 		evade = isUpgraded ? 3 : 2;
-		def = isUpgraded ? 2 : 1;
+		def = 1;
 	}
 	
 	public static Equipment get() {
@@ -40,6 +40,6 @@ public class LeatherCowl extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(def) + ".");
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + ".");
 	}
 }
