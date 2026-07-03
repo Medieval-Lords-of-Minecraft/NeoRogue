@@ -83,7 +83,6 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			DamageMeta meta = new DamageMeta(fd);
 			boolean increaseDamageNotoriety = NotorietySetting.INCREASE_DAMAGE.isActive(fd.getInstance().getSession());
 			double mult = 1 + ((level - 1) * 0.2);
-			mult += (((int) level - 1) / 15);
 			if (increaseDamageNotoriety) {
 				mult *= NotorietySetting.INCREASE_DAMAGE_MULTIPLIER;
 			}
