@@ -82,6 +82,9 @@ public class MythicLoader implements Listener {
 		case "nrstatus":
 			mechanic = new MechanicStatus(cfg);
 			break;
+		case "nrclearstatus":
+			mechanic = new MechanicClearStatus(cfg);
+			break;
 		case "nrmodifykb":
 			mechanic = new MechanicModifyKnockback(cfg);
 			break;
