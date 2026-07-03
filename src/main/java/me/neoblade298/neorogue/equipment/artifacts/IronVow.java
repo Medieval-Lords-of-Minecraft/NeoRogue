@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -17,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IronVow extends Artifact {
 	private static final String ID = "IronVow";
 	private int shields = 1;
+	private int seconds = 5;
 
 	public IronVow() {
 		super(ID, "Iron Vow", Rarity.RARE, EquipmentClass.CLASSLESS);
@@ -42,7 +44,7 @@ public class IronVow extends Artifact {
 			Player p = data.getPlayer();
 			if (!p.isSprinting()) {
 				ticksNotSprinting[0]++;
-				if (ticksNotSprinting[0] >= 2) {
+				if (ticksNotSprinting[0] >= seconds) {
 					ticksNotSprinting[0] = 0;
 					data.addPermanentShield(p.getUniqueId(), shields, this);
 				}
@@ -64,6 +66,6 @@ public class IronVow extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_NUGGET, "Grants " + GlossaryTag.SHIELDS.tag(this, shields, false)
-				+ " for every 2 seconds you don't sprint.");
+				+ " for every " + DescUtil.white(seconds) + " seconds you don't sprint.");
 	}
 }

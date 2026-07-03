@@ -21,7 +21,7 @@ public class Buckler extends Equipment {
 		super(ID, "Buckler", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		threshold = isUpgraded ? 4 : 5;
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 5 : 3;
 	}
 
 	public static Equipment get() {

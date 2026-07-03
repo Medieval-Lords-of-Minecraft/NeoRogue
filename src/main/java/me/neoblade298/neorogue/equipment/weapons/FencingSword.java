@@ -29,7 +29,7 @@ public class FencingSword extends Equipment {
 						.ofWeapon(isUpgraded ? 40 : 30, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 3 : 2;
 	}
 	
 	@Override
