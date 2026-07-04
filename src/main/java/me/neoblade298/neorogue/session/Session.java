@@ -59,6 +59,7 @@ import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
@@ -814,8 +815,22 @@ public class Session {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
 			if (pdata == null) continue;
 			EquipmentClass ec = entry.getValue().getPlayerClass();
-			pdata.addExp(ec, finalXp);
+			int playerXp = (int) Math.round(finalXp * entry.getValue().getRunExpBoostMultiplier());
+			pdata.addExp(ec, playerXp);
 			pdata.saveAchievementsAsync();
+		}
+	}
+
+	// Captures and consumes each party member's exp boosts for this run. TIME boosts
+	// contribute while active; RUNS boosts are decremented by one and applied to this run.
+	// Server-wide global boosts are added additively on top of each member's personal boosts.
+	public void applyExpBoosts() {
+		if (sessionType == SessionType.TUTORIAL) return;
+		double globalBonus = GlobalBoostManager.getGlobalBoostBonus();
+		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
+			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
+			if (pdata == null) continue;
+			entry.getValue().setRunExpBoostMultiplier(pdata.consumeRunExpBoosts() + globalBonus);
 		}
 	}
 	

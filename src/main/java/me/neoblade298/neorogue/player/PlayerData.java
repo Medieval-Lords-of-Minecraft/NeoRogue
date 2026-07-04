@@ -33,6 +33,9 @@ import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.boost.BoostDurationType;
+import me.neoblade298.neorogue.player.boost.ExpBoost;
+import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -70,6 +73,7 @@ public class PlayerData {
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
 	private HashSet<String> unlockNodes = new HashSet<String>();
 	private HashSet<String> flags = new HashSet<String>();
+	private ArrayList<ExpBoost> expBoosts = new ArrayList<ExpBoost>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private DropTableSet<Artifact> artifactDroptable;
 	private DropTableSet<Consumable> consumableDroptable;
@@ -149,6 +153,22 @@ public class PlayerData {
 			try (ResultSet flagsRs = flagsStmt.executeQuery()) {
 				while (flagsRs.next()) {
 					flags.add(flagsRs.getString("flag"));
+				}
+			}
+
+			// Load exp boosts from separate table
+			try (PreparedStatement boostStmt = con.prepareStatement("SELECT * FROM neorogue_expboosts WHERE uuid = ?;")) {
+				boostStmt.setString(1, uuidStr);
+				try (ResultSet boostRs = boostStmt.executeQuery()) {
+					while (boostRs.next()) {
+						try {
+							ExpBoostType type = ExpBoostType.valueOf(boostRs.getString("type"));
+							ExpBoost boost = new ExpBoost(type, boostRs.getLong("remaining"));
+							if (!boost.isExpired()) expBoosts.add(boost);
+						} catch (IllegalArgumentException ex) {
+							// Unknown boost type, skip
+						}
+					}
 				}
 			}
 
@@ -315,6 +335,67 @@ public class PlayerData {
 		saveClassProgressionAsync();
 	}
 
+	// ---- Exp boosts ----
+
+	public List<ExpBoost> getExpBoosts() {
+		return expBoosts;
+	}
+
+	// Grants a new boost. RUNS types stack their run count if one of the same type
+	// already exists; TIME types keep whichever expiry is later.
+	public void addExpBoost(ExpBoostType type, long durationInput) {
+		ExpBoost existing = null;
+		for (ExpBoost b : expBoosts) {
+			if (b.getType() == type) {
+				existing = b;
+				break;
+			}
+		}
+		if (existing == null) {
+			expBoosts.add(ExpBoost.create(type, durationInput));
+		}
+		else if (type.getDurationType() == BoostDurationType.RUNS) {
+			existing.setRemaining(existing.getRemaining() + durationInput);
+		}
+		else {
+			existing.setRemaining(Math.max(existing.getRemaining(), System.currentTimeMillis() + durationInput * 1000L));
+		}
+		saveExpBoostsAsync();
+	}
+
+	// Removes any boosts that are no longer active.
+	private void pruneExpBoosts() {
+		expBoosts.removeIf(ExpBoost::isExpired);
+	}
+
+	// Returns the combined exp multiplier from all currently-active boosts, e.g. 1.30
+	// for a single +30% boost. Additive stacking across boosts.
+	public double getExpBoostMultiplier() {
+		pruneExpBoosts();
+		double bonus = 0.0;
+		for (ExpBoost b : expBoosts) {
+			bonus += b.getMultiplier();
+		}
+		return 1.0 + bonus;
+	}
+
+	// Called when a run starts. Captures the current combined multiplier, decrements
+	// RUNS boosts by one, prunes expired boosts, and returns the captured multiplier
+	// to lock in for that run.
+	public double consumeRunExpBoosts() {
+		double multiplier = getExpBoostMultiplier();
+		boolean changed = false;
+		for (ExpBoost b : expBoosts) {
+			if (b.getType().getDurationType() == BoostDurationType.RUNS) {
+				b.tickRun();
+				changed = true;
+			}
+		}
+		pruneExpBoosts();
+		if (changed) saveExpBoostsAsync();
+		return multiplier;
+	}
+
 	private void addExpInternal(EquipmentClass ec, int amount) {
 		int currentExp = getExp(ec) + amount;
 		int currentLevel = getLevel(ec);
@@ -434,6 +515,37 @@ public class PlayerData {
 					}
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to save class progression for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private void saveExpBoostsAsync() {
+		final String uuidStr = uuid.toString();
+		final ArrayList<ExpBoost> snapshot = new ArrayList<>(expBoosts);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_expboosts WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+					if (snapshot.isEmpty()) return;
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_expboosts");
+					for (ExpBoost boost : snapshot) {
+						sql.addValue("uuid", uuidStr)
+								.addValue("type", boost.getType().name())
+								.addValue("remaining", boost.getRemaining())
+								.addRow();
+					}
+					try (PreparedStatement ps = sql.build(con)) {
+						ps.executeBatch();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save exp boosts for " + uuidStr);
 					ex.printStackTrace();
 				}
 			}
@@ -569,6 +681,22 @@ public class PlayerData {
 					.addRow();
 		}
 		stmts.add(classSql.build(con));
+
+		// Save exp boosts
+		PreparedStatement clearBoosts = con.prepareStatement("DELETE FROM neorogue_expboosts WHERE uuid = ?;");
+		clearBoosts.setString(1, uuid.toString());
+		stmts.add(clearBoosts);
+
+		if (!expBoosts.isEmpty()) {
+			SQLInsertBuilder boostSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_expboosts");
+			for (ExpBoost boost : expBoosts) {
+				boostSql.addValue("uuid", uuid.toString())
+						.addValue("type", boost.getType().name())
+						.addValue("remaining", boost.getRemaining())
+						.addRow();
+			}
+			stmts.add(boostSql.build(con));
+		}
 
 		PreparedStatement clearAch = con.prepareStatement("DELETE FROM neorogue_achievements WHERE uuid = ?;");
 		clearAch.setString(1, uuid.toString());

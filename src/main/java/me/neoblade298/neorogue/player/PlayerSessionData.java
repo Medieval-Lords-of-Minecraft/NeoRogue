@@ -78,6 +78,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
 
+	// Combined exp boost multiplier captured for the current run (1.0 = no boost).
+	// Computed and consumed at run start, then persisted so it survives relogs/restarts.
+	private double runExpBoostMultiplier = 1.0;
+
 	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
@@ -109,6 +113,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.armorSlots = rs.getInt("armorSlots");
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
+		this.runExpBoostMultiplier = rs.getDouble("runExpBoostMultiplier");
 		sessionStats.load(rs);
 		initialize();
 	}
@@ -402,6 +407,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public PlayerData getData() {
 		return data;
+	}
+
+	public double getRunExpBoostMultiplier() {
+		return runExpBoostMultiplier;
+	}
+
+	public void setRunExpBoostMultiplier(double runExpBoostMultiplier) {
+		this.runExpBoostMultiplier = runExpBoostMultiplier;
 	}
 
 	public SessionStatistics getSessionStats() {
@@ -1091,7 +1104,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("statFightsCompleted", sessionStats.getFightsCompleted())
 					.addValue("statDeaths", sessionStats.getDeaths())
 					.addValue("statStatusesApplied", sessionStats.getStatusesApplied())
-					.addValue("statDmgHealthRegionStart", sessionStats.getDamageTakenHealthAtRegionStart());
+					.addValue("statDmgHealthRegionStart", sessionStats.getDamageTakenHealthAtRegionStart())
+					.addValue("runExpBoostMultiplier", runExpBoostMultiplier);
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();
 			ps.close();

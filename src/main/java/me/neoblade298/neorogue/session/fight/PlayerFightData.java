@@ -62,6 +62,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CreateRiftEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -654,6 +655,9 @@ public class PlayerFightData extends FightData {
 				}
 				if (tr.cancelEvent()) {
 					cancel = true;
+					if (inputs instanceof ReceiveDamageEvent) {
+						((ReceiveDamageEvent) inputs).setNullifiedSourceId(inst.getId());
+					}
 					break;
 				}
 				if (tr.breakLoop()) {

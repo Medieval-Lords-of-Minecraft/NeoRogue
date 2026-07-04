@@ -233,6 +233,7 @@ public class NewLobbyInstance extends LobbyInstance {
 	public void startGame() {
 		s.setBusy(true);
 		s.addPlayers(players);
+		s.applyExpBoosts();
 		s.broadcast("Generating your game...");
         s.generateRegion();
 		s.setNode(s.getRegion().getNodes()[0][2]);

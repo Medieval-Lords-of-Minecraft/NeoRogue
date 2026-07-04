@@ -24,6 +24,7 @@ public class FightStatistics {
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
 	private HashMap<String, Double> shieldsByEquip = new HashMap<String, Double>();
 	private HashMap<String, Double> healingByEquip = new HashMap<String, Double>();
+	private HashMap<String, Double> nullifiedByEquip = new HashMap<String, Double>();
 	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
 	private int deaths, revives;
@@ -38,7 +39,21 @@ public class FightStatistics {
 	}
 
 	public void addDamageNullified(double damageNullified) {
-		this.damageNullified += damageNullified;
+		addDamageNullified((Equipment) null, damageNullified);
+	}
+
+	// Records nullified damage attributed to the equipment that cancelled it (null = misc).
+	public void addDamageNullified(Equipment source, double amount) {
+		this.damageNullified += amount;
+		String key;
+		if (source == null) {
+			key = UNATTRIBUTED;
+		}
+		else {
+			key = source.serialize();
+			sourceNames.putIfAbsent(key, source.getDisplay());
+		}
+		nullifiedByEquip.merge(key, amount, Double::sum);
 	}
 
 	public void addDamageBarriered(double damageBarriered) {
@@ -324,7 +339,17 @@ public class FightStatistics {
 			}
 		}
 		if (damageBarriered != 0) { hover = hover.appendNewline().append(getStatPiece("Damage Barriered", damageBarriered)); hasDetail = true; }
-		if (damageNullified != 0) { hover = hover.appendNewline().append(getStatPiece("Damage Nullified", damageNullified)); hasDetail = true; }
+		if (damageNullified != 0) {
+			if (nullifiedByEquip.isEmpty()) {
+				hover = hover.appendNewline().append(getStatPiece("Damage Nullified", damageNullified));
+			}
+			else {
+				for (Entry<String, Double> ent : nullifiedByEquip.entrySet()) {
+					hover = hover.appendNewline().append(getSourceAction(ent.getKey(), "Damage Nullified", ent.getValue()));
+				}
+			}
+			hasDetail = true;
+		}
 		if (evadeMitigated != 0) { hover = hover.appendNewline().append(getStatPiece("Evade Mitigated", evadeMitigated)); hasDetail = true; }
 
 		Component mitigation = buffSection(StatCategory.DAMAGE_TAKEN);

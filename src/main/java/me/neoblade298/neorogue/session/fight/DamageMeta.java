@@ -532,7 +532,9 @@ public class DamageMeta {
 		// General damage nullification
 		if (cancelDamage && recipient instanceof PlayerFightData) {
 			PlayerFightData pl = (PlayerFightData) recipient;
-			pl.getStats().addDamageNullified(damage + ignoreShieldsDamage);
+			Equipment nullifiedSource = rdev.getNullifiedSourceId() == null ? null
+					: Equipment.get(rdev.getNullifiedSourceId(), false);
+			pl.getStats().addDamageNullified(nullifiedSource, damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
 			rawDamage = 0;

@@ -7,6 +7,7 @@ public class ReceiveDamageEvent {
 	private FightData damager;
 	private DamageMeta meta;
 	private boolean isNullified = false;
+	private String nullifiedSourceId;
 	public FightData getDamager() {
 		return damager;
 	}
@@ -26,5 +27,11 @@ public class ReceiveDamageEvent {
 	}
 	public void setNullified(boolean isNullified) {
 		this.isNullified = isNullified;
+	}
+	public String getNullifiedSourceId() {
+		return nullifiedSourceId;
+	}
+	public void setNullifiedSourceId(String nullifiedSourceId) {
+		this.nullifiedSourceId = nullifiedSourceId;
 	}
 }
