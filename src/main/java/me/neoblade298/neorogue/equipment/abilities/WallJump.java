@@ -79,6 +79,7 @@ public class WallJump extends Equipment {
 					Vector dashVec = p.getLocation().getDirection().clone();
 					dashVec.setY(0);
 					dashVec.normalize();
+					dashVec.multiply(1.5);
 					dashVec.setY(0.3);
 					p.setVelocity(dashVec);
 					

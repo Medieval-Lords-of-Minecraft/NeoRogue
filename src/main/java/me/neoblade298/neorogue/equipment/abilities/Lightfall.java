@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -72,7 +71,7 @@ public class Lightfall extends Equipment {
 				public void run() {
 					p.setVelocity(new Vector(0, -2, 0));
 				}
-			}.runTaskLater(NeoRogue.inst(), 7));
+			}.runTaskLater(NeoRogue.inst(), 10));
 
 			data.addTask(new BukkitRunnable() {
 				int count = 0;
@@ -90,7 +89,7 @@ public class Lightfall extends Equipment {
 						cancel();
 					}
 				}
-			}.runTaskTimer(NeoRogue.inst(), 8, 1));
+			}.runTaskTimer(NeoRogue.inst(), 10, 1));
 			return TriggerResult.keep();
 		}));
 	}

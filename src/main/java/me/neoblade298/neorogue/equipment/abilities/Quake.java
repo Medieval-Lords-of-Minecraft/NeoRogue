@@ -7,6 +7,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -31,8 +33,20 @@ public class Quake extends Equipment {
 	private static final String ID = "Quake";
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private int concussed, damage;
-	private static final ParticleContainer part = new ParticleContainer(Particle.CLOUD).spread(tp.range, 0.2).count(50);
+	// Crisp dirt ring marking the exact edge of the AOE
+	private static final Circle circ = new Circle(tp.range);
+	private static final ParticleContainer ring = new ParticleContainer(Particle.BLOCK)
+			.blockData(Material.DIRT.createBlockData()).count(1).spread(0, 0).speed(0).offsetY(0.1);
+	// Light dust fill so the whole affected zone reads clearly
+	private static final ParticleContainer ringFill = new ParticleContainer(Particle.CLOUD)
+			.count(1).spread(0.1, 0).speed(0).offsetY(0.1);
+	// Central ground burst to telegraph the cast (intentional heavy-impact FX)
+	private static final ParticleContainer burst = new ParticleContainer(Particle.EXPLOSION_EMITTER)
+			.count(2).spread(0.6, 0.1);
+	private static final ParticleContainer debris = new ParticleContainer(Particle.BLOCK)
+			.blockData(Material.DIRT.createBlockData()).count(60).spread(tp.range * 0.6, 0.2).speed(0.08).offsetY(0.3);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_WARDEN_ATTACK_IMPACT);
+	private static final SoundContainer ground = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK, 1.6F, 0.6F);
 	
 	public Quake(boolean isUpgraded) {
 		super(ID, "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -51,7 +65,10 @@ public class Quake extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			sc.play(p, p);
-			part.play(p, p);
+			ground.play(p, p);
+			circ.play(ring, p.getLocation(), LocalAxes.xz(), ringFill);
+			burst.play(p, p);
+			debris.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1, this);

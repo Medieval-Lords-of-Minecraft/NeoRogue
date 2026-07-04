@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -33,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
 
 public class ThunderclapAndFlash extends Equipment {
 	private static final String ID = "ThunderclapAndFlash";
-	private static final int ELECTRIFIED_THRESHOLD = 1000;
+	private static final int ELECTRIFIED_THRESHOLD = 100;
 	private static final ParticleContainer part = new ParticleContainer(Particle.ELECTRIC_SPARK)
 			.count(5).spread(0.3, 0.3);
 	private static final TargetProperties tp = TargetProperties.line(4, 2, TargetType.ENEMY);

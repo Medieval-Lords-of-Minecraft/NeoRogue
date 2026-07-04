@@ -44,7 +44,7 @@ public class StoneSpear extends Equipment {
 	public StoneSpear(boolean isUpgraded) {
 		super(
 				ID, "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(40, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(40, 1, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		
 		damage = (int) properties.get(PropertyType.DAMAGE);
