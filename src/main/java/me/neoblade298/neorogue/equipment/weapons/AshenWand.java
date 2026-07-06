@@ -41,7 +41,7 @@ public class AshenWand extends Equipment {
 	public AshenWand(boolean isUpgraded) {
 		super(
 				ID , "Ashen Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 60 : 50, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 40 : 35, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
