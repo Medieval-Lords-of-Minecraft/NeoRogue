@@ -29,7 +29,7 @@ public class CmdAdminDrop extends Subcommand {
 		this.overrideTabHandler();
 		ArrayList<String> ecTab = new ArrayList<>();
 		for (EquipmentClass ec : EquipmentClass.values()) ecTab.add(ec.name());
-		args.add(new Arg("type"), new Arg("player", false), new Arg("value"), new Arg("amount", false), new Arg("classes...").setTabOptions(ecTab));
+		args.add(new Arg("equipment/artifact/consumable"), new Arg("player", false), new Arg("value"), new Arg("amount", false), new Arg("classes...").setTabOptions(ecTab));
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class AshenHeadhunter extends Equipment {
 	public AshenHeadhunter(boolean isUpgraded) {
 		super(
 				ID , "Ashen Headhunter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(4, 0, isUpgraded ? 140 : 100, 0.5, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
+				EquipmentProperties.ofWeapon(4, 0, isUpgraded ? 140 : 100, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		burn = isUpgraded ? 8 : 5;
