@@ -61,7 +61,7 @@ public class MainMenuInventory extends CoreInventory {
 		meta.displayName(Component.text("Stats", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
-		lore.add(Component.text("  XP: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.text("  Exp: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.empty());
 		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
 			int level = pd.getLevel(ec);
@@ -69,7 +69,7 @@ public class MainMenuInventory extends CoreInventory {
 			int required = PlayerData.getXpRequired(level);
 			int notoriety = pd.getMaxNotoriety(ec);
 			lore.add(Component.text(ec.getDisplay() + " Level: " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-			lore.add(Component.text("  XP: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("  Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			lore.add(Component.text("  Max Notoriety: " + notoriety, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		meta.lore(lore);
