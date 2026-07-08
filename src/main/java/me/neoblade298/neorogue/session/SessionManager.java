@@ -708,6 +708,17 @@ public class SessionManager implements Listener {
 			p.teleport(NeoRogue.spawn);
 			resetPlayer(p);
 		}
+		// The joining player has a fresh visibility list, so re-hide any currently
+		// active spectators from them (covers viewer relogs and new joins)
+		for (Session s : getSessions()) {
+			for (UUID specUuid : s.getSpectators().keySet()) {
+				if (specUuid.equals(p.getUniqueId()))
+					continue;
+				Player spec = Bukkit.getPlayer(specUuid);
+				if (spec != null)
+					p.hidePlayer(NeoRogue.inst(), spec);
+			}
+		}
 	}
 
 	private void handleLeave(Player p) {
@@ -746,7 +757,32 @@ public class SessionManager implements Listener {
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
+		showPlayerToAll(p);
 		giveMenuCompass(p);
+	}
+
+	// Fully hides a player (spectator) from every other online player. Unlike
+	// setInvisible, this removes the entity entirely on other clients.
+	public static void hidePlayerFromAll(Player p) {
+		if (p == null)
+			return;
+		for (Player other : Bukkit.getOnlinePlayers()) {
+			if (other.equals(p))
+				continue;
+			other.hidePlayer(NeoRogue.inst(), p);
+		}
+	}
+
+	// Reveals a previously hidden player to every other online player. Safe to
+	// call even if the player was never hidden.
+	public static void showPlayerToAll(Player p) {
+		if (p == null)
+			return;
+		for (Player other : Bukkit.getOnlinePlayers()) {
+			if (other.equals(p))
+				continue;
+			other.showPlayer(NeoRogue.inst(), p);
+		}
 	}
 
 	private static final NamespacedKey MENU_KEY = new NamespacedKey(NeoRogue.inst(), "menu_compass");

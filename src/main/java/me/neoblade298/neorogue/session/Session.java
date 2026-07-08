@@ -384,6 +384,7 @@ public class Session {
 		p.setGameMode(GameMode.ADVENTURE);
 		p.teleport(inst.getSpawn());
 		inst.getSpectatorFlags().applyFlags(p);
+		SessionManager.hidePlayerFromAll(p);
 		inst.handleSpectatorJoin(p);
 	}
 	
@@ -393,6 +394,7 @@ public class Session {
 		spectators.remove(p.getUniqueId());
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
+		SessionManager.showPlayerToAll(p);
 		SessionManager.removeFromSession(p.getUniqueId());
 		SessionManager.giveMenuCompass(p);
 		p.teleport(NeoRogue.spawn);
