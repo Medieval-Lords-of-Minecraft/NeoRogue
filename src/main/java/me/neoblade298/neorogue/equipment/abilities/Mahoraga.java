@@ -37,7 +37,7 @@ public class Mahoraga extends Equipment {
 		refresh = 10;
 		berserk = isUpgraded ? 3 : 2;
 		thres = isUpgraded ? 30 : 25;
-		heal = 10;
+		heal = 3;
 	}
 
 	public static Equipment get() {
