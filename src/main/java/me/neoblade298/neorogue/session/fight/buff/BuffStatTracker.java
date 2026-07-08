@@ -44,7 +44,8 @@ public class BuffStatTracker extends StatTracker {
 
     protected BuffStatTracker(StatusType type, boolean damage, boolean invert) {
         this(type.name(), type.ctag.append(
-            Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)), invert, false);
+            Component.text(damage ? (invert ? " - Damage Reduced" : " - Damage Buffed")
+                : (invert ? " - Damage Increased" : " - Damage Mitigated"), NamedTextColor.GRAY)), invert, false);
         this.category = damage ? StatCategory.DAMAGE_DEALT : StatCategory.DAMAGE_TAKEN;
     }
     

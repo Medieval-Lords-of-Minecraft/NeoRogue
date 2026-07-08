@@ -57,21 +57,35 @@ public class LoadLobbyInstance extends LobbyInstance {
             return;
         }
         updateBoardLines();
-        invitePlayers();
+        notifyPartyToJoin();
     }
 
-    // Invite all members of the session that aren't already in the lobby
-    private void invitePlayers() {
+    // Only saved party members may join a loaded game
+    @Override
+    protected boolean canJoin(Player requester) {
+        return s.getParty().containsKey(requester.getUniqueId());
+    }
+
+    // Returning party members rejoin immediately without needing host approval
+    @Override
+    protected boolean autoAccept(UUID requester) {
+        return s.getParty().containsKey(requester);
+    }
+
+    // Notify all saved party members that the game is loaded so they can rejoin
+    private void notifyPartyToJoin() {
         for (PlayerSessionData data : s.getParty().values()) {
             if (data.getUniqueId().equals(host))
                 continue;
             if (inLobby.contains(data.getUniqueId()))
                 continue;
-            invited.add(data.getUniqueId());
-            Util.msgRaw(data.getPlayer(), Component.text("You've been invited to ")
-                    .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
-            Util.msgRaw(data.getPlayer(),
-                    NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
+            Player member = data.getPlayer();
+            if (member == null)
+                continue;
+            Util.msgRaw(member, Component.text("Your game is ready! Rejoin ")
+                    .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(":")));
+            Util.msgRaw(member,
+                    NeoCore.miniMessage().deserialize(joinPrefix + Bukkit.getPlayer(host).getName() + joinSuffix));
         }
     }
     
@@ -113,19 +127,19 @@ public class LoadLobbyInstance extends LobbyInstance {
 
         if (e.getClickedBlock().getType() == Material.OAK_WALL_SIGN) {
             if (!s.getHost().equals(uuid)) {
-                Util.displayError(p, "Only the host may invite players!");
+                Util.displayError(p, "Only the host may notify players!");
                 return;
             }
 
             // Add cooldown to prevent spam clicking
             if (System.currentTimeMillis() - lastInviteTime < INVITE_COOLDOWN) {
-                Util.displayError(p, "Please wait before inviting again!");
+                Util.displayError(p, "Please wait before notifying again!");
                 return;
             }
             lastInviteTime = System.currentTimeMillis();
-            Util.msgRaw(p, "You re-sent the invite!");
+            Util.msgRaw(p, "You notified your party to rejoin!");
             Sounds.success.play(p, p, Audience.ORIGIN);
-            invitePlayers();
+            notifyPartyToJoin();
             return;
         }
 		

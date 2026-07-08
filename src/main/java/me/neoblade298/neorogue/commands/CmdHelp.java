@@ -21,8 +21,9 @@ public class CmdHelp extends Subcommand {
 		sendLine(s, "/nr help", "View this command list");
 		sendLine(s, "/nr new [slot]", "Create a new game");
 		sendLine(s, "/nr load [slot]", "Load an existing game");
-		sendLine(s, "/nr invite <player>", "Invite a player to your party");
-		sendLine(s, "/nr join", "Join an active session");
+		sendLine(s, "/nr join <player>", "Request to join a player's lobby");
+		sendLine(s, "/nr accept <player>", "Accept a join request to your lobby");
+		sendLine(s, "/nr decline <player>", "Decline a join request to your lobby");
 		sendLine(s, "/nr leave", "Leave your session");
 		sendLine(s, "/nr kick <player>", "Kick a player from your party");
 		sendLine(s, "/nr spectate", "Spectate a player's session");

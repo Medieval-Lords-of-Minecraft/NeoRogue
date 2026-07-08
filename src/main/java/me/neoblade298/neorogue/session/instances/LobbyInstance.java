@@ -25,19 +25,21 @@ public abstract class LobbyInstance extends Instance {
 	public static final int MAX_SIZE = 4;
 
 	protected Session session;
-	protected HashSet<UUID> invited = new HashSet<UUID>(), inLobby = new HashSet<UUID>();
+	protected HashSet<UUID> joinRequests = new HashSet<UUID>(), inLobby = new HashSet<UUID>();
 	protected HashSet<UUID> pendingRemovals = new HashSet<UUID>();
 	protected boolean hostLeft = false;
 	protected UUID host;
 	protected Component partyInfoHeader;
 	protected TextDisplay holo;
 
+	// Clickable prompt sent to players so they can request to join a lobby
+	protected static String joinPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
+			joinSuffix = "'><hover:show_text:'Click to request to join'>Click here to join!</hover></click></green>]";
 	// Static error messages
-	protected static String invPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
-			invSuffix = "'><hover:show_text:'Click to accept invite'>Click here to accept the invite!</hover></click></green>]";
 	protected static final TextComponent gameGenerating = Component.text("Your game is generating! You can't do this right now!",
 					NamedTextColor.RED),
 			hostOnlyKick = Component.text("Only the host may kick other players!", NamedTextColor.RED),
+			hostOnlyRespond = Component.text("Only the host may respond to join requests!", NamedTextColor.RED),
 			playerNotInLobby = Component.text("That player isn't in the lobby!", NamedTextColor.RED);
 	protected String name;
 
@@ -130,8 +132,106 @@ public abstract class LobbyInstance extends Instance {
 		return hostLeft;
 	}
 
-	public HashSet<UUID> getInvited() {
-		return invited;
+	public HashSet<UUID> getJoinRequests() {
+		return joinRequests;
+	}
+
+	// Whether a player is allowed to join this lobby at all. New lobbies allow anyone;
+	// loaded lobbies restrict joining to the saved party.
+	protected boolean canJoin(Player requester) {
+		return true;
+	}
+
+	// Whether an eligible requester joins immediately without host approval (e.g. returning
+	// party members of a loaded game).
+	protected boolean autoAccept(UUID requester) {
+		return false;
+	}
+
+	// Called when a player runs /nr join <someone in this lobby>. Sends the host a request
+	// they can accept or decline, unless the requester is eligible to auto-join.
+	public void requestJoin(Player requester) {
+		UUID uuid = requester.getUniqueId();
+		if (s.isBusy()) {
+			Util.msgRaw(requester, gameGenerating);
+			return;
+		}
+		if (inLobby.contains(uuid)) {
+			Util.displayError(requester, "You're already in this lobby!");
+			return;
+		}
+		if (MAX_SIZE <= inLobby.size()) {
+			Util.displayError(requester, "That lobby is full!");
+			return;
+		}
+		if (!canJoin(requester)) {
+			Util.displayError(requester, "You can't join this lobby!");
+			return;
+		}
+		if (autoAccept(uuid)) {
+			addPlayer(requester);
+			return;
+		}
+		if (!joinRequests.add(uuid)) {
+			Util.displayError(requester, "You've already requested to join this lobby!");
+			return;
+		}
+
+		Util.msgRaw(requester, Component.text("Your request to join ", NamedTextColor.GRAY)
+				.append(Component.text(name, NamedTextColor.YELLOW))
+				.append(Component.text(" was sent!", NamedTextColor.GRAY)));
+		Player hostp = Bukkit.getPlayer(host);
+		if (hostp == null) return;
+		String rn = requester.getName();
+		Util.msgRaw(hostp, NeoCore.miniMessage().deserialize(
+				"<gray>" + rn + " wants to join your lobby! "
+				+ "<dark_gray>[<green><click:run_command:'/nr accept " + rn + "'><hover:show_text:'Accept " + rn
+				+ "'>Accept</hover></click></green>]</dark_gray> "
+				+ "<dark_gray>[<red><click:run_command:'/nr decline " + rn + "'><hover:show_text:'Decline " + rn
+				+ "'>Decline</hover></click></red>]</dark_gray>"));
+	}
+
+	// Host accepts a pending join request, adding the player to the lobby.
+	public void acceptRequest(Player hostPlayer, String username) {
+		if (!hostPlayer.getUniqueId().equals(host)) {
+			Util.msgRaw(hostPlayer, hostOnlyRespond);
+			return;
+		}
+		if (s.isBusy()) {
+			Util.msgRaw(hostPlayer, gameGenerating);
+			return;
+		}
+		Player target = Bukkit.getPlayer(username);
+		if (target == null || !joinRequests.contains(target.getUniqueId())) {
+			Util.displayError(hostPlayer, "There's no pending join request from " + username + "!");
+			return;
+		}
+		if (SessionManager.getSession(target) != null) {
+			joinRequests.remove(target.getUniqueId());
+			Util.displayError(hostPlayer, username + " is already in another session!");
+			return;
+		}
+		joinRequests.remove(target.getUniqueId());
+		addPlayer(target);
+	}
+
+	// Host declines a pending join request.
+	public void declineRequest(Player hostPlayer, String username) {
+		if (!hostPlayer.getUniqueId().equals(host)) {
+			Util.msgRaw(hostPlayer, hostOnlyRespond);
+			return;
+		}
+		Player target = Bukkit.getPlayer(username);
+		if (target == null || !joinRequests.remove(target.getUniqueId())) {
+			Util.displayError(hostPlayer, "There's no pending join request from " + username + "!");
+			return;
+		}
+		Util.msgRaw(hostPlayer, Component.text("You declined ", NamedTextColor.GRAY)
+				.append(Component.text(username, NamedTextColor.YELLOW))
+				.append(Component.text("'s request to join.", NamedTextColor.GRAY)));
+		Util.msgRaw(target, Component.text("Your request to join ", NamedTextColor.GRAY)
+				.append(Component.text(name, NamedTextColor.YELLOW))
+				.append(Component.text(" was declined.", NamedTextColor.GRAY)));
 	}
 
 	@Override

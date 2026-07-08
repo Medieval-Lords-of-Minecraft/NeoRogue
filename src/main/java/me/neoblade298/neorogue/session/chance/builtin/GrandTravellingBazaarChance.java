@@ -18,10 +18,12 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
+import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
@@ -41,7 +43,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 				+ "hands in exchange for something useful. Only one trade per customer — choose wisely!\"");
 
 		// Choice 1: Trade a specific artifact the player has for a reward artifact
-		stage.addChoice(new ChanceChoice(Material.ENDER_EYE, "Trade an artifact",
+		ChanceChoice tradeArtifact = new ChanceChoice(Material.ENDER_EYE, "Trade an artifact",
 				GrandTravellingBazaarChance::desc1,
 				"You have no artifacts to offer!",
 				(s, inst, data) -> getValue(data, "c1") != null,
@@ -58,10 +60,12 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> traded an artifact with the merchant.", p);
 					data.giveArtifact(reward, 1);
 					return null;
-				}));
+				});
+		setRewardGlossary(tradeArtifact, "r1");
+		stage.addChoice(tradeArtifact);
 
 		// Choice 2: Trade 150 gold for a reward artifact
-		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Buy with " + GOLD_COST + " gold",
+		ChanceChoice buyWithGold = new ChanceChoice(Material.GOLD_INGOT, "Buy with " + GOLD_COST + " gold",
 				GrandTravellingBazaarChance::desc2,
 				"You don't have " + GOLD_COST + " coins!",
 				(s, inst, data) -> data.hasCoins(GOLD_COST),
@@ -73,10 +77,12 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> bought an artifact from the merchant.", p);
 					data.giveArtifact(reward, 1);
 					return null;
-				}));
+				});
+		setRewardGlossary(buyWithGold, "r2");
+		stage.addChoice(buyWithGold);
 
 		// Choice 3: Trade a specific non-storage equipment for a reward artifact
-		stage.addChoice(new ChanceChoice(Material.IRON_SWORD, "Trade equipment",
+		ChanceChoice tradeEquipment = new ChanceChoice(Material.IRON_SWORD, "Trade equipment",
 				GrandTravellingBazaarChance::desc3,
 				"You have no equipped or hotbar items to offer!",
 				(s, inst, data) -> getValue(data, "c3") != null,
@@ -110,8 +116,22 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> traded equipment with the merchant.", p);
 					data.giveArtifact(reward, 1);
 					return null;
-				}));
+				});
+		setRewardGlossary(tradeEquipment, "r3");
+		stage.addChoice(tradeEquipment);
 
+	}
+
+	// Right-clicking a choice opens the glossary page of the artifact it offers
+	private static void setRewardGlossary(ChanceChoice choice, String rewardKey) {
+		choice.setOnRightClick((p, prev) -> {
+			ChanceInventory ci = (ChanceInventory) prev;
+			String rewardId = getValue(ci.getData(), rewardKey);
+			if (rewardId == null) return;
+			Equipment reward = Equipment.get(rewardId, false);
+			if (reward == null) return;
+			new EquipmentGlossaryInventory(p, reward, prev);
+		});
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class Mob implements Comparable<Mob> {
 	private static final Pattern glossaryPattern = Pattern.compile("%[a-zA-Z]+%");
 	
 	private MobType type;
-	private String id, base64;
+	private String id, statId, base64;
 	private TextComponent display;
 	private double baseHealth;
 	private int amount;
@@ -73,12 +73,27 @@ public class Mob implements Comparable<Mob> {
 		return mobs.get(id);
 	}
 
+	// Returns the canonical stat id for a mob, collapsing alternate "forms" (e.g. Angvoth2 -> Angvoth)
+	// so their statistics are combined into one entity. Falls back to the id itself when the mob isn't
+	// registered or declares no alias.
+	public static String getStatId(String id) {
+		if (id == null) return null;
+		Mob m = mobs.get(id);
+		return m != null ? m.statId : id;
+	}
+
+	public String getStatId() {
+		return statId;
+	}
+
 	public TextComponent getDisplay() {
 		return display;
 	}
 	
 	public Mob(Section sec) {
 		id = sec.getName();
+		// Alternate forms of the same entity can share stats by pointing at a canonical id
+		statId = sec.getString("stat-alias", id);
 		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
 		if (opt.isPresent()) {
 			MythicMob mm = opt.get();

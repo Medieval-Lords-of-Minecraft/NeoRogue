@@ -33,7 +33,7 @@ public class ProvingGroundsChance extends ChanceSet {
 
 		// Choice 1: Hone your basics - upgrade one chosen piece of gear
 		ChanceChoice hone = new ChanceChoice(Material.ANVIL, "Hone Your Basics",
-				"Spar with the mercenaries to <yellow>upgrade</yellow> one equipment.",
+				"Practice with the mercenaries to <yellow>upgrade</yellow> one equipment.",
 				"You have no gear that can be upgraded!",
 				(s, inst, data) -> data.aggregateEquipment(ProvingGroundsChance::isUpgradable).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
@@ -42,7 +42,7 @@ public class ProvingGroundsChance extends ChanceSet {
 
 		// Choice 2: Adapt your style - transform one chosen piece of gear
 		ChanceChoice adapt = new ChanceChoice(Material.SMITHING_TABLE, "Adapt Your Style",
-				"Spar with the mercenaries to <yellow>transform</yellow> one equipment.",
+				"Practice with the mercenaries to <yellow>transform</yellow> one equipment.",
 				"You have no gear that can be transformed!",
 				(s, inst, data) -> data.aggregateEquipment((meta) -> isTransformable(meta, data)).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution

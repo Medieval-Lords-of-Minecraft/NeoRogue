@@ -291,6 +291,10 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void runLoseLogic(FightInstance fi) {
+		// Prevent double-resolution: if the fight was already won (e.g. the player's
+		// return damage killed the last mob on the same tick they died), don't override
+		// it with a loss.
+		if (!fi.isActive) return;
 		fi.isActive = false;
 		fi.fightWon = false;
 		new BukkitRunnable() {
@@ -430,6 +434,28 @@ public abstract class FightInstance extends Instance {
 			p.setInvisible(true);
 		}
 
+		// The rejoining player has a fresh client visibility list, so reconcile
+		// death-based visibility: hide dead players from alive players (and vice versa)
+		boolean pDead = pdata.isDead();
+		for (Player other : getSession().getOnlinePlayers()) {
+			if (other.equals(p))
+				continue;
+			PlayerFightData od = getUserData(other.getUniqueId());
+			boolean otherDead = od != null && od.isDead();
+			// Hide dead players from the rejoining player unless the rejoiner is also dead
+			if (otherDead && !pDead) {
+				p.hidePlayer(NeoRogue.inst(), other);
+			} else {
+				p.showPlayer(NeoRogue.inst(), other);
+			}
+			// Hide the rejoining player from alive players if they're dead
+			if (pDead && !otherDead) {
+				other.hidePlayer(NeoRogue.inst(), p);
+			} else {
+				other.showPlayer(NeoRogue.inst(), p);
+			}
+		}
+
 		for (BossBar bar : bars) {
 			p.showBossBar(bar);
 		}
@@ -470,6 +496,9 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void handleWin(Title title, Instance next) {
+		// Prevent double-resolution: if the fight was already resolved (e.g. the last
+		// player died on the same tick the final mob was killed), don't fire a win.
+		if (!isActive) return;
 		for (PlayerFightData data : userData.values()) {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}

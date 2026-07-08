@@ -34,10 +34,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class NewLobbyInstance extends LobbyInstance {
     private static final double SPAWN_X = Session.NEW_LOBBY_X + 6.5, SPAWN_Z = Session.NEW_LOBBY_Z + 3.5, HOLO_X = 0,
             HOLO_Y = 3, HOLO_Z = 10;
-	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!",
-			NamedTextColor.RED),
-			playerNotOnline = Component.text("That player isn't online!", NamedTextColor.RED),
-			maxSizeError = Component.text("This lobby is full as it has a max of " + LobbyInstance.MAX_SIZE + " players!",
+	private static final TextComponent maxSizeError = Component.text("This lobby is full as it has a max of " + LobbyInstance.MAX_SIZE + " players!",
 					NamedTextColor.RED);
     private static final TextComponent hostKickSelf = Component.text("The host cannot kick themselves!", NamedTextColor.RED);
 	private static final TextComponent classLocked = Component.text("That class is locked for you!", NamedTextColor.RED);
@@ -57,7 +54,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		players.put(host.getUniqueId(), getDefaultClass(host.getUniqueId()));
 
 		// Setup hologram
-		Component text = Component.text("Invite players with /nr invite {name/all}").appendNewline()
+		Component text = Component.text("Players can join with /nr join " + host.getName()).appendNewline()
 			.append(Component.text("Choose a class then hit the button")).appendNewline()
 			.append(Component.text("when you're ready!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
@@ -65,35 +62,6 @@ public class NewLobbyInstance extends LobbyInstance {
         updateBoardLines();
     }
 
-	public void invitePlayer(Player inviter, String username) {
-		if (!inviter.getUniqueId().equals(host)) {
-			Util.msgRaw(inviter, hostOnlyInvite);
-			return;
-		}
-
-		if (s.isBusy()) {
-			Util.msgRaw(inviter, gameGenerating);
-			return;
-		}
-
-		Player recipient = Bukkit.getPlayer(username);
-		if (recipient == null) {
-			Util.msgRaw(inviter, playerNotOnline);
-			return;
-		}
-		
-		if (inLobby.contains(recipient.getUniqueId())) return;
-
-		invited.add(recipient.getUniqueId());
-		TextComponent tc = Component.text().content(recipient.getName()).color(NamedTextColor.YELLOW)
-				.append(Component.text(" was invited to the lobby!", NamedTextColor.GRAY)).build();
-		broadcast(tc);
-		Util.msgRaw(recipient, Component.text("You've been invited to ")
-				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
-        Util.msgRaw(recipient,
-                NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
-	}
-    
     @Override
     public void addPlayer(Player p) {
 		if (MAX_SIZE <= inLobby.size()) {
@@ -107,7 +75,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		}
 
         inLobby.add(p.getUniqueId());
-		invited.remove(p.getUniqueId());
+		joinRequests.remove(p.getUniqueId());
 		p.setGameMode(GameMode.SURVIVAL);
 		players.put(p.getUniqueId(), getDefaultClass(p.getUniqueId()));
 		SessionManager.addToSession(p.getUniqueId(), this.s);

@@ -478,6 +478,40 @@ public class PlayerFightData extends FightData {
 			// dead
 			removeStatus(StatusType.POISON);
 		}
+		updateDeathVisibility();
+	}
+
+	// Dead players are fully hidden from alive players. Visibility is restored when
+	// they're revived or when the fight ends (both go through setDeath(false)).
+	private void updateDeathVisibility() {
+		FightInstance inst = getInstance();
+		if (inst == null)
+			return;
+		for (Player other : inst.getSession().getOnlinePlayers()) {
+			if (other.equals(p))
+				continue;
+			PlayerFightData od = FightInstance.getUserData(other.getUniqueId());
+			boolean otherDead = od != null && od.isDead();
+			if (isDead) {
+				// Hide this newly-dead player from alive players, but let dead players
+				// still see each other
+				if (otherDead) {
+					other.showPlayer(NeoRogue.inst(), p);
+					p.showPlayer(NeoRogue.inst(), other);
+				} else {
+					other.hidePlayer(NeoRogue.inst(), p);
+				}
+			} else {
+				// This player is alive again: reveal them to everyone, and hide any
+				// players still dead from them
+				other.showPlayer(NeoRogue.inst(), p);
+				if (otherDead) {
+					p.hidePlayer(NeoRogue.inst(), other);
+				} else {
+					p.showPlayer(NeoRogue.inst(), other);
+				}
+			}
+		}
 	}
 
 	@Override

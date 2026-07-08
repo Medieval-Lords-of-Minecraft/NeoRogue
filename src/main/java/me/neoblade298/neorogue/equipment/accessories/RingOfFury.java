@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfFury extends Equipment {
 	private static final String ID = "RingOfFury";
-	private static final int THRES = 1200;
+	private static final int THRES = 400;
 	private int berserk;
 
 	public RingOfFury(boolean isUpgraded) {

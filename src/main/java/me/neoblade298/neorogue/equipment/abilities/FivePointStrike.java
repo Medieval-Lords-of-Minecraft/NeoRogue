@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -31,7 +30,17 @@ public class FivePointStrike extends Equipment {
 	private static final String ID = "FivePointStrike";
 	private int damage;
 	private ProjectileGroup projs = new ProjectileGroup();
-	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT);
+	// Sharp, thin needle trail with a bright accent sparkle
+	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT)
+			.count(4).spread(0.05, 0.05).speed(0.01);
+	private static final ParticleContainer trail = new ParticleContainer(Particle.ENCHANTED_HIT)
+			.count(2).spread(0.05, 0.05).speed(0);
+	// Slashing flash as the needles launch
+	private static final ParticleContainer launch = new ParticleContainer(Particle.SWEEP_ATTACK)
+			.count(1).spread(0, 0).speed(0);
+	// Burst when a needle strikes a target
+	private static final ParticleContainer impact = new ParticleContainer(Particle.CRIT)
+			.count(16).spread(0.15, 0.15).speed(0.05);
 	
 	public FivePointStrike(boolean isUpgraded) {
 		super(ID, "Five Point Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
@@ -83,13 +92,15 @@ public class FivePointStrike extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			Player p = (Player) proj.getOwner().getEntity();
+			impact.play(p, proj.getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Player p = (Player) proj.getOwner().getEntity();
 			Sounds.attackSweep.play(p, p);
+			launch.play(p, proj.getLocation());
 			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
 		}
 
@@ -97,6 +108,7 @@ public class FivePointStrike extends Equipment {
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
 			part.play(p, proj.getLocation());
+			trail.play(p, proj.getLocation());
 		}
 	}
 }

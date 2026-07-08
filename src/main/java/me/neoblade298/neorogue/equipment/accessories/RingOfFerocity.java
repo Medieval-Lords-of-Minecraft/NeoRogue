@@ -21,8 +21,8 @@ public class RingOfFerocity extends Equipment {
 	public RingOfFerocity(boolean isUpgraded) {
 		super(ID, "Ring of Ferocity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		mult = isUpgraded ? 0.5 : 0.3;
-		display = isUpgraded ? 50 : 30;
+		mult = isUpgraded ? 0.25 : 0.15;
+		display = (int) (mult * 100);
 	}
 
 	public static Equipment get() {

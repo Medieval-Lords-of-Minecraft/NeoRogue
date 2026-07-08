@@ -24,8 +24,10 @@ import me.neoblade298.neorogue.equipment.weapons.Nightmare;
 import me.neoblade298.neorogue.equipment.weapons.RedBaron;
 import me.neoblade298.neorogue.equipment.weapons.SilverFang;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
+import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
@@ -71,6 +73,10 @@ public class LostRelicChance extends ChanceSet {
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to take the old weapon!", p);
 					return null;
 				});
+		ch.setOnRightClick((p, prev) -> {
+			ChanceInventory ci = (ChanceInventory) prev;
+			new EquipmentGlossaryInventory(p, items.get(ci.getData().getPlayerClass()), prev);
+		});
 		stage.addChoice(ch);
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Leave it",

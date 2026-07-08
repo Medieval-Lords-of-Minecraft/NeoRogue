@@ -51,10 +51,6 @@ public class CmdJoin extends Subcommand {
 		}
 
 		LobbyInstance li = (LobbyInstance) sess.getInstance();
-		if (!li.getInvited().contains(p.getUniqueId())) {
-			Util.displayError(p, "You're not invited to this session!");
-			return;
-		}
-		li.addPlayer(p);
+		li.requestJoin(p);
 	}
 }

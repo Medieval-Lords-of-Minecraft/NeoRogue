@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.Dexterity;
 import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -27,7 +26,7 @@ public class ButterflyKnife extends Equipment {
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
 		dmg = isUpgraded ? 20 : 10;
-		stam = isUpgraded ? 35 : 25;
+		stam = isUpgraded ? 30 : 35;
 	}
 
 	@Override

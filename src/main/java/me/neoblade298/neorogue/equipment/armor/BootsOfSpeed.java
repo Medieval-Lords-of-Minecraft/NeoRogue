@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -39,6 +40,6 @@ public class BootsOfSpeed extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by " + DescUtil.yellow(stamina)
-				+ ". Reduces damage taken by " + DescUtil.white(DAMAGE_REDUCTION) + ".");
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(DAMAGE_REDUCTION) + ".");
 	}
 }

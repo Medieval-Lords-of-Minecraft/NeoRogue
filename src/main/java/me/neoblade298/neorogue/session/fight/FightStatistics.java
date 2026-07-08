@@ -99,6 +99,8 @@ public class FightStatistics {
 	}
 	
 	public void addDamageTaken(String mobId, DamageType type, double amount) {
+		// Collapse alternate mob "forms" (e.g. Angvoth2 -> Angvoth) into one entity for stats
+		mobId = Mob.getStatId(mobId);
 		HashMap<DamageType, Double> mobMap = damageTaken.getOrDefault(mobId, new HashMap<DamageType, Double>());
 		double amt = mobMap.getOrDefault(type, 0D);
 		mobMap.put(type, amt + amount);
