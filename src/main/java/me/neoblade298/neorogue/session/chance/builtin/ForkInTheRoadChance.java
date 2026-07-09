@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
 
 public class ForkInTheRoadChance extends ChanceSet {
+	private static final double DEBUFF = 0.2; // Reduced damage debuff applied when starting the fight
 
 	public ForkInTheRoadChance() {
 		super(RegionType.LOW_DISTRICT, Material.GRAVEL, "ForkInTheRoad", "Fork in the road");
@@ -29,7 +30,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 		fight.addChoice(new ChanceChoice(Material.GREEN_WOOL, "<green>Welp, but green"));
 
 		ChanceChoice choice = new ChanceChoice(Material.COBBLESTONE, "Let's risk it",
-				"<gray><yellow>50% </yellow>chance to arrive at a shrine, <yellow>50% </yellow>chance to encounter a fight and start it with 10% reduced damage debuff.",
+				"<gray><white>50% </white>chance to arrive at a shrine, <white>50% </white>chance to encounter a fight and start it with " + (int) (DEBUFF * 100) + "% reduced damage debuff.",
 				(s, inst, data) -> {
 					boolean isShrine = NeoRogue.gen.nextBoolean();
 					if (isShrine) {
@@ -43,7 +44,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 						StandardFightInstance sfi = StandardFightInstance.create(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited());
 						sfi.addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("forkInTheRoadChance")));
+								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -DEBUFF, BuffStatTracker.ignored("forkInTheRoadChance")));
 							}
 						});
 						inst.setNextInstance(sfi);

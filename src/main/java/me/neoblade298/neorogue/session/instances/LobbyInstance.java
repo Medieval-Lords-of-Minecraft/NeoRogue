@@ -92,6 +92,17 @@ public abstract class LobbyInstance extends Instance {
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 					.append(Component.text(" disbanded the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);
+			// Lobby joiners aren't in the session party yet (that only happens once the game
+			// starts), so Session.cleanup won't reset them. Reset each of them here so they get
+			// their menu compass back and are sent to spawn before the session ends.
+			for (UUID uuid : inLobby) {
+				if (uuid.equals(host)) continue;
+				Player other = Bukkit.getPlayer(uuid);
+				if (other == null) continue;
+				SessionManager.removeFromSession(uuid);
+				SessionManager.resetPlayer(other);
+				other.teleport(NeoRogue.spawn);
+			}
 			SessionManager.endSession(s);
 			SessionManager.resetPlayer(p);
 			p.teleport(NeoRogue.spawn);

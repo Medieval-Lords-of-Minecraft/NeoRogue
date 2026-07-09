@@ -27,6 +27,7 @@ import io.lumine.mythic.bukkit.events.MythicReloadedEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.achievement.AchievementRewardRegistry;
 import me.neoblade298.neorogue.commands.CmdAccept;
 import me.neoblade298.neorogue.commands.CmdAchievements;
 import me.neoblade298.neorogue.commands.CmdAdminAchievement;
@@ -125,6 +126,7 @@ public class NeoRogue extends JavaPlugin {
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
+		saveResource("achievements.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
@@ -160,6 +162,7 @@ public class NeoRogue extends JavaPlugin {
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
+		AchievementRewardRegistry.reload(); // Load achievement command rewards
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);

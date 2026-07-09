@@ -12,5 +12,6 @@ public enum SessionTrigger {
 	WIN_BOSS,
 	SPEND_COINS,
 	ACQUIRE_EQUIPMENT,
-	FINISH_RUN;
+	FINISH_RUN,
+	WIN_RUN;
 }

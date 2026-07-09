@@ -1,0 +1,37 @@
+# ============================================================================
+# Achievement command rewards
+# ----------------------------------------------------------------------------
+# Reload after editing with /nradmin reload.
+#
+# Commands are dispatched from the console.
+# Placeholders available in commands:
+#   %player% - the player's name
+#   %uuid%   - the player's UUID
+#
+# Achievement ids can be viewed in-game via /nr achievements.
+# ============================================================================
+
+# Commands run every time a player gains ANY achievement mastery tier.
+global-commands: []
+#  - "broadcast %player% earned an achievement!"
+#  - "give %player% diamond 1"
+
+# Each reward runs its commands when a player gains an achievement tier that EXACTLY matches
+# one of the reward's 'requirements' (achievement id + class + tier), AND every requirement is
+# met at or above its tier. Matching the exact tier means each reward fires once.
+#
+# Requirement keys mirror unlocks: "achievement_id: <tier>" for global (or auto-resolved class)
+# scope, or "achievement_id@CLASS: <tier>" to require a specific class's version.
+rewards: {}
+#  completionist:
+#    requirements:
+#      victorious: 4
+#      conqueror: 1
+#    commands:
+#      - "give %player% nether_star 1"
+#      - "broadcast %player% is a completionist!"
+#  thief_low_district:
+#    requirements:
+#      low_district_victor@THIEF: 1
+#    commands:
+#      - "give %player% diamond 1"

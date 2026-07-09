@@ -69,7 +69,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		int itemSlot = 0;
 		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) continue;
-			contents[itemSlot++] = storage[i].getEquipment().getItem();
+			contents[itemSlot++] = storage[i].getItem();
 		}
 
 		if (!isShop) {

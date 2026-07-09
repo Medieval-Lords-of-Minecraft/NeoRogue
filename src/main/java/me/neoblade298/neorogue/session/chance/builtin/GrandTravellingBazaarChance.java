@@ -108,6 +108,11 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 					}
 
 					EquipmentMetadata target = candidates.get(0);
+					String restriction = data.getRemovalRestriction(target.getEquipment(), null, true, "trade");
+					if (restriction != null) {
+						Util.msgRaw(p, "<red>" + restriction);
+						return null;
+					}
 					Equipment traded = data.removeEquipment(target.getEquipSlot(), target.getSlot()).getEquipment();
 					data.setupInventory();
 					Util.msgRaw(p, Component.text("You hand over your ", NamedTextColor.GRAY)
@@ -159,10 +164,13 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 
 			// Choice 3 cost: pick a random non-storage, non-artifact, non-consumable equipment
 			ArrayList<EquipmentMetadata> candidates = data.aggregateEquipment(meta -> {
-				EquipmentType type = meta.getEquipment().getType();
+				Equipment eq = meta.getEquipment();
+				EquipmentType type = eq.getType();
 				return meta.getEquipSlot() != EquipSlot.STORAGE
 						&& type != EquipmentType.ARTIFACT
-						&& type != EquipmentType.CONSUMABLE;
+						&& type != EquipmentType.CONSUMABLE
+						// Never offer the player's last weapon or last unlimited ammunition
+						&& data.getRemovalRestriction(eq, null, true, "trade") == null;
 			});
 			if (!candidates.isEmpty()) {
 				EquipmentMetadata pick = candidates.get(NeoRogue.gen.nextInt(candidates.size()));

@@ -51,6 +51,7 @@ public class WinInstance extends EditInventoryInstance {
 		}
 
 		for (PlayerSessionData data : s.getParty().values()) {
+			data.trigger(SessionTrigger.WIN_RUN, null);
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),

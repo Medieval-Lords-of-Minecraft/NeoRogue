@@ -57,6 +57,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import io.lumine.mythic.core.mobs.DespawnMode;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.Audience;
@@ -1301,13 +1302,18 @@ public abstract class FightInstance extends Instance {
 			for (BukkitTask task : tasks) {
 				task.cancel();
 			}
+		}
 
-			// Avoids concurrent modification (killing them removes them)
-			for (FightData fd : toKill) {
-				if (fd.getEntity() != null) {
-					LivingEntity li = fd.getEntity();
-					li.damage(li.getHealth() + 20);
-				}
+		// Remove all mobs spawned for this fight, no matter how it ended (including plugin disable).
+		// On a normal cleanup we kill them (same as winning); on plugin disable we remove directly
+		// since damage events won't process during shutdown.
+		for (FightData fd : toKill) {
+			LivingEntity li = fd.getEntity();
+			if (li == null) continue;
+			if (pluginDisable) {
+				li.remove();
+			} else {
+				li.damage(li.getHealth() + 20);
 			}
 		}
 
@@ -1499,6 +1505,7 @@ public abstract class FightInstance extends Instance {
 		double mhealth = mob.getMaxHealthScale(s);
 		am.getEntity().setMaxHealth(mhealth);
 		am.getEntity().setHealth(mhealth);
+		am.setDespawnMode(DespawnMode.NEVER);
 		return am;
 	}
 

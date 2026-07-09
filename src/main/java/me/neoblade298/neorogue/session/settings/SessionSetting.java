@@ -28,6 +28,13 @@ public class SessionSetting {
         s -> s.isEndless() ? 1 : 0
     );
 
+    public static final SessionSetting OPEN_LOBBY = new SessionSetting(
+        1, "Open Lobby", Material.OAK_DOOR,
+        "Enable to auto-accept join requests without host approval.",
+        (s, leftClick) -> s.setLobbyOpen(!s.isLobbyOpen()),
+        s -> s.isLobbyOpen() ? 1 : 0
+    );
+
     // Toggle setting with standardized icon (enchant glow when enabled, Yes/No lore)
     public SessionSetting(int id, String title, Material mat, String description,
             SettingEffect effect, SettingValueRetriever valueRetriever) {

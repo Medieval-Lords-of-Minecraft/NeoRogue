@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.achievement;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -81,5 +82,27 @@ public interface Achievement {
 	 * @param ec the class scope (null = global)
 	 */
 	default void grantReward(Player p, int mastery, EquipmentClass ec) {
+	}
+
+	/**
+	 * A mastery threshold, in a specific scope, that should be broadcast to the whole server when
+	 * reached. {@code classScope} is null for the global scope; {@code tier} is 1-based mastery.
+	 */
+	public static record AnnouncedThreshold(EquipmentClass classScope, int tier) {
+		public static AnnouncedThreshold global(int tier) {
+			return new AnnouncedThreshold(null, tier);
+		}
+
+		public static AnnouncedThreshold of(EquipmentClass classScope, int tier) {
+			return new AnnouncedThreshold(classScope, tier);
+		}
+	}
+
+	/**
+	 * Mastery tiers (per scope) that should be globally announced in chat when earned. Each entry
+	 * must match the exact scope (null = global) and tier of the gain. Empty by default.
+	 */
+	default Collection<AnnouncedThreshold> getAnnouncedThresholds() {
+		return List.of();
 	}
 }

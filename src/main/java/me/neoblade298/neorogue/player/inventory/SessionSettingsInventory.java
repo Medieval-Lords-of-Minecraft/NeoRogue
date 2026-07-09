@@ -23,6 +23,7 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
+import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.session.settings.SessionSetting;
 import net.kyori.adventure.text.Component;
@@ -59,6 +60,10 @@ public class SessionSettingsInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 
 		contents[0] = SessionSetting.settings.get(0).getItem(s);
+		// Open Lobby only applies to new lobbies (loaded lobbies auto-admit the saved party)
+		if (inst instanceof NewLobbyInstance) {
+			contents[1] = SessionSetting.settings.get(1).getItem(s);
+		}
 
 		// Notoriety row: down arrow (12), icon (13), up arrow (14), glass panes elsewhere
 		for (int i = 9; i < 18; i++) {
@@ -234,8 +239,8 @@ public class SessionSettingsInventory extends CoreInventory {
 				String oldValue = valuesBefore.get(id).toString();
 				String newValue = "" + setting.getValue(s);
 
-				// Hardcoded for session setting 0 (endless mode) because I'm lazy
-				if (id == 0) {
+				// Hardcoded for boolean toggle settings (endless mode, open lobby) because I'm lazy
+				if (id == 0 || id == 1) {
 					oldValue = oldValue.equals("1") ? "Enabled" : "Disabled";
 					newValue = newValue.equals("1") ? "Enabled" : "Disabled";
 				}

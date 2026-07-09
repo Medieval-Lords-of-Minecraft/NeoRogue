@@ -62,6 +62,13 @@ public class NewLobbyInstance extends LobbyInstance {
         updateBoardLines();
     }
 
+    // Auto-accept join requests when the host has opened the lobby. Party-size limits are still
+    // enforced by requestJoin() and addPlayer().
+    @Override
+    protected boolean autoAccept(UUID requester) {
+        return s.isLobbyOpen();
+    }
+
     @Override
     public void addPlayer(Player p) {
 		if (MAX_SIZE <= inLobby.size()) {
@@ -258,6 +265,20 @@ public class NewLobbyInstance extends LobbyInstance {
 		return EquipmentClass.WARRIOR;
 	}
 
+	// Picks a random class the player has unlocked (never CLASSLESS/SHOP)
+	private EquipmentClass getRandomUnlockedClass(UUID uuid) {
+		PlayerData data = PlayerManager.getPlayerData(uuid);
+		ArrayList<EquipmentClass> unlocked = new ArrayList<EquipmentClass>();
+		for (EquipmentClass ec : EquipmentClass.values()) {
+			if (ec == EquipmentClass.CLASSLESS || ec == EquipmentClass.SHOP) continue;
+			if (data == null || UnlockRegistry.isClassUnlockedFor(data, ec)) {
+				unlocked.add(ec);
+			}
+		}
+		if (unlocked.isEmpty()) return EquipmentClass.WARRIOR;
+		return unlocked.get(NeoRogue.gen.nextInt(unlocked.size()));
+	}
+
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (!e.getAction().isLeftClick() && !e.getAction().isRightClick()) return;
@@ -289,6 +310,9 @@ public class NewLobbyInstance extends LobbyInstance {
 		case 'M':
 			switchClass(uuid, EquipmentClass.MAGE);
 			break;
+        case 'R':
+            switchClass(uuid, getRandomUnlockedClass(uuid));
+            break;
 		case 'C':
 			new SessionSettingsInventory(e.getPlayer(), s, this);
 			break;

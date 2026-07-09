@@ -99,6 +99,8 @@ public class Session {
 	// Settings
     private boolean debug;
 	private boolean endless;
+	// New-lobby only: when true, join requests are auto-accepted instead of needing host approval
+	private boolean lobbyOpen = false;
 	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.03, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			COIN_REDUCTION_PER_LEVEL = 0.15, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.05;
 	private int notoriety;
@@ -740,6 +742,14 @@ public class Session {
 
 	public boolean isEndless() {
 		return endless;
+	}
+
+	public void setLobbyOpen(boolean lobbyOpen) {
+		this.lobbyOpen = lobbyOpen;
+	}
+
+	public boolean isLobbyOpen() {
+		return lobbyOpen;
 	}
     
     public void setDebug(boolean debug) {

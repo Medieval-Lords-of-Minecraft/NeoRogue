@@ -28,7 +28,7 @@ public class CompositeBow extends Bow {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(30, 1, 0, 12, 0, 1.2));
 			thres = 2;
-			damage = isUpgraded ? 10 : 5;
+			damage = isUpgraded ? 15 : 10;
 	}
 
 	@Override

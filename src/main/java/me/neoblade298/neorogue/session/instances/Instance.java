@@ -46,14 +46,12 @@ public abstract class Instance {
 
 	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags) {
 		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
+		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(s.getXOff() + spawnX), 64.5, s.getZOff() + spawnZ);
 		this.playerFlags = playerFlags;
 	}
 	
 	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags, PlayerFlags spectatorFlags) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
-		this.playerFlags = playerFlags;
+		this(s, spawnX, spawnZ, playerFlags);
 		this.spectatorFlags = spectatorFlags;
 	}
 	

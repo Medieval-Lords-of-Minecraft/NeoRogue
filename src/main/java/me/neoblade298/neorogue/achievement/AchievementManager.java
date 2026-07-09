@@ -37,6 +37,7 @@ import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCoinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.WinRunsAchievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -54,6 +55,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 public class AchievementManager {
 	private static final List<Achievement> achievements = List.of(
 			new WinFightsAchievement(),
+			new WinRunsAchievement(),
 			new FinishRunAchievement(),
 			new BeatMinibossesAchievement(),
 new BeatRegionAchievement("low_district_victor", Component.text("Low District Victor", NamedTextColor.GOLD),
@@ -230,6 +232,42 @@ new SRankRegionAchievement("low_district_speedster", Component.text("Low Distric
 		EquipmentClass ec = progress.getScope();
 		sendToast(p, achievement, mastery, ec, progress);
 		achievement.grantReward(p, mastery, ec);
+		AchievementRewardRegistry.handleAchievementGained(p, achievement, progress);
+
+		// Globally announce this exact (scope, tier) if the achievement marked it. The enum ==
+		// comparison handles null == null for the global scope, so scope matches exactly.
+		for (Achievement.AnnouncedThreshold at : achievement.getAnnouncedThresholds()) {
+			if (at.classScope() == ec && at.tier() == mastery) {
+				broadcastAnnouncement(p, achievement, mastery, ec, progress);
+				break;
+			}
+		}
+	}
+
+	// Broadcasts a globally-announced threshold to every online player except the earner, who
+	// already receives their personal toast and chat message.
+	private static void broadcastAnnouncement(Player earner, Achievement achievement, int mastery, EquipmentClass ec,
+			AchievementProgress progress) {
+		Component hoverText = buildAchievementHover(achievement, mastery, ec, progress);
+		String scope = ec != null ? ec.name().toLowerCase() : "global";
+		Component msg = Component.text("[Achievement] ", NamedTextColor.YELLOW)
+				.append(Component.text(earner.getName(), NamedTextColor.GOLD))
+				.append(Component.text(" earned ", NamedTextColor.GRAY))
+				.append(achievement.getDisplayName())
+				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
+		if (ec != null) {
+			msg = msg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
+		}
+		else {
+			msg = msg.append(Component.text(" [Global]", NamedTextColor.GRAY));
+		}
+		msg = msg.append(Component.text("!", NamedTextColor.GRAY))
+				.hoverEvent(HoverEvent.showText(hoverText))
+				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			if (online.equals(earner)) continue;
+			online.sendMessage(msg);
+		}
 	}
 
 	private static class ToastEntry {
@@ -262,19 +300,7 @@ new SRankRegionAchievement("low_district_speedster", Component.text("Low Distric
 		processToastQueue(uuid);
 
 		// Build hover text using the same lore structure as the inventory item
-		Component hoverText = achievement.getDisplayName();
-		if (ec != null) {
-			hoverText = hoverText.append(Component.newline())
-					.append(Component.text("Class: " + ec.getDisplay(), NamedTextColor.YELLOW));
-		}
-		List<Component> loreLines = progress != null
-				? progress.buildLoreLines()
-				: achievement.getDescription(0, mastery - 1);
-		for (Component line : loreLines) {
-			hoverText = hoverText.append(Component.newline()).append(line);
-		}
-		hoverText = hoverText.append(Component.newline()).append(Component.newline())
-				.append(Component.text("Click to view achievements", NamedTextColor.GRAY));
+		Component hoverText = buildAchievementHover(achievement, mastery, ec, progress);
 
 		String scope = ec != null ? ec.name().toLowerCase() : "global";
 		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.YELLOW)
@@ -289,6 +315,25 @@ new SRankRegionAchievement("low_district_speedster", Component.text("Low Distric
 		chatMsg = chatMsg.hoverEvent(HoverEvent.showText(hoverText))
 				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
 		p.sendMessage(chatMsg);
+	}
+
+	// Builds the shared hover tooltip (class line + lore + "click to view") used by both the
+	// personal achievement message and the global announcement.
+	private static Component buildAchievementHover(Achievement achievement, int mastery, EquipmentClass ec,
+			AchievementProgress progress) {
+		Component hoverText = achievement.getDisplayName();
+		if (ec != null) {
+			hoverText = hoverText.append(Component.newline())
+					.append(Component.text("Class: " + ec.getDisplay(), NamedTextColor.YELLOW));
+		}
+		List<Component> loreLines = progress != null
+				? progress.buildLoreLines()
+				: achievement.getDescription(0, mastery - 1);
+		for (Component line : loreLines) {
+			hoverText = hoverText.append(Component.newline()).append(line);
+		}
+		return hoverText.append(Component.newline()).append(Component.newline())
+				.append(Component.text("Click to view achievements", NamedTextColor.GRAY));
 	}
 
 	private static void processToastQueue(UUID uuid) {
