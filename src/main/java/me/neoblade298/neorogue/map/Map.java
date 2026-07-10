@@ -452,7 +452,7 @@ public class Map {
 		// First clear the board (only the used region)
 		// Clear Y range: pieces at Y_OFFSET (64) with offsets -4 to +4, mountains up to +35, barriers above that
 		int clearMinY = MapPieceInstance.Y_OFFSET - 10;
-		int clearMaxY = 120;
+		int clearMaxY = 140;
 
 		long clearStart = System.currentTimeMillis();
 		EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world);

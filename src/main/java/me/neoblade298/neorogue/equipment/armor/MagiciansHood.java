@@ -26,8 +26,8 @@ public class MagiciansHood extends Equipment {
 	public MagiciansHood(boolean isUpgraded) {
 		super(ID, "Magician's Hood", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		thres = isUpgraded ? 25 : 35;
-		def = 2;
+		thres = isUpgraded ? 30 : 35;
+		def = 1;
 	}
 
 	public static Equipment get() {

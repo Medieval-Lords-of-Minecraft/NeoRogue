@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -25,10 +24,11 @@ public class CeruleanBracelet extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addMaxMana(mp);
+		data.addMana(mp);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "At the start of the fight, increase your max mana by " + DescUtil.yellow(mp) + ".");
+		item = createItem(Material.LAPIS_LAZULI, "At the start of the fight, increase your max mana and starting mana by " + DescUtil.yellow(mp) + ".");
 	}
 }

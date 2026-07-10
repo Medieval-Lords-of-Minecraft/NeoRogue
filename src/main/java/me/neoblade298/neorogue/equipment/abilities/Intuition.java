@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -47,7 +46,7 @@ public class Intuition extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_EYE,
+		item = createItem(Material.BOOK,
 				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + ". " +
 				"While below " + DescUtil.white(THRES) + " mana, mana regen is increased by " + DescUtil.white(regen) + ".");
 	}

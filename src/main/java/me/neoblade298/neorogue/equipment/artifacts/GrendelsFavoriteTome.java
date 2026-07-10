@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.StatCategory;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -37,7 +38,7 @@ public class GrendelsFavoriteTome extends Artifact {
 			if (!ev.isStatus(StatusType.INTELLECT) || !(ev.getTarget() instanceof PlayerFightData)) {
 				return TriggerResult.keep();
 			}
-			ev.getStacksBuffList().add(Buff.multiplier(data, 1, BuffStatTracker.of(buffId, this, "Intellect doubled")));
+			ev.getStacksBuffList().add(Buff.multiplier(data, 1, BuffStatTracker.of(buffId, this, "Intellect doubled").category(StatCategory.STATUS)));
 			return TriggerResult.keep();
 		});
 	}

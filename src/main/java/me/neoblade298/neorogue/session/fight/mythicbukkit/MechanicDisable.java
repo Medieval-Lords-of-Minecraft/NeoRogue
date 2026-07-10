@@ -116,13 +116,14 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			p.sendMessage(name.append(Component.text(" was disabled for " + (int) seconds + "s!", NamedTextColor.RED)));
 
 			// Schedule revert
-			long ticks = (long) (seconds * 20);
+			int ticks = (int) (seconds * 20);
 			DisableCandidate finalChosen = chosen;
 			pdata.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
 					finalChosen.list.add(finalChosen.action);
 					Player current = pdata.getPlayer();
+					current.setCooldown(Material.BARRIER, ticks);
 					if (finalChosen.action instanceof EquipmentInstance) {
 						((EquipmentInstance) finalChosen.action).updateIcon();
 					} else {

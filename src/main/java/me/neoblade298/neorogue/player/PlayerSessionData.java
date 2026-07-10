@@ -174,8 +174,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		}
 
-		if (NotorietySetting.LESS_ACCESSORY_SLOT.isActive(s)) {
+		if (NotorietySetting.LESS_SLOTS.isActive(s)) {
 			accessorySlots = Math.max(0, accessorySlots - 1);
+			armorSlots = Math.max(0, armorSlots - 1);
 		}
 		initialize();
 		data.getPlayer().setHealth(maxHealth);
@@ -547,10 +548,20 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// If components null, no broadcast
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
-		giveEquipment(new SessionEquipment(eq), toSelf, toOthers);
+		giveEquipment(new SessionEquipment(eq), toSelf, toOthers, true);
+	}
+
+	// triggerAcquire=false for upgrades/reforges/returns where the item was already owned, so it
+	// doesn't re-fire ACQUIRE_EQUIPMENT (which would double-count achievements like rarity-seen).
+	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers, boolean triggerAcquire) {
+		giveEquipment(new SessionEquipment(eq), toSelf, toOthers, triggerAcquire);
 	}
 
 	public void giveEquipment(SessionEquipment se, Component toSelf, Component toOthers) {
+		giveEquipment(se, toSelf, toOthers, true);
+	}
+
+	public void giveEquipment(SessionEquipment se, Component toSelf, Component toOthers, boolean triggerAcquire) {
 		Equipment eq = se.getEquipment();
 		Player p = getPlayer();
 		if (toSelf != null) {
@@ -582,7 +593,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				if (success) {
 					if (toSelf != null) Util.msgRaw(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					PlayerSessionInventory.setupInventory(p.getInventory(), this);
-					trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+					if (triggerAcquire) trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 					return;
 				}
 			}
@@ -603,7 +614,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				}.runTask(NeoRogue.inst());
 			}
 		}
-		trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+		if (triggerAcquire) trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
 	}
 
 	public boolean sendToStorage(SessionEquipment se) {

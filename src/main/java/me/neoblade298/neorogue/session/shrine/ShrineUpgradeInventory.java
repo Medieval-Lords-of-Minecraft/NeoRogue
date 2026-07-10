@@ -100,7 +100,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			Equipment eq = Equipment.get(id, true);
 			data.giveEquipment(eq,
 					SharedUtil.color("You upgraded to a(n) "),
-					SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded to a(n) "));
+					SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded to a(n) "), false);
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			inst.useUpgrade(p.getUniqueId());
 			p.closeInventory();
@@ -112,7 +112,8 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		if (inv.getItem(0) != null) {
 			NBTItem nbti = new NBTItem(inv.getItem(0));
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
-			data.giveEquipmentSilent(eq);
+			// Returning the item the player placed in - it was already owned, don't re-fire acquire
+			data.giveEquipment(eq, null, null, false);
 		}
 	}
 

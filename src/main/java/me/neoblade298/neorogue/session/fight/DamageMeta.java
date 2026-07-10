@@ -597,13 +597,6 @@ public class DamageMeta {
 			damage = Math.max(0, shields.useShields(damage));
 		}
 			
-		if (owner instanceof PlayerFightData) {
-			PlayerFightData pdata = (PlayerFightData) owner;
-			for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
-				pdata.getStats().addDamageDealt(entry.getKey(), entry.getValue());
-			}
-		}
-		
 		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
 			// Apply damage received stats
@@ -636,6 +629,7 @@ public class DamageMeta {
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		Vector originalVelocity = target.getVelocity().clone();
+		boolean damageCancelled = false;
 		if (damage + ignoreShieldsDamage > 0) {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -660,7 +654,7 @@ public class DamageMeta {
 			else {
 				target.damage(finalDamage);
 			}
-			boolean damageCancelled = target.isValid() && target.getHealth() >= healthBefore;
+			damageCancelled = target.isValid() && target.getHealth() >= healthBefore;
 
 			// Create damage display
 			if (!(target instanceof Player)) {
@@ -725,7 +719,16 @@ public class DamageMeta {
 		else if (!slices.isEmpty()) {
 			target.playHurtAnimation(0);
 		}
-		
+
+		// Credit the attacker's damage-dealt stats only if the hit actually landed. Deferred to here
+		// (after target.damage) so cancelled hits, e.g. invulnerability frames, don't over-count.
+		if (owner instanceof PlayerFightData && !damageCancelled) {
+			PlayerFightData pdata = (PlayerFightData) owner;
+			for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
+				pdata.getStats().addDamageDealt(entry.getKey(), entry.getValue());
+			}
+		}
+
 		// Return damage
 		FightInstance.dealDamage(returnDamage, owner.getEntity());
 		return damage + ignoreShieldsDamage;

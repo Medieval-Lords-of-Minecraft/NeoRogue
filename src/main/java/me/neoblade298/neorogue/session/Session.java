@@ -822,6 +822,7 @@ public class Session {
 	}
 
 	public void awardXp(int baseXp) {
+		if (regionsCompleted > 3) return;
 		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());

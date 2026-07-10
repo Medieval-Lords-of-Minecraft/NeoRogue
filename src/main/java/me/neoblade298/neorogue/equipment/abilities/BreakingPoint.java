@@ -50,7 +50,7 @@ public class BreakingPoint extends Equipment {
 		am.setDouble(shields);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
-			if (ev.isSneaking()) {
+			if (!ev.isSneaking()) {
 				// Cancel the refresh task when crouching
 				BukkitTask task = am.getTask();
 				if (task != null) {

@@ -37,8 +37,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class BeamStaff extends Equipment {
 	private static final String ID = "BeamStaff";
 	private static final StatusType[] STATUS_POOL = { StatusType.BURN, StatusType.INSANITY, StatusType.CONCUSSED, StatusType.FROST };
-	private static final TargetProperties tp = TargetProperties.radius(12, false),
-		aoe = TargetProperties.radius(1.5, false);
+	private static final TargetProperties tp = TargetProperties.radius(10, false),
+		aoe = TargetProperties.radius(2, false);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(10).spread(0.25, 0.2).speed(0.01);
 	private int numStatuses;
 	private static final ParticleAnimation anim;
@@ -54,10 +54,10 @@ public class BeamStaff extends Equipment {
 	public BeamStaff(boolean isUpgraded) {
 		super(
 				ID , "Beam Staff", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, 60, 0.75, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWeapon(3, 0, 70, 0.8, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 				.add(PropertyType.RANGE, tp.range).add(PropertyType.AREA_OF_EFFECT, aoe.range)
 		);
-		numStatuses = isUpgraded ? 3 : 2;
+		numStatuses = isUpgraded ? 4 : 2;
 		canDrop = false;
 	}
 	
@@ -98,7 +98,7 @@ public class BeamStaff extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD, "Fires a beam down onto the block you aim at after a brief delay, dealing " + 
-		GlossaryTag.LIGHT.tag(this, properties.get(PropertyType.DAMAGE), false) + " damage to all enemies in a small radius. Applies " +
+		" damage to all enemies in a small radius. Applies " +
 		DescUtil.yellow(numStatuses + "") + " random stacks of " + GlossaryTag.BURN.tag(this) + ", " +
 		GlossaryTag.INSANITY.tag(this) + ", " + GlossaryTag.CONCUSSED.tag(this) + ", or " +
 		GlossaryTag.FROST.tag(this) + ".");

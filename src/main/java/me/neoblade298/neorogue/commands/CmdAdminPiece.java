@@ -55,7 +55,7 @@ public class CmdAdminPiece extends Subcommand {
 		// Clear the area
 		int clearPadding = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
 		int clearMinY = MapPieceInstance.Y_OFFSET - 5;
-		int clearMaxY = MapPieceInstance.Y_OFFSET + 40;
+		int clearMaxY = MapPieceInstance.Y_OFFSET + 80;
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 			CuboidRegion r = new CuboidRegion(
 					BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET) + clearPadding, clearMinY, MapPieceInstance.Z_FIGHT_OFFSET + zOff - clearPadding),
