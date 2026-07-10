@@ -584,7 +584,7 @@ public class Map {
 			for (int j = y - 1; j < y + 5; j++) {
 				for (int k = z; k <= zp; k++) {
 					Block b = new Location(w, i, j, k).getBlock();
-					b.setType(Material.BLACK_CONCRETE);
+					b.setType(Material.STONE_BRICKS);
 				}
 			}
 		}

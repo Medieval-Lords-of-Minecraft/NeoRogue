@@ -105,6 +105,7 @@ import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -129,6 +130,7 @@ public class NeoRogue extends JavaPlugin {
 		saveResource("achievements.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
+		RunReward.setupEconomy();
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
 		reload();

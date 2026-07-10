@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -54,6 +55,7 @@ public class WinInstance extends EditInventoryInstance {
 			data.trigger(SessionTrigger.WIN_RUN, null);
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
+		RunReward.payout(s, true);
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
 				Component.text("Right click to view stats!", NamedTextColor.WHITE));
 		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
