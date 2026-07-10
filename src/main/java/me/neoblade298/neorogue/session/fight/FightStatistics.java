@@ -27,6 +27,7 @@ public class FightStatistics {
 	private HashMap<String, Double> nullifiedByEquip = new HashMap<String, Double>();
 	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
+	private double damageMitigated; // Buff-based damage mitigation (StatTracker.isMitigation)
 	private int deaths, revives;
 
 	private static final String UNATTRIBUTED = "\u0000misc";
@@ -130,6 +131,10 @@ public class FightStatistics {
 	public void addBuffStat(StatTracker stat, double amount) {
 		double amt = buffStats.getOrDefault(stat, 0D);
 		buffStats.put(stat, amt + amount);
+		if (stat.isMitigation()) {
+			// Inverted mitigation trackers store negative values that display as positive.
+			damageMitigated += stat.isInverted() ? -amount : amount;
+		}
 	}
 
 	public static Component getStatsHeader(String timer, FightScore score) {
@@ -164,6 +169,10 @@ public class FightStatistics {
 
 	public double getDamageShielded() {
 		return damageShielded;
+	}
+	
+	public double getDamageMitigated() {
+		return damageMitigated;
 	}
 	
 	public double getSelfHealing() {

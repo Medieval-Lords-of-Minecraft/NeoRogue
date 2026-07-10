@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.builtin.AcquireRarityAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllBossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ApplyNegativeStatusAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
@@ -32,6 +33,7 @@ import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement.StatType;
+import me.neoblade298.neorogue.achievement.builtin.MitigateDamageAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCoinsAchievement;
@@ -57,6 +59,8 @@ public class AchievementManager {
 			new WinFightsAchievement(),
 			new WinRunsAchievement(),
 			new FinishRunAchievement(),
+			new ApplyNegativeStatusAchievement(),
+			new MitigateDamageAchievement(),
 			new BeatMinibossesAchievement(),
 new BeatRegionAchievement("low_district_victor", Component.text("Low District Victor", NamedTextColor.GOLD),
 				Material.COBBLESTONE, RegionType.LOW_DISTRICT),
