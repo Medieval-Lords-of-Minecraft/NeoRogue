@@ -14,7 +14,6 @@ public class StatTracker {
     private boolean invert, ignore; // Quick easy way to invert the stat number
     protected String equipmentId; // Equipment responsible for this stat (null = no equipment, e.g. status-origin)
     protected StatCategory category = StatCategory.OTHER;
-    protected boolean mitigation; // True if this tracker credits buff-based damage mitigation
 
     private static HashMap<StatusType, BuffStatTracker> statusOrigins = new HashMap<StatusType, BuffStatTracker>();
 
@@ -105,15 +104,6 @@ public class StatTracker {
         return this;
     }
 
-    public boolean isMitigation() {
-        return mitigation;
-    }
-
-    public StatTracker mitigation() {
-        this.mitigation = true;
-        return this;
-    }
-
     public static StatTracker of(String id, Equipment eq, String statTitle) {
         return new StatTracker(id, eq, statTitle);
     }
@@ -163,19 +153,19 @@ public class StatTracker {
     }
 
     public static BuffStatTracker defenseBuffAlly(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true).category(StatCategory.DAMAGE_TAKEN).mitigation();
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseBuffAlly(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", shouldCombine).category(StatCategory.DAMAGE_TAKEN).mitigation();
+        return new BuffStatTracker(id, eq, "Damage Mitigated", shouldCombine).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true, true).category(StatCategory.DAMAGE_TAKEN).mitigation();
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, true).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(id, eq, "Damage Mitigated", true, shouldCombine).category(StatCategory.DAMAGE_TAKEN).mitigation();
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, shouldCombine).category(StatCategory.DAMAGE_TAKEN);
     }
 
     public static BuffStatTracker defenseDebuffEnemy(String id, Equipment eq) {

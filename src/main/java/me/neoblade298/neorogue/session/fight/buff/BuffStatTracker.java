@@ -40,7 +40,6 @@ public class BuffStatTracker extends StatTracker {
         this(type.name(), type.ctag.append(
             Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)), false, true);
         this.category = damage ? StatCategory.DAMAGE_DEALT : StatCategory.DAMAGE_TAKEN;
-        this.mitigation = !damage;
     }
 
     protected BuffStatTracker(StatusType type, boolean damage, boolean invert) {
@@ -48,7 +47,6 @@ public class BuffStatTracker extends StatTracker {
             Component.text(damage ? (invert ? " - Damage Reduced" : " - Damage Buffed")
                 : (invert ? " - Damage Increased" : " - Damage Mitigated"), NamedTextColor.GRAY)), invert, false);
         this.category = damage ? StatCategory.DAMAGE_DEALT : StatCategory.DAMAGE_TAKEN;
-        this.mitigation = !damage && !invert;
     }
     
     protected BuffStatTracker(String id) {
@@ -86,12 +84,6 @@ public class BuffStatTracker extends StatTracker {
     @Override
     public BuffStatTracker category(StatCategory category) {
         this.category = category;
-        return this;
-    }
-
-    @Override
-    public BuffStatTracker mitigation() {
-        this.mitigation = true;
         return this;
     }
 

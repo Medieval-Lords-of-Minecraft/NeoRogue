@@ -62,6 +62,7 @@ public class DamageMeta {
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
+	private HashMap<DamageType, Double> preMitigationSlices = new HashMap<DamageType, Double>(); // Damage before buff-based mitigation, mirrors statSlices
 	private HashMap<StatTracker, Double> trackerSlices = new HashMap<StatTracker, Double>();
 	private double ignoreShieldsDamage, damage, rawDamage, knockback;
 	private Location source; // Override for knockback source
@@ -416,6 +417,7 @@ public class DamageMeta {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
 			}
 			final double sliceDamageFinal = sliceDamage;
+			double mitigatedThisSlice = 0; // Damage prevented by reducing (defensive) buffs on this slice
 
 			// Sort buffs by greatest positive impact to greatest negative impact
 			if (!ignoreBuffs) {
@@ -451,6 +453,7 @@ public class DamageMeta {
 					// over-mitigated hits would each claim their full theoretical value.
 					debuffs.sort(comp);
 					double mitigationPool = preMitigation - sliceDamage;
+					mitigatedThisSlice = Math.max(0, mitigationPool);
 					for (Buff b : debuffs) {
 						if (mitigationPool <= 0) break;
 						if (b.getStatTracker() == null) continue;
@@ -492,6 +495,9 @@ public class DamageMeta {
 			// Save the damage values per damage type to put into stats later
 			double temp = statSlices.getOrDefault(slice.getPostBuffType(), 0.0) + sliceDamageFinal;
 			statSlices.put(slice.getPostBuffType(), temp);
+			// Mirror post-mitigation damage plus the amount buffs prevented, so pre - post = mitigation
+			double preTemp = preMitigationSlices.getOrDefault(slice.getPostBuffType(), 0.0) + sliceDamageFinal + mitigatedThisSlice;
+			preMitigationSlices.put(slice.getPostBuffType(), preTemp);
 			temp = trackerSlices.getOrDefault(slice.getTracker().getId(), 0.0) + sliceDamageFinal;
 			trackerSlices.put(slice.getTracker(), temp);
 
@@ -527,6 +533,7 @@ public class DamageMeta {
 			rawDamage = 0;
 			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
+			// preMitigationSlices intentionally kept: fully nullified damage still counts as prevented
 		}
 		
 		// General damage nullification
@@ -540,6 +547,7 @@ public class DamageMeta {
 			rawDamage = 0;
 			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
+			// preMitigationSlices intentionally kept: fully nullified damage still counts as prevented
 		}
 		
 		//Corruption
@@ -563,6 +571,7 @@ public class DamageMeta {
 				ignoreShieldsDamage = 0;
 				statSlices.clear(); // Clear these so they don't get counted in stats
 				trackerSlices.clear();
+				// preMitigationSlices intentionally kept: fully evaded damage still counts as prevented
 				rawDamage = 0;
 				pl.getStats().addEvadeMitigated(totalDamage);
 				pl.addStamina(-totalDamage / staminaPerDamage);
@@ -617,6 +626,7 @@ public class DamageMeta {
 					rawDamage = 0;
 					trackerSlices.clear();
 					statSlices.clear();
+					// preMitigationSlices intentionally kept: fully nullified damage still counts as prevented
 				}
 			}
 			// all damage was mitigated via buffs or shields
@@ -755,6 +765,13 @@ public class DamageMeta {
 	public HashMap<DamageType, Double> getPostMitigationDamage() {
 		return statSlices;
 	}
+
+	// Damage per type before mitigation. The total difference from getPostMitigationDamage equals the
+	// damage prevented this hit: reducing (defensive) buffs plus any full nullification (barrier,
+	// evade, invincibility, or cancelled health damage), which leave post at 0 but keep pre intact.
+	public HashMap<DamageType, Double> getPreMitigationDamage() {
+		return preMitigationSlices;
+	}
 	
 	public LinkedList<DamageSlice> getSlices() {
 		return slices;
@@ -805,6 +822,8 @@ public class DamageMeta {
 			statSlices.put(entry.getKey(), newVal);
 		}
 
+		// preMitigationSlices intentionally left untouched here: damage removed by evade is still
+		// prevented damage, so keeping pre high makes pre - post credit the evaded amount too.
 		for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
 			double newVal = entry.getValue() - fromEach;
 			if (newVal < 0) newVal = 0;
