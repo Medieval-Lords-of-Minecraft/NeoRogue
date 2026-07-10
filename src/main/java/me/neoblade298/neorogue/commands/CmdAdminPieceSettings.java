@@ -52,7 +52,6 @@ public class CmdAdminPieceSettings extends Subcommand {
 			return;
 		}
 		MapPiece piece = pieces.get(args[0]);
-		MapPieceInstance inst = piece.getInstance();
 		boolean pasteAll = args.length == 1;
 
 		int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
@@ -78,20 +77,28 @@ public class CmdAdminPieceSettings extends Subcommand {
 		ArrayList<Location> potentialSpawns = new ArrayList<>();
 		if (pasteAll) {
 			for (int i = 0; i < 4; i++) {
-				inst.setRotations(i);
-				inst.setFlip(false, false);
-				inst.instantiate(null, PADDING * i, 0);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, 0));
+				// Each variant needs its own instance: markSpawns places its markers ~20 ticks later
+				// and reads the instance's rotation/flip at that time, so a shared instance would make
+				// every variant's spawns use the last-applied settings.
+				MapPieceInstance noFlip = piece.getInstance();
+				noFlip.setRotations(i);
+				noFlip.setFlip(false, false);
+				noFlip.instantiate(null, PADDING * i, 0);
+				potentialSpawns.addAll(noFlip.markSpawns(p, PADDING * i, 0));
 				placeVariantSign(PADDING * i, 0, "rot=" + i, "no flip");
 
-				inst.setFlip(true, false);
-				inst.instantiate(null, PADDING * i, PADDING);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING));
+				MapPieceInstance flipX = piece.getInstance();
+				flipX.setRotations(i);
+				flipX.setFlip(true, false);
+				flipX.instantiate(null, PADDING * i, PADDING);
+				potentialSpawns.addAll(flipX.markSpawns(p, PADDING * i, PADDING));
 				placeVariantSign(PADDING * i, PADDING, "rot=" + i, "flipX");
 
-				inst.setFlip(false, true);
-				inst.instantiate(null, PADDING * i, PADDING * 2);
-				potentialSpawns.addAll(inst.markSpawns(p, PADDING * i, PADDING * 2));
+				MapPieceInstance flipZ = piece.getInstance();
+				flipZ.setRotations(i);
+				flipZ.setFlip(false, true);
+				flipZ.instantiate(null, PADDING * i, PADDING * 2);
+				potentialSpawns.addAll(flipZ.markSpawns(p, PADDING * i, PADDING * 2));
 				placeVariantSign(PADDING * i, PADDING * 2, "rot=" + i, "flipZ");
 			}
 		}
@@ -99,6 +106,7 @@ public class CmdAdminPieceSettings extends Subcommand {
 			int rotations = Integer.parseInt(args[1]);
 			boolean flipX = args.length > 2 ? args[2].equals("1") : false;
 			boolean flipZ = args.length > 3 ? args[3].equals("1") : false;
+			MapPieceInstance inst = piece.getInstance();
 			inst.setRotations(rotations);
 			inst.setFlip(flipX, flipZ);
 			inst.instantiate(null, 0, 0);
