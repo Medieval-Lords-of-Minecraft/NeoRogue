@@ -77,6 +77,8 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
+import me.neoblade298.neorogue.session.event.SessionJoinEvent;
+import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -144,13 +146,16 @@ public class SessionManager implements Listener {
 		sessions.put(uuid, s);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null) p.getInventory().clear();
+		Bukkit.getPluginManager().callEvent(new SessionJoinEvent(uuid, s));
 	}
 
 	public static void removeFromSession(UUID uuid) {
-		sessions.remove(uuid);
+		Session s = sessions.remove(uuid);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null)
 			p.teleport(NeoRogue.spawn);
+		if (s != null)
+			Bukkit.getPluginManager().callEvent(new SessionLeaveEvent(uuid, s));
 	}
 
 	public static void removeSession(Session s) {
