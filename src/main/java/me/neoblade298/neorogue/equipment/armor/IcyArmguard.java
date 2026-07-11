@@ -57,7 +57,7 @@ public class IcyArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage received by " + DescUtil.yellow(damageReduction) + ". " +
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage received by " + DescUtil.white(damageReduction) + ". " +
 				"Also grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>] for every " +
 				GlossaryTag.FROST.tag(this, thres, true) + " you apply.");
 	}

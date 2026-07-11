@@ -47,7 +47,7 @@ public class NotorietySetting {
     public static final double SCORE_THRESHOLD_MULTIPLIER = 0.8;
     public static final NotorietySetting REDUCED_SCORE_THRESHOLDS = new NotorietySetting(
             Component.text("Fight score time thresholds reduced by ").color(NamedTextColor.GRAY)
-                    .append(Component.text("20%").color(NamedTextColor.YELLOW))
+                    .append(Component.text((int) ((1 - SCORE_THRESHOLD_MULTIPLIER) * 100) + "%").color(NamedTextColor.YELLOW))
                     .append(Component.text(" after first boss").color(NamedTextColor.GRAY)),
             Component.text("You have tighter deadlines to reach the market."));
 
@@ -58,13 +58,13 @@ public class NotorietySetting {
     public static final double INCREASE_DAMAGE_MULTIPLIER = 1.3;
     public static final NotorietySetting INCREASE_DAMAGE = new NotorietySetting(
             Component.text("Increase enemy damage by ").color(NamedTextColor.GRAY)
-                    .append(Component.text("20%").color(NamedTextColor.YELLOW)),
+                    .append(Component.text((int) ((INCREASE_DAMAGE_MULTIPLIER - 1) * 100) + "%").color(NamedTextColor.YELLOW)),
             Component.text("Your caravan is attracting more dangerous enemies."));
 
     public static final double INCREASE_HEALTH_MULTIPLIER = 1.35;
     public static final NotorietySetting INCREASE_HEALTH = new NotorietySetting(
             Component.text("Increase enemy health by ").color(NamedTextColor.GRAY)
-                    .append(Component.text("25%").color(NamedTextColor.YELLOW)),
+                    .append(Component.text((int) ((INCREASE_HEALTH_MULTIPLIER - 1) * 100) + "%").color(NamedTextColor.YELLOW)),
             Component.text("Enemies prepare better armor as your reputation spreads."));
 
     public static final NotorietySetting LESS_SLOTS = new NotorietySetting(

@@ -461,16 +461,28 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					}
 				}
-				Block b = loc.getBlock();
-				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-				Directional bmeta = (Directional) b.getBlockData();
+				// Determine facing once for all marker blocks
+				BlockFace facing;
 				switch (coords.getDirection()) {
-				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
-				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
-				case EAST: bmeta.setFacing(BlockFace.WEST); break;
-				case WEST: bmeta.setFacing(BlockFace.EAST); break;
+				case NORTH: facing = BlockFace.SOUTH; break;
+				case SOUTH: facing = BlockFace.NORTH; break;
+				case EAST: facing = BlockFace.WEST; break;
+				default: facing = BlockFace.EAST; break;
 				}
-				b.setBlockData(bmeta);
+
+				// If a resolved axis lands on a whole number, it sits on a block boundary,
+				// so mark both adjacent blocks along that axis (axis and axis - 1)
+				int xMin = loc.getX() % 1 == 0 ? -1 : 0;
+				int zMin = loc.getZ() % 1 == 0 ? -1 : 0;
+				for (int dx = 0; dx >= xMin; dx--) {
+					for (int dz = 0; dz >= zMin; dz--) {
+						Block b = loc.clone().add(dx, 0, dz).getBlock();
+						b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+						Directional bmeta = (Directional) b.getBlockData();
+						bmeta.setFacing(facing);
+						b.setBlockData(bmeta);
+					}
+				}
 
 				String isLabel = "IS " + (int) coords.getX() + ", " + (int) coords.getY() + ", " + (int) coords.getZ() + ", " + coords.getDirection().flip(false).name().charAt(0);
 				placeOrAppendSign(loc.clone().add(0, 1, 0), coords.getDirection(), isLabel, NamedTextColor.GREEN, signLines);
@@ -492,16 +504,28 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					}
 				}
 
-				Block b = l.getBlock();
-				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-				Directional bmeta = (Directional) b.getBlockData();
+				// Determine facing once for all marker blocks
+				BlockFace facing;
 				switch (coords.getDirection()) {
-				case NORTH: bmeta.setFacing(BlockFace.SOUTH); break;
-				case SOUTH: bmeta.setFacing(BlockFace.NORTH); break;
-				case EAST: bmeta.setFacing(BlockFace.WEST); break;
-				case WEST: bmeta.setFacing(BlockFace.EAST); break;
+				case NORTH: facing = BlockFace.SOUTH; break;
+				case SOUTH: facing = BlockFace.NORTH; break;
+				case EAST: facing = BlockFace.WEST; break;
+				default: facing = BlockFace.EAST; break;
 				}
-				b.setBlockData(bmeta);
+
+				// If a resolved axis lands on a whole number, it sits on a block boundary,
+				// so mark both adjacent blocks along that axis (axis and axis - 1)
+				int xMin = l.getX() % 1 == 0 ? -1 : 0;
+				int zMin = l.getZ() % 1 == 0 ? -1 : 0;
+				for (int dx = 0; dx >= xMin; dx--) {
+					for (int dz = 0; dz >= zMin; dz--) {
+						Block b = l.clone().add(dx, 0, dz).getBlock();
+						b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+						Directional bmeta = (Directional) b.getBlockData();
+						bmeta.setFacing(facing);
+						b.setBlockData(bmeta);
+					}
+				}
 
 				String psLabel = "PS " + (int) coords.getX() + ", " + (int) coords.getY() + ", " + (int) coords.getZ() + ", " + coords.getDirection().flip(false).name().charAt(0);
 				placeOrAppendSign(l.clone().add(0, 1, 0), coords.getDirection(), psLabel, NamedTextColor.YELLOW, signLines);

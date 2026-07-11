@@ -680,6 +680,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void tickDurability(Player p) {
 		EquipSlot[] slots = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.KEYBIND };
 		SessionEquipment[][] equipped = new SessionEquipment[][] { hotbar, armors, offhand, accessories, otherBinds };
+		boolean broke = false;
 		for (int i = 0; i < equipped.length; i++) {
 			SessionEquipment[] arr = equipped[i];
 			for (int slot = 0; slot < arr.length; slot++) {
@@ -688,13 +689,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				int dur = se.getDurability() - 1;
 				if (dur <= 0) {
 					removeEquipment(slots[i], slot);
-					Util.msgRaw(p, Component.text("Your ", NamedTextColor.GRAY)
-							.append(se.getEquipment().getHoverable())
-							.append(Component.text(" broke!", NamedTextColor.GRAY)));
+					broke = true;
+					new BukkitRunnable() {
+						public void run() {
+							Sounds.breaks.play(p, p);
+							Util.msgRaw(p, Component.text("Your ", NamedTextColor.GRAY)
+									.append(se.getEquipment().getHoverable())
+									.append(Component.text(" broke!", NamedTextColor.GRAY)));
+						}
+					}.runTaskLater(NeoRogue.inst(), 20L);
 				} else {
 					se.setDurability(dur);
 				}
 			}
+		}
+		if (broke) {
+			PlayerSessionInventory.setupInventory(p.getInventory(), this);
 		}
 	}
 
