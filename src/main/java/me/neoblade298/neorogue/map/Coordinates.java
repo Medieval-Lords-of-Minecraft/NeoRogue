@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.region.Region;
  */
 public class Coordinates extends Rotatable {
 	private double x, y, z, xp, zp, xlen, zlen, xOff, yOff, zOff;
+	private boolean minecraftCoords;
 	private Direction ogDir;
 	private Direction dir = Direction.NORTH;
 	private HashSet<String> tags = new HashSet<>();
@@ -31,8 +32,8 @@ public class Coordinates extends Rotatable {
 		this.z = Double.parseDouble(parsed[2]);
 		this.xlen = usesMinecraftCoords ? piece.getShape().getBaseLength() * 16 - 1: piece.getShape().getBaseLength() - 1;
 		this.zlen = usesMinecraftCoords ? piece.getShape().getBaseHeight() * 16 - 1: piece.getShape().getBaseHeight() - 1;
-		this.xp = x % 1 != 0 ? xlen + 1 - x : xlen - x;
-		this.zp = z % 1 != 0 ? zlen + 1 - z : zlen - z;
+		this.minecraftCoords = usesMinecraftCoords;
+		computePrime();
 		this.ogDir = parsed.length > 3 ? Direction.getFromCharacter(parsed[3].charAt(0)) : Direction.NORTH;
 		this.dir = ogDir;
 		if (parsed.length > 4) this.tags = parseTags(parsed[4]);
@@ -50,6 +51,13 @@ public class Coordinates extends Rotatable {
 		return result;
 	}
 	
+	// Reverses a coordinate for rotation/flip. Half-block (centered) points shift by 1 to stay within
+	// the mirrored span; whole-number points keep the plain index reversal and are fenceposted later.
+	private void computePrime() {
+		this.xp = x % 1 != 0 ? xlen + 1 - x : xlen - x;
+		this.zp = z % 1 != 0 ? zlen + 1 - z : zlen - z;
+	}
+	
 	public Coordinates(double x, double y, double z, double xlen, double zlen) {
 		this(x, y, z, xlen, zlen, Direction.NORTH, Direction.NORTH);
 	}
@@ -60,15 +68,16 @@ public class Coordinates extends Rotatable {
 		this.z = z;
 		this.xlen = xlen;
 		this.zlen = zlen;
-		this.xp = x % 1 != 0 ? xlen + 1 - x : xlen - x;
-		this.zp = z % 1 != 0 ? zlen + 1 - z : zlen - z;
+		computePrime();
 		this.ogDir = ogDir;
 		this.dir = dir;
 	}
 	
 	public Coordinates(double x, double y, double z, double xlen, double zlen, Direction ogDir, Direction dir, double xOff, double yOff, double zOff, int numRotations,
-			boolean flipX, boolean flipZ) {
+			boolean flipX, boolean flipZ, boolean minecraftCoords) {
 		this(x, y, z, xlen, zlen, ogDir, dir);
+		this.minecraftCoords = minecraftCoords;
+		computePrime();
 		this.xOff = xOff;
 		this.yOff = yOff;
 		this.zOff = zOff;
@@ -76,7 +85,7 @@ public class Coordinates extends Rotatable {
 	}
 	
 	public Coordinates clone() {
-		Coordinates c = new Coordinates(x, y, z, xlen, zlen, ogDir, dir, xOff, yOff, zOff, numRotations, flipX, flipZ);
+		Coordinates c = new Coordinates(x, y, z, xlen, zlen, ogDir, dir, xOff, yOff, zOff, numRotations, flipX, flipZ, minecraftCoords);
 		c.tags = new HashSet<>(tags);
 		c.requiredTags = new HashSet<>(requiredTags);
 		c.allowedTags = new HashSet<>(allowedTags);
@@ -114,7 +123,20 @@ public class Coordinates extends Rotatable {
 	private double[] getCoordinates() {
 		double newX = swapAxes ? (reverseX ? zp : z) : (reverseX ? xp : x);
 		double newZ = swapAxes ? (reverseZ ? xp : x) : (reverseZ ? zp : z);
-		
+
+		if (minecraftCoords) {
+			// Whole-number coordinates sit on a block boundary, so a rotation that reverses an axis
+			// leaves them a block short of where a centered (x.5) coordinate would land. Nudge the
+			// reversed axis back by one block. The pre-swap reverse flags identify which world axis
+			// was reversed; world X is negated downstream (so subtract) while world Z is not (so add).
+			boolean preRevX = swapAxes ? !reverseX : reverseX;
+			boolean preRevZ = swapAxes ? !reverseZ : reverseZ;
+			boolean newXWhole = (swapAxes ? z : x) % 1 == 0;
+			boolean newZWhole = (swapAxes ? x : z) % 1 == 0;
+			if (preRevX && newXWhole) newX -= 1;
+			if (preRevZ && newZWhole) newZ += 1;
+		}
+
 		return new double[] {newX, newZ};
 	}
 	

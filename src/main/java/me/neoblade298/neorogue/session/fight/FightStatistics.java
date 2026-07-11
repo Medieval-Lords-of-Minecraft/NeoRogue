@@ -26,7 +26,7 @@ public class FightStatistics {
 	private HashMap<String, Double> healingByEquip = new HashMap<String, Double>();
 	private HashMap<String, Double> nullifiedByEquip = new HashMap<String, Double>();
 	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
-	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
+	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified, healthDamageTaken;
 	private int deaths, revives;
 
 	private static final String UNATTRIBUTED = "\u0000misc";
@@ -111,6 +111,11 @@ public class FightStatistics {
 		this.damageShielded += amount;
 	}
 	
+	// Actual health lost after shields and mitigation, used for an accurate HP-loss display
+	public void addHealthDamageTaken(double amount) {
+		this.healthDamageTaken += amount;
+	}
+	
 	public void addDefenseBuffed(double amount) {
 		this.defenseBuffed += amount;
 	}
@@ -164,6 +169,10 @@ public class FightStatistics {
 
 	public double getDamageShielded() {
 		return damageShielded;
+	}
+	
+	public double getHealthDamageTaken() {
+		return healthDamageTaken;
 	}
 	
 	public double getSelfHealing() {
@@ -280,19 +289,20 @@ public class FightStatistics {
 		return map;
 	}
 
-	public Component getStatLine() {
-		Component line = Component.text("").append(getNameplateComponent())
+	public Component getStatLine(boolean lost) {
+		Component line = Component.text("").append(getNameplateComponent(lost))
 				.append(getDamageDealtComponent()).append(separator)
 				.append(getDamageTakenComponent()).append(separator)
 				.append(getStatusComponent());
 		return line;
 	}
 
-	public Component getNameplateComponent() {
+	public Component getNameplateComponent(boolean lost) {
 		Component nameHover = getNameHoverComponent();
+		String hp = lost ? "0" : df.format(data.getPlayer().getHealth());
 		return Component.text(data.getSessionData().getData().getDisplay(), NamedTextColor.YELLOW)
 		.append(Component.text(" (", NamedTextColor.GRAY))
-		.append(Component.text(df.format(data.getPlayer().getHealth()), NamedTextColor.GREEN))
+		.append(Component.text(hp, NamedTextColor.GREEN))
 		.append(Component.text(")", NamedTextColor.GRAY))
 		.hoverEvent(nameHover.children().isEmpty() ? null : HoverEvent.showText(getNameHoverComponent()))
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null));
@@ -323,12 +333,6 @@ public class FightStatistics {
 	}
 
 	public Component getDamageTakenComponent() {
-		Component taken = Component.text("");
-		if (damageShielded > 0) {
-			taken = taken.append(Component.text(df.format(damageShielded) + "♥", NamedTextColor.YELLOW))
-				.append(Component.text(", ", NamedTextColor.GRAY));
-		}
-		
 		Component hover = Component.text("Damage taken post buff and mitigation:", NamedTextColor.GRAY);
 		double totalDamageTaken = 0;
 		boolean hasDetail = false;
@@ -366,7 +370,16 @@ public class FightStatistics {
 			hasDetail = true;
 		}
 
-		taken = taken.append(Component.text(df.format(totalDamageTaken - damageShielded) + "♥", NamedTextColor.DARK_RED));
+		// Split incoming damage into what was absorbed (shields/rounding) vs. what actually hit health.
+		// Uses the real post-shield health damage instead of reconstructing it, so the HP number matches
+		// actual health lost even with team-applied shields or rounding.
+		double shielded = Math.max(0, totalDamageTaken - healthDamageTaken);
+		Component taken = Component.text("");
+		if (shielded > 0) {
+			taken = taken.append(Component.text(df.format(shielded) + "♥", NamedTextColor.YELLOW))
+				.append(Component.text(", ", NamedTextColor.GRAY));
+		}
+		taken = taken.append(Component.text(df.format(healthDamageTaken) + "♥", NamedTextColor.DARK_RED));
 		if (hasDetail) taken = taken.hoverEvent(hover);
 
 		return taken;

@@ -1318,6 +1318,7 @@ public abstract class FightInstance extends Instance {
 		for (FightData fd : toKill) {
 			LivingEntity li = fd.getEntity();
 			if (li == null) continue;
+			System.out.println("Removing " + li.getName() + " " + pluginDisable);
 			if (pluginDisable) {
 				li.remove();
 			} else {

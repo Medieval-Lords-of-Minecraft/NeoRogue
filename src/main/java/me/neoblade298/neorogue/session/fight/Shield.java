@@ -91,7 +91,8 @@ public class Shield implements Comparable<Shield> {
 		double original = this.amount;
 		this.amount = Math.max(0, this.amount - damage);
 		shieldHolder.subtractShields(original - amount);
-		FightData fd = FightInstance.getFightData(applier);
+		// Credit the damage shielded to whoever received the shield, not who applied it
+		FightData fd = shieldHolder.getData();
 		if (fd instanceof PlayerFightData) {
 			((PlayerFightData) fd).getStats().addDamageShielded(original - amount);
 		}

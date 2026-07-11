@@ -51,20 +51,25 @@ public class BreakingPoint extends Equipment {
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
-				// Cancel the refresh task when crouching
+				// Apply shield when crouching
 				BukkitTask task = am.getTask();
 				if (task != null) {
 					task.cancel();
 					am.setTask(null);
 				}
-				if (am.getObject() == null) return TriggerResult.keep();
-				Shield shield = (Shield) am.getObject();
-				am.setDouble(shield.getAmount());
-				shield.remove();
-				am.setObject(null);
+				if (am.getDouble() <= 0)
+					return TriggerResult.keep();
+				Shield shield = data.addPermanentShield(data.getPlayer().getUniqueId(), am.getDouble(), true, this);
+				am.setObject(shield);
 			}
 			else {
-				// Refresh shield when uncrouch
+				// Remove shield when uncrouch and start the refresh timer
+				if (am.getObject() != null) {
+					Shield shield = (Shield) am.getObject();
+					am.setDouble(shield.getAmount());
+					shield.remove();
+					am.setObject(null);
+				}
 				BukkitTask task = am.getTask();
 				if (task != null) {
 					task.cancel();
@@ -79,10 +84,6 @@ public class BreakingPoint extends Equipment {
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				data.addTask(task);
 				am.setTask(task);
-				if (am.getDouble() <= 0)
-					return TriggerResult.keep();
-				Shield shield = data.addPermanentShield(data.getPlayer().getUniqueId(), am.getDouble(), true, this);
-				am.setObject(shield);
 			}
 			return TriggerResult.keep();
 		});

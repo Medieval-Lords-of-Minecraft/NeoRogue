@@ -636,6 +636,8 @@ public class DamageMeta {
 			}
 			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
 			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);
+			// Record the actual health damage (post shields/mitigation) for accurate stats display
+			pdata.getStats().addHealthDamageTaken(damage + ignoreShieldsDamage);
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		Vector originalVelocity = target.getVelocity().clone();
