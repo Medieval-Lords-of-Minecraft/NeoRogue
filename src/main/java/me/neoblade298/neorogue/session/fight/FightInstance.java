@@ -1313,17 +1313,13 @@ public abstract class FightInstance extends Instance {
 		}
 
 		// Remove all mobs spawned for this fight, no matter how it ended (including plugin disable).
-		// On a normal cleanup we kill them (same as winning); on plugin disable we remove directly
-		// since damage events won't process during shutdown.
+		// Use direct removal rather than lethal damage: bosses/adds can be invincible or immune to
+		// generic damage (so li.damage would leave them alive), and killing them here would fire
+		// MythicMobs death skills that could summon even more mobs mid-cleanup.
 		for (FightData fd : toKill) {
 			LivingEntity li = fd.getEntity();
 			if (li == null) continue;
-			System.out.println("Removing " + li.getName() + " " + pluginDisable);
-			if (pluginDisable) {
-				li.remove();
-			} else {
-				li.damage(li.getHealth() + 20);
-			}
+			li.remove();
 		}
 
 		if (recordAnalytics) {

@@ -14,13 +14,11 @@ public class Shield implements Comparable<Shield> {
 	private boolean isPercent;
 	private int decayRepetitions;
 	private ShieldHolder shieldHolder;
-	private UUID applier;
 	private BukkitTask task;
 	public Shield(UUID applier, double amt, boolean isPercent, int decayDelayTicks, double decayAmount, 
 			int decayPeriodTicks, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
-		this.applier = applier;
 		this.decayDelayTicks = decayDelayTicks;
 		this.decayAmount = decayAmount;
 		this.decayPeriodTicks = decayPeriodTicks;

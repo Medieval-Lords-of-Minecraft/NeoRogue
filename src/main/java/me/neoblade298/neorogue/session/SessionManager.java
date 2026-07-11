@@ -77,6 +77,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -660,6 +661,12 @@ public class SessionManager implements Listener {
 				if (s.getInstance() == null)
 					return;
 				ActiveMob am = e.getMob();
+				// Register the summoned mob so fight cleanup can remove it. Mob-summoned adds are
+				// otherwise never tracked in fightData and leak when the fight is cleaned up.
+				if (!FightInstance.hasFightData(ent.getUniqueId())) {
+					FightData fd = new FightData((LivingEntity) ent, am, mob, null);
+					if (fd.getEntity() != null) FightInstance.putFightData(ent.getUniqueId(), fd);
+				}
 				// Delay 1 tick so MythicMobs finishes applying mob options (health) before we override
 				Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
 					FightInstance.scaleMob(s, mob, mythicMob, am);

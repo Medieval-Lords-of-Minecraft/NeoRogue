@@ -133,7 +133,7 @@ public class BeamStaff extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD, "Fires a beam down onto the block you aim at after a brief delay, dealing " + 
-		" damage to all enemies in a small radius. Applies " +
+		"damage to all enemies in a small radius. Applies " +
 		DescUtil.yellow(numStatuses + "") + " random stacks of " + GlossaryTag.BURN.tag(this) + ", " +
 		GlossaryTag.INSANITY.tag(this) + ", " + GlossaryTag.CONCUSSED.tag(this) + ", or " +
 		GlossaryTag.FROST.tag(this) + ".");

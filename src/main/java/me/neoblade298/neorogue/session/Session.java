@@ -821,6 +821,15 @@ public class Session {
 		return notoriety * 5;
 	}
 
+	// Each notoriety level grants a 2% bonus to run money earnings
+	public double getNotorietyMoneyMultiplier() {
+		return 1.0 + notoriety * 0.02;
+	}
+
+	public int getNotorietyMoneyBonusPercent() {
+		return notoriety * 2;
+	}
+
 	public void awardXp(int baseXp) {
 		if (regionsCompleted > 3) return;
 		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
