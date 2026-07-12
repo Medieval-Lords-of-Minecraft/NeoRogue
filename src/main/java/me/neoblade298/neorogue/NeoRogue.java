@@ -91,6 +91,7 @@ import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
@@ -128,6 +129,7 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
 		saveResource("achievements.yml", false);
+		saveResource("prices.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
 		RunReward.setupEconomy();
@@ -165,6 +167,7 @@ public class NeoRogue extends JavaPlugin {
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
+		MaterialPrices.reload(); // Load material pricing config
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);

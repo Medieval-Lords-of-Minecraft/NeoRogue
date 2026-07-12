@@ -1,0 +1,124 @@
+# ==========================================================================
+# Material pricing configuration
+# --------------------------------------------------------------------------
+# Grounding reference: 1 DIAMOND = 100 currency.
+# Prices are currency units (decimals allowed), valued relative to that anchor.
+#
+# Keys must be valid Bukkit Material enum names (uppercase, underscores).
+# Unknown material names are logged and skipped on load.
+#
+# This file is the current pricing backend. The loader is written against a
+# swappable source interface (MaterialPriceSource), so a SQL-backed source can
+# be dropped in later without touching consumers of MaterialPrices.
+# ==========================================================================
+
+prices:
+  # --- Ores / precious metals ---
+  DIAMOND: 100
+  DIAMOND_BLOCK: 900
+  EMERALD: 80
+  EMERALD_BLOCK: 720
+  GOLD_INGOT: 40
+  GOLD_BLOCK: 360
+  RAW_GOLD: 36
+  IRON_INGOT: 20
+  IRON_BLOCK: 180
+  RAW_IRON: 18
+  COPPER_INGOT: 8
+  COPPER_BLOCK: 72
+  RAW_COPPER: 7
+  NETHERITE_INGOT: 1600
+  NETHERITE_SCRAP: 300
+  ANCIENT_DEBRIS: 320
+  NETHERITE_BLOCK: 14400
+
+  # --- Common minerals / dusts ---
+  COAL: 2
+  CHARCOAL: 2
+  COAL_BLOCK: 18
+  REDSTONE: 3
+  REDSTONE_BLOCK: 27
+  LAPIS_LAZULI: 4
+  LAPIS_BLOCK: 36
+  QUARTZ: 3
+  GLOWSTONE_DUST: 4
+  AMETHYST_SHARD: 5
+
+  # --- Building blocks ---
+  STONE: 0.1
+  COBBLESTONE: 0.1
+  DIRT: 0.1
+  SAND: 0.1
+  GRAVEL: 0.1
+  GLASS: 0.15
+  OBSIDIAN: 1
+  FLINT: 0.3
+  CLAY_BALL: 0.2
+  BRICK: 0.3
+  STICK: 0.1
+
+  # --- Logs (all wood types, incl. stripped + stems) ---
+  OAK_LOG: 0.2
+  SPRUCE_LOG: 0.2
+  BIRCH_LOG: 0.2
+  JUNGLE_LOG: 0.2
+  ACACIA_LOG: 0.2
+  DARK_OAK_LOG: 0.2
+  MANGROVE_LOG: 0.2
+  CHERRY_LOG: 0.2
+  PALE_OAK_LOG: 0.2
+  CRIMSON_STEM: 0.2
+  WARPED_STEM: 0.2
+  BAMBOO_BLOCK: 0.2
+  STRIPPED_OAK_LOG: 0.2
+  STRIPPED_SPRUCE_LOG: 0.2
+  STRIPPED_BIRCH_LOG: 0.2
+  STRIPPED_JUNGLE_LOG: 0.2
+  STRIPPED_ACACIA_LOG: 0.2
+  STRIPPED_DARK_OAK_LOG: 0.2
+  STRIPPED_MANGROVE_LOG: 0.2
+  STRIPPED_CHERRY_LOG: 0.2
+  STRIPPED_PALE_OAK_LOG: 0.2
+  STRIPPED_CRIMSON_STEM: 0.2
+  STRIPPED_WARPED_STEM: 0.2
+  STRIPPED_BAMBOO_BLOCK: 0.2
+
+  # --- Planks (all wood types) ---
+  OAK_PLANKS: 0.1
+  SPRUCE_PLANKS: 0.1
+  BIRCH_PLANKS: 0.1
+  JUNGLE_PLANKS: 0.1
+  ACACIA_PLANKS: 0.1
+  DARK_OAK_PLANKS: 0.1
+  MANGROVE_PLANKS: 0.1
+  CHERRY_PLANKS: 0.1
+  PALE_OAK_PLANKS: 0.1
+  CRIMSON_PLANKS: 0.1
+  WARPED_PLANKS: 0.1
+  BAMBOO_PLANKS: 0.1
+
+  # --- Food ---
+  WHEAT: 0.2
+  BREAD: 0.6
+  APPLE: 0.3
+  CARROT: 0.2
+  POTATO: 0.2
+  GOLDEN_CARROT: 4.5
+  EGG: 0.1
+  SUGAR: 0.1
+
+  # --- Mob drops ---
+  STRING: 3
+  LEATHER: 5
+  FEATHER: 2
+  BONE: 2
+  GUNPOWDER: 6
+  SPIDER_EYE: 3
+  ROTTEN_FLESH: 1
+  SLIME_BALL: 8
+  ENDER_PEARL: 30
+  ENDER_EYE: 70
+  BLAZE_ROD: 25
+  BLAZE_POWDER: 12
+  GHAST_TEAR: 50
+  MAGMA_CREAM: 20
