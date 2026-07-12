@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -42,7 +41,7 @@ public class EyeOfTheStorm extends Equipment {
 	public EyeOfTheStorm(boolean isUpgraded) {
 		super(ID, "Eye Of The Storm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(24, 0, 7, 0, tp.range));
-		damage = isUpgraded ? 120 : 80;
+		damage = isUpgraded ? 60 : 40;
 		elec = isUpgraded ? 4 : 3;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}

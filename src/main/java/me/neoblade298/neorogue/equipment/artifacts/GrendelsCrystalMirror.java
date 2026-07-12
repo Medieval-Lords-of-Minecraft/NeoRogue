@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class GrendelsCrystalMirror extends Artifact {
 	private static final String ID = "GrendelsCrystalMirror";
 	public GrendelsCrystalMirror() {
-		super(ID, "Grendel's Crystal Mirror", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Grendel's Crystal Mirror", Rarity.RARE, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE });
 	}
 	
 	public static Equipment get() {
