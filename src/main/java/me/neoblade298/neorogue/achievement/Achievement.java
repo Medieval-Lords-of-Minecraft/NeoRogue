@@ -37,10 +37,6 @@ public interface Achievement {
 		return null;
 	}
 
-	default int getSortPriority() {
-		return 0;
-	}
-
 	/**
 	 * Returns the progress display lines for the item tooltip.
 	 * Override this for custom progress display (e.g. objective checklists).

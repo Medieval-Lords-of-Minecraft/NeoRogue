@@ -54,11 +54,6 @@ public class AcquireRarityAchievement implements Achievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 30 + rarity.getValue();
-	}
-
-	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
 		String name = rarity.name().charAt(0) + rarity.name().substring(1).toLowerCase();

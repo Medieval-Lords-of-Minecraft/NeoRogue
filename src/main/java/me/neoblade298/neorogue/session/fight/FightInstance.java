@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -1130,7 +1131,7 @@ public abstract class FightInstance extends Instance {
 					inst.spawnMob();
 				}
 			}
-		}.runTaskLater(NeoRogue.inst(), 60L);
+		}.runTaskLater(NeoRogue.inst(), 40L);
 		
 		tasks.add(new BukkitRunnable() {
 			boolean alternate = false;
@@ -1209,7 +1210,9 @@ public abstract class FightInstance extends Instance {
 		);
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 		
-		s.broadcast(FightStatistics.getStatsHeader(timer, getFightScore()));
+		// Don't show a fight score/rating when the player lost, as it's not relevant
+		FightScore score = Boolean.FALSE.equals(fightWon) ? null : getFightScore();
+		s.broadcast(FightStatistics.getStatsHeader(timer, score));
 	}
 
 	public FightScore getFightScore() {
@@ -1221,6 +1224,7 @@ public abstract class FightInstance extends Instance {
 		cleanupHelper(pluginDisable);
 	}
 
+	// Needs a helper because this is called from two places
 	private void cleanupHelper(boolean pluginDisable) {
 		if (isCleaned) return;
 		isCleaned = true;
@@ -1265,7 +1269,11 @@ public abstract class FightInstance extends Instance {
 					data.revertMaxHealth();
 					data.updateCoinsBar();
 					p.clearActivePotionEffects();
-					s.broadcast(pdata.getStats().getStatLine());
+					p.getAttribute(Attribute.JUMP_STRENGTH)
+						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+					p.getAttribute(Attribute.JUMP_STRENGTH)
+						.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
+					s.broadcast(pdata.getStats().getStatLine(Boolean.FALSE.equals(fightWon)));
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
@@ -1305,16 +1313,13 @@ public abstract class FightInstance extends Instance {
 		}
 
 		// Remove all mobs spawned for this fight, no matter how it ended (including plugin disable).
-		// On a normal cleanup we kill them (same as winning); on plugin disable we remove directly
-		// since damage events won't process during shutdown.
+		// Use direct removal rather than lethal damage: bosses/adds can be invincible or immune to
+		// generic damage (so li.damage would leave them alive), and killing them here would fire
+		// MythicMobs death skills that could summon even more mobs mid-cleanup.
 		for (FightData fd : toKill) {
 			LivingEntity li = fd.getEntity();
 			if (li == null) continue;
-			if (pluginDisable) {
-				li.remove();
-			} else {
-				li.damage(li.getHealth() + 20);
-			}
+			li.remove();
 		}
 
 		if (recordAnalytics) {

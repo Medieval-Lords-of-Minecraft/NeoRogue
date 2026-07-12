@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -25,7 +24,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class AchievementsInventory extends CoreInventory {
 	private static final int BACK = 0;
@@ -62,8 +60,7 @@ public class AchievementsInventory extends CoreInventory {
 		for (Achievement ach : visible) {
 			list.add(getProgress(pd, ach, ec));
 		}
-		list.sort(Comparator.comparingInt((AchievementProgress ap) -> ap.getAchievement().getSortPriority())
-				.thenComparing(ap -> PlainTextComponentSerializer.plainText().serialize(ap.getAchievement().getDisplayName())));
+		// Achievements are shown in registration order (see AchievementManager's list)
 		return list;
 	}
 

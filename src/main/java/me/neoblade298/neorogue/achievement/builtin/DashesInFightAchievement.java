@@ -4,51 +4,39 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
+import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
-import me.neoblade298.neorogue.region.RegionType;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class SRankRegionAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 1, 5, 20, 100 };
-
-	private final String id;
-	private final Component displayName;
-	private final Material material;
-	private final RegionType region;
-	private final RegionType debugRegion;
-
-	public SRankRegionAchievement(String id, Component displayName, Material material, RegionType region) {
-		this.id = id;
-		this.displayName = displayName;
-		this.material = material;
-		this.region = region;
-		this.debugRegion = RegionType.getDebugRegion(region);
-	}
+// Thief-only. Tracks the most dashes performed within a single fight. Mastery tiers at
+// 50 / 100 / 200 dashes.
+public class DashesInFightAchievement implements Achievement {
+	private static final String ID = "shadow_dancer";
+	private static final int[] THRESHOLDS = { 50, 100, 200 };
 
 	@Override
 	public String getId() {
-		return id;
+		return ID;
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return displayName;
+		return Component.text("Shadow Dancer", NamedTextColor.GOLD);
 	}
 
 	@Override
 	public Material getMaterial() {
-		return material;
+		return Material.SUGAR;
 	}
 
 	@Override
@@ -57,11 +45,19 @@ public class SRankRegionAchievement implements Achievement {
 	}
 
 	@Override
+	public AchievementScope getScope() {
+		return AchievementScope.CLASS;
+	}
+
+	@Override
+	public EquipmentClass getRequiredClass() {
+		return EquipmentClass.THIEF;
+	}
+
+	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
-		String desc = target == 1 ? "Beat a " + region.getDisplay() + " fight with S rank." :
-				"Beat " + target + " " + region.getDisplay() + " fights with S rank.";
-		return List.of(Component.text(desc, NamedTextColor.GRAY));
+		return List.of(Component.text("Dash " + target + " times in a single fight.", NamedTextColor.GRAY));
 	}
 
 	@Override
@@ -71,13 +67,13 @@ public class SRankRegionAchievement implements Achievement {
 
 	@Override
 	public void registerFight(FightInstance fight, PlayerFightData data, AchievementProgress progress) {
-		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
-			RegionType fightRegion = pdata.getSessionData().getSession().getRegion().getType();
-			if (fightRegion != region && fightRegion != debugRegion) return TriggerResult.keep();
-			if (pdata.getInstance().getFightScore() == FightScore.S) {
-				if (progress.addProgress(1)) {
-					Player p = pdata.getPlayer();
-					AchievementManager.notifyMastery(p, this, progress);
+		// Fresh per-fight counter; progress tracks the best single-fight dash count ever reached.
+		int[] fightCount = { 0 };
+		data.addTrigger(ID, Trigger.DASH, (pdata, in) -> {
+			fightCount[0]++;
+			if (fightCount[0] > progress.getProgress()) {
+				if (progress.addProgress(fightCount[0] - progress.getProgress())) {
+					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 				}
 			}
 			return TriggerResult.keep();

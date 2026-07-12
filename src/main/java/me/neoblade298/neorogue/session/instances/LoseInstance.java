@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -25,7 +26,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
-	private TextDisplay holo, leaveHolo;
+	private TextDisplay holo, leaveHolo, financeHolo;
+	private Location financeBlock;
 	
 	public LoseInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -46,6 +48,11 @@ public class LoseInstance extends EditInventoryInstance {
 				Component.text("Right click to view stats!"));
 		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
 				Component.text("Right click to leave!"));
+		// Finances gold block, offset to the side of the stats/leave axis (adjust offset if it clips geometry)
+		financeBlock = spawn.clone().add(2, -0.5, 0);
+		financeBlock.getBlock().setType(Material.GOLD_BLOCK);
+		financeHolo = NeoRogue.createHologram(spawn.clone().add(2, 2, 0),
+				Component.text("Right click to view finances!", NamedTextColor.GOLD));
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.trigger(SessionTrigger.FINISH_RUN, false);
@@ -86,6 +93,8 @@ public class LoseInstance extends EditInventoryInstance {
 		super.cleanup(pluginDisable);
 		holo.remove();
 		leaveHolo.remove();
+		financeHolo.remove();
+		if (financeBlock != null) financeBlock.getBlock().setType(Material.AIR);
 	}
 
 	@Override
@@ -107,6 +116,10 @@ public class LoseInstance extends EditInventoryInstance {
 				if (data != null) {
 					data.getSessionStats().sendTo(p);
 				}
+				return;
+			}
+			if (e.getClickedBlock().getType() == Material.GOLD_BLOCK) {
+				RunReward.sendFinancesSummary(p, s, false);
 				return;
 			}
 		}

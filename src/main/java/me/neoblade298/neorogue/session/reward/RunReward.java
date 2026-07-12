@@ -1,8 +1,6 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -10,40 +8,27 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.player.PlayerData;
-import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.milkbowl.vault2.economy.Economy;
 
 // Handles paying out real (VaultUnlocked) currency to party members when a run ends.
-// The payout formula lives in calculatePayout() and is intentionally kept simple
+// The payout formula lives in calculateBreakdown() and is intentionally kept simple
 // and centralized so the numbers can be tuned easily later.
 public class RunReward {
 	private static Economy economy;
 
-	// ----- Placeholder tuning constants (adjust these to tune payouts) -----
+	// ----- Payout tuning constants (adjust these to tune payouts) -----
 	// Flat base amount awarded regardless of performance.
 	private static final double WIN_BASE = 100.0;
 	private static final double LOSE_BASE = 25.0;
 
-	// Per-unit bonus values. These are summed into a "bonus" pool before the
-	// win/lose bonus multiplier is applied.
-	private static final double NOTORIETY_BONUS = 10.0; // per notoriety level
-	private static final double REGION_BONUS = 25.0; // per region completed
-	private static final double NODE_BONUS = 2.0; // per node visited
-	private static final double ENDLESS_BONUS = 50.0; // flat if the run is endless
+	// Per-unit bonus values.
+	private static final double NODE_BONUS = 10.0; // per node visited
+	private static final double REGION_BONUS = 100.0; // per region completed
 
-	// Wins apply the full bonus pool; losses only get a fraction of it.
-	private static final double WIN_BONUS_MULTIPLIER = 1.0;
-	private static final double LOSE_BONUS_MULTIPLIER = 0.25;
-
-	// Optional per-flag bonuses. Add entries like FLAG_BONUSES.put("some_flag", 50.0);
-	// Any listed flag the player has adds its value to the bonus pool.
-	private static final Map<String, Double> FLAG_BONUSES = new LinkedHashMap<String, Double>();
-	static {
-		// FLAG_BONUSES.put("example_flag", 50.0);
-	}
+	// A loss with fewer than this many nodes visited earns nothing.
+	private static final int DEATH_NODE_THRESHOLD = 5;
 	// -----------------------------------------------------------------------
 
 	// Hooks VaultUnlocked's economy service. Call once on plugin enable (after VaultUnlocked has loaded).
@@ -70,46 +55,89 @@ public class RunReward {
 	public static void payout(Session s, boolean won) {
 		if (economy == null) return;
 
+		Breakdown b = calculateBreakdown(s, won);
 		String pluginName = NeoRogue.inst().getName();
 		for (PlayerSessionData psd : s.getParty().values()) {
-			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			double amount = calculatePayout(s, pd, won);
-			if (amount <= 0) continue;
-
-			BigDecimal payment = BigDecimal.valueOf(amount);
-			economy.deposit(pluginName, psd.getUniqueId(), payment);
+			if (b.total > 0) {
+				economy.deposit(pluginName, psd.getUniqueId(), BigDecimal.valueOf(b.total));
+			}
 
 			Player p = psd.getPlayer();
 			if (p != null) {
-				Util.msgRaw(p, "<green>You earned <yellow>" + economy.format(pluginName, payment) + "<green> for "
-						+ (won ? "winning" : "completing") + " your run!");
+				Util.msgRaw(p, "<green>You earned <yellow>" + formatMoney(b.total) + "<green> for "
+						+ (won ? "winning" : "completing") + " your run! <gray>(click the gold block for a breakdown)");
 			}
 		}
 	}
 
 	// Central payout formula. Edit the constants above or the math here to tune rewards.
-	public static double calculatePayout(Session s, PlayerData pd, boolean won) {
+	public static Breakdown calculateBreakdown(Session s, boolean won) {
+		int nodes = s.getNodesVisited();
+		int regions = s.getRegionsCompleted();
+		int notoriety = s.getNotoriety();
+
+		// A loss before reaching the node threshold earns nothing, no matter the progress.
+		boolean zeroedByDeath = !won && nodes < DEATH_NODE_THRESHOLD;
+
 		double base = won ? WIN_BASE : LOSE_BASE;
+		double nodeBonus = nodes * NODE_BONUS;
+		double regionBonus = regions * REGION_BONUS;
+		double subtotal = base + nodeBonus + regionBonus;
+		double notorietyMultiplier = s.getNotorietyMoneyMultiplier();
+		double total = zeroedByDeath ? 0.0 : subtotal * notorietyMultiplier;
 
-		// Bonus pool built from run progress and player state.
-		double bonus = 0.0;
-		bonus += s.getNotoriety() * NOTORIETY_BONUS;
-		bonus += s.getRegionsCompleted() * REGION_BONUS;
-		bonus += s.getNodesVisited() * NODE_BONUS;
-		if (s.isEndless()) bonus += ENDLESS_BONUS;
-		bonus += calculateFlagBonus(pd);
-
-		// Wins reap the full bonus pool; losses only a fraction.
-		double bonusMultiplier = won ? WIN_BONUS_MULTIPLIER : LOSE_BONUS_MULTIPLIER;
-		return base + (bonus * bonusMultiplier);
+		return new Breakdown(won, zeroedByDeath, nodes, regions, notoriety, base, nodeBonus, regionBonus,
+				subtotal, notorietyMultiplier, total);
 	}
 
-	private static double calculateFlagBonus(PlayerData pd) {
-		if (pd == null || FLAG_BONUSES.isEmpty()) return 0.0;
-		double total = 0.0;
-		for (Map.Entry<String, Double> entry : FLAG_BONUSES.entrySet()) {
-			if (pd.hasFlag(entry.getKey())) total += entry.getValue();
+	// Sends a chat breakdown of a player's run earnings. Used by the win/lose "finances" gold block.
+	public static void sendFinancesSummary(Player p, Session s, boolean won) {
+		Breakdown b = calculateBreakdown(s, won);
+		Util.msgRaw(p, "<gold><st>                    </st>[ <yellow>Run Finances</yellow> ]<st>                    </st>");
+		if (b.zeroedByDeath) {
+			Util.msgRaw(p, "<red>You fell before visiting <yellow>" + DEATH_NODE_THRESHOLD
+					+ "<red> nodes, so you earned nothing this run.");
+			return;
 		}
-		return total;
+
+		Util.msgRaw(p, "<gray>Base (" + (won ? "victory" : "completion") + "): <green>+" + formatMoney(b.base));
+		Util.msgRaw(p, "<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 " + formatMoney(NODE_BONUS)
+				+ "): <green>+" + formatMoney(b.nodeBonus));
+		Util.msgRaw(p, "<gray>Regions completed (<white>" + b.regionsCompleted + "<gray> \u00d7 " + formatMoney(REGION_BONUS)
+				+ "): <green>+" + formatMoney(b.regionBonus));
+		Util.msgRaw(p, "<gray>Subtotal: <yellow>" + formatMoney(b.subtotal));
+		Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
+				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier));
+		Util.msgRaw(p, "<gold>Total earned: <yellow>" + formatMoney(b.total));
+	}
+
+	private static String formatMoney(double amount) {
+		if (economy != null) {
+			return economy.format(NeoRogue.inst().getName(), BigDecimal.valueOf(amount));
+		}
+		return String.valueOf(Math.round(amount));
+	}
+
+	// Immutable breakdown of a single run's payout, used for both paying out and displaying finances.
+	public static class Breakdown {
+		public final boolean won, zeroedByDeath;
+		public final int nodesVisited, regionsCompleted, notoriety;
+		public final double base, nodeBonus, regionBonus, subtotal, notorietyMultiplier, total;
+
+		private Breakdown(boolean won, boolean zeroedByDeath, int nodesVisited, int regionsCompleted, int notoriety,
+				double base, double nodeBonus, double regionBonus, double subtotal, double notorietyMultiplier,
+				double total) {
+			this.won = won;
+			this.zeroedByDeath = zeroedByDeath;
+			this.nodesVisited = nodesVisited;
+			this.regionsCompleted = regionsCompleted;
+			this.notoriety = notoriety;
+			this.base = base;
+			this.nodeBonus = nodeBonus;
+			this.regionBonus = regionBonus;
+			this.subtotal = subtotal;
+			this.notorietyMultiplier = notorietyMultiplier;
+			this.total = total;
+		}
 	}
 }

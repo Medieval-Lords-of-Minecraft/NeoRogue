@@ -58,7 +58,9 @@ public class FrostbiteBow extends Bow {
 			bproj.setDamageBonus(hasBonus ? damage : 0);
 			if (hasBonus) {
 				bproj.addProjectileTickAction((p2, inst, interpolation) -> {
-					pc.play(data.getPlayer(), inst.getLocation());
+					if (inst.getTick() % 5 == 0) {
+						pc.play(data.getPlayer(), inst.getLocation());
+					}
 				});
 			}
 			ProjectileGroup proj = new ProjectileGroup(bproj);

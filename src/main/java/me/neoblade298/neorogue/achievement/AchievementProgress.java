@@ -110,18 +110,18 @@ public class AchievementProgress {
 		return lines;
 	}
 
-	private static final Material[] MASTERY_DYES = {
-		Material.GRAY_DYE,       // mastery 0 — no progress
-		Material.YELLOW_DYE,     // mastery 1
-		Material.LIME_DYE,       // mastery 2
-		Material.GREEN_DYE,      // mastery 3
-		Material.CYAN_DYE,       // mastery 4+
+	private static final Material[] MASTERY_MATS = {
+		Material.GRAY_STAINED_GLASS_PANE,       // mastery 0 — no progress
+		Material.YELLOW_STAINED_GLASS_PANE,     // mastery 1
+		Material.LIME_STAINED_GLASS_PANE,       // mastery 2
+		Material.GREEN_STAINED_GLASS_PANE,      // mastery 3
+		Material.CYAN_STAINED_GLASS_PANE,       // mastery 4+
 	};
 
 	public ItemStack toItemStack() {
 		Material mat = isComplete()
 				? achievement.getMaterial()
-				: MASTERY_DYES[Math.min(getMastery(), MASTERY_DYES.length - 1)];
+				: MASTERY_MATS[Math.min(getMastery(), MASTERY_MATS.length - 1)];
 
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();

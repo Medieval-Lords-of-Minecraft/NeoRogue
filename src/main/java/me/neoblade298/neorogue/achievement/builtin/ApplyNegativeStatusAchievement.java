@@ -55,11 +55,6 @@ public class ApplyNegativeStatusAchievement implements Achievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 4;
-	}
-
-	@Override
 	public void registerFight(FightInstance fight, PlayerFightData data, AchievementProgress progress) {
 		data.addTrigger(ID, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;

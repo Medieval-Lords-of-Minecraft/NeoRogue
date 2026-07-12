@@ -77,6 +77,9 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
+import me.neoblade298.neorogue.session.event.SessionJoinEvent;
+import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -143,13 +146,16 @@ public class SessionManager implements Listener {
 		sessions.put(uuid, s);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null) p.getInventory().clear();
+		Bukkit.getPluginManager().callEvent(new SessionJoinEvent(uuid, s));
 	}
 
 	public static void removeFromSession(UUID uuid) {
-		sessions.remove(uuid);
+		Session s = sessions.remove(uuid);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null)
 			p.teleport(NeoRogue.spawn);
+		if (s != null)
+			Bukkit.getPluginManager().callEvent(new SessionLeaveEvent(uuid, s));
 	}
 
 	public static void removeSession(Session s) {
@@ -660,6 +666,12 @@ public class SessionManager implements Listener {
 				if (s.getInstance() == null)
 					return;
 				ActiveMob am = e.getMob();
+				// Register the summoned mob so fight cleanup can remove it. Mob-summoned adds are
+				// otherwise never tracked in fightData and leak when the fight is cleaned up.
+				if (!FightInstance.hasFightData(ent.getUniqueId())) {
+					FightData fd = new FightData((LivingEntity) ent, am, mob, null);
+					if (fd.getEntity() != null) FightInstance.putFightData(ent.getUniqueId(), fd);
+				}
 				// Delay 1 tick so MythicMobs finishes applying mob options (health) before we override
 				Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
 					FightInstance.scaleMob(s, mob, mythicMob, am);
@@ -753,6 +765,7 @@ public class SessionManager implements Listener {
 		PlayerFlags.applyDefaults(p);
 		p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 		p.setHealthScaled(false);
+		p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
 		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		p.getAttribute(Attribute.JUMP_STRENGTH)

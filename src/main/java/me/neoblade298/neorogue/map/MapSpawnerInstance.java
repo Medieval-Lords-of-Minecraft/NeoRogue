@@ -23,8 +23,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawnerInstance {
-	// Spawn telegraph: a summoning circle that shows for 1 second before the mob appears
-	private static final int SPAWN_DELAY = 20;
+	private static final int SPAWN_DELAY = 10;
 	private static final Circle circ = new Circle(0.75);
 	private static final ParticleContainer ring = new ParticleContainer(Particle.SOUL_FIRE_FLAME)
 			.count(1).spread(0, 0).speed(0).forceVisible(Audience.ALL);

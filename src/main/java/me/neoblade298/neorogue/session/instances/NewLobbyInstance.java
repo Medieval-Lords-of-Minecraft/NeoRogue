@@ -54,8 +54,8 @@ public class NewLobbyInstance extends LobbyInstance {
 		players.put(host.getUniqueId(), getDefaultClass(host.getUniqueId()));
 
 		// Setup hologram
-		Component text = Component.text("Players can join with /nr join " + host.getName()).appendNewline()
-			.append(Component.text("Choose a class then hit the button")).appendNewline()
+		Component text = Component.text("Choose a class then")
+            .append(Component.text("hit the button")).appendNewline()
 			.append(Component.text("when you're ready!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
         

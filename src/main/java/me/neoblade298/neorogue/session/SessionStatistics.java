@@ -38,8 +38,9 @@ public class SessionStatistics {
 				totalTaken += amt;
 			}
 		}
-		damageTakenHealth += totalTaken - fs.getDamageShielded();
-		damageTakenShields += fs.getDamageShielded();
+		double healthTaken = fs.getHealthDamageTaken();
+		damageTakenHealth += healthTaken;
+		damageTakenShields += Math.max(0, totalTaken - healthTaken);
 
 		shieldsApplied += fs.getShieldsApplied();
 		healingDone += fs.getHealingGiven() + fs.getSelfHealing();

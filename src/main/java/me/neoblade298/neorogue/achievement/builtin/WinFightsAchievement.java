@@ -53,11 +53,6 @@ public class WinFightsAchievement implements Achievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 3;
-	}
-
-	@Override
 	public void registerFight(FightInstance fight, PlayerFightData data, AchievementProgress progress) {
 		data.addTrigger(ID, Trigger.WIN_FIGHT, (pdata, in) -> {
 			if (progress.addProgress(1)) {

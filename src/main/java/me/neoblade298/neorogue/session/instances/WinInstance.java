@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -26,7 +27,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class WinInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
-	private TextDisplay holo, leaveHolo;
+	private TextDisplay holo, leaveHolo, financeHolo;
+	private Location financeBlock;
 
 	public WinInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -60,6 +62,11 @@ public class WinInstance extends EditInventoryInstance {
 				Component.text("Right click to view stats!", NamedTextColor.WHITE));
 		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
 				Component.text("Right click to leave!", NamedTextColor.WHITE));
+		// Finances gold block, offset to the side of the stats/leave axis (adjust offset if it clips geometry)
+		financeBlock = spawn.clone().add(2, -0.5, 0);
+		financeBlock.getBlock().setType(Material.GOLD_BLOCK);
+		financeHolo = NeoRogue.createHologram(spawn.clone().add(2, 2, 0),
+				Component.text("Right click to view finances!", NamedTextColor.GOLD));
 		s.broadcast(Component.text("Congratulations! You won!", NamedTextColor.GREEN));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
@@ -95,6 +102,8 @@ public class WinInstance extends EditInventoryInstance {
 		super.cleanup(pluginDisable);
 		holo.remove();
 		leaveHolo.remove();
+		financeHolo.remove();
+		if (financeBlock != null) financeBlock.getBlock().setType(Material.AIR);
 	}
 
 	@Override
@@ -116,6 +125,10 @@ public class WinInstance extends EditInventoryInstance {
 				if (data != null) {
 					data.getSessionStats().sendTo(p);
 				}
+				return;
+			}
+			if (e.getClickedBlock().getType() == Material.GOLD_BLOCK) {
+				RunReward.sendFinancesSummary(p, s, true);
 				return;
 			}
 		}

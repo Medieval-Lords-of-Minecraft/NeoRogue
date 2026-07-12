@@ -14,6 +14,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -39,15 +41,37 @@ public class BeamStaff extends Equipment {
 	private static final StatusType[] STATUS_POOL = { StatusType.BURN, StatusType.INSANITY, StatusType.CONCUSSED, StatusType.FROST };
 	private static final TargetProperties tp = TargetProperties.radius(10, false),
 		aoe = TargetProperties.radius(2, false);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(10).spread(0.25, 0.2).speed(0.01);
+	private static final ParticleContainer beamPart = new ParticleContainer(Particle.END_ROD).count(1).spread(0, 0).speed(0),
+			spiralPart = new ParticleContainer(Particle.FIREWORK).count(1).spread(0, 0).speed(0.01),
+			burst = new ParticleContainer(Particle.FIREWORK).count(40).spread(1.2, 0.4).speed(0.08),
+			ringEdge = new ParticleContainer(Particle.END_ROD).count(1).spread(0, 0).speed(0),
+			ringFill = new ParticleContainer(Particle.FIREWORK).count(1).spread(0.1, 0).speed(0.01);
+	private static final Circle circ = new Circle(aoe.range);
 	private int numStatuses;
-	private static final ParticleAnimation anim;
+	private static final ParticleAnimation beamAnim, spiralAnim;
 	
 	static {
-		anim = new ParticleAnimation(pc, (loc, tick) -> {
-			LinkedList<Location> partLocs = new LinkedList<Location>();
-			partLocs.add(loc.clone().add(0, 4 * ((10 - tick) * 0.4), 0));
-			return partLocs;
+		// Beam head streaks downward from high above onto the target over the cast delay
+		beamAnim = new ParticleAnimation(beamPart, (loc, tick) -> {
+			LinkedList<Location> locs = new LinkedList<Location>();
+			double headY = 8.0 * (9 - tick) / 9.0;
+			for (double y = headY; y <= headY + 2.5; y += 0.4) {
+				locs.add(loc.clone().add(0, y, 0));
+			}
+			return locs;
+		}, 10);
+		
+		// Double helix of sparks wrapping the descending beam
+		spiralAnim = new ParticleAnimation(spiralPart, (loc, tick) -> {
+			LinkedList<Location> locs = new LinkedList<Location>();
+			double headY = 8.0 * (9 - tick) / 9.0;
+			double radius = 0.7;
+			for (double y = headY; y <= headY + 2.5; y += 0.5) {
+				double angle = Math.toRadians(tick * 72) + y * 1.4;
+				locs.add(loc.clone().add(Math.cos(angle) * radius, y, Math.sin(angle) * radius));
+				locs.add(loc.clone().add(Math.cos(angle + Math.PI) * radius, y, Math.sin(angle + Math.PI) * radius));
+			}
+			return locs;
 		}, 10);
 	}
 
@@ -75,12 +99,23 @@ public class BeamStaff extends Equipment {
 			if (block == null) {
 				return TriggerResult.keep();
 			}
-			Location loc = block.getLocation();
+			Location loc = block.getLocation().add(0.5, 1, 0.5);
 			weaponSwing(p, data);
-			anim.play(p, loc);
+			beamAnim.play(p, loc);
+			spiralAnim.play(p, loc);
+			// Telegraph the impact area on the ground while the beam descends
+			data.addTask(new BukkitRunnable() {
+				private int count = 0;
+				public void run() {
+					circ.play(ringEdge, loc, LocalAxes.xz(), null);
+					if (++count >= 5) cancel();
+				}
+			}.runTaskTimer(NeoRogue.inst(), 0, 2));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Sounds.explode.play(p, loc);
+					burst.play(p, loc);
+					circ.play(ringEdge, loc, LocalAxes.xz(), ringFill);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
 						weaponDamage(p, data, ent);
 						List<StatusType> pool = new ArrayList<>(Arrays.asList(STATUS_POOL));
@@ -98,7 +133,7 @@ public class BeamStaff extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD, "Fires a beam down onto the block you aim at after a brief delay, dealing " + 
-		" damage to all enemies in a small radius. Applies " +
+		"damage to all enemies in a small radius. Applies " +
 		DescUtil.yellow(numStatuses + "") + " random stacks of " + GlossaryTag.BURN.tag(this) + ", " +
 		GlossaryTag.INSANITY.tag(this) + ", " + GlossaryTag.CONCUSSED.tag(this) + ", or " +
 		GlossaryTag.FROST.tag(this) + ".");

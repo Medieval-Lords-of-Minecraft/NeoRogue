@@ -126,6 +126,9 @@ public class SessionSettingsInventory extends CoreInventory {
 		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.text("Crowns Bonus: ", NamedTextColor.GRAY)
+				.append(Component.text("+" + s.getNotorietyMoneyBonusPercent() + "%", NamedTextColor.GREEN))
+				.decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.empty().decoration(TextDecoration.ITALIC, false));
 		if (notoriety > 0) {
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));

@@ -104,6 +104,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			// Save original item and set barrier
 			ItemStack original = p.getInventory().getItem(chosen.invSlot);
 			p.getInventory().setItem(chosen.invSlot, new ItemStack(Material.BARRIER));
+			p.setCooldown(Material.BARRIER, (int) (seconds * 20));
 
 			// Send disable message
 			Component name;
@@ -113,7 +114,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 				Equipment eq = Equipment.get(chosen.action.getId(), false);
 				name = eq != null ? eq.getHoverable() : Component.text(chosen.action.getId(), NamedTextColor.RED);
 			}
-			p.sendMessage(name.append(Component.text(" was disabled for " + (int) seconds + "s!", NamedTextColor.RED)));
+			p.sendMessage(Component.text("").append(name).append(Component.text(" was disabled for " + (int) seconds + "s!", NamedTextColor.RED)));
 
 			// Schedule revert
 			int ticks = (int) (seconds * 20);
@@ -123,7 +124,6 @@ public class MechanicDisable implements ITargetedEntitySkill {
 				public void run() {
 					finalChosen.list.add(finalChosen.action);
 					Player current = pdata.getPlayer();
-					current.setCooldown(Material.BARRIER, ticks);
 					if (finalChosen.action instanceof EquipmentInstance) {
 						((EquipmentInstance) finalChosen.action).updateIcon();
 					} else {

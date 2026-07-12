@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -21,7 +20,7 @@ public class LightLeatherGauntlets extends Equipment {
 	public LightLeatherGauntlets(boolean isUpgraded) {
 		super(ID, "Light Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(25, 1.75, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(25, 1.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		stamina = isUpgraded ? 3 : 2;
 	}
 	

@@ -53,11 +53,6 @@ public class BeatRegionAchievement implements Achievement {
 		return THRESHOLDS;
 	}
 
-    @Override
-    public int getSortPriority() {
-        return 10 + region.getDifficulty();
-    }
-
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];

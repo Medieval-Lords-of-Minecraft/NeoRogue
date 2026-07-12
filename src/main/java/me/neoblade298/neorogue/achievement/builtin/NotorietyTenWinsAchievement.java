@@ -15,22 +15,25 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class SpendCoinsAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 100, 1000, 10000, 100000 };
+// Counts how many runs have been won at maximum notoriety (10). Mastery tiers at 3, 10, and 25 wins.
+public class NotorietyTenWinsAchievement implements Achievement {
+	private static final String ID = "infamous_champion";
+	private static final int MAX_NOTORIETY = 10;
+	private static final int[] THRESHOLDS = { 3, 10, 25 };
 
 	@Override
 	public String getId() {
-		return "big_spender";
+		return ID;
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return Component.text("Big Spender", NamedTextColor.GOLD);
+		return Component.text("Infamous Champion", NamedTextColor.GOLD);
 	}
 
 	@Override
 	public Material getMaterial() {
-		return Material.GOLD_NUGGET;
+		return Material.WITHER_SKELETON_SKULL;
 	}
 
 	@Override
@@ -41,7 +44,9 @@ public class SpendCoinsAchievement implements Achievement {
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
-		return List.of(Component.text("Spend " + target + " coins at shops.", NamedTextColor.GRAY));
+		String desc = target == 1 ? "Win a run at notoriety " + MAX_NOTORIETY + "."
+				: "Win " + target + " runs at notoriety " + MAX_NOTORIETY + ".";
+		return List.of(Component.text(desc, NamedTextColor.GRAY));
 	}
 
 	@Override
@@ -51,10 +56,11 @@ public class SpendCoinsAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger("big_spender", SessionTrigger.SPEND_COINS, (pdata, in) -> {
-			int amount = (int) in;
-			if (progress.addProgress(amount)) {
-				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
+		data.addTrigger(ID, SessionTrigger.WIN_RUN, (pdata, in) -> {
+			if (session.getNotoriety() >= MAX_NOTORIETY) {
+				if (progress.addProgress(1)) {
+					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
+				}
 			}
 		});
 	}
