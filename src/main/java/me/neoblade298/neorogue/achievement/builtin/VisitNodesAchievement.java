@@ -28,11 +28,6 @@ public class VisitNodesAchievement implements Achievement {
 		return Component.text("Explorer", NamedTextColor.GOLD);
 	}
 
-    @Override
-    public int getSortPriority() {
-        return 1;
-    }
-
 	@Override
 	public Material getMaterial() {
 		return Material.COMPASS;

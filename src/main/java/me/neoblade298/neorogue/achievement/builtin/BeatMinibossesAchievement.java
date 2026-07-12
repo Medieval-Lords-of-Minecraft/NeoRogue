@@ -34,11 +34,6 @@ public class BeatMinibossesAchievement implements Achievement {
 		return Material.IRON_SWORD;
 	}
 
-    @Override
-    public int getSortPriority() {
-        return 5;
-    }
-
 	@Override
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;

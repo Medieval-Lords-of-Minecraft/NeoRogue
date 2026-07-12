@@ -55,11 +55,6 @@ public class MitigateDamageAchievement implements Achievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 6;
-	}
-
-	@Override
 	public void registerFight(FightInstance fight, PlayerFightData data, AchievementProgress progress) {
 		// On each hit received, credit the damage buffs prevented for this player: the difference
 		// between the pre- and post-mitigation damage on the DamageMeta. carry[0] holds fractional

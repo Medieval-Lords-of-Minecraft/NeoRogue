@@ -75,7 +75,10 @@ import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 
 public class Session {
@@ -101,6 +104,8 @@ public class Session {
 	private boolean endless;
 	// New-lobby only: when true, join requests are auto-accepted instead of needing host approval
 	private boolean lobbyOpen = false;
+	// Ensures the "lobby is open" join broadcast only fires once per session
+	private boolean announcedOpenLobby = false;
 	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.03, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			COIN_REDUCTION_PER_LEVEL = 0.15, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.05;
 	private int notoriety;
@@ -746,6 +751,30 @@ public class Session {
 
 	public void setLobbyOpen(boolean lobbyOpen) {
 		this.lobbyOpen = lobbyOpen;
+		// The first time the lobby is opened, broadcast a clickable button so others can join
+		if (lobbyOpen && !announcedOpenLobby) {
+			announcedOpenLobby = true;
+			broadcastOpenLobby();
+		}
+	}
+
+	// Announces to the server that this lobby is open, with a button that runs the join command
+	private void broadcastOpenLobby() {
+		Player hostPlayer = Bukkit.getPlayer(host);
+		if (hostPlayer == null) return;
+		String hostName = hostPlayer.getName();
+		Component msg = Component.text(hostName, NamedTextColor.YELLOW)
+				.append(Component.text("'s lobby is now open! ", NamedTextColor.GREEN))
+				.append(Component.text("[Click to Join]", NamedTextColor.GOLD)
+						.decorate(TextDecoration.BOLD)
+						.hoverEvent(HoverEvent.showText(
+								Component.text("Click to join " + hostName + "'s lobby", NamedTextColor.GRAY)))
+						.clickEvent(ClickEvent.runCommand("/nr join " + hostName)));
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			// Skip players already in a session; they can't join anyway
+			if (SessionManager.getSession(online) != null) continue;
+			online.sendMessage(msg);
+		}
 	}
 
 	public boolean isLobbyOpen() {

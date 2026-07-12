@@ -28,6 +28,8 @@ import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ApplyNegativeStatusAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.CrownsEarnedAchievement;
+import me.neoblade298.neorogue.achievement.builtin.DashesInFightAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
@@ -35,7 +37,10 @@ import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement.StatType;
 import me.neoblade298.neorogue.achievement.builtin.MitigateDamageAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
+import me.neoblade298.neorogue.achievement.builtin.NotorietyTenWinsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.NotorietyWinAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ShieldsInFightAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCoinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
@@ -56,51 +61,56 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class AchievementManager {
 	private static final List<Achievement> achievements = List.of(
-			new WinFightsAchievement(),
-			new WinRunsAchievement(),
 			new FinishRunAchievement(),
+			new VisitNodesAchievement(),
+			new WinRunsAchievement(),
+			new WinFightsAchievement(),
 			new ApplyNegativeStatusAchievement(),
-			new MitigateDamageAchievement(),
 			new BeatMinibossesAchievement(),
-new BeatRegionAchievement("low_district_victor", Component.text("Low District Victor", NamedTextColor.GOLD),
-				Material.COBBLESTONE, RegionType.LOW_DISTRICT),
+			new MitigateDamageAchievement(),
+			new BeatRegionAchievement("low_district_victor", Component.text("Low District Victor", NamedTextColor.GOLD),
+					Material.COBBLESTONE, RegionType.LOW_DISTRICT),
 			new BeatRegionAchievement("harvest_fields_victor", Component.text("Harvest Fields Victor", NamedTextColor.GOLD),
-				Material.HAY_BLOCK, RegionType.HARVEST_FIELDS),
+					Material.HAY_BLOCK, RegionType.HARVEST_FIELDS),
 			new BeatRegionAchievement("frozen_wastes_victor", Component.text("Frozen Wastes Victor", NamedTextColor.GOLD),
 					Material.PACKED_ICE, RegionType.FROZEN_WASTES),
 			new FullPartyAchievement(),
-new AllMinibossesAchievement("low_district_miniboss_slayer", Component.text("Low District Miniboss Slayer", NamedTextColor.GOLD),
-				Material.STONE_SWORD, RegionType.LOW_DISTRICT),
-			new AllMinibossesAchievement("harvest_fields_miniboss_slayer", Component.text("Harvest Fields Miniboss Slayer", NamedTextColor.GOLD),
-				Material.STONE_SWORD, RegionType.HARVEST_FIELDS),
-			new AllMinibossesAchievement("frozen_wastes_miniboss_slayer", Component.text("Frozen Wastes Miniboss Slayer", NamedTextColor.GOLD),
-					Material.STONE_SWORD, RegionType.FROZEN_WASTES),
-new AllBossesAchievement("low_district_boss_slayer", Component.text("Low District Boss Slayer", NamedTextColor.GOLD),
-				Material.DIAMOND_SWORD, RegionType.LOW_DISTRICT),
-			new AllBossesAchievement("harvest_fields_boss_slayer", Component.text("Harvest Fields Boss Slayer", NamedTextColor.GOLD),
-				Material.DIAMOND_SWORD, RegionType.HARVEST_FIELDS),
-			new AllBossesAchievement("frozen_wastes_boss_slayer", Component.text("Frozen Wastes Boss Slayer", NamedTextColor.GOLD),
-					Material.DIAMOND_SWORD, RegionType.FROZEN_WASTES),
-			new NoHealthLossAchievement(),
-			new FlawlessRegionAchievement(),
-new MaxStatAchievement("beefy", Component.text("Beefy", NamedTextColor.GOLD),
-				Material.GOLDEN_APPLE, StatType.HEALTH, 200),
-			new MaxStatAchievement("arcane_reservoir", Component.text("Arcane Reservoir", NamedTextColor.GOLD),
-				Material.LAPIS_LAZULI, StatType.MANA, 100),
-			new MaxStatAchievement("tireless", Component.text("Tireless", NamedTextColor.GOLD),
-					Material.FEATHER, StatType.STAMINA, 100),
-new AcquireRarityAchievement("rare_find", Component.text("Rare Find", NamedTextColor.GOLD),
-				Material.GOLD_INGOT, Rarity.RARE),
+			new SpendCoinsAchievement(),
+			new NotorietyWinAchievement(),
+			new NotorietyTenWinsAchievement(),
+			new CrownsEarnedAchievement(),
+			new AcquireRarityAchievement("rare_find", Component.text("Rare Find", NamedTextColor.GOLD),
+					Material.GOLD_INGOT, Rarity.RARE),
 			new AcquireRarityAchievement("epic_discovery", Component.text("Epic Discovery", NamedTextColor.GOLD),
 					Material.DIAMOND, Rarity.EPIC),
-			new VisitNodesAchievement(),
-			new SpendCoinsAchievement(),
-new SRankRegionAchievement("low_district_speedster", Component.text("Low District Speedster", NamedTextColor.GOLD),
-				Material.CLOCK, RegionType.LOW_DISTRICT),
+			new MaxStatAchievement("beefy", Component.text("Beefy", NamedTextColor.GOLD),
+					Material.GOLDEN_APPLE, StatType.HEALTH, 200),
+			new MaxStatAchievement("arcane_reservoir", Component.text("Arcane Reservoir", NamedTextColor.GOLD),
+					Material.LAPIS_LAZULI, StatType.MANA, 100),
+			new MaxStatAchievement("tireless", Component.text("Tireless", NamedTextColor.GOLD),
+					Material.FEATHER, StatType.STAMINA, 100),
+			new ShieldsInFightAchievement(),
+			new DashesInFightAchievement(),
+			new AllMinibossesAchievement("low_district_miniboss_slayer", Component.text("Low District Miniboss Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.LOW_DISTRICT),
+			new AllMinibossesAchievement("harvest_fields_miniboss_slayer", Component.text("Harvest Fields Miniboss Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.HARVEST_FIELDS),
+			new AllMinibossesAchievement("frozen_wastes_miniboss_slayer", Component.text("Frozen Wastes Miniboss Slayer", NamedTextColor.GOLD),
+					Material.STONE_SWORD, RegionType.FROZEN_WASTES),
+			new AllBossesAchievement("low_district_boss_slayer", Component.text("Low District Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.LOW_DISTRICT),
+			new AllBossesAchievement("harvest_fields_boss_slayer", Component.text("Harvest Fields Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.HARVEST_FIELDS),
+			new AllBossesAchievement("frozen_wastes_boss_slayer", Component.text("Frozen Wastes Boss Slayer", NamedTextColor.GOLD),
+					Material.DIAMOND_SWORD, RegionType.FROZEN_WASTES),
+			new SRankRegionAchievement("low_district_speedster", Component.text("Low District Speedster", NamedTextColor.GOLD),
+					Material.CLOCK, RegionType.LOW_DISTRICT),
 			new SRankRegionAchievement("harvest_fields_speedster", Component.text("Harvest Fields Speedster", NamedTextColor.GOLD),
-				Material.CLOCK, RegionType.HARVEST_FIELDS),
+					Material.CLOCK, RegionType.HARVEST_FIELDS),
 			new SRankRegionAchievement("frozen_wastes_speedster", Component.text("Frozen Wastes Speedster", NamedTextColor.GOLD),
-					Material.CLOCK, RegionType.FROZEN_WASTES)
+					Material.CLOCK, RegionType.FROZEN_WASTES),
+			new NoHealthLossAchievement(),
+			new FlawlessRegionAchievement()
 	);
 	private static final HashMap<String, Achievement> achievementsById = new HashMap<>();
 	private static final EnumMap<AchievementTriggerType, List<Achievement>> achievementsByTrigger = new EnumMap<>(

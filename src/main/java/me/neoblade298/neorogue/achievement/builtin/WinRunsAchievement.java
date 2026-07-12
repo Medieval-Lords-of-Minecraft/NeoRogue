@@ -52,11 +52,6 @@ public class WinRunsAchievement implements Achievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 2;
-	}
-
-	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 		data.addTrigger(ID, SessionTrigger.WIN_RUN, (pdata, in) -> {
 			if (progress.addProgress(1)) {

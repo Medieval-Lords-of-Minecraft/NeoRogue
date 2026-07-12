@@ -46,11 +46,6 @@ public class FlawlessRegionAchievement extends ObjectiveAchievement {
 	}
 
 	@Override
-	public int getSortPriority() {
-		return 90;
-	}
-
-	@Override
 	public EnumSet<AchievementTriggerType> getTriggerTypes() {
 		return EnumSet.of(AchievementTriggerType.SESSION);
 	}
