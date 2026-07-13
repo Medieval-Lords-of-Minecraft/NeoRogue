@@ -36,7 +36,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(50).spread(2, 2).speed(0.1);
 	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
-			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 7;
+			HOLO_X = 0, HOLO_Y = 2.5, HOLO_Z = 7;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURNING_STATE = 3, RETURN_FAIL_STATE = 4;
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;

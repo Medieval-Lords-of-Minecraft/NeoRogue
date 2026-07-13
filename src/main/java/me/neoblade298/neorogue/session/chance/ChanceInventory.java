@@ -211,6 +211,7 @@ public class ChanceInventory extends CoreInventory {
 		if (!AnalyticsManager.ENABLED) return;
 		ChanceChoiceSnapshot snap = new ChanceChoiceSnapshot(UUID.randomUUID().toString(),
 				System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION, uuid.toString(),
+				data.getPlayerClass() != null ? data.getPlayerClass().name() : "UNKNOWN",
 				s.getHost().toString(), s.getSaveSlot(), set.getId(), stage.getId(),
 				s.getRegion().getType().name(), s.getNode().getType().name(), s.getLevel(),
 				set.isIndividual());

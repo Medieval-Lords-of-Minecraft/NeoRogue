@@ -24,8 +24,20 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 // shared "NeoRogue" session SQL pool. Writes are batched and run asynchronously.
 public class AnalyticsManager {
 	// Bump this whenever equipment/balance changes meaningfully so analytics can be sliced per
-	// balance pass. Older rows keep their original stamp.
+	// balance pass. Older rows keep their original stamp. New rows are always written at this version.
 	public static final int BALANCE_VERSION = 1;
+
+	// The balance version that /nrlytics report queries read from. Defaults to the latest version but
+	// can be changed at runtime (via /nrlytics balanceversion) to inspect older balance passes.
+	private static int queryBalanceVersion = BALANCE_VERSION;
+
+	public static int getQueryBalanceVersion() {
+		return queryBalanceVersion;
+	}
+
+	public static void setQueryBalanceVersion(int version) {
+		queryBalanceVersion = version;
+	}
 
 	// Master switch for analytics collection. Disable to skip all schema/recording work.
 	public static final boolean ENABLED = true;
@@ -146,6 +158,7 @@ public class AnalyticsManager {
 							+ "ts BIGINT NOT NULL,"
 							+ "balanceVersion INT NOT NULL,"
 							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "playerClass VARCHAR(40) NOT NULL,"
 							+ "host VARCHAR(36) NOT NULL,"
 							+ "slot INT NOT NULL,"
 							+ "setId VARCHAR(64) NOT NULL,"
@@ -160,6 +173,9 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (pickId, choiceIndex)"
 							+ ");");
 
+					// Migration: add playerClass to chance_choices for DBs created before it existed.
+					addColumnIfMissing(stmt, "neorogue_chance_choices", "playerClass", "VARCHAR(40) NOT NULL DEFAULT 'UNKNOWN'");
+
 					createIndex(stmt, "idx_fights_balance", "neorogue_fights", "balanceVersion");
 					createIndex(stmt, "idx_fights_region_node", "neorogue_fights", "regionType, nodeType");
 					createIndex(stmt, "idx_fightequip_lookup", "neorogue_fight_equipment", "equipmentId, upgraded, balanceVersion");
@@ -168,6 +184,7 @@ public class AnalyticsManager {
 					createIndex(stmt, "idx_offers_source", "neorogue_equipment_offers", "source, balanceVersion");
 					createIndex(stmt, "idx_chance_lookup", "neorogue_chance_choices", "setId, stageId, balanceVersion");
 					createIndex(stmt, "idx_chance_balance", "neorogue_chance_choices", "balanceVersion");
+					createIndex(stmt, "idx_chance_class", "neorogue_chance_choices", "setId, playerClass, balanceVersion");
 
 					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_fight_mobs", "mobId, balanceVersion");
 					createIndex(stmt, "idx_fightmobs_class", "neorogue_fight_mobs", "mobId, playerClass, balanceVersion");
@@ -191,6 +208,15 @@ public class AnalyticsManager {
 		}
 		catch (SQLException ignore) {
 			// Index already exists
+		}
+	}
+
+	private static void addColumnIfMissing(Statement stmt, String table, String column, String definition) {
+		try {
+			stmt.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition + ";");
+		}
+		catch (SQLException ignore) {
+			// Column already exists
 		}
 	}
 
@@ -307,6 +333,7 @@ public class AnalyticsManager {
 					.addValue("ts", snap.timestamp)
 					.addValue("balanceVersion", snap.balanceVersion)
 					.addValue("playerUuid", snap.playerUuid)
+					.addValue("playerClass", snap.playerClass)
 					.addValue("host", snap.host)
 					.addValue("slot", snap.slot)
 					.addValue("setId", snap.setId)

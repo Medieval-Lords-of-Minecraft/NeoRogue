@@ -48,8 +48,10 @@ public class MapViewer {
 	}
 	
 	// Snaps the map view so the session's current node is visible, aligned to the same
-	// 4-row scroll grid used by scrollMapUp/scrollMapDown.
+	// 4-row scroll grid used by scrollMapUp/scrollMapDown. No-op before a map/node exists
+	// (e.g. the new-run lobby), where there is no node to snap to.
 	public void snapToCurrentNode() {
+		if (s.getNode() == null) return;
 		int currentRow = s.getNode().getRow();
 		int maxPosition = Math.max(0, s.getRegion().getRowCount() - 5);
 		mapPosition = Math.min(maxPosition, (currentRow / 4) * 4);

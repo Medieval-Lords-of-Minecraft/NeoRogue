@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.commands;
 
-import java.util.ArrayList;
-
 import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
@@ -15,27 +13,14 @@ public class CmdLyticsMob extends Subcommand {
 		super(key, desc, perm, runner);
 		enableTabComplete();
 		args.add(new Arg("mobId", true));
-		ArrayList<String> versions = new ArrayList<String>();
-		versions.add(String.valueOf(AnalyticsManager.BALANCE_VERSION));
-		args.add(new Arg("balanceVersion", false).setTabOptions(versions));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
 		if (args.length < 1) {
-			Util.msgRaw(s, "<red>Usage: /nrlytics mob <mobId> [balanceVersion]");
+			Util.msgRaw(s, "<red>Usage: /nrlytics mob <mobId>");
 			return;
 		}
-		int version = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 1) {
-			try {
-				version = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-		AnalyticsReport.mob(s, args[0], version);
+		AnalyticsReport.mob(s, args[0], AnalyticsManager.getQueryBalanceVersion());
 	}
 }

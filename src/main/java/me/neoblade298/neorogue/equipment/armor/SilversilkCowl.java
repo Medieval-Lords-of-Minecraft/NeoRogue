@@ -27,6 +27,7 @@ public class SilversilkCowl extends Equipment {
 	public SilversilkCowl(boolean isUpgraded) {
 		super(ID, "Silversilk Cowl", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
+		// damage per stamina, 1.5 (2.0) damage for 1 stamina
 		mult = isUpgraded ? 1.0 : 0.5;
 	}
 	
@@ -50,10 +51,10 @@ public class SilversilkCowl extends Equipment {
 
 	@Override
 	public void setupItem() {
-		int pct = (int)(1.0 / (1.0 + mult) * 100);
+		int pct = (int)(mult / (1.0 + mult) * 100);
 		item = createItem(Material.CHAINMAIL_HELMET,
 				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def)
-				+ ". Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
+				+ ". Start every fight with " + DescUtil.white(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
 				+ "The amount of stamina that " + GlossaryTag.EVADE.tag(this) + " consumes per damage mitigated is decreased by " + DescUtil.yellow(pct + "%") + ".");
 	}
 }

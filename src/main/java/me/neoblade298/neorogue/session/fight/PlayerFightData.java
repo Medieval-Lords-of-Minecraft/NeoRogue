@@ -157,7 +157,8 @@ public class PlayerFightData extends FightData {
 				boolean needsHotfix = (eq instanceof Ammunition) && !(eq instanceof LimitedAmmunition) &&
 						eq.getItem().getType() != Material.ARROW;
 				if (needsHotfix) {
-					ItemStack icon = hotbar.getEquipment().getItem();
+					ItemStack icon = inv.getItem(i);
+					if (icon == null) icon = hotbar.getItem();
 					icon.setAmount(2);
 					inv.setItem(i, icon);
 				}
@@ -179,7 +180,7 @@ public class PlayerFightData extends FightData {
 
 		SessionEquipment offhand = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
-			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getEquipment().getItem());
+			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
 			offhand.getEquipment().initialize(this, null, EquipSlot.OFFHAND, 40, offhand);
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);

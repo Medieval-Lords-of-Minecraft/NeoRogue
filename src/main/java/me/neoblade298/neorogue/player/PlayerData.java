@@ -95,7 +95,10 @@ public class PlayerData {
 		this.display = p.getName();
 
 		initializeDefaultProgression();
-		if (p.hasPermission("neorogue.slots.5")) {
+		if (p.hasPermission("neorogue.admin")) {
+			slotsAvailable = 9;
+		}
+		else if (p.hasPermission("neorogue.slots.5")) {
 			slotsAvailable = 5;
 		}
 		else if (p.hasPermission("neorogue.slots.3")) {

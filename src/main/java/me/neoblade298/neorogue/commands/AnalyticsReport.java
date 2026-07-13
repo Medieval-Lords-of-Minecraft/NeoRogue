@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,6 +15,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.map.MapPiece;
+import me.neoblade298.neorogue.region.RegionType;
 
 // Runs and prints aggregated effectiveness analytics from the per-fight fact tables. Invoked by the
 // /nrlytics subcommands, which handle argument parsing; each method here just reports parsed args.
@@ -139,13 +144,13 @@ public class AnalyticsReport {
 	}
 
 	// Equipment pickrate leaderboard (optionally filtered to a single offer source: SHOP or REWARD).
-	public static void pickrate(CommandSender s, int version, String source) {
+	public static void pickrate(CommandSender s, int version, String source, String eqClass, String sortBy) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryLeaderboard(con, version, source, lines);
+					queryLeaderboard(con, version, source, eqClass, sortBy, lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -157,7 +162,9 @@ public class AnalyticsReport {
 					@Override
 					public void run() {
 						Util.msgRaw(s, "<gold>=== Pickrate Leaderboard (balance v" + version
-								+ (source != null ? ", " + source : "") + ") ===");
+								+ (source != null ? ", " + source : "")
+								+ (eqClass != null ? ", " + eqClass : "")
+								+ (sortBy != null ? ", sorted by " + sortBy : "") + ") ===");
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No offers recorded with at least " + MIN_OFFERS + " samples.");
 							return;
@@ -171,32 +178,43 @@ public class AnalyticsReport {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryLeaderboard(Connection con, int version, String source, ArrayList<String> lines)
+	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS offered, SUM(picked) AS picked,"
 				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_equipment_offers WHERE balanceVersion = ?");
 		if (source != null) sql.append(" AND source = ?");
+		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, equipClass)");
 		sql.append(" GROUP BY equipmentId, upgraded HAVING offered >= ").append(MIN_OFFERS);
 
+		String orderClause = (sortBy != null && sortBy.equalsIgnoreCase("class")) ? " ORDER BY equipmentId ASC" : " ORDER BY rate DESC";
 		ArrayList<String[]> rows = new ArrayList<String[]>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate DESC;")) {
-			ps.setInt(1, version);
-			if (source != null) ps.setString(2, source);
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + orderClause + ";")) {
+			int idx = 1;
+			ps.setInt(idx++, version);
+			if (source != null) ps.setString(idx++, source);
+			if (eqClass != null) ps.setString(idx++, eqClass);
 			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT);
 		}
 		if (rows.isEmpty()) return;
 
-		lines.add("<green>Most picked:");
-		for (String[] row : rows) lines.add(row[0]);
+		if (sortBy != null && sortBy.equalsIgnoreCase("class")) {
+			lines.add("<green>All equipment (sorted by class):");
+			for (String[] row : rows) lines.add(row[0]);
+		} else {
+			lines.add("<green>Most picked:");
+			for (String[] row : rows) lines.add(row[0]);
 
-		rows.clear();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate ASC;")) {
-			ps.setInt(1, version);
-			if (source != null) ps.setString(2, source);
-			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT);
+			rows.clear();
+			try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate ASC;")) {
+				int idx = 1;
+				ps.setInt(idx++, version);
+				if (source != null) ps.setString(idx++, source);
+				if (eqClass != null) ps.setString(idx++, eqClass);
+				collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT);
+			}
+			lines.add("<red>Least picked:");
+			for (String[] row : rows) lines.add(row[0]);
 		}
-		lines.add("<red>Least picked:");
-		for (String[] row : rows) lines.add(row[0]);
 	}
 
 	private static void collectLeaderboardRows(PreparedStatement ps, ArrayList<String[]> rows, int limit) throws SQLException {
@@ -215,13 +233,13 @@ public class AnalyticsReport {
 
 	// Leaderboard of chance-event option pick rate, computed as picked / valid so options are only
 	// counted when they were actually selectable for the player.
-	public static void chance(CommandSender s, int version, String setId) {
+	public static void chance(CommandSender s, int version, String setId, String playerClass) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryChanceLeaderboard(con, version, setId, lines);
+					queryChanceLeaderboard(con, version, setId, playerClass, lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -233,7 +251,8 @@ public class AnalyticsReport {
 					@Override
 					public void run() {
 						Util.msgRaw(s, "<gold>=== Chance Pickrate (balance v" + version
-								+ (setId != null ? ", " + setId : "") + ") ===");
+								+ (setId != null ? ", " + setId : "")
+								+ (playerClass != null ? ", " + playerClass : "") + ") ===");
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No chance options recorded with at least " + MIN_OFFERS
 									+ " valid samples.");
@@ -250,25 +269,61 @@ public class AnalyticsReport {
 
 	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in. Only
 	// mobs that have appeared in at least MIN_OFFERS fights are listed.
-	public static void mobs(CommandSender s, int version, String regionType) {
+	public static void mobs(CommandSender s, int version, String regionType, String playerClass) {
+		mobLeaderboard(s, version, regionType, playerClass, null, "Mob Damage Leaderboard");
+	}
+
+	// Same leaderboard restricted to the boss target mobs declared by BOSS map pieces.
+	public static void bosses(CommandSender s, int version, String playerClass) {
+		Set<String> ids = collectTargetMobIds(Map.getBossPieces());
+		mobLeaderboard(s, version, null, playerClass, ids, "Boss Damage Leaderboard");
+	}
+
+	// Same leaderboard restricted to the miniboss target mobs declared by MINIBOSS map pieces.
+	public static void minibosses(CommandSender s, int version, String playerClass) {
+		Set<String> ids = collectTargetMobIds(Map.getMinibossPieces());
+		mobLeaderboard(s, version, null, playerClass, ids, "Miniboss Damage Leaderboard");
+	}
+
+	// Unions the target mob ids of every map piece across all regions. Used to scope the mob
+	// leaderboard to just the actual boss/miniboss entities (excluding adds spawned in those fights).
+	private static Set<String> collectTargetMobIds(java.util.HashMap<RegionType, ArrayList<MapPiece>> pieces) {
+		Set<String> ids = new HashSet<String>();
+		if (pieces == null) return ids;
+		for (ArrayList<MapPiece> list : pieces.values()) {
+			if (list == null) continue;
+			for (MapPiece piece : list) {
+				if (piece == null || piece.getTargets() == null) continue;
+				ids.addAll(piece.getTargets());
+			}
+		}
+		return ids;
+	}
+
+	private static void mobLeaderboard(CommandSender s, int version, String regionType, String playerClass,
+			Set<String> mobIdWhitelist, String title) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
-				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryMobLeaderboard(con, version, regionType, lines);
-				}
-				catch (SQLException ex) {
-					lines.clear();
-					lines.add("<red>Failed to query analytics (see console).");
-					ex.printStackTrace();
+				// An empty (but non-null) whitelist means no boss/miniboss ids were found; nothing matches.
+				if (mobIdWhitelist == null || !mobIdWhitelist.isEmpty()) {
+					try (Connection con = SQLManager.getConnection("NeoRogue")) {
+						queryMobLeaderboard(con, version, regionType, playerClass, mobIdWhitelist, lines);
+					}
+					catch (SQLException ex) {
+						lines.clear();
+						lines.add("<red>Failed to query analytics (see console).");
+						ex.printStackTrace();
+					}
 				}
 
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msgRaw(s, "<gold>=== Mob Damage Leaderboard (balance v" + version
-								+ (regionType != null ? ", " + regionType : "") + ") ===");
+						Util.msgRaw(s, "<gold>=== " + title + " (balance v" + version
+								+ (regionType != null ? ", " + regionType : "")
+								+ (playerClass != null ? ", " + playerClass : "") + ") ===");
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No mobs recorded in at least " + MIN_OFFERS + " fights.");
 							return;
@@ -282,17 +337,22 @@ public class AnalyticsReport {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryMobLeaderboard(Connection con, int version, String regionType, ArrayList<String> lines)
-			throws SQLException {
+	private static void queryMobLeaderboard(Connection con, int version, String regionType, String playerClass,
+			Set<String> mobIdWhitelist, ArrayList<String> lines) throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
 				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE balanceVersion = ?");
 		if (regionType != null) sql.append(" AND regionType = ?");
+		if (playerClass != null) sql.append(" AND playerClass = ?");
+		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
+			sql.append(" AND mobId IN (");
+			for (int i = 0; i < mobIdWhitelist.size(); i++) sql.append(i == 0 ? "?" : ",?");
+			sql.append(")");
+		}
 		sql.append(" GROUP BY mobId HAVING fights >= ").append(MIN_OFFERS);
 
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC;")) {
-			ps.setInt(1, version);
-			if (regionType != null) ps.setString(2, regionType);
+			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
 			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT);
 		}
 		if (top.isEmpty()) return;
@@ -302,12 +362,22 @@ public class AnalyticsReport {
 
 		ArrayList<String> bottom = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg ASC;")) {
-			ps.setInt(1, version);
-			if (regionType != null) ps.setString(2, regionType);
+			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
 			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT);
 		}
 		lines.add("<green>Least damaging:");
 		lines.addAll(bottom);
+	}
+
+	private static void bindMobLeaderboardParams(PreparedStatement ps, int version, String regionType,
+			String playerClass, Set<String> mobIdWhitelist) throws SQLException {
+		int idx = 1;
+		ps.setInt(idx++, version);
+		if (regionType != null) ps.setString(idx++, regionType);
+		if (playerClass != null) ps.setString(idx++, playerClass);
+		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
+			for (String id : mobIdWhitelist) ps.setString(idx++, id);
+		}
 	}
 
 	private static void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit) throws SQLException {
@@ -437,18 +507,21 @@ public class AnalyticsReport {
 		}
 	}
 
-	private static void queryChanceLeaderboard(Connection con, int version, String setId, ArrayList<String> lines)
-			throws SQLException {
+	private static void queryChanceLeaderboard(Connection con, int version, String setId, String playerClass,
+			ArrayList<String> lines) throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT setId, stageId, choiceIndex, MAX(choiceLabel) AS label,"
 				+ " SUM(valid) AS valid, SUM(picked) AS picked,"
 				+ " (SUM(picked) / SUM(valid)) AS rate FROM neorogue_chance_choices WHERE balanceVersion = ?");
 		if (setId != null) sql.append(" AND setId = ?");
+		if (playerClass != null) sql.append(" AND playerClass = ?");
 		sql.append(" GROUP BY setId, stageId, choiceIndex HAVING valid >= ").append(MIN_OFFERS)
 				.append(" ORDER BY setId, stageId, rate DESC;");
 
 		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
-			ps.setInt(1, version);
-			if (setId != null) ps.setString(2, setId);
+			int idx = 1;
+			ps.setInt(idx++, version);
+			if (setId != null) ps.setString(idx++, setId);
+			if (playerClass != null) ps.setString(idx++, playerClass);
 			try (ResultSet rs = ps.executeQuery()) {
 				String currentSet = null;
 				while (rs.next()) {

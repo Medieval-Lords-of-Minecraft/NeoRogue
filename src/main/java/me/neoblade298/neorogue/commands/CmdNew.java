@@ -38,6 +38,5 @@ public class CmdNew extends Subcommand {
 			return;
 		}
 		SessionManager.tryNewGame(p, slot);
-		SessionManager.createSession(p, slot, true);
 	}
 }

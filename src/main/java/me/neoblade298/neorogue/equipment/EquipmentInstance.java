@@ -1,12 +1,15 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -16,10 +19,15 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class EquipmentInstance extends PriorityAction {
 	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
@@ -89,8 +97,38 @@ public class EquipmentInstance extends PriorityAction {
 		this.invSlot = EquipSlot.convertSlot(es, slot);
 		this.es = es;
 		this.p = data.getPlayer();
-		this.icon = eq.getItem();
+		this.icon = decorateIcon(eq.getItem());
 		updateIcon();
+	}
+
+	// Adds durability and hotbar/keybind lore so the in-fight icon matches the edit inventory display
+	private ItemStack decorateIcon(ItemStack base) {
+		if (base == null) return base;
+		ItemMeta meta = base.getItemMeta();
+		if (meta == null) return base;
+		List<Component> lore = meta.lore();
+		if (lore == null) lore = new ArrayList<>();
+
+		// Bind lore (inserted after the first description line, matching the edit inventory)
+		if (es == EquipSlot.HOTBAR) {
+			lore.add(Math.min(1, lore.size()), Component.text("Bound to Hotbar #" + (slot + 1), NamedTextColor.YELLOW)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+		else if (es == EquipSlot.KEYBIND) {
+			lore.add(Math.min(1, lore.size()), Component.text("Bound to ", NamedTextColor.YELLOW)
+					.append(KeyBind.getBindFromData(slot).getDisplay())
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+
+		// Durability lore (appended, matching SessionEquipment.getItem())
+		if (sessionEquipment != null && sessionEquipment.hasDurability()) {
+			lore.add(Component.text("Breaks after " + sessionEquipment.getDurability() + " fights", NamedTextColor.RED)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+
+		meta.lore(lore);
+		base.setItemMeta(meta);
+		return base;
 	}
 
 	// Used when a player relogs to update the player reference
@@ -99,7 +137,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 
 	public void setIcon(ItemStack icon) {
-		this.icon = icon;
+		this.icon = decorateIcon(icon);
 		updateIcon();
 	}
 

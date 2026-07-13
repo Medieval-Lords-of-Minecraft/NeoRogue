@@ -27,7 +27,7 @@ public class CmdAdminChance extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player host = (Player) s;
-		Session sess = SessionManager.createSession(host, 10);
+		Session sess = SessionManager.createSession(host, 9);
 		sess.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
 
 		sess.generateRegion(RegionType.LOW_DISTRICT);

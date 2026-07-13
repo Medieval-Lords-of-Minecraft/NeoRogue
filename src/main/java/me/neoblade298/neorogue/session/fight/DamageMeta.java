@@ -564,8 +564,8 @@ public class DamageMeta {
 			PreEvadeEvent ev = new PreEvadeEvent(this);
 			pl.runActions(pl, Trigger.PRE_EVADE, ev);
 			BuffList stamCostBuffs = ev.getStaminaCostBuff();
-			double staminaPerDamage = stamCostBuffs.apply(1D);
-			double evasionLimit = pl.getStamina() * staminaPerDamage;
+			double damagePerStamina = stamCostBuffs.apply(1D);
+			double evasionLimit = pl.getStamina() * damagePerStamina;
 			if (totalDamage < evasionLimit) {
 				damage = 0;
 				ignoreShieldsDamage = 0;
@@ -574,7 +574,7 @@ public class DamageMeta {
 				// preMitigationSlices intentionally kept: fully evaded damage still counts as prevented
 				rawDamage = 0;
 				pl.getStats().addEvadeMitigated(totalDamage);
-				pl.addStamina(-totalDamage / staminaPerDamage);
+				pl.addStamina(-totalDamage / damagePerStamina);
 				fullEvade = true;
 			}
 			else {

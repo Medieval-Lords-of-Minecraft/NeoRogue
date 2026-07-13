@@ -12,6 +12,7 @@ public class ChanceChoiceSnapshot {
 	public final long timestamp;
 	public final int balanceVersion;
 	public final String playerUuid;
+	public final String playerClass;
 	public final String host;
 	public final int slot;
 	public final String setId;
@@ -23,13 +24,14 @@ public class ChanceChoiceSnapshot {
 
 	public final ArrayList<ChoiceRow> rows = new ArrayList<ChoiceRow>();
 
-	public ChanceChoiceSnapshot(String pickId, long timestamp, int balanceVersion, String playerUuid, String host,
-			int slot, String setId, String stageId, String regionType, String nodeType, int level,
+	public ChanceChoiceSnapshot(String pickId, long timestamp, int balanceVersion, String playerUuid, String playerClass,
+			String host, int slot, String setId, String stageId, String regionType, String nodeType, int level,
 			boolean individual) {
 		this.pickId = pickId;
 		this.timestamp = timestamp;
 		this.balanceVersion = balanceVersion;
 		this.playerUuid = playerUuid;
+		this.playerClass = playerClass;
 		this.host = host;
 		this.slot = slot;
 		this.setId = setId;

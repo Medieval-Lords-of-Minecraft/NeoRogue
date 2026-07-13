@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -20,6 +18,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -170,7 +169,7 @@ public class PiercingNight extends Equipment {
 			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
 			GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " + 
 			GlossaryTag.INSANITY.tag(this, insanity, true) + ". If an enemy is hit, " +
-			DescUtil.white("charge 1s") + " and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
+			DescUtil.charge(this, 1, 1) + " and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
 			" damage in a line in front of you and apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + 
 			". Enemies hit by both are applied " + DescUtil.white("2x") + " their current " + GlossaryTag.INSANITY.tag(this) + ".");
 	}
