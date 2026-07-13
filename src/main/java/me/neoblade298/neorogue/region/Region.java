@@ -693,6 +693,10 @@ public class Region {
 		return rowCount - 1;
 	}
 
+	public Node getBossNode() {
+		return nodes[getBossRow()][CENTER_LANE];
+	}
+
 	private int getPreBossRow() {
 		return rowCount - 2;
 	}

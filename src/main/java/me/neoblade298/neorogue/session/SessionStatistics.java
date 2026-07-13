@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.session;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
@@ -11,6 +13,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightStatistics;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class SessionStatistics {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
@@ -96,8 +99,29 @@ public class SessionStatistics {
 		p.sendMessage(statLine("Statuses Applied", String.valueOf(statusesApplied)));
 	}
 
+	// Builds the full list of stat lines used as item lore in the session stats inventory UI.
+	public List<Component> buildLore() {
+		List<Component> lore = new ArrayList<Component>();
+		lore.add(loreLine("Fights Completed", String.valueOf(fightsCompleted)));
+		lore.add(loreLine("Deaths", String.valueOf(deaths)));
+		lore.add(loreLine("Damage Dealt", df.format(damageDealt)));
+		lore.add(loreLine("Damage Taken (Health)", df.format(damageTakenHealth)));
+		lore.add(loreLine("Damage Taken (Shields)", df.format(damageTakenShields)));
+		lore.add(loreLine("Shields Applied", df.format(shieldsApplied)));
+		lore.add(loreLine("Healing Done", df.format(healingDone)));
+		lore.add(loreLine("Damage Barriered", df.format(damageBarriered)));
+		lore.add(loreLine("Statuses Applied", String.valueOf(statusesApplied)));
+		return lore;
+	}
+
 	private Component statLine(String label, String value) {
 		return Component.text(" " + label + ": ", NamedTextColor.GRAY)
 				.append(Component.text(value, NamedTextColor.WHITE));
+	}
+
+	private Component loreLine(String label, String value) {
+		return Component.text(label + ": ", NamedTextColor.GRAY)
+				.append(Component.text(value, NamedTextColor.WHITE))
+				.decoration(TextDecoration.ITALIC, false);
 	}
 }

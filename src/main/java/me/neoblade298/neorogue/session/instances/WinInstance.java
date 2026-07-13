@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SessionStatsInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.reward.RunReward;
@@ -121,10 +122,7 @@ public class WinInstance extends EditInventoryInstance {
 				return;
 			}
 			if (e.getClickedBlock().getType() == Material.LECTERN) {
-				PlayerSessionData data = s.getData(p.getUniqueId());
-				if (data != null) {
-					data.getSessionStats().sendTo(p);
-				}
+				new SessionStatsInventory(p, s);
 				return;
 			}
 			if (e.getClickedBlock().getType() == Material.GOLD_BLOCK) {

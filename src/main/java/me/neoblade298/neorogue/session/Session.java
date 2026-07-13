@@ -385,7 +385,9 @@ public class Session {
 	}
 	
 	public void addSpectator(Player p) {
-		this.spectators.put(p.getUniqueId(), new MapViewer(this, p.getUniqueId()));
+		MapViewer viewer = new MapViewer(this, p.getUniqueId());
+		viewer.snapToCurrentNode();
+		this.spectators.put(p.getUniqueId(), viewer);
 		SessionManager.addToSession(p.getUniqueId(), this);
 		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
 		p.setGameMode(GameMode.ADVENTURE);
@@ -764,7 +766,7 @@ public class Session {
 		if (hostPlayer == null) return;
 		String hostName = hostPlayer.getName();
 		Component msg = Component.text(hostName, NamedTextColor.YELLOW)
-				.append(Component.text("'s lobby is now open! ", NamedTextColor.GREEN))
+				.append(Component.text("'s lobby is now open! ", NamedTextColor.GRAY))
 				.append(Component.text("[Click to Join]", NamedTextColor.GOLD)
 						.decorate(TextDecoration.BOLD)
 						.hoverEvent(HoverEvent.showText(

@@ -22,7 +22,7 @@ public class WitchCaveChance extends ChanceSet {
 				+ "She turns to greet you with a knowing smile. \"A potion for the road, dearie? Or would you rather pay your way out?\"");
 
 		stage.addChoice(new ChanceChoice(Material.HONEY_BOTTLE, "Everlasting Health",
-				"Heal " + DescUtil.white("20%") + " of your max health, but you can no longer gain " + DescUtil.white("shields")
+				"Heal " + DescUtil.white("20%") + " of your max health after every fight, but you can no longer gain " + DescUtil.white("shields")
 						+ " after " + DescUtil.white("10s") + " of a fight.",
 				(s, inst, data) -> {
 					data.healPercent(0.2);

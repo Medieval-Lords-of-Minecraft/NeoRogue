@@ -102,6 +102,23 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		ItemStack clicked = e.getCurrentItem();
+		ItemStack cursor = e.getCursor();
+		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
+		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
+		
+		// If right click with empty hand, open glossary, disgusting code due to if statement handling
+		if (e.isRightClick() && nclicked != null && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					handleInventoryClose();
+					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+
 		if (spectator != null) {
 			e.setCancelled(true);
 			return;
@@ -140,23 +157,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			e.setCancelled(true);
 			return;
 		}
-
-		ItemStack clicked = e.getCurrentItem();
-		ItemStack cursor = e.getCursor();
-		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
-		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
 		
-		// If right click with empty hand, open glossary, disgusting code due to if statement handling
-		if (e.isRightClick() && nclicked != null && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
-			e.setCancelled(true);
-			new BukkitRunnable() {
-				public void run() {
-					handleInventoryClose();
-					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
-				}
-			}.runTask(NeoRogue.inst());
-			return;
-		}
 		// Handle shift clicks
 		else if (e.isShiftClick()) {
 			if (nclicked == null || !nclicked.hasTag("equipId")) return;

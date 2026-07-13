@@ -191,6 +191,25 @@ public class SessionManager implements Listener {
 		return sessionPlots.values();
 	}
 
+	// Shared spectate validation so the command and the spectate menu enforce the same rules.
+	// Returns true and starts spectating on success; displays the reason and returns false otherwise.
+	public static boolean trySpectate(Player p, Session sess) {
+		if (sess == null) {
+			Util.displayError(p, "That session no longer exists!");
+			return false;
+		}
+		if (getSession(p) != null) {
+			Util.displayError(p, "You're already in a session!");
+			return false;
+		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return false;
+		}
+		sess.addSpectator(p);
+		return true;
+	}
+
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent e) {
 		Player p = (Player) e.getWhoClicked();

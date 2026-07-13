@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.region.Node;
+import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
@@ -73,6 +74,15 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		// Set up info hologram
 		createInfoHologram(spawn.clone().add(0, 2.8, 8));
 
+		// Always show a "Boss: name" hologram over the boss node (lane 2, boss row)
+		Node bossNode = region.getBossNode();
+		if (bossNode != null) {
+			Component bossText = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD)
+					.append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
+			Location bossLoc = region.nodeToLocation(bossNode, 1).clone().add(0, 1, 0);
+			holograms.add(NeoRogue.createHologram(bossLoc, bossText));
+		}
+
 		if (s.getNode().getRow() == 0) {
 			Title title = Title.title(Component.text(region.getType().getDisplay()), Component.text(" "));
 			s.broadcastTitle(title);
@@ -108,6 +118,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 
 	public void createHologram(Location loc, Node dest) {
+		// Boss node has a dedicated always-on hologram created in setup()
+		if (dest.getType() == NodeType.BOSS) return;
 		Component text = Component.text(dest.getType() + " Node", NamedTextColor.WHITE, TextDecoration.BOLD);
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);

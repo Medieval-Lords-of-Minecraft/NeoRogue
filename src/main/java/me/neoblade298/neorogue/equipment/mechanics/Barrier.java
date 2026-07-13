@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -21,9 +23,11 @@ import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class Barrier {
-	private static final double METERS_PER_PARTICLE = 0.5,
+	private static final double METERS_PER_PARTICLE = 1,
 			FORWARD_OFFSET = 0.5; // Used so the shield hitbox doesn't protect the user from side attacks, only for centered
-	private static final ParticleContainer DEFAULT_SHIELD_PARTICLE = new ParticleContainer(Particle.END_ROD).count(1);
+	// White redstone dust stays put and fades quickly, so it clearly marks the shield
+	// plane each tick without lingering and clouding the player's vision like end rods did.
+	private static final ParticleContainer DEFAULT_SHIELD_PARTICLE = new ParticleContainer(Particle.DUST).count(1).speed(0).dustOptions(new DustOptions(Color.WHITE, 1F));
 	
 	// Shared
 	private UUID uuid;

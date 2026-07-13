@@ -88,7 +88,7 @@ public class SpectateMenuInventory extends CoreInventory {
 		if (index >= 0 && index < sessions.size()) {
 			Session session = sessions.get(index);
 			p.closeInventory();
-			session.addSpectator(p);
+			SessionManager.trySpectate(p, session);
 		}
 	}
 

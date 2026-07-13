@@ -55,7 +55,7 @@ public class FightData {
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
-	private TextDisplay hologram;
+	protected TextDisplay hologram;
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -232,10 +232,7 @@ public class FightData {
 			return;
 
 		if (hasStatus("INVISIBLE")) {
-			if (hologram != null) {
-				hologram.remove();
-				hologram = null;
-			}
+			removeHologram();
 			return;
 		}
 
@@ -280,20 +277,32 @@ public class FightData {
 			fullDisplay = bottomLine;
 		}
 		fullDisplay = fullDisplay.appendNewline();
+		renderHologram(fullDisplay);
+	}
+
+	// Creates (if needed), mounts, and updates the hologram text mounted above this entity.
+	protected void renderHologram(Component text) {
+		if (entity == null || !entity.isValid()) return;
 		if (hologram == null) {
-			// Create hologram
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
 			hologram.setViewRange(100);
 			hologram.setSeeThrough(false);
-			
+
 			// Try to mount and verify
 			entity.addPassenger(hologram);
 		} else if (hologram.isValid() && !entity.getPassengers().contains(hologram)) {
-			// Some mobs (e.g. Hoglins) occasionally dismount the hologram; remount it
+			// Some entities occasionally dismount the hologram; remount it
 			entity.addPassenger(hologram);
 		}
-		hologram.text(fullDisplay);
+		hologram.text(text);
+	}
+
+	protected void removeHologram() {
+		if (hologram != null) {
+			hologram.remove();
+			hologram = null;
+		}
 	}
 	
 	public void updateDisplayNameOld() {

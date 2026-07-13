@@ -105,6 +105,6 @@ public class EnergyBattery extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_BULB,
-				"Your first ability is free to cast and has no cooldown.");
+				"Your first-cast ability is free to cast and has no cooldown.");
 	}
 }

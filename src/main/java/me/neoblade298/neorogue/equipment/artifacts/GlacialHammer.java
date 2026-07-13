@@ -18,7 +18,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GlacialHammer extends Artifact {
 	private static final String ID = "GlacialHammer";
-	private static final int cost = 2;
 
 	public GlacialHammer() {
 		super(ID, "Glacial Hammer", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -32,15 +31,15 @@ public class GlacialHammer extends Artifact {
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			if (am.getTime() + 1000 > System.currentTimeMillis()) {
+			if (data.getMana() <= data.getMaxMana() * 0.5) {
 				return TriggerResult.keep();
 			}
-			if (data.getMana() > data.getMaxMana() * 0.5) {
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				am.setTime(System.currentTimeMillis());
-				data.addMana(-cost);
-				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
+			if (am.addCount(1) < 5) {
+				return TriggerResult.keep();
 			}
+			am.setCount(0);
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+			ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			return TriggerResult.keep();
 		});
 	}
@@ -58,7 +57,7 @@ public class GlacialHammer extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
-				"Landing a basic attack when you're above " + DescUtil.white("50%") + " mana gives the enemy slowness " + DescUtil.white(1)
-				+ " [<white>1s</white>] and costs " + DescUtil.white(cost) + " mana. " + DescUtil.white("1s") + " cooldown.");
+				"Every " + DescUtil.white(5) + " basic attacks while you're above " + DescUtil.white("50%") + " mana gives the enemy slowness " + DescUtil.white(1)
+				+ " [<white>1s</white>].");
 	}
 }

@@ -381,6 +381,32 @@ public class PlayerFightData extends FightData {
 
 	@Override
 	public void updateDisplayName() {
+		if (isDead || p == null || !p.isValid()) {
+			removeHologram();
+			return;
+		}
+
+		double health = p.getHealth();
+		double shieldAmt = shields.getAmount();
+		double healthPct = maxHealth > 0 ? health / maxHealth : 0;
+		NamedTextColor healthColor;
+		if (healthPct < 0.33) {
+			healthColor = NamedTextColor.RED;
+		} else if (healthPct < 0.67) {
+			healthColor = NamedTextColor.YELLOW;
+		} else {
+			healthColor = NamedTextColor.GREEN;
+		}
+
+		// Example: 55 (+20) / 100 ♥, where (+20) is shields
+		Component text = Component.text((int) Math.ceil(health), healthColor);
+		if (shieldAmt > 0) {
+			text = text.append(Component.text(" (+" + (int) Math.ceil(shieldAmt) + ")", NamedTextColor.YELLOW));
+		}
+		text = text.append(Component.text(" / ", NamedTextColor.WHITE))
+				.append(Component.text((int) maxHealth, healthColor))
+				.append(Component.text(" ♥", NamedTextColor.RED));
+		renderHologram(text);
 	}
 
 	public void updateBoardLines() {
@@ -479,6 +505,7 @@ public class PlayerFightData extends FightData {
 			removeStatus(StatusType.POISON);
 		}
 		updateDeathVisibility();
+		updateDisplayName();
 	}
 
 	// Dead players are fully hidden from alive players. Visibility is restored when
@@ -813,6 +840,9 @@ public class PlayerFightData extends FightData {
 
 	public void updatePlayer() {
 		this.p = Bukkit.getPlayer(uuid);
+		this.entity = this.p;
+		// The old hologram was mounted on the stale player entity; recreate it fresh
+		removeHologram();
 
 		for (EquipmentInstance eqi : equips.values()) {
 			eqi.updatePlayer(p);
@@ -889,6 +919,7 @@ public class PlayerFightData extends FightData {
 		stats.addSelfHealing(healed);
 		stats.addHealingDone(source, healed);
 		p.setHealth(after);
+		updateDisplayName();
 	}
 
 	public void addMana(double amount) {
@@ -990,6 +1021,7 @@ public class PlayerFightData extends FightData {
 				.append(Component.text("  |  ", NamedTextColor.GRAY))
 				.append(Component.text("SP: " + (int) stamina + " / " + (int) maxStamina, NamedTextColor.GREEN));
 		p.sendActionBar(bar);
+		updateDisplayName();
 	}
 
 	public void addTrap(Trap trap) {

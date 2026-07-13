@@ -3,9 +3,7 @@ package me.neoblade298.neorogue.session.chance.builtin;
 import java.util.ArrayList;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -36,14 +34,15 @@ public class GamblingDenChance extends ChanceSet {
 				"You don't have 50 coins!",
 				(s, inst, data) -> data.hasCoins(50),
 				(s, inst, data) -> {
-					Player p = data.getPlayer();
+					String name = data.getData().getDisplay();
 					data.addCoins(-50);
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>50 coins</yellow> on a card game.");
 					if (NeoRogue.gen.nextBoolean()) {
 						data.addCoins(100);
-						Util.msgRaw(p, "The cards fall in your favor! You rake in <yellow>100 coins</yellow>.");
+						s.broadcast("The cards fall in <yellow>" + name + "'s</yellow> favor! They rake in <yellow>100 coins</yellow>.");
 					}
 					else {
-						Util.msgRaw(p, "Lady luck isn't with you tonight. Your <yellow>50 coins</yellow> are gone.");
+						s.broadcast("Lady luck isn't with <yellow>" + name + "</yellow> tonight. Their <yellow>50 coins</yellow> are gone.");
 					}
 					return null;
 				}));
@@ -56,23 +55,24 @@ public class GamblingDenChance extends ChanceSet {
 				"You don't have 100 coins!",
 				(s, inst, data) -> data.hasCoins(100),
 				(s, inst, data) -> {
-					Player p = data.getPlayer();
+					String name = data.getData().getDisplay();
 					data.addCoins(-100);
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>100 coins</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
 						giveRandomArtifacts(s, data, 1);
-						Util.msgRaw(p, "A dealer slides a curious trinket across the table. A win!");
+						s.broadcast("A dealer slides a curious trinket across the table to <yellow>" + name + "</yellow>. A win!");
 						break;
 					case 1:
 						data.addCoins(200);
-						Util.msgRaw(p, "The pot is yours! You scoop up <yellow>200 coins</yellow>.");
+						s.broadcast("The pot is <yellow>" + name + "'s</yellow>! They scoop up <yellow>200 coins</yellow>.");
 						break;
 					case 2:
 						loseHealth(data, 0.10);
-						Util.msgRaw(p, "A sore loser shoves you hard against the table. You lose <yellow>10%</yellow> health.");
+						s.broadcast("A sore loser shoves <yellow>" + name + "</yellow> hard against the table. They lose <yellow>10%</yellow> health.");
 						break;
 					default:
-						Util.msgRaw(p, "The hand goes nowhere. Your <yellow>100 coins</yellow> are gone.");
+						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>100 coins</yellow> are gone.");
 						break;
 					}
 					return null;
@@ -87,23 +87,24 @@ public class GamblingDenChance extends ChanceSet {
 				"You don't have 200 coins!",
 				(s, inst, data) -> data.hasCoins(200),
 				(s, inst, data) -> {
-					Player p = data.getPlayer();
+					String name = data.getData().getDisplay();
 					data.addCoins(-200);
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>200 coins</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
 						giveRandomArtifacts(s, data, 3);
-						Util.msgRaw(p, "Three glittering trinkets are pushed your way. What a haul!");
+						s.broadcast("Three glittering trinkets are pushed toward <yellow>" + name + "</yellow>. What a haul!");
 						break;
 					case 1:
 						data.addCoins(400);
 						data.healPercent(1.0);
-						Util.msgRaw(p, "The table erupts! You win <yellow>400 coins</yellow> and a round of healing drinks on the house.");
+						s.broadcast("The table erupts! <yellow>" + name + "</yellow> wins <yellow>400 coins</yellow> and a round of healing drinks on the house.");
 						break;
 					case 2:
-						loseRandomEquipment(data);
+						loseRandomEquipment(s, data);
 						break;
 					default:
-						Util.msgRaw(p, "The hand goes nowhere. Your <yellow>200 coins</yellow> are gone.");
+						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>200 coins</yellow> are gone.");
 						break;
 					}
 					return null;
@@ -114,13 +115,14 @@ public class GamblingDenChance extends ChanceSet {
 				DescUtil.white("50%") + " chance someone slices you as you leave, losing up to " + DescUtil.white("10%")
 						+ " health (cannot die from this).",
 				(s, inst, data) -> {
-					Player p = data.getPlayer();
+					String name = data.getData().getDisplay();
+					s.broadcast("<yellow>" + name + "</yellow> decides to leave the gambling den.");
 					if (NeoRogue.gen.nextBoolean()) {
 						loseHealth(data, 0.10);
-						Util.msgRaw(p, "As you turn to go, a blade nicks your side. You lose up to <yellow>10%</yellow> health.");
+						s.broadcast("As <yellow>" + name + "</yellow> turns to go, a blade nicks their side. They lose up to <yellow>10%</yellow> health.");
 					}
 					else {
-						Util.msgRaw(p, "You slip out of the tent without trouble.");
+						s.broadcast("<yellow>" + name + "</yellow> slips out of the tent without trouble.");
 					}
 					return null;
 				}));
@@ -133,18 +135,19 @@ public class GamblingDenChance extends ChanceSet {
 		}
 	}
 
-	private static void loseRandomEquipment(PlayerSessionData data) {
-		Player p = data.getPlayer();
+	private static void loseRandomEquipment(Session s, PlayerSessionData data) {
+		String name = data.getData().getDisplay();
 		ArrayList<EquipmentMetadata> candidates = data.aggregateEquipment(
 				(meta) -> !meta.getEquipment().isCursed() && data.getRemovalRestriction(meta.getEquipment(), null, true, "lose") == null);
 		if (candidates.isEmpty()) {
-			Util.msgRaw(p, "They reach for your belongings, but you've nothing worth taking.");
+			s.broadcast("Sore losers reach for <yellow>" + name + "'s</yellow> belongings, but they've nothing worth taking.");
 			return;
 		}
 		EquipmentMetadata meta = candidates.get(NeoRogue.gen.nextInt(candidates.size()));
 		Equipment lost = data.removeEquipment(meta.getEquipSlot(), meta.getSlot()).getEquipment();
 		data.setupInventory();
-		Util.msgRaw(p, Component.text("A sore loser swipes your ", NamedTextColor.GRAY)
+		s.broadcast(Component.text("A sore loser swipes ", NamedTextColor.GRAY)
+				.append(Component.text(name + "'s ", NamedTextColor.YELLOW))
 				.append(lost.getHoverable())
 				.append(Component.text(" and vanishes into the crowd.", NamedTextColor.GRAY)));
 	}

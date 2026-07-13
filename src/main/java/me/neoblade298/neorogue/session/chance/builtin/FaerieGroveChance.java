@@ -59,13 +59,12 @@ public class FaerieGroveChance extends ChanceSet {
 						EquipmentMetadata meta = matches.get(0);
 						data.removeEquipment(meta.getEquipSlot(), meta.getSlot());
 					}
+					s.broadcastOthers(Component.text(p.getName(), NamedTextColor.YELLOW)
+							.append(Component.text(" traded ", NamedTextColor.WHITE)).append(chosenEq.getHoverable())
+							.append(Component.text(" with the faerie!", NamedTextColor.WHITE)), p);
 					// Give the reward
 					Equipment rewardEq = Equipment.deserialize(reward);
 					data.giveEquipment(rewardEq);
-					s.broadcastOthers(Component.text(p.getName(), NamedTextColor.YELLOW)
-							.append(Component.text(" traded ", NamedTextColor.WHITE))
-							.append(chosenEq.getHoverable())
-							.append(Component.text(" with the faerie!", NamedTextColor.WHITE)), p);
 					return null;
 				});
 		tradeChoice.setOnRightClick((p, prev) -> {

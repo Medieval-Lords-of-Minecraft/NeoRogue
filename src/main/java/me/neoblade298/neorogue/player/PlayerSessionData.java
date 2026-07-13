@@ -942,6 +942,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		if (amount < 0) {
 			trigger(SessionTrigger.SPEND_COINS, -amount);
 		}
+		coins = Math.max(0, coins);
 		String symbol = amount > 0 ? "+" : "";
 		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 		updateCoinsBar();

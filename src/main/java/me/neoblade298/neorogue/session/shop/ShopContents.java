@@ -143,7 +143,10 @@ public class ShopContents {
 	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
 		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) Enderchest.get() }) {
-			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
+			// Enderchest is priced at half the cost of the other shop artifacts
+			boolean isEnderchest = art instanceof Enderchest;
+			double priceMult = isEnderchest ? 0.5 * discountMult : discountMult;
+			int price = NeoRogue.gen.nextInt((int) (100 * priceMult), (int) (200 * priceMult));
 			shopItems.put(idx++, new ShopItem(new SessionEquipment(art), price, false));
 		}
 	}

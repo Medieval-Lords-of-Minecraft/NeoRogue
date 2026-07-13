@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -13,13 +11,14 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -43,7 +42,7 @@ public class EarthenTackle extends Equipment {
 	
 	public EarthenTackle(boolean isUpgraded) {
 		super(ID, "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 12, 0, hc.range));
 		damage = isUpgraded ? 240 : 160;
 		concussed = isUpgraded? 15 : 10;
 		
@@ -115,7 +114,7 @@ public class EarthenTackle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>4" },
+		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
 						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ". "

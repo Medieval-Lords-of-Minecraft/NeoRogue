@@ -62,8 +62,7 @@ public class NewLobbyInstance extends LobbyInstance {
         updateBoardLines();
     }
 
-    // Auto-accept join requests when the host has opened the lobby. Party-size limits are still
-    // enforced by requestJoin() and addPlayer().
+    // Auto-accept join requests
     @Override
     protected boolean autoAccept(UUID requester) {
         return s.isLobbyOpen();

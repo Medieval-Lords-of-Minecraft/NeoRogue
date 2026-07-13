@@ -1,9 +1,8 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
@@ -12,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,15 +41,19 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id, es, slot));
 	}
 	
 	private class CrimsonBladeInstance extends PriorityAction {
 		private int count;
 		private long start;
 		private boolean deactivated;
-		public CrimsonBladeInstance(String id) {
+		private EquipSlot es;
+		private int slot;
+		public CrimsonBladeInstance(String id, EquipSlot es, int slot) {
 			super(id);
+			this.es = es;
+			this.slot = slot;
 			start = System.currentTimeMillis();
 			action = (pdata, inputs) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
@@ -59,6 +63,7 @@ public class CrimsonBlade extends Equipment {
 					if (!deactivated) {
 						deactivated = true;
 						Util.msgRaw(p, hoverable.append(Component.text(" was deactivated", NamedTextColor.GRAY)));
+						replaceWithWoodenSword(p);
 					}
 					return TriggerResult.keep();
 				}
@@ -69,6 +74,16 @@ public class CrimsonBlade extends Equipment {
 				}
 				return TriggerResult.keep();
 			};
+		}
+
+		private void replaceWithWoodenSword(Player p) {
+			int invSlot = EquipSlot.convertSlot(es, slot);
+			if (invSlot < 0) return;
+			ItemStack item = p.getInventory().getItem(invSlot);
+			if (item == null || item.getType() != Material.IRON_SWORD) return;
+			ItemMeta meta = item.getItemMeta();
+			item.withType(Material.WOODEN_SWORD);
+			item.setItemMeta(meta);
 		}
 	}
 

@@ -35,7 +35,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 
 		// Choice 1: Gaze into the Beyond - store a passive ability in a slot-free Echo Stone
 		ChanceChoice gaze = new ChanceChoice(Material.ENDER_EYE, "Gaze into the Beyond",
-				"Pay " + DescUtil.white("30%") + " of your current health to store a passive ability in an "
+				"Pay " + DescUtil.white("30%") + " of your max health to store a passive ability in an "
 						+ "Echo Stone, converting it into an artifact.",
 				"You have no passive abilities to store!",
 				(s, inst, data) -> data.aggregateEquipment(SageOfTheMountainChance::isStorablePassive).size() > 0,
@@ -64,7 +64,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 				(meta) -> {
 					SessionEquipment held = data.removeEquipment(meta.getEquipSlot(), meta.getSlot());
 					data.setupInventory();
-					data.setHealth(data.getHealth() * 0.7);
+					data.setHealth(Math.max(1, data.getHealth() - (0.3 * data.getMaxHealth())));
 					data.giveArtifact(new ArtifactInstance((Artifact) EchoStone.get(), 1, held));
 					Util.msgRaw(p, Component.text("The sage's eyes glaze over as he channels your ", NamedTextColor.GRAY)
 							.append(held.getEquipment().getHoverable())
