@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 
 // Runs and prints aggregated effectiveness analytics from the per-fight fact tables. Invoked by the
 // /nrlytics subcommands, which handle argument parsing; each method here just reports parsed args.
