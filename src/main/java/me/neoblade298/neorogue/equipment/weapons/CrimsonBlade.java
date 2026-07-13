@@ -62,7 +62,7 @@ public class CrimsonBlade extends Equipment {
 				if (System.currentTimeMillis() - start >= DURATION * 1000L) {
 					if (!deactivated) {
 						deactivated = true;
-						Util.msgRaw(p, hoverable.append(Component.text(" was deactivated", NamedTextColor.GRAY)));
+						Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was deactivated", NamedTextColor.GRAY)));
 						replaceWithWoodenSword(p);
 					}
 					return TriggerResult.keep();
@@ -84,6 +84,7 @@ public class CrimsonBlade extends Equipment {
 			ItemMeta meta = item.getItemMeta();
 			item.withType(Material.WOODEN_SWORD);
 			item.setItemMeta(meta);
+			p.getInventory().setItem(invSlot, item);
 		}
 	}
 

@@ -140,7 +140,7 @@ public class FightStatistics {
 	public static Component getStatsHeader(String timer, FightScore score) {
 		String scoreText = score != null ? " | Reward Rating: " + score.getMiniMessageDisplay() : "";
 		return SharedUtil.color(
-			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + " (Hoverable stats)\n=====\n"
+			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + "\n== (Hoverable Stats) ==\n"
 					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "
 					+ "</dark_red>/ <gold>Statuses</gold>]"
 		);

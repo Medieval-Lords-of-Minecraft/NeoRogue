@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.instances;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -116,6 +117,16 @@ public abstract class LobbyInstance extends Instance {
 		SessionManager.resetPlayer(p);
 		p.teleport(NeoRogue.spawn);
 		updateBoardLines();
+	}
+
+	public ArrayList<Player> getOnlinePlayers() {
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (UUID uuid : inLobby) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null)
+				players.add(p);
+		}
+		return players;
 	}
 
 	public void broadcast(Component msg) {

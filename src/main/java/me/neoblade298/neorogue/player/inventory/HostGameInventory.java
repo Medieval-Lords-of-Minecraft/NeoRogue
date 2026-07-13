@@ -30,7 +30,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 // delete (right click). Replaces the separate New/Load slot inventories.
 public class HostGameInventory extends CoreInventory {
 	private static final int BACK = 22;
-	private static final int SLOT_START = 11;
+	// Save slots are centered within the middle row (indices 9-17), supporting up to 9 slots.
+	private static final int MIDDLE_ROW_START = 9, ROW_WIDTH = 9, MAX_SLOTS = 9;
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("MMM d yyyy h:mma");
 
 	static {
@@ -38,6 +39,9 @@ public class HostGameInventory extends CoreInventory {
 	}
 
 	private PlayerData pd;
+	// Number of slots shown and the (centered) inventory index of the first slot. Computed in setup
+	// and reused by the click handler to map an inventory slot back to a save slot number.
+	private int slotCount, slotStart;
 
 	public HostGameInventory(Player p, PlayerData pd) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Host Game - Select Slot", NamedTextColor.GOLD)));
@@ -49,9 +53,12 @@ public class HostGameInventory extends CoreInventory {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		ItemStack[] contents = new ItemStack[inv.getSize()];
 
-		for (int i = 1; i <= pd.getSlots(); i++) {
+		slotCount = Math.min(pd.getSlots(), MAX_SLOTS);
+		slotStart = MIDDLE_ROW_START + (ROW_WIDTH - slotCount) / 2;
+
+		for (int i = 1; i <= slotCount; i++) {
 			SessionSnapshot snap = pd.getSnapshot(i);
-			int slot = SLOT_START + (i - 1);
+			int slot = slotStart + (i - 1);
 			if (snap != null) {
 				ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
 				ItemMeta meta = item.getItemMeta();
@@ -97,8 +104,8 @@ public class HostGameInventory extends CoreInventory {
 			return;
 		}
 
-		if (clickedSlot >= SLOT_START && clickedSlot < SLOT_START + pd.getSlots()) {
-			int saveSlot = clickedSlot - SLOT_START + 1;
+		if (clickedSlot >= slotStart && clickedSlot < slotStart + slotCount) {
+			int saveSlot = clickedSlot - slotStart + 1;
 			boolean hasData = pd.getSnapshot(saveSlot) != null;
 
 			if (!hasData) {

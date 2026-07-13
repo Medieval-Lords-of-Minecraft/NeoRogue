@@ -406,8 +406,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError("You can't unequip cursed items!", false);
 					return;
 				}
+				SessionEquipment se = SessionEquipment.fromItem(cursor);
 				p.setItemOnCursor(null);
-				data.sendToStorage(eq);
+				data.sendToStorage(se != null ? se : new SessionEquipment(eq));
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F);
 				clearHighlights();
 			}

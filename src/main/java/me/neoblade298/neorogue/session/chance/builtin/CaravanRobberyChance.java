@@ -20,6 +20,14 @@ public class CaravanRobberyChance extends ChanceSet {
 
 		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Save the Merchants",
 				"Gain <yellow>300 coins</yellow> but reduce your max abilities by <white>1</white> for 3 fights.",
+				"Someone in your party is already exhausted.",
+				(s, inst, data) -> {
+					String exhaustionId = Exhaustion.get().getId();
+					for (PlayerSessionData pd : s.getParty().values()) {
+						if (pd.getArtifacts().containsKey(exhaustionId)) return false;
+					}
+					return true;
+				},
 				(s, inst, data) -> {
 					for (PlayerSessionData pd: s.getParty().values()) {
 						pd.addCoins(300);

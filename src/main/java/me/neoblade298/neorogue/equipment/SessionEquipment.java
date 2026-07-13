@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +27,9 @@ import net.kyori.adventure.text.format.TextDecoration.State;
  */
 public class SessionEquipment {
 	public static final String DURABILITY_KEY = "dur";
+	// NBT key used to persist the full serialized SessionEquipment (including metadata) on the
+	// item form, so metadata survives round-trips through items (e.g. moving items into storage).
+	public static final String NBT_KEY = "sessionEquip";
 	private Equipment equipment;
 	private HashMap<String, Object> metadata;
 
@@ -55,7 +59,30 @@ public class SessionEquipment {
 			meta.lore(lore);
 			item.setItemMeta(meta);
 		}
+		// Persist metadata onto the item so it survives being reconstructed from item form.
+		if (!metadata.isEmpty()) {
+			NBTItem nbti = new NBTItem(item);
+			nbti.setString(NBT_KEY, serialize());
+			item = nbti.getItem();
+		}
 		return item;
+	}
+
+	/**
+	 * Reconstructs a SessionEquipment from its item form, preserving metadata when present.
+	 * Falls back to the plain equipId/isUpgraded NBT tags for items without embedded metadata.
+	 */
+	public static SessionEquipment fromItem(ItemStack item) {
+		if (item == null) return null;
+		NBTItem nbti = new NBTItem(item);
+		if (nbti.hasTag(NBT_KEY)) {
+			SessionEquipment se = deserialize(nbti.getString(NBT_KEY));
+			if (se != null) return se;
+		}
+		if (!nbti.hasTag("equipId")) return null;
+		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		if (eq == null) return null;
+		return new SessionEquipment(eq);
 	}
 
 	public Component getDisplay() {

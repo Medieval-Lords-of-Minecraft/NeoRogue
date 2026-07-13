@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
 
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -56,6 +57,7 @@ public class FightData {
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
 	protected TextDisplay hologram;
+	protected static final float HOLOGRAM_Y_OFFSET = 0.4f;
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -288,6 +290,13 @@ public class FightData {
 			hologram.setBillboard(Billboard.CENTER);
 			hologram.setViewRange(100);
 			hologram.setSeeThrough(false);
+
+			// Nudge the display up relative to its mount point. Since the hologram is mounted as a
+			// passenger, the vehicle controls its position; a translation transformation is the
+			// reliable way to shift it vertically.
+			Transformation t = hologram.getTransformation();
+			t.getTranslation().add(0f, HOLOGRAM_Y_OFFSET, 0f);
+			hologram.setTransformation(t);
 
 			// Try to mount and verify
 			entity.addPassenger(hologram);

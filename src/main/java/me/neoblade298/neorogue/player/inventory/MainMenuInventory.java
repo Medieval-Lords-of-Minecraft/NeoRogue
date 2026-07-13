@@ -40,7 +40,7 @@ public class MainMenuInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		contents[HOST_GAME] = CoreInventory.createButton(Material.WRITABLE_BOOK,
 				Component.text("Host Game", NamedTextColor.GREEN));
-		contents[JOIN_GAME] = CoreInventory.createButton(Material.PLAYER_HEAD,
+		contents[JOIN_GAME] = CoreInventory.createButton(Material.SPYGLASS,
 				Component.text("Join Game", NamedTextColor.YELLOW));
 		contents[ACHIEVEMENTS] = CoreInventory.createButton(Material.DIAMOND,
 				Component.text("Achievements", NamedTextColor.AQUA));

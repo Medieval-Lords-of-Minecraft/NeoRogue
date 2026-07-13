@@ -795,6 +795,10 @@ public class Session {
 	}
 	
 	public ArrayList<Player> getOnlinePlayers() {
+		if (inst instanceof LobbyInstance) {
+			return ((LobbyInstance) inst).getOnlinePlayers();
+		}
+		
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (UUID uuid : party.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);

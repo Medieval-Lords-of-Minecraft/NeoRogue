@@ -275,9 +275,9 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
 			if (!nbti.hasTag("equipId")) continue;
-			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
-			if (eq != null) {
-				snapshot[iter++] = new SessionEquipment(eq);
+			SessionEquipment se = SessionEquipment.fromItem(item);
+			if (se != null) {
+				snapshot[iter++] = se;
 			}
 		}
 
@@ -298,12 +298,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
 			if (!nbti.hasTag("equipId")) continue;
-			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
-			if (eq == null) {
+			SessionEquipment se = SessionEquipment.fromItem(item);
+			if (se == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to save item " + nbti.getString("equipId") + " to storage of " + p.getName());
 				continue;
 			}
-			newSave[iter++] = new SessionEquipment(eq);
+			newSave[iter++] = se;
 		}
 		data.setStorage(newSave);
 	}
