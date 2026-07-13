@@ -10,73 +10,23 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neocore.shared.commands.Arg;
-import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 
-// Reports aggregated effectiveness analytics for a single equipment id from the per-fight fact tables.
-public class CmdAdminAnalytics extends Subcommand {
+// Runs and prints aggregated effectiveness analytics from the per-fight fact tables. Invoked by the
+// /nrlytics subcommands, which handle argument parsing; each method here just reports parsed args.
+public class AnalyticsReport {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final int MIN_OFFERS = 10;
 	private static final int LEADERBOARD_LIMIT = 10;
 
-	public CmdAdminAnalytics(String key, String desc, String perm, SubcommandRunner runner) {
-		super(key, desc, perm, runner);
-		args.add(new Arg("equipment", false));
-		args.add(new Arg("balanceVersion", false));
-	}
+	private AnalyticsReport() {}
 
-	@Override
-	public void run(CommandSender s, String[] args) {
-		if (args.length < 1) {
-			Util.msgRaw(s, "<red>Usage: /nradmin analytics <equipment> [balanceVersion]");
-			Util.msgRaw(s, "<red>       /nradmin analytics pickrate [balanceVersion] [source]");
-			Util.msgRaw(s, "<red>       /nradmin analytics chance [balanceVersion] [setId]");
-			Util.msgRaw(s, "<red>       /nradmin analytics mobs [balanceVersion] [regionType]");
-			Util.msgRaw(s, "<red>       /nradmin analytics mob <mobId> [balanceVersion]");
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("pickrate")) {
-			runPickrateLeaderboard(s, args);
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("chance")) {
-			runChanceLeaderboard(s, args);
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("mobs")) {
-			runMobLeaderboard(s, args);
-			return;
-		}
-
-		if (args[0].equalsIgnoreCase("mob")) {
-			runMobDetail(s, args);
-			return;
-		}
-
-		String equipmentId = args[0];
-		if (equipmentId.endsWith("+")) equipmentId = equipmentId.substring(0, equipmentId.length() - 1);
-
-		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 1) {
-			try {
-				balanceVersion = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-
-		final String id = equipmentId;
-		final int version = balanceVersion;
+	// Single equipment id: effectiveness, statuses applied, and pickrate by source.
+	public static void equipment(CommandSender s, String equipmentId, int version) {
+		final String id = equipmentId.endsWith("+") ? equipmentId.substring(0, equipmentId.length() - 1) : equipmentId;
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -109,7 +59,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private void queryEquipment(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
+	private static void queryEquipment(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT upgraded, COUNT(*) AS n, SUM(outcome) AS wins,"
 				+ " AVG(damageDealt) AS dmg, AVG(damageBuffAdded) AS buff, AVG(damageMitigated) AS mit,"
 				+ " AVG(shieldsApplied) AS shields, AVG(healingDone) AS heal, AVG(statusTotal) AS status"
@@ -137,7 +87,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		}
 	}
 
-	private void queryStatuses(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
+	private static void queryStatuses(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT upgraded, statusType, COUNT(*) AS n, SUM(outcome) AS wins, AVG(stacks) AS avgStacks"
 				+ " FROM neorogue_fight_equipment_status WHERE equipmentId = ? AND balanceVersion = ?"
 				+ " GROUP BY upgraded, statusType ORDER BY upgraded, statusType;";
@@ -163,7 +113,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		}
 	}
 
-	private void queryPickrate(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
+	private static void queryPickrate(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT source, upgraded, COUNT(*) AS offered, SUM(picked) AS picked"
 				+ " FROM neorogue_equipment_offers WHERE equipmentId = ? AND balanceVersion = ?"
 				+ " GROUP BY source, upgraded ORDER BY source, upgraded;";
@@ -189,19 +139,8 @@ public class CmdAdminAnalytics extends Subcommand {
 		}
 	}
 
-	private void runPickrateLeaderboard(CommandSender s, String[] args) {
-		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 1) {
-			try {
-				balanceVersion = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-		final String source = args.length > 2 ? args[2].toUpperCase() : null;
-		final int version = balanceVersion;
+	// Equipment pickrate leaderboard (optionally filtered to a single offer source: SHOP or REWARD).
+	public static void pickrate(CommandSender s, int version, String source) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -233,7 +172,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private void queryLeaderboard(Connection con, int version, String source, ArrayList<String> lines)
+	private static void queryLeaderboard(Connection con, int version, String source, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS offered, SUM(picked) AS picked,"
 				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_equipment_offers WHERE balanceVersion = ?");
@@ -261,7 +200,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		for (String[] row : rows) lines.add(row[0]);
 	}
 
-	private void collectLeaderboardRows(PreparedStatement ps, ArrayList<String[]> rows, int limit) throws SQLException {
+	private static void collectLeaderboardRows(PreparedStatement ps, ArrayList<String[]> rows, int limit) throws SQLException {
 		try (ResultSet rs = ps.executeQuery()) {
 			while (rs.next() && rows.size() < limit) {
 				boolean upgraded = rs.getInt("upgraded") == 1;
@@ -277,19 +216,7 @@ public class CmdAdminAnalytics extends Subcommand {
 
 	// Leaderboard of chance-event option pick rate, computed as picked / valid so options are only
 	// counted when they were actually selectable for the player.
-	private void runChanceLeaderboard(CommandSender s, String[] args) {
-		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 1) {
-			try {
-				balanceVersion = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-		final String setId = args.length > 2 ? args[2] : null;
-		final int version = balanceVersion;
+	public static void chance(CommandSender s, int version, String setId) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -324,19 +251,7 @@ public class CmdAdminAnalytics extends Subcommand {
 
 	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in. Only
 	// mobs that have appeared in at least MIN_OFFERS fights are listed.
-	private void runMobLeaderboard(CommandSender s, String[] args) {
-		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 1) {
-			try {
-				balanceVersion = Integer.parseInt(args[1]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-		final String regionType = args.length > 2 ? args[2].toUpperCase() : null;
-		final int version = balanceVersion;
+	public static void mobs(CommandSender s, int version, String regionType) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -368,9 +283,9 @@ public class CmdAdminAnalytics extends Subcommand {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private void queryMobLeaderboard(Connection con, int version, String regionType, ArrayList<String> lines)
+	private static void queryMobLeaderboard(Connection con, int version, String regionType, ArrayList<String> lines)
 			throws SQLException {
-		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(*) AS fights, SUM(damageDealt) AS total,"
+		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
 				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE balanceVersion = ?");
 		if (regionType != null) sql.append(" AND regionType = ?");
 		sql.append(" GROUP BY mobId HAVING fights >= ").append(MIN_OFFERS);
@@ -396,43 +311,28 @@ public class CmdAdminAnalytics extends Subcommand {
 		lines.addAll(bottom);
 	}
 
-	private void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit) throws SQLException {
+	private static void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit) throws SQLException {
 		try (ResultSet rs = ps.executeQuery()) {
 			while (rs.next() && rows.size() < limit) {
 				int fights = rs.getInt("fights");
 				double avgDmg = rs.getDouble("avgDmg");
 				double winrate = 100.0 * rs.getDouble("winrate");
 				rows.add("  <yellow>" + df.format(avgDmg) + "</yellow> <white>" + rs.getString("mobId")
-						+ "</white> <gray>avg/fight (" + fights + " fights, " + df.format(winrate) + "% party wr)");
+						+ "</white> <gray>avg/player (" + fights + " fights, " + df.format(winrate) + "% party wr)");
 			}
 		}
 	}
 
 	// Per-mob detail: appearances, average/total damage to the party, party winrate, and the damage
 	// type breakdown for a single mob id.
-	private void runMobDetail(CommandSender s, String[] args) {
-		if (args.length < 2) {
-			Util.msgRaw(s, "<red>Usage: /nradmin analytics mob <mobId> [balanceVersion]");
-			return;
-		}
-		int balanceVersion = AnalyticsManager.BALANCE_VERSION;
-		if (args.length > 2) {
-			try {
-				balanceVersion = Integer.parseInt(args[2]);
-			}
-			catch (NumberFormatException ex) {
-				Util.msgRaw(s, "<red>Balance version must be a number.");
-				return;
-			}
-		}
-		final String mobId = args[1];
-		final int version = balanceVersion;
+	public static void mob(CommandSender s, String mobId, int version) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					queryMobDetail(con, mobId, version, lines);
+					queryMobByClass(con, mobId, version, lines);
 					queryMobDamageTypes(con, mobId, version, lines);
 				}
 				catch (SQLException ex) {
@@ -459,26 +359,64 @@ public class CmdAdminAnalytics extends Subcommand {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private void queryMobDetail(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
-		String sql = "SELECT COUNT(*) AS fights, SUM(damageDealt) AS total, AVG(damageDealt) AS avgDmg,"
-				+ " AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
+	private static void queryMobDetail(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
+		String sql = "SELECT COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total, AVG(damageDealt) AS avgDmg"
+				+ " FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
+		boolean hasData = false;
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next() && rs.getInt("fights") > 0) {
+					hasData = true;
 					int fights = rs.getInt("fights");
-					double winrate = 100.0 * rs.getDouble("winrate");
 					lines.add("  <white>Appearances:</white> <yellow>" + fights + "</yellow> fights");
-					lines.add("  <white>Avg Damage/fight:</white> <yellow>" + df.format(rs.getDouble("avgDmg"))
+					lines.add("  <white>Avg Damage/player:</white> <yellow>" + df.format(rs.getDouble("avgDmg"))
 							+ "</yellow> <gray>| Total:</gray> " + df.format(rs.getDouble("total")));
-					lines.add("  <white>Party Winrate:</white> <yellow>" + df.format(winrate) + "%");
+				}
+			}
+		}
+		if (!hasData) return;
+
+		// Party winrate over distinct fights (outcome is identical for every per-player row of a fight).
+		String wrSql = "SELECT AVG(outcome) AS winrate FROM (SELECT fightId, MAX(outcome) AS outcome"
+				+ " FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ? GROUP BY fightId) t;";
+		try (PreparedStatement ps = con.prepareStatement(wrSql)) {
+			ps.setString(1, mobId);
+			ps.setInt(2, version);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					lines.add("  <white>Party Winrate:</white> <yellow>" + df.format(100.0 * rs.getDouble("winrate")) + "%");
 				}
 			}
 		}
 	}
 
-	private void queryMobDamageTypes(Connection con, String mobId, int version, ArrayList<String> lines)
+	// Per-class breakdown: average damage this mob deals to a single player of each class, plus the
+	// winrate of fights that class was present for (weighted by class headcount).
+	private static void queryMobByClass(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
+		String sql = "SELECT playerClass, COUNT(*) AS players, AVG(damageDealt) AS avgDmg, SUM(damageDealt) AS total,"
+				+ " AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ?"
+				+ " GROUP BY playerClass ORDER BY avgDmg DESC;";
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setString(1, mobId);
+			ps.setInt(2, version);
+			try (ResultSet rs = ps.executeQuery()) {
+				boolean header = false;
+				while (rs.next()) {
+					if (!header) {
+						lines.add("<gold>By class (avg damage/player):");
+						header = true;
+					}
+					lines.add("  <aqua>" + rs.getString("playerClass") + ":</aqua> <yellow>"
+							+ df.format(rs.getDouble("avgDmg")) + "</yellow> <gray>avg/player ("
+							+ rs.getInt("players") + " players, " + df.format(100.0 * rs.getDouble("winrate")) + "% wr)");
+				}
+			}
+		}
+	}
+
+	private static void queryMobDamageTypes(Connection con, String mobId, int version, ArrayList<String> lines)
 			throws SQLException {
 		String sql = "SELECT damageType, SUM(amount) AS total, AVG(amount) AS avgAmt FROM neorogue_fight_mob_damage"
 				+ " WHERE mobId = ? AND balanceVersion = ? GROUP BY damageType ORDER BY total DESC;";
@@ -500,7 +438,7 @@ public class CmdAdminAnalytics extends Subcommand {
 		}
 	}
 
-	private void queryChanceLeaderboard(Connection con, int version, String setId, ArrayList<String> lines)
+	private static void queryChanceLeaderboard(Connection con, int version, String setId, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT setId, stageId, choiceIndex, MAX(choiceLabel) AS label,"
 				+ " SUM(valid) AS valid, SUM(picked) AS picked,"

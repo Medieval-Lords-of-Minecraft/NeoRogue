@@ -1235,7 +1235,7 @@ public abstract class FightInstance extends Instance {
 		ArrayList<FightSnapshot.EquipRow> equipRows = new ArrayList<FightSnapshot.EquipRow>();
 		ArrayList<FightSnapshot.StatusRow> statusRows = new ArrayList<FightSnapshot.StatusRow>();
 		LinkedHashSet<String> mobIds = new LinkedHashSet<String>();
-		HashMap<String, HashMap<DamageType, Double>> mobDamage = new HashMap<String, HashMap<DamageType, Double>>();
+		ArrayList<FightSnapshot.MobRow> mobRows = new ArrayList<FightSnapshot.MobRow>();
 		double partyDamageDealt = 0, partyDamageTaken = 0;
 
 		for (UUID uuid : s.getParty().keySet()) {
@@ -1249,12 +1249,14 @@ public abstract class FightInstance extends Instance {
 					partyDamageDealt += fs.getTotalDamageDealt();
 					partyDamageTaken += fs.getTotalDamageTaken();
 					mobIds.addAll(fs.getDamageTaken().keySet());
+					String playerClass = data.getPlayerClass() != null ? data.getPlayerClass().name() : "UNKNOWN";
 					for (Entry<String, HashMap<DamageType, Double>> mobEnt : fs.getDamageTaken().entrySet()) {
-						HashMap<DamageType, Double> agg = mobDamage.computeIfAbsent(mobEnt.getKey(),
-								k -> new HashMap<DamageType, Double>());
-						for (Entry<DamageType, Double> typeEnt : mobEnt.getValue().entrySet()) {
-							agg.merge(typeEnt.getKey(), typeEnt.getValue(), Double::sum);
-						}
+						HashMap<DamageType, Double> byType = mobEnt.getValue();
+						double mobTotal = 0;
+						for (double amt : byType.values()) mobTotal += amt;
+						if (mobTotal <= 0) continue;
+						mobRows.add(new FightSnapshot.MobRow(mobEnt.getKey(), uuid.toString(), playerClass, mobTotal,
+								new HashMap<DamageType, Double>(byType)));
 					}
 					gatherContributions(uuid.toString(), fs, equipRows, statusRows);
 				}
@@ -1332,12 +1334,7 @@ public abstract class FightInstance extends Instance {
 					s.getNotoriety(), s.isEndless(), now - startTime, fightWon, partyDamageDealt, partyDamageTaken, mobs);
 			snap.equipRows.addAll(equipRows);
 			snap.statusRows.addAll(statusRows);
-			for (Entry<String, HashMap<DamageType, Double>> mobEnt : mobDamage.entrySet()) {
-				double total = 0;
-				for (double amt : mobEnt.getValue().values()) total += amt;
-				if (total <= 0) continue;
-				snap.mobRows.add(new FightSnapshot.MobRow(mobEnt.getKey(), total, mobEnt.getValue()));
-			}
+			snap.mobRows.addAll(mobRows);
 			AnalyticsManager.recordFight(snap);
 		}
 	}

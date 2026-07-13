@@ -114,6 +114,8 @@ public class AnalyticsManager {
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mobs ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "mobId VARCHAR(64) NOT NULL,"
+							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "playerClass VARCHAR(40) NOT NULL,"
 							+ "ts BIGINT NOT NULL,"
 							+ "balanceVersion INT NOT NULL,"
 							+ "host VARCHAR(36) NOT NULL,"
@@ -123,17 +125,19 @@ public class AnalyticsManager {
 							+ "level INT NOT NULL,"
 							+ "outcome TINYINT NOT NULL,"
 							+ "damageDealt DOUBLE NOT NULL,"
-							+ "PRIMARY KEY (fightId, mobId)"
+							+ "PRIMARY KEY (fightId, mobId, playerUuid)"
 							+ ");");
 
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mob_damage ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "mobId VARCHAR(64) NOT NULL,"
+							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "playerClass VARCHAR(40) NOT NULL,"
 							+ "damageType VARCHAR(30) NOT NULL,"
 							+ "amount DOUBLE NOT NULL,"
 							+ "balanceVersion INT NOT NULL,"
 							+ "outcome TINYINT NOT NULL,"
-							+ "PRIMARY KEY (fightId, mobId, damageType)"
+							+ "PRIMARY KEY (fightId, mobId, playerUuid, damageType)"
 							+ ");");
 
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_chance_choices ("
@@ -166,8 +170,10 @@ public class AnalyticsManager {
 					createIndex(stmt, "idx_chance_balance", "neorogue_chance_choices", "balanceVersion");
 
 					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_fight_mobs", "mobId, balanceVersion");
+					createIndex(stmt, "idx_fightmobs_class", "neorogue_fight_mobs", "mobId, playerClass, balanceVersion");
 					createIndex(stmt, "idx_fightmobs_region", "neorogue_fight_mobs", "regionType, nodeType, balanceVersion");
 					createIndex(stmt, "idx_fightmobdmg_lookup", "neorogue_fight_mob_damage", "mobId, damageType, balanceVersion");
+					createIndex(stmt, "idx_fightmobdmg_class", "neorogue_fight_mob_damage", "mobId, playerClass, damageType, balanceVersion");
 
 					initialized = true;
 				}
@@ -358,6 +364,8 @@ public class AnalyticsManager {
 		for (MobRow row : snap.mobRows) {
 			sql.addValue("fightId", snap.fightId)
 					.addValue("mobId", row.mobId)
+					.addValue("playerUuid", row.playerUuid)
+					.addValue("playerClass", row.playerClass)
 					.addValue("ts", snap.timestamp)
 					.addValue("balanceVersion", snap.balanceVersion)
 					.addValue("host", snap.host)
@@ -384,6 +392,8 @@ public class AnalyticsManager {
 				if (ent.getValue() == null || ent.getValue() <= 0) continue;
 				sql.addValue("fightId", snap.fightId)
 						.addValue("mobId", row.mobId)
+						.addValue("playerUuid", row.playerUuid)
+						.addValue("playerClass", row.playerClass)
 						.addValue("damageType", ent.getKey().name())
 						.addValue("amount", ent.getValue())
 						.addValue("balanceVersion", snap.balanceVersion)

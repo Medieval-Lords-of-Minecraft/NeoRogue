@@ -47,7 +47,7 @@ public class NotorietySetting {
     public static final double SCORE_THRESHOLD_MULTIPLIER = 0.8;
     public static final NotorietySetting REDUCED_SCORE_THRESHOLDS = new NotorietySetting(
             Component.text("Fight score time thresholds reduced by ").color(NamedTextColor.GRAY)
-                    .append(Component.text((int) ((1 - SCORE_THRESHOLD_MULTIPLIER) * 100) + "%").color(NamedTextColor.YELLOW))
+                    .append(Component.text((int) (1 - SCORE_THRESHOLD_MULTIPLIER) * 100 + "%").color(NamedTextColor.YELLOW))
                     .append(Component.text(" after first boss").color(NamedTextColor.GRAY)),
             Component.text("You have tighter deadlines to reach the market."));
 

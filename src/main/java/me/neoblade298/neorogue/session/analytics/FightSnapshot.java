@@ -103,15 +103,21 @@ public class FightSnapshot {
 		}
 	}
 
-	// A single mob's aggregated damage dealt to the whole party during this fight. byType holds the
-	// per-damage-type breakdown; damageDealt is the total across all types.
+	// A single mob's damage dealt to one player during this fight. byType holds the per-damage-type
+	// breakdown; damageDealt is the total across all types. playerClass is denormalized so analytics
+	// can slice by class without a join, mirroring how EquipRow stores equipClass.
 	public static class MobRow {
 		public final String mobId;
+		public final String playerUuid;
+		public final String playerClass;
 		public final double damageDealt;
 		public final HashMap<DamageType, Double> byType;
 
-		public MobRow(String mobId, double damageDealt, HashMap<DamageType, Double> byType) {
+		public MobRow(String mobId, String playerUuid, String playerClass, double damageDealt,
+				HashMap<DamageType, Double> byType) {
 			this.mobId = mobId;
+			this.playerUuid = playerUuid;
+			this.playerClass = playerClass;
 			this.damageDealt = damageDealt;
 			this.byType = byType;
 		}

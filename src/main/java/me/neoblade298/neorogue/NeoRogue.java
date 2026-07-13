@@ -31,7 +31,11 @@ import me.neoblade298.neorogue.achievement.AchievementRewardRegistry;
 import me.neoblade298.neorogue.commands.CmdAccept;
 import me.neoblade298.neorogue.commands.CmdAchievements;
 import me.neoblade298.neorogue.commands.CmdAdminAchievement;
-import me.neoblade298.neorogue.commands.CmdAdminAnalytics;
+import me.neoblade298.neorogue.commands.CmdLyticsChance;
+import me.neoblade298.neorogue.commands.CmdLyticsEquipment;
+import me.neoblade298.neorogue.commands.CmdLyticsMob;
+import me.neoblade298.neorogue.commands.CmdLyticsMobs;
+import me.neoblade298.neorogue.commands.CmdLyticsPickrate;
 import me.neoblade298.neorogue.commands.CmdAdminBoost;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
@@ -246,7 +250,14 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminFlag("flag", "Add or remove a player flag", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminAnalytics("analytics", "Report effectiveness analytics for an equipment", null, SubcommandRunner.BOTH));
+		mngr.registerCommandList("");
+
+		mngr = new SubcommandManager("nrlytics", "neorogue.admin", NamedTextColor.DARK_RED, this);
+		mngr.register(new CmdLyticsEquipment("equipment", "View a single equipment's effectiveness", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsPickrate("pickrate", "Equipment pickrate leaderboard", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsChance("chance", "Chance event pickrate leaderboard", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsMobs("mobs", "Mob damage leaderboard", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsMob("mob", "Detailed mob damage and winrate report", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	
