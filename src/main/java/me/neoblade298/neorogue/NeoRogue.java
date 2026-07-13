@@ -76,6 +76,7 @@ import me.neoblade298.neorogue.commands.CmdAdminTestMW;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdAdminUnlock;
 import me.neoblade298.neorogue.commands.CmdAdminUnlocks;
+import me.neoblade298.neorogue.commands.CmdCargo;
 import me.neoblade298.neorogue.commands.CmdDecline;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdHelp;
@@ -197,6 +198,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));

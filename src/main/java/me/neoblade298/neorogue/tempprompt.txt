@@ -1,1 +1,0 @@
-I need a way to allow players to add "cargo" to their runs. Add a command /cargo that lets players drag and drop (or shift click) items from their inventory into the inventory to sell. Only items that do not have special meta should be sellable.

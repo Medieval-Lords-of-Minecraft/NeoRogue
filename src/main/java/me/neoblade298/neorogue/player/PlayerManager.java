@@ -31,6 +31,8 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_achievements (uuid VARCHAR(36) NOT NULL, achievement VARCHAR(100) NOT NULL, progress INT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, achievement));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_expboosts (uuid VARCHAR(36) NOT NULL, type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (uuid, type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_expboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (uuid, material));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo_meta (uuid VARCHAR(36) NOT NULL, capacity INT NOT NULL DEFAULT 3000, slots INT NOT NULL DEFAULT 5, PRIMARY KEY (uuid));");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -82,6 +83,8 @@ public class PlayerData {
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
 	private int slotsAvailable;
 	public static final int NOTORIETY_HARD_CAP = 10;
+	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
+	private Cargo cargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
 	
@@ -208,6 +211,26 @@ public class PlayerData {
 					partyStmt.setInt(2, slot);
 					try (ResultSet party = partyStmt.executeQuery()) {
 						snapshots.put(slot, new SessionSnapshot(saves, party));
+					}
+				}
+			}
+
+			// Load cargo limits and contents
+			try (PreparedStatement cargoMetaStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo_meta WHERE uuid = ?;")) {
+				cargoMetaStmt.setString(1, uuidStr);
+				try (ResultSet cargoMeta = cargoMetaStmt.executeQuery()) {
+					if (cargoMeta.next()) {
+						cargo.setCapacity(cargoMeta.getInt("capacity"));
+						cargo.setSlots(cargoMeta.getInt("slots"));
+					}
+				}
+			}
+			try (PreparedStatement cargoStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo WHERE uuid = ?;")) {
+				cargoStmt.setString(1, uuidStr);
+				try (ResultSet cargoRs = cargoStmt.executeQuery()) {
+					while (cargoRs.next()) {
+						Material mat = Material.getMaterial(cargoRs.getString("material"));
+						if (mat != null) cargo.load(mat, cargoRs.getInt("amount"));
 					}
 				}
 			}
@@ -477,6 +500,79 @@ public class PlayerData {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
+	public Cargo getCargo() {
+		return cargo;
+	}
+
+	public int getCargoCapacity() {
+		return cargo.getCapacity();
+	}
+
+	public void setCargoCapacity(int capacity) {
+		cargo.setCapacity(capacity);
+		saveCargoAsync();
+	}
+
+	public void addCargoCapacity(int amount) {
+		cargo.addCapacity(amount);
+		saveCargoAsync();
+	}
+
+	public int getCargoSlots() {
+		return cargo.getSlots();
+	}
+
+	public void setCargoSlots(int slots) {
+		cargo.setSlots(slots);
+		saveCargoAsync();
+	}
+
+	public void addCargoSlots(int amount) {
+		cargo.addSlots(amount);
+		saveCargoAsync();
+	}
+
+	public void saveCargoAsync() {
+		final String uuidStr = uuid.toString();
+		final HashMap<Material, Integer> snapshot = new HashMap<>(cargo.getItems());
+		final int capacity = cargo.getCapacity();
+		final int slots = cargo.getSlots();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_playercargo WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+					if (!snapshot.isEmpty()) {
+						SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
+						for (var entry : snapshot.entrySet()) {
+							sql.addValue("uuid", uuidStr)
+									.addValue("material", entry.getKey().name())
+									.addValue("amount", entry.getValue())
+									.addRow();
+						}
+						try (PreparedStatement ps = sql.build(con)) {
+							ps.executeBatch();
+						}
+					}
+					try (PreparedStatement meta = con.prepareStatement(
+							"REPLACE INTO neorogue_playercargo_meta (uuid, capacity, slots) VALUES (?, ?, ?);")) {
+						meta.setString(1, uuidStr);
+						meta.setInt(2, capacity);
+						meta.setInt(3, slots);
+						meta.executeUpdate();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save cargo for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
 	private void saveClassProgressionAsync() {
 		final String uuidStr = uuid.toString();
 		final HashMap<EquipmentClass, ClassProgression> snapshot = new HashMap<>();
@@ -728,6 +824,30 @@ public class PlayerData {
 		if (achSql != null) {
 			stmts.add(achSql.build(con));
 		}
+
+		// Save cargo contents
+		PreparedStatement clearCargo = con.prepareStatement("DELETE FROM neorogue_playercargo WHERE uuid = ?;");
+		clearCargo.setString(1, uuid.toString());
+		stmts.add(clearCargo);
+
+		if (!cargo.getItems().isEmpty()) {
+			SQLInsertBuilder cargoSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
+			for (var entry : cargo.getItems().entrySet()) {
+				cargoSql.addValue("uuid", uuid.toString())
+						.addValue("material", entry.getKey().name())
+						.addValue("amount", entry.getValue())
+						.addRow();
+			}
+			stmts.add(cargoSql.build(con));
+		}
+
+		// Save cargo limits
+		SQLInsertBuilder cargoMetaSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo_meta");
+		cargoMetaSql.addValue("uuid", uuid.toString())
+				.addValue("capacity", cargo.getCapacity())
+				.addValue("slots", cargo.getSlots())
+				.addRow();
+		stmts.add(cargoMetaSql.build(con));
 	}
 	
 	// Should only ever be displayed to the owner

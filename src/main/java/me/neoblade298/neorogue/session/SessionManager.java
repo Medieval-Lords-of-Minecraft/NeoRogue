@@ -612,7 +612,7 @@ public class SessionManager implements Listener {
 			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE || mat == Material.ANVIL
 					|| mat == Material.ENCHANTING_TABLE || mat == Material.BREWING_STAND || mat == Material.FURNACE
 					|| mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE || mat == Material.CARTOGRAPHY_TABLE
-					|| mat == Material.LOOM || mat == Material.JIGSAW) {
+					|| mat == Material.LOOM || mat == Material.JIGSAW || mat == Material.FLOWER_POT) {
 				e.setCancelled(true);
 			}
 
