@@ -144,10 +144,6 @@ public class SessionStatistics {
 				.append(Component.text(value, NamedTextColor.WHITE));
 	}
 
-	private Component loreLine(String label, String value) {
-		return loreLine(label, value, false);
-	}
-
 	private Component loreLine(String label, String value, boolean bold) {
 		return Component.text(label + ": ", NamedTextColor.GRAY)
 				.append(Component.text(value, NamedTextColor.WHITE))
