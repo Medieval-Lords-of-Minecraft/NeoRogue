@@ -41,11 +41,6 @@ public abstract class EditInventoryInstance extends Instance {
 			data.setupInventory();
 			data.updateBoardLines();
 		}
-		
-		for (UUID uuid : s.getSpectators().keySet()) {
-			Player p = Bukkit.getPlayer(uuid);
-			s.setupSpectatorInventory(p);
-		}
 		updateBoardLines();
 	}
 
@@ -115,11 +110,6 @@ public abstract class EditInventoryInstance extends Instance {
 		else {
 			s.getData(p.getUniqueId()).syncHealth();
 		}
-	}
-
-	@Override
-	public void handleSpectatorJoin(Player p) {
-		s.setupSpectatorInventory(p);
 	}
 
 	@Override

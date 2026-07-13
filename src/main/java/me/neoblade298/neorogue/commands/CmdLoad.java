@@ -7,7 +7,6 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -31,12 +30,7 @@ public class CmdLoad extends Subcommand {
 		}
 		else {
 			int slot = Integer.parseInt(args[0]);
-			PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
-			if (pd == null || pd.getSnapshot(slot) == null) {
-				Util.displayError(p, "No save data in that slot!");
-				return;
-			}
-			SessionManager.createSession(p, slot, false); 
+			SessionManager.tryLoadGame(p, slot);
 		}
 	}
 }

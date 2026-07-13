@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -69,6 +70,7 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
@@ -208,6 +210,65 @@ public class SessionManager implements Listener {
 		}
 		sess.addSpectator(p);
 		return true;
+	}
+
+	// Shared new-game validation so the command and the host menu enforce the same rules.
+	public static Session tryNewGame(Player p, int saveSlot) {
+		if (getSession(p) != null) {
+			Util.displayError(p, "You're already in a session!");
+			return null;
+		}
+		return createSession(p, saveSlot, true);
+	}
+
+	// Shared load-game validation so the command and the host menu enforce the same rules.
+	public static Session tryLoadGame(Player p, int saveSlot) {
+		if (getSession(p) != null) {
+			Util.displayError(p, "You're already in a session!");
+			return null;
+		}
+		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
+		if (pd == null || pd.getSnapshot(saveSlot) == null) {
+			Util.displayError(p, "No save data in that slot!");
+			return null;
+		}
+		return createSession(p, saveSlot, false);
+	}
+
+	// Shared join validation so the command and the join menu enforce the same rules.
+	public static boolean tryJoin(Player p, Session sess) {
+		if (sess == null) {
+			Util.displayError(p, "That session is no longer available!");
+			return false;
+		}
+		if (getSession(p) != null) {
+			Util.displayError(p, "You're already in a session!");
+			return false;
+		}
+		if (!(sess.getInstance() instanceof LobbyInstance)) {
+			Util.displayError(p, "That session has already started!");
+			return false;
+		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return false;
+		}
+		((LobbyInstance) sess.getInstance()).requestJoin(p);
+		return true;
+	}
+
+	// Deletes a save slot from both the in-memory snapshot cache and the database.
+	public static void deleteSave(Player p, int saveSlot) {
+		UUID host = p.getUniqueId();
+		PlayerData pd = PlayerManager.getPlayerData(host);
+		if (pd != null) pd.removeSnapshot(saveSlot);
+		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
+			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
+			ex.printStackTrace();
+		}
 	}
 
 	@EventHandler
@@ -622,7 +683,7 @@ public class SessionManager implements Listener {
 		}
 
 		if (s.isSpectator(uuid)) {
-			s.getInstance().handleSpectatorInteractEvent(e);
+			s.handleSpectatorInteract(p, e);
 			return;
 		}
 		s.getInstance().handleInteractEvent(e);

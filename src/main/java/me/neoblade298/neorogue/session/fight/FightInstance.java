@@ -1548,6 +1548,16 @@ public abstract class FightInstance extends Instance {
 		return loc.getBlock().getType() == Material.GRASS_BLOCK;
 	}
 
+	// Returns the location of the given player's corpse if they are currently downed, else null.
+	public Location getCorpseLocation(UUID uuid) {
+		for (Corpse c : corpses) {
+			if (c.data.getUniqueId().equals(uuid)) {
+				return c.corpseDisplay.getLocation();
+			}
+		}
+		return null;
+	}
+
 	private static class Corpse {
 		protected PlayerFightData data;
 		protected PlayerFightData reviver;

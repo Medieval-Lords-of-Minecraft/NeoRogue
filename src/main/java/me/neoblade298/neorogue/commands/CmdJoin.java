@@ -10,7 +10,6 @@ import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.instances.LobbyInstance;
 
 public class CmdJoin extends Subcommand {
 
@@ -32,25 +31,13 @@ public class CmdJoin extends Subcommand {
 			Util.displayError(p, "That player is not online!");
 			return;
 		}
-		
+
 		Session sess = SessionManager.getSession(host);
 		if (sess == null) {
 			Util.displayError(p, "That player is not in a session!");
 			return;
 		}
-		
-		// Try to join a lobby
-		if (!(sess.getInstance() instanceof LobbyInstance)) {
-			Util.displayError(p, "That session has already started!");
-			return;
-		}
 
-		if (sess.isBusy()) {
-			Util.displayError(p, "You can't do that while the session is loading!");
-			return;
-		}
-
-		LobbyInstance li = (LobbyInstance) sess.getInstance();
-		li.requestJoin(p);
+		SessionManager.tryJoin(p, sess);
 	}
 }

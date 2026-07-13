@@ -27,7 +27,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int NEW_GAME = 11, LOAD_GAME = 12, SPECTATE = 13, ACHIEVEMENTS = 14, UNLOCKS = 15, LEVELS = 4;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, LEVELS = 4;
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));
@@ -38,14 +38,12 @@ public class MainMenuInventory extends CoreInventory {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		ItemStack[] contents = inv.getContents();
-		contents[NEW_GAME] = CoreInventory.createButton(Material.EMERALD,
-				Component.text("New Game", NamedTextColor.GREEN));
-		contents[LOAD_GAME] = CoreInventory.createButton(Material.WRITABLE_BOOK,
-				Component.text("Load Game", NamedTextColor.GOLD));
+		contents[HOST_GAME] = CoreInventory.createButton(Material.WRITABLE_BOOK,
+				Component.text("Host Game", NamedTextColor.GREEN));
+		contents[JOIN_GAME] = CoreInventory.createButton(Material.PLAYER_HEAD,
+				Component.text("Join Game", NamedTextColor.YELLOW));
 		contents[ACHIEVEMENTS] = CoreInventory.createButton(Material.DIAMOND,
 				Component.text("Achievements", NamedTextColor.AQUA));
-		contents[SPECTATE] = CoreInventory.createButton(Material.SPYGLASS,
-				Component.text("Spectate", NamedTextColor.YELLOW));
 		contents[UNLOCKS] = CoreInventory.createButton(Material.ENDER_EYE,
 				Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE));
 		int totalAvailable = countAvailableUnlocks(pd);
@@ -108,7 +106,7 @@ public class MainMenuInventory extends CoreInventory {
 		if (pd == null) return;
 
 		switch (e.getSlot()) {
-		case NEW_GAME:
+		case HOST_GAME:
 			if (!pd.hasFlag("played_before")) {
 				pd.addFlag("played_before");
 				p.closeInventory();
@@ -118,46 +116,14 @@ public class MainMenuInventory extends CoreInventory {
 					Util.displayError(p, "You're already in a session!");
 					return;
 				}
-				// Auto-use first empty slot if one exists
-				int emptySlot = -1;
-				for (int i = 1; i <= pd.getSlots(); i++) {
-					if (pd.getSnapshot(i) == null) {
-						emptySlot = i;
-						break;
-					}
-				}
-				if (emptySlot != -1) {
-					p.closeInventory();
-					SessionManager.createSession(p, emptySlot, true);
-				} else if (pd.getSlots() == 1) {
-					p.closeInventory();
-					SessionManager.createSession(p, 1, true);
-				} else {
-					new NewGameSlotInventory(p, pd);
-				}
+				new HostGameInventory(p, pd);
 			}
 			break;
-		case LOAD_GAME:
-			if (pd.getSlots() == 1) {
-				if (pd.getSnapshot(1) == null) {
-					Util.displayError(p, "No save data in that slot!");
-					return;
-				}
-				if (SessionManager.getSession(p) != null) {
-					Util.displayError(p, "You're already in a session!");
-					return;
-				}
-				p.closeInventory();
-				SessionManager.createSession(p, 1, false);
-			} else {
-				new LoadGameSlotInventory(p, pd);
-			}
+		case JOIN_GAME:
+			new JoinGameInventory(p);
 			break;
 		case ACHIEVEMENTS:
 			new AchievementsMenuInventory(p);
-			break;
-		case SPECTATE:
-			new SpectateMenuInventory(p);
 			break;
 		case UNLOCKS:
 			new UnlocksMenuInventory(p);

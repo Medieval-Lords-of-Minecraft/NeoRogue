@@ -67,6 +67,7 @@ public abstract class Instance {
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			spectatorFlags.applyFlags(p);
+			s.setupSpectatorInventory(p);
 		}
 		setup();
 		s.getSessionType().onInstanceSetup(s, this);

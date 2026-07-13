@@ -37,7 +37,7 @@ public class CmdNew extends Subcommand {
 			Util.displayError(p, "Invalid save slot! You only have " + pd.getSlots() + " slot(s)!");
 			return;
 		}
-		
+		SessionManager.tryNewGame(p, slot);
 		SessionManager.createSession(p, slot, true);
 	}
 }

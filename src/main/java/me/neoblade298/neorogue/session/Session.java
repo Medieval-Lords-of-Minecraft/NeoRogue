@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -25,10 +26,13 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.map.MapView;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
@@ -43,6 +47,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -60,6 +65,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
@@ -72,7 +78,6 @@ import me.neoblade298.neorogue.session.instances.LoadLobbyInstance;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
 import me.neoblade298.neorogue.session.instances.LoseInstance;
 import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
-import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -395,6 +400,7 @@ public class Session {
 		inst.getSpectatorFlags().applyFlags(p);
 		SessionManager.hidePlayerFromAll(p);
 		inst.handleSpectatorJoin(p);
+		setupSpectatorInventory(p);
 	}
 	
 	public void removeSpectator(Player p) {
@@ -602,16 +608,112 @@ public class Session {
 	}
 	
 	public void setupSpectatorInventory(Player p) {
-		p.getInventory().clear();
-		if (inst instanceof NodeSelectInstance)
+		if (p == null) return;
+		PlayerInventory pinv = p.getInventory();
+		pinv.clear();
+
+		// Node map (slot 0) whenever a region is loaded
+		if (region != null) {
+			ItemStack item = CoreInventory
+					.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+			MapMeta meta = (MapMeta) item.getItemMeta();
+			meta.setMapView(Bukkit.getMap(EditInventoryInstance.MAP_ID));
+			item.setItemMeta(meta);
+			pinv.setItem(0, item);
+		}
+
+		// During fights, a head per party member for teleporting / viewing their inventory
+		if (inst instanceof FightInstance) {
+			int slot = 1;
+			for (PlayerSessionData data : party.values()) {
+				if (slot > 7) break;
+				pinv.setItem(slot++, createSpectatorHead(data));
+			}
+		}
+
+		// Barrier (slot 8) to stop spectating
+		pinv.setItem(8, createLeaveBarrier());
+	}
+
+	private ItemStack createSpectatorHead(PlayerSessionData data) {
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+		SkullMeta meta = (SkullMeta) skull.getItemMeta();
+		meta.setOwningPlayer(data.getPlayer() != null ? data.getPlayer() : Bukkit.getOfflinePlayer(data.getUniqueId()));
+		meta.displayName(Component.text(data.getData().getDisplay(), NamedTextColor.YELLOW)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+		meta.lore(List.of(
+				Component.text("Left click to teleport", NamedTextColor.GRAY)
+						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+				Component.text("Right click to view inventory", NamedTextColor.GRAY)
+						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
+		skull.setItemMeta(meta);
+		NBTItem nbti = new NBTItem(skull);
+		nbti.setString("spectateTarget", data.getUniqueId().toString());
+		return nbti.getItem();
+	}
+
+	private ItemStack createLeaveBarrier() {
+		ItemStack barrier = new ItemStack(Material.BARRIER);
+		ItemMeta meta = barrier.getItemMeta();
+		meta.displayName(Component.text("Leave Session", NamedTextColor.RED)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+		meta.lore(List.of(Component.text("Right click to stop spectating", NamedTextColor.GRAY)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
+		barrier.setItemMeta(meta);
+		return barrier;
+	}
+
+	// Routes a spectator's world interaction based on the held hotbar item. Block clicks (e.g.
+	// lecterns) and unrecognized items fall through to the instance's own spectator handler.
+	public void handleSpectatorInteract(Player p, PlayerInteractEvent e) {
+		if (e.getClickedBlock() != null) {
+			inst.handleSpectatorInteractEvent(e);
 			return;
-		ItemStack item = CoreInventory
-				.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
-		MapMeta meta = (MapMeta) item.getItemMeta();
-		MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
-		meta.setMapView(map);
-		item.setItemMeta(meta);
-		p.getInventory().setItem(0, item);
+		}
+		ItemStack hand = e.getItem();
+		if (hand == null) {
+			inst.handleSpectatorInteractEvent(e);
+			return;
+		}
+
+		Material type = hand.getType();
+		if (type == Material.FILLED_MAP) {
+			MapViewer viewer = spectators.get(p.getUniqueId());
+			if (viewer != null) {
+				if (e.getAction().isLeftClick()) viewer.scrollMapDown();
+				else if (e.getAction().isRightClick()) viewer.scrollMapUp();
+			}
+			return;
+		}
+		if (type == Material.BARRIER) {
+			if (e.getAction().isRightClick()) removeSpectator(p);
+			return;
+		}
+		if (type == Material.PLAYER_HEAD && inst instanceof FightInstance) {
+			NBTItem nbti = new NBTItem(hand);
+			if (nbti.hasTag("spectateTarget")) {
+				PlayerSessionData data = party.get(UUID.fromString(nbti.getString("spectateTarget")));
+				if (data == null) return;
+				if (e.getAction().isLeftClick()) {
+					// Downed players are hidden, so teleport to their corpse if they have one
+					Location dest = ((FightInstance) inst).getCorpseLocation(data.getUniqueId());
+					if (dest == null) {
+						Player target = data.getPlayer();
+						if (target != null && target.isOnline()) dest = target.getLocation();
+					}
+					if (dest != null) {
+						p.teleport(dest);
+						Sounds.turnPage.play(p, p, Audience.ORIGIN);
+					}
+				}
+				else if (e.getAction().isRightClick()) {
+					new PlayerSessionSpectateInventory(data, p);
+				}
+				return;
+			}
+		}
+
+		inst.handleSpectatorInteractEvent(e);
 	}
 	
 	// False if set instance fails

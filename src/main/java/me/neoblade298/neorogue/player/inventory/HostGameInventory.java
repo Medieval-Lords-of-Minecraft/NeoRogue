@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
@@ -27,7 +26,9 @@ import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class NewGameSlotInventory extends CoreInventory {
+// Unified host menu: empty slots start a new game (left click), filled slots load (left click) or
+// delete (right click). Replaces the separate New/Load slot inventories.
+public class HostGameInventory extends CoreInventory {
 	private static final int BACK = 22;
 	private static final int SLOT_START = 11;
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("MMM d yyyy h:mma");
@@ -38,15 +39,15 @@ public class NewGameSlotInventory extends CoreInventory {
 
 	private PlayerData pd;
 
-	public NewGameSlotInventory(Player p, PlayerData pd) {
-		super(p, Bukkit.createInventory(p, 27, Component.text("New Game - Select Slot", NamedTextColor.GREEN)));
+	public HostGameInventory(Player p, PlayerData pd) {
+		super(p, Bukkit.createInventory(p, 27, Component.text("Host Game - Select Slot", NamedTextColor.GOLD)));
 		this.pd = pd;
 		setupInventory();
 	}
 
 	private void setupInventory() {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		ItemStack[] contents = inv.getContents();
+		ItemStack[] contents = new ItemStack[inv.getSize()];
 
 		for (int i = 1; i <= pd.getSlots(); i++) {
 			SessionSnapshot snap = pd.getSnapshot(i);
@@ -54,7 +55,7 @@ public class NewGameSlotInventory extends CoreInventory {
 			if (snap != null) {
 				ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
 				ItemMeta meta = item.getItemMeta();
-				meta.displayName(Component.text("Slot " + i + " (Overwrite)", NamedTextColor.YELLOW));
+				meta.displayName(Component.text("Slot " + i, NamedTextColor.GOLD));
 				List<Component> lore = new ArrayList<>();
 				lore.add(Component.text("Last saved: " + sdf.format(new Date(snap.getLastSaved())), NamedTextColor.GRAY));
 				lore.add(Component.text("Region: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
@@ -64,14 +65,19 @@ public class NewGameSlotInventory extends CoreInventory {
 					lore.add(Component.text("  " + ent.getKey() + " [" + ent.getValue().getDisplay() + "]", NamedTextColor.GRAY));
 				}
 				lore.add(Component.empty());
-				lore.add(Component.text("Click to start a new game on this slot", NamedTextColor.GREEN));
+				lore.add(Component.text("Left click to load this game", NamedTextColor.GOLD));
+				lore.add(Component.text("Right click to delete this save", NamedTextColor.RED));
 				meta.lore(lore);
 				item.setItemMeta(meta);
 				contents[slot] = item;
 			}
 			else {
-				contents[slot] = CoreInventory.createButton(Material.GREEN_STAINED_GLASS_PANE,
-						Component.text("Slot " + i + " (Empty)", NamedTextColor.GREEN));
+				ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+				ItemMeta meta = item.getItemMeta();
+				meta.displayName(Component.text("Slot " + i + " (Empty)", NamedTextColor.GREEN));
+				meta.lore(List.of(Component.text("Left click to start a new game", NamedTextColor.GREEN)));
+				item.setItemMeta(meta);
+				contents[slot] = item;
 			}
 		}
 
@@ -86,7 +92,6 @@ public class NewGameSlotInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 
 		int clickedSlot = e.getSlot();
-
 		if (clickedSlot == BACK) {
 			new MainMenuInventory(p);
 			return;
@@ -94,12 +99,32 @@ public class NewGameSlotInventory extends CoreInventory {
 
 		if (clickedSlot >= SLOT_START && clickedSlot < SLOT_START + pd.getSlots()) {
 			int saveSlot = clickedSlot - SLOT_START + 1;
-			if (SessionManager.getSession(p) != null) {
-				Util.displayError(p, "You're already in a session!");
+			boolean hasData = pd.getSnapshot(saveSlot) != null;
+
+			if (!hasData) {
+				// Empty slot: left click starts a new game
+				if (e.isRightClick()) return;
+				p.closeInventory();
+				SessionManager.tryNewGame(p, saveSlot);
 				return;
 			}
-			p.closeInventory();
-			SessionManager.createSession(p, saveSlot, true);
+
+			if (e.isRightClick()) {
+				// Confirm before deleting
+				final int fSlot = saveSlot;
+				ItemStack display = e.getCurrentItem() != null ? e.getCurrentItem().clone() : null;
+				new ConfirmInventory(p, Component.text("Delete Save Slot " + fSlot + "?", NamedTextColor.RED), display,
+						() -> {
+							SessionManager.deleteSave(p, fSlot);
+							p.playSound(p, Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+							new HostGameInventory(p, pd);
+						},
+						() -> new HostGameInventory(p, pd));
+			}
+			else {
+				p.closeInventory();
+				SessionManager.tryLoadGame(p, saveSlot);
+			}
 		}
 	}
 
