@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionStatistics;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -39,16 +40,23 @@ public class SessionStatsInventory extends CoreInventory {
 		Collections.sort(rest);
 		ordered.addAll(rest);
 
+		// Compute the party-wide max per stat so the top holder of each stat can be bolded
+		ArrayList<SessionStatistics> allStats = new ArrayList<SessionStatistics>();
+		for (PlayerSessionData data : ordered) {
+			allStats.add(data.getSessionStats());
+		}
+		SessionStatistics maxStats = SessionStatistics.max(allStats);
+
 		// Center the heads in the single row
 		int idx = Math.max(0, 5 - ordered.size());
 		for (PlayerSessionData data : ordered) {
 			if (idx >= inv.getSize()) break;
-			inv.setItem(idx, createStatsHead(s, data));
+			inv.setItem(idx, createStatsHead(s, data, maxStats));
 			idx += 2;
 		}
 	}
 
-	private ItemStack createStatsHead(Session s, PlayerSessionData data) {
+	private ItemStack createStatsHead(Session s, PlayerSessionData data, SessionStatistics maxStats) {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
 		meta.setOwningPlayer(data.getPlayer() != null ? data.getPlayer() : Bukkit.getOfflinePlayer(data.getUniqueId()));
@@ -57,7 +65,7 @@ public class SessionStatsInventory extends CoreInventory {
 		if (s.getHost().equals(data.getUniqueId())) name = "\u2605 " + name;
 		meta.displayName(Component.text(name, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
 
-		List<Component> lore = data.getSessionStats().buildLore();
+		List<Component> lore = data.getSessionStats().buildLore(maxStats);
 		meta.lore(lore);
 		skull.setItemMeta(meta);
 		return skull;
