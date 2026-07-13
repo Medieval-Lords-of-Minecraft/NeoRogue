@@ -101,17 +101,42 @@ public class SessionStatistics {
 
 	// Builds the full list of stat lines used as item lore in the session stats inventory UI.
 	public List<Component> buildLore() {
+		return buildLore(null);
+	}
+
+	// Builds stat lines, bolding any stat where this player holds the party-wide max (from max).
+	// Pass null to disable bolding.
+	public List<Component> buildLore(SessionStatistics max) {
 		List<Component> lore = new ArrayList<Component>();
-		lore.add(loreLine("Fights Completed", String.valueOf(fightsCompleted)));
-		lore.add(loreLine("Deaths", String.valueOf(deaths)));
-		lore.add(loreLine("Damage Dealt", df.format(damageDealt)));
-		lore.add(loreLine("Damage Taken (Health)", df.format(damageTakenHealth)));
-		lore.add(loreLine("Damage Taken (Shields)", df.format(damageTakenShields)));
-		lore.add(loreLine("Shields Applied", df.format(shieldsApplied)));
-		lore.add(loreLine("Healing Done", df.format(healingDone)));
-		lore.add(loreLine("Damage Barriered", df.format(damageBarriered)));
-		lore.add(loreLine("Statuses Applied", String.valueOf(statusesApplied)));
+		lore.add(loreLine("Fights Completed", String.valueOf(fightsCompleted), max != null && fightsCompleted > 0 && fightsCompleted >= max.fightsCompleted));
+		lore.add(loreLine("Deaths", String.valueOf(deaths), max != null && deaths > 0 && deaths >= max.deaths));
+		lore.add(loreLine("Damage Dealt", df.format(damageDealt), max != null && damageDealt > 0 && damageDealt >= max.damageDealt));
+		lore.add(loreLine("Damage Taken (Health)", df.format(damageTakenHealth), max != null && damageTakenHealth > 0 && damageTakenHealth >= max.damageTakenHealth));
+		lore.add(loreLine("Damage Taken (Shields)", df.format(damageTakenShields), max != null && damageTakenShields > 0 && damageTakenShields >= max.damageTakenShields));
+		lore.add(loreLine("Shields Applied", df.format(shieldsApplied), max != null && shieldsApplied > 0 && shieldsApplied >= max.shieldsApplied));
+		lore.add(loreLine("Healing Done", df.format(healingDone), max != null && healingDone > 0 && healingDone >= max.healingDone));
+		lore.add(loreLine("Damage Barriered", df.format(damageBarriered), max != null && damageBarriered > 0 && damageBarriered >= max.damageBarriered));
+		lore.add(loreLine("Statuses Applied", String.valueOf(statusesApplied), max != null && statusesApplied > 0 && statusesApplied >= max.statusesApplied));
 		return lore;
+	}
+
+	// Returns a SessionStatistics holding the per-stat maximum across the given statistics.
+	public static SessionStatistics max(Iterable<SessionStatistics> all) {
+		SessionStatistics max = new SessionStatistics();
+		boolean any = false;
+		for (SessionStatistics s : all) {
+			any = true;
+			max.fightsCompleted = Math.max(max.fightsCompleted, s.fightsCompleted);
+			max.deaths = Math.max(max.deaths, s.deaths);
+			max.damageDealt = Math.max(max.damageDealt, s.damageDealt);
+			max.damageTakenHealth = Math.max(max.damageTakenHealth, s.damageTakenHealth);
+			max.damageTakenShields = Math.max(max.damageTakenShields, s.damageTakenShields);
+			max.shieldsApplied = Math.max(max.shieldsApplied, s.shieldsApplied);
+			max.healingDone = Math.max(max.healingDone, s.healingDone);
+			max.damageBarriered = Math.max(max.damageBarriered, s.damageBarriered);
+			max.statusesApplied = Math.max(max.statusesApplied, s.statusesApplied);
+		}
+		return any ? max : null;
 	}
 
 	private Component statLine(String label, String value) {
@@ -120,8 +145,13 @@ public class SessionStatistics {
 	}
 
 	private Component loreLine(String label, String value) {
+		return loreLine(label, value, false);
+	}
+
+	private Component loreLine(String label, String value, boolean bold) {
 		return Component.text(label + ": ", NamedTextColor.GRAY)
 				.append(Component.text(value, NamedTextColor.WHITE))
-				.decoration(TextDecoration.ITALIC, false);
+				.decoration(TextDecoration.ITALIC, false)
+				.decoration(TextDecoration.BOLD, bold);
 	}
 }
