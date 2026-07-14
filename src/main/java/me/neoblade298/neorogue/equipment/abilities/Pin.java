@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -24,6 +22,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -32,6 +31,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -44,9 +44,9 @@ public class Pin extends Equipment {
 	
 	public Pin(boolean isUpgraded) {
 		super(ID, "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 12, 0, 2));
-		damage = isUpgraded ? 160 : 130;
-		reduction = isUpgraded ? 15 : 10;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 12, 0, 2));
+		damage = isUpgraded ? 200 : 160;
+		reduction = isUpgraded ? 20 : 15;
 		
 		pc.count(25).spread(1, 1);
 		start.count(25).spread(0.5, 0);
@@ -73,6 +73,7 @@ public class Pin extends Equipment {
 			action = (pdata, in) -> {
 				Sounds.jump.play(p, p);
 				start.play(p, p);
+				data.applyStatus(StatusType.INVINCIBLE, data, 1, 10);
 				Vector v = p.getEyeLocation().getDirection().setY(0).normalize().multiply(1.2).setY(0.3);
 				if (p.isOnGround()) {
 					p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -175,7 +176,7 @@ public class Pin extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, dash forward, taking all enemies you contact with you. Slow all enemies hit " + DescUtil.duration(5, false) + ". If you hit a wall,"
+				"On cast, dash forward, taking all enemies you contact with you and become invulnerable [" + DescUtil.white("0.5s") + "]. Slow all enemies hit " + DescUtil.duration(5, false) + ". If you hit a wall,"
 				+ " deal " + GlossaryTag.BLUNT.tag(this) + " " + DescUtil.yellow(damage) + " damage and reduce the damage of all enemies hit by "
 				+ DescUtil.yellow(reduction) + " " + DescUtil.duration(5, false) + ".");
 	}

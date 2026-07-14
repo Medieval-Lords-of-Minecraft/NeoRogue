@@ -1,7 +1,10 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -80,9 +83,21 @@ public class RunReward {
 			depositCargo(psd, result.value);
 			Player p = psd.getPlayer();
 			if (p != null) {
-				Util.msgRaw(p, "<green>Your caravan sold <yellow>" + result.itemsSold + "<green> cargo item"
+				Util.msgRaw(p, "<gray>Your caravan sold <yellow>" + result.itemsSold + "</yellow> cargo item"
 						+ (result.itemsSold == 1 ? "" : "s") + " in " + completed.getDisplay() + " for <yellow>"
-						+ formatMoney(result.value) + "<green>!");
+						+ formatMoney(result.value) + "</yellow>:");
+
+				// Per-material breakdown, most valuable first.
+				List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
+						result.qtyByMaterial.entrySet());
+				lines.sort(Comparator.comparingDouble(
+						(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
+						.reversed());
+				for (Map.Entry<Material, Integer> line : lines) {
+					Material mat = line.getKey();
+					Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
+							+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
+				}
 			}
 		}
 	}

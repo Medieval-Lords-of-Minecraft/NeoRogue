@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -21,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -29,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -67,6 +67,7 @@ public class Tackle extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.jump.play(p, p);
 			start.play(p, p);
+			data.applyStatus(StatusType.INVINCIBLE, data, 1, 10);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -120,7 +121,7 @@ public class Tackle extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.BLUNT.tag(this) +
-				" damage in a small area. "
+				" damage in a small area, and become invulnerable [" + DescUtil.white("0.5s") + "]. "
 						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.white(10) + ". If you have any " + GlossaryTag.SHIELDS.tag(this) + 
 						" on hit, further reduce this ability's cooldown by " + DescUtil.white(5) + ".");
 	}

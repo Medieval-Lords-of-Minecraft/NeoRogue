@@ -62,6 +62,7 @@ public class EarthenTackle extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.jump.play(p, p);
 			start.play(p, p);
+			data.applyStatus(StatusType.INVINCIBLE, data, 1, 10);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -117,7 +118,7 @@ public class EarthenTackle extends Equipment {
 		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
-						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ". "
+						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ", and become invulnerable [" + DescUtil.white("0.5s") + "]. "
 						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.white(10) + ".");
 	}
 }

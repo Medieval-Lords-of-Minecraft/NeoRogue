@@ -1144,7 +1144,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		int toSell = (int) Math.round(total * fraction);
 		if (toSell <= 0) return new CargoSaleResult(0, 0);
 		if (toSell > total) toSell = total;
-
 		int remaining = total;
 		double value = 0;
 		int itemsSold = 0;
@@ -1182,17 +1181,27 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		for (Map.Entry<Material, Integer> ent : saleQty.entrySet()) {
 			DynamicPricingManager.recordSale(ent.getKey(), ent.getValue(), saleValue.getOrDefault(ent.getKey(), 0.0));
 		}
-		return new CargoSaleResult(itemsSold, value);
+		return new CargoSaleResult(itemsSold, value, saleQty, saleValue);
 	}
 
-	// Result of a single cargo auto-sale: number of units sold and their total sell value.
+	// Result of a single cargo auto-sale: number of units sold, their total sell value, and a
+	// per-material breakdown of quantities/values sold in this sale.
 	public static class CargoSaleResult {
 		public final int itemsSold;
 		public final double value;
+		public final LinkedHashMap<Material, Integer> qtyByMaterial;
+		public final LinkedHashMap<Material, Double> valueByMaterial;
 
 		public CargoSaleResult(int itemsSold, double value) {
+			this(itemsSold, value, new LinkedHashMap<Material, Integer>(), new LinkedHashMap<Material, Double>());
+		}
+
+		public CargoSaleResult(int itemsSold, double value, LinkedHashMap<Material, Integer> qtyByMaterial,
+				LinkedHashMap<Material, Double> valueByMaterial) {
 			this.itemsSold = itemsSold;
 			this.value = value;
+			this.qtyByMaterial = qtyByMaterial;
+			this.valueByMaterial = valueByMaterial;
 		}
 	}
 
