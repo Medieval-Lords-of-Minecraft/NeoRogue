@@ -293,6 +293,12 @@ public class NewLobbyInstance extends LobbyInstance {
 			return;
 		}
 
+		if (e.getClickedBlock().getType() == Material.BEACON) {
+			e.setCancelled(true);
+			leavePlayer(e.getPlayer());
+			return;
+		}
+
 		if (!Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
 		UUID uuid = e.getPlayer().getUniqueId();
 		Sign sign = (Sign) e.getClickedBlock().getState();

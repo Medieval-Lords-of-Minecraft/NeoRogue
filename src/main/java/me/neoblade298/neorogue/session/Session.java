@@ -72,6 +72,7 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.EndRunInstance;
 import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.instances.LoadLobbyInstance;
@@ -638,12 +639,23 @@ public class Session {
 			pinv.setItem(0, item);
 		}
 
-		// During fights, a head per party member for teleporting / viewing their inventory
-		if (inst instanceof FightInstance) {
-			int slot = 1;
-			for (PlayerSessionData data : party.values()) {
-				if (slot > 7) break;
-				pinv.setItem(slot++, createSpectatorHead(data));
+		// During fights or inventory editing, a head per party member for teleporting / viewing their inventory
+		if (inst instanceof FightInstance || inst instanceof EditInventoryInstance) {
+			List<PlayerSessionData> members = new ArrayList<PlayerSessionData>(party.values());
+			int firstSlot = 1, lastSlot = 7, available = lastSlot - firstSlot + 1;
+			int center = firstSlot + (available - 1) / 2;
+			int count = Math.min(members.size(), available);
+			for (int i = 0; i < count; i++) {
+				int slot;
+				if (count <= 4) {
+					// Centered layout with a 1-slot gap between heads
+					// 1:{4} 2:{3,5} 3:{2,4,6} 4:{1,3,5,7}
+					slot = center - (count - 1) + 2 * i;
+				} else {
+					// More heads than the centered layout can hold: spread to fill the width
+					slot = firstSlot + (int) Math.round((double) i * (available - 1) / (count - 1));
+				}
+				pinv.setItem(slot, createSpectatorHead(members.get(i)));
 			}
 		}
 
@@ -705,21 +717,23 @@ public class Session {
 			if (e.getAction().isRightClick()) removeSpectator(p);
 			return;
 		}
-		if (type == Material.PLAYER_HEAD && inst instanceof FightInstance) {
+		if (type == Material.PLAYER_HEAD && (inst instanceof FightInstance || inst instanceof EditInventoryInstance)) {
 			NBTItem nbti = new NBTItem(hand);
 			if (nbti.hasTag("spectateTarget")) {
 				PlayerSessionData data = party.get(UUID.fromString(nbti.getString("spectateTarget")));
 				if (data == null) return;
 				if (e.getAction().isLeftClick()) {
 					// Downed players are hidden, so teleport to their corpse if they have one
-					Location dest = ((FightInstance) inst).getCorpseLocation(data.getUniqueId());
+					Location dest = inst instanceof FightInstance
+							? ((FightInstance) inst).getCorpseLocation(data.getUniqueId())
+							: null;
 					if (dest == null) {
 						Player target = data.getPlayer();
 						if (target != null && target.isOnline()) dest = target.getLocation();
 					}
 					if (dest != null) {
 						p.teleport(dest);
-						Sounds.turnPage.play(p, p, Audience.ORIGIN);
+						Sounds.teleport.play(p, p, Audience.ORIGIN);
 					}
 				}
 				else if (e.getAction().isRightClick()) {
@@ -761,9 +775,14 @@ public class Session {
 			Bukkit.getLogger().info("Armor: " + psd.getArmorEquipped() + " / " + psd.getArmorSlots());
 		}
 		
-		// Auto-save
+		// Don't save because autosave happened
 		if (firstLoad)
 			return true;
+
+		// Don't save because the session is already ended
+		if (inst instanceof EndRunInstance)
+			return true;
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -829,7 +848,7 @@ public class Session {
 		if (inst instanceof LobbyInstance) {
 			return ((LobbyInstance) inst).getChatParticipants();
 		}
-		
+
 		ArrayList<Player> participants = new ArrayList<Player>();
 		for (UUID uuid : party.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);

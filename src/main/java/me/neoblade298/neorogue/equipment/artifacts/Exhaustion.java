@@ -36,7 +36,7 @@ public class Exhaustion extends Artifact {
 				data.getSessionData().addMaxAbilities(1);
 				return TriggerResult.remove();
 			}
-			Util.msgRaw(data.getPlayer(), hoverable.append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
+			Util.msgRaw(data.getPlayer(), Component.text("").append(hoverable).append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
 			return TriggerResult.keep();
 		});
 	}

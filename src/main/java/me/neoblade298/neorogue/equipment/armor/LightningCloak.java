@@ -57,7 +57,7 @@ public class LightningCloak extends Equipment {
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= threshold) {
 				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
-				Util.msgRaw(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();

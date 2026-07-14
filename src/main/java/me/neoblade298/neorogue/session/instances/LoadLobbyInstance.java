@@ -142,6 +142,12 @@ public class LoadLobbyInstance extends LobbyInstance {
             notifyPartyToJoin();
             return;
         }
+
+        if (e.getClickedBlock().getType() == Material.BEACON) {
+            e.setCancelled(true);
+            leavePlayer(e.getPlayer());
+            return;
+        }
 		
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
             if (!s.getHost().equals(uuid)) {

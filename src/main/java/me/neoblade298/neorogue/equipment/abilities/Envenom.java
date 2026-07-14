@@ -32,14 +32,13 @@ public class Envenom extends Equipment {
 	
 	public Envenom(boolean isUpgraded) {
 		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		poison = isUpgraded ? 15 : 10;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 12, 0));
+		poison = isUpgraded ? 8 : 5;
 		poisonDuration = 40;
 	}
 
 	@Override
 	public void setupReforges() {
-		addReforge(Resourcefulness.get(), EndlessVenom.get());
 		addReforge(Dexterity.get(), Envenom2.get());
 	}
 	

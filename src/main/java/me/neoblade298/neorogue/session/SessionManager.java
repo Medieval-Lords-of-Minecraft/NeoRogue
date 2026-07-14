@@ -86,6 +86,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.EndRunInstance;
 import me.neoblade298.neorogue.session.instances.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
 import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
@@ -925,6 +926,7 @@ public class SessionManager implements Listener {
 	public static void endSession(Session s) {
 		s.cleanup(false);
 		removeSession(s);
+		if (s.getInstance() instanceof EndRunInstance) return;
 
 		new BukkitRunnable() {
 			public void run() {

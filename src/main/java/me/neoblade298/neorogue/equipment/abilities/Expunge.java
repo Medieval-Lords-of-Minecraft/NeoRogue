@@ -44,7 +44,7 @@ public class Expunge extends Equipment {
 		super(ID, "Expunge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 7));
 		
-		stacks = isUpgraded ? 60 : 40;
+		stacks = isUpgraded ? 30 : 20;
 		bonus = isUpgraded ? 12 : 8;
 		poisonDuration = 60;
 	}

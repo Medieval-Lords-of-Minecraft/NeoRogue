@@ -22,7 +22,7 @@ public class Envenom2 extends Equipment {
 	public Envenom2(boolean isUpgraded) {
 		super(ID, "Envenom II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		poison = isUpgraded ? 25 : 15;
+		poison = isUpgraded ? 9 : 6;
 		poisonDuration = 40;
 	}
 	

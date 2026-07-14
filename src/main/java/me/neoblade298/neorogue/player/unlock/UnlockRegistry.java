@@ -179,6 +179,8 @@ public class UnlockRegistry {
 				for (String equipmentId : nodeTargets) {
 					Equipment eq = Equipment.get(equipmentId, false);
 					if (eq == null || eq.getType() != EquipmentType.ARTIFACT) continue;
+					// Gem artifacts are post-fight-only; never inject them into the drop/chance-trade pool
+					if (((Artifact) eq).isGemArtifact()) continue;
 					derived.add(eq.getEquipmentClasses(), (Artifact) eq);
 				}
 			}

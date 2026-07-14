@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.RegionType;
@@ -25,6 +29,19 @@ public class AnalyticsReport {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final int MIN_OFFERS = 10;
 	private static final int LEADERBOARD_LIMIT = 10;
+
+	// Filterable columns exposed by the "equipment" view. Shared with the command layer so tab
+	// completion and query building stay in sync. equipClass is comma-separated, so it uses FIND_IN_SET.
+	public static final List<AnalyticsFilters.FilterOption> EQUIPMENT_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("class", "equipClass", true, enumNames(EquipmentClass.values())),
+			new AnalyticsFilters.FilterOption("rarity", "rarity", false, enumNames(Rarity.values())),
+			new AnalyticsFilters.FilterOption("type", "equipType", false, enumNames(EquipmentType.values())));
+
+	private static List<String> enumNames(Enum<?>[] values) {
+		ArrayList<String> names = new ArrayList<String>();
+		for (Enum<?> v : values) names.add(v.name());
+		return names;
+	}
 
 	private AnalyticsReport() {}
 
@@ -139,6 +156,88 @@ public class AnalyticsReport {
 					lines.add("  <aqua>" + source + (upgraded ? "+" : "") + ":</aqua> <yellow>" + df.format(rate)
 							+ "%</yellow> <gray>(" + picked + "/" + offered + " offered)");
 				}
+			}
+		}
+	}
+
+	// View: equipment ranked by average damage dealt, filtered by any of the equipment filter columns
+	// (class/rarity/type). Shows the most and least damaging entries, mirroring the mob leaderboard.
+	public static void equipmentDamage(CommandSender s, int version, AnalyticsFilters filters) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ArrayList<String> lines = new ArrayList<String>();
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					queryEquipmentDamage(con, version, filters, lines);
+				}
+				catch (SQLException ex) {
+					lines.clear();
+					lines.add("<red>Failed to query analytics (see console).");
+					ex.printStackTrace();
+				}
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Util.msgRaw(s, "<gold>=== Equipment Damage (balance v" + version + ", " + filters.summary()
+								+ ") ===");
+						for (String err : filters.getErrors()) {
+							Util.msgRaw(s, "<red>" + err);
+						}
+						if (lines.isEmpty()) {
+							Util.msgRaw(s, "<yellow>No equipment recorded in at least " + MIN_OFFERS + " fights.");
+							return;
+						}
+						for (String line : lines) {
+							Util.msgRaw(s, line);
+						}
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private static void queryEquipmentDamage(Connection con, int version, AnalyticsFilters filters,
+			ArrayList<String> lines) throws SQLException {
+		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS n, SUM(outcome) AS wins,"
+				+ " AVG(damageDealt) AS dmg FROM neorogue_fight_equipment WHERE balanceVersion = ?");
+		filters.appendWhere(sql);
+		sql.append(" GROUP BY equipmentId, upgraded HAVING n >= ").append(MIN_OFFERS);
+
+		ArrayList<String> top = new ArrayList<String>();
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC;")) {
+			int idx = 1;
+			ps.setInt(idx++, version);
+			filters.bind(ps, idx);
+			collectEquipmentDamageRows(ps, top, LEADERBOARD_LIMIT);
+		}
+		if (top.isEmpty()) return;
+
+		lines.add("<red>Most damaging:");
+		lines.addAll(top);
+
+		ArrayList<String> bottom = new ArrayList<String>();
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg ASC;")) {
+			int idx = 1;
+			ps.setInt(idx++, version);
+			filters.bind(ps, idx);
+			collectEquipmentDamageRows(ps, bottom, LEADERBOARD_LIMIT);
+		}
+		lines.add("<green>Least damaging:");
+		lines.addAll(bottom);
+	}
+
+	private static void collectEquipmentDamageRows(PreparedStatement ps, ArrayList<String> rows, int limit)
+			throws SQLException {
+		try (ResultSet rs = ps.executeQuery()) {
+			while (rs.next() && rows.size() < limit) {
+				boolean upgraded = rs.getInt("upgraded") == 1;
+				int n = rs.getInt("n");
+				int wins = rs.getInt("wins");
+				double dmg = rs.getDouble("dmg");
+				double winrate = n > 0 ? (100.0 * wins / n) : 0;
+				rows.add("  <yellow>" + df.format(dmg) + "</yellow> <white>" + rs.getString("equipmentId")
+						+ (upgraded ? "+" : "") + "</white> <gray>(" + n + " fights, " + df.format(winrate) + "% wr)");
 			}
 		}
 	}

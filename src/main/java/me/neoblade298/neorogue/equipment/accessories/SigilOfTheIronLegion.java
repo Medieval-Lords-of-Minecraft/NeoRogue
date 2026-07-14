@@ -51,7 +51,7 @@ public class SigilOfTheIronLegion extends Artifact {
 			if (data.getStatus(StatusType.STRENGTH).getStacks() + ev.getStacks()>= thres) {
 				Player p = data.getPlayer();
 				Sounds.success.play(p, p, Audience.ORIGIN);
-				Util.msgRaw(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 				am.setBool(true);
 				return TriggerResult.remove();
 			}

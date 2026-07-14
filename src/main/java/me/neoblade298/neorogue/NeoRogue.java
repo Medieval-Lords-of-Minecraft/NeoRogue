@@ -94,6 +94,7 @@ import me.neoblade298.neorogue.commands.CmdLyticsMinibosses;
 import me.neoblade298.neorogue.commands.CmdLyticsMob;
 import me.neoblade298.neorogue.commands.CmdLyticsMobs;
 import me.neoblade298.neorogue.commands.CmdLyticsPickrate;
+import me.neoblade298.neorogue.commands.CmdLyticsView;
 import me.neoblade298.neorogue.commands.CmdMenu;
 import me.neoblade298.neorogue.commands.CmdNew;
 import me.neoblade298.neorogue.commands.CmdSpectate;
@@ -255,8 +256,9 @@ public class NeoRogue extends JavaPlugin {
 		mngr.registerCommandList("");
 
 		mngr = new SubcommandManager("nrlytics", "neorogue.admin", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdLyticsBalanceVersion("balanceversion", "View or set the balance version reports read from", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsBalanceVersion("version", "View or set the balance version reports read from", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsEquipment("equipment", "View a single equipment's effectiveness", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLyticsView("view", "Filterable analytics views (e.g. equipment damage)", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsPickrate("pickrate", "Equipment pickrate leaderboard", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsChance("chance", "Chance event pickrate leaderboard", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsMobs("mobs", "Mob damage leaderboard", null, SubcommandRunner.BOTH));

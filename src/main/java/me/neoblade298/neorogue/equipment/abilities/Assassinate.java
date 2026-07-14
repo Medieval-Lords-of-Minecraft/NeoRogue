@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -68,7 +67,7 @@ public class Assassinate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, true) + ". If you kill an enemy,"
+				"On cast, your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, false) + ". If you kill an enemy,"
 				+ " the stamina cost is refunded and the cooldown is reset.");
 	}
 }

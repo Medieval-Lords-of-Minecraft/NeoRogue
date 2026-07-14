@@ -53,8 +53,8 @@ public class Pandemic extends Equipment implements Power {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, radius));
 		bonusDamage = isUpgraded ? 0.9 : 0.6;
-		bonusPoison = isUpgraded ? 70 : 50;
-		areaPoison = isUpgraded ? 50 : 30;
+		bonusPoison = isUpgraded ? 35 : 25;
+		areaPoison = isUpgraded ? 25 : 15;
 		poisonDuration = 60;
 	}
 	

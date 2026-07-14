@@ -33,7 +33,7 @@ public class AlchemistBag extends Artifact {
 		data.addTrigger(id, Trigger.USE_CONSUMABLE, (pdata, in) -> {
 			data.addHealth(heal, this);
 			Player p = data.getPlayer();
-			Util.msgRaw(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.keep();
 		});
 	}

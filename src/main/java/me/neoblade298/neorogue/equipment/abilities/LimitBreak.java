@@ -63,7 +63,7 @@ public class LimitBreak extends Equipment {
 			// Block casting until the ability has charged for [delay] seconds into the fight
 			setCondition((pl, pdata, in) -> {
 				if (!ready) {
-					Util.msgRaw(pl, hoverable.append(Component.text(" can't be cast until " + delay + "s into the fight!", NamedTextColor.RED)));
+					Util.msgRaw(pl, Component.text("").append(hoverable).append(Component.text(" can't be cast until " + delay + "s into the fight!", NamedTextColor.RED)));
 					return false;
 				}
 				return true;

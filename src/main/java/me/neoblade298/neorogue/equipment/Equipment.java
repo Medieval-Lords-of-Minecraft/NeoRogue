@@ -206,6 +206,7 @@ import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
 import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
+import me.neoblade298.neorogue.equipment.consumables.CatalystPotion;
 import me.neoblade298.neorogue.equipment.consumables.DropOfInsanity;
 import me.neoblade298.neorogue.equipment.consumables.ForcePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorFirePotion;
@@ -216,7 +217,7 @@ import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MirrorPotion;
-import me.neoblade298.neorogue.equipment.consumables.PowerPotion;
+import me.neoblade298.neorogue.equipment.consumables.PotentialPotion;
 import me.neoblade298.neorogue.equipment.consumables.SeraphsPotion;
 import me.neoblade298.neorogue.equipment.consumables.ToughnessPotion;
 import me.neoblade298.neorogue.equipment.consumables.WeaponsPotion;
@@ -283,6 +284,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static TreeMap<String, Equipment> upgraded = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Equipment> weapons = new DropTableSet<Equipment>();
+	private static DropTableSet<Equipment> powers = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
 
@@ -305,6 +307,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		upgraded.clear();
 		droptables.reload();
 		weapons.reload();
+		powers.reload();
 		artifacts.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
@@ -436,7 +439,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Endurance(b);
 			new Engulf(b);
 			new Enlighten(b);
-			new EndlessVenom(b);
 			new EnduranceTraining(b);
 			new Energize(b);
 			new EnergyBeam(b);
@@ -964,11 +966,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AegisPotion(b);
 			new ForcePotion(b);
 			new MirrorPotion(b);
-			new PowerPotion(b);
+			new PotentialPotion(b);
 			new DropOfInsanity(b);
 			new SeraphsPotion(b);
 			new ToughnessPotion(b);
 			new AlchemistsPotion(b);
+			new CatalystPotion(b);
 		}
 
 		// Artifacts
@@ -1239,6 +1242,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			droptables.add(ecs, this);
 			if (type == EquipmentType.WEAPON) {
 				weapons.add(ecs, this);
+			}
+			if (this instanceof Power) {
+				powers.add(ecs, this);
 			}
 		}
 	}
@@ -1570,6 +1576,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public static ArrayList<Equipment> getWeapon(int value, int numDrops, EquipmentClass... ec) {
 		return weapons.getMultiple(value, numDrops, ec);
+	}
+
+	public static ArrayList<Equipment> getPower(int value, int numDrops, EquipmentClass... ec) {
+		return powers.getMultiple(value, numDrops, ec);
 	}
 
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, ArrayList<Equipment> exclusions, EquipmentClass... ec) {

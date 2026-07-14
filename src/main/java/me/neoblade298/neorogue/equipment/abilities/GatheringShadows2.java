@@ -47,7 +47,7 @@ public class GatheringShadows2 extends Equipment {
 				if (inst.getCount() > 2) dmg += bonus * (inst.getCount() - 2);
 				ev.getMeta().addDamageSlice(new DamageSlice(pdata2, dmg, DamageType.DARK,
 						DamageStatTracker.of(ID + slot, this)));
-				inst.setCount(0);
+				inst.setCount(-1);
 				return TriggerResult.keep();
 			});
 

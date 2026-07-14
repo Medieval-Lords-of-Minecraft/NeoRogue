@@ -20,6 +20,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -134,9 +135,7 @@ public class ArtifactsInventory extends CoreInventory {
 	}
 
 	private static boolean isGemArtifactId(String id) {
-		return RUBY_SHARD.equals(id) || RUBY_CLUSTER.equals(id) || RUBY_GEM.equals(id)
-				|| SAPPHIRE_SHARD.equals(id) || SAPPHIRE_CLUSTER.equals(id) || SAPPHIRE_GEM.equals(id)
-				|| EMERALD_SHARD.equals(id) || EMERALD_CLUSTER.equals(id) || EMERALD_GEM.equals(id);
+		return Artifact.isGemArtifact(id);
 	}
 
 	private static int calculateInventorySize(PlayerSessionData data) {

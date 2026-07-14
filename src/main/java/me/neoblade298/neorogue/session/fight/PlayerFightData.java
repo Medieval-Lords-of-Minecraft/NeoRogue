@@ -896,7 +896,7 @@ public class PlayerFightData extends FightData {
 				entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 			}
 		} else {
-			p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
+			p.setFoodLevel((int) Math.ceil(this.stamina * 14 / (int) sessdata.getMaxStamina()) + 6);
 			// Remove withered jump modifier if present
 			NamespacedKey key = NamespacedKey.fromString("withered", NeoRogue.inst());
 			if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) {

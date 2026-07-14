@@ -50,7 +50,7 @@ public class BlightTendril extends Equipment implements Power {
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		poison = isUpgraded ? 30 : 20;
+		poison = isUpgraded ? 15 : 10;
 		poisonMult = 0.5;
 		poisonDuration = 60;
 	}

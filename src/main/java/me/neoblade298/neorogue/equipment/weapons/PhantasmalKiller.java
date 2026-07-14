@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -59,7 +58,7 @@ public class PhantasmalKiller extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		if (data.getSessionData().getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
 			Player p = data.getPlayer();
-			Util.msgRaw(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
+			Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
 			return;
 		}
