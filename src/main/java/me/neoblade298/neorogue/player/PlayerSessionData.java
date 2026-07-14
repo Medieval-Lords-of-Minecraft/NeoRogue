@@ -8,12 +8,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
@@ -47,6 +50,7 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
+import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
@@ -82,6 +86,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	// Computed and consumed at run start, then persisted so it survives relogs/restarts.
 	private double runExpBoostMultiplier = 1.0;
 
+	// Run-scoped cargo carried into this run (moved from the player's persistent cargo on run start),
+	// plus a per-material log of what was auto-sold during the run for the end-of-run finance summary.
+	private final LinkedHashMap<Material, Integer> runCargo = new LinkedHashMap<Material, Integer>();
+	private final LinkedHashMap<Material, Integer> soldCargoQty = new LinkedHashMap<Material, Integer>();
+	private final LinkedHashMap<Material, Double> soldCargoValue = new LinkedHashMap<Material, Double>();
+
 	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
@@ -115,6 +125,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.instanceData = rs.getString("instanceData");
 		this.runExpBoostMultiplier = rs.getDouble("runExpBoostMultiplier");
 		sessionStats.load(rs);
+		loadRunCargoFromSQL();
 		initialize();
 	}
 
@@ -1092,6 +1103,89 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return boardLines;
 	}
 
+	// --- Run cargo & selling ---
+
+	public LinkedHashMap<Material, Integer> getRunCargo() {
+		return runCargo;
+	}
+
+	public LinkedHashMap<Material, Integer> getSoldCargoQty() {
+		return soldCargoQty;
+	}
+
+	public LinkedHashMap<Material, Double> getSoldCargoValue() {
+		return soldCargoValue;
+	}
+
+	// Loads a run cargo entry directly (from SQL or when moving cargo into the run), no limit checks.
+	public void loadRunCargo(Material mat, int amount) {
+		if (mat == null || amount <= 0) return;
+		runCargo.merge(mat, amount, Integer::sum);
+	}
+
+	public int getRunCargoTotal() {
+		int total = 0;
+		for (int amt : runCargo.values()) total += amt;
+		return total;
+	}
+
+	public boolean hasSoldCargo() {
+		return !soldCargoQty.isEmpty();
+	}
+
+	// Sells the given fraction of the current run cargo, choosing the specific units as a
+	// count-weighted random draw across all materials. Reduces runCargo, records the sold
+	// quantities/values for the finance summary, and returns how much sold and its value.
+	public CargoSaleResult sellRunCargo(double fraction) {
+		int total = getRunCargoTotal();
+		if (total <= 0 || fraction <= 0) return new CargoSaleResult(0, 0);
+		fraction = Math.min(fraction, 1.0);
+		int toSell = (int) Math.round(total * fraction);
+		if (toSell <= 0) return new CargoSaleResult(0, 0);
+		if (toSell > total) toSell = total;
+
+		int remaining = total;
+		double value = 0;
+		int itemsSold = 0;
+		for (int i = 0; i < toSell && remaining > 0; i++) {
+			int roll = NeoRogue.gen.nextInt(remaining);
+			Material chosen = null;
+			int cumulative = 0;
+			for (Map.Entry<Material, Integer> ent : runCargo.entrySet()) {
+				cumulative += ent.getValue();
+				if (roll < cumulative) {
+					chosen = ent.getKey();
+					break;
+				}
+			}
+			if (chosen == null) break;
+
+			int newCount = runCargo.get(chosen) - 1;
+			if (newCount <= 0) runCargo.remove(chosen);
+			else runCargo.put(chosen, newCount);
+			remaining--;
+
+			double price = MaterialPrices.getPrice(chosen);
+			if (price < 0) price = 0;
+			value += price;
+			itemsSold++;
+			soldCargoQty.merge(chosen, 1, Integer::sum);
+			soldCargoValue.merge(chosen, price, Double::sum);
+		}
+		return new CargoSaleResult(itemsSold, value);
+	}
+
+	// Result of a single cargo auto-sale: number of units sold and their total sell value.
+	public static class CargoSaleResult {
+		public final int itemsSold;
+		public final double value;
+
+		public CargoSaleResult(int itemsSold, double value) {
+			this.itemsSold = itemsSold;
+			this.value = value;
+		}
+	}
+
 	public void save(Connection con) {
 		UUID host = s.getHost();
 		String uuid = data.getPlayer().getUniqueId().toString();
@@ -1138,9 +1232,90 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();
 			ps.close();
+
+			saveRunCargo(con, host.toString(), saveSlot, uuid);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
 					+ host + " to slot " + saveSlot);
+			ex.printStackTrace();
+		}
+	}
+
+	// Persists run cargo and the sold-cargo log to their own tables, keyed by host/slot/uuid.
+	private void saveRunCargo(Connection con, String host, int saveSlot, String uuid) throws SQLException {
+		try (PreparedStatement clear = con.prepareStatement(
+				"DELETE FROM neorogue_sessioncargo WHERE host = ? AND slot = ? AND uuid = ?;")) {
+			clear.setString(1, host);
+			clear.setInt(2, saveSlot);
+			clear.setString(3, uuid);
+			clear.executeUpdate();
+		}
+		if (!runCargo.isEmpty()) {
+			SQLInsertBuilder cargoSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessioncargo");
+			for (Map.Entry<Material, Integer> ent : runCargo.entrySet()) {
+				cargoSql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
+						.addValue("material", ent.getKey().name()).addValue("amount", ent.getValue()).addRow();
+			}
+			try (PreparedStatement ps = cargoSql.build(con)) {
+				ps.executeBatch();
+			}
+		}
+
+		try (PreparedStatement clear = con.prepareStatement(
+				"DELETE FROM neorogue_sessioncargosold WHERE host = ? AND slot = ? AND uuid = ?;")) {
+			clear.setString(1, host);
+			clear.setInt(2, saveSlot);
+			clear.setString(3, uuid);
+			clear.executeUpdate();
+		}
+		if (!soldCargoQty.isEmpty()) {
+			SQLInsertBuilder soldSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessioncargosold");
+			for (Map.Entry<Material, Integer> ent : soldCargoQty.entrySet()) {
+				soldSql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
+						.addValue("material", ent.getKey().name()).addValue("amount", ent.getValue())
+						.addValue("value", soldCargoValue.getOrDefault(ent.getKey(), 0.0)).addRow();
+			}
+			try (PreparedStatement ps = soldSql.build(con)) {
+				ps.executeBatch();
+			}
+		}
+	}
+
+	// Loads run cargo and the sold-cargo log from SQL for this player's current run. Called on run load.
+	public void loadRunCargoFromSQL() {
+		String host = s.getHost().toString();
+		int saveSlot = s.getSaveSlot();
+		String uuidStr = uuid.toString();
+		try (Connection con = SQLManager.getConnection("NeoRogue")) {
+			try (PreparedStatement ps = con.prepareStatement(
+					"SELECT material, amount FROM neorogue_sessioncargo WHERE host = ? AND slot = ? AND uuid = ?;")) {
+				ps.setString(1, host);
+				ps.setInt(2, saveSlot);
+				ps.setString(3, uuidStr);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Material mat = Material.getMaterial(rs.getString("material"));
+						if (mat != null) runCargo.merge(mat, rs.getInt("amount"), Integer::sum);
+					}
+				}
+			}
+			try (PreparedStatement ps = con.prepareStatement(
+					"SELECT material, amount, value FROM neorogue_sessioncargosold WHERE host = ? AND slot = ? AND uuid = ?;")) {
+				ps.setString(1, host);
+				ps.setInt(2, saveSlot);
+				ps.setString(3, uuidStr);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Material mat = Material.getMaterial(rs.getString("material"));
+						if (mat != null) {
+							soldCargoQty.merge(mat, rs.getInt("amount"), Integer::sum);
+							soldCargoValue.merge(mat, rs.getDouble("value"), Double::sum);
+						}
+					}
+				}
+			}
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load run cargo for " + uuidStr);
 			ex.printStackTrace();
 		}
 	}

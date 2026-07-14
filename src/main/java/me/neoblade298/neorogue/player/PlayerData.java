@@ -85,6 +85,9 @@ public class PlayerData {
 	public static final int NOTORIETY_HARD_CAP = 10;
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
 	private Cargo cargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
+	// Overflow stash for unsold cargo returned at run end that didn't fit in the main cargo.
+	// Shares its capacity/slot limits with the main cargo; withdraw-only in the GUI.
+	private Cargo lostCargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
 	
@@ -225,6 +228,9 @@ public class PlayerData {
 					if (cargoMeta.next()) {
 						cargo.setCapacity(cargoMeta.getInt("capacity"));
 						cargo.setSlots(cargoMeta.getInt("slots"));
+						// Lost cargo shares the same limits as the main cargo.
+						lostCargo.setCapacity(cargoMeta.getInt("capacity"));
+						lostCargo.setSlots(cargoMeta.getInt("slots"));
 					}
 				}
 			}
@@ -234,6 +240,15 @@ public class PlayerData {
 					while (cargoRs.next()) {
 						Material mat = Material.getMaterial(cargoRs.getString("material"));
 						if (mat != null) cargo.load(mat, cargoRs.getInt("amount"));
+					}
+				}
+			}
+			try (PreparedStatement lostStmt = con.prepareStatement("SELECT * FROM neorogue_playerlostcargo WHERE uuid = ?;")) {
+				lostStmt.setString(1, uuidStr);
+				try (ResultSet lostRs = lostStmt.executeQuery()) {
+					while (lostRs.next()) {
+						Material mat = Material.getMaterial(lostRs.getString("material"));
+						if (mat != null) lostCargo.load(mat, lostRs.getInt("amount"));
 					}
 				}
 			}
@@ -507,17 +522,23 @@ public class PlayerData {
 		return cargo;
 	}
 
+	public Cargo getLostCargo() {
+		return lostCargo;
+	}
+
 	public int getCargoCapacity() {
 		return cargo.getCapacity();
 	}
 
 	public void setCargoCapacity(int capacity) {
 		cargo.setCapacity(capacity);
+		lostCargo.setCapacity(capacity);
 		saveCargoAsync();
 	}
 
 	public void addCargoCapacity(int amount) {
 		cargo.addCapacity(amount);
+		lostCargo.addCapacity(amount);
 		saveCargoAsync();
 	}
 
@@ -527,11 +548,13 @@ public class PlayerData {
 
 	public void setCargoSlots(int slots) {
 		cargo.setSlots(slots);
+		lostCargo.setSlots(slots);
 		saveCargoAsync();
 	}
 
 	public void addCargoSlots(int amount) {
 		cargo.addSlots(amount);
+		lostCargo.addSlots(amount);
 		saveCargoAsync();
 	}
 
@@ -570,6 +593,39 @@ public class PlayerData {
 					}
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to save cargo for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// Persists the lost-cargo overflow stash. Limits are shared with the main cargo (saved by saveCargoAsync).
+	public void saveLostCargoAsync() {
+		final String uuidStr = uuid.toString();
+		final HashMap<Material, Integer> snapshot = new HashMap<>(lostCargo.getItems());
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_playerlostcargo WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+					if (!snapshot.isEmpty()) {
+						SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerlostcargo");
+						for (var entry : snapshot.entrySet()) {
+							sql.addValue("uuid", uuidStr)
+									.addValue("material", entry.getKey().name())
+									.addValue("amount", entry.getValue())
+									.addRow();
+						}
+						try (PreparedStatement ps = sql.build(con)) {
+							ps.executeBatch();
+						}
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save lost cargo for " + uuidStr);
 					ex.printStackTrace();
 				}
 			}

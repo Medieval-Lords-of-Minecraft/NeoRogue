@@ -372,8 +372,24 @@ public class Session {
 	// Players are added this way after a lobby instance starts the game
 	public void addPlayers(HashMap<UUID, EquipmentClass> players) {
 		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
-			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue(), this));
+			PlayerSessionData psd = new PlayerSessionData(ent.getKey(), ent.getValue(), this);
+			moveCargoIntoRun(psd);
+			party.put(ent.getKey(), psd);
 		}
+	}
+
+	// On a new run, a player's persistent cargo is emptied into the run so it can be sold as regions
+	// are completed. Any unsold remainder is returned at the end of the run.
+	private void moveCargoIntoRun(PlayerSessionData psd) {
+		PlayerData pd = psd.getData();
+		if (pd == null) return;
+		me.neoblade298.neorogue.player.Cargo cargo = pd.getCargo();
+		if (cargo.getItems().isEmpty()) return;
+		for (Entry<Material, Integer> ent : new HashMap<Material, Integer>(cargo.getItems()).entrySet()) {
+			psd.loadRunCargo(ent.getKey(), ent.getValue());
+		}
+		cargo.clear();
+		pd.saveCargoAsync();
 	}
 	
 	// Used for debug purposes only
@@ -798,7 +814,7 @@ public class Session {
 		if (inst instanceof LobbyInstance) {
 			return ((LobbyInstance) inst).getOnlinePlayers();
 		}
-		
+
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (UUID uuid : party.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
@@ -1141,7 +1157,10 @@ public class Session {
 					"DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 			);
 			stmt.executeUpdate(
-					"DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+					"DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 			);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning(

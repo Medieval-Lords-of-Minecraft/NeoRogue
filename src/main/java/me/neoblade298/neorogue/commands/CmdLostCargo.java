@@ -1,0 +1,34 @@
+package me.neoblade298.neorogue.commands;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import me.neoblade298.neocore.bukkit.commands.Subcommand;
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.inventory.LostCargoInventory;
+import me.neoblade298.neorogue.session.SessionManager;
+
+public class CmdLostCargo extends Subcommand {
+
+	public CmdLostCargo(String key, String desc, String perm, SubcommandRunner runner) {
+		super(key, desc, perm, runner);
+	}
+
+	@Override
+	public void run(CommandSender s, String[] args) {
+		Player p = (Player) s;
+		if (SessionManager.getSession(p) != null) {
+			Util.displayError(p, "You can't manage cargo during a run!");
+			return;
+		}
+		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
+		if (pd == null) {
+			Util.displayError(p, "Your player data isn't loaded yet!");
+			return;
+		}
+		new LostCargoInventory(p, pd);
+	}
+}

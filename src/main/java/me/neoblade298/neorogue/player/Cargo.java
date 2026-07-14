@@ -84,6 +84,11 @@ public class Cargo {
 		items.merge(mat, amount, Integer::sum);
 	}
 
+	// Removes all items (limits are untouched).
+	public void clear() {
+		items.clear();
+	}
+
 	public double getSellValue(Material mat) {
 		return MaterialPrices.getPrice(mat) * getCount(mat);
 	}

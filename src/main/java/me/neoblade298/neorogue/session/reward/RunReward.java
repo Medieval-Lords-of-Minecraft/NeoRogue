@@ -1,14 +1,20 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.Cargo;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import net.milkbowl.vault2.economy.Economy;
 
@@ -29,6 +35,9 @@ public class RunReward {
 
 	// A loss with fewer than this many nodes visited earns nothing.
 	private static final int DEATH_NODE_THRESHOLD = 5;
+
+	// Random +/- variance applied to each region's cargo sell percentage at runtime.
+	private static final double CARGO_SELL_VARIANCE = 0.03;
 	// -----------------------------------------------------------------------
 
 	// Hooks VaultUnlocked's economy service. Call once on plugin enable (after VaultUnlocked has loaded).
@@ -50,9 +59,38 @@ public class RunReward {
 		return economy != null;
 	}
 
+	// Deposits arbitrary VaultUnlocked currency to a party member (used for cargo sale proceeds).
+	public static void depositCargo(PlayerSessionData psd, double amount) {
+		if (economy == null || amount <= 0) return;
+		economy.deposit(NeoRogue.inst().getName(), psd.getUniqueId(), BigDecimal.valueOf(amount));
+	}
+
+	// Sells each party member's run cargo for a completed region. The region's base percentage is
+	// randomized by +/- CARGO_SELL_VARIANCE, proceeds are paid out immediately, and the sale is
+	// logged on each PlayerSessionData for the end-of-run finance summary.
+	public static void sellCargoForRegion(Session s, RegionType completed) {
+		double base = completed.getCargoSellPercent();
+		if (base <= 0) return;
+		for (PlayerSessionData psd : s.getParty().values()) {
+			if (psd.getRunCargoTotal() <= 0) continue;
+			double variance = (NeoRogue.gen.nextDouble() * 2 - 1) * CARGO_SELL_VARIANCE;
+			double fraction = Math.max(0.0, Math.min(1.0, base + variance));
+			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(fraction);
+			if (result.itemsSold <= 0) continue;
+			depositCargo(psd, result.value);
+			Player p = psd.getPlayer();
+			if (p != null) {
+				Util.msgRaw(p, "<green>Your caravan sold <yellow>" + result.itemsSold + "<green> cargo item"
+						+ (result.itemsSold == 1 ? "" : "s") + " in " + completed.getDisplay() + " for <yellow>"
+						+ formatMoney(result.value) + "<green>!");
+			}
+		}
+	}
+
 	// Pays out each party member the calculated amount for finishing a run.
 	// won = true for a run victory, false for a run loss.
 	public static void payout(Session s, boolean won) {
+		returnUnsoldCargo(s);
 		if (economy == null) return;
 
 		Breakdown b = calculateBreakdown(s, won);
@@ -66,6 +104,35 @@ public class RunReward {
 			if (p != null) {
 				Util.msgRaw(p, "<green>You earned <yellow>" + formatMoney(b.total) + "<green> for "
 						+ (won ? "winning" : "completing") + " your run! <gray>(click the gold block for a breakdown)");
+			}
+		}
+	}
+
+	// At run end, returns each player's unsold run cargo to their persistent cargo. Anything that no
+	// longer fits overflows into their lost cargo; anything still left over is discarded.
+	public static void returnUnsoldCargo(Session s) {
+		for (PlayerSessionData psd : s.getParty().values()) {
+			Map<Material, Integer> remaining = psd.getRunCargo();
+			if (remaining.isEmpty()) continue;
+			PlayerData pd = psd.getData();
+			if (pd == null) continue;
+			Cargo cargo = pd.getCargo();
+			Cargo lost = pd.getLostCargo();
+			boolean anyDiscarded = false;
+			for (Map.Entry<Material, Integer> ent : new HashMap<Material, Integer>(remaining).entrySet()) {
+				Material mat = ent.getKey();
+				int leftover = ent.getValue() - cargo.addItem(mat, ent.getValue());
+				if (leftover > 0) {
+					leftover -= lost.addItem(mat, leftover);
+					if (leftover > 0) anyDiscarded = true;
+				}
+			}
+			remaining.clear();
+			pd.saveCargoAsync();
+			pd.saveLostCargoAsync();
+			Player p = psd.getPlayer();
+			if (p != null && anyDiscarded) {
+				Util.msgRaw(p, "<red>Some unsold cargo didn't fit in your cargo or lost cargo and was discarded!");
 			}
 		}
 	}
@@ -109,6 +176,34 @@ public class RunReward {
 		Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
 				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier));
 		Util.msgRaw(p, "<gold>Total earned: <yellow>" + formatMoney(b.total));
+
+		// Cargo is sold and paid out per region during the run; summarize what each player sold here.
+		PlayerSessionData psd = s.getParty().get(p.getUniqueId());
+		if (psd != null && psd.hasSoldCargo()) {
+			Util.msgRaw(p, "<gold><st>          </st>[ <yellow>Cargo Sold</yellow> ]<st>          </st>");
+			double cargoTotal = 0;
+			for (Map.Entry<Material, Integer> ent : psd.getSoldCargoQty().entrySet()) {
+				Material mat = ent.getKey();
+				int qty = ent.getValue();
+				double value = psd.getSoldCargoValue().getOrDefault(mat, 0.0);
+				cargoTotal += value;
+				Util.msgRaw(p, "<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
+						+ formatMoney(value));
+			}
+			Util.msgRaw(p, "<gold>Total cargo sold: <yellow>" + formatMoney(cargoTotal));
+		}
+	}
+
+	// Converts an enum material name (e.g. IRON_INGOT) to a readable label (e.g. Iron Ingot).
+	private static String prettyName(Material mat) {
+		String[] parts = mat.name().toLowerCase().split("_");
+		StringBuilder sb = new StringBuilder();
+		for (String part : parts) {
+			if (part.isEmpty()) continue;
+			if (sb.length() > 0) sb.append(' ');
+			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+		}
+		return sb.toString();
 	}
 
 	private static String formatMoney(double amount) {

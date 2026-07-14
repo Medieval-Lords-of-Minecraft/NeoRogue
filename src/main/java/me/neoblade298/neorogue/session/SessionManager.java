@@ -265,6 +265,8 @@ public class SessionManager implements Listener {
 		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
 			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
 			ex.printStackTrace();

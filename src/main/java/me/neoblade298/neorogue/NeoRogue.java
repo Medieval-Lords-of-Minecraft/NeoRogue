@@ -85,6 +85,7 @@ import me.neoblade298.neorogue.commands.CmdKick;
 import me.neoblade298.neorogue.commands.CmdLeave;
 import me.neoblade298.neorogue.commands.CmdList;
 import me.neoblade298.neorogue.commands.CmdLoad;
+import me.neoblade298.neorogue.commands.CmdLostCargo;
 import me.neoblade298.neorogue.commands.CmdLyticsBalanceVersion;
 import me.neoblade298.neorogue.commands.CmdLyticsBosses;
 import me.neoblade298.neorogue.commands.CmdLyticsChance;
@@ -206,6 +207,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdLostCargo("lostcargo", "Withdraw unsold cargo from past runs", null, SubcommandRunner.PLAYER_ONLY));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));

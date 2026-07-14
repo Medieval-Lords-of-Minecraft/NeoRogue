@@ -22,6 +22,18 @@ public enum RegionType {
 		nextRegion.put(LOW_DISTRICT, HARVEST_FIELDS);
 		nextRegion.put(HARVEST_FIELDS, FROZEN_WASTES);
 	}
+
+	// Fraction of a player's run cargo that is auto-sold upon completing each region.
+	private static HashMap<RegionType, Double> cargoSellPercent = new HashMap<RegionType, Double>();
+	static {
+		cargoSellPercent.put(LOW_DISTRICT, 0.20);
+		cargoSellPercent.put(HARVEST_FIELDS, 0.40);
+		cargoSellPercent.put(FROZEN_WASTES, 1.00);
+		cargoSellPercent.put(LOW_DISTRICT_DEBUG, 0.20);
+		cargoSellPercent.put(HARVEST_FIELDS_DEBUG, 0.40);
+		cargoSellPercent.put(FROZEN_WASTES_DEBUG, 1.00);
+		cargoSellPercent.put(OUTER_ADMIRATIO_DEBUG, 1.00);
+	}
 	
 	private String display;
 	private int rowCount, difficulty;
@@ -52,6 +64,11 @@ public enum RegionType {
 	
 	public static RegionType getNextRegion(RegionType curr, boolean endless) {
 		return endless && !nextRegion.containsKey(curr) ? LOW_DISTRICT : nextRegion.get(curr);
+	}
+
+	// Fraction (0-1) of run cargo auto-sold when this region is completed. 0 if not sellable.
+	public double getCargoSellPercent() {
+		return cargoSellPercent.getOrDefault(this, 0.0);
 	}
     
     public static RegionType getDebugRegion(RegionType type) {

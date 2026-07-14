@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -69,6 +70,8 @@ public class BossFightInstance extends FightInstance {
 			}
 
 			RegionType bossRegion = s.getRegion().getType();
+			// Completing a region auto-sells a portion of each player's run cargo.
+			RunReward.sellCargoForRegion(s, bossRegion);
 			RegionType nextRegion = RegionType.getNextRegion(bossRegion, s.isEndless());
 			if (nextRegion == null) {
 				handleWin(title, new WinInstance(s));

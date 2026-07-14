@@ -33,6 +33,11 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_expboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (uuid, material));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo_meta (uuid VARCHAR(36) NOT NULL, capacity INT NOT NULL DEFAULT 3000, slots INT NOT NULL DEFAULT 5, PRIMARY KEY (uuid));");
+			// Run-scoped cargo carried into a run, and per-material log of what was sold during it.
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargo (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargosold (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, value DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
+			// Overflow inventory for unsold cargo that couldn't be returned to a player's main cargo. Withdraw-only.
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerlostcargo (uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (uuid, material));");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
