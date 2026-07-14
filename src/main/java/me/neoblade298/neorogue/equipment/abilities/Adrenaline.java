@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Color;
@@ -11,12 +9,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -30,6 +29,7 @@ public class Adrenaline extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private static final int stamina = 100;
+	private static final int damageReduc = 2;
 	
 	public Adrenaline(boolean isUpgraded) {
 		super(ID, "Adrenaline", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -50,7 +50,7 @@ public class Adrenaline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself " + DescUtil.white(stamina) + " stamina and take " + DescUtil.white(5) + " less damage " + DescUtil.duration(10, false) + ". Can be cast " + DescUtil.yellow(isUpgraded ? "twice" : "once") + " per fight.");
+				"On cast, give yourself " + DescUtil.white(stamina) + " stamina and take " + DescUtil.white(damageReduc) + " less damage " + DescUtil.duration(10, false) + ". Can be cast " + DescUtil.yellow(isUpgraded ? "twice" : "once") + " per fight.");
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class Adrenaline extends Equipment {
 				sc.play(p, p);
 				pc.play(p, p);
 				pdata.addStamina(stamina);
-				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 5, 0, StatTracker.defenseBuffAlly(id, eq, false)));
+				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damageReduc, 0, StatTracker.defenseBuffAlly(id, eq, false)));
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);

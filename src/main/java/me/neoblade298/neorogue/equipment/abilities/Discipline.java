@@ -27,13 +27,14 @@ public class Discipline extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final int stamina = 50;
 	private static final int INTERVAL = 15;
-	private int staminaGain;
+	private int staminaGain, damageReduc;
 	
 	public Discipline(boolean isUpgraded) {
 		super(ID, "Discipline", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 15 : 10;
+		damageReduc = 2;
 	}
 	
 	public static Equipment get() {
@@ -44,7 +45,7 @@ public class Discipline extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"Every " + DescUtil.white(INTERVAL + "s") + ", give yourself " + DescUtil.white(stamina) + " stamina, " + DescUtil.yellow(staminaGain) + " max stamina, and"
-						+ " take " + DescUtil.white(7) + " less damage " + DescUtil.duration(10, false) + ".");
+						+ " take " + DescUtil.white(damageReduc) + " less damage " + DescUtil.duration(10, false) + ".");
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class Discipline extends Equipment {
 			pc.play(p, p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 7, 0, StatTracker.defenseBuffAlly(buffId, this)), 200);
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damageReduc, 0, StatTracker.defenseBuffAlly(buffId, this)), 200);
 			return TriggerResult.keep();
 		});
 	}

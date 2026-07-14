@@ -128,6 +128,21 @@ public abstract class LobbyInstance extends Instance {
 		}
 		return players;
 	}
+	
+	public ArrayList<Player> getChatParticipants() {
+		ArrayList<Player> participants = new ArrayList<Player>();
+		for (UUID uuid : inLobby) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null)
+				participants.add(p);
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null)
+				participants.add(p);
+		}
+		return participants;
+	}
 
 	public void broadcast(Component msg) {
 		for (UUID uuid : inLobby) {

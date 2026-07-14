@@ -823,6 +823,26 @@ public class Session {
 		}
 		return players;
 	}
+
+	// This includes spectators and players
+	public ArrayList<Player> getChatParticipants() {
+		if (inst instanceof LobbyInstance) {
+			return ((LobbyInstance) inst).getChatParticipants();
+		}
+		
+		ArrayList<Player> participants = new ArrayList<Player>();
+		for (UUID uuid : party.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null)
+				participants.add(p);
+		}
+		for (UUID uuid : spectators.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null)
+				participants.add(p);
+		}
+		return participants;
+	}
 	
 	public int getNodesVisited() {
 		return nodesVisited;
@@ -1111,19 +1131,10 @@ public class Session {
 		}
 	}
 	
+	// Any party member leaving an active run ends the game for the whole party.
 	public void leavePlayer(Player p) {
-		UUID uuid = p.getUniqueId();
-		if (uuid.equals(host)) {
-			broadcast("The host has left the party, so the game has ended!");
-			SessionManager.endSession(this);
-		} else {
-			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
-			PlayerSessionData psd = party.remove(p.getUniqueId());
-			psd.cleanup();
-			SessionManager.resetPlayer(p); // endSession does this for everyone, so only need to do it in the else section
-			SessionManager.removeFromSession(p.getUniqueId());
-			inst.handlePlayerLeaveParty(p);
-		}
+		broadcast("<yellow>" + p.getName() + " <gray>has left the party, so the game has ended!");
+		SessionManager.endSession(this);
 	}
 	
 	public void kickPlayer(Player p, OfflinePlayer target) {

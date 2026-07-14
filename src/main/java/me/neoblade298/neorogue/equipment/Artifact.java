@@ -24,4 +24,5 @@ public abstract class Artifact extends Equipment {
 	public abstract void initialize(PlayerFightData data, ArtifactInstance ai);
 	public abstract void onAcquire(PlayerSessionData data, int amount);
 	public abstract void onInitializeSession(PlayerSessionData data);
+	public void onRemove(PlayerSessionData data, int amount) {}
 }

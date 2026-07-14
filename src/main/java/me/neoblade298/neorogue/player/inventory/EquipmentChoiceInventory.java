@@ -68,13 +68,13 @@ public class EquipmentChoiceInventory extends CoreInventory {
 			prev.openInventory();
 			return;
 		}
+		if (e.isRightClick() && slot < equips.size()) {
+			new EquipmentGlossaryInventory(p, equips.get(slot).getEquipment(), this);
+			return;
+		}
 		if (spectator != null) return;
 		
 		if (slot < equips.size()) {
-			if (e.isRightClick()) {
-				new EquipmentGlossaryInventory(p, equips.get(slot).getEquipment(), this);
-				return;
-			}
 			
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			SessionEquipment se = equips.get(slot);

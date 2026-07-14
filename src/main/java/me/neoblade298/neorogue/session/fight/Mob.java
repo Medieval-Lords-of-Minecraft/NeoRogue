@@ -62,6 +62,16 @@ public class Mob implements Comparable<Mob> {
 		}
 	}
 	
+	// Distinct canonical stat ids of every registered mob, used to tab-complete /nrlytics mob (which
+	// queries analytics keyed by stat id). Sorted for a stable, readable completion list.
+	public static TreeSet<String> getStatIds() {
+		TreeSet<String> ids = new TreeSet<String>();
+		for (Mob mob : mobs.values()) {
+			ids.add(mob.statId);
+		}
+		return ids;
+	}
+
 	public static Mob get(String id) {
 		/**
 		 * Don't do this, many mobs aren't in the Mob glossary (like BanditKingCondemn) and thus this will spam

@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
@@ -53,7 +54,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12, REFORGES = 15;
+	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12, REFORGES = 15, LEAVE = 16;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -181,7 +182,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			meta.setMapView(map);
 			contents[(MAP + offset) % inv.getSize()].setItemMeta(meta);
 		}
+
+		if (!isSpectating) {
+			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon();
+		}
 		inv.setContents(contents);
+	}
+
+	private static ItemStack createLeaveIcon() {
+		return CoreInventory.createButton(Material.COMPASS, Component.text("Leave Session", NamedTextColor.RED),
+				"Click to leave the session. This ends the game for your entire party!", 250, NamedTextColor.GRAY);
 	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {
@@ -414,6 +424,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			return;
 		}
+		else if (slot == LEAVE) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					handleInventoryClose();
+					SessionManager.leaveSession(p);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
 
 		InventoryAction action = e.getAction();
 		if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.COLLECT_TO_CURSOR) {
@@ -539,8 +559,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				setHighlights(Equipment.get(nclicked.getString("equipId"), false).getType());
 			}
 
-			// Place equipment into clicked slot
-			data.setEquipment(type, nclicked.getInteger("dataSlot"), eq);
+			// Place equipment into clicked slot, preserving session metadata (durability, etc.) from the item
+			SessionEquipment placed = SessionEquipment.fromItem(cursor);
+			data.setEquipment(type, nclicked.getInteger("dataSlot"), placed != null ? placed : new SessionEquipment(eq));
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			if (isBindable(type))
 				cursor = addBindLore(cursor, slot, nclicked.getInteger("dataSlot"));
@@ -644,7 +665,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
 		ItemStack autoItem = inv.getItem(result.slot);
 		NBTItem nauto = new NBTItem(autoItem);
-		data.setEquipment(result.es, nauto.getInteger("dataSlot"), eq);
+		SessionEquipment placed = SessionEquipment.fromItem(item);
+		data.setEquipment(result.es, nauto.getInteger("dataSlot"), placed != null ? placed : new SessionEquipment(eq));
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		if (isBindable(result.es)) item = addBindLore(item, result.slot, nauto.getInteger("dataSlot"));
 		inv.setItem(result.slot, addNbt(item, nauto.getInteger("dataSlot")));

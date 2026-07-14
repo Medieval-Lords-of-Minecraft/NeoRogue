@@ -500,8 +500,8 @@ public class AnalyticsReport {
 						header = true;
 					}
 					lines.add("  <aqua>" + rs.getString("damageType") + ":</aqua> <yellow>"
-							+ df.format(rs.getDouble("total")) + "</yellow> <gray>total ("
-							+ df.format(rs.getDouble("avgAmt")) + " avg)");
+							+ df.format(rs.getDouble("avgAmt")) + "</yellow> <gray>avg (Total: "
+							+ df.format(rs.getDouble("total")) + ")");
 				}
 			}
 		}

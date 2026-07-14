@@ -221,6 +221,10 @@ public class NewLobbyInstance extends LobbyInstance {
 	}
 
     public void switchClass(UUID uuid, EquipmentClass pc) {
+        switchClass(uuid, pc, false);
+    }
+
+    public void switchClass(UUID uuid, EquipmentClass pc, boolean random) {
         if (!players.containsKey(uuid)) {
             Bukkit.getLogger().warning("[NeoRogue] Player tried to switch class when not belonging to that session");
             return;
@@ -237,7 +241,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		}
 
         TextComponent tc = Component.text().content(Bukkit.getPlayer(uuid).getName()).color(NamedTextColor.YELLOW)
-                .append(Component.text(" switched to class ", NamedTextColor.GRAY))
+                .append(Component.text(random ? " switched to random class " : " switched to class ", NamedTextColor.GRAY))
                 .append(Component.text(pc.getDisplay(), getClassColor(pc))).build();
         broadcast(tc);
         players.put(uuid, pc);
@@ -310,7 +314,7 @@ public class NewLobbyInstance extends LobbyInstance {
 			switchClass(uuid, EquipmentClass.MAGE);
 			break;
         case 'R':
-            switchClass(uuid, getRandomUnlockedClass(uuid));
+            switchClass(uuid, getRandomUnlockedClass(uuid), true);
             break;
 		case 'C':
 			new SessionSettingsInventory(e.getPlayer(), s, this);

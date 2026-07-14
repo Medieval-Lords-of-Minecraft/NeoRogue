@@ -39,6 +39,11 @@ public class TomeOfWisdom extends Artifact {
 	}
 
 	@Override
+	public void onRemove(PlayerSessionData data, int amount) {
+		data.addMaxAbilities(-amount);
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.ENCHANTED_BOOK, "Increases the number of abilities you can equip by " + DescUtil.white(1) + ".");
 	}

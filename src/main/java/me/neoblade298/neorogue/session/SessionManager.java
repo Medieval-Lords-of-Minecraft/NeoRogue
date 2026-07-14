@@ -675,7 +675,8 @@ public class SessionManager implements Listener {
 			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE || mat == Material.ANVIL
 					|| mat == Material.ENCHANTING_TABLE || mat == Material.BREWING_STAND || mat == Material.FURNACE
 					|| mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE || mat == Material.CARTOGRAPHY_TABLE
-					|| mat == Material.LOOM || mat == Material.JIGSAW || mat == Material.FLOWER_POT) {
+					|| mat == Material.LOOM || mat == Material.JIGSAW || mat == Material.FLOWER_POT
+					|| mat.name().startsWith("POTTED_")) {
 				e.setCancelled(true);
 			}
 
@@ -895,6 +896,30 @@ public class SessionManager implements Listener {
 		meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.BYTE, (byte) 1);
 		compass.setItemMeta(meta);
 		p.getInventory().setItem(4, compass);
+	}
+
+	// Standardized entry point for a player leaving via /nr leave or the leave button in the
+	// session inventory. Handles spectators, busy/loading state, and lobby vs in-game dispatch.
+	public static void leaveSession(Player p) {
+		Session sess = getSession(p);
+		if (sess == null) {
+			Util.displayError(p, "You're not in a session!");
+			return;
+		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return;
+		}
+		if (sess.isSpectator(p.getUniqueId())) {
+			sess.removeSpectator(p);
+			return;
+		}
+		if (sess.getInstance() instanceof LobbyInstance) {
+			((LobbyInstance) sess.getInstance()).leavePlayer(p);
+		}
+		else {
+			sess.leavePlayer(p);
+		}
 	}
 
 	public static void endSession(Session s) {
