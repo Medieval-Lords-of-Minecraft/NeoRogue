@@ -87,6 +87,12 @@ public class BuffStatTracker extends StatTracker {
         return this;
     }
 
+    @Override
+    public BuffStatTracker invert() {
+        super.invert();
+        return this;
+    }
+
     public BuffStatTracker shouldCombine(boolean shouldCombine) {
         this.shouldCombine = shouldCombine;
         return this;

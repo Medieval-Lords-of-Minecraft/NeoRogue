@@ -284,6 +284,9 @@ public class SessionManager implements Listener {
 		e.setCancelled(true);
 		if (InventoryListener.hasOpenCoreInventory(p))
 			return;
+		// Spectators can never edit their own inventory; leave the event cancelled
+		if (s.isSpectator(uuid))
+			return;
 		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e); // Register core player inventory when
@@ -316,6 +319,11 @@ public class SessionManager implements Listener {
 		}
 		if (InventoryListener.hasOpenCoreInventory(p))
 			return;
+		// Spectators can never edit their own inventory
+		if (s.isSpectator(uuid)) {
+			e.setCancelled(true);
+			return;
+		}
 		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);

@@ -54,7 +54,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12, REFORGES = 15, LEAVE = 16;
+	public static final int STATS = 9, TRASH = 16, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -162,8 +162,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
 				0);
-		if (data.getSession().getParty().size() > 1)
-			contents[(SEE_OTHERS + offset) % inv.getSize()] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 
 		int reforgeCount = 0;
 		for (PlayerSessionData.ReforgePairData pair : data.computeAvailableReforges()) {
@@ -378,16 +376,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			return;
 		}
-		else if (slot == SEE_OTHERS && data.getSession().getParty().size() > 1) {
-			e.setCancelled(true);
-			new BukkitRunnable() {
-				public void run() {
-					handleInventoryClose();
-					new SpectateSelectInventory(data.getSession(), p, data, false);
-				}
-			}.runTask(NeoRogue.inst());
-			return;
-		}
 		else if (slot == MAP) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
@@ -424,7 +412,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			return;
 		}
-		else if (slot == LEAVE) {
+		else if (slot == LEAVE && cursor.getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {

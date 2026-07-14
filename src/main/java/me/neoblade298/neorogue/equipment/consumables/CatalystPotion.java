@@ -38,7 +38,7 @@ public class CatalystPotion extends Consumable {
 		int value = s.getBaseDropValue();
 
 		// Roll random powers at the session's current drop level
-		ArrayList<Equipment> rolled = Equipment.getPower(value, count, sdata.getPlayerClass(), EquipmentClass.CLASSLESS);
+		ArrayList<Equipment> rolled = Equipment.getPower(value + 2, count, sdata.getPlayerClass(), EquipmentClass.CLASSLESS);
 		if (rolled.isEmpty()) return TriggerResult.remove();
 
 		// activatePower gives each its own activation feedback (message + sound) and fires the
@@ -53,7 +53,7 @@ public class CatalystPotion extends Consumable {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On use, activate " + DescUtil.yellow(count) + " random " + GlossaryTag.POWER.tag(this)
-				+ (count == 1 ? "" : "s") + " at your current drop level.");
+				+ (count == 1 ? "" : "s") + ".");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(170, 60, 220));
 		item.setItemMeta(meta);

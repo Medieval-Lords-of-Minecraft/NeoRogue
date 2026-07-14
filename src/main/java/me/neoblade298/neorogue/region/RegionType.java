@@ -11,7 +11,8 @@ public enum RegionType {
 	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, 1, Layout.STANDARD),
 	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 7, 0, Layout.TUTORIAL),
 	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, 2, Layout.STANDARD),
-	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, Layout.STANDARD);
+	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, Layout.STANDARD),
+	TESTER("Tester", 16, 0, Layout.STANDARD);
 	
 	// ARGENT_PLAZA("Argent Plaza"),
 	// CAILIRIC_ARCHIVES("Cailiric Archives"), 
@@ -29,10 +30,6 @@ public enum RegionType {
 		cargoSellPercent.put(LOW_DISTRICT, 0.20);
 		cargoSellPercent.put(HARVEST_FIELDS, 0.40);
 		cargoSellPercent.put(FROZEN_WASTES, 1.00);
-		cargoSellPercent.put(LOW_DISTRICT_DEBUG, 0.20);
-		cargoSellPercent.put(HARVEST_FIELDS_DEBUG, 0.40);
-		cargoSellPercent.put(FROZEN_WASTES_DEBUG, 1.00);
-		cargoSellPercent.put(OUTER_ADMIRATIO_DEBUG, 1.00);
 	}
 	
 	private String display;

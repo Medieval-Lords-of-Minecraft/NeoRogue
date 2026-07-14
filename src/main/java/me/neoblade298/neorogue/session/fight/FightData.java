@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Display.Billboard;
@@ -127,14 +128,24 @@ public class FightData {
 			}
 		}
 
-		// Set up custom nameplate
+		// Set up custom nameplate. Hide MythicMobs' vanilla nameplate now, then again next tick: the
+		// summon mechanic applies the summoned mob's display name AFTER this spawn event fires (same
+		// reason scaleMob is delayed a tick below), which would otherwise re-show the vanilla nametag
+		// alongside our hologram. Re-hiding a tick later overrides that late application.
+		hideVanillaNameplate();
+		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), this::hideVanillaNameplate, 1L);
+		updateDisplayName();
+	}
+
+	// Hides the vanilla/MythicMobs nameplate so only our hologram is shown. Safe to call repeatedly.
+	protected void hideVanillaNameplate() {
+		if (entity == null || !entity.isValid()) return;
 		if (DisguiseAPI.isDisguised(entity)) {
 			DisguiseAPI.getDisguise(entity).getWatcher().setCustomNameVisible(false);
 		}
-		am.setShowCustomNameplate(false);
+		if (am != null) am.setShowCustomNameplate(false);
 		entity.setCustomNameVisible(false);
 		entity.customName(Component.empty());
-		updateDisplayName();
 	}
 	
 	public UUID getUniqueId() {

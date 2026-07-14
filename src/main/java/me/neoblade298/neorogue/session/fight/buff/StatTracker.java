@@ -104,6 +104,12 @@ public class StatTracker {
         return this;
     }
 
+    // Flips the sign of the tracked value when displayed (e.g. a negative defense buff shown as positive)
+    public StatTracker invert() {
+        this.invert = true;
+        return this;
+    }
+
     public static StatTracker of(String id, Equipment eq, String statTitle) {
         return new StatTracker(id, eq, statTitle);
     }

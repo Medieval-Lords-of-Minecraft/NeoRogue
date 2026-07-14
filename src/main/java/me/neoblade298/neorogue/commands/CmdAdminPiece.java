@@ -71,7 +71,7 @@ public class CmdAdminPiece extends Subcommand {
 		inst.instantiate(null, xOff, zOff);
 
 		// Mark spawn locations with terracotta
-		ArrayList<Location> potentialSpawns = inst.markSpawns(xOff, zOff);
+		ArrayList<Location> potentialSpawns = inst.markSpawns(p, xOff, zOff);
 
 		new BukkitRunnable() {
 			@Override

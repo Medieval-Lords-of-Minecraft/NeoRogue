@@ -23,7 +23,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionSpectateInventory extends CoreInventory {
 	private static final int ARTIFACTS = convertSlot(PlayerSessionInventory.ARTIFACTS),
-		SEE_OTHERS = convertSlot(PlayerSessionInventory.SEE_OTHERS),
 		STORAGE = convertSlot(PlayerSessionInventory.STORAGE),
 		ACHIEVEMENTS = 5,
 		UNLOCKS = 7;
@@ -77,15 +76,6 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 				public void run() {
 					PlayerData targetData = PlayerManager.getPlayerData(data.getPlayer().getUniqueId());
 					if (targetData != null) new UnlocksMenuInventory(spectator, targetData);
-				}
-			}.runTask(NeoRogue.inst());
-			return;
-		}
-		else if (slot == SEE_OTHERS && data.getSession().getParty().size() > 1) {
-			e.setCancelled(true);
-			new BukkitRunnable() {
-				public void run() {
-					new SpectateSelectInventory(data.getSession(), spectator, null, false);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

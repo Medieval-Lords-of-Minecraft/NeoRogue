@@ -7,17 +7,20 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.function.mask.BlockTypeMask;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.function.mask.MaskIntersection;
 import com.sk89q.worldedit.function.mask.Masks;
 import com.sk89q.worldedit.function.mask.SolidBlockMask;
 import com.sk89q.worldedit.function.operation.Operation;
@@ -25,6 +28,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -291,13 +295,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			// Restricted marker blocks that must never be pasted into the world
+			Mask notRestricted = Masks.negate(
+					new BlockTypeMask(Region.world, BlockTypes.LAPIS_BLOCK, BlockTypes.DIAMOND_BLOCK));
 		    Operation pasteSolid = schematic.createPaste(editSession)
-		    		.maskSource(new SolidBlockMask(Region.world))
+		    		.maskSource(new MaskIntersection(new SolidBlockMask(Region.world), notRestricted))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
 		    Operation pasteRemaining = schematic.createPaste(editSession)
-		    		.maskSource(Masks.negate(new SolidBlockMask(Region.world)))
+		    		.maskSource(new MaskIntersection(Masks.negate(new SolidBlockMask(Region.world)), notRestricted))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
@@ -398,15 +405,28 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			}
 		}
 
-		// Delay block placement and error checking to allow async WorldEdit paste to complete
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				markSpawnsDelayed(p, xOff, zOff);
-			}
-		}.runTaskLater(NeoRogue.inst(), 20);
+		// Paste is synchronous, so mark spawns immediately
+		markSpawnsDelayed(p, xOff, zOff);
 
 		return playerSpawnLocs;
+	}
+
+	// Whether a block should count as obstructing a marker. Ignores our own marker blocks (so
+	// re-marking or overlapping markers don't flag each other) and signs, which aren't real obstructions.
+	private static boolean isObstruction(Block b) {
+		Material t = b.getType();
+		if (!t.isSolid()) return false;
+		switch (t) {
+		case ORANGE_WOOL:
+		case ORANGE_STAINED_GLASS:
+		case MAGENTA_GLAZED_TERRACOTTA:
+		case MAGENTA_STAINED_GLASS:
+		case RED_CONCRETE:
+		case RED_STAINED_GLASS:
+			return false;
+		default:
+			return !Tag.SIGNS.isTagged(t) && !Tag.WALL_SIGNS.isTagged(t);
+		}
 	}
 
 	private void markSpawnsDelayed(Player p, int xOff, int zOff) {
@@ -421,8 +441,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				Bukkit.getLogger().info("[markSpawns] Spawner '" + spawner.getMobId() + "' at " + Util.locToString(loc, false, false) + " world=" + loc.getWorld().getName() + " block=" + loc.getBlock().getType() + " below=" + loc.clone().add(0, -1, 0).getBlock().getType());
+				Bukkit.getLogger().info("[markSpawns] Spawner block check complete, sending info to " + p);
 				if (p != null) {
-					if (loc.getBlock().getType().isSolid()) {
+					if (isObstruction(loc.getBlock())) {
 						Util.msgRaw(p, "<red>A spawner appears to be inside a block.");
 						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 						Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
@@ -432,7 +453,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					}
 				}
-				loc.getBlock().setType(Material.ORANGE_WOOL);
+				// If the marker would sit inside a solid block, use glass so the obstruction stays visible
+				loc.getBlock().setType(isObstruction(loc.getBlock()) ? Material.ORANGE_STAINED_GLASS : Material.ORANGE_WOOL);
 				Location signLoc = loc.clone().add(0, 1, 0);
 				if (!signLines.containsKey(signLoc.toBlockLocation())) {
 					Coordinates origCoords = spawner.getCoordinates();
@@ -451,7 +473,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
-					if (loc.getBlock().getType().isSolid()) {
+					if (isObstruction(loc.getBlock())) {
 						Util.msgRaw(p, "<red>An initial spawn appears to be inside a block.");
 						Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 						Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
@@ -477,10 +499,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				for (int dx = 0; dx >= xMin; dx--) {
 					for (int dz = 0; dz >= zMin; dz--) {
 						Block b = loc.clone().add(dx, 0, dz).getBlock();
-						b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-						Directional bmeta = (Directional) b.getBlockData();
-						bmeta.setFacing(facing);
-						b.setBlockData(bmeta);
+						// Inside a solid block: use glass so the obstruction stays visible
+						if (isObstruction(b)) {
+							b.setType(Material.MAGENTA_STAINED_GLASS);
+						} else {
+							b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+							Directional bmeta = (Directional) b.getBlockData();
+							bmeta.setFacing(facing);
+							b.setBlockData(bmeta);
+						}
 					}
 				}
 
@@ -497,7 +524,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
 				if (p != null) {
-					if (l.getBlock().getType().isSolid()) {
+					if (isObstruction(l.getBlock())) {
 						Util.msgRaw(p, "<red>A spawnpoint appears to be inside a block.");
 						Util.msgRaw(p, "<red>Coords: " + Util.locToString(l, false, false));
 						Util.msgRaw(p, "<red>Block: " + l.getBlock().getType());
@@ -520,10 +547,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				for (int dx = 0; dx >= xMin; dx--) {
 					for (int dz = 0; dz >= zMin; dz--) {
 						Block b = l.clone().add(dx, 0, dz).getBlock();
-						b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-						Directional bmeta = (Directional) b.getBlockData();
-						bmeta.setFacing(facing);
-						b.setBlockData(bmeta);
+						// Inside a solid block: use glass so the obstruction stays visible
+						if (isObstruction(b)) {
+							b.setType(Material.MAGENTA_STAINED_GLASS);
+						} else {
+							b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+							Directional bmeta = (Directional) b.getBlockData();
+							bmeta.setFacing(facing);
+							b.setBlockData(bmeta);
+						}
 					}
 				}
 
@@ -539,7 +571,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 			loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
 			if (p != null) {
-				if (loc.getBlock().getType().isSolid()) {
+				if (isObstruction(loc.getBlock())) {
 					Util.msgRaw(p, "<red>A mythic location appears to be inside a block.");
 					Util.msgRaw(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					Util.msgRaw(p, "<red>Block: " + loc.getBlock().getType());
@@ -561,10 +593,15 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			for (int dx = 0; dx >= xMin; dx--) {
 				for (int dz = 0; dz >= zMin; dz--) {
 					Block b = loc.clone().add(dx, 0, dz).getBlock();
-					b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
-					Directional bmeta = (Directional) b.getBlockData();
-					bmeta.setFacing(facing);
-					b.setBlockData(bmeta);
+					// Inside a solid block: use glass so the obstruction stays visible
+					if (isObstruction(b)) {
+						b.setType(Material.MAGENTA_STAINED_GLASS);
+					} else {
+						b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+						Directional bmeta = (Directional) b.getBlockData();
+						bmeta.setFacing(facing);
+						b.setBlockData(bmeta);
+					}
 				}
 			}
 
@@ -634,10 +671,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 
-	public ArrayList<Location> markSpawns(int xOff, int zOff) {
-		return markSpawns(null, xOff, zOff);
-	}
-	
 	public Coordinates getMythicLocation(String key) {
 		return mythicLocations.get(key);
 	}

@@ -933,7 +933,7 @@ public class Region {
 					if (mobs.length == 0) continue;
 					Mob chosen = mobs[0];
 					
-					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>());
+					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>(), true);
 					Location headLoc = nodeToLocation(destDest, 1);
 					if (headItem.getType() == Material.PLAYER_HEAD) {
 						SkullMeta meta = (SkullMeta) headItem.getItemMeta();

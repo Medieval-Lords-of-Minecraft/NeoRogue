@@ -105,6 +105,9 @@ public class RunReward {
 	// Pays out each party member the calculated amount for finishing a run.
 	// won = true for a run victory, false for a run loss.
 	public static void payout(Session s, boolean won) {
+		// On a victory the caravan reaches safety and sells all remaining cargo at full value,
+		// ignoring region sell rates. Runs before returnUnsoldCargo so nothing is left to return.
+		if (won) sellRemainingCargo(s);
 		returnUnsoldCargo(s);
 		if (economy == null) return;
 
@@ -119,6 +122,35 @@ public class RunReward {
 			if (p != null) {
 				Util.msgRaw(p, "<green>You earned <yellow>" + formatMoney(b.total) + "<green> for "
 						+ (won ? "winning" : "completing") + " your run! <gray>(click the gold block for a breakdown)");
+			}
+		}
+	}
+
+	// On a run victory, sells every party member's remaining run cargo at full value regardless of
+	// the region's sell rate. Proceeds are paid out immediately and recorded for the finance summary.
+	public static void sellRemainingCargo(Session s) {
+		for (PlayerSessionData psd : s.getParty().values()) {
+			if (psd.getRunCargoTotal() <= 0) continue;
+			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(1.0);
+			if (result.itemsSold <= 0) continue;
+			depositCargo(psd, result.value);
+			Player p = psd.getPlayer();
+			if (p != null) {
+				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining <yellow>" + result.itemsSold
+						+ "</yellow> cargo item" + (result.itemsSold == 1 ? "" : "s") + " for <yellow>"
+						+ formatMoney(result.value) + "</yellow>:");
+
+				// Per-material breakdown, most valuable first.
+				List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
+						result.qtyByMaterial.entrySet());
+				lines.sort(Comparator.comparingDouble(
+						(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
+						.reversed());
+				for (Map.Entry<Material, Integer> line : lines) {
+					Material mat = line.getKey();
+					Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
+							+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
+				}
 			}
 		}
 	}

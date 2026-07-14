@@ -1,8 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
@@ -77,14 +75,9 @@ public class CrimsonBlade extends Equipment {
 		}
 
 		private void replaceWithWoodenSword(Player p) {
-			int invSlot = EquipSlot.convertSlot(es, slot);
-			if (invSlot < 0) return;
-			ItemStack item = p.getInventory().getItem(invSlot);
-			if (item == null || item.getType() != Material.IRON_SWORD) return;
-			ItemMeta meta = item.getItemMeta();
-			item.withType(Material.WOODEN_SWORD);
-			item.setItemMeta(meta);
-			p.getInventory().setItem(invSlot, item);
+			System.out.println("Replacing slot " + slot + " with wooden sword");
+			// withType() returns a NEW ItemStack (carrying over meta); it does not mutate in place
+			p.getInventory().setItem(slot, item.withType(Material.WOODEN_SWORD));
 		}
 	}
 

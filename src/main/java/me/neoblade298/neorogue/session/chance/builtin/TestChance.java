@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.instances.Instance;
 public class TestChance extends ChanceSet {
 
 	public TestChance(Instance next) {
-		super(RegionType.MEADOWOOD, Material.GRAVEL, "Tester", "Tester");
+		super(RegionType.TESTER, Material.GRAVEL, "Tester", "Tester");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "Click the choice to continue");
 
 		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Next",

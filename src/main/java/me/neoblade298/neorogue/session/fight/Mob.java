@@ -211,15 +211,16 @@ public class Mob implements Comparable<Mob> {
 		return knockbackMultiplier;
 	}
 	
-	public ItemStack getItemDisplay(Session s, ArrayList<MobModifier> modifiers) {
+	public ItemStack getItemDisplay(Session s, ArrayList<MobModifier> modifiers, boolean isChance) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
+		int effectiveLevel = isChance ? s.getLevel() : s.getLevel() + 1;
 
-		// Add 1 to session level to show next node's health
+		// Add 1 to session level to show next node's health if it's next node. If it's a chance, don't
 		Component health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text("" + getMaxHealthScale(s, s.getLevel() + 1), NamedTextColor.YELLOW));
+				.append(Component.text("" + getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
 		
 		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.spawnValue, NamedTextColor.YELLOW));
 		lore.add(health.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
