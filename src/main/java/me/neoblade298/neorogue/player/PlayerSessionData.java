@@ -50,6 +50,7 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
+import me.neoblade298.neorogue.integration.DynamicPricingManager;
 import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageInventory;
@@ -1147,6 +1148,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		int remaining = total;
 		double value = 0;
 		int itemsSold = 0;
+		// Accumulate this sale per-material so it can be logged to the dynamic pricing sales table.
+		LinkedHashMap<Material, Integer> saleQty = new LinkedHashMap<Material, Integer>();
+		LinkedHashMap<Material, Double> saleValue = new LinkedHashMap<Material, Double>();
 		for (int i = 0; i < toSell && remaining > 0; i++) {
 			int roll = NeoRogue.gen.nextInt(remaining);
 			Material chosen = null;
@@ -1171,6 +1175,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			itemsSold++;
 			soldCargoQty.merge(chosen, 1, Integer::sum);
 			soldCargoValue.merge(chosen, price, Double::sum);
+			saleQty.merge(chosen, 1, Integer::sum);
+			saleValue.merge(chosen, price, Double::sum);
+		}
+		// Log each material's contribution to this sale for dynamic price adjustment.
+		for (Map.Entry<Material, Integer> ent : saleQty.entrySet()) {
+			DynamicPricingManager.recordSale(ent.getKey(), ent.getValue(), saleValue.getOrDefault(ent.getKey(), 0.0));
 		}
 		return new CargoSaleResult(itemsSold, value);
 	}

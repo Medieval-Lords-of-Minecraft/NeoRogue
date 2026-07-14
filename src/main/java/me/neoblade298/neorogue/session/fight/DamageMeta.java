@@ -642,6 +642,7 @@ public class DamageMeta {
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		Vector originalVelocity = target.getVelocity().clone();
 		boolean damageCancelled = false;
+		boolean statsCredited = false;
 		if (damage + ignoreShieldsDamage > 0) {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -652,6 +653,11 @@ public class DamageMeta {
 					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.PRE_KILL, ev);
 
 				}
+				// Credit damage-dealt stats before applying damage: a fight-ending kill broadcasts
+				// statistics synchronously during target.damage() (via MythicMobDeathEvent), which
+				// would otherwise omit this final hit. Reversed below if the hit didn't actually land.
+				creditDamageDealt((PlayerFightData) owner, 1);
+				statsCredited = true;
 				target.damage(finalDamage, owner.getEntity());
 				if (isBasicAttack) {
 					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);
@@ -732,12 +738,16 @@ public class DamageMeta {
 			target.playHurtAnimation(0);
 		}
 
-		// Credit the attacker's damage-dealt stats only if the hit actually landed. Deferred to here
-		// (after target.damage) so cancelled hits, e.g. invulnerability frames, don't over-count.
-		if (owner instanceof PlayerFightData && !damageCancelled) {
+		// Reconcile the attacker's damage-dealt stats with whether the hit actually landed.
+		if (owner instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) owner;
-			for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
-				pdata.getStats().addDamageDealt(entry.getKey(), entry.getValue());
+			if (statsCredited && damageCancelled) {
+				// The pre-credited hit didn't land (e.g. invulnerability frames); reverse the credit.
+				creditDamageDealt(pdata, -1);
+			}
+			else if (!statsCredited && !damageCancelled) {
+				// Fully-mitigated hits (target.damage was never called) are credited here instead.
+				creditDamageDealt(pdata, 1);
 			}
 		}
 
@@ -815,9 +825,15 @@ public class DamageMeta {
 		return false;
 	}
 
+	// Credits (sign = 1) or reverses (sign = -1) the attacker's per-tracker damage-dealt stats.
+	private void creditDamageDealt(PlayerFightData pdata, double sign) {
+		for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
+			pdata.getStats().addDamageDealt(entry.getKey(), sign * entry.getValue());
+		}
+	}
+
 	// Used to subtract a straight number equally from all damage types in the stat slices
-	private void subtractFromStats(double amount) {
-		double fromEach = Math.round(amount * 10 / slices.size()) / 10;
+	private void subtractFromStats(double amount) {		double fromEach = Math.round(amount * 10 / slices.size()) / 10;
 		for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
 			double newVal = entry.getValue() - fromEach;
 			if (newVal < 0) newVal = 0;

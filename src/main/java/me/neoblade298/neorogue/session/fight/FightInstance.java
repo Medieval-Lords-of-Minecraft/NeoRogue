@@ -1230,6 +1230,13 @@ public abstract class FightInstance extends Instance {
 		isCleaned = true;
 		isActive = false;
 
+		// If the fight is torn down without resolving to a win/loss (e.g. a player left mid-fight,
+		// ending the session), still show the stats header so they see their fight summary. Win/loss
+		// paths broadcast it themselves, so this only fires for unresolved teardowns.
+		if (fightWon == null && !pluginDisable) {
+			broadcastStatistics();
+		}
+
 		// Analytics: only record fights that resolved to a clear win/loss (not aborted/plugin disable)
 		boolean recordAnalytics = fightWon != null && !pluginDisable && AnalyticsManager.ENABLED;
 		ArrayList<FightSnapshot.EquipRow> equipRows = new ArrayList<FightSnapshot.EquipRow>();

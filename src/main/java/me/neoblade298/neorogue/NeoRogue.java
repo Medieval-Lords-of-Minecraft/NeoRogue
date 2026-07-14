@@ -100,6 +100,7 @@ import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.integration.DynamicPricingManager;
 import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -141,6 +142,7 @@ public class NeoRogue extends JavaPlugin {
 		saveResource("prices.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
+		DynamicPricingManager.init();
 		RunReward.setupEconomy();
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);

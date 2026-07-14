@@ -40,19 +40,20 @@ public class MaterialPrices {
 	}
 
 	/**
-	 * @return the material's price in currency units, or {@code -1} if it has no
-	 *         configured price. Use {@link #hasPrice(Material)} to distinguish an
-	 *         unpriced material from a legitimately free one.
+	 * @return the material's current price in currency units (base price scaled by its dynamic
+	 *         multiplier), or {@code -1} if it has no configured price. Use
+	 *         {@link #hasPrice(Material)} to distinguish an unpriced material from a legitimately
+	 *         free one.
 	 */
 	public static double getPrice(Material mat) {
 		Double price = source.getPrice(mat);
-		return price == null ? -1 : price;
+		return price == null ? -1 : price * DynamicPricingManager.getMultiplier(mat);
 	}
 
-	/** @return the material's price in currency units, or {@code def} if unpriced. */
+	/** @return the material's current price in currency units, or {@code def} if unpriced. */
 	public static double getPrice(Material mat, double def) {
 		Double price = source.getPrice(mat);
-		return price == null ? def : price;
+		return price == null ? def : price * DynamicPricingManager.getMultiplier(mat);
 	}
 
 	/** @return an immutable view of every configured material price. */
