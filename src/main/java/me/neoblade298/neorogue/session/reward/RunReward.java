@@ -45,13 +45,13 @@ public class RunReward {
 
 	// Hooks VaultUnlocked's economy service. Call once on plugin enable (after VaultUnlocked has loaded).
 	public static boolean setupEconomy() {
-		if (Bukkit.getPluginManager().getPlugin("VaultUnlocked") == null) {
-			Bukkit.getLogger().warning("[NeoRogue] VaultUnlocked not found; run payouts will be disabled.");
+		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Vault not found; run payouts will be disabled.");
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
 		if (rsp == null) {
-			Bukkit.getLogger().warning("[NeoRogue] No VaultUnlocked economy provider found; run payouts will be disabled.");
+			Bukkit.getLogger().warning("[NeoRogue] No Vault economy provider found; run payouts will be disabled.");
 			return false;
 		}
 		economy = rsp.getProvider();

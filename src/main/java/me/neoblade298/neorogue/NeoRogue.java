@@ -96,14 +96,10 @@ import me.neoblade298.neorogue.commands.CmdLyticsMobs;
 import me.neoblade298.neorogue.commands.CmdLyticsPickrate;
 import me.neoblade298.neorogue.commands.CmdMenu;
 import me.neoblade298.neorogue.commands.CmdNew;
-import me.neoblade298.neorogue.commands.CmdPrice;
-import me.neoblade298.neorogue.commands.CmdPrices;
 import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
-import me.neoblade298.neorogue.integration.DynamicPricingManager;
-import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
@@ -141,10 +137,8 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
 		saveResource("achievements.yml", false);
-		saveResource("prices.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
-		DynamicPricingManager.init();
 		RunReward.setupEconomy();
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
@@ -180,7 +174,6 @@ public class NeoRogue extends JavaPlugin {
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
-		MaterialPrices.reload(); // Load material pricing config
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
@@ -212,12 +205,6 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLostCargo("lostcargo", "Withdraw unsold cargo from past runs", null, SubcommandRunner.PLAYER_ONLY));
-		
-		mngr = new SubcommandManager("prices", "neorogue.general", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdPrices("", "View sell prices for materials", null, SubcommandRunner.BOTH));
-		
-		mngr = new SubcommandManager("price", "neorogue.general", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdPrice("", "View the sell price of your held item", null, SubcommandRunner.PLAYER_ONLY));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));

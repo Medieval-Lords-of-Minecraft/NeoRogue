@@ -21,6 +21,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.ascheladd.asheconomy.pricing.DynamicPricingManager;
+import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -50,8 +52,6 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
-import me.neoblade298.neorogue.integration.DynamicPricingManager;
-import me.neoblade298.neorogue.integration.MaterialPrices;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
@@ -706,6 +706,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				SessionEquipment se = arr[slot];
 				if (se == null || !se.hasDurability()) continue;
 				int dur = se.getDurability() - 1;
+				System.out.println("Ticked dura of " + se + ", now " + dur);
 				if (dur <= 0) {
 					removeEquipment(slots[i], slot);
 					broke = true;

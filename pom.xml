@@ -123,6 +123,15 @@
             <version>2.16</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- AshEconomy (install locally via mvn install on AshEconomy project).
+             Provides material pricing + dynamic pricing consumed by cargo/sale logic. -->
+        <dependency>
+            <groupId>me.ascheladd</groupId>
+            <artifactId>asheconomy</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

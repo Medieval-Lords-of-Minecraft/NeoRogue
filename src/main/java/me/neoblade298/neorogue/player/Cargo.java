@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.neoblade298.neorogue.integration.MaterialPrices;
+import me.ascheladd.asheconomy.pricing.MaterialPrices;
 
 // A player's persistent stash of sellable vanilla items plus its two limits. Owned by PlayerData
 // and persisted to SQL (items in neorogue_playercargo, limits in neorogue_playercargo_meta).

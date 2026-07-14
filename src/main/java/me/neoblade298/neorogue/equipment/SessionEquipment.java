@@ -282,6 +282,14 @@ public class SessionEquipment {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "SessionEquipment{" +
+				"equipment=" + equipment +
+				", metadata=" + metadata +
+				'}';
+	}
+
 	// --- Array Serialization ---
 
 	public static String serialize(SessionEquipment[] arr) {

@@ -794,7 +794,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	
 	private ItemStack iconFromEquipSlot(EquipSlot es, int slot) {
 		switch (es) {
-		case ACCESSORY: return createAccessoryIcon(slot - 21);
+		case ACCESSORY: return createAccessoryIcon(slot - 22);
 		case ARMOR: return createArmorIcon(slot - 18);
 		case HOTBAR: if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
 			return createMaxedAbilitiesIcon(data, slot, null);
