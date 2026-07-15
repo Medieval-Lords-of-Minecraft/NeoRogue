@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
@@ -27,7 +28,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, LEVELS = 4;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, LEVELS = 4;
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));
@@ -48,8 +49,22 @@ public class MainMenuInventory extends CoreInventory {
 				Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE));
 		int totalAvailable = countAvailableUnlocks(pd);
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
+		contents[CARGO] = createCargoButton(pd);
 		contents[LEVELS] = createLevelsButton(pd);
 		inv.setContents(contents);
+	}
+
+	private ItemStack createCargoButton(PlayerData pd) {
+		Cargo cargo = pd.getCargo();
+		ItemStack item = CoreInventory.createButton(Material.CHEST_MINECART,
+				Component.text("Cargo", NamedTextColor.GOLD));
+		ItemMeta meta = item.getItemMeta();
+		List<Component> lore = new ArrayList<>();
+		lore.add(Component.text("Items: " + cargo.getTotalItems() + " / " + cargo.getCapacity(), NamedTextColor.GRAY)
+				.decoration(TextDecoration.ITALIC, false));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private ItemStack createLevelsButton(PlayerData pd) {
@@ -127,6 +142,9 @@ public class MainMenuInventory extends CoreInventory {
 			break;
 		case UNLOCKS:
 			new UnlocksMenuInventory(p);
+			break;
+		case CARGO:
+			new CargoInventory(p, pd);
 			break;
 		}
 	}

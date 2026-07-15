@@ -40,20 +40,24 @@ public class CargoInventory extends CoreInventory {
 	private final PlayerData pd;
 	private final Cargo cargo;
 	private final int infoSlot;
+	// -1 when the player has no lost cargo; otherwise the slot holding the "Lost Cargo" button.
+	private final int lostCargoSlot;
 	private final HashMap<Integer, Material> slotToMaterial = new HashMap<Integer, Material>();
 
 	public CargoInventory(Player p, PlayerData pd) {
-		super(p, Bukkit.createInventory(p, computeSize(pd.getCargo()), Component.text("Cargo", NamedTextColor.GOLD)));
+		super(p, Bukkit.createInventory(p, computeSize(pd.getCargo(), pd.getLostCargo().getTotalItems() > 0 ? 2 : 1),
+				Component.text("Cargo", NamedTextColor.GOLD)));
 		this.pd = pd;
 		this.cargo = pd.getCargo();
 		this.infoSlot = inv.getSize() - 1;
+		this.lostCargoSlot = pd.getLostCargo().getTotalItems() > 0 ? inv.getSize() - 2 : -1;
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		render();
 	}
 
-	private static int computeSize(Cargo cargo) {
+	private static int computeSize(Cargo cargo, int reserved) {
 		int itemCount = Math.max(cargo.getSlots(), cargo.getUsedSlots());
-		int rows = (int) Math.ceil((itemCount + 1) / 9.0);
+		int rows = (int) Math.ceil((itemCount + reserved) / 9.0);
 		if (rows < 1) rows = 1;
 		if (rows > 6) rows = 6;
 		return rows * 9;
@@ -62,9 +66,11 @@ public class CargoInventory extends CoreInventory {
 	private void render() {
 		inv.clear();
 		slotToMaterial.clear();
+		// Stop before the first reserved button slot (lost cargo button, if present, else info button).
+		int firstButtonSlot = lostCargoSlot != -1 ? lostCargoSlot : infoSlot;
 		int slot = 0;
 		for (Map.Entry<Material, Integer> ent : cargo.getItems().entrySet()) {
-			if (slot >= infoSlot) break;
+			if (slot >= firstButtonSlot) break;
 			Material mat = ent.getKey();
 			int count = ent.getValue();
 
@@ -87,7 +93,26 @@ public class CargoInventory extends CoreInventory {
 			slotToMaterial.put(slot, mat);
 			slot++;
 		}
+		if (lostCargoSlot != -1) inv.setItem(lostCargoSlot, buildLostCargoButton());
 		inv.setItem(infoSlot, buildInfoButton());
+	}
+
+	private ItemStack buildLostCargoButton() {
+		Cargo lost = pd.getLostCargo();
+		ItemStack item = new ItemStack(Material.MINECART);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(line(Component.text("Lost Cargo", NamedTextColor.RED)));
+		List<Component> lore = new ArrayList<Component>();
+		lore.add(line(Component.text("Items: ", NamedTextColor.GRAY)
+				.append(Component.text(lost.getTotalItems(), NamedTextColor.WHITE))));
+		lore.add(line(Component.text("Total sell value: ", NamedTextColor.GRAY)
+				.append(Component.text(df.format(lost.getTotalSellValue()), NamedTextColor.GOLD))));
+		lore.add(Component.empty());
+		lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
+				.append(Component.text("open lost cargo", NamedTextColor.WHITE))));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private ItemStack buildInfoButton() {
@@ -123,6 +148,16 @@ public class CargoInventory extends CoreInventory {
 			e.setCancelled(true);
 			int slot = e.getSlot();
 			if (slot == infoSlot) return;
+			if (slot == lostCargoSlot) {
+				click();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						new LostCargoInventory(p, pd);
+					}
+				}.runTask(NeoRogue.inst());
+				return;
+			}
 
 			Material mat = slotToMaterial.get(slot);
 			if (mat != null) {
