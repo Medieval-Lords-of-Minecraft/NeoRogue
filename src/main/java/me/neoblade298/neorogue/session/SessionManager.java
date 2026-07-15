@@ -99,6 +99,9 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
+	// Per-player cooldown (ms) between join attempts to prevent request spam
+	private static final long JOIN_COOLDOWN_MS = 10000;
+	private static final HashMap<UUID, Long> joinCooldowns = new HashMap<UUID, Long>();
 	
 	public static Session createSession(Player p, int saveSlot) {
 		return createSession(p, saveSlot, true, SessionType.STANDARD);
@@ -254,6 +257,15 @@ public class SessionManager implements Listener {
 			Util.displayError(p, "You can't do that while the session is loading!");
 			return false;
 		}
+		// Per-player cooldown to prevent join-request spam
+		long now = System.currentTimeMillis();
+		Long last = joinCooldowns.get(p.getUniqueId());
+		if (last != null && now - last < JOIN_COOLDOWN_MS) {
+			long remaining = (JOIN_COOLDOWN_MS - (now - last) + 999) / 1000;
+			Util.displayError(p, "You must wait " + remaining + "s before trying to join again!");
+			return false;
+		}
+		joinCooldowns.put(p.getUniqueId(), now);
 		((LobbyInstance) sess.getInstance()).requestJoin(p);
 		return true;
 	}

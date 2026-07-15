@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -777,6 +778,18 @@ public class PlayerFightData extends FightData {
 
 	public boolean hasTriggerAction(Trigger trigger) {
 		return triggers.containsKey(trigger) && !triggers.get(trigger).isEmpty();
+	}
+
+	// Inventory slots disabled by a mob mechanic; the player can't switch to (or use) them until re-enabled
+	private HashSet<Integer> disabledSlots = new HashSet<Integer>();
+
+	public void setSlotDisabled(int slot, boolean disabled) {
+		if (disabled) disabledSlots.add(slot);
+		else disabledSlots.remove(slot);
+	}
+
+	public boolean isSlotDisabled(int slot) {
+		return disabledSlots.contains(slot);
 	}
 
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {

@@ -498,7 +498,9 @@ public class DamageMeta {
 			// Mirror post-mitigation damage plus the amount buffs prevented, so pre - post = mitigation
 			double preTemp = preMitigationSlices.getOrDefault(slice.getPostBuffType(), 0.0) + sliceDamageFinal + mitigatedThisSlice;
 			preMitigationSlices.put(slice.getPostBuffType(), preTemp);
-			temp = trackerSlices.getOrDefault(slice.getTracker().getId(), 0.0) + sliceDamageFinal;
+			// Credit the source (e.g. the weapon) with only its base damage; buff-added damage such as
+			// Strength is tracked separately per buff, so it isn't double-counted onto the source.
+			temp = trackerSlices.getOrDefault(slice.getTracker().getId(), 0.0) + Math.min(base, sliceDamageFinal);
 			trackerSlices.put(slice.getTracker(), temp);
 
 			if (!slice.isIgnoreShields()) {

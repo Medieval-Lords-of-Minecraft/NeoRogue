@@ -132,8 +132,14 @@ public class FightData {
 		// summon mechanic applies the summoned mob's display name AFTER this spawn event fires (same
 		// reason scaleMob is delayed a tick below), which would otherwise re-show the vanilla nametag
 		// alongside our hologram. Re-hiding a tick later overrides that late application.
+		// Collidability is forced on for the same reason: a late MythicMobs Collidable option could
+		// otherwise override it, so it's set now and re-applied a tick later.
+		entity.setCollidable(true);
 		hideVanillaNameplate();
-		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), this::hideVanillaNameplate, 1L);
+		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
+			hideVanillaNameplate();
+			if (entity != null && entity.isValid()) entity.setCollidable(true);
+		}, 1L);
 		updateDisplayName();
 	}
 
@@ -654,7 +660,13 @@ public class FightData {
 				StatusType type = StatusType.valueOf(id);
 				// Only count genuine applications; negative stacks (e.g. consuming Evade) aren't applied.
 				// The source is credited only the base stacks; buffs are credited to their own equipment above.
-				if (!type.isHidden() && finalStacks > 0 && stacks > 0) ((PlayerFightData) applier).getStats().addStatusApplied(type, source, stacks);
+				if (!type.isHidden() && finalStacks > 0 && stacks > 0) {
+					((PlayerFightData) applier).getStats().addStatusApplied(type, source, stacks);
+					// Poison damage scales with duration, so also track effective poison = stacks x seconds
+					if (type == StatusType.POISON && ticks > 0) {
+						((PlayerFightData) applier).getStats().addEffectivePoison(source, stacks * (ticks / 20.0));
+					}
+				}
 			}
 			catch (IllegalArgumentException ex) {
 				// Not a standard status, ignore

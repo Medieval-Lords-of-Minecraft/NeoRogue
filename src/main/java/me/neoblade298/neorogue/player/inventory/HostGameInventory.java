@@ -44,7 +44,7 @@ public class HostGameInventory extends CoreInventory {
 	private int slotCount, slotStart;
 
 	public HostGameInventory(Player p, PlayerData pd) {
-		super(p, Bukkit.createInventory(p, 27, Component.text("Host Game - Select Slot", NamedTextColor.GOLD)));
+		super(p, Bukkit.createInventory(p, 27, Component.text("Host Game - Select Slot", NamedTextColor.GREEN)));
 		this.pd = pd;
 		setupInventory();
 	}

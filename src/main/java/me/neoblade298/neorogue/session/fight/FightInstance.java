@@ -527,6 +527,11 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null)
 			return;
+		// Disabled slots can't be switched to
+		if (data.isSlotDisabled(e.getNewSlot())) {
+			e.setCancelled(true);
+			return;
+		}
 		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
 		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
 	}

@@ -917,21 +917,26 @@ public class Session {
 		// The first time the lobby is opened, broadcast a clickable button so others can join
 		if (lobbyOpen && !announcedOpenLobby) {
 			announcedOpenLobby = true;
-			broadcastOpenLobby();
+			broadcastLobbyInvite(true);
 		}
 	}
 
-	// Announces to the server that this lobby is open, with a button that runs the join command
-	private void broadcastOpenLobby() {
+	// Announces this lobby to the server with a clickable button. open = true means it auto-accepts
+	// (Click to Join); open = false is a freshly created lobby that requires requests (Click to Request to Join).
+	public void broadcastLobbyInvite(boolean open) {
 		Player hostPlayer = Bukkit.getPlayer(host);
 		if (hostPlayer == null) return;
 		String hostName = hostPlayer.getName();
+		Component lead = open ? Component.text("'s lobby is now open! ", NamedTextColor.GRAY)
+				: Component.text(" created a new lobby! ", NamedTextColor.GRAY);
+		String label = open ? "Click to Join" : "Click to Request to Join";
+		String hover = (open ? "Click to join " : "Click to request to join ") + hostName + "'s lobby";
 		Component msg = Component.text(hostName, NamedTextColor.YELLOW)
-				.append(Component.text("'s lobby is now open! ", NamedTextColor.GRAY))
-				.append(Component.text("[Click to Join]", NamedTextColor.GOLD)
+				.append(lead)
+				.append(Component.text("[" + label + "]", NamedTextColor.GOLD)
 						.decorate(TextDecoration.BOLD)
 						.hoverEvent(HoverEvent.showText(
-								Component.text("Click to join " + hostName + "'s lobby", NamedTextColor.GRAY)))
+								Component.text(hover, NamedTextColor.GRAY)))
 						.clickEvent(ClickEvent.runCommand("/nr join " + hostName)));
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			// Skip players already in a session; they can't join anyway

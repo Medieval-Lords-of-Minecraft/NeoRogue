@@ -60,6 +60,13 @@ public class NewLobbyInstance extends LobbyInstance {
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
         
         updateBoardLines();
+
+        // Announce the new lobby so others can request to join (deferred so the session is registered)
+        new BukkitRunnable() {
+            public void run() {
+                s.broadcastLobbyInvite(false);
+            }
+        }.runTaskLater(NeoRogue.inst(), 1L);
     }
 
     // Auto-accept join requests
@@ -322,10 +329,12 @@ public class NewLobbyInstance extends LobbyInstance {
         case 'R':
             switchClass(uuid, getRandomUnlockedClass(uuid), true);
             break;
-		case 'C':
-			new SessionSettingsInventory(e.getPlayer(), s, this);
-			break;
 		}
+
+        char c2 = ((TextComponent) sign.getSide(Side.FRONT).line(2)).content().charAt(0);
+        if (c2 == 'f') {
+			new SessionSettingsInventory(e.getPlayer(), s, this);
+        }
 	}
 
     private void readyPlayer(Player p) {

@@ -189,7 +189,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack createLeaveIcon() {
 		return CoreInventory.createButton(Material.COMPASS, Component.text("Save & Quit", NamedTextColor.RED),
-				"Saves and quit your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
+				"Save and quit your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
 	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {

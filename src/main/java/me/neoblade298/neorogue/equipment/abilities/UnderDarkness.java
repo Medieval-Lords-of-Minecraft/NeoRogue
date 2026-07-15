@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -21,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -95,7 +94,7 @@ public class UnderDarkness extends Equipment {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after " + DescUtil.white("1s") + ". After detonation, for " + DescUtil.white("5s") + ","
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>], buffs"
-						+ " your damage by " + DescUtil.yellow(damage) + ", and grants "
+						+ " your damage by " + DescUtil.yellow(damage) + " [<white>1s</white>], and grants "
 						+ GlossaryTag.SHIELDS.tag(this, 8, false) + " [<white>2s</white>].");
 	}
 }

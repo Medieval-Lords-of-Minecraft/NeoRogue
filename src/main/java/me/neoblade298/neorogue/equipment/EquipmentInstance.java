@@ -49,6 +49,9 @@ public class EquipmentInstance extends PriorityAction {
 	// Useful for toggleable abilities and abilities that can fail post-trigger
 	// (like ground lance requiring a block to be aimed at).
 	protected boolean castsUsable = true;
+	// While disabled (e.g. by a mob's disable mechanic), the slot keeps its placeholder (a barrier) and
+	// updateIcon() is suppressed so a finishing cooldown can't restore the ability icon over it.
+	protected boolean disabled;
 
 	static {
 		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
@@ -137,7 +140,6 @@ public class EquipmentInstance extends PriorityAction {
 	}
 
 	public void setIcon(ItemStack icon) {
-		this.icon = decorateIcon(icon);
 		updateIcon();
 	}
 
@@ -180,6 +182,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 
 	public void updateIcon() {
+		if (disabled) return; // Keep the disable placeholder (barrier) until re-enabled
 		int cooldownSeconds = getCooldownSeconds();
 		PlayerInventory inv = p.getInventory();
 		if (cooldownSeconds <= 0) { // For setting icon when not on cooldown
@@ -213,6 +216,23 @@ public class EquipmentInstance extends PriorityAction {
 
 	public double getBaseCooldown() {
 		return cooldown;
+	}
+
+	// Suppresses icon/cooldown updates while disabled so a placeholder (barrier) isn't overridden.
+	// Cancels any pending cooldown-restore task, since it would otherwise replace the barrier when the
+	// cooldown finishes mid-disable.
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+		if (disabled && cooldownTaskId != null) {
+			cooldownTask.cancel();
+			data.removeTask(cooldownTaskId);
+			cooldownTaskId = null;
+			cooldownTask = null;
+		}
+	}
+
+	public boolean isDisabled() {
+		return disabled;
 	}
 
 	public void addCooldown(double seconds) {

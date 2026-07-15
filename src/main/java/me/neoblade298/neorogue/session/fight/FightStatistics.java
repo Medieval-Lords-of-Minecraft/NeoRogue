@@ -21,6 +21,8 @@ public class FightStatistics {
 	private HashMap<StatTracker, Double> damageDealt = new HashMap<StatTracker, Double>();
 	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
 	private HashMap<StatusType, HashMap<String, Integer>> statusesApplied = new HashMap<StatusType, HashMap<String, Integer>>();
+	// Effective poison applied per source: stacks x (duration / 20), since poison damage scales with duration
+	private HashMap<String, Double> effectivePoisonApplied = new HashMap<String, Double>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
 	private HashMap<String, Double> shieldsByEquip = new HashMap<String, Double>();
 	private HashMap<String, Double> healingByEquip = new HashMap<String, Double>();
@@ -151,6 +153,13 @@ public class FightStatistics {
 			.merge(recordSource(source), amount, Integer::sum);
 	}
 
+	// Effective poison = stacks x seconds. Tracked separately from raw stacks since a short, high-stack
+	// application and a long, low-stack one can deal the same total damage.
+	public void addEffectivePoison(Equipment source, double amount) {
+		if (amount <= 0) return;
+		effectivePoisonApplied.merge(recordSource(source), amount, Double::sum);
+	}
+
 	public HashMap<StatTracker, Double> getDamageDealt() {
 		return damageDealt;
 	}
@@ -224,6 +233,14 @@ public class FightStatistics {
 	public double getTotalDamageDealt() {
 		double total = 0;
 		for (double amt : damageDealt.values()) total += amt;
+		// Buff-added damage is tracked separately from its source, so include it for the full total
+		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
+			StatTracker stat = ent.getKey();
+			if (stat.isIgnored()) continue;
+			StatCategory c = stat.getCategory() == StatCategory.OTHER ? StatCategory.DAMAGE_DEALT : stat.getCategory();
+			if (c != StatCategory.DAMAGE_DEALT) continue;
+			total += stat.isInverted() ? -ent.getValue() : ent.getValue();
+		}
 		return total;
 	}
 
@@ -321,6 +338,15 @@ public class FightStatistics {
 			total += ent.getValue();
 			any = true;
 		}
+		// Buff-added damage is credited to the buffing equipment; include it in the headline total so it
+		// still reflects the full amount dealt (source base + buffs).
+		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
+			StatTracker stat = ent.getKey();
+			if (stat.isIgnored()) continue;
+			StatCategory c = stat.getCategory() == StatCategory.OTHER ? StatCategory.DAMAGE_DEALT : stat.getCategory();
+			if (c != StatCategory.DAMAGE_DEALT) continue;
+			total += stat.isInverted() ? -ent.getValue() : ent.getValue();
+		}
 		Component buffs = buffSection(StatCategory.DAMAGE_DEALT);
 		if (buffs != null) {
 			hover = hover.appendNewline().append(buffs);
@@ -401,6 +427,15 @@ public class FightStatistics {
 				score += srcEnt.getValue();
 				any = true;
 			}
+		}
+		// Effective poison (stacks x seconds) is tracked separately since poison damage scales with duration
+		for (Entry<String, Double> ent : effectivePoisonApplied.entrySet()) {
+			Component disp = sourceNames.getOrDefault(ent.getKey(), Component.text("Misc", NamedTextColor.GRAY));
+			hover = hover.appendNewline().append(disp.append(Component.text(" - Effective ", NamedTextColor.GRAY))
+				.append(StatusType.POISON.ctag)
+				.append(Component.text(": ", NamedTextColor.YELLOW))
+				.append(Component.text(df.format(ent.getValue()), NamedTextColor.WHITE)));
+			any = true;
 		}
 		// Buffer contributions are credited to the buffing equipment; include them in the headline total
 		// so it still reflects the full amount applied (base + buffs).

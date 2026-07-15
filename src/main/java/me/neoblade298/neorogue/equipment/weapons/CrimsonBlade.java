@@ -39,18 +39,16 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id, es, slot));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id, slot));
 	}
 	
 	private class CrimsonBladeInstance extends PriorityAction {
 		private int count;
 		private long start;
 		private boolean deactivated;
-		private EquipSlot es;
 		private int slot;
-		public CrimsonBladeInstance(String id, EquipSlot es, int slot) {
+		public CrimsonBladeInstance(String id, int slot) {
 			super(id);
-			this.es = es;
 			this.slot = slot;
 			start = System.currentTimeMillis();
 			action = (pdata, inputs) -> {

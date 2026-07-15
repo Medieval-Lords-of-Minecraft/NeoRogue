@@ -44,10 +44,10 @@ public class FrozenForgeChance extends ChanceSet {
 
 		// Choice 2: Sit and warm yourself - obtain a common reforge item
 		stage.addChoice(new ChanceChoice(Material.CAMPFIRE, "Sit and Warm Yourself",
-				"Obtain a common reforgeable equipment.",
+				"Obtain an upgraded common reforgeable equipment.",
 				(s, inst, data) -> {
 					Equipment eq = ManaPoolChance.getReforgeItem(data.getPlayerClass());
-					data.giveEquipment(eq);
+					data.giveEquipment(eq.getUpgraded());
 					Util.msgRaw(data.getPlayer(), "You rest by the blue flames until your bones thaw, idly tinkering with a spare piece of gear.");
 					return null;
 				}));

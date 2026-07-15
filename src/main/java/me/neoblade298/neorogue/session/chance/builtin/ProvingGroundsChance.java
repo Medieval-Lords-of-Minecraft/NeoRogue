@@ -42,7 +42,7 @@ public class ProvingGroundsChance extends ChanceSet {
 
 		// Choice 2: Adapt your style - transform one chosen piece of gear
 		ChanceChoice adapt = new ChanceChoice(Material.SMITHING_TABLE, "Adapt Your Style",
-				"Practice with the mercenaries to <yellow>transform</yellow> one equipment.",
+				"Practice with the mercenaries to <yellow>transform</yellow> one equipment into a random upgraded equipment of miniboss drop rarity.",
 				"You have no gear that can be transformed!",
 				(s, inst, data) -> data.aggregateEquipment((meta) -> isTransformable(meta, data)).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
@@ -83,13 +83,12 @@ public class ProvingGroundsChance extends ChanceSet {
 				(meta) -> {
 					Equipment removed = data.removeEquipment(meta.getEquipSlot(), meta.getSlot()).getEquipment();
 					SessionEquipment se = new SessionEquipment(Equipment.getDrop(data.getData().getEquipmentDroptable(),
-							s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
-					se = s.rollUpgrade(se, 0);
+							s.getBaseDropValue() + 2, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0)
+							.getUpgraded());
 					NotorietySetting.rollBreakable(s, se);
 					Util.msgRaw(p, Component.text("You adapt your style, leaving behind your ", NamedTextColor.GRAY)
 							.append(removed.getHoverable())
 							.append(Component.text("...", NamedTextColor.GRAY)));
-					data.giveEquipment(se);
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> adapted their style!", p);
 					inst.advanceStage(uuid, null);
 					s.getInstance().updateBoardLines();

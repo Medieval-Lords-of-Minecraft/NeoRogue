@@ -101,6 +101,13 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			// Remove the specific PriorityAction from its list
 			chosen.list.remove(chosen.action);
 
+			// Suppress icon updates so a finishing cooldown can't override the barrier placeholder
+			if (chosen.action instanceof EquipmentInstance) {
+				((EquipmentInstance) chosen.action).setDisabled(true);
+			}
+			// Prevent the player from switching to the disabled slot
+			pdata.setSlotDisabled(chosen.invSlot, true);
+
 			// Save original item and set barrier
 			ItemStack original = p.getInventory().getItem(chosen.invSlot);
 			p.getInventory().setItem(chosen.invSlot, new ItemStack(Material.BARRIER));
@@ -123,9 +130,12 @@ public class MechanicDisable implements ITargetedEntitySkill {
 				@Override
 				public void run() {
 					finalChosen.list.add(finalChosen.action);
+					pdata.setSlotDisabled(finalChosen.invSlot, false);
 					Player current = pdata.getPlayer();
 					if (finalChosen.action instanceof EquipmentInstance) {
-						((EquipmentInstance) finalChosen.action).updateIcon();
+						EquipmentInstance ei = (EquipmentInstance) finalChosen.action;
+						ei.setDisabled(false);
+						ei.updateIcon();
 					} else {
 						current.getInventory().setItem(finalChosen.invSlot, original);
 					}
