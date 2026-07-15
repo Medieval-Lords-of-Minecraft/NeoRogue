@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -50,6 +49,6 @@ public class Bloodthirster extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.IRON_SWORD,
-				"Increases its damage by " + DescUtil.yellow(mult + "x") + " "+ GlossaryTag.STRENGTH.tag(this) + " and " + GlossaryTag.BERSERK.tag(this) + ".");
+				"Increases its damage by " + DescUtil.yellow(mult + "x") + " " + GlossaryTag.STRENGTH.tag(this) + " and " + DescUtil.yellow(mult + "x") + " " + GlossaryTag.BERSERK.tag(this) + " .");
 	}
 }

@@ -18,7 +18,6 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
@@ -333,10 +332,6 @@ public class ShopInventory extends CoreInventory {
 		}
 		if (eq.isCursed()) {
 			Util.displayError(p, "Curses cannot be sold!");
-			return false;
-		}
-		if (eq.getType() == EquipmentType.CONSUMABLE) {
-			Util.displayError(p, "Consumables cannot be sold!");
 			return false;
 		}
 		String restriction = data.getRemovalRestriction(eq, storageSnapshot, false, "sell");

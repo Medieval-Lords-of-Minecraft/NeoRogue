@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -8,12 +6,12 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -41,8 +39,8 @@ public class WarCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself " + DescUtil.yellow(strength) + " " + GlossaryTag.STRENGTH.tag(this) + " and " + DescUtil.yellow(
-						strength) + " " + GlossaryTag.SHIELDS.tag(this) + " that last " + DescUtil.white("5s") + ".");
+				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength, true) + " [<white>5s<white>] and "
+						+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s<white>].");
 	}
 
 	@Override

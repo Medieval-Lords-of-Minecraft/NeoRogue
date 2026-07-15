@@ -303,6 +303,14 @@ public class FightStatistics {
 			}
 		}
 
+		// Poison isn't tracked as raw stacks (see statusesApplied); record its effective value
+		// (stacks x seconds) as POISON status stacks so analytics treats it like any other status.
+		for (Entry<String, Double> ent : effectivePoisonApplied.entrySet()) {
+			if (ent.getKey().equals(UNATTRIBUTED)) continue;
+			map.computeIfAbsent(ent.getKey(), EquipmentContribution::new)
+				.addStatus(StatusType.POISON, (int) Math.round(ent.getValue()));
+		}
+
 		return map;
 	}
 

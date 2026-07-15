@@ -19,6 +19,7 @@ public class ConditionIsNeoRoguePlayer implements ISkillMetaComparisonCondition 
 			Player p = (Player) ent.getBukkitEntity();
 			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
 			if (pfd == null) return false;
+			System.out.println("Checking nrplayer " + p.getName() + ": " + !pfd.isDead());
 			return !pfd.isDead();
 		}
 		catch (IllegalStateException e) {

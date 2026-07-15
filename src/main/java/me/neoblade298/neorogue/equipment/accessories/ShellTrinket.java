@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ShellTrinket extends Artifact {
 	private static final String ID = "ShellTrinket";
-	private static final int dec = 2;
+	private static final int dec = 1;
 	
 	public ShellTrinket() {
 		super(ID, "Shell Trinket", Rarity.COMMON, EquipmentClass.CLASSLESS);

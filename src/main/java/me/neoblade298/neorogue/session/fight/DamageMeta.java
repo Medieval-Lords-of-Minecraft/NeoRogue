@@ -638,8 +638,6 @@ public class DamageMeta {
 			}
 			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
 			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);
-			// Record the actual health damage (post shields/mitigation) for accurate stats display
-			pdata.getStats().addHealthDamageTaken(damage + ignoreShieldsDamage);
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		Vector originalVelocity = target.getVelocity().clone();
@@ -675,6 +673,15 @@ public class DamageMeta {
 				target.damage(finalDamage);
 			}
 			damageCancelled = target.isValid() && target.getHealth() >= healthBefore;
+
+			// Record the true health lost from the actual damage application, not the pre-computed
+			// value. Minecraft's invulnerability frames can combine overlapping hits so that only part
+			// (or none) of finalDamage reaches health; measuring the real HP delta keeps the HP-taken
+			// stat consistent with the player's actual health change.
+			if (recipient instanceof PlayerFightData) {
+				double healthLost = target.isValid() ? Math.max(0, healthBefore - target.getHealth()) : healthBefore;
+				((PlayerFightData) recipient).getStats().addHealthDamageTaken(healthLost);
+			}
 
 			// Create damage display
 			if (!(target instanceof Player)) {

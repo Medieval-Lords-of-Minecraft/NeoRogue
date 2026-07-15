@@ -115,6 +115,7 @@ public class StoneSpear extends Equipment {
 			super(1, 15, 1);
 			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(1);
 			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override

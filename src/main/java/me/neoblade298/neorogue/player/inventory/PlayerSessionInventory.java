@@ -54,7 +54,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 16, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17;
+	public static final int STATS = 9, TRASH = 15, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -127,7 +127,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			contents[i] = eq != null
-					? addNbt(addBindLore(eq.getItem(), i, bind.getDataSlot()), eq.getEquipment().getId(),
+					? addNbt(addBindLore(eq.getItem(), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
 							eq.getEquipment().isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}

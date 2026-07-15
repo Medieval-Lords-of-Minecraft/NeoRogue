@@ -29,7 +29,7 @@ public class RunReward {
 
 	// ----- Payout tuning constants (adjust these to tune payouts) -----
 	// Flat base amount awarded regardless of performance.
-	private static final double WIN_BASE = 100.0;
+	private static final double WIN_BASE = 1000.0;
 	private static final double LOSE_BASE = 25.0;
 
 	// Per-unit bonus values.
@@ -68,6 +68,36 @@ public class RunReward {
 		economy.deposit(NeoRogue.inst().getName(), psd.getUniqueId(), BigDecimal.valueOf(amount));
 	}
 
+	// Cargo sales count as run-reward "base" income: the raw sell value is multiplied by the notoriety
+	// money multiplier (the same bonus the end-of-run base earns). Because cargo is sold once per
+	// completed region (and again on victory), each sale is effectively its own run reward paid out
+	// during the run. Returns the actual amount deposited (post-multiplier).
+	private static double payoutCargoReward(Session s, PlayerSessionData psd, double cargoValue) {
+		double reward = cargoValue * s.getNotorietyMoneyMultiplier();
+		depositCargo(psd, reward);
+		return reward;
+	}
+
+	// Prints the per-material breakdown (most valuable first) for a cargo sale, then a notoriety-bonus
+	// note whenever the multiplier boosted the payout above the raw sale value.
+	private static void sendCargoBreakdown(Player p, Session s, PlayerSessionData.CargoSaleResult result, double reward) {
+		List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
+				result.qtyByMaterial.entrySet());
+		lines.sort(Comparator.comparingDouble(
+				(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
+				.reversed());
+		for (Map.Entry<Material, Integer> line : lines) {
+			Material mat = line.getKey();
+			Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
+					+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
+		}
+		if (reward > result.value) {
+			Util.msgRaw(p, "<gray>  <white>(includes <green>+" + s.getNotorietyMoneyBonusPercent()
+					+ "%<white> notoriety bonus on the <yellow>" + formatMoney(result.value) + "<white> sale value)");
+		}
+	}
+
+
 	// Sells each party member's run cargo for a completed region. The region's base percentage is
 	// randomized by +/- CARGO_SELL_VARIANCE, proceeds are paid out immediately, and the sale is
 	// logged on each PlayerSessionData for the end-of-run finance summary.
@@ -80,24 +110,15 @@ public class RunReward {
 			double fraction = Math.max(0.0, Math.min(1.0, base + variance));
 			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(fraction);
 			if (result.itemsSold <= 0) continue;
-			depositCargo(psd, result.value);
+			double reward = payoutCargoReward(s, psd, result.value);
 			Player p = psd.getPlayer();
 			if (p != null) {
 				Util.msgRaw(p, "<gray>Your caravan sold <yellow>" + result.itemsSold + "</yellow> cargo item"
 						+ (result.itemsSold == 1 ? "" : "s") + " in " + completed.getDisplay() + " for <yellow>"
-						+ formatMoney(result.value) + "</yellow>:");
+						+ formatMoney(reward) + "</yellow>:");
 
-				// Per-material breakdown, most valuable first.
-				List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
-						result.qtyByMaterial.entrySet());
-				lines.sort(Comparator.comparingDouble(
-						(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
-						.reversed());
-				for (Map.Entry<Material, Integer> line : lines) {
-					Material mat = line.getKey();
-					Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
-							+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
-				}
+				// Per-material breakdown, most valuable first, plus any notoriety bonus applied.
+				sendCargoBreakdown(p, s, result, reward);
 			}
 		}
 	}
@@ -120,8 +141,8 @@ public class RunReward {
 
 			Player p = psd.getPlayer();
 			if (p != null) {
-				Util.msgRaw(p, "<green>You earned <yellow>" + formatMoney(b.total) + "<green> for "
-						+ (won ? "winning" : "completing") + " your run! <gray>(click the gold block for a breakdown)");
+				Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(b.total) + "</yellow> for "
+						+ (won ? "winning" : "completing") + " your run! (click the gold block for a breakdown)");
 			}
 		}
 	}
@@ -133,24 +154,15 @@ public class RunReward {
 			if (psd.getRunCargoTotal() <= 0) continue;
 			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(1.0);
 			if (result.itemsSold <= 0) continue;
-			depositCargo(psd, result.value);
+			double reward = payoutCargoReward(s, psd, result.value);
 			Player p = psd.getPlayer();
 			if (p != null) {
 				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining <yellow>" + result.itemsSold
 						+ "</yellow> cargo item" + (result.itemsSold == 1 ? "" : "s") + " for <yellow>"
-						+ formatMoney(result.value) + "</yellow>:");
+						+ formatMoney(reward) + "</yellow>:");
 
-				// Per-material breakdown, most valuable first.
-				List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
-						result.qtyByMaterial.entrySet());
-				lines.sort(Comparator.comparingDouble(
-						(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
-						.reversed());
-				for (Map.Entry<Material, Integer> line : lines) {
-					Material mat = line.getKey();
-					Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
-							+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
-				}
+				// Per-material breakdown, most valuable first, plus any notoriety bonus applied.
+				sendCargoBreakdown(p, s, result, reward);
 			}
 		}
 	}
@@ -225,6 +237,7 @@ public class RunReward {
 		Util.msgRaw(p, "<gold>Total earned: <yellow>" + formatMoney(b.total));
 
 		// Cargo is sold and paid out per region during the run; summarize what each player sold here.
+		// Cargo income counts as run-reward base, so the notoriety multiplier applies to it too.
 		PlayerSessionData psd = s.getParty().get(p.getUniqueId());
 		if (psd != null && psd.hasSoldCargo()) {
 			Util.msgRaw(p, "<gold><st>          </st>[ <yellow>Cargo Sold</yellow> ]<st>          </st>");
@@ -237,7 +250,14 @@ public class RunReward {
 				Util.msgRaw(p, "<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
 						+ formatMoney(value));
 			}
-			Util.msgRaw(p, "<gold>Total cargo sold: <yellow>" + formatMoney(cargoTotal));
+			double cargoMultiplier = s.getNotorietyMoneyMultiplier();
+			double cargoReward = cargoTotal * cargoMultiplier;
+			if (cargoReward > cargoTotal) {
+				Util.msgRaw(p, "<gray>Sale value: <yellow>" + formatMoney(cargoTotal));
+				Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
+						+ "%<gray>): <green>\u00d7" + String.format("%.2f", cargoMultiplier));
+			}
+			Util.msgRaw(p, "<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward));
 		}
 	}
 

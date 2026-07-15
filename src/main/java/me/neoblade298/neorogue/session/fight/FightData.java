@@ -139,6 +139,7 @@ public class FightData {
 		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
 			hideVanillaNameplate();
 			if (entity != null && entity.isValid()) entity.setCollidable(true);
+			System.out.println("Exempt collisions: " + entity.getCollidableExemptions());
 		}, 1L);
 		updateDisplayName();
 	}
@@ -661,10 +662,15 @@ public class FightData {
 				// Only count genuine applications; negative stacks (e.g. consuming Evade) aren't applied.
 				// The source is credited only the base stacks; buffs are credited to their own equipment above.
 				if (!type.isHidden() && finalStacks > 0 && stacks > 0) {
-					((PlayerFightData) applier).getStats().addStatusApplied(type, source, stacks);
-					// Poison damage scales with duration, so also track effective poison = stacks x seconds
-					if (type == StatusType.POISON && ticks > 0) {
-						((PlayerFightData) applier).getStats().addEffectivePoison(source, stacks * (ticks / 20.0));
+					// Poison damage scales with duration, so it's tracked as effective poison (stacks x
+					// seconds) instead of raw stacks; every other status records raw stacks applied.
+					if (type == StatusType.POISON) {
+						if (ticks > 0) {
+							((PlayerFightData) applier).getStats().addEffectivePoison(source, stacks * (ticks / 20.0));
+						}
+					}
+					else {
+						((PlayerFightData) applier).getStats().addStatusApplied(type, source, stacks);
 					}
 				}
 			}

@@ -3,11 +3,10 @@ package me.neoblade298.neorogue.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import io.lumine.mythic.api.exceptions.InvalidMobTypeException;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminTest extends Subcommand {
 
@@ -17,8 +16,12 @@ public class CmdAdminTest extends Subcommand {
 
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		
-		Session sess = SessionManager.getSession(p);
-		Util.msgRaw(p, "Last miniboss: " + sess.getLastMiniboss());
+		for (int i = 0; i < 10; i++) {
+			try {
+				MythicBukkit.inst().getAPIHelper().spawnMythicMob("SewerMonster", p.getLocation());
+			} catch (InvalidMobTypeException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
