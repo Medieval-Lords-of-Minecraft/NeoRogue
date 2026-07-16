@@ -7,5 +7,6 @@
         "mvn compile": true,
         "mvn package": true,
         "mvn clean": true
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
