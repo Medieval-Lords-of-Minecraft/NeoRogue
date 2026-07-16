@@ -370,6 +370,51 @@ public class Session {
 		
 		party.get(host).getData().updateSnapshot(this, saveSlot);
 	}
+
+	// Captures each online party member's current fight health (capped at their session max). Used
+	// to persist a lowered HP when a session ends mid-fight, since fights otherwise don't save.
+	public HashMap<UUID, Double> captureLiveHealth() {
+		HashMap<UUID, Double> out = new HashMap<UUID, Double>();
+		for (PlayerSessionData psd : party.values()) {
+			Player pl = psd.getPlayer();
+			if (pl == null) continue;
+			out.put(psd.getUniqueId(), (double) Math.round(Math.min(psd.getMaxHealth(), pl.getHealth())));
+		}
+		return out;
+	}
+
+	// Lowers each party member's saved health to their captured fight health, but only when it's
+	// below the previously saved value. Runs async when a session ends during a fight.
+	public void saveHealthAfterFightEnd(Connection con, HashMap<UUID, Double> capturedHp) {
+		for (Entry<UUID, Double> ent : capturedHp.entrySet()) {
+			try {
+				double liveHp = ent.getValue();
+				double savedHp;
+				try (PreparedStatement sel = con.prepareStatement(
+						"SELECT health FROM neorogue_playersessiondata WHERE host = ? AND slot = ? AND uuid = ?;")) {
+					sel.setString(1, host.toString());
+					sel.setInt(2, saveSlot);
+					sel.setString(3, ent.getKey().toString());
+					try (ResultSet rs = sel.executeQuery()) {
+						if (!rs.next()) continue; // no saved row for this player
+						savedHp = rs.getDouble("health");
+					}
+				}
+				if (liveHp >= savedHp) continue; // only ever lower the saved health
+				try (PreparedStatement upd = con.prepareStatement(
+						"UPDATE neorogue_playersessiondata SET health = ? WHERE host = ? AND slot = ? AND uuid = ?;")) {
+					upd.setDouble(1, liveHp);
+					upd.setString(2, host.toString());
+					upd.setInt(3, saveSlot);
+					upd.setString(4, ent.getKey().toString());
+					upd.executeUpdate();
+				}
+			} catch (SQLException ex) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to save mid-fight health for " + ent.getKey());
+				ex.printStackTrace();
+			}
+		}
+	}
 	
 	// Players are added this way after a lobby instance starts the game
 	public void addPlayers(HashMap<UUID, EquipmentClass> players) {

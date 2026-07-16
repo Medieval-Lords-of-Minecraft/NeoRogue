@@ -355,6 +355,15 @@ public class SessionManager implements Listener {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
 		} else if (s.getInstance() instanceof FightInstance) {
 			e.setCancelled(true);
+			// Leave Fight icon lives in the player's own inventory at the LEAVE slot during fights.
+			if (e.getClickedInventory() == p.getInventory() && e.getSlot() == PlayerSessionInventory.LEAVE
+					&& e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.COMPASS) {
+				new BukkitRunnable() {
+					public void run() {
+						s.leavePlayer(p);
+					}
+				}.runTask(NeoRogue.inst());
+			}
 		}
 	}
 
@@ -958,14 +967,21 @@ public class SessionManager implements Listener {
 	}
 
 	public static void endSession(Session s) {
+		// Fights don't save; but when a session ends mid-fight we still persist a lowered HP.
+		HashMap<UUID, Double> fightHp = s.getInstance() instanceof FightInstance ? s.captureLiveHealth() : null;
 		s.cleanup(false);
 		removeSession(s);
 		if (s.getInstance() instanceof EndRunInstance) return;
 
+		final HashMap<UUID, Double> capturedHp = fightHp;
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager")) {
-					s.save(con);
+					if (capturedHp != null) {
+						s.saveHealthAfterFightEnd(con, capturedHp);
+					} else {
+						s.save(con);
+					}
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}

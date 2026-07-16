@@ -128,7 +128,7 @@ public class Region {
 	}
 
 	private static void clearLecternBook(Block block) {
-		if (!(block.getState() instanceof org.bukkit.block.Lectern lectern)) {
+		if (!(block.getState(false) instanceof org.bukkit.block.Lectern lectern)) {
 			return;
 		}
 		lectern.getInventory().clear();

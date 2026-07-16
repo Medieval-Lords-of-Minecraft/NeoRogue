@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -47,6 +48,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
@@ -186,6 +188,11 @@ public class PlayerFightData extends FightData {
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
+
+		// Leave Fight icon, placed in the same slot as PlayerSessionInventory's Save & Quit button.
+		inv.setItem(PlayerSessionInventory.LEAVE, CoreInventory.createButton(Material.COMPASS,
+				Component.text("Leave Fight", NamedTextColor.RED),
+				"Leave the fight and end the run. Your health is saved.", 250, NamedTextColor.GRAY));
 
 		// Initialize static triggers
 		addTrigger("SPRINT", Trigger.TOGGLE_SPRINT, (pdata, in) -> {
