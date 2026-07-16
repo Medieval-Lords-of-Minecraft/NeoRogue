@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -110,9 +110,8 @@ public class SessionSettingsInventory extends CoreInventory {
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("action", "notoriety-down");
-		return nbti.getItem();
+		NBT.modify(item, nbt -> { nbt.setString("action", "notoriety-down"); });
+		return item;
 	}
 
 	private ItemStack createNotorietyIcon() {
@@ -173,9 +172,8 @@ public class SessionSettingsInventory extends CoreInventory {
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("action", "notoriety-up");
-		return nbti.getItem();
+		NBT.modify(item, nbt -> { nbt.setString("action", "notoriety-up"); });
+		return item;
 	}
 
 	@Override
@@ -185,10 +183,11 @@ public class SessionSettingsInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 		if (e.getAction() == InventoryAction.NOTHING) return;
 		
-		NBTItem clicked = new NBTItem(e.getCurrentItem());
+		ItemStack clickedItem = e.getCurrentItem();
+		String action = NBT.get(clickedItem, nbt -> nbt.hasTag("action") ? nbt.getString("action") : null);
+		Integer settingId = NBT.get(clickedItem, nbt -> nbt.hasTag("id") ? nbt.getInteger("id") : null);
 
-		if (clicked.hasTag("action")) {
-			String action = clicked.getString("action");
+		if (action != null) {
 			int notoriety = s.getNotoriety();
 			if (action.equals("notoriety-down") && notoriety > 0) {
 				click.play(p, p, Audience.ORIGIN);
@@ -201,8 +200,8 @@ public class SessionSettingsInventory extends CoreInventory {
 			inv.setItem(12, createDownArrow());
 			inv.setItem(13, createNotorietyIcon());
 			inv.setItem(14, createUpArrow());
-		} else if (clicked.hasTag("id")) {
-			int id = clicked.getInteger("id");
+		} else if (settingId != null) {
+			int id = settingId;
 			SessionSetting setting = SessionSetting.getById(id);
 			
 			if (e.isLeftClick() && setting.canLeftClick(s)) {

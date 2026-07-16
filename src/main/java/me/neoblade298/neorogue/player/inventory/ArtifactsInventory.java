@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -163,12 +163,12 @@ public class ArtifactsInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 		
 		ItemStack item = e.getCurrentItem();
-		NBTItem nclicked = new NBTItem(item);
-		if (e.isRightClick() && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
+		String equipId = NBT.get(item, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null);
+		if (e.isRightClick() && equipId != null && e.getCursor().getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
-					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(equipId, false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

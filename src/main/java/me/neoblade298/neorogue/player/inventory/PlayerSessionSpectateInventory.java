@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,7 +50,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 		e.setCancelled(true);
 		int slot = e.getSlot();
 		if (cursor.getType().isAir() && clicked == null) return;
-		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
+		String clickedEquipId = clicked != null ? NBT.get(clicked, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;
 
 		if (slot == ARTIFACTS) {
 			new BukkitRunnable() {
@@ -91,12 +91,12 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 		}
 
 		// If right click with empty hand, open glossary
-		if (e.isRightClick() && nclicked.hasTag("equipId") && cursor.getType().isAir()) {
+		if (e.isRightClick() && clickedEquipId != null && cursor.getType().isAir()) {
 			e.setCancelled(true);
 			PlayerSessionSpectateInventory temp = this;
 			new BukkitRunnable() {
 				public void run() {
-					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), temp);
+					new EquipmentGlossaryInventory(p, Equipment.get(clickedEquipId, false), temp);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

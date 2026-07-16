@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
@@ -272,9 +272,8 @@ public class UnlockNode {
 		item.setItemMeta(meta);
 
 		// Add NBT tag for click handling
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("unlockNodeId", id);
-		return nbti.getItem();
+		NBT.modify(item, nbt -> { nbt.setString("unlockNodeId", id); });
+		return item;
 	}
 
 	/**

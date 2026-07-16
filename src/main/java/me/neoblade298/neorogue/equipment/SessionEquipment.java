@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -61,9 +61,8 @@ public class SessionEquipment {
 		}
 		// Persist metadata onto the item so it survives being reconstructed from item form.
 		if (!metadata.isEmpty()) {
-			NBTItem nbti = new NBTItem(item);
-			nbti.setString(NBT_KEY, serialize());
-			item = nbti.getItem();
+			String serialized = serialize();
+			NBT.modify(item, nbt -> { nbt.setString(NBT_KEY, serialized); });
 		}
 		return item;
 	}
@@ -74,13 +73,15 @@ public class SessionEquipment {
 	 */
 	public static SessionEquipment fromItem(ItemStack item) {
 		if (item == null) return null;
-		NBTItem nbti = new NBTItem(item);
-		if (nbti.hasTag(NBT_KEY)) {
-			SessionEquipment se = deserialize(nbti.getString(NBT_KEY));
+		String serialized = NBT.get(item, nbt -> nbt.hasTag(NBT_KEY) ? nbt.getString(NBT_KEY) : null);
+		if (serialized != null) {
+			SessionEquipment se = deserialize(serialized);
 			if (se != null) return se;
 		}
-		if (!nbti.hasTag("equipId")) return null;
-		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		String equipId = NBT.get(item, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null);
+		if (equipId == null) return null;
+		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		Equipment eq = Equipment.get(equipId, isUpgraded);
 		if (eq == null) return null;
 		return new SessionEquipment(eq);
 	}

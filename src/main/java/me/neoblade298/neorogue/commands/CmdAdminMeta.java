@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -45,8 +45,7 @@ public class CmdAdminMeta extends Subcommand {
 		SessionEquipment se = null;
 		ItemStack held = p.getInventory().getItemInMainHand();
 		if (!held.getType().isAir()) {
-			NBTItem nbti = new NBTItem(held);
-			if (nbti.hasTag("equipId")) {
+			if (NBT.get(held, nbt -> { return nbt.hasTag("equipId"); })) {
 				int heldSlot = p.getInventory().getHeldItemSlot();
 				se = data.getSessionEquipment(EquipSlot.HOTBAR)[heldSlot];
 			}

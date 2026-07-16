@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -43,12 +43,12 @@ public class GlossaryInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (!e.isRightClick()) return;
 		if (e.getCurrentItem() == null) return;
-		NBTItem nbti = new NBTItem(e.getCurrentItem());
-		if (!nbti.getKeys().contains("equipId")) return;
+		String equipId = NBT.get(e.getCurrentItem(), nbt -> nbt.getKeys().contains("equipId") ? nbt.getString("equipId") : null);
+		if (equipId == null) return;
 		openOther = false;
 		new BukkitRunnable() {
 			public void run() {
-				new EquipmentGlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
+				new EquipmentGlossaryInventory(p, Equipment.get(equipId, false), prev);
 			}
 		}.runTask(NeoRogue.inst());
 	}

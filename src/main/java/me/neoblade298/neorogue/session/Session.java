@@ -48,7 +48,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -151,7 +151,7 @@ public class Session {
 	
 	private static Clipboard loadClipboard(String schematic) {
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
-		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		ClipboardFormat format = ClipboardFormats.findByPath(file.toPath());
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
 			return reader.read();
 		} catch (FileNotFoundException e) {
@@ -676,9 +676,9 @@ public class Session {
 				Component.text("Right click to view inventory", NamedTextColor.GRAY)
 						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
 		skull.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(skull);
-		nbti.setString("spectateTarget", data.getUniqueId().toString());
-		return nbti.getItem();
+		String spectateTarget = data.getUniqueId().toString();
+		NBT.modify(skull, nbt -> { nbt.setString("spectateTarget", spectateTarget); });
+		return skull;
 	}
 
 	private ItemStack createLeaveBarrier() {
@@ -719,9 +719,9 @@ public class Session {
 			return;
 		}
 		if (type == Material.PLAYER_HEAD && (inst instanceof FightInstance || inst instanceof EditInventoryInstance)) {
-			NBTItem nbti = new NBTItem(hand);
-			if (nbti.hasTag("spectateTarget")) {
-				PlayerSessionData data = party.get(UUID.fromString(nbti.getString("spectateTarget")));
+			String spectateTarget = NBT.get(hand, nbt -> { return nbt.hasTag("spectateTarget") ? nbt.getString("spectateTarget") : null; });
+			if (spectateTarget != null) {
+				PlayerSessionData data = party.get(UUID.fromString(spectateTarget));
 				if (data == null) return;
 				if (e.getAction().isLeftClick()) {
 					// Downed players are hidden, so teleport to their corpse if they have one

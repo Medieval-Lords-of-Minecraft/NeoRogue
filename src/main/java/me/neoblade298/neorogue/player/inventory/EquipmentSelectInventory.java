@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -55,9 +55,9 @@ public class EquipmentSelectInventory extends CoreInventory {
 		for (int i = 0; i < maxItems; i++) {
 			int idx = start + i;
 			ItemStack item = options.get(idx).getSessionEquipment().getItem();
-			NBTItem nbti = new NBTItem(item);
-			nbti.setInteger("selIdx", idx + 1);
-			contents[i] = nbti.getItem();
+			final int selIdx = idx + 1;
+			NBT.modify(item, nbt -> { nbt.setInteger("selIdx", selIdx); });
+			contents[i] = item;
 		}
 
 		if (options.isEmpty()) {
@@ -98,7 +98,7 @@ public class EquipmentSelectInventory extends CoreInventory {
 		}
 		if (slot >= PAGE_SIZE) return;
 
-		int idx = new NBTItem(item).getInteger("selIdx") - 1;
+		int idx = NBT.get(item, nbt -> { return nbt.getInteger("selIdx"); }) - 1;
 		if (idx < 0 || idx >= options.size()) return;
 		EquipmentMetadata meta = options.get(idx);
 

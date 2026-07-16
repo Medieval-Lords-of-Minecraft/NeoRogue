@@ -16,7 +16,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -138,9 +138,8 @@ public class UnlockClassInventory extends CoreInventory {
 
 		// Check if clicking a node item
 		if (slot >= 9) {
-			NBTItem nclicked = new NBTItem(e.getCurrentItem());
-			if (!nclicked.hasTag("unlockNodeId")) return;
-			String nodeId = nclicked.getString("unlockNodeId");
+			String nodeId = NBT.get(e.getCurrentItem(), nbt -> nbt.hasTag("unlockNodeId") ? nbt.getString("unlockNodeId") : null);
+			if (nodeId == null) return;
 			PlayerData data = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 			UnlockNode node = UnlockRegistry.getNode(nodeId);
 

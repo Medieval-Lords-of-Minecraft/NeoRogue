@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -48,8 +48,7 @@ public class TrashInventory extends CoreInventory implements ShiftClickableInven
 				pinv.clearHighlights();
 			}
 			if (e.getCurrentItem() != null) {
-				NBTItem nbti = new NBTItem(e.getCurrentItem());
-				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				Equipment eq = Equipment.get(NBT.get(e.getCurrentItem(), nbt -> { return nbt.getString("equipId"); }), false);
 				pinv.setHighlights(eq.getType());
 			}
 		}

@@ -97,11 +97,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- NBT API -->
+        <!-- NBT API (item-nbt-api-plugin keeps the de.tr7zw.nbtapi package, which is
+             what the standalone NBTAPI plugin provides at runtime) -->
         <dependency>
             <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api</artifactId>
-            <version>2.12.2</version>
+            <artifactId>item-nbt-api-plugin</artifactId>
+            <version>2.15.7</version>
             <scope>provided</scope>
         </dependency>
 

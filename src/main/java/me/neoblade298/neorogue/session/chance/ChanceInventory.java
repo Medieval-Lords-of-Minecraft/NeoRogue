@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -124,8 +124,7 @@ public class ChanceInventory extends CoreInventory {
 		
 		ItemStack item = e.getCurrentItem();
 		if (item == null) return;
-		NBTItem nbti = new NBTItem(item);
-		int num = nbti.getInteger("choice");
+		int num = NBT.get(item, nbt -> { return nbt.getInteger("choice"); });
 		if (num == 0) return;
 		ChanceChoice choice = stage.choices.get(num - 1);
 		ChanceInventory ci = this;
@@ -200,9 +199,9 @@ public class ChanceInventory extends CoreInventory {
 
 	private ItemStack getChoiceItem(int num) {
 		ItemStack item = stage.choices.get(num).getItem(s, inst, data);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setInteger("choice", num + 1);
-		return nbti.getItem();
+		final int choiceNum = num + 1;
+		NBT.modify(item, nbt -> { nbt.setInteger("choice", choiceNum); });
+		return item;
 	}
 
 	// Builds a snapshot of the current stage's choices (each flagged valid/picked) and stashes it on

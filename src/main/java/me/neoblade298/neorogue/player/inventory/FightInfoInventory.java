@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -53,10 +53,10 @@ public class FightInfoInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		if (e.isRightClick() && e.getCurrentItem() != null) {
-			NBTItem nbti = new NBTItem(e.getCurrentItem());
-			if (!nbti.getKeys().contains("mobId")) return;
+			String mobId = NBT.get(e.getCurrentItem(), nbt -> nbt.getKeys().contains("mobId") ? nbt.getString("mobId") : null);
+			if (mobId == null) return;
 			
-			Mob mob = Mob.get(nbti.getString("mobId"));
+			Mob mob = Mob.get(mobId);
 			if (mob.getTags().isEmpty()) return;
 			new MobGlossaryInventory(p, mob, this);
 		}

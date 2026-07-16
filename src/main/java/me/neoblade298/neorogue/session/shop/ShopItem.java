@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,9 +51,8 @@ public class ShopItem {
 		}
 		ItemStack item = se.getItem();
 		update(data, item, true);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setInteger("idx", idx);
-		return nbti.getItem();
+		NBT.modify(item, nbt -> { nbt.setInteger("idx", idx); });
+		return item;
 	}
 	
 	public Equipment getEquipment() {

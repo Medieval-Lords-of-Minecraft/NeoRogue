@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -167,9 +167,8 @@ public class ShopInventory extends CoreInventory {
 				return;
 			}
 			ItemStack item = e.getCurrentItem();
-			NBTItem nbti = new NBTItem(item);
 			// Only allow picking up equipment
-			if (!nbti.getKeys().contains("equipId")) {
+			if (!NBT.get(item, nbt -> { return nbt.getKeys().contains("equipId"); })) {
 				e.setCancelled(true);
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
@@ -186,8 +185,7 @@ public class ShopInventory extends CoreInventory {
 
 		if (e.getCursor().getType().isAir() && slot >= 6 && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
 			ItemStack clicked = e.getCurrentItem();
-			NBTItem nclicked = new NBTItem(clicked);
-			int idx = nclicked.getInteger("idx");
+			int idx = NBT.get(clicked, nbt -> { return nbt.getInteger("idx"); });
 			ShopItem shopItem = shopItems.get(idx);
 			int price = shopItem.getPrice();
 			
@@ -254,8 +252,7 @@ public class ShopInventory extends CoreInventory {
 				}
 	
 				data.addCoins(-REMOVE_CURSE_PRICE);
-				NBTItem nbti = new NBTItem(e.getCursor());
-				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				Equipment eq = Equipment.get(NBT.get(e.getCursor(), nbt -> { return nbt.getString("equipId"); }), false);
 				if (!eq.isCursed()) {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
@@ -305,8 +302,7 @@ public class ShopInventory extends CoreInventory {
 	}
 
 	private void updateSingle(ItemStack item) {
-		NBTItem nbti = new NBTItem(item);
-		int idx = nbti.getInteger("idx");
+		int idx = NBT.get(item, nbt -> { return nbt.getInteger("idx"); });
 		ShopItem si = shopItems.get(idx);
 		si.update(data, item, false);
 	}
@@ -322,11 +318,11 @@ public class ShopInventory extends CoreInventory {
 		if (cursor == null || cursor.getType().isAir()) {
 			return false;
 		}
-		NBTItem nbti = new NBTItem(cursor);
-		if (!nbti.hasTag("equipId")) {
+		String equipId = NBT.get(cursor, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null);
+		if (equipId == null) {
 			return false;
 		}
-		Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+		Equipment eq = Equipment.get(equipId, false);
 		if (eq == null) {
 			return false;
 		}

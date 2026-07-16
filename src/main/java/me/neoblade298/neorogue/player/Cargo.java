@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 
 // A player's persistent stash of sellable vanilla items plus its two limits. Owned by PlayerData
@@ -29,7 +29,7 @@ public class Cargo {
 	public static boolean isEligible(ItemStack item) {
 		if (item == null || item.getType().isAir()) return false;
 		if (!MaterialPrices.hasPrice(item.getType())) return false;
-		if (new NBTItem(item).hasTag("equipId")) return false;
+		if (NBT.get(item, nbt -> { return nbt.hasTag("equipId"); })) return false;
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return true;
 		if (meta.hasDisplayName() || meta.hasLore() || meta.hasEnchants()) return false;

@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
@@ -1440,11 +1440,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
 				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
 
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", id);
-		nbti.setString("type", type.getDisplay());
-		nbti.setBoolean("isUpgraded", isUpgraded);
-		return nbti.getItem();
+		NBT.modify(item, nbt -> {
+			nbt.setString("equipId", id);
+			nbt.setString("type", type.getDisplay());
+			nbt.setBoolean("isUpgraded", isUpgraded);
+		});
+		return item;
 	}
 
 	public TreeMap<Equipment, Equipment[]> getReforgeOptions() {

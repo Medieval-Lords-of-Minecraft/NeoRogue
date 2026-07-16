@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -58,9 +58,8 @@ public class SessionSetting {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
             icon.setItemMeta(meta);
-            NBTItem nbti = new NBTItem(icon);
-            nbti.setInteger("id", id);
-            return nbti.getItem();
+            NBT.modify(icon, nbt -> { nbt.setInteger("id", id); });
+            return icon;
         };
         settings.put(id, this);
     }

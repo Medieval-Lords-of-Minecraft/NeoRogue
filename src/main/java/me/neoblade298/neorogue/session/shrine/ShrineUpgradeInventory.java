@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -66,8 +66,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 				pinv.clearHighlights();
 			}
 			if (e.getCurrentItem() != null) {
-				NBTItem nbti = new NBTItem(e.getCurrentItem());
-				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				Equipment eq = Equipment.get(NBT.get(e.getCurrentItem(), nbt -> { return nbt.getString("equipId"); }), false);
 				pinv.setHighlights(eq.getType());
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
@@ -88,8 +87,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		else {
 			e.setCancelled(true);
 			ItemStack item = e.getCurrentItem();
-			NBTItem nbti = new NBTItem(item);
-			String id = nbti.getString("equipId");
+			String id = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
 			if (id.isBlank()) {
 				Util.displayError(p, "Invalid upgrade!");
 				return;
@@ -110,8 +108,10 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (inv.getItem(0) != null) {
-			NBTItem nbti = new NBTItem(inv.getItem(0));
-			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+			ItemStack placed = inv.getItem(0);
+			String equipId = NBT.get(placed, nbt -> { return nbt.getString("equipId"); });
+			boolean isUpgraded = Boolean.TRUE.equals(NBT.get(placed, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+			Equipment eq = Equipment.get(equipId, isUpgraded);
 			// Returning the item the player placed in - it was already owned, don't re-fire acquire
 			data.giveEquipment(eq, null, null, false);
 		}
@@ -139,9 +139,8 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			inv.setItem(2, null);
 		}
 		else {
-			NBTItem nbti = new NBTItem(item);
-			String id = nbti.getString("equipId");
-			boolean isUpgraded = nbti.getBoolean("isUpgraded");
+			String id = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
+			boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
 			if (id.isBlank()) {
 				inv.setItem(2, CoreInventory.createButton(Material.BARRIER, Component.text("This item is not equipment", NamedTextColor.RED)));
 				return;

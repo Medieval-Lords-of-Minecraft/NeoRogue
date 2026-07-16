@@ -324,8 +324,8 @@ public class ProceduralMountainGenerator {
         double minDistance = Double.MAX_VALUE;
         for (BlockVector3 excluded : exclusionZones) {
             // 2D distance (ignore Y)
-            double dx = pos.getX() - excluded.getX();
-            double dz = pos.getZ() - excluded.getZ();
+            double dx = pos.x() - excluded.x();
+            double dz = pos.z() - excluded.z();
             double distance = Math.sqrt(dx * dx + dz * dz);
             minDistance = Math.min(minDistance, distance);
             

@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -104,16 +104,18 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	public void handleInventoryClick(InventoryClickEvent e) {
 		ItemStack clicked = e.getCurrentItem();
 		ItemStack cursor = e.getCursor();
-		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
-		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
+		String clickedEquipId = clicked != null ? NBT.get(clicked, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;
+		String cursorEquipId = !cursor.isEmpty() ? NBT.get(cursor, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;
+		boolean cursorUpgraded = !cursor.isEmpty() && Boolean.TRUE.equals(NBT.get(cursor, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		boolean clickedUpgraded = clicked != null && Boolean.TRUE.equals(NBT.get(clicked, nbt -> { return nbt.getBoolean("isUpgraded"); }));
 		
 		// If right click with empty hand, open glossary, disgusting code due to if statement handling
-		if (e.isRightClick() && nclicked != null && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
+		if (e.isRightClick() && clickedEquipId != null && e.getCursor().getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
 					handleInventoryClose();
-					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(clickedEquipId, false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -160,7 +162,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		
 		// Handle shift clicks
 		else if (e.isShiftClick()) {
-			if (nclicked == null || !nclicked.hasTag("equipId")) return;
+			if (clickedEquipId == null) return;
 			e.setCancelled(true);
 			if (!pinv.canShiftClickIn(inv.getItem(e.getSlot()))) return;
 			pinv.handleShiftClickIn(e, inv.getItem(e.getSlot()));
@@ -170,8 +172,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		// Handle left click
 		else {
 			// First check for curses in cursor
-			if (ncursor != null && ncursor.hasTag("equipId")) {
-				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+			if (cursorEquipId != null) {
+				Equipment eq = Equipment.get(cursorEquipId, cursorUpgraded);
 				if (eq.isCursed()) {
 					displayError("You can't unequip cursed items!", false);
 					e.setCancelled(true);
@@ -180,9 +182,9 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			}
 
 			// Picking up an item
-			if (nclicked != null && nclicked.hasTag("equipId") && ncursor == null) {
+			if (clickedEquipId != null && cursor.isEmpty()) {
 				e.setCancelled(true);
-				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+				Equipment eq = Equipment.get(clickedEquipId, false);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				p.setItemOnCursor(e.getCurrentItem());
 				inv.setItem(e.getSlot(), null);
@@ -194,16 +196,16 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				}
 			}
 			// Swapping an item
-			else if (ncursor != null && nclicked != null) {
+			else if (!cursor.isEmpty() && clicked != null) {
 				e.setCancelled(true);
-				if (!nclicked.hasTag("equipId") || !ncursor.hasTag("equipId")) {
+				if (clickedEquipId == null || cursorEquipId == null) {
 					return;
 				}
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-				String eqId = ncursor.getString("equipId");
-				String eqedId = nclicked.getString("equipId");
-				Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
-				Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
+				String eqId = cursorEquipId;
+				String eqedId = clickedEquipId;
+				Equipment eq = Equipment.get(eqId, cursorUpgraded);
+				Equipment eqed = Equipment.get(eqedId, clickedUpgraded);
 				// Reforged item check
 				Equipment[] reforgePair = Equipment.resolveReforgePair(eq, eqed);
 				if (reforgePair != null) {
@@ -247,7 +249,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				p.setItemOnCursor(clicked);
 			}
 			// dropping an item
-			else if (nclicked == null && ncursor != null) {
+			else if (clicked == null && !cursor.isEmpty()) {
 				e.setCancelled(true);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				pinv.clearHighlights();
@@ -273,8 +275,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
-			NBTItem nbti = new NBTItem(item);
-			if (!nbti.hasTag("equipId")) continue;
+			if (!NBT.get(item, nbt -> { return nbt.hasTag("equipId"); })) continue;
 			SessionEquipment se = SessionEquipment.fromItem(item);
 			if (se != null) {
 				snapshot[iter++] = se;
@@ -296,11 +297,11 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
-			NBTItem nbti = new NBTItem(item);
-			if (!nbti.hasTag("equipId")) continue;
+			String equipId = NBT.get(item, nbt -> { return nbt.hasTag("equipId") ? nbt.getString("equipId") : null; });
+			if (equipId == null) continue;
 			SessionEquipment se = SessionEquipment.fromItem(item);
 			if (se == null) {
-				Bukkit.getLogger().warning("[NeoRogue] Failed to save item " + nbti.getString("equipId") + " to storage of " + p.getName());
+				Bukkit.getLogger().warning("[NeoRogue] Failed to save item " + equipId + " to storage of " + p.getName());
 				continue;
 			}
 			newSave[iter++] = se;
@@ -319,12 +320,13 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	}
 
 	private void tryTrashCursorItem(PlayerSessionInventory pinv, ItemStack cursor) {
-		NBTItem nbti = new NBTItem(cursor);
-		if (!nbti.hasTag("equipId")) {
+		String equipId = NBT.get(cursor, nbt -> { return nbt.hasTag("equipId") ? nbt.getString("equipId") : null; });
+		if (equipId == null) {
 			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
 			return;
 		}
-		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(cursor, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		Equipment eq = Equipment.get(equipId, isUpgraded);
 		if (eq == null) {
 			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
 			return;

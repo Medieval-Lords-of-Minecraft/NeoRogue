@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import io.lumine.mythic.api.mobs.MythicMob;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.SkullUtil;
@@ -255,9 +255,8 @@ public class Mob implements Comparable<Mob> {
 		lore.addAll(this.lore);
 		meta.lore(lore);
 		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("mobId", id);
-		return nbti.getItem();
+		NBT.modify(item, nbt -> { nbt.setString("mobId", id); });
+		return item;
 	}
 
 	@Override

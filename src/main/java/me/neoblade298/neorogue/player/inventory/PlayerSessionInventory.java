@@ -24,7 +24,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -207,10 +207,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					lore.add(Component.text("Bound to ", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE).append(bind.getDisplay()));
 					item.lore(lore);
 				}
-				NBTItem nbti = new NBTItem(item);
-				nbti.setBoolean("maxed", true);
-				nbti.setBoolean("openSlot", true);
-				return addNbt(nbti.getItem(), dataSlot);
+				NBT.modify(item, nbt -> {
+					nbt.setBoolean("maxed", true);
+					nbt.setBoolean("openSlot", true);
+				});
+				return addNbt(item, dataSlot);
 	}
 
 	public static ItemStack createIcon(EquipSlot slot, int dataSlot) {
@@ -324,13 +325,23 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 		if (cursor.getType().isAir() && (clicked == null || clicked.getType().isAir())) return;
 
-		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		NBTItem nclicked = clicked != null && !clicked.getType().isAir() ? new NBTItem(clicked) : null;
+		String cursorEquipId = !cursor.getType().isAir()
+				? NBT.get(cursor, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;
+		boolean cursorUpgraded = !cursor.getType().isAir()
+				&& Boolean.TRUE.equals(NBT.get(cursor, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		boolean clickedPresent = clicked != null && !clicked.getType().isAir();
+		String clickedEquipId = clickedPresent
+				? NBT.get(clicked, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;
+		boolean clickedUpgraded = clickedPresent
+				&& Boolean.TRUE.equals(NBT.get(clicked, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		int clickedDataSlot = clickedPresent
+				? NBT.get(clicked, nbt -> nbt.hasTag("dataSlot") ? nbt.getInteger("dataSlot") : 0) : 0;
+		boolean clickedHasDataSlot = clickedPresent && NBT.get(clicked, nbt -> { return nbt.hasTag("dataSlot"); });
 		Player p = (Player) e.getWhoClicked();
 
 		if (slot == TRASH && !cursor.getType().isAir()) {
 			e.setCancelled(true);
-			Equipment eq = Equipment.get(ncursor.getString("equipId"), false);
+			Equipment eq = Equipment.get(cursorEquipId, false);
 			if (eq == null) {
 				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
 				return;
@@ -399,7 +410,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			// Should not be usable if the storage inventory is open
 			else if (!(InventoryListener.getUpperInventory(p) instanceof StorageInventory)) {
-				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+				Equipment eq = Equipment.get(cursorEquipId, cursorUpgraded);
 				if (eq.isCursed()) {
 					displayError("You can't unequip cursed items!", false);
 					return;
@@ -434,12 +445,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		// If right click with empty hand, open glossary
-		if (e.isRightClick() && nclicked.hasTag("equipId") && cursor.getType().isAir()) {
+		if (e.isRightClick() && clickedEquipId != null && cursor.getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
 					handleInventoryClose();
-					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(clickedEquipId, false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -449,11 +460,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (e.isShiftClick() && clicked != null) {
 			EquipSlot type = slotTypes.get(slot);
 			e.setCancelled(true);
-			if (!nclicked.hasTag("equipId")) return;
+			if (clickedEquipId == null) return;
 			CoreInventory upper = InventoryListener.getUpperInventory(p);
 			if (upper == null) return;
 			if (upper instanceof ShiftClickableInventory) {
-				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+				Equipment eq = Equipment.get(clickedEquipId, false);
 				if (eq.isCursed()) {
 					displayError("You can't unequip cursed items!", false);
 					return;
@@ -461,7 +472,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				ShiftClickableInventory sci = (ShiftClickableInventory) upper;
 				if (!sci.canShiftClickIn(clicked)) return;
 				if (isBindable(type)) clicked = removeBindLore(clicked);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				removeEquipment(type, clickedDataSlot, slot, e.getClickedInventory());
 				sci.handleShiftClickIn(e, clicked);
 
 				if (eq.getType() == EquipmentType.ABILITY && data.getAbilitiesEquipped() == data.getMaxAbilities() - 1) {
@@ -474,16 +485,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		if (cursor.getType().isAir() && !clicked.getType().isAir()) {
 			// Only allow picking up equipment
-			if (!nclicked.hasTag("equipId")) {
+			if (clickedEquipId == null) {
 				e.setCancelled(true);
 			}
 			// Remove gear
 			else {
-				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+				Equipment eq = Equipment.get(clickedEquipId, false);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				e.setCancelled(true);
 				EquipSlot type = slotTypes.get(slot);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				removeEquipment(type, clickedDataSlot, slot, e.getClickedInventory());
 				setHighlights(eq.getType());
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				p.setItemOnCursor(clicked);
@@ -494,10 +505,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		else if (!cursor.getType().isAir() && clicked != null) {
 			e.setCancelled(true);
 
-			String eqId = ncursor.getString("equipId");
-			String eqedId = nclicked.getString("equipId");
-			Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
-			Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
+			String eqId = cursorEquipId;
+			String eqedId = clickedEquipId;
+			Equipment eq = Equipment.get(eqId, cursorUpgraded);
+			Equipment eqed = Equipment.get(eqedId, clickedUpgraded);
 
 			// Reforged item check
 			Equipment[] reforgePair = Equipment.resolveReforgePair(eq, eqed);
@@ -509,18 +520,18 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError(msg, false);
 					return;
 				}
-				handleReforge(e, reforgePair[0], reforgePair[1], slot, nclicked);
+				handleReforge(e, reforgePair[0], reforgePair[1], slot, clickedDataSlot);
 				return;
 			}
 
 			// Wildcard reforge check (e.g. Transmutation): reforge any item into any of its results
 			Equipment[] wildcardPair = Equipment.resolveWildcardReforge(eq, eqed);
 			if (wildcardPair != null) {
-				handleWildcardReforge(e, wildcardPair[0], wildcardPair[1], slot, nclicked);
+				handleWildcardReforge(e, wildcardPair[0], wildcardPair[1], slot, clickedDataSlot);
 				return;
 			}
 
-			if (!nclicked.hasTag("dataSlot")) return;
+			if (!clickedHasDataSlot) return;
 			if (eq.getType() == EquipmentType.ABILITY && (eqed == null || eqed.getType() != EquipmentType.ABILITY)
 					&& !data.canEquipAbility()) {
 				displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
@@ -534,7 +545,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 
 			// Not swapping equipment, remove the cursor item
-			boolean isSwapping = nclicked.hasTag("equipId");
+			boolean isSwapping = clickedEquipId != null;
 			if (!isSwapping) {
 				p.setItemOnCursor(null);
 			}
@@ -542,18 +553,18 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			else {
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				clearHighlights();
-				data.removeEquipment(type, nclicked.getInteger("dataSlot"));
+				data.removeEquipment(type, clickedDataSlot);
 				p.setItemOnCursor(clicked);
-				setHighlights(Equipment.get(nclicked.getString("equipId"), false).getType());
+				setHighlights(Equipment.get(clickedEquipId, false).getType());
 			}
 
 			// Place equipment into clicked slot, preserving session metadata (durability, etc.) from the item
 			SessionEquipment placed = SessionEquipment.fromItem(cursor);
-			data.setEquipment(type, nclicked.getInteger("dataSlot"), placed != null ? placed : new SessionEquipment(eq));
+			data.setEquipment(type, clickedDataSlot, placed != null ? placed : new SessionEquipment(eq));
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			if (isBindable(type))
-				cursor = addBindLore(cursor, slot, nclicked.getInteger("dataSlot"));
-			inv.setItem(slot, addNbt(cursor, nclicked.getInteger("dataSlot")));
+				cursor = addBindLore(cursor, slot, clickedDataSlot);
+			inv.setItem(slot, addNbt(cursor, clickedDataSlot));
 			if (!isSwapping) clearHighlights();
 		}
 		else {
@@ -561,12 +572,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 	}
 
-	private void handleReforge(InventoryClickEvent e, Equipment primary, Equipment secondary, int slot, NBTItem nclicked) {
+	private void handleReforge(InventoryClickEvent e, Equipment primary, Equipment secondary, int slot, int dataSlot) {
 		new BukkitRunnable() {
 			public void run() {
 				p.setItemOnCursor(null);
 				EquipSlot type = slotTypes.get(slot);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				removeEquipment(type, dataSlot, slot, e.getClickedInventory());
 				inv.setItem(slot, iconFromEquipSlot(type, slot));
 				handleInventoryClose();
 				new ReforgeOptionsInventory(data, primary, secondary);
@@ -575,12 +586,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return;
 	}
 
-	private void handleWildcardReforge(InventoryClickEvent e, Equipment target, Equipment wildcard, int slot, NBTItem nclicked) {
+	private void handleWildcardReforge(InventoryClickEvent e, Equipment target, Equipment wildcard, int slot, int dataSlot) {
 		new BukkitRunnable() {
 			public void run() {
 				p.setItemOnCursor(null);
 				EquipSlot type = slotTypes.get(slot);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				removeEquipment(type, dataSlot, slot, e.getClickedInventory());
 				inv.setItem(slot, iconFromEquipSlot(type, slot));
 				handleInventoryClose();
 				new WildcardReforgeInventory(data, target, wildcard);
@@ -604,11 +615,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int[] slots : arrayFromEquipSlot(type)) {
 			for (int s : slots) {
 				ItemStack iter = contents[s];
-				NBTItem nbti = new NBTItem(iter);
+				boolean hasEquipId = NBT.get(iter, nbt -> { return nbt.hasTag("equipId"); });
+				boolean hasOpenSlot = NBT.get(iter, nbt -> { return nbt.hasTag("openSlot"); });
 
-				if (nbti.hasTag("equipId") || !nbti.hasTag("openSlot")) continue;
+				if (hasEquipId || !hasOpenSlot) continue;
 				if (type == EquipmentType.ABILITY && !data.canEquipAbility()) {
-					int dataSlot = nbti.getInteger("dataSlot");
+					int dataSlot = NBT.get(iter, nbt -> { return nbt.getInteger("dataSlot"); });
 					boolean isBind = KeyBind.isKeybindSlot(s);
 					createMaxedAbilitiesIcon(data, dataSlot, isBind ? KeyBind.getBindFromSlot(s) : null);
 				}
@@ -648,16 +660,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	
 	@Override
 	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
-		NBTItem nbti = new NBTItem(item);
-		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		String equipId = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
+		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		Equipment eq = Equipment.get(equipId, isUpgraded);
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
 		ItemStack autoItem = inv.getItem(result.slot);
-		NBTItem nauto = new NBTItem(autoItem);
+		int autoDataSlot = NBT.get(autoItem, nbt -> { return nbt.getInteger("dataSlot"); });
 		SessionEquipment placed = SessionEquipment.fromItem(item);
-		data.setEquipment(result.es, nauto.getInteger("dataSlot"), placed != null ? placed : new SessionEquipment(eq));
+		data.setEquipment(result.es, autoDataSlot, placed != null ? placed : new SessionEquipment(eq));
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
-		if (isBindable(result.es)) item = addBindLore(item, result.slot, nauto.getInteger("dataSlot"));
-		inv.setItem(result.slot, addNbt(item, nauto.getInteger("dataSlot")));
+		if (isBindable(result.es)) item = addBindLore(item, result.slot, autoDataSlot);
+		inv.setItem(result.slot, addNbt(item, autoDataSlot));
 
 		if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
 			// Lazy, just re-setup entire inventory
@@ -667,8 +680,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	
 	@Override
 	public boolean canShiftClickIn(ItemStack item) {
-		NBTItem nbti = new NBTItem(item);
-		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		String equipId = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
+		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		Equipment eq = Equipment.get(equipId, isUpgraded);
 		switch (eq.getType()) {
 			case ABILITY:
 				if (!data.canEquipAbility()) {
@@ -701,9 +715,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (clicked.getType().isAir()) return;
 		Inventory iclicked = e.getClickedInventory();
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
-		NBTItem nclicked = new NBTItem(clicked);
+		String clickedEquipId = NBT.get(clicked, nbt -> { return nbt.hasTag("equipId") ? nbt.getString("equipId") : null; });
+		int clickedDataSlot = NBT.get(clicked, nbt -> { return nbt.hasTag("dataSlot") ? nbt.getInteger("dataSlot") : 0; });
 
-		if (!nclicked.hasTag("equipId")) {
+		if (clickedEquipId == null) {
 			e.setCancelled(true);
 			return;
 		}
@@ -712,7 +727,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			EquipSlot type = slotTypes.get(slot);
 			if (isBindable(type)) clicked = removeBindLore(clicked);
 			p.getWorld().dropItem(p.getLocation(), clicked).setPickupDelay(40);
-			removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+			removeEquipment(type, clickedDataSlot, slot, e.getClickedInventory());
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 	}
@@ -728,8 +743,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		
 		if (p.getItemOnCursor().getType().isAir()) return;
 		ItemStack clicked = p.getItemOnCursor();
-		NBTItem nclicked = new NBTItem(clicked);
-		data.giveEquipmentSilent(Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded")));
+		String equipId = NBT.get(clicked, nbt -> { return nbt.getString("equipId"); });
+		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(clicked, nbt -> { return nbt.getBoolean("isUpgraded"); }));
+		data.giveEquipmentSilent(Equipment.get(equipId, isUpgraded));
 		p.setItemOnCursor(null);
 	}
 
@@ -739,19 +755,21 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private static ItemStack addNbt(ItemStack item, int dataSlot) {
-		NBTItem nbti = new NBTItem(item);
-		nbti.setInteger("dataSlot", dataSlot);
-		nbti.setBoolean("openSlot", true); // Differentiates with available equippable slots and just empty panes in inventory
-		return nbti.getItem();
+		NBT.modify(item, nbt -> {
+			nbt.setInteger("dataSlot", dataSlot);
+			nbt.setBoolean("openSlot", true); // Differentiates with available equippable slots and just empty panes in inventory
+		});
+		return item;
 	}
 
 	private static ItemStack addNbt(ItemStack item, String equipId, boolean isUpgraded, int dataSlot) {
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", equipId);
-		nbti.setInteger("dataSlot", dataSlot);
-		nbti.setBoolean("isUpgraded", isUpgraded);
-		nbti.setBoolean("openSlot", true);
-		return nbti.getItem();
+		NBT.modify(item, nbt -> {
+			nbt.setString("equipId", equipId);
+			nbt.setInteger("dataSlot", dataSlot);
+			nbt.setBoolean("isUpgraded", isUpgraded);
+			nbt.setBoolean("openSlot", true);
+		});
+		return item;
 	}
 
 	private void removeEquipment(EquipSlot type, int dataSlot, int invSlot, Inventory inv) {
