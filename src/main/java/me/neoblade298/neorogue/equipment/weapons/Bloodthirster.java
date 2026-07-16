@@ -26,7 +26,7 @@ public class Bloodthirster extends Equipment {
 				ID, "Bloodthirster", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(150, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		mult = isUpgraded ? 12 : 8;
+		mult = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

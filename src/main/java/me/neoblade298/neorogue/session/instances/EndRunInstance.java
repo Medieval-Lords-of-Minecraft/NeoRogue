@@ -16,10 +16,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SessionStatsInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -59,6 +61,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		super.setup();
 
 		onRunEnd();
+		recordRunResults();
 
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
 				Component.text("Right click to view stats!", NamedTextColor.WHITE));
@@ -72,6 +75,18 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		s.broadcast(getResultMessage());
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
+	}
+
+	// Records a finished-run result for each party member for winrate/winstreak stats. Tutorial and
+	// endless runs are excluded so they don't distort the numbers.
+	private void recordRunResults() {
+		if (s.getSessionType() == SessionType.TUTORIAL || s.isEndless()) return;
+		boolean won = isWin();
+		int notoriety = s.getNotoriety();
+		for (PlayerSessionData psd : s.getParty().values()) {
+			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
+			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, won);
+		}
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.mask.BlockTypeMask;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.MaskIntersection;
@@ -295,16 +296,20 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			// Source masks are evaluated against the extent they're bound to, and here they filter the
+			// clipboard (the paste source), so they must be bound to the clipboard. Binding them to the
+			// world instead tests the empty target, so nothing gets filtered and marker blocks leak in.
+			Clipboard clipboard = schematic.getClipboard();
 			// Restricted marker blocks that must never be pasted into the world
 			Mask notRestricted = Masks.negate(
-					new BlockTypeMask(Region.world, BlockTypes.LAPIS_BLOCK, BlockTypes.DIAMOND_BLOCK));
+					new BlockTypeMask(clipboard, BlockTypes.LAPIS_BLOCK, BlockTypes.DIAMOND_BLOCK));
 		    Operation pasteSolid = schematic.createPaste(editSession)
-		    		.maskSource(new MaskIntersection(new SolidBlockMask(Region.world), notRestricted))
+		    		.maskSource(new MaskIntersection(new SolidBlockMask(clipboard), notRestricted))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
 		    Operation pasteRemaining = schematic.createPaste(editSession)
-		    		.maskSource(new MaskIntersection(Masks.negate(new SolidBlockMask(Region.world)), notRestricted))
+		    		.maskSource(new MaskIntersection(Masks.negate(new SolidBlockMask(clipboard)), notRestricted))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
@@ -405,8 +410,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			}
 		}
 
-		// Paste is synchronous, so mark spawns immediately
-		markSpawnsDelayed(p, xOff, zOff);
+		markSpawns(p, xOff, zOff);
 
 		return playerSpawnLocs;
 	}
@@ -429,9 +433,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 
-	private void markSpawnsDelayed(Player p, int xOff, int zOff) {
+	private void markSpawns(Player p, int xOff, int zOff) {
 		HashMap<Location, Integer> signLines = new HashMap<>();
-		Bukkit.getLogger().info("[markSpawns] Running delayed markSpawns, activeWorld=" + Region.getActiveWorldName());
 
 		// Mark spawners with orange wool and signs
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
@@ -440,8 +443,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				Location loc = coords.toLocation();
 				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX() + (loc.getX() % 1 != 0 ? 1 : 0));
-				Bukkit.getLogger().info("[markSpawns] Spawner '" + spawner.getMobId() + "' at " + Util.locToString(loc, false, false) + " world=" + loc.getWorld().getName() + " block=" + loc.getBlock().getType() + " below=" + loc.clone().add(0, -1, 0).getBlock().getType());
-				Bukkit.getLogger().info("[markSpawns] Spawner block check complete, sending info to " + p);
 				if (p != null) {
 					if (isObstruction(loc.getBlock())) {
 						Util.msgRaw(p, "<red>A spawner appears to be inside a block.");

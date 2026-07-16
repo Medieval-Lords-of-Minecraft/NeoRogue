@@ -19,7 +19,7 @@ public class CmdLyticsView extends Subcommand {
 
 	public CmdLyticsView(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		enableTabComplete();
+		this.overrideTabHandler();
 		args.add(new Arg("view").setTabOptions(new ArrayList<String>(VIEWS)));
 
 		// Suggest the available filter keys for the trailing filter tokens.
@@ -28,6 +28,45 @@ public class CmdLyticsView extends Subcommand {
 			filterKeys.add(o.key + "=");
 		}
 		args.add(new Arg("filters...", false).setTabOptions(filterKeys));
+		args.setMax(-1);
+	}
+
+	// Context-aware completion: the view name first, then filter keys, then a key's allowed values
+	// once the user has typed "key=". The framework prefix-filters whatever list we return.
+	@Override
+	public List<String> getTabOptions(CommandSender s, String[] args) {
+		// Completing the view name
+		if (args.length <= 1) return new ArrayList<String>(VIEWS);
+
+		// Remaining tokens are key=value filters; which keys are valid depends on the chosen view.
+		List<AnalyticsFilters.FilterOption> options = filterOptionsFor(args[0]);
+		if (options == null) return null;
+
+		String token = args[args.length - 1];
+		int eq = token.indexOf('=');
+		ArrayList<String> out = new ArrayList<String>();
+
+		// No '=' yet: suggest the available filter keys.
+		if (eq < 0) {
+			for (AnalyticsFilters.FilterOption o : options) out.add(o.key + "=");
+			return out;
+		}
+
+		// "key=" typed: suggest that key's allowed values (null = free-form, no suggestions).
+		String key = token.substring(0, eq).toLowerCase();
+		for (AnalyticsFilters.FilterOption o : options) {
+			if (!o.key.equalsIgnoreCase(key)) continue;
+			if (o.allowed == null) return null;
+			for (String value : o.allowed) out.add(o.key + "=" + value);
+			return out;
+		}
+		return null;
+	}
+
+	// Maps a view name to its filter options (currently only the equipment view is filterable).
+	private static List<AnalyticsFilters.FilterOption> filterOptionsFor(String view) {
+		if (view.equalsIgnoreCase("equipment")) return AnalyticsReport.EQUIPMENT_FILTER_OPTIONS;
+		return null;
 	}
 
 	@Override

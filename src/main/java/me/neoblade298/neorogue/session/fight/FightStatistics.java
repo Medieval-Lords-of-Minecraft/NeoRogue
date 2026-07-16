@@ -142,8 +142,8 @@ public class FightStatistics {
 	public static Component getStatsHeader(String timer, FightScore score) {
 		String scoreText = score != null ? " | Reward Rating: " + score.getMiniMessageDisplay() : "";
 		return SharedUtil.color(
-			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + "\n== (Hoverable Stats) ==\n"
-					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "
+			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + "\n====== (Hoverable Stats) ======\n"
+					+ "[<yellow>Playername</yellow> <red>HP</red> - <red>Damage Dealt </red>/ <dark_red>Taken "
 					+ "</dark_red>/ <gold>Statuses</gold>]"
 		);
 	}
@@ -325,12 +325,15 @@ public class FightStatistics {
 	public Component getNameplateComponent(boolean lost) {
 		Component nameHover = getNameHoverComponent();
 		String hp = lost ? "0" : df.format(data.getPlayer().getHealth());
+		double diff = data.getPlayer().getHealth() - data.getSessionData().getHealth();
+		boolean lostHp = diff < 0;
 		return Component.text(data.getSessionData().getData().getDisplay(), NamedTextColor.YELLOW)
+		.append(Component.text(" ", NamedTextColor.GRAY))
+		.append(Component.text(hp + "♥", NamedTextColor.RED))
 		.append(Component.text(" (", NamedTextColor.GRAY))
-		.append(Component.text(hp, NamedTextColor.GREEN))
-		.append(Component.text(")", NamedTextColor.GRAY))
-		.hoverEvent(nameHover.children().isEmpty() ? null : HoverEvent.showText(getNameHoverComponent()))
-		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null));
+		.append(Component.text((lostHp ? "-" : "+") + df.format(Math.abs(diff)), lostHp ? NamedTextColor.RED : NamedTextColor.GREEN))
+		.append(Component.text(") - ", NamedTextColor.GRAY))
+		.hoverEvent(nameHover.children().isEmpty() ? null : HoverEvent.showText(getNameHoverComponent()));
 	}
 	
 	public Component getDamageDealtComponent() {

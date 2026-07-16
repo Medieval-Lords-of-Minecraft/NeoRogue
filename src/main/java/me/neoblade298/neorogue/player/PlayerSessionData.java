@@ -708,7 +708,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				SessionEquipment se = arr[slot];
 				if (se == null || !se.hasDurability()) continue;
 				int dur = se.getDurability() - 1;
-				System.out.println("Ticked dura of " + se + ", now " + dur);
 				if (dur <= 0) {
 					removeEquipment(slots[i], slot);
 					broke = true;
@@ -1241,6 +1240,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("coins", coins)
 					.addValue("instanceData", instanceData)
 					.addValue("statDamageDealt", sessionStats.getDamageDealt())
+					.addValue("statDamageDealtStandard", sessionStats.getDamageDealtStandard())
+					.addValue("statDamageDealtMiniboss", sessionStats.getDamageDealtMiniboss())
+					.addValue("statDamageDealtBoss", sessionStats.getDamageDealtBoss())
 					.addValue("statDamageTakenHealth", sessionStats.getDamageTakenHealth())
 					.addValue("statDamageTakenShields", sessionStats.getDamageTakenShields())
 					.addValue("statShieldsApplied", sessionStats.getShieldsApplied())

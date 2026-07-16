@@ -81,6 +81,8 @@ public class PlayerData {
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
+	// Append-only finished-run history backing the winrate/winstreak stats (see RunStats).
+	private ArrayList<RunStats.RunRecord> runResults = new ArrayList<RunStats.RunRecord>();
 	private int slotsAvailable;
 	public static final int NOTORIETY_HARD_CAP = 10;
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
@@ -151,13 +153,30 @@ public class PlayerData {
 				}
 			}
 
+			// Load finished-run history for winrate/winstreak stats.
+			try (PreparedStatement runStmt = con.prepareStatement(
+					"SELECT ts, playerClass, notoriety, won FROM neorogue_run_results WHERE uuid = ?;")) {
+				runStmt.setString(1, uuidStr);
+				try (ResultSet runRs = runStmt.executeQuery()) {
+					while (runRs.next()) {
+						EquipmentClass ec;
+						try {
+							ec = EquipmentClass.valueOf(runRs.getString("playerClass"));
+						} catch (IllegalArgumentException ex) {
+							continue;
+						}
+						runResults.add(new RunStats.RunRecord(runRs.getLong("ts"), ec,
+								runRs.getInt("notoriety"), runRs.getInt("won") == 1));
+					}
+				}
+			}
+
 			unlockStmt.setString(1, uuidStr);
 			try (ResultSet unlocks = unlockStmt.executeQuery()) {
 				while (unlocks.next()) {
 					unlockNodes.add(UnlockRegistry.normalizeNodeId(unlocks.getString("node")));
 				}
 			}
-
 			flagsStmt.setString(1, uuidStr);
 			try (ResultSet flagsRs = flagsStmt.executeQuery()) {
 				while (flagsRs.next()) {
@@ -626,6 +645,57 @@ public class PlayerData {
 					}
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to save lost cargo for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// A read-only view over this player's finished-run history for winrate/winstreak stats.
+	public RunStats getRunStats() {
+		return new RunStats(runResults);
+	}
+
+	// Records one finished run (win or lose) for this player and persists it. Callers should skip
+	// runs that shouldn't count toward stats (e.g. tutorial or endless runs).
+	public void addRunResult(EquipmentClass playerClass, int notoriety, boolean won) {
+		if (playerClass == null) return;
+		long ts = System.currentTimeMillis();
+		runResults.add(new RunStats.RunRecord(ts, playerClass, notoriety, won));
+		persistRunResultAsync(uuid.toString(), ts, playerClass, notoriety, won);
+	}
+
+	// Records a run result for a player by uuid whether or not their PlayerData is loaded. Used for
+	// events that affect players who may be offline, e.g. deleting an in-progress run (a loss for
+	// everyone who was in it). Loaded players also get the record reflected in memory immediately.
+	public static void recordRunResult(UUID uuid, EquipmentClass playerClass, int notoriety, boolean won) {
+		if (playerClass == null) return;
+		PlayerData pd = PlayerManager.getPlayerData(uuid);
+		if (pd != null) {
+			pd.addRunResult(playerClass, notoriety, won);
+		} else {
+			persistRunResultAsync(uuid.toString(), System.currentTimeMillis(), playerClass, notoriety, won);
+		}
+	}
+
+	private static void persistRunResultAsync(String uuidStr, long ts, EquipmentClass playerClass, int notoriety, boolean won) {
+		final String classKey = playerClass.name();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_run_results");
+					sql.addValue("uuid", uuidStr)
+							.addValue("ts", ts)
+							.addValue("playerClass", classKey)
+							.addValue("notoriety", notoriety)
+							.addValue("won", won ? 1 : 0)
+							.addRow();
+					try (PreparedStatement ps = sql.build(con)) {
+						ps.executeBatch();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save run result for " + uuidStr);
 					ex.printStackTrace();
 				}
 			}

@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent.Builder;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -34,6 +35,9 @@ public class SessionSnapshot {
 	private long lastSaved;
 	private int nodesVisited;
 	private RegionType regionType;
+	private int notoriety;
+	private boolean endless;
+	private SessionType sessionType = SessionType.STANDARD;
 	private HashMap<String, EquipmentClass> party = new HashMap<String, EquipmentClass>();
 	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
 	
@@ -41,6 +45,9 @@ public class SessionSnapshot {
 		this.lastSaved = System.currentTimeMillis();
 		this.nodesVisited = s.getNodesVisited();
 		this.regionType = s.getRegion().getType();
+		this.notoriety = s.getNotoriety();
+		this.endless = s.isEndless();
+		this.sessionType = s.getSessionType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
 			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
@@ -52,6 +59,9 @@ public class SessionSnapshot {
 		this.lastSaved = save.getLong("lastSaved");
 		this.nodesVisited = save.getInt("nodesVisited");
 		this.regionType = RegionType.valueOf(save.getString("regionType"));
+		this.notoriety = save.getInt("notoriety");
+		this.endless = save.getInt("endless") == 1;
+		this.sessionType = SessionType.fromStorage(save.getString("sessionType"));
 		
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
@@ -123,5 +133,27 @@ public class SessionSnapshot {
 
 	public HashMap<String, EquipmentClass> getParty() {
 		return party;
+	}
+
+	public int getNotoriety() {
+		return notoriety;
+	}
+
+	public boolean isEndless() {
+		return endless;
+	}
+
+	public SessionType getSessionType() {
+		return sessionType;
+	}
+
+	// Party members of the saved run mapped to the class each was playing.
+	public HashMap<UUID, EquipmentClass> getPartyClasses() {
+		HashMap<UUID, EquipmentClass> out = new HashMap<UUID, EquipmentClass>();
+		for (Entry<UUID, String> ent : partyIds.entrySet()) {
+			EquipmentClass ec = party.get(ent.getValue());
+			if (ec != null) out.put(ent.getKey(), ec);
+		}
+		return out;
 	}
 }

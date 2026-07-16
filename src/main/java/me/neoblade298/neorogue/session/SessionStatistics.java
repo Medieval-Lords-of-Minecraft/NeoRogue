@@ -9,15 +9,21 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.FightStatistics;
+import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class SessionStatistics {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
-	private double damageDealt;
+	// Damage dealt is split by fight type so standard/miniboss/boss contributions can be compared.
+	private double damageDealtStandard;
+	private double damageDealtMiniboss;
+	private double damageDealtBoss;
 	private double damageTakenHealth;
 	private double damageTakenShields;
 	private double shieldsApplied;
@@ -28,11 +34,15 @@ public class SessionStatistics {
 	private int statusesApplied;
 	private double damageTakenHealthAtRegionStart;
 
-	public void aggregate(FightStatistics fs) {
-		// Sum all damage dealt
+	public void aggregate(FightStatistics fs, FightInstance fight) {
+		// Sum this fight's damage dealt into the bucket for its fight type
+		double dealt = 0;
 		for (double amt : fs.getDamageDealt().values()) {
-			damageDealt += amt;
+			dealt += amt;
 		}
+		if (fight instanceof BossFightInstance) damageDealtBoss += dealt;
+		else if (fight instanceof MinibossFightInstance) damageDealtMiniboss += dealt;
+		else damageDealtStandard += dealt;
 
 		// Sum all damage taken (across all mobs and types)
 		double totalTaken = 0;
@@ -59,7 +69,14 @@ public class SessionStatistics {
 	}
 
 	public void load(ResultSet rs) throws SQLException {
-		damageDealt = rs.getDouble("statDamageDealt");
+		damageDealtStandard = rs.getDouble("statDamageDealtStandard");
+		damageDealtMiniboss = rs.getDouble("statDamageDealtMiniboss");
+		damageDealtBoss = rs.getDouble("statDamageDealtBoss");
+		// Migration: saves from before the per-fight-type split only stored one total; attribute it to
+		// standard fights so the number isn't lost when an old in-progress run is resumed.
+		if (damageDealtStandard == 0 && damageDealtMiniboss == 0 && damageDealtBoss == 0) {
+			damageDealtStandard = rs.getDouble("statDamageDealt");
+		}
 		damageTakenHealth = rs.getDouble("statDamageTakenHealth");
 		damageTakenShields = rs.getDouble("statDamageTakenShields");
 		shieldsApplied = rs.getDouble("statShieldsApplied");
@@ -71,7 +88,10 @@ public class SessionStatistics {
 		damageTakenHealthAtRegionStart = rs.getDouble("statDmgHealthRegionStart");
 	}
 
-	public double getDamageDealt() { return damageDealt; }
+	public double getDamageDealt() { return damageDealtStandard + damageDealtMiniboss + damageDealtBoss; }
+	public double getDamageDealtStandard() { return damageDealtStandard; }
+	public double getDamageDealtMiniboss() { return damageDealtMiniboss; }
+	public double getDamageDealtBoss() { return damageDealtBoss; }
 	public double getDamageTakenHealth() { return damageTakenHealth; }
 	public double getDamageTakenShields() { return damageTakenShields; }
 	public double getShieldsApplied() { return shieldsApplied; }
@@ -90,7 +110,9 @@ public class SessionStatistics {
 		p.sendMessage(Component.text("=== Session Statistics ===", NamedTextColor.GOLD));
 		p.sendMessage(statLine("Fights Completed", String.valueOf(fightsCompleted)));
 		p.sendMessage(statLine("Deaths", String.valueOf(deaths)));
-		p.sendMessage(statLine("Damage Dealt", df.format(damageDealt)));
+		p.sendMessage(statLine("Damage Dealt (Fights)", df.format(damageDealtStandard)));
+		p.sendMessage(statLine("Damage Dealt (Minibosses)", df.format(damageDealtMiniboss)));
+		p.sendMessage(statLine("Damage Dealt (Bosses)", df.format(damageDealtBoss)));
 		p.sendMessage(statLine("Damage Taken (Health)", df.format(damageTakenHealth)));
 		p.sendMessage(statLine("Damage Taken (Shields)", df.format(damageTakenShields)));
 		p.sendMessage(statLine("Shields Applied", df.format(shieldsApplied)));
@@ -110,7 +132,9 @@ public class SessionStatistics {
 		List<Component> lore = new ArrayList<Component>();
 		lore.add(loreLine("Fights Completed", String.valueOf(fightsCompleted), max != null && fightsCompleted > 0 && fightsCompleted >= max.fightsCompleted));
 		lore.add(loreLine("Deaths", String.valueOf(deaths), max != null && deaths > 0 && deaths >= max.deaths));
-		lore.add(loreLine("Damage Dealt", df.format(damageDealt), max != null && damageDealt > 0 && damageDealt >= max.damageDealt));
+		lore.add(loreLine("Damage Dealt (Fights)", df.format(damageDealtStandard), max != null && damageDealtStandard > 0 && damageDealtStandard >= max.damageDealtStandard));
+		lore.add(loreLine("Damage Dealt (Minibosses)", df.format(damageDealtMiniboss), max != null && damageDealtMiniboss > 0 && damageDealtMiniboss >= max.damageDealtMiniboss));
+		lore.add(loreLine("Damage Dealt (Bosses)", df.format(damageDealtBoss), max != null && damageDealtBoss > 0 && damageDealtBoss >= max.damageDealtBoss));
 		lore.add(loreLine("Damage Taken (Health)", df.format(damageTakenHealth), max != null && damageTakenHealth > 0 && damageTakenHealth >= max.damageTakenHealth));
 		lore.add(loreLine("Damage Taken (Shields)", df.format(damageTakenShields), max != null && damageTakenShields > 0 && damageTakenShields >= max.damageTakenShields));
 		lore.add(loreLine("Shields Applied", df.format(shieldsApplied), max != null && shieldsApplied > 0 && shieldsApplied >= max.shieldsApplied));
@@ -128,7 +152,9 @@ public class SessionStatistics {
 			any = true;
 			max.fightsCompleted = Math.max(max.fightsCompleted, s.fightsCompleted);
 			max.deaths = Math.max(max.deaths, s.deaths);
-			max.damageDealt = Math.max(max.damageDealt, s.damageDealt);
+			max.damageDealtStandard = Math.max(max.damageDealtStandard, s.damageDealtStandard);
+			max.damageDealtMiniboss = Math.max(max.damageDealtMiniboss, s.damageDealtMiniboss);
+			max.damageDealtBoss = Math.max(max.damageDealtBoss, s.damageDealtBoss);
 			max.damageTakenHealth = Math.max(max.damageTakenHealth, s.damageTakenHealth);
 			max.damageTakenShields = Math.max(max.damageTakenShields, s.damageTakenShields);
 			max.shieldsApplied = Math.max(max.shieldsApplied, s.shieldsApplied);

@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, LEVELS = 4;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATISTICS = 3, LEVELS = 5;
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));
@@ -50,6 +50,8 @@ public class MainMenuInventory extends CoreInventory {
 		int totalAvailable = countAvailableUnlocks(pd);
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
 		contents[CARGO] = createCargoButton(pd);
+		contents[STATISTICS] = CoreInventory.createButton(Material.WRITTEN_BOOK,
+				Component.text("Statistics", NamedTextColor.DARK_AQUA));
 		contents[LEVELS] = createLevelsButton(pd);
 		inv.setContents(contents);
 	}
@@ -145,6 +147,9 @@ public class MainMenuInventory extends CoreInventory {
 			break;
 		case CARGO:
 			new CargoInventory(p, pd);
+			break;
+		case STATISTICS:
+			new StatsMenuInventory(p);
 			break;
 		}
 	}

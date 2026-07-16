@@ -42,6 +42,15 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerclass (uuid VARCHAR(36) NOT NULL, class VARCHAR(40) NOT NULL, level INT NOT NULL DEFAULT 1, exp INT NOT NULL DEFAULT 0, points INT NOT NULL DEFAULT 0, notoriety_max INT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, class));");
 
+			// Append-only history of finished runs (one row per player per completed run). Drives
+			// winrate and winstreak stats sliced by class, notoriety, and time (see RunStats).
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_run_results (id BIGINT NOT NULL AUTO_INCREMENT, uuid VARCHAR(36) NOT NULL, ts BIGINT NOT NULL, playerClass VARCHAR(40) NOT NULL, notoriety INT NOT NULL, won TINYINT NOT NULL, PRIMARY KEY (id));");
+			try {
+				stmt.execute("CREATE INDEX idx_neorogue_run_results_uuid ON neorogue_run_results (uuid);");
+			} catch (SQLException ignore) {
+				// Index already exists
+			}
+
 			// Session save tables
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessions (host VARCHAR(36) NOT NULL, slot INT NOT NULL, regionType VARCHAR(50), position INT, lane INT, nodesVisited INT, regionsCompleted INT, potionChance INT, notoriety INT, endless TINYINT, lastSaved BIGINT, instanceData TEXT, sessionType VARCHAR(40), lastMiniboss VARCHAR(100), PRIMARY KEY (host, slot));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_nodes (host VARCHAR(36) NOT NULL, slot INT NOT NULL, type VARCHAR(40), position INT NOT NULL, lane INT NOT NULL, destinations TEXT, instanceData TEXT, PRIMARY KEY (host, slot, position, lane));");
@@ -51,7 +60,8 @@ public class PlayerManager implements IOComponent {
 					+ " startingMana DOUBLE, startingStamina DOUBLE, manaRegen DOUBLE, staminaRegen DOUBLE,"
 					+ " hotbar TEXT, armors TEXT, offhand TEXT, accessories TEXT, storage TEXT, otherBinds TEXT, artifacts TEXT,"
 					+ " maxAbilities INT, maxStorage INT, armorSlots INT, accessorySlots INT, coins INT, instanceData TEXT,"
-					+ " statDamageDealt DOUBLE, statDamageTakenHealth DOUBLE, statDamageTakenShields DOUBLE,"
+					+ " statDamageDealt DOUBLE, statDamageDealtStandard DOUBLE, statDamageDealtMiniboss DOUBLE, statDamageDealtBoss DOUBLE,"
+					+ " statDamageTakenHealth DOUBLE, statDamageTakenShields DOUBLE,"
 					+ " statShieldsApplied DOUBLE, statHealingDone DOUBLE, statDamageBarriered DOUBLE,"
 					+ " statFightsCompleted INT, statDeaths INT, statStatusesApplied INT, statDmgHealthRegionStart DOUBLE,"
 					+ " runExpBoostMultiplier DOUBLE, PRIMARY KEY (host, slot, uuid));");
@@ -75,8 +85,7 @@ public class PlayerManager implements IOComponent {
 
 	public static PlayerData getPlayerData(UUID uuid) {
 		return data.get(uuid);
-	}
-	
+	}	
 	public static boolean hasPlayerData(UUID uuid) {
 		return data.containsKey(uuid);
 	}

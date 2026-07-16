@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
+import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 
 // Runs and prints aggregated effectiveness analytics from the per-fight fact tables. Invoked by the
@@ -31,11 +32,15 @@ public class AnalyticsReport {
 	private static final int LEADERBOARD_LIMIT = 10;
 
 	// Filterable columns exposed by the "equipment" view. Shared with the command layer so tab
-	// completion and query building stay in sync. equipClass is comma-separated, so it uses FIND_IN_SET.
+	// completion and query building stay in sync. Columns are qualified (fe = neorogue_fight_equipment,
+	// f = neorogue_fights) because the query joins the two. equipClass is comma-separated (FIND_IN_SET).
 	public static final List<AnalyticsFilters.FilterOption> EQUIPMENT_FILTER_OPTIONS = List.of(
-			new AnalyticsFilters.FilterOption("class", "equipClass", true, enumNames(EquipmentClass.values())),
-			new AnalyticsFilters.FilterOption("rarity", "rarity", false, enumNames(Rarity.values())),
-			new AnalyticsFilters.FilterOption("type", "equipType", false, enumNames(EquipmentType.values())));
+			new AnalyticsFilters.FilterOption("class", "fe.equipClass", true, enumNames(EquipmentClass.values())),
+			new AnalyticsFilters.FilterOption("rarity", "fe.rarity", false, enumNames(Rarity.values())),
+			new AnalyticsFilters.FilterOption("type", "fe.equipType", false, enumNames(EquipmentType.values())),
+			new AnalyticsFilters.FilterOption("fighttype", "f.nodeType", false,
+					List.of(NodeType.FIGHT.name(), NodeType.MINIBOSS.name(), NodeType.BOSS.name())),
+			new AnalyticsFilters.FilterOption("regions", "f.regionsCompleted", false, null));
 
 	private static List<String> enumNames(Enum<?>[] values) {
 		ArrayList<String> names = new ArrayList<String>();
@@ -199,10 +204,14 @@ public class AnalyticsReport {
 
 	private static void queryEquipmentDamage(Connection con, int version, AnalyticsFilters filters,
 			ArrayList<String> lines) throws SQLException {
-		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS n, SUM(outcome) AS wins,"
-				+ " AVG(damageDealt) AS dmg FROM neorogue_fight_equipment WHERE balanceVersion = ?");
+		// Join the fight facts so views can filter on fight-level columns (fight type, regions completed).
+		// outcome/balanceVersion exist on both tables, so they're qualified to the equipment table.
+		StringBuilder sql = new StringBuilder("SELECT fe.equipmentId AS equipmentId, fe.upgraded AS upgraded,"
+				+ " COUNT(*) AS n, SUM(fe.outcome) AS wins, AVG(fe.damageDealt) AS dmg"
+				+ " FROM neorogue_fight_equipment fe JOIN neorogue_fights f ON fe.fightId = f.fightId"
+				+ " WHERE fe.balanceVersion = ?");
 		filters.appendWhere(sql);
-		sql.append(" GROUP BY equipmentId, upgraded HAVING n >= ").append(MIN_OFFERS);
+		sql.append(" GROUP BY fe.equipmentId, fe.upgraded HAVING n >= ").append(MIN_OFFERS);
 
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC;")) {

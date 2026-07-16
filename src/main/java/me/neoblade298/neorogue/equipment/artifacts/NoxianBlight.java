@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -34,16 +34,16 @@ public class NoxianBlight extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
-			CastUsableEvent ev = (CastUsableEvent) in;
+		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
+			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			if (!ev.getInstance().canTrigger(data.getPlayer(), data, in))
 				return TriggerResult.keep();
 			boolean activated = false;
-			if (ev.getInstance().getManaCost() >= 25) {
+			if (ev.getInstance().getManaCost() >= mana) {
 				activated = true;
 				data.applyStatus(StatusType.INTELLECT, data, inc, -1, this);
 			}
-			if (ev.getInstance().getStaminaCost() >= 25) {
+			if (ev.getInstance().getStaminaCost() >= stamina) {
 				activated = true;
 				data.applyStatus(StatusType.STRENGTH, data, inc, -1, this);
 			}

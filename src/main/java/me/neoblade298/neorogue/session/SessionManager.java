@@ -76,6 +76,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
@@ -274,6 +275,9 @@ public class SessionManager implements Listener {
 	public static void deleteSave(Player p, int saveSlot) {
 		UUID host = p.getUniqueId();
 		PlayerData pd = PlayerManager.getPlayerData(host);
+		// Abandoning an in-progress run counts as a loss (breaking winstreaks) for the host who
+		// deletes it. Read the snapshot before removing it so we know the host's class and notoriety.
+		if (pd != null) recordDeletedRunAsLoss(host, pd.getSnapshot(saveSlot));
 		if (pd != null) pd.removeSnapshot(saveSlot);
 		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
 			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
@@ -284,6 +288,16 @@ public class SessionManager implements Listener {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
 			ex.printStackTrace();
 		}
+	}
+
+	// Records a deleted (abandoned) run as a loss for the host who deleted it. Tutorial and endless
+	// runs are excluded, consistent with EndRunInstance.
+	private static void recordDeletedRunAsLoss(UUID host, SessionSnapshot snap) {
+		if (snap == null) return;
+		if (snap.getSessionType() == SessionType.TUTORIAL || snap.isEndless()) return;
+		EquipmentClass hostClass = snap.getPartyClasses().get(host);
+		if (hostClass == null) return;
+		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), false);
 	}
 
 	@EventHandler

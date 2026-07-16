@@ -139,7 +139,6 @@ public class FightData {
 		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
 			hideVanillaNameplate();
 			if (entity != null && entity.isValid()) entity.setCollidable(true);
-			System.out.println("Exempt collisions: " + entity.getCollidableExemptions());
 		}, 1L);
 		updateDisplayName();
 	}

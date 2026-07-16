@@ -35,6 +35,11 @@ public class CaravanRobberyChance extends ChanceSet {
 							pd.unequip(EquipmentType.ABILITY);
 						}
 						pd.giveEquipment(Exhaustion.get());
+
+						// Have to manually call this as usually inventory
+						// is not re-setup for artifacts
+						// Shows player the max abilities panes properly
+						pd.setupInventory(); 
 					}
 					s.broadcast("You save the merchants and are rewarded <yellow>300 coins</yellow>, but you feel exhausted.");
 					return null;

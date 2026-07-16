@@ -1215,8 +1215,8 @@ public abstract class FightInstance extends Instance {
 		);
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 		
-		// Don't show a fight score/rating when the player lost, as it's not relevant
-		FightScore score = Boolean.FALSE.equals(fightWon) ? null : getFightScore();
+		// Don't show a fight score/rating when the player lost or left
+		FightScore score = Boolean.FALSE.equals(fightWon) || fightWon == null ? null : getFightScore();
 		s.broadcast(FightStatistics.getStatsHeader(timer, score));
 	}
 
@@ -1235,9 +1235,6 @@ public abstract class FightInstance extends Instance {
 		isCleaned = true;
 		isActive = false;
 
-		// If the fight is torn down without resolving to a win/loss (e.g. a player left mid-fight,
-		// ending the session), still show the stats header so they see their fight summary. Win/loss
-		// paths broadcast it themselves, so this only fires for unresolved teardowns.
 		if (fightWon == null && !pluginDisable) {
 			broadcastStatistics();
 		}
@@ -1255,7 +1252,7 @@ public abstract class FightInstance extends Instance {
 			PlayerSessionData data = pdata.getSessionData();
 			Player p = pdata.getPlayer();
 			if (pdata != null) {
-				data.getSessionStats().aggregate(pdata.getStats());
+				data.getSessionStats().aggregate(pdata.getStats(), this);
 				if (recordAnalytics) {
 					FightStatistics fs = pdata.getStats();
 					partyDamageDealt += fs.getTotalDamageDealt();
@@ -1277,6 +1274,7 @@ public abstract class FightInstance extends Instance {
 					if (pdata.isDead()) {
 						pdata.setDeath(false);
 					}
+					s.broadcast(pdata.getStats().getStatLine(Boolean.FALSE.equals(fightWon)));
 					data.updateHealth();
 					data.syncHealth();
 					p.setFoodLevel(20);
@@ -1287,7 +1285,6 @@ public abstract class FightInstance extends Instance {
 						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 					p.getAttribute(Attribute.JUMP_STRENGTH)
 						.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
-					s.broadcast(pdata.getStats().getStatLine(Boolean.FALSE.equals(fightWon)));
 				}
 			}
 			FightData fdata = fightData.remove(uuid);

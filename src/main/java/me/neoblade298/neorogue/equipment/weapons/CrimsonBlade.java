@@ -73,8 +73,6 @@ public class CrimsonBlade extends Equipment {
 		}
 
 		private void replaceWithWoodenSword(Player p) {
-			System.out.println("Replacing slot " + slot + " with wooden sword");
-			// withType() returns a NEW ItemStack (carrying over meta); it does not mutate in place
 			p.getInventory().setItem(slot, item.withType(Material.WOODEN_SWORD));
 		}
 	}
