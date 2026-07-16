@@ -31,7 +31,6 @@ public class MapPiece {
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
 	private MapSpawner[] initialSpawns;
 	protected Clipboard clipboard;
-	private ArrayList<String> customInfoOrder = new ArrayList<String>(); // For showing fight info mobs in a specific order
 	
 	public MapPiece(Section cfg) {
 		id = cfg.getName();
@@ -113,8 +112,6 @@ public class MapPiece {
 			this.targets = new HashSet<String>();
 			this.targets.addAll(targets);
 		}
-		
-		this.customInfoOrder = (ArrayList<String>) cfg.getStringList("fightinfomobs");
 		
 		pieces.put(id, this);
 		setupSpecialPiece();
@@ -232,13 +229,5 @@ public class MapPiece {
 		}
 		else if (!id.equals(other.id)) return false;
 		return true;
-	}
-	
-	public boolean hasCustomMobInfo() {
-		return this.customInfoOrder != null;
-	}
-	
-	public ArrayList<String> getCustomMobInfo() {
-		return this.customInfoOrder;
 	}
 }

@@ -1,18 +1,15 @@
 package me.neoblade298.neorogue.map;
 
 import java.io.File;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
@@ -36,7 +33,6 @@ import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class Map {
 	private static HashMap<String, MapPiece> allPieces = new HashMap<String, MapPiece>();
@@ -52,8 +48,7 @@ public class Map {
 	protected LinkedList<MapEntrance> entrances = new LinkedList<MapEntrance>(),
 			obstructedEntrances = new LinkedList<MapEntrance>();
 	private ArrayList<Coordinates> spawns = new ArrayList<Coordinates>();
-	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
-	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
+	private TreeSet<Mob> mobs = new TreeSet<Mob>();
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	private int effectiveSize;
@@ -331,38 +326,23 @@ public class Map {
 				obstructedEntrances.add(ent);
 			}
 		}
-
-		// Set up the mobs
-		if (inst.getPiece().hasCustomMobInfo()) {
-			hasCustomMobInfo = true;
-			for (String str : inst.getPiece().getCustomMobInfo()) {
-				Mob mob = Mob.get(str);
-				if (mob == null) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to load mob " + str + " from custom mob info in mappiece " + inst.getPiece().getId());
+		
+		if (inst.getPiece().getInitialSpawns() != null) {
+			for (MapSpawner spawner : inst.getPiece().getInitialSpawns()) {
+				if (spawner.getMob() == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", initial spawner had null mob " + spawner.getMobId());
 					continue;
 				}
-				customMobs.put(mob, MobModifier.generateModifiers(0));
+				mobs.add(spawner.getMob());
 			}
 		}
-		
-		if (customMobs.isEmpty()) {
-			if (inst.getPiece().getInitialSpawns() != null) {
-				for (MapSpawner spawner : inst.getPiece().getInitialSpawns()) {
-					if (spawner.getMob() == null) {
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", initial spawner had null mob " + spawner.getMobId());
-						continue;
-					}
-					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+		if (inst.getPiece().hasSpawners()) {
+			for (MapSpawner spawner : inst.getPiece().getSpawners(inst.getSpawnerSet())) {
+				if (spawner.getMob() == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob " + spawner.getMobId());
+					continue;
 				}
-			}
-			if (inst.getPiece().hasSpawners()) {
-				for (MapSpawner spawner : inst.getPiece().getSpawners(inst.getSpawnerSet())) {
-					if (spawner.getMob() == null) {
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob " + spawner.getMobId());
-						continue;
-					}
-					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
-				}
+				mobs.add(spawner.getMob());
 			}
 		}
 		
@@ -612,8 +592,8 @@ public class Map {
 		return (standard != null && !standard.isEmpty()) || (used != null && !used.isEmpty());
 	}
 	
-	public AbstractMap<Mob, ArrayList<MobModifier>> getMobs() {
-		return customMobs.isEmpty() ? mobs : customMobs;
+	public TreeSet<Mob> getMobs() {
+		return mobs;
 	}
 	
 	public ArrayList<MapPieceInstance> getPieces() {

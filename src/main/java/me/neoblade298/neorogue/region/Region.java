@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,7 +54,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.MobModifier;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import net.kyori.adventure.text.Component;
@@ -939,11 +937,11 @@ public class Region {
 			for (Node destDest : dest.getDestinations()) {
 				if (destDest.getType() == NodeType.FIGHT) {
 					StandardFightInstance ddInst = (StandardFightInstance) destDest.generateInstance(s, type);
-					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
+					Mob[] mobs = ddInst.getMap().getMobs().toArray(new Mob[0]);
 					if (mobs.length == 0) continue;
 					Mob chosen = mobs[0];
 					
-					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>(), true);
+					ItemStack headItem = chosen.getItemDisplay(s, null, true);
 					Location headLoc = nodeToLocation(destDest, 1);
 					if (headItem.getType() == Material.PLAYER_HEAD) {
 						SkullMeta meta = (SkullMeta) headItem.getItemMeta();

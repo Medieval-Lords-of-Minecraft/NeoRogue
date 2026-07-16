@@ -1,8 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,30 +16,27 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.MobModifier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightInfoInventory extends CoreInventory {
-	public FightInfoInventory(Player viewer, Session s, @Nullable PlayerSessionData data, AbstractMap<Mob, ArrayList<MobModifier>> mobs, boolean hasCustomMobInfo, boolean isChance) {
+	public FightInfoInventory(Player viewer, Session s, @Nullable PlayerSessionData data, TreeSet<Mob> mobs, boolean isChance) {
 		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		
 		int pos = 0;
-		for (Entry<Mob, ArrayList<MobModifier>> ent : mobs.entrySet()) {
-			Mob mob = ent.getKey();
-			contents[pos++] = mob.getItemDisplay(s, ent.getValue(), isChance);
+		for (Mob mob : mobs) {
+			contents[pos++] = mob.getItemDisplay(s, null, isChance);
 
-			// Only show summons if there's no custom mob order, since the mob order overrides everything
-			if (!hasCustomMobInfo && mob.getSummons() != null) {
+			if (mob.getSummons() != null) {
 				for (String summonStr : mob.getSummons()) {
 					Mob summon = Mob.get(summonStr);
 					if (summon == null) {
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load summon " + summonStr + " for mob " + ent.getKey().getId());
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load summon " + summonStr + " for mob " + mob.getId());
 						continue;
 					}
-					contents[pos++] = summon.getItemDisplay(s, ent.getValue(), isChance);
+					contents[pos++] = summon.getItemDisplay(s, null, isChance);
 				}
 			}
 		}

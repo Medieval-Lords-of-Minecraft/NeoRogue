@@ -211,7 +211,7 @@ public class Mob implements Comparable<Mob> {
 		return knockbackMultiplier;
 	}
 	
-	public ItemStack getItemDisplay(Session s, ArrayList<MobModifier> modifiers, boolean isChance) {
+	public ItemStack getItemDisplay(Session s, MobModifier modifier, boolean isChance) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);

@@ -114,7 +114,7 @@ public class ChanceInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
 			FightInstance fi = (FightInstance) inst.getNextInstance();
-			new FightInfoInventory(p, s, data, fi.getMap().getMobs(), fi.getMap().hasCustomMobInfo(), true);
+			new FightInfoInventory(p, s, data, fi.getMap().getMobs(), true);
 		}
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
