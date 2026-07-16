@@ -40,17 +40,20 @@ public class CargoInventory extends CoreInventory {
 	private final PlayerData pd;
 	private final Cargo cargo;
 	private final int infoSlot;
+	private final int backSlot;
 	// -1 when the player has no lost cargo; otherwise the slot holding the "Lost Cargo" button.
 	private final int lostCargoSlot;
 	private final HashMap<Integer, Material> slotToMaterial = new HashMap<Integer, Material>();
 
 	public CargoInventory(Player p, PlayerData pd) {
-		super(p, Bukkit.createInventory(p, computeSize(pd.getCargo(), pd.getLostCargo().getTotalItems() > 0 ? 2 : 1),
+		super(p, Bukkit.createInventory(p, computeSize(pd.getCargo(), pd.getLostCargo().getTotalItems() > 0 ? 3 : 2),
 				Component.text("Cargo", NamedTextColor.GOLD)));
 		this.pd = pd;
 		this.cargo = pd.getCargo();
+		boolean hasLost = pd.getLostCargo().getTotalItems() > 0;
 		this.infoSlot = inv.getSize() - 1;
-		this.lostCargoSlot = pd.getLostCargo().getTotalItems() > 0 ? inv.getSize() - 2 : -1;
+		this.backSlot = inv.getSize() - 2;
+		this.lostCargoSlot = hasLost ? inv.getSize() - 3 : -1;
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		render();
 	}
@@ -66,15 +69,16 @@ public class CargoInventory extends CoreInventory {
 	private void render() {
 		inv.clear();
 		slotToMaterial.clear();
-		// Stop before the first reserved button slot (lost cargo button, if present, else info button).
-		int firstButtonSlot = lostCargoSlot != -1 ? lostCargoSlot : infoSlot;
+		// Stop before the first reserved button slot (lost cargo button if present, else back button).
+		int firstButtonSlot = lostCargoSlot != -1 ? lostCargoSlot : backSlot;
 		int slot = 0;
 		for (Map.Entry<Material, Integer> ent : cargo.getItems().entrySet()) {
 			if (slot >= firstButtonSlot) break;
 			Material mat = ent.getKey();
 			int count = ent.getValue();
 
-			ItemStack disp = new ItemStack(mat, Math.max(1, Math.min(count, mat.getMaxStackSize())));
+			// Always display a single item so shift-clicking matching items in isn't blocked by a full stack.
+			ItemStack disp = new ItemStack(mat, 1);
 			ItemMeta meta = disp.getItemMeta();
 			List<Component> lore = new ArrayList<Component>();
 			lore.add(line(Component.text("Amount: ", NamedTextColor.GRAY)
@@ -93,8 +97,33 @@ public class CargoInventory extends CoreInventory {
 			slotToMaterial.put(slot, mat);
 			slot++;
 		}
+		// Cover the remaining unused (non-button) slots with filler panes.
+		for (int i = slot; i < firstButtonSlot; i++) {
+			inv.setItem(i, buildFillerPane());
+		}
 		if (lostCargoSlot != -1) inv.setItem(lostCargoSlot, buildLostCargoButton());
+		inv.setItem(backSlot, buildBackButton());
 		inv.setItem(infoSlot, buildInfoButton());
+	}
+
+	private ItemStack buildFillerPane() {
+		ItemStack pane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+		ItemMeta meta = pane.getItemMeta();
+		meta.displayName(Component.empty());
+		pane.setItemMeta(meta);
+		return pane;
+	}
+
+	private ItemStack buildBackButton() {
+		ItemStack item = new ItemStack(Material.ARROW);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(line(Component.text("Back", NamedTextColor.YELLOW)));
+		List<Component> lore = new ArrayList<Component>();
+		lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
+				.append(Component.text("return to main menu", NamedTextColor.WHITE))));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private ItemStack buildLostCargoButton() {
@@ -148,6 +177,16 @@ public class CargoInventory extends CoreInventory {
 			e.setCancelled(true);
 			int slot = e.getSlot();
 			if (slot == infoSlot) return;
+			if (slot == backSlot) {
+				click();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						new MainMenuInventory(p);
+					}
+				}.runTask(NeoRogue.inst());
+				return;
+			}
 			if (slot == lostCargoSlot) {
 				click();
 				new BukkitRunnable() {

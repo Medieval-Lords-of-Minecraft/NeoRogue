@@ -69,7 +69,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 				Component.text("Right click to leave!", NamedTextColor.WHITE));
 		// Finances gold block, offset to the side of the stats/leave axis (adjust offset if it clips geometry)
 		financeBlock = spawn.clone().add(2, -0.5, 0);
-		financeHolo = NeoRogue.createHologram(spawn.clone().add(-4, 2, 0),
+		financeHolo = NeoRogue.createHologram(spawn.clone().add(-3, 2, 0),
 				Component.text("Right click to view finances!", NamedTextColor.GOLD));
 
 		s.broadcast(getResultMessage());

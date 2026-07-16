@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.RunStats;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -28,7 +30,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATISTICS = 3, LEVELS = 5;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATS = 4;
+	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 
 	public MainMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("NeoRogue", NamedTextColor.DARK_RED)));
@@ -50,9 +53,7 @@ public class MainMenuInventory extends CoreInventory {
 		int totalAvailable = countAvailableUnlocks(pd);
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
 		contents[CARGO] = createCargoButton(pd);
-		contents[STATISTICS] = CoreInventory.createButton(Material.WRITTEN_BOOK,
-				Component.text("Statistics", NamedTextColor.DARK_AQUA));
-		contents[LEVELS] = createLevelsButton(pd);
+		contents[STATS] = createStatsButton(pd);
 		inv.setContents(contents);
 	}
 
@@ -69,7 +70,7 @@ public class MainMenuInventory extends CoreInventory {
 		return item;
 	}
 
-	private ItemStack createLevelsButton(PlayerData pd) {
+	private ItemStack createStatsButton(PlayerData pd) {
 		ItemStack item = new ItemStack(Material.EXPERIENCE_BOTTLE);
 		item.setAmount(Math.min(Math.max(pd.getLevel(), 1), 64));
 		ItemMeta meta = item.getItemMeta();
@@ -77,6 +78,10 @@ public class MainMenuInventory extends CoreInventory {
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.text("  Exp: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+		RunStats.Winrate wr = pd.getRunStats().winrate(null, null, false);
+		if (wr.hasRuns()) {
+			lore.add(Component.text("Winrate: " + pct.format(wr.rate() * 100) + "% (" + wr.wins + "/" + wr.total + ")", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+		}
 		lore.add(Component.empty());
 		for (EquipmentClass ec : new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF, EquipmentClass.ARCHER, EquipmentClass.MAGE }) {
 			int level = pd.getLevel(ec);
@@ -87,6 +92,8 @@ public class MainMenuInventory extends CoreInventory {
 			lore.add(Component.text("  Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			lore.add(Component.text("  Max Notoriety: " + notoriety, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
+		lore.add(Component.empty());
+		lore.add(Component.text("Click to view detailed statistics", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
@@ -148,7 +155,7 @@ public class MainMenuInventory extends CoreInventory {
 		case CARGO:
 			new CargoInventory(p, pd);
 			break;
-		case STATISTICS:
+		case STATS:
 			new StatsMenuInventory(p);
 			break;
 		}

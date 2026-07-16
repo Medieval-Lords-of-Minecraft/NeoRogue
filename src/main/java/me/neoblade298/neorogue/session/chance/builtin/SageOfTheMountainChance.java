@@ -37,8 +37,9 @@ public class SageOfTheMountainChance extends ChanceSet {
 		ChanceChoice gaze = new ChanceChoice(Material.ENDER_EYE, "Gaze into the Beyond",
 				"Pay " + DescUtil.white("30%") + " of your max health to store a passive ability in an "
 						+ "Echo Stone, converting it into an artifact.",
-				"You have no passive abilities to store!",
-				(s, inst, data) -> data.aggregateEquipment(SageOfTheMountainChance::isStorablePassive).size() > 0,
+				"You need a passive ability to store and at least " + DescUtil.white("30%") + " health!",
+				(s, inst, data) -> data.aggregateEquipment(SageOfTheMountainChance::isStorablePassive).size() > 0
+						&& data.getHealth() >= 0.3 * data.getMaxHealth(),
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
 		gaze.setOnInteract((prev, data) -> openGaze(prev, data, stage));
 		stage.addChoice(gaze);

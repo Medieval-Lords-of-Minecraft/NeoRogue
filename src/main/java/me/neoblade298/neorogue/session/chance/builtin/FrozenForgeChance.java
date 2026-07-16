@@ -21,7 +21,6 @@ import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
-import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -66,8 +65,7 @@ public class FrozenForgeChance extends ChanceSet {
 					data.setupInventory();
 					ArrayList<Equipment> results = removed.getAllReforgeResults();
 					Equipment result = results.get(NeoRogue.gen.nextInt(results.size()));
-					SessionEquipment se = s.rollUpgrade(new SessionEquipment(result), 0);
-					NotorietySetting.rollBreakable(s, se);
+					SessionEquipment se = new SessionEquipment(result);
 					data.giveEquipment(se);
 					Util.msgRaw(p, Component.text("You feed your ", NamedTextColor.GRAY)
 							.append(removed.getHoverable())

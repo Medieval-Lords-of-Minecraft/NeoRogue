@@ -51,20 +51,44 @@ public class SessionEquipment {
 
 	public ItemStack getItem() {
 		ItemStack item = equipment.getItem();
-		if (hasDurability()) {
-			ItemMeta meta = item.getItemMeta();
-			List<Component> lore = meta.lore();
-			lore.add(Component.text("Breaks after " + getDurability() + " fights", NamedTextColor.RED)
-					.decoration(TextDecoration.ITALIC, State.FALSE));
-			meta.lore(lore);
-			item.setItemMeta(meta);
-		}
+		applyExtraData(item);
 		// Persist metadata onto the item so it survives being reconstructed from item form.
 		if (!metadata.isEmpty()) {
 			String serialized = serialize();
 			NBT.modify(item, nbt -> { nbt.setString(NBT_KEY, serialized); });
 		}
 		return item;
+	}
+
+	// Appends this equipment's session-specific extra data (currently just durability) as lore.
+	private void applyExtraData(ItemStack item) {
+		List<Component> extra = getExtraData();
+		if (extra.isEmpty()) return;
+		ItemMeta meta = item.getItemMeta();
+		List<Component> lore = meta.lore();
+		if (lore == null) lore = new ArrayList<Component>();
+		lore.addAll(extra);
+		meta.lore(lore);
+		item.setItemMeta(meta);
+	}
+
+	// The session-specific extra data lines shown on this equipment's tooltip and hoverable.
+	// Add future per-session display data here.
+	private List<Component> getExtraData() {
+		List<Component> lore = new ArrayList<Component>();
+		if (hasDurability()) {
+			lore.add(Component.text("Breaks after " + getDurability() + " fights", NamedTextColor.RED)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+		return lore;
+	}
+
+	public static ArrayList<SessionEquipment> fromEquipment(ArrayList<? extends Equipment> equipment) {
+		ArrayList<SessionEquipment> sessionEquipmentList = new ArrayList<>();
+		for (Equipment eq : equipment) {
+			sessionEquipmentList.add(new SessionEquipment(eq));
+		}
+		return sessionEquipmentList;
 	}
 
 	/**
@@ -94,13 +118,12 @@ public class SessionEquipment {
 		return display;
 	}
 
+	// Builds this SessionEquipment's own hoverable so it always reflects session-specific extra
+	// data (e.g. durability), rather than delegating to the base Equipment's cached hoverable.
 	public Component getHoverable() {
-		if (hasDurability()) {
-			return getDisplay().decorate(TextDecoration.UNDERLINED)
-					.hoverEvent(getItem().asHoverEvent())
-					.clickEvent(ClickEvent.runCommand("/nr glossary " + equipment.getId()));
-		}
-		return equipment.getHoverable();
+		return getDisplay().decorate(TextDecoration.UNDERLINED)
+				.hoverEvent(getItem().asHoverEvent())
+				.clickEvent(ClickEvent.runCommand("/nr glossary " + equipment.getId()));
 	}
 
 	/**

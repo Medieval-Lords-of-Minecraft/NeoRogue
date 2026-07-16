@@ -427,7 +427,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
-					handleInventoryClose();
+					inv.close();
 					SessionManager.leaveSession(p);
 				}
 			}.runTask(NeoRogue.inst());

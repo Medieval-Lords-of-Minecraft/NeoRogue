@@ -340,7 +340,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 		if (removed != null) {
 			PlayerSessionInventory.setupInventory(getPlayer().getInventory(), this);
-			Util.msgRaw(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(removed.getEquipment().getHoverable()).append(Component.text(", it was sent to storage.")));
+			Util.msgRaw(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(removed.getHoverable()).append(Component.text(", it was sent to storage.")));
 			return true;
 		}
 		return false;
@@ -586,8 +586,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Equipment eq = se.getEquipment();
 		Player p = getPlayer();
 		if (toSelf != null) {
-			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
-			toSelf = toSelf.append(eq.getHoverable());
+			s.broadcastOthers(toOthers.append(se.getHoverable()).append(Component.text(".")), p);
+			toSelf = toSelf.append(se.getHoverable());
 		}
 
 		if (eq instanceof Artifact) {
@@ -671,9 +671,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
 	}
 
-	public void giveEquipment(ArrayList<? extends Equipment> eqs) {
-		for (Equipment eq : eqs) {
-			giveEquipment(new SessionEquipment(eq), SharedUtil.color("You received "),
+	public void giveEquipment(ArrayList<? extends SessionEquipment> eqs) {
+		for (SessionEquipment se : eqs) {
+			giveEquipment(se, SharedUtil.color("You received "),
 					SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
 		}
 	}

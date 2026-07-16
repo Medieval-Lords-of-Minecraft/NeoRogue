@@ -1,12 +1,15 @@
 package me.neoblade298.neorogue.session.chance.builtin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -35,7 +38,8 @@ public class LabChance extends ChanceSet {
 				"Everyone receives a consumable and <white>50</white> coins.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						Equipment consumable = Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).getFirst();
+						data.giveEquipment(new SessionEquipment(consumable));
 						data.addCoins(50);
 					}
 					s.broadcast("You all get to work scouring the place, finding the coolest-looking potion, and picking up spare coins.");
@@ -65,7 +69,8 @@ public class LabChance extends ChanceSet {
 						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
 								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");
 						for (PlayerSessionData pd : s.getParty().values()) {
-							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getBaseDropValue(), 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
+							ArrayList<Artifact> eqs = Equipment.getArtifact(pd.getArtifactDroptable(), s.getBaseDropValue(), 1, EquipmentClass.CLASSLESS, pd.getPlayerClass());
+							pd.giveEquipment(new SessionEquipment(eqs.get(0)));
 						}
 					}
 					return null;
