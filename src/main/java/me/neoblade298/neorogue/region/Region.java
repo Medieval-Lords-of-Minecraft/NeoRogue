@@ -126,6 +126,14 @@ public class Region {
 	public static String getActiveWorldName() {
 		return activeWorldName;
 	}
+
+	private static void clearLecternBook(Block block) {
+		if (!(block.getState() instanceof org.bukkit.block.Lectern lectern)) {
+			return;
+		}
+		lectern.getInventory().clear();
+		lectern.update(true, false);
+	}
 	
 	public static void loadConfig() {
 		// set defaults
@@ -873,7 +881,9 @@ public class Region {
 					Location loc = nodeToLocation(n, 1);
 					loc.getBlock().setType(Material.AIR); // Button
 					loc.add(0, -2, -1);
-					loc.getBlock()
+					Block lecternBlock = loc.getBlock();
+					clearLecternBook(lecternBlock);
+					lecternBlock
 							.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
 				}
 			}

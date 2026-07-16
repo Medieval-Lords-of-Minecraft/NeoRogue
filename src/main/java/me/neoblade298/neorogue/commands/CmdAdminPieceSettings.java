@@ -74,7 +74,6 @@ public class CmdAdminPieceSettings extends Subcommand {
 			}
 		}
 		
-		ArrayList<Location> potentialSpawns = new ArrayList<>();
 		if (pasteAll) {
 			for (int i = 0; i < 4; i++) {
 				// Each variant needs its own instance: markSpawns places its markers ~20 ticks later
@@ -84,21 +83,21 @@ public class CmdAdminPieceSettings extends Subcommand {
 				noFlip.setRotations(i);
 				noFlip.setFlip(false, false);
 				noFlip.instantiate(null, PADDING * i, 0);
-				potentialSpawns.addAll(noFlip.markSpawns(p, PADDING * i, 0));
+				noFlip.markSpawns(p, PADDING * i, 0);
 				placeVariantSign(PADDING * i, 0, "rot=" + i, "no flip");
 
 				MapPieceInstance flipX = piece.getInstance();
 				flipX.setRotations(i);
 				flipX.setFlip(true, false);
 				flipX.instantiate(null, PADDING * i, PADDING);
-				potentialSpawns.addAll(flipX.markSpawns(p, PADDING * i, PADDING));
+				flipX.markSpawns(p, PADDING * i, PADDING);
 				placeVariantSign(PADDING * i, PADDING, "rot=" + i, "flipX");
 
 				MapPieceInstance flipZ = piece.getInstance();
 				flipZ.setRotations(i);
 				flipZ.setFlip(false, true);
 				flipZ.instantiate(null, PADDING * i, PADDING * 2);
-				potentialSpawns.addAll(flipZ.markSpawns(p, PADDING * i, PADDING * 2));
+				flipZ.markSpawns(p, PADDING * i, PADDING * 2);
 				placeVariantSign(PADDING * i, PADDING * 2, "rot=" + i, "flipZ");
 			}
 		}
@@ -110,19 +109,15 @@ public class CmdAdminPieceSettings extends Subcommand {
 			inst.setRotations(rotations);
 			inst.setFlip(flipX, flipZ);
 			inst.instantiate(null, 0, 0);
-			potentialSpawns.addAll(inst.markSpawns(p, 0, 0));
+			inst.markSpawns(p, 0, 0);
 		}
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				Region.useMainWorld();
-				if (!potentialSpawns.isEmpty()) {
-					p.teleport(potentialSpawns.get(0));
-				} else {
-					org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-					p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
-				}
+				org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
+				p.teleport(new Location(w, -(MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET));
 				Util.msgRaw(p, "Successfully pasted piece settings");
 			}
 		}.runTaskLater(NeoRogue.inst(), 20);

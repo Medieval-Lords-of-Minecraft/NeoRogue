@@ -575,7 +575,7 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			public void run() {
 				if (p != null && s.getInstance() == fight) {
-				p.setAllowFlight(true);
+					p.setAllowFlight(true);
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 10);
@@ -591,9 +591,9 @@ public abstract class FightInstance extends Instance {
 
 	public static void handleClickArmorStand(Player p, Entity armorStand) {
 		PlayerFightData data = userData.get(p.getUniqueId());
-		FightInstance fi = data.getInstance();
 		if (data == null || data.isDead())
 			return;
+		FightInstance fi = data.getInstance();
 		for (Corpse c : fi.corpses) {
 			if (c.hitCorpse(armorStand)) {
 				if (fi.revivers.containsKey(p)) {

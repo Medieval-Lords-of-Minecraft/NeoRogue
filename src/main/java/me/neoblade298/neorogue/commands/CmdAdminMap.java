@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,19 +78,18 @@ public class CmdAdminMap extends Subcommand {
 		
 		// Mark down spawn location blocks
 		long markStart = System.currentTimeMillis();
-		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
 		for (MapPieceInstance mpi : map.getPieces()) {
-			potentialSpawns.addAll(mpi.markSpawns(p, xOff, zOff));
+			mpi.markSpawns(p, xOff, zOff);
 		}
 		Util.msgRaw(p, "Mark spawns: " + (System.currentTimeMillis() - markStart) + "ms");
 
-		// Choose random teleport location (delayed to let async paste finish)
+		// Teleport near the pasted map (delayed to let async paste finish)
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				Region.useMainWorld();
-				int rand = NeoRogue.gen.nextInt(potentialSpawns.size());
-				p.teleport(potentialSpawns.get(rand));
+				org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
+				p.teleport(new Location(w, -(xOff + MapPieceInstance.X_FIGHT_OFFSET), MapPieceInstance.Y_OFFSET + 1, MapPieceInstance.Z_FIGHT_OFFSET + zOff));
 			}
 		}.runTaskLater(NeoRogue.inst(), 20);
 	}

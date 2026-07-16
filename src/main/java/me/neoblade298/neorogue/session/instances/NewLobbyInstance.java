@@ -331,7 +331,10 @@ public class NewLobbyInstance extends LobbyInstance {
             break;
 		}
 
-        char c2 = ((TextComponent) sign.getSide(Side.FRONT).line(2)).content().charAt(0);
+        String line2 = ((TextComponent) sign.getSide(Side.FRONT).line(2)).content();
+        
+        if (line2.isEmpty()) return;
+        char c2 = line2.charAt(0);
         if (c2 == 'f') {
 			new SessionSettingsInventory(e.getPlayer(), s, this);
         }

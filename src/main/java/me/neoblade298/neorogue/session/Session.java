@@ -24,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -1061,6 +1062,14 @@ public class Session {
 	public void generateRegion() {
 		generateRegion(sessionType.getInitialRegion());
 	}
+
+	private static void clearLecternBook(Block block) {
+		if (!(block.getState() instanceof org.bukkit.block.Lectern lectern)) {
+			return;
+		}
+		lectern.getInventory().clear();
+		lectern.update(true, false);
+	}
 	
 	public void generateNextRegion() {
 		// Erase old nodes
@@ -1080,7 +1089,9 @@ public class Session {
 					loc.add(0, -1, -1);
 					loc.getBlock().setType(Material.AIR); // Remove sign
 					loc.add(0, -1, 0);
-					loc.getBlock().setType(Material.CRYING_OBSIDIAN); // Remove boss lectern
+					Block lecternBlock = loc.getBlock();
+					clearLecternBook(lecternBlock);
+					lecternBlock.setType(Material.CRYING_OBSIDIAN); // Remove boss lectern
 				}
 			}
 		}

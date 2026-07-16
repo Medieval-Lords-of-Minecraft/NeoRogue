@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.map;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -395,26 +394,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		signLines.put(key, line + 1);
 	}
 
-	// Marks spawn locations with directional terracotta and returns the player spawn locations
-	public ArrayList<Location> markSpawns(Player p, int xOff, int zOff) {
-		ArrayList<Location> playerSpawnLocs = new ArrayList<>();
-
-		// Pre-compute player spawn locations (pure coordinate math)
-		if (spawns != null) {
-			for (Coordinates c : spawns) {
-				Coordinates coords = c.clone().applySettings(this);
-				Location l = coords.toLocation();
-				l.add(xOff + X_FIGHT_OFFSET, Y_OFFSET, Z_FIGHT_OFFSET + zOff);
-				l.setX(-l.getX() + (l.getX() % 1 != 0 ? 1 : 0));
-				playerSpawnLocs.add(l);
-			}
-		}
-
-		markSpawns(p, xOff, zOff);
-
-		return playerSpawnLocs;
-	}
-
 	// Whether a block should count as obstructing a marker. Ignores our own marker blocks (so
 	// re-marking or overlapping markers don't flag each other) and signs, which aren't real obstructions.
 	private static boolean isObstruction(Block b) {
@@ -433,7 +412,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 
-	private void markSpawns(Player p, int xOff, int zOff) {
+	public void markSpawns(Player p, int xOff, int zOff) {
 		HashMap<Location, Integer> signLines = new HashMap<>();
 
 		// Mark spawners with orange wool and signs

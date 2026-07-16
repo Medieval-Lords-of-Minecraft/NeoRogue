@@ -71,18 +71,14 @@ public class CmdAdminPiece extends Subcommand {
 		inst.instantiate(null, xOff, zOff);
 
 		// Mark spawn locations with terracotta
-		ArrayList<Location> potentialSpawns = inst.markSpawns(p, xOff, zOff);
+		inst.markSpawns(p, xOff, zOff);
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				Region.useMainWorld();
-				if (!potentialSpawns.isEmpty()) {
-					p.teleport(potentialSpawns.get(0));
-				} else {
-					org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-					p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
-				}
+				org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
+				p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
 			}
 		}.runTaskLater(NeoRogue.inst(), 20);
 	}
