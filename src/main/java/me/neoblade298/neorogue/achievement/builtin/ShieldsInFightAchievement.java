@@ -71,7 +71,7 @@ public class ShieldsInFightAchievement implements Achievement {
 		// Fresh per-fight accumulator; progress tracks the best single-fight total ever reached.
 		// carry keeps fractional shields between grants so nothing is lost to integer truncation.
 		double[] fightTotal = { 0 };
-		data.addTrigger(ID, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			ShieldsEvent ev = (ShieldsEvent) in;
 			double amt = ev.getShield().getTotal();
 			if (amt <= 0) return TriggerResult.keep();
