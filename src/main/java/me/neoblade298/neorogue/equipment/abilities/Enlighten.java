@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -36,7 +35,7 @@ public class Enlighten extends Equipment implements Power {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
 			am.setBool(true);
 			return TriggerResult.keep();
 		});
@@ -60,7 +59,7 @@ public class Enlighten extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta am2 = new ActionMeta();
-		data.addTrigger(id + "-active", Trigger.GRANT_SHIELDS, (pdata2, in2) -> {
+		data.addTrigger(id + "-active", Trigger.PRE_GRANT_SHIELDS, (pdata2, in2) -> {
 			am2.setBool(true);
 			return TriggerResult.keep();
 		});

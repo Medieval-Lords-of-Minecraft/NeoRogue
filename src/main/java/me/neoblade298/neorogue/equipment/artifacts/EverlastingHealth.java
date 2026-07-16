@@ -39,7 +39,7 @@ public class EverlastingHealth extends Artifact {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			am.addCount(1);
 			if (am.getCount() < DELAY) return TriggerResult.keep();
-			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, pa);
+			data.addTrigger(id, Trigger.PRE_RECEIVE_SHIELDS, pa);
 			return TriggerResult.remove();
 		});
 

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 
 public class ThornGarden extends Equipment implements Power {
 	private static final String ID = "ThornGarden";
@@ -38,7 +38,7 @@ public class ThornGarden extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_SHIELDS, (pdata, in) -> {
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
 		});
@@ -50,7 +50,7 @@ public class ThornGarden extends Equipment implements Power {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.RECEIVE_SHIELDS, (pdata2, in2) -> {
-					GrantShieldsEvent ev = (GrantShieldsEvent) in2;
+					ShieldsEvent ev = (ShieldsEvent) in2;
 					shieldCount[0] += ev.getShield().getAmount();
 					data.applyStatus(StatusType.THORNS, data, thorns * (shieldCount[0] / CUTOFF), -1, ThornGarden.this);
 					shieldCount[0] = shieldCount[0] % CUTOFF;

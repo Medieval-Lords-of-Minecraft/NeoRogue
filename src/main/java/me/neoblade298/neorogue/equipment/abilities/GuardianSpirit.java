@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -15,8 +14,8 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 
 public class GuardianSpirit extends Equipment {
 	private static final String ID = "GuardianSpirit";
@@ -37,8 +36,8 @@ public class GuardianSpirit extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		data.addPermanentShield(p.getUniqueId(), shields, this);
-		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
-			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+		data.addTrigger(id, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
+			ShieldsEvent ev = (ShieldsEvent) in;
 			ev.getAmountBuff().add(Buff.increase(data, shields, BuffStatTracker.shield(id + slot, this)));
 			return TriggerResult.keep();
 		});

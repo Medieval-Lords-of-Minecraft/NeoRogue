@@ -43,8 +43,8 @@ import me.neoblade298.neorogue.session.fight.trigger.MobAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -507,12 +507,12 @@ public class FightData {
 			int decayPeriodTicks, int decayRepetitions, boolean isSecondary, String sourceKey, Component sourceDisplay) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
 		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
-		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
+		ShieldsEvent ev = new ShieldsEvent(applierData, this, shield, isSecondary);
 		if (applierData != null) {
-			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
+			FightInstance.trigger(applierData.getPlayer(), Trigger.PRE_GRANT_SHIELDS, ev);
 		}
 		if (this instanceof PlayerFightData) {
-			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
+			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.PRE_RECEIVE_SHIELDS, ev);
 		}
 		// Record the base shield amount (pre-buff) against its own source, then attribute each amount
 		// buff to the equipment that provided it. Buff application on shields is linear, so each buff's
@@ -530,6 +530,12 @@ public class FightData {
 			}
 		}
 		shields.addShield(shield);
+		if (applierData != null) {
+			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
+		}
+		if (this instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
+		}
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
 		return shield;
 	}

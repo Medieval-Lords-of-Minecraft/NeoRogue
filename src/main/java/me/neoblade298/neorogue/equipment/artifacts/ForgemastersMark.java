@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 
 public class ForgemastersMark extends Artifact {
 	private static final String ID = "ForgemastersMark";
@@ -30,8 +30,8 @@ public class ForgemastersMark extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
-			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+		data.addTrigger(id, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
+			ShieldsEvent ev = (ShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.remove();
 			ev.getAmountBuff().add(Buff.multiplier(data, buff, BuffStatTracker.shield(id, this)));
 			ev.getDurationBuff().add(Buff.multiplier(data, buff, BuffStatTracker.ignored(this)));

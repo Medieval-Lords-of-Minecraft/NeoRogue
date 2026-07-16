@@ -152,10 +152,13 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 			values.put("r2", Equipment.getArtifact(pool2, s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0).getId());
 			values.put("r3", Equipment.getArtifact(pool3, s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0).getId());
 
-			// Choice 1 cost: pick a random artifact the player currently has
-			if (!data.getArtifacts().isEmpty()) {
-				ArtifactInstance[] owned = data.getArtifacts().values().toArray(new ArtifactInstance[0]);
-				ArtifactInstance pick = owned[NeoRogue.gen.nextInt(owned.length)];
+			// Choice 1 cost: pick a random non-gem artifact the player currently has
+			ArrayList<ArtifactInstance> ownedNonGem = new ArrayList<ArtifactInstance>();
+			for (ArtifactInstance ai : data.getArtifacts().values()) {
+				if (!ai.getArtifact().isGemArtifact()) ownedNonGem.add(ai);
+			}
+			if (!ownedNonGem.isEmpty()) {
+				ArtifactInstance pick = ownedNonGem.get(NeoRogue.gen.nextInt(ownedNonGem.size()));
 				values.put("c1", pick.getArtifact().getId());
 			}
 			else {

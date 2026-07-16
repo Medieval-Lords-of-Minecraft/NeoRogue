@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 
 public class MinorShieldingRelic extends Equipment {
 	private static final String ID = "MinorShieldingRelic";
@@ -29,8 +29,8 @@ public class MinorShieldingRelic extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
-			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_SHIELDS, (pdata, in) -> {
+			ShieldsEvent ev = (ShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
 			ev.getAmountBuff().add(Buff.increase(data, shields, BuffStatTracker.shield(id + slot, this)));
 			return TriggerResult.keep();

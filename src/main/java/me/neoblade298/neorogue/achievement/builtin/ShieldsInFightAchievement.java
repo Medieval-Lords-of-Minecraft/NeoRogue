@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -71,8 +71,8 @@ public class ShieldsInFightAchievement implements Achievement {
 		// Fresh per-fight accumulator; progress tracks the best single-fight total ever reached.
 		// carry keeps fractional shields between grants so nothing is lost to integer truncation.
 		double[] fightTotal = { 0 };
-		data.addTrigger(ID, Trigger.GRANT_SHIELDS, (pdata, in) -> {
-			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+		data.addTrigger(ID, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
+			ShieldsEvent ev = (ShieldsEvent) in;
 			double amt = ev.getShield().getTotal();
 			if (amt <= 0) return TriggerResult.keep();
 			fightTotal[0] += amt;

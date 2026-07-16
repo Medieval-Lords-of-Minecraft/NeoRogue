@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ShieldsEvent;
 
 public class EnduranceTraining extends Equipment {
 	private static final String ID = "EnduranceTraining";
@@ -34,8 +34,8 @@ public class EnduranceTraining extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		Player p = data.getPlayer();
 		data.addPermanentShield(p.getUniqueId(), shields, this);
-		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
-			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+		data.addTrigger(id, Trigger.PRE_GRANT_SHIELDS, (pdata, in) -> {
+			ShieldsEvent ev = (ShieldsEvent) in;
 			ev.getDurationBuff().add(Buff.increase(data, dur, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
