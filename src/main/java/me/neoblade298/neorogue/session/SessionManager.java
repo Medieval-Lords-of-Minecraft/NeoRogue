@@ -751,7 +751,11 @@ public class SessionManager implements Listener {
 			return;
 
 		e.setCancelled(true);
-		FightInstance.handleClickArmorStand(p, e.getRightClicked());
+		// If it's not a revive, it might be a mythicmob (like Grand Archivist Totem)
+		// Trigger regular right click hit
+		if (!FightInstance.handleClickArmorStand(p, e.getRightClicked())) {
+			FightInstance.handleRightClickEntity(e);
+		}
 	}
 
 	private static EquipmentSlot canEquip(ItemStack item) {

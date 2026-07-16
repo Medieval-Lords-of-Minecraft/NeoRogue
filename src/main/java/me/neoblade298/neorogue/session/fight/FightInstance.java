@@ -589,25 +589,28 @@ public abstract class FightInstance extends Instance {
 		trigger(e.getPlayer(), Trigger.TOGGLE_SPRINT, e);
 	}
 
-	public static void handleClickArmorStand(Player p, Entity armorStand) {
+	// Returns true if the player is reviving someone, false otherwise
+	public static boolean handleClickArmorStand(Player p, Entity armorStand) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null || data.isDead())
-			return;
+			return false;
 		FightInstance fi = data.getInstance();
 		for (Corpse c : fi.corpses) {
 			if (c.hitCorpse(armorStand)) {
 				if (fi.revivers.containsKey(p)) {
 					Util.displayError(p, "You're already reviving someone!");
-					return;
+					return false;
 				}
 
 				if (c.reviver != null) {
 					Util.displayError(p, "Someone is already reviving this player!");
-					return;
+					return false;
 				}
 				fi.startRevive(data, c);
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public static void handlePotionEffect(EntityPotionEffectEvent e) {
