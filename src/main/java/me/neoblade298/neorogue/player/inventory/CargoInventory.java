@@ -119,8 +119,6 @@ public class CargoInventory extends CoreInventory {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(line(Component.text("Back", NamedTextColor.YELLOW)));
 		List<Component> lore = new ArrayList<Component>();
-		lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
-				.append(Component.text("return to main menu", NamedTextColor.WHITE))));
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;

@@ -1,9 +1,5 @@
 package me.neoblade298.neorogue.session.fight.modifier;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.entity.LivingEntity;
 
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -15,11 +11,7 @@ import net.kyori.adventure.text.Component;
 // Steadily reduces the mob's ability cooldowns, letting it use skills more often over time.
 public class Alacrity extends MobModifier {
 	private static final int INTERVAL = 10; // seconds between reductions
-	private static final long REDUCTION_TICKS = 20L; // 1 second, in MythicMobs skill cooldown ticks
-
-	// MythicMobs' per-skill cooldown map isn't in the compile-time API, so we resolve it reflectively.
-	private static Field cooldownsField;
-	private static boolean fieldResolved = false;
+	private static final int REDUCTION_TICKS = 20; // 1 second, in MythicMobs skill cooldown ticks
 
 	public Alacrity() {
 		super("Alacrity", Component.text("Alacrity"),
@@ -47,23 +39,8 @@ public class Alacrity extends MobModifier {
 
 	// MythicMobs stores skill cooldowns as the tick at which each skill is next usable; lowering
 	// those values makes the skills available sooner.
-	@SuppressWarnings("unchecked")
 	private static void reduceCooldowns(ActiveMob am) {
-		try {
-			if (!fieldResolved) {
-				cooldownsField = ActiveMob.class.getField("cooldowns");
-				fieldResolved = true;
-			}
-			if (cooldownsField == null) return;
-			Map<String, Long> cooldowns = (Map<String, Long>) cooldownsField.get(am);
-			if (cooldowns == null) return;
-			for (Entry<String, Long> ent : cooldowns.entrySet()) {
-				ent.setValue(Math.max(0, ent.getValue() - REDUCTION_TICKS));
-			}
-		} catch (Exception ex) {
-			// Field unavailable in this MythicMobs build; stop retrying every tick.
-			fieldResolved = true;
-			cooldownsField = null;
-		}
+		int gcd = am.getGlobalCooldown();
+		if (gcd > 0) am.setGlobalCooldown(Math.max(0, gcd - REDUCTION_TICKS));
 	}
 }

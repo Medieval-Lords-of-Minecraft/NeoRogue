@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -146,6 +148,9 @@ public class SessionSettingsInventory extends CoreInventory {
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
+		item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay()
+				.addHiddenComponents(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER)
+				.build());
 		return item;
 	}
 

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -25,6 +23,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
 import me.neoblade298.neorogue.equipment.abilities.HerculeanStrength;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -102,7 +101,7 @@ public class RisingSun extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE,
+				Material.NETHER_STAR,
 				"On cast, " + DescUtil.charge(this, 1, 1) + ", then spin clockwise, dealing " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage to and knocking up all enemies in a circle.");
 	}
 }

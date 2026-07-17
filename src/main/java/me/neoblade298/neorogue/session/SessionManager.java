@@ -345,9 +345,11 @@ public class SessionManager implements Listener {
 		}
 		if (InventoryListener.hasOpenCoreInventory(p))
 			return;
-		// Spectators can never edit their own inventory
+		// Spectators can never edit their own inventory, but their hotbar tools (map / party heads /
+		// leave barrier) should still work when clicked in the inventory, not just via world interaction.
 		if (s.isSpectator(uuid)) {
 			e.setCancelled(true);
+			s.handleSpectatorInventoryClick(p, e);
 			return;
 		}
 		if (s.getInstance() instanceof EditInventoryInstance
@@ -358,11 +360,7 @@ public class SessionManager implements Listener {
 			// Leave Fight icon lives in the player's own inventory at the LEAVE slot during fights.
 			if (e.getClickedInventory() == p.getInventory() && e.getSlot() == PlayerSessionInventory.LEAVE
 					&& e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.COMPASS) {
-				new BukkitRunnable() {
-					public void run() {
-						s.leavePlayer(p);
-					}
-				}.runTask(NeoRogue.inst());
+				s.tryLeave(p);
 			}
 		}
 	}
@@ -947,27 +945,14 @@ public class SessionManager implements Listener {
 	}
 
 	// Standardized entry point for a player leaving via /nr leave or the leave button in the
-	// session inventory. Handles spectators, busy/loading state, and lobby vs in-game dispatch.
+	// session inventory. Resolves the player's session and delegates to Session.tryLeave.
 	public static void leaveSession(Player p) {
 		Session sess = getSession(p);
 		if (sess == null) {
 			Util.displayError(p, "You're not in a session!");
 			return;
 		}
-		if (sess.isBusy()) {
-			Util.displayError(p, "You can't do that while the session is loading!");
-			return;
-		}
-		if (sess.isSpectator(p.getUniqueId())) {
-			sess.removeSpectator(p);
-			return;
-		}
-		if (sess.getInstance() instanceof LobbyInstance) {
-			((LobbyInstance) sess.getInstance()).leavePlayer(p);
-		}
-		else {
-			sess.leavePlayer(p);
-		}
+		sess.tryLeave(p);
 	}
 
 	public static void endSession(Session s) {

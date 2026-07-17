@@ -130,7 +130,6 @@ public class Region {
 			return;
 		}
 		lectern.getInventory().clear();
-		lectern.update();
 	}
 	
 	public static void loadConfig() {
@@ -881,8 +880,8 @@ public class Region {
 					loc.add(0, -2, -1);
 					Block lecternBlock = loc.getBlock();
 					clearLecternBook(lecternBlock);
-					// lecternBlock
-					// 		.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
+					lecternBlock
+							.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
 				}
 			}
 		}

@@ -113,7 +113,7 @@ public class SessionEquipment {
 	public Component getDisplay() {
 		Component display = equipment.getDisplay();
 		if (hasDurability()) {
-			display = display.append(Component.text(" (" + getDurability() + " uses)", NamedTextColor.RED));
+			display = display.append(Component.text(" ")).append(Component.text(getDurability() + " uses)", NamedTextColor.RED));
 		}
 		return display;
 	}

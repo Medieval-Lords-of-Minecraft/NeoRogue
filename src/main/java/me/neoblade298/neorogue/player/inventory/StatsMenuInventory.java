@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,6 +30,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class StatsMenuInventory extends CoreInventory {
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 	private static final int GLOBAL_SLOT = 4;
+	private static final int BACK_SLOT = 22;
 	private static final int[] CLASS_SLOTS = { 10, 12, 14, 16 };
 	private static final EquipmentClass[] CLASSES = { EquipmentClass.WARRIOR, EquipmentClass.THIEF,
 			EquipmentClass.ARCHER, EquipmentClass.MAGE };
@@ -46,6 +48,8 @@ public class StatsMenuInventory extends CoreInventory {
 			inv.setItem(CLASS_SLOTS[i],
 					buildScopeItem(stats, CLASSES[i], icons[i], CLASSES[i].getDisplay(), NamedTextColor.YELLOW));
 		}
+		inv.setItem(BACK_SLOT, CoreInventory.createButton(Material.BARRIER,
+				Component.text("Back", NamedTextColor.RED)));
 	}
 
 	// Builds a scope tile (global or a single class). ec == null means global (all classes).
@@ -107,6 +111,10 @@ public class StatsMenuInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		if (e.getSlot() == BACK_SLOT) {
+			new MainMenuInventory(p);
+		}
 	}
 
 	@Override

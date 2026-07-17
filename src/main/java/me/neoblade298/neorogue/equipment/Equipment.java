@@ -25,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
@@ -1431,11 +1433,24 @@ public abstract class Equipment implements Comparable<Equipment> {
 			meta.addEnchant(Enchantment.INFINITY, 1, true); // Needed for now
 		}
 
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ARMOR_TRIM);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ARMOR_TRIM);	
 		meta.setEnchantmentGlintOverride(isUpgraded);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);
+		// The HIDE_* ItemFlags above are deprecated and no longer suppress these lines in the
+		// data-component tooltip system, so hide the underlying components directly. NOTE: a smithing
+		// template's "Applies to / Ingredients" text is intrinsic to the item type (not component-
+		// provided) and therefore cannot be hidden here.
+		item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay()
+				.addHiddenComponents(
+						DataComponentTypes.ATTRIBUTE_MODIFIERS,
+						DataComponentTypes.UNBREAKABLE,
+						DataComponentTypes.ENCHANTMENTS,
+						DataComponentTypes.STORED_ENCHANTMENTS,
+						DataComponentTypes.DYED_COLOR,
+						DataComponentTypes.TRIM)
+				.build());
 
 		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
 				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));

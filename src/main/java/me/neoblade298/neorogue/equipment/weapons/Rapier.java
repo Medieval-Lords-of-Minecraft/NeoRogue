@@ -43,7 +43,7 @@ public class Rapier extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			if (am.addCount(1) < 3) {
+			if (am.addCount(1) >= 3) {
 				data.addSimpleShield(p.getUniqueId(), shields, 80, this);
 				am.setCount(0);
 			}

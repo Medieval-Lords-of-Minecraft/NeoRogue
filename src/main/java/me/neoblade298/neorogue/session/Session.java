@@ -27,6 +27,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -734,44 +735,60 @@ public class Session {
 		ItemMeta meta = barrier.getItemMeta();
 		meta.displayName(Component.text("Leave Session", NamedTextColor.RED)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
-		meta.lore(List.of(Component.text("Right click to stop spectating", NamedTextColor.GRAY)
+		meta.lore(List.of(Component.text("Click to stop spectating", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
 		barrier.setItemMeta(meta);
 		return barrier;
 	}
 
-	// Routes a spectator's world interaction based on the held hotbar item. Block clicks (e.g.
-	// lecterns) and unrecognized items fall through to the instance's own spectator handler.
+	// Routes a spectator's world interaction based on the held hotbar item. Recognized spectator
+	// tools (map/leave barrier/party heads) take priority over block clicks so they still work when
+	// the spectator happens to be aiming at a block. Unrecognized items and bare block clicks (e.g.
+	// lecterns) fall through to the instance's own spectator handler.
 	public void handleSpectatorInteract(Player p, PlayerInteractEvent e) {
-		if (e.getClickedBlock() != null) {
-			inst.handleSpectatorInteractEvent(e);
-			return;
-		}
-		ItemStack hand = e.getItem();
-		if (hand == null) {
-			inst.handleSpectatorInteractEvent(e);
-			return;
-		}
+		if (handleSpectatorItem(p, e.getItem(), e.getAction().isLeftClick(), e.getAction().isRightClick())) return;
+		inst.handleSpectatorInteractEvent(e);
+	}
 
-		Material type = hand.getType();
+	// Lets the spectator hotbar tools also work when clicked inside the player's own inventory (e.g.
+	// with the inventory open), not just via world interaction. Deferred a tick so actions that open
+	// inventories or teleport don't fight the in-progress InventoryClickEvent.
+	public void handleSpectatorInventoryClick(Player p, InventoryClickEvent e) {
+		ItemStack item = e.getCurrentItem();
+		if (item == null || item.getType().isAir()) return;
+		final boolean left = e.isLeftClick(), right = e.isRightClick();
+		final ItemStack clicked = item;
+		new BukkitRunnable() {
+			public void run() {
+				handleSpectatorItem(p, clicked, left, right);
+			}
+		}.runTask(NeoRogue.inst());
+	}
+
+	// Shared dispatch for the spectator hotbar tools, usable from both world interaction and inventory
+	// clicks. Returns true if the item was a recognized spectator tool (and was handled).
+	private boolean handleSpectatorItem(Player p, ItemStack item, boolean isLeftClick, boolean isRightClick) {
+		Material type = item != null ? item.getType() : null;
+
 		if (type == Material.FILLED_MAP) {
 			MapViewer viewer = spectators.get(p.getUniqueId());
 			if (viewer != null) {
-				if (e.getAction().isLeftClick()) viewer.scrollMapDown();
-				else if (e.getAction().isRightClick()) viewer.scrollMapUp();
+				if (isLeftClick) viewer.scrollMapDown();
+				else if (isRightClick) viewer.scrollMapUp();
 			}
-			return;
+			return true;
 		}
 		if (type == Material.BARRIER) {
-			if (e.getAction().isRightClick()) removeSpectator(p);
-			return;
+			// Either click leaves; spectators shouldn't have to hunt for the right mouse button
+			removeSpectator(p);
+			return true;
 		}
 		if (type == Material.PLAYER_HEAD && (inst instanceof FightInstance || inst instanceof EditInventoryInstance)) {
-			String spectateTarget = NBT.get(hand, nbt -> { return nbt.hasTag("spectateTarget") ? nbt.getString("spectateTarget") : null; });
+			String spectateTarget = NBT.get(item, nbt -> { return nbt.hasTag("spectateTarget") ? nbt.getString("spectateTarget") : null; });
 			if (spectateTarget != null) {
 				PlayerSessionData data = party.get(UUID.fromString(spectateTarget));
-				if (data == null) return;
-				if (e.getAction().isLeftClick()) {
+				if (data == null) return true;
+				if (isLeftClick) {
 					// Downed players are hidden, so teleport to their corpse if they have one
 					Location dest = inst instanceof FightInstance
 							? ((FightInstance) inst).getCorpseLocation(data.getUniqueId())
@@ -785,14 +802,14 @@ public class Session {
 						Sounds.teleport.play(p, p, Audience.ORIGIN);
 					}
 				}
-				else if (e.getAction().isRightClick()) {
+				else if (isRightClick) {
 					new PlayerSessionSpectateInventory(data, p);
 				}
-				return;
+				return true;
 			}
 		}
 
-		inst.handleSpectatorInteractEvent(e);
+		return false;
 	}
 	
 	// False if set instance fails
@@ -1112,11 +1129,10 @@ public class Session {
 	}
 
 	private static void clearLecternBook(Block block) {
-		if (!(block.getState() instanceof org.bukkit.block.Lectern lectern)) {
+		if (!(block.getState(false) instanceof org.bukkit.block.Lectern lectern)) {
 			return;
 		}
 		lectern.getInventory().clear();
-		lectern.update(true, false);
 	}
 	
 	public void generateNextRegion() {
@@ -1218,6 +1234,27 @@ public class Session {
 	public void leavePlayer(Player p) {
 		broadcast("<yellow>" + p.getName() + " <gray>has left the party, so the game has ended!");
 		SessionManager.endSession(this);
+	}
+	
+	// Standardized entry point for a player leaving this session via /nr leave or the leave button
+	// in the session inventory. Handles busy/loading state, spectators, and lobby vs in-game dispatch.
+	// Returns true if the leave was carried out, false if it was rejected (e.g. session is loading).
+	public boolean tryLeave(Player p) {
+		if (isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return false;
+		}
+		if (isSpectator(p.getUniqueId())) {
+			removeSpectator(p);
+			return true;
+		}
+		if (inst instanceof LobbyInstance) {
+			((LobbyInstance) inst).leavePlayer(p);
+		}
+		else {
+			leavePlayer(p);
+		}
+		return true;
 	}
 	
 	public void kickPlayer(Player p, OfflinePlayer target) {
