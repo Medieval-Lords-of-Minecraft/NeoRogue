@@ -507,8 +507,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 			String eqId = cursorEquipId;
 			String eqedId = clickedEquipId;
-			Equipment eq = Equipment.get(eqId, cursorUpgraded);
-			Equipment eqed = Equipment.get(eqedId, clickedUpgraded);
+			Equipment eq = eqId == null ? null : Equipment.get(eqId, cursorUpgraded);
+			Equipment eqed = eqedId == null ? null : Equipment.get(eqedId, clickedUpgraded);
 
 			// Reforged item check
 			Equipment[] reforgePair = Equipment.resolveReforgePair(eq, eqed);
@@ -759,6 +759,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			nbt.setInteger("dataSlot", dataSlot);
 			nbt.setBoolean("openSlot", true); // Differentiates with available equippable slots and just empty panes in inventory
 		});
+		debugNbt("addNbt(dataSlot=" + dataSlot + ")", item);
 		return item;
 	}
 

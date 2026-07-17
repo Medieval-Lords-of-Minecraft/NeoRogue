@@ -151,8 +151,9 @@ public class Session {
 	
 	private static Clipboard loadClipboard(String schematic) {
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
-		ClipboardFormat format = ClipboardFormats.findByPath(file.toPath());
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		try (FileInputStream fis = new FileInputStream(file);
+			ClipboardReader reader = format.getReader(fis)) {
 			return reader.read();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -308,7 +309,7 @@ public class Session {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
 			loc.getBlock().setType(versionCheck);
 			// Generate the lobby and add the host there
-			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().world(Region.world).build()) {
 				pasteSchematic(newLobby, editSession, this, Session.NEW_LOBBY_Z);
 				pasteSchematic(loadLobby, editSession, this, LOAD_LOBBY_X, 0, Session.LOAD_LOBBY_Z);
 				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);

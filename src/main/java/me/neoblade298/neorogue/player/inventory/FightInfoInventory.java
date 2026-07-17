@@ -15,19 +15,31 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.MobModifier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightInfoInventory extends CoreInventory {
-	public FightInfoInventory(Player viewer, Session s, @Nullable PlayerSessionData data, TreeSet<Mob> mobs, boolean isChance) {
-		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
+	public FightInfoInventory(Player viewer, Session s, @Nullable PlayerSessionData data, @Nullable FightInstance inst, TreeSet<Mob> mobs, boolean isChance) {
+		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9
+				+ (inst != null && inst.getModifier() != null ? 9 : 0), Component.text("Fight Info", NamedTextColor.BLUE)));
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
-		
+
+		// If the fight has a modifier, reserve the top row: place its icon in the top middle slot (4)
+		// and push all mob items down by a row.
+		MobModifier fightModifier = inst != null ? inst.getModifier() : null;
 		int pos = 0;
+		if (fightModifier != null) {
+			contents[4] = fightModifier.getIcon();
+			pos = 9;
+		}
+
 		for (Mob mob : mobs) {
-			contents[pos++] = mob.getItemDisplay(s, null, isChance);
+			MobModifier modifier = inst != null ? inst.getDisplayModifier(mob) : null;
+			contents[pos++] = mob.getItemDisplay(s, modifier, isChance);
 
 			if (mob.getSummons() != null) {
 				for (String summonStr : mob.getSummons()) {

@@ -253,6 +253,9 @@ public class Mob implements Comparable<Mob> {
 		}
 		
 		lore.addAll(this.lore);
+		if (modifier != null) {
+			modifier.appendDisplay(lore);
+		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		NBT.modify(item, nbt -> { nbt.setString("mobId", id); });

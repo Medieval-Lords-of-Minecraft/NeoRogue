@@ -51,8 +51,8 @@ public class NotorietySetting {
                     .append(Component.text(" after first boss").color(NamedTextColor.GRAY)),
             Component.text("You have tighter deadlines to reach the market."));
 
-    public static final NotorietySetting BOSS_RANDOM_MODIFIER = new NotorietySetting(
-        Component.text("Minibosses and bosses have a random modifier").color(NamedTextColor.GRAY),
+    public static final NotorietySetting MOB_MODIFIERS = new NotorietySetting(
+        Component.text("Fights have a random enemy modifier").color(NamedTextColor.GRAY),
         Component.text("Dangerous enemies put everything on the line to defeat you."));
    
     public static final double INCREASE_DAMAGE_MULTIPLIER = 1.3;

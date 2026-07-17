@@ -31,6 +31,9 @@ public class StandardFightInstance extends FightInstance {
 	private static final int KILLS_TO_SCALE = 7; // number of mobs to kill before increasing total mobs by 1
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
+	// Chance for each mob in a standard fight to spawn with the fight's modifier. Configurable.
+	public static double MODIFIER_SPAWN_CHANCE = 0.2;
+
 	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private BossBar timeBar, scoreBar;
 	private double time, score;
@@ -53,6 +56,7 @@ public class StandardFightInstance extends FightInstance {
 		 * int max = (int) Math.min(rand + min, 6);
 		 */
 		map = Map.generate(type, NeoRogue.gen.nextInt(3, 6), s.isDebug());
+		generateModifier(false);
 	}
 
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
@@ -235,7 +239,21 @@ public class StandardFightInstance extends FightInstance {
 
 	@Override
 	public String serializeInstanceData() {
-		return "STANDARD:" + map.serialize();
+		return serializeWithModifier("STANDARD:");
+	}
+
+	// Standard fights apply the modifier to any spawned mob with a fixed chance, rather than to all
+	// non-normal mobs (of which standard fights have none).
+	@Override
+	public MobModifier rollModifierForMob(Mob mob) {
+		if (modifier == null || mob == null) return null;
+		return NeoRogue.gen.nextDouble() < MODIFIER_SPAWN_CHANCE ? modifier : null;
+	}
+
+	// Any mob in a standard fight may spawn with the modifier, so preview it on all of them.
+	@Override
+	public MobModifier getDisplayModifier(Mob mob) {
+		return modifier;
 	}
 
 	@Override

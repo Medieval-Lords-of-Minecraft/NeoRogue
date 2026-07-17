@@ -33,6 +33,7 @@ public class BossFightInstance extends FightInstance {
 		super(s, players);
 		map = Map.generateBoss(type, 0, s.isDebug());
 		targets.addAll(map.getTargets());
+		generateModifier(true);
 	}
 	
 	public BossFightInstance(Session s, Set<UUID> players, Map map) {
@@ -113,7 +114,7 @@ public class BossFightInstance extends FightInstance {
 
 	@Override
 	public String serializeInstanceData() {
-		return "BOSS:" + map.serialize();
+		return serializeWithModifier("BOSS:");
 	}
 
 	@Override

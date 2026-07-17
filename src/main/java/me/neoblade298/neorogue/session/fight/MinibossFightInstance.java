@@ -30,6 +30,7 @@ public class MinibossFightInstance extends FightInstance {
 		map = Map.generateMiniboss(type, 0, s.isDebug(), s.getLastMiniboss());
 		minibossId = map.getPieces().getFirst().getPiece().getId();
 		targets.addAll(map.getTargets());
+		generateModifier(true);
 	}
 	
 	public MinibossFightInstance(Session s, Set<UUID> party, Map map) {
@@ -93,7 +94,7 @@ public class MinibossFightInstance extends FightInstance {
 	}
 	
 	public String serializeInstanceData() {
-		return "MINIBOSS:" + map.serialize();
+		return serializeWithModifier("MINIBOSS:");
 	}
 
 	@Override

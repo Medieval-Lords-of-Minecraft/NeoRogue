@@ -38,7 +38,7 @@ public class MapPiece {
 
 		// Save schematic
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, cfg.getString("schematic") + ".schem");
-		ClipboardFormat format = ClipboardFormats.findByPath(file.toPath());
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
 			clipboard = reader.read();
 		} catch (FileNotFoundException e) {

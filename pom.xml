@@ -31,6 +31,10 @@
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
+            <id>intellectualsites</id>
+            <url>https://mvn.intellectualsites.com/content/repositories/releases/</url>
+        </repository>
+        <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
@@ -81,11 +85,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- WorldEdit -->
+        <!-- FastAsyncWorldEdit (drop-in replacement for WorldEdit; keeps the WorldEdit API) -->
         <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>7.4.4</version>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <version>2.15.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
+            <version>2.15.3</version>
             <scope>provided</scope>
         </dependency>
 

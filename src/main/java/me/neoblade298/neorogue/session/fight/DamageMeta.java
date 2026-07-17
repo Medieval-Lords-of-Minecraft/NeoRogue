@@ -299,6 +299,10 @@ public class DamageMeta {
 			}
 			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEAL_DAMAGE, new PreDealDamageEvent(this, target));
 		}
+		else {
+			// Mob-owned damage: let mob modifiers react to dealing damage (e.g. Windcutter)
+			owner.runMobActions(owner, Trigger.DEAL_DAMAGE, target);
+		}
 		
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile

@@ -111,6 +111,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.MobModifier;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
@@ -173,6 +174,7 @@ public class NeoRogue extends JavaPlugin {
 		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
+		MobModifier.registerModifiers(); // Register miniboss/boss mob modifiers
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
 		

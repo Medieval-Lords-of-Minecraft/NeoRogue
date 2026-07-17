@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -53,6 +54,7 @@ public class FightData {
 	protected String mobDisplay;
 	protected ActiveMob am;
 	protected Mob mob;
+	protected MobModifier modifier; // Non-null if a mob modifier was applied to this mob
 	protected double knockbackMult;
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
@@ -66,6 +68,7 @@ public class FightData {
 	protected HashMap<UUID, Barrier> barriers = new HashMap<UUID, Barrier>();
 	protected ShieldHolder shields; // Never null
 	protected LivingEntity entity = null;
+	protected ArrayList<Consumer<FightData>> deathActions = new ArrayList<Consumer<FightData>>();
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected LinkedList<TickAction> pendingTickActions = new LinkedList<TickAction>(); // Added during iteration
 	protected boolean isIteratingTickActions = false;
@@ -141,6 +144,16 @@ public class FightData {
 			if (entity != null && entity.isValid()) entity.setCollidable(true);
 		}, 1L);
 		updateDisplayName();
+
+		// Attach any mob modifier the fight instance assigned to this mob (notoriety feature)
+		if (inst != null && mob != null) {
+			MobModifier mod = inst.rollModifierForMob(mob);
+			if (mod != null) {
+				this.modifier = mod;
+				mod.initialize(this);
+				updateDisplayName(); // Refresh the hologram so the modifier skull shows
+			}
+		}
 	}
 
 	// Hides the vanilla/MythicMobs nameplate so only our hologram is shown. Safe to call repeatedly.
@@ -172,6 +185,27 @@ public class FightData {
 	
 	public Mob getMob() {
 		return this.mob;
+	}
+
+	public ActiveMob getActiveMob() {
+		return this.am;
+	}
+
+	public MobModifier getModifier() {
+		return this.modifier;
+	}
+
+	// Registers an action to run when this mob dies (not on despawn or fight cleanup). Used by
+	// modifiers such as Martyr that trigger on death.
+	public void addDeathAction(Consumer<FightData> action) {
+		deathActions.add(action);
+	}
+
+	// Runs all registered death actions. Called from FightInstance.handleMythicDeath.
+	public void runDeathActions() {
+		for (Consumer<FightData> action : deathActions) {
+			action.accept(this);
+		}
 	}
 
 	public void addDamageBuff(DamageBuffType type, Buff b) {
@@ -267,10 +301,15 @@ public class FightData {
 		}
 
 		// Build bottom line with health and mob name
+		Component nameComponent = Component.text(" " + mobDisplay).color(NamedTextColor.WHITE);
+		if (modifier != null) {
+			// Prefix a skull to signal this mob carries a modifier
+			nameComponent = Component.text(" \u2620").color(NamedTextColor.DARK_RED).append(nameComponent);
+		}
 		Component bottomLine = Component.text((int) Math.ceil(entity.getHealth())).color(healthColor)
 				.append(Component.text("/").color(NamedTextColor.WHITE))
 				.append(Component.text((int) entity.getAttribute(Attribute.MAX_HEALTH).getValue()).color(healthColor))
-				.append(Component.text(" " + mobDisplay).color(NamedTextColor.WHITE));
+				.append(nameComponent);
 		
 		// Build status list
 		ArrayList<Status> list = new ArrayList<Status>(statuses.values());

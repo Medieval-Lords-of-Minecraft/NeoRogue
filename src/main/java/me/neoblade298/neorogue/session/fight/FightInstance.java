@@ -94,6 +94,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultiple
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.LoseInstance;
+import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -113,6 +114,10 @@ public abstract class FightInstance extends Instance {
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected Map map;
+	// A single mob modifier assigned to this fight (notoriety feature). For miniboss/boss fights every
+	// non-normal mob spawns with it; for standard fights each mob has a chance to spawn with it. It is
+	// serialized with the fight instance so quitting and rejoining can't reroll it.
+	protected MobModifier modifier;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
 			initialSpawns = new ArrayList<MapSpawnerInstance>();
@@ -852,6 +857,7 @@ public abstract class FightInstance extends Instance {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null)
 			return;
+		data.runDeathActions();
 		data.cleanup();
 
 		if (data.getInstance() == null || !data.getInstance().isActive)
@@ -1481,16 +1487,74 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public abstract String serializeInstanceData();
-	
+
+	// Separates the mob modifier segment from the map segment in serialized instance data.
+	private static final String MODIFIER_DELIMITER = "@@";
+
+	// Rolls this fight's mob modifier if the notoriety setting is active. Only called on fresh
+	// creation (never on deserialization), so an existing assignment is preserved across relogs.
+	// Standard fights pass allowBossModifiers=false to exclude boss-only modifiers.
+	public void generateModifier(boolean allowBossModifiers) {
+		if (!NotorietySetting.MOB_MODIFIERS.isActive(s)) return;
+		modifier = MobModifier.generate(allowBossModifiers);
+	}
+
+	public MobModifier getModifier() {
+		return modifier;
+	}
+
+	// Decides whether a newly spawned mob should receive this fight's modifier. The base behavior
+	// (miniboss/boss) applies it to every non-normal mob. StandardFightInstance overrides this to
+	// apply it to any mob with a configurable chance.
+	public MobModifier rollModifierForMob(Mob mob) {
+		if (modifier == null || mob == null) return null;
+		if (mob.getType() == Mob.MobType.NORMAL) return null;
+		return modifier;
+	}
+
+	// The modifier to preview for a mob in the Fight Info inventory. Base behavior mirrors
+	// rollModifierForMob (non-normal mobs); StandardFightInstance shows it on all mobs since any of
+	// them may randomly spawn with it.
+	public MobModifier getDisplayModifier(Mob mob) {
+		if (modifier == null || mob == null) return null;
+		return mob.getType() == Mob.MobType.NORMAL ? null : modifier;
+	}
+
+	// Restores the fight's modifier from serialized data. Unknown/blank ids leave it unset.
+	protected void loadModifier(String data) {
+		if (data == null || data.isBlank()) return;
+		modifier = MobModifier.get(data);
+	}
+
+	// Prefixes the map serialization with the modifier segment.
+	protected String serializeWithModifier(String prefix) {
+		return prefix + (modifier != null ? modifier.getId() : "") + MODIFIER_DELIMITER + map.serialize();
+	}
+
 	public static FightInstance deserializeInstanceData(Session s, HashMap<UUID, PlayerSessionData> party, String str) {
 		try {
-			if (str.startsWith("STANDARD")) {
-				return StandardFightInstance.create(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
-			} else if (str.startsWith("MINIBOSS")) {
-				return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
-			} else {
-				return new BossFightInstance(s, party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
+			int colon = str.indexOf(':');
+			String type = str.substring(0, colon);
+			String body = str.substring(colon + 1);
+
+			// Split off the modifier segment if present (absent in older saves)
+			String modData = null, mapData = body;
+			int idx = body.indexOf(MODIFIER_DELIMITER);
+			if (idx >= 0) {
+				modData = body.substring(0, idx);
+				mapData = body.substring(idx + MODIFIER_DELIMITER.length());
 			}
+
+			FightInstance inst;
+			if (type.equals("STANDARD")) {
+				inst = StandardFightInstance.create(s, party.keySet(), Map.deserialize(mapData));
+			} else if (type.equals("MINIBOSS")) {
+				inst = new MinibossFightInstance(s, party.keySet(), Map.deserialize(mapData));
+			} else {
+				inst = new BossFightInstance(s, party.keySet(), Map.deserialize(mapData));
+			}
+			inst.loadModifier(modData);
+			return inst;
 		}
 		catch (Exception e) {
 			Bukkit.getLogger().severe("[NeoRogue] Failed to deserialize FightInstance data: " + str);
