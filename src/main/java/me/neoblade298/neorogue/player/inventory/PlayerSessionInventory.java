@@ -759,7 +759,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			nbt.setInteger("dataSlot", dataSlot);
 			nbt.setBoolean("openSlot", true); // Differentiates with available equippable slots and just empty panes in inventory
 		});
-		debugNbt("addNbt(dataSlot=" + dataSlot + ")", item);
 		return item;
 	}
 

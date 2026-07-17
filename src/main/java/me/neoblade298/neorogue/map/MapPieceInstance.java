@@ -298,7 +298,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			// Source masks are evaluated against the extent they're bound to, and here they filter the
 			// clipboard (the paste source), so they must be bound to the clipboard. Binding them to the
 			// world instead tests the empty target, so nothing gets filtered and marker blocks leak in.
-			Clipboard clipboard = schematic.getClipboard();
+			Clipboard clipboard = schematic.getClipboards().get(0);
 			// Restricted marker blocks that must never be pasted into the world
 			Mask notRestricted = Masks.negate(
 					new BlockTypeMask(clipboard, BlockTypes.LAPIS_BLOCK, BlockTypes.DIAMOND_BLOCK));

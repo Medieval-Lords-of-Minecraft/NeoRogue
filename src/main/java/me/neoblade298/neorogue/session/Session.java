@@ -166,7 +166,8 @@ public class Session {
 	private static void pasteSchematic(
 			Clipboard clipboard, EditSession editSession, Session session, int xOff, int yOff, int zOff
 	) {
-		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
+		ClipboardHolder holder = new ClipboardHolder(clipboard);
+		Operation operation = holder.createPaste(editSession)
 				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
 				.ignoreAirBlocks(false).build();
 		try {
@@ -174,6 +175,7 @@ public class Session {
 		} catch (WorldEditException e) {
 			e.printStackTrace();
 		}
+		holder.close();
 	}
 
 	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) {

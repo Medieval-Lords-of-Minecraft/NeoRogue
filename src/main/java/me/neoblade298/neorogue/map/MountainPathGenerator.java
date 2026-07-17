@@ -12,8 +12,8 @@ import org.bukkit.World;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.block.BaseBlock;
 
 import me.neoblade298.neorogue.region.Region;
 
@@ -32,12 +32,12 @@ public class MountainPathGenerator {
 	private static final int PADDING_CHUNKS = 2;
 
 	// Pre-adapted block states for WorldEdit bulk placement
-	private static final BaseBlock WE_STONE = BukkitAdapter.adapt(Material.STONE.createBlockData()).toBaseBlock();
-	private static final BaseBlock WE_ANDESITE = BukkitAdapter.adapt(Material.ANDESITE.createBlockData()).toBaseBlock();
-	private static final BaseBlock WE_COBBLESTONE = BukkitAdapter.adapt(Material.COBBLESTONE.createBlockData()).toBaseBlock();
-	private static final BaseBlock WE_SNOW_BLOCK = BukkitAdapter.adapt(Material.SNOW_BLOCK.createBlockData()).toBaseBlock();
-	private static final BaseBlock WE_PACKED_ICE = BukkitAdapter.adapt(Material.PACKED_ICE.createBlockData()).toBaseBlock();
-	private static final BaseBlock WE_BARRIER = BukkitAdapter.adapt(Material.BARRIER.createBlockData()).toBaseBlock();
+	private static final Pattern WE_STONE = BukkitAdapter.adapt(Material.STONE.createBlockData()).toBaseBlock();
+	private static final Pattern WE_ANDESITE = BukkitAdapter.adapt(Material.ANDESITE.createBlockData()).toBaseBlock();
+	private static final Pattern WE_COBBLESTONE = BukkitAdapter.adapt(Material.COBBLESTONE.createBlockData()).toBaseBlock();
+	private static final Pattern WE_SNOW_BLOCK = BukkitAdapter.adapt(Material.SNOW_BLOCK.createBlockData()).toBaseBlock();
+	private static final Pattern WE_PACKED_ICE = BukkitAdapter.adapt(Material.PACKED_ICE.createBlockData()).toBaseBlock();
+	private static final Pattern WE_BARRIER = BukkitAdapter.adapt(Material.BARRIER.createBlockData()).toBaseBlock();
 
 	/**
 	 * Generate mountain terrain and path corridors for a spaced map.
@@ -591,7 +591,7 @@ public class MountainPathGenerator {
 				int fillStart = Math.min(baseY - 4, surfaceY);
 				double stoneVar = noise.noise(tx * 0.1, tz * 0.1);
 				for (int y = fillStart; y <= surfaceY; y++) {
-					BaseBlock block;
+					Pattern block;
 					if (y == surfaceY) {
 						block = WE_SNOW_BLOCK;
 					} else if (y > surfaceY - 3) {
