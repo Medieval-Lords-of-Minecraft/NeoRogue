@@ -158,8 +158,11 @@ public class CargoInventory extends CoreInventory {
 			slotToMaterial.put(slot, mat);
 			slot++;
 		}
+		// Leave slots open (empty) up to the cargo's slot limit so the player has room to deposit;
+		// pane off everything beyond the limit.
+		int openLimit = Math.min(view.getSlots(), controlBase);
 		for (int i = slot; i < controlBase; i++) {
-			inv.setItem(i, buildFillerPane());
+			if (i >= openLimit) inv.setItem(i, buildFillerPane());
 		}
 		renderControlRow();
 	}
