@@ -1,0 +1,143 @@
+# Caravan upgrades. Each top-level key is an upgrade id, purchased once with VaultUnlocked currency.
+# Upgrades render as coloured stained-glass panes by availability (green = purchased, yellow =
+# available, orange = can't afford, red = missing prerequisites), like the unlock menu.
+#
+#   title:       display name
+#   description: list of lore lines
+#   cost:        VaultUnlocked currency cost (whole number)
+#   slot:        GUI slot (0-53); -1 (or omit) to auto-place
+#   requires:    optional list of prerequisite upgrade ids that must be purchased first. Each list
+#                entry is an AND requirement; use "|" within an entry for OR alternatives, e.g.
+#                "cargo_capacity_1 | cargo_capacity_2".
+#   actions:     list of "<id> [amount|package]" effects applied on purchase:
+#       cargo_access               - unlock the cargo system (main menu shows cargo locked until then)
+#       cargo_amount <n>           - +n total cargo item capacity
+#       cargo_slots <n>            - +n unique cargo slots
+#       cargo_insurance            - keep run cargo after a loss + unlock the Lost Cargo menu
+#       cargo_base_reward <n>      - +n currency awarded each time you complete a region
+#       cargo_sellables <package>  - grant a sellable package (see sellables.yml)
+#       cargo_sell_multiplier <n>  - +n% cargo sell value
+#       fleet_size <n>             - +n extra fleet holds (auto-sold at midnight America/Los_Angeles)
+#       fleet_capacity <n>         - +n item capacity per fleet hold
+#       fleet_slots <n>            - +n unique-material slots per fleet hold
+
+cargo_access:
+  title: "Caravan License"
+  description:
+    - "Unlocks your caravan's cargo hold,"
+    - "letting you haul goods between runs."
+  cost: 1000
+  slot: 10
+  actions:
+    - "cargo_access"
+
+cargo_capacity_1:
+  title: "Reinforced Hold I"
+  description:
+    - "Expands how many items your"
+    - "cargo can carry."
+  cost: 750
+  slot: 11
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_amount 1000"
+
+cargo_slots_1:
+  title: "Sorting Shelves I"
+  description:
+    - "Adds room for more unique"
+    - "kinds of goods."
+  cost: 750
+  slot: 12
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_slots 2"
+
+cargo_insurance:
+  title: "Caravan Insurance"
+  description:
+    - "Keep your unsold cargo even if"
+    - "your run ends in defeat, and"
+    - "unlock the Lost Cargo menu."
+  cost: 2500
+  slot: 13
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_insurance"
+
+cargo_base_reward_1:
+  title: "Trade Contracts I"
+  description:
+    - "Earn a guaranteed reward each"
+    - "time you complete a region."
+  cost: 1500
+  slot: 14
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_base_reward 100"
+
+cargo_sellables_ores:
+  title: "Ore Trade Permit"
+  description:
+    - "Allows precious ores to be"
+    - "stored in your cargo."
+  cost: 2000
+  slot: 15
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_sellables ores"
+
+cargo_sell_multiplier_1:
+  title: "Shrewd Negotiator I"
+  description:
+    - "Increases the value of all"
+    - "cargo you sell by 10%."
+  cost: 3000
+  slot: 16
+  requires:
+    - "cargo_access"
+  actions:
+    - "cargo_sell_multiplier 10"
+
+fleet_size_1:
+  title: "Merchant Fleet I"
+  description:
+    - "Adds an extra fleet hold. Fleet"
+    - "holds are auto-sold each night at"
+    - "midnight (PST); collect the coin"
+    - "from your fleet afterwards."
+  cost: 5000
+  slot: 19
+  requires:
+    - "cargo_access"
+  actions:
+    - "fleet_size 1"
+
+fleet_capacity_1:
+  title: "Deep Holds I"
+  description:
+    - "Expands how many items each"
+    - "of your fleet holds can carry."
+  cost: 1500
+  slot: 20
+  requires:
+    - "fleet_size_1"
+  actions:
+    - "fleet_capacity 1000"
+
+fleet_slots_1:
+  title: "Fleet Manifests I"
+  description:
+    - "Adds room for more unique"
+    - "kinds of goods per fleet hold."
+  cost: 1500
+  slot: 21
+  requires:
+    - "fleet_size_1"
+  actions:
+    - "fleet_slots 2"

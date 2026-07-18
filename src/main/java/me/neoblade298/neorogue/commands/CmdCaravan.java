@@ -8,12 +8,12 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.player.inventory.LostCargoInventory;
+import me.neoblade298.neorogue.player.inventory.CaravanUpgradesInventory;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public class CmdLostCargo extends Subcommand {
+public class CmdCaravan extends Subcommand {
 
-	public CmdLostCargo(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdCaravan(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 	}
 
@@ -21,7 +21,7 @@ public class CmdLostCargo extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
 		if (SessionManager.getSession(p) != null) {
-			Util.displayError(p, "You can't manage cargo during a run!");
+			Util.displayError(p, "You can't manage your caravan during a run!");
 			return;
 		}
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
@@ -29,10 +29,6 @@ public class CmdLostCargo extends Subcommand {
 			Util.displayError(p, "Your player data isn't loaded yet!");
 			return;
 		}
-		if (!pd.hasFlag(PlayerData.FLAG_CARGO_INSURANCE)) {
-			Util.displayError(p, "You haven't unlocked caravan insurance yet! Buy it from the Caravan Upgrades menu.");
-			return;
-		}
-		new LostCargoInventory(p, pd);
+		new CaravanUpgradesInventory(p, pd);
 	}
 }

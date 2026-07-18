@@ -58,6 +58,20 @@ public class MainMenuInventory extends CoreInventory {
 	}
 
 	private ItemStack createCargoButton(PlayerData pd) {
+		// Cargo stays locked until the caravan "cargo_access" upgrade is purchased.
+		if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
+			ItemStack locked = CoreInventory.createButton(Material.BARRIER,
+					Component.text("Cargo (Locked)", NamedTextColor.DARK_GRAY));
+			ItemMeta meta = locked.getItemMeta();
+			List<Component> lore = new ArrayList<>();
+			lore.add(Component.text("Unlock cargo access from", NamedTextColor.GRAY)
+					.decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("the Caravan Upgrades menu.", NamedTextColor.GRAY)
+					.decoration(TextDecoration.ITALIC, false));
+			meta.lore(lore);
+			locked.setItemMeta(meta);
+			return locked;
+		}
 		Cargo cargo = pd.getCargo();
 		ItemStack item = CoreInventory.createButton(Material.CHEST_MINECART,
 				Component.text("Cargo", NamedTextColor.GOLD));
@@ -153,6 +167,10 @@ public class MainMenuInventory extends CoreInventory {
 			new UnlocksMenuInventory(p);
 			break;
 		case CARGO:
+			if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
+				Util.displayError(p, "You haven't unlocked cargo access yet! Buy it from the Caravan Upgrades menu.");
+				return;
+			}
 			new CargoInventory(p, pd);
 			break;
 		case STATS:

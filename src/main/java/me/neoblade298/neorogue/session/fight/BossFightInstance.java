@@ -73,6 +73,8 @@ public class BossFightInstance extends FightInstance {
 			RegionType bossRegion = s.getRegion().getType();
 			// Completing a region auto-sells a portion of each player's run cargo.
 			RunReward.sellCargoForRegion(s, bossRegion);
+			// Award each player's persistent per-region completion reward (a caravan upgrade).
+			RunReward.awardRegionBaseReward(s);
 			RegionType nextRegion = RegionType.getNextRegion(bossRegion, s.isEndless());
 			if (nextRegion == null) {
 				handleWin(title, new WinInstance(s));

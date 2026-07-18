@@ -6,11 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,12 +40,16 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.boost.BoostDurationType;
 import me.neoblade298.neorogue.player.boost.ExpBoost;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
+import me.neoblade298.neorogue.player.caravan.CaravanUpgrade;
+import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
+import me.neoblade298.neorogue.player.caravan.SellablePackageRegistry;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -86,10 +93,27 @@ public class PlayerData {
 	private int slotsAvailable;
 	public static final int NOTORIETY_HARD_CAP = 10;
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
+	public static final int DEFAULT_FLEET_CAPACITY = 3000, DEFAULT_FLEET_SLOTS = 5;
+	// Flags gating the caravan/cargo system, set by caravan upgrades.
+	public static final String FLAG_CARGO_ACCESS = "cargo_access", FLAG_CARGO_INSURANCE = "cargo_insurance";
+	// Namespaced flag prefixes: owned sellable packages and purchased caravan upgrades are stored as
+	// player flags (e.g. "caravan_pkg:ores", "caravan_upgrade:cargo_access").
+	public static final String FLAG_PREFIX_PACKAGE = "caravan_pkg:", FLAG_PREFIX_UPGRADE = "caravan_upgrade:";
 	private Cargo cargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
 	// Overflow stash for unsold cargo returned at run end that didn't fit in the main cargo.
 	// Shares its capacity/slot limits with the main cargo; withdraw-only in the GUI.
 	private Cargo lostCargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
+	// Persistent caravan scalars, stored on the neorogue_playerdata row.
+	private int cargoBaseReward = 0;          // currency awarded per completed region
+	private int sellMultiplierBonus = 0;      // % bonus to cargo sell value (effective mult = 1 + bonus/100)
+	// Fleet: extra cargo holds beyond the main cargo. fleetSize is the number of extra holds (0 = none);
+	// each fleet hold is bounded by fleetCapacity/fleetSlots and auto-sells at midnight America/Los_Angeles.
+	private int fleetSize = 0;
+	private int fleetCapacity = DEFAULT_FLEET_CAPACITY;
+	private int fleetSlots = DEFAULT_FLEET_SLOTS;
+	private final ArrayList<FleetHold> fleetHolds = new ArrayList<FleetHold>();
+	// Proceeds from auto-sold fleet holds awaiting collection, keyed by material (amount + total value).
+	private final LinkedHashMap<Material, PendingFleetSale> pendingFleetSales = new LinkedHashMap<Material, PendingFleetSale>();
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
 	
@@ -131,9 +155,11 @@ public class PlayerData {
 			baseStmt.setString(1, uuidStr);
 			try (ResultSet base = baseStmt.executeQuery()) {
 				if (!base.next()) {
-					saveDisplayAsync();
+					savePlayerDataAsync();
 					return;
 				}
+				// Caravan scalars (cargo/fleet limits, base reward, sell multiplier) are no longer stored;
+				// they are derived from the player's purchased upgrades in recomputeCaravanState() below.
 			}
 
 			// Load class progression from separate table
@@ -183,6 +209,10 @@ public class PlayerData {
 					flags.add(flagsRs.getString("flag"));
 				}
 			}
+			// Derive all caravan effects (cargo/fleet limits, grants, packages) from the purchased upgrades
+			// so config changes to caravan.yml apply retroactively. Must run before fleet cargo is loaded so
+			// the holds exist.
+			recomputeCaravanState();
 
 			// Load exp boosts from separate table
 			try (PreparedStatement boostStmt = con.prepareStatement("SELECT * FROM neorogue_expboosts WHERE uuid = ?;")) {
@@ -240,37 +270,45 @@ public class PlayerData {
 				}
 			}
 
-			// Load cargo limits and contents
-			try (PreparedStatement cargoMetaStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo_meta WHERE uuid = ?;")) {
-				cargoMetaStmt.setString(1, uuidStr);
-				try (ResultSet cargoMeta = cargoMetaStmt.executeQuery()) {
-					if (cargoMeta.next()) {
-						cargo.setCapacity(cargoMeta.getInt("capacity"));
-						cargo.setSlots(cargoMeta.getInt("slots"));
-						// Lost cargo shares the same limits as the main cargo.
-						lostCargo.setCapacity(cargoMeta.getInt("capacity"));
-						lostCargo.setSlots(cargoMeta.getInt("slots"));
-					}
-				}
-			}
+			// Load cargo contents from the unified neorogue_playercargo table (MAIN/LOST/FLEET/PENDING).
+			// Limits live on the playerdata row (read above); fleet holds carry a per-material price
+			// snapshot and a fill timestamp used for the midnight auto-sale.
 			try (PreparedStatement cargoStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo WHERE uuid = ?;")) {
 				cargoStmt.setString(1, uuidStr);
 				try (ResultSet cargoRs = cargoStmt.executeQuery()) {
 					while (cargoRs.next()) {
 						Material mat = Material.getMaterial(cargoRs.getString("material"));
-						if (mat != null) cargo.load(mat, cargoRs.getInt("amount"));
+						if (mat == null) continue;
+						int amount = cargoRs.getInt("amount");
+						String type = cargoRs.getString("type");
+						if (type == null) type = "MAIN";
+						switch (type) {
+						case "LOST":
+							lostCargo.load(mat, amount);
+							break;
+						case "FLEET": {
+							FleetHold hold = getFleetHold(cargoRs.getInt("idx"));
+							if (hold != null) hold.load(mat, amount, cargoRs.getDouble("price"), cargoRs.getLong("filled_at"));
+							else addPendingSale(mat, amount, cargoRs.getDouble("price") * amount); // hold no longer exists (fleet size reduced); bank the value
+							break;
+						}
+						case "PENDING": {
+							double value = cargoRs.getDouble("price") * amount;
+							PendingFleetSale ps = pendingFleetSales.get(mat);
+							if (ps == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
+							else { ps.amount += amount; ps.value += value; }
+							break;
+						}
+						default:
+							cargo.load(mat, amount);
+							break;
+						}
 					}
 				}
 			}
-			try (PreparedStatement lostStmt = con.prepareStatement("SELECT * FROM neorogue_playerlostcargo WHERE uuid = ?;")) {
-				lostStmt.setString(1, uuidStr);
-				try (ResultSet lostRs = lostStmt.executeQuery()) {
-					while (lostRs.next()) {
-						Material mat = Material.getMaterial(lostRs.getString("material"));
-						if (mat != null) lostCargo.load(mat, lostRs.getInt("amount"));
-					}
-				}
-			}
+			// Resolve any fleet holds that should have auto-sold while the player was offline.
+			resolveFleetSales();
+			// Owned sellable packages and purchased caravan upgrades are loaded as flags above.
 		for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
 			unlockNodes.add(defaultNode);
 		}
@@ -280,7 +318,7 @@ public class PlayerData {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		saveDisplayAsync();
+		savePlayerDataAsync();
 	}
 	
 	public Player getPlayer() {
@@ -294,7 +332,7 @@ public class PlayerData {
 		p = Bukkit.getPlayer(uuid);
 		if (p != null && !p.getName().equals(display)) {
 			display = p.getName();
-			saveDisplayAsync();
+			savePlayerDataAsync();
 		}
 	}
 
@@ -516,7 +554,7 @@ public class PlayerData {
 		saveClassProgressionAsync();
 	}
 
-	private void saveDisplayAsync() {
+	private void savePlayerDataAsync() {
 		final String uuidStr = uuid.toString();
 		final String name = display;
 		new BukkitRunnable() {
@@ -530,7 +568,7 @@ public class PlayerData {
 						ps.executeUpdate();
 					}
 				} catch (SQLException ex) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to save display name for " + uuidStr);
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save player data for " + uuidStr);
 					ex.printStackTrace();
 				}
 			}
@@ -545,6 +583,8 @@ public class PlayerData {
 		return lostCargo;
 	}
 
+	// Caravan effects are derived from purchased upgrades (see recomputeCaravanState), so the scalar
+	// setters/adders below only mutate in-memory state; nothing is persisted here.
 	public int getCargoCapacity() {
 		return cargo.getCapacity();
 	}
@@ -552,13 +592,11 @@ public class PlayerData {
 	public void setCargoCapacity(int capacity) {
 		cargo.setCapacity(capacity);
 		lostCargo.setCapacity(capacity);
-		saveCargoAsync();
 	}
 
 	public void addCargoCapacity(int amount) {
 		cargo.addCapacity(amount);
 		lostCargo.addCapacity(amount);
-		saveCargoAsync();
 	}
 
 	public int getCargoSlots() {
@@ -568,20 +606,179 @@ public class PlayerData {
 	public void setCargoSlots(int slots) {
 		cargo.setSlots(slots);
 		lostCargo.setSlots(slots);
-		saveCargoAsync();
 	}
 
 	public void addCargoSlots(int amount) {
 		cargo.addSlots(amount);
 		lostCargo.addSlots(amount);
-		saveCargoAsync();
 	}
 
+	// Recomputes every caravan effect from the player's purchased upgrades, resetting to defaults first
+	// so that changes to caravan.yml (e.g. lowering a capacity bonus) apply retroactively. Called on
+	// login before the fleet cargo is loaded. Cargo limits, base reward, sell multiplier, fleet
+	// configuration, and the access/insurance/package grant flags are all derived here.
+	public void recomputeCaravanState() {
+		cargo.setCapacity(DEFAULT_CARGO_CAPACITY);
+		cargo.setSlots(DEFAULT_CARGO_SLOTS);
+		lostCargo.setCapacity(DEFAULT_CARGO_CAPACITY);
+		lostCargo.setSlots(DEFAULT_CARGO_SLOTS);
+		cargoBaseReward = 0;
+		sellMultiplierBonus = 0;
+		fleetSize = 0;
+		fleetCapacity = DEFAULT_FLEET_CAPACITY;
+		fleetSlots = DEFAULT_FLEET_SLOTS;
+		// Boolean/package grants are re-derived from the purchased upgrades below.
+		flags.remove(FLAG_CARGO_ACCESS);
+		flags.remove(FLAG_CARGO_INSURANCE);
+		flags.removeIf(f -> f.startsWith(FLAG_PREFIX_PACKAGE));
+		for (String upgradeId : getPurchasedUpgrades()) {
+			CaravanUpgrade up = CaravanUpgradeRegistry.get(upgradeId);
+			if (up != null) up.applyActions(this);
+		}
+		syncFleetHolds();
+	}
+
+	// ----- Fleet holds -----
+	// A pending sale of one material from an auto-sold fleet hold, awaiting collection by the player.
+	public static class PendingFleetSale {
+		public final Material material;
+		public int amount;
+		public double value;
+
+		public PendingFleetSale(Material material, int amount, double value) {
+			this.material = material;
+			this.amount = amount;
+			this.value = value;
+		}
+	}
+
+	public int getFleetSize() {
+		return fleetSize;
+	}
+
+	public int getFleetCapacity() {
+		return fleetCapacity;
+	}
+
+	public int getFleetSlots() {
+		return fleetSlots;
+	}
+
+	// Returns the fleet hold at the given 1-based index, or null if out of range.
+	public FleetHold getFleetHold(int index) {
+		if (index < 1 || index > fleetHolds.size()) return null;
+		return fleetHolds.get(index - 1);
+	}
+
+	public List<FleetHold> getFleetHolds() {
+		return fleetHolds;
+	}
+
+	// Reconciles the fleetHolds list with fleetSize. Growing adds empty holds; shrinking dumps the
+	// removed holds' contents into pending earnings so items are never lost.
+	private void syncFleetHolds() {
+		while (fleetHolds.size() < fleetSize) fleetHolds.add(new FleetHold(fleetCapacity, fleetSlots));
+		while (fleetHolds.size() > fleetSize) {
+			FleetHold removed = fleetHolds.remove(fleetHolds.size() - 1);
+			for (Map.Entry<Material, Integer> ent : removed.getCargo().getItems().entrySet()) {
+				addPendingSale(ent.getKey(), ent.getValue(), removed.getUnitPrice(ent.getKey()) * ent.getValue());
+			}
+		}
+	}
+
+	public void addFleetSize(int amount) {
+		if (amount == 0) return;
+		fleetSize = Math.max(0, fleetSize + amount);
+		syncFleetHolds();
+	}
+
+	public void addFleetCapacity(int amount) {
+		fleetCapacity += amount;
+		for (FleetHold hold : fleetHolds) hold.setCapacity(fleetCapacity);
+	}
+
+	public void addFleetSlots(int amount) {
+		fleetSlots += amount;
+		for (FleetHold hold : fleetHolds) hold.setSlots(fleetSlots);
+	}
+
+	private void addPendingSale(Material mat, int amount, double value) {
+		PendingFleetSale ps = pendingFleetSales.get(mat);
+		if (ps == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
+		else { ps.amount += amount; ps.value += value; }
+	}
+
+	// Epoch millis of the most recent midnight in America/Los_Angeles.
+	private static long lastLosAngelesMidnightMillis() {
+		java.time.ZoneId la = java.time.ZoneId.of("America/Los_Angeles");
+		return java.time.ZonedDateTime.now(la).toLocalDate().atStartOfDay(la).toInstant().toEpochMilli();
+	}
+
+	// Auto-sells any fleet hold that was filled before the most recent America/Los_Angeles midnight,
+	// moving its snapshot value into pending earnings. Returns true if anything was sold.
+	public boolean resolveFleetSales() {
+		long cutoff = lastLosAngelesMidnightMillis();
+		boolean changed = false;
+		for (FleetHold hold : fleetHolds) {
+			if (hold.isEmpty()) continue;
+			long filledAt = hold.getFilledAt();
+			if (filledAt <= 0 || filledAt >= cutoff) continue;
+			for (Map.Entry<Material, Integer> ent : new java.util.ArrayList<Map.Entry<Material, Integer>>(hold.getCargo().getItems().entrySet())) {
+				Material mat = ent.getKey();
+				int amt = ent.getValue();
+				addPendingSale(mat, amt, hold.getUnitPrice(mat) * amt);
+			}
+			hold.clear();
+			changed = true;
+		}
+		if (changed) saveCargoAsync();
+		return changed;
+	}
+
+	public boolean hasPendingFleetSales() {
+		return !pendingFleetSales.isEmpty();
+	}
+
+	public Collection<PendingFleetSale> getPendingFleetSales() {
+		return pendingFleetSales.values();
+	}
+
+	public double getPendingFleetEarnings() {
+		double total = 0;
+		for (PendingFleetSale ps : pendingFleetSales.values()) total += ps.value;
+		return total;
+	}
+
+	// Deposits all pending fleet earnings to the player's economy balance and clears them. Returns the
+	// amount collected (0 if there was nothing to collect).
+	public double collectFleetEarnings() {
+		double total = getPendingFleetEarnings();
+		if (total <= 0) return 0;
+		RunReward.deposit(uuid, total);
+		pendingFleetSales.clear();
+		saveCargoAsync();
+		return total;
+	}
+
+	// Persists all cargo (main, lost, fleet holds, and pending fleet sales) into the unified table.
 	public void saveCargoAsync() {
 		final String uuidStr = uuid.toString();
-		final HashMap<Material, Integer> snapshot = new HashMap<>(cargo.getItems());
-		final int capacity = cargo.getCapacity();
-		final int slots = cargo.getSlots();
+		final HashMap<Material, Integer> mainSnap = new HashMap<>(cargo.getItems());
+		final HashMap<Material, Integer> lostSnap = new HashMap<>(lostCargo.getItems());
+		final ArrayList<Object[]> fleetRows = new ArrayList<Object[]>();
+		for (int i = 0; i < fleetHolds.size(); i++) {
+			FleetHold hold = fleetHolds.get(i);
+			int idx = i + 1;
+			long filledAt = hold.getFilledAt();
+			for (Map.Entry<Material, Integer> ent : hold.getCargo().getItems().entrySet()) {
+				fleetRows.add(new Object[] { idx, ent.getKey().name(), ent.getValue(), hold.getUnitPrice(ent.getKey()), filledAt });
+			}
+		}
+		final ArrayList<Object[]> pendingRows = new ArrayList<Object[]>();
+		for (PendingFleetSale ps : pendingFleetSales.values()) {
+			double unit = ps.amount > 0 ? ps.value / ps.amount : 0;
+			pendingRows.add(new Object[] { ps.material.name(), ps.amount, unit });
+		}
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -591,24 +788,36 @@ public class PlayerData {
 						clear.setString(1, uuidStr);
 						clear.executeUpdate();
 					}
-					if (!snapshot.isEmpty()) {
-						SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
-						for (var entry : snapshot.entrySet()) {
-							sql.addValue("uuid", uuidStr)
-									.addValue("material", entry.getKey().name())
-									.addValue("amount", entry.getValue())
-									.addRow();
-						}
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
+					boolean any = false;
+					for (var entry : mainSnap.entrySet()) {
+						sql.addValue("uuid", uuidStr).addValue("type", "MAIN").addValue("idx", 0)
+								.addValue("material", entry.getKey().name()).addValue("amount", entry.getValue())
+								.addValue("price", 0).addValue("filled_at", 0).addRow();
+						any = true;
+					}
+					for (var entry : lostSnap.entrySet()) {
+						sql.addValue("uuid", uuidStr).addValue("type", "LOST").addValue("idx", 0)
+								.addValue("material", entry.getKey().name()).addValue("amount", entry.getValue())
+								.addValue("price", 0).addValue("filled_at", 0).addRow();
+						any = true;
+					}
+					for (Object[] row : fleetRows) {
+						sql.addValue("uuid", uuidStr).addValue("type", "FLEET").addValue("idx", (int) row[0])
+								.addValue("material", (String) row[1]).addValue("amount", (int) row[2])
+								.addValue("price", (double) row[3]).addValue("filled_at", (long) row[4]).addRow();
+						any = true;
+					}
+					for (Object[] row : pendingRows) {
+						sql.addValue("uuid", uuidStr).addValue("type", "PENDING").addValue("idx", 0)
+								.addValue("material", (String) row[0]).addValue("amount", (int) row[1])
+								.addValue("price", (double) row[2]).addValue("filled_at", 0).addRow();
+						any = true;
+					}
+					if (any) {
 						try (PreparedStatement ps = sql.build(con)) {
 							ps.executeBatch();
 						}
-					}
-					try (PreparedStatement meta = con.prepareStatement(
-							"REPLACE INTO neorogue_playercargo_meta (uuid, capacity, slots) VALUES (?, ?, ?);")) {
-						meta.setString(1, uuidStr);
-						meta.setInt(2, capacity);
-						meta.setInt(3, slots);
-						meta.executeUpdate();
 					}
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to save cargo for " + uuidStr);
@@ -618,37 +827,75 @@ public class PlayerData {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	// Persists the lost-cargo overflow stash. Limits are shared with the main cargo (saved by saveCargoAsync).
+	// The lost-cargo stash is persisted as part of the unified saveCargoAsync(); kept as an alias so
+	// existing callers (run-end cargo return) continue to work.
 	public void saveLostCargoAsync() {
-		final String uuidStr = uuid.toString();
-		final HashMap<Material, Integer> snapshot = new HashMap<>(lostCargo.getItems());
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
-					try (PreparedStatement clear = con.prepareStatement(
-							"DELETE FROM neorogue_playerlostcargo WHERE uuid = ?;")) {
-						clear.setString(1, uuidStr);
-						clear.executeUpdate();
-					}
-					if (!snapshot.isEmpty()) {
-						SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playerlostcargo");
-						for (var entry : snapshot.entrySet()) {
-							sql.addValue("uuid", uuidStr)
-									.addValue("material", entry.getKey().name())
-									.addValue("amount", entry.getValue())
-									.addRow();
-						}
-						try (PreparedStatement ps = sql.build(con)) {
-							ps.executeBatch();
-						}
-					}
-				} catch (SQLException ex) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to save lost cargo for " + uuidStr);
-					ex.printStackTrace();
-				}
-			}
-		}.runTaskAsynchronously(NeoRogue.inst());
+		saveCargoAsync();
+	}
+
+	// ----- Caravan upgrade state -----
+	// Purchased upgrades (namespaced flags) are the sole persisted caravan state. Every derived effect
+	// (cargo/fleet limits, base reward, sell multiplier, access/insurance/package grants) is recomputed
+	// from them on login via recomputeCaravanState(), so the setters below are in-memory only.
+
+	public int getCargoBaseReward() {
+		return cargoBaseReward;
+	}
+
+	public void addCargoBaseReward(int amount) {
+		cargoBaseReward += amount;
+	}
+
+	public int getSellMultiplierBonus() {
+		return sellMultiplierBonus;
+	}
+
+	// Effective multiplier applied to cargo sale value (1.0 = no bonus).
+	public double getSellMultiplier() {
+		return 1.0 + (sellMultiplierBonus / 100.0);
+	}
+
+	public void addSellMultiplier(int percent) {
+		sellMultiplierBonus += percent;
+	}
+
+	public java.util.Set<String> getSellablePackages() {
+		return flagsWithPrefix(FLAG_PREFIX_PACKAGE);
+	}
+
+	public boolean hasSellablePackage(String id) {
+		return hasFlag(FLAG_PREFIX_PACKAGE + id);
+	}
+
+	public void addSellablePackage(String id) {
+		addFlag(FLAG_PREFIX_PACKAGE + id);
+	}
+
+	// Whether this player is permitted to deposit the given material into cargo (default package plus
+	// any owned sellable packages).
+	public boolean canDepositMaterial(Material mat) {
+		return SellablePackageRegistry.canDeposit(getSellablePackages(), mat);
+	}
+
+	public java.util.Set<String> getPurchasedUpgrades() {
+		return flagsWithPrefix(FLAG_PREFIX_UPGRADE);
+	}
+
+	public boolean hasPurchasedUpgrade(String id) {
+		return hasFlag(FLAG_PREFIX_UPGRADE + id);
+	}
+
+	public void addPurchasedUpgrade(String id) {
+		addFlag(FLAG_PREFIX_UPGRADE + id);
+	}
+
+	// Collects flags starting with the given prefix and returns their suffixes (prefix stripped).
+	private java.util.Set<String> flagsWithPrefix(String prefix) {
+		java.util.HashSet<String> result = new java.util.HashSet<String>();
+		for (String flag : flags) {
+			if (flag.startsWith(prefix)) result.add(flag.substring(prefix.length()));
+		}
+		return result;
 	}
 
 	// A read-only view over this player's finished-run history for winrate/winstreak stats.

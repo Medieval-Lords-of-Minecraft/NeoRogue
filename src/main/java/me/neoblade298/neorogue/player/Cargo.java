@@ -12,7 +12,8 @@ import de.tr7zw.nbtapi.NBT;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 
 // A player's persistent stash of sellable vanilla items plus its two limits. Owned by PlayerData
-// and persisted to SQL (items in neorogue_playercargo, limits in neorogue_playercargo_meta).
+// and persisted to SQL (items in neorogue_playercargo). The limits are derived from the player's
+// purchased caravan upgrades on login (see PlayerData.recomputeCaravanState), not persisted directly.
 public class Cargo {
 	// LinkedHashMap keeps a stable slot ordering in the GUI as items are added.
 	private final LinkedHashMap<Material, Integer> items = new LinkedHashMap<Material, Integer>();

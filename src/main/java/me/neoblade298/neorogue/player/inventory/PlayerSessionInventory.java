@@ -1,9 +1,12 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import de.tr7zw.nbtapi.NBT;
+import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -54,7 +58,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 15, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17;
+	public static final int STATS = 9, TRASH = 15, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17, CARGO = 14;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -163,6 +167,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
 				0);
 
+		contents[(CARGO + offset) % inv.getSize()] = createCargoIcon(data);
+
 		int reforgeCount = 0;
 		for (PlayerSessionData.ReforgePairData pair : data.computeAvailableReforges()) {
 			for (Equipment r : pair.getResults()) {
@@ -190,6 +196,53 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static ItemStack createLeaveIcon() {
 		return CoreInventory.createButton(Material.COMPASS, Component.text("Save & Quit", NamedTextColor.RED),
 				"Save and quit your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
+	}
+
+	// Read-only summary of the cargo collected this run. Run cargo is sold automatically as regions
+	// are completed, so there's nothing to click here.
+	private static ItemStack createCargoIcon(PlayerSessionData data) {
+		ItemStack item = CoreInventory.createButton(Material.CHEST_MINECART, Component.text("Cargo", NamedTextColor.GOLD));
+		ItemMeta meta = item.getItemMeta();
+		List<Component> lore = new ArrayList<Component>();
+		LinkedHashMap<Material, Integer> cargo = data.getRunCargo();
+		if (cargo.isEmpty()) {
+			lore.add(Component.text("You haven't collected any cargo yet.", NamedTextColor.GRAY)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		} else {
+			double total = 0;
+			for (Map.Entry<Material, Integer> ent : cargo.entrySet()) {
+				total += MaterialPrices.getPrice(ent.getKey()) * ent.getValue();
+				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
+						.append(Component.text(prettyName(ent.getKey()), NamedTextColor.WHITE))
+						.append(Component.text(" x" + ent.getValue(), NamedTextColor.GRAY))
+						.decoration(TextDecoration.ITALIC, State.FALSE));
+			}
+			lore.add(Component.empty());
+			lore.add(Component.text("Total items: ", NamedTextColor.GRAY)
+					.append(Component.text(data.getRunCargoTotal(), NamedTextColor.WHITE))
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+			lore.add(Component.text("Est. sell value: ", NamedTextColor.GRAY)
+					.append(Component.text(df.format(total), NamedTextColor.GOLD))
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+		lore.add(Component.empty());
+		lore.add(Component.text("Sold automatically as you complete regions.", NamedTextColor.DARK_GRAY)
+				.decoration(TextDecoration.ITALIC, State.FALSE));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	// Converts an enum material name (e.g. IRON_INGOT) to a readable label (e.g. Iron Ingot).
+	private static String prettyName(Material mat) {
+		String[] parts = mat.name().toLowerCase().split("_");
+		StringBuilder sb = new StringBuilder();
+		for (String part : parts) {
+			if (part.isEmpty()) continue;
+			if (sb.length() > 0) sb.append(' ');
+			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+		}
+		return sb.toString();
 	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {
@@ -373,6 +426,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					new ArtifactsInventory(data);
 				}
 			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == CARGO) {
+			// Read-only cargo summary; nothing to interact with.
+			e.setCancelled(true);
 			return;
 		}
 		else if (slot == REFORGES) {

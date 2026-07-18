@@ -31,27 +31,19 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_achievements (uuid VARCHAR(36) NOT NULL, achievement VARCHAR(100) NOT NULL, progress INT NOT NULL DEFAULT 0, scope VARCHAR(40) NOT NULL DEFAULT 'GLOBAL', data TEXT, PRIMARY KEY (uuid, achievement, scope));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_expboosts (uuid VARCHAR(36) NOT NULL, type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (uuid, type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_expboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (uuid, material));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo_meta (uuid VARCHAR(36) NOT NULL, capacity INT NOT NULL DEFAULT 3000, slots INT NOT NULL DEFAULT 5, PRIMARY KEY (uuid));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, material));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargo (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargosold (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, value DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerlostcargo (uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (uuid, material));");
-
-			// Core player tables
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerclass (uuid VARCHAR(36) NOT NULL, class VARCHAR(40) NOT NULL, level INT NOT NULL DEFAULT 1, exp INT NOT NULL DEFAULT 0, points INT NOT NULL DEFAULT 0, notoriety_max INT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, class));");
-
-			// Append-only history of finished runs (one row per player per completed run). Drives
-			// winrate and winstreak stats sliced by class, notoriety, and time (see RunStats).
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_run_results (id BIGINT NOT NULL AUTO_INCREMENT, uuid VARCHAR(36) NOT NULL, ts BIGINT NOT NULL, playerClass VARCHAR(40) NOT NULL, notoriety INT NOT NULL, won TINYINT NOT NULL, PRIMARY KEY (id));");
 			try {
 				stmt.execute("CREATE INDEX idx_neorogue_run_results_uuid ON neorogue_run_results (uuid);");
 			} catch (SQLException ignore) {
 				// Index already exists
 			}
-
-			// Session save tables
+			
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessions (host VARCHAR(36) NOT NULL, slot INT NOT NULL, regionType VARCHAR(50), position INT, lane INT, nodesVisited INT, regionsCompleted INT, potionChance INT, notoriety INT, endless TINYINT, lastSaved BIGINT, instanceData TEXT, sessionType VARCHAR(40), lastMiniboss VARCHAR(100), PRIMARY KEY (host, slot));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_nodes (host VARCHAR(36) NOT NULL, slot INT NOT NULL, type VARCHAR(40), position INT NOT NULL, lane INT NOT NULL, destinations TEXT, instanceData TEXT, PRIMARY KEY (host, slot, position, lane));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playersessiondata ("

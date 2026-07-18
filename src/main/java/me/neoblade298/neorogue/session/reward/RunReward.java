@@ -68,14 +68,54 @@ public class RunReward {
 		economy.deposit(NeoRogue.inst().getName(), psd.getUniqueId(), BigDecimal.valueOf(amount));
 	}
 
+	// Whether the player can afford the given amount of VaultUnlocked currency.
+	public static boolean hasBalance(java.util.UUID uuid, double amount) {
+		if (economy == null) return false;
+		return economy.has(NeoRogue.inst().getName(), uuid, BigDecimal.valueOf(amount));
+	}
+
+	// Deposits currency directly to a player by uuid (used for fleet earnings collected outside a run).
+	public static boolean deposit(java.util.UUID uuid, double amount) {
+		if (economy == null || amount <= 0) return false;
+		return economy.deposit(NeoRogue.inst().getName(), uuid, BigDecimal.valueOf(amount)).transactionSuccess();
+	}
+
+	// Attempts to charge the player. Returns true only if the funds were successfully withdrawn.
+	public static boolean charge(java.util.UUID uuid, double amount) {
+		if (economy == null || amount <= 0) return false;
+		String pluginName = NeoRogue.inst().getName();
+		if (!economy.has(pluginName, uuid, BigDecimal.valueOf(amount))) return false;
+		return economy.withdraw(pluginName, uuid, BigDecimal.valueOf(amount)).transactionSuccess();
+	}
+
 	// Cargo sales count as run-reward "base" income: the raw sell value is multiplied by the notoriety
 	// money multiplier (the same bonus the end-of-run base earns). Because cargo is sold once per
 	// completed region (and again on victory), each sale is effectively its own run reward paid out
 	// during the run. Returns the actual amount deposited (post-multiplier).
 	private static double payoutCargoReward(Session s, PlayerSessionData psd, double cargoValue) {
-		double reward = cargoValue * s.getNotorietyMoneyMultiplier();
+		PlayerData pd = psd.getData();
+		double sellMult = pd != null ? pd.getSellMultiplier() : 1.0;
+		double reward = cargoValue * s.getNotorietyMoneyMultiplier() * sellMult;
 		depositCargo(psd, reward);
 		return reward;
+	}
+
+	// Pays each party member their persistent per-region completion reward (a caravan upgrade). Scaled
+	// by the notoriety money multiplier like other cargo income. Called when a region is completed.
+	public static void awardRegionBaseReward(Session s) {
+		for (PlayerSessionData psd : s.getParty().values()) {
+			PlayerData pd = psd.getData();
+			if (pd == null) continue;
+			int base = pd.getCargoBaseReward();
+			if (base <= 0) continue;
+			double reward = base * s.getNotorietyMoneyMultiplier();
+			depositCargo(psd, reward);
+			Player p = psd.getPlayer();
+			if (p != null) {
+				Util.msgRaw(p, "<gray>Your caravan earned a <yellow>" + formatMoney(reward)
+						+ "</yellow> reward for completing the region!");
+			}
+		}
 	}
 
 	// Prints the per-material breakdown (most valuable first) for a cargo sale, then a notoriety-bonus
@@ -129,7 +169,7 @@ public class RunReward {
 		// On a victory the caravan reaches safety and sells all remaining cargo at full value,
 		// ignoring region sell rates. Runs before returnUnsoldCargo so nothing is left to return.
 		if (won) sellRemainingCargo(s);
-		returnUnsoldCargo(s);
+		returnUnsoldCargo(s, won);
 		if (economy == null) return;
 
 		Breakdown b = calculateBreakdown(s, won);
@@ -168,13 +208,21 @@ public class RunReward {
 	}
 
 	// At run end, returns each player's unsold run cargo to their persistent cargo. Anything that no
-	// longer fits overflows into their lost cargo; anything still left over is discarded.
-	public static void returnUnsoldCargo(Session s) {
+	// longer fits overflows into their lost cargo; anything still left over is discarded. On a loss the
+	// run cargo is only kept if the player has caravan insurance; otherwise it is discarded entirely.
+	public static void returnUnsoldCargo(Session s, boolean won) {
 		for (PlayerSessionData psd : s.getParty().values()) {
 			Map<Material, Integer> remaining = psd.getRunCargo();
 			if (remaining.isEmpty()) continue;
 			PlayerData pd = psd.getData();
 			if (pd == null) continue;
+			// Without caravan insurance, unsold run cargo is lost when the run ends in defeat.
+			if (!won && !pd.hasFlag(PlayerData.FLAG_CARGO_INSURANCE)) {
+				remaining.clear();
+				Player p = psd.getPlayer();
+				if (p != null) Util.msgRaw(p, "<red>Without caravan insurance, your unsold cargo was lost!");
+				continue;
+			}
 			Cargo cargo = pd.getCargo();
 			Cargo lost = pd.getLostCargo();
 			boolean anyDiscarded = false;
@@ -273,7 +321,7 @@ public class RunReward {
 		return sb.toString();
 	}
 
-	private static String formatMoney(double amount) {
+	public static String formatMoney(double amount) {
 		if (economy != null) {
 			return economy.format(NeoRogue.inst().getName(), BigDecimal.valueOf(amount));
 		}

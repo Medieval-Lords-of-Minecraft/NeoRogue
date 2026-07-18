@@ -75,6 +75,7 @@ import me.neoblade298.neorogue.commands.CmdAdminTestMW;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdAdminUnlock;
 import me.neoblade298.neorogue.commands.CmdAdminUnlocks;
+import me.neoblade298.neorogue.commands.CmdCaravan;
 import me.neoblade298.neorogue.commands.CmdCargo;
 import me.neoblade298.neorogue.commands.CmdDecline;
 import me.neoblade298.neorogue.commands.CmdGlossary;
@@ -103,6 +104,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
+import me.neoblade298.neorogue.player.caravan.SellablePackageRegistry;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
@@ -139,6 +142,8 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
 		saveResource("achievements.yml", false);
+		saveResource("caravan.yml", false);
+		saveResource("sellables.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
 		RunReward.setupEconomy();
@@ -170,6 +175,8 @@ public class NeoRogue extends JavaPlugin {
 		Region.initialize();
 		Equipment.load();
 		UnlockRegistry.reload();
+		SellablePackageRegistry.reload();
+		CaravanUpgradeRegistry.reload();
 		EquipmentPresets.reload();
 		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
@@ -208,6 +215,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLostCargo("lostcargo", "Withdraw unsold cargo from past runs", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdCaravan("caravan", "Purchase caravan upgrades", null, SubcommandRunner.PLAYER_ONLY));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));

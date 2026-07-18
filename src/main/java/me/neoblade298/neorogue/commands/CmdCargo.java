@@ -29,6 +29,10 @@ public class CmdCargo extends Subcommand {
 			Util.displayError(p, "Your player data isn't loaded yet!");
 			return;
 		}
+		if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
+			Util.displayError(p, "You haven't unlocked cargo access yet! Buy it from the Caravan Upgrades menu.");
+			return;
+		}
 		new CargoInventory(p, pd);
 	}
 }

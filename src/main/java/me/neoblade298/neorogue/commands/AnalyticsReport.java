@@ -32,8 +32,8 @@ public class AnalyticsReport {
 	private static final int LEADERBOARD_LIMIT = 10;
 
 	// Filterable columns exposed by the "equipment" view. Shared with the command layer so tab
-	// completion and query building stay in sync. Columns are qualified (fe = neorogue_fight_equipment,
-	// f = neorogue_fights) because the query joins the two. equipClass is comma-separated (FIND_IN_SET).
+	// completion and query building stay in sync. Columns are qualified (fe = neorogue_analytics_fight_equipment,
+	// f = neorogue_analytics_fights) because the query joins the two. equipClass is comma-separated (FIND_IN_SET).
 	public static final List<AnalyticsFilters.FilterOption> EQUIPMENT_FILTER_OPTIONS = List.of(
 			new AnalyticsFilters.FilterOption("class", "fe.equipClass", true, enumNames(EquipmentClass.values())),
 			new AnalyticsFilters.FilterOption("rarity", "fe.rarity", false, enumNames(Rarity.values())),
@@ -89,7 +89,7 @@ public class AnalyticsReport {
 		String sql = "SELECT upgraded, COUNT(*) AS n, SUM(outcome) AS wins,"
 				+ " AVG(damageDealt) AS dmg, AVG(damageBuffAdded) AS buff, AVG(damageMitigated) AS mit,"
 				+ " AVG(shieldsApplied) AS shields, AVG(healingDone) AS heal, AVG(statusTotal) AS status"
-				+ " FROM neorogue_fight_equipment WHERE equipmentId = ? AND balanceVersion = ? GROUP BY upgraded;";
+				+ " FROM neorogue_analytics_fight_equipment WHERE equipmentId = ? AND balanceVersion = ? GROUP BY upgraded;";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, id);
 			ps.setInt(2, version);
@@ -115,7 +115,7 @@ public class AnalyticsReport {
 
 	private static void queryStatuses(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT upgraded, statusType, COUNT(*) AS n, SUM(outcome) AS wins, AVG(stacks) AS avgStacks"
-				+ " FROM neorogue_fight_equipment_status WHERE equipmentId = ? AND balanceVersion = ?"
+				+ " FROM neorogue_analytics_fight_equipment_status WHERE equipmentId = ? AND balanceVersion = ?"
 				+ " GROUP BY upgraded, statusType ORDER BY upgraded, statusType;";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, id);
@@ -141,7 +141,7 @@ public class AnalyticsReport {
 
 	private static void queryPickrate(Connection con, String id, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT source, upgraded, COUNT(*) AS offered, SUM(picked) AS picked"
-				+ " FROM neorogue_equipment_offers WHERE equipmentId = ? AND balanceVersion = ?"
+				+ " FROM neorogue_analytics_equipment_offers WHERE equipmentId = ? AND balanceVersion = ?"
 				+ " GROUP BY source, upgraded ORDER BY source, upgraded;";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, id);
@@ -208,7 +208,7 @@ public class AnalyticsReport {
 		// outcome/balanceVersion exist on both tables, so they're qualified to the equipment table.
 		StringBuilder sql = new StringBuilder("SELECT fe.equipmentId AS equipmentId, fe.upgraded AS upgraded,"
 				+ " COUNT(*) AS n, SUM(fe.outcome) AS wins, AVG(fe.damageDealt) AS dmg"
-				+ " FROM neorogue_fight_equipment fe JOIN neorogue_fights f ON fe.fightId = f.fightId"
+				+ " FROM neorogue_analytics_fight_equipment fe JOIN neorogue_analytics_fights f ON fe.fightId = f.fightId"
 				+ " WHERE fe.balanceVersion = ?");
 		filters.appendWhere(sql);
 		sql.append(" GROUP BY fe.equipmentId, fe.upgraded HAVING n >= ").append(MIN_OFFERS);
@@ -289,7 +289,7 @@ public class AnalyticsReport {
 	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS offered, SUM(picked) AS picked,"
-				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_equipment_offers WHERE balanceVersion = ?");
+				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_analytics_equipment_offers WHERE balanceVersion = ?");
 		if (source != null) sql.append(" AND source = ?");
 		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, equipClass)");
 		sql.append(" GROUP BY equipmentId, upgraded HAVING offered >= ").append(MIN_OFFERS);
@@ -448,7 +448,7 @@ public class AnalyticsReport {
 	private static void queryMobLeaderboard(Connection con, int version, String regionType, String playerClass,
 			Set<String> mobIdWhitelist, ArrayList<String> lines) throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
-				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE balanceVersion = ?");
+				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_analytics_fight_mobs WHERE balanceVersion = ?");
 		if (regionType != null) sql.append(" AND regionType = ?");
 		if (playerClass != null) sql.append(" AND playerClass = ?");
 		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
@@ -538,7 +538,7 @@ public class AnalyticsReport {
 
 	private static void queryMobDetail(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total, AVG(damageDealt) AS avgDmg"
-				+ " FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
+				+ " FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
 		boolean hasData = false;
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, mobId);
@@ -557,7 +557,7 @@ public class AnalyticsReport {
 
 		// Party winrate over distinct fights (outcome is identical for every per-player row of a fight).
 		String wrSql = "SELECT AVG(outcome) AS winrate FROM (SELECT fightId, MAX(outcome) AS outcome"
-				+ " FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ? GROUP BY fightId) t;";
+				+ " FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ? GROUP BY fightId) t;";
 		try (PreparedStatement ps = con.prepareStatement(wrSql)) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
@@ -573,7 +573,7 @@ public class AnalyticsReport {
 	// winrate of fights that class was present for (weighted by class headcount).
 	private static void queryMobByClass(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT playerClass, COUNT(*) AS players, AVG(damageDealt) AS avgDmg, SUM(damageDealt) AS total,"
-				+ " AVG(outcome) AS winrate FROM neorogue_fight_mobs WHERE mobId = ? AND balanceVersion = ?"
+				+ " AVG(outcome) AS winrate FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ?"
 				+ " GROUP BY playerClass ORDER BY avgDmg DESC;";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, mobId);
@@ -595,7 +595,7 @@ public class AnalyticsReport {
 
 	private static void queryMobDamageTypes(Connection con, String mobId, int version, ArrayList<String> lines)
 			throws SQLException {
-		String sql = "SELECT damageType, SUM(amount) AS total, AVG(amount) AS avgAmt FROM neorogue_fight_mob_damage"
+		String sql = "SELECT damageType, SUM(amount) AS total, AVG(amount) AS avgAmt FROM neorogue_analytics_fight_mob_damage"
 				+ " WHERE mobId = ? AND balanceVersion = ? GROUP BY damageType ORDER BY total DESC;";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, mobId);
@@ -619,7 +619,7 @@ public class AnalyticsReport {
 			ArrayList<String> lines) throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT setId, stageId, choiceIndex, MAX(choiceLabel) AS label,"
 				+ " SUM(valid) AS valid, SUM(picked) AS picked,"
-				+ " (SUM(picked) / SUM(valid)) AS rate FROM neorogue_chance_choices WHERE balanceVersion = ?");
+				+ " (SUM(picked) / SUM(valid)) AS rate FROM neorogue_analytics_chance_choices WHERE balanceVersion = ?");
 		if (setId != null) sql.append(" AND setId = ?");
 		if (playerClass != null) sql.append(" AND playerClass = ?");
 		sql.append(" GROUP BY setId, stageId, choiceIndex HAVING valid >= ").append(MIN_OFFERS)

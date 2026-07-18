@@ -1,0 +1,27 @@
+# Sellable packages control which vanilla materials a player may place into their cargo.
+# The "default" package is available to every player. Other packages must be granted via a caravan
+# upgrade (the "cargo_sellables <id>" action). A material must (1) have a price in asheconomy's
+# prices.yml AND (2) belong to a package the player owns before it can be deposited into cargo.
+#
+# Each top-level key is a package id:
+#   display:   friendly name shown in menus (optional)
+#   materials: list of Bukkit material names this package permits
+
+default:
+  display: "Basic Goods"
+  materials:
+    - COAL
+    - IRON_INGOT
+    - COPPER_INGOT
+    - GOLD_INGOT
+    - WHEAT
+    - LEATHER
+
+ores:
+  display: "Precious Ores"
+  materials:
+    - DIAMOND
+    - EMERALD
+    - LAPIS_LAZULI
+    - REDSTONE
+    - NETHERITE_INGOT

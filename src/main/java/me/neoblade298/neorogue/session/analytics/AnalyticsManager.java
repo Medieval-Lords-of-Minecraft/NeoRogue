@@ -50,7 +50,7 @@ public class AnalyticsManager {
 			@Override
 			public void run() {
 				try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fights ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fights ("
 							+ "fightId VARCHAR(36) NOT NULL PRIMARY KEY,"
 							+ "ts BIGINT NOT NULL,"
 							+ "balanceVersion INT NOT NULL,"
@@ -70,7 +70,7 @@ public class AnalyticsManager {
 							+ "mobs VARCHAR(255) NOT NULL"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_equipment ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_equipment ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "playerUuid VARCHAR(36) NOT NULL,"
 							+ "equipmentId VARCHAR(64) NOT NULL,"
@@ -89,7 +89,7 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (fightId, playerUuid, equipmentId, upgraded)"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_equipment_status ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_equipment_status ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "playerUuid VARCHAR(36) NOT NULL,"
 							+ "equipmentId VARCHAR(64) NOT NULL,"
@@ -101,7 +101,7 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (fightId, playerUuid, equipmentId, upgraded, statusType)"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_equipment_offers ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_equipment_offers ("
 							+ "offerId VARCHAR(36) NOT NULL,"
 							+ "slotIndex INT NOT NULL,"
 							+ "ts BIGINT NOT NULL,"
@@ -123,7 +123,7 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (offerId, slotIndex)"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mobs ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_mobs ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "mobId VARCHAR(64) NOT NULL,"
 							+ "playerUuid VARCHAR(36) NOT NULL,"
@@ -140,7 +140,7 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (fightId, mobId, playerUuid)"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_fight_mob_damage ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_mob_damage ("
 							+ "fightId VARCHAR(36) NOT NULL,"
 							+ "mobId VARCHAR(64) NOT NULL,"
 							+ "playerUuid VARCHAR(36) NOT NULL,"
@@ -152,7 +152,7 @@ public class AnalyticsManager {
 							+ "PRIMARY KEY (fightId, mobId, playerUuid, damageType)"
 							+ ");");
 
-					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_chance_choices ("
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_chance_choices ("
 							+ "pickId VARCHAR(36) NOT NULL,"
 							+ "choiceIndex INT NOT NULL,"
 							+ "ts BIGINT NOT NULL,"
@@ -174,23 +174,23 @@ public class AnalyticsManager {
 							+ ");");
 
 					// Migration: add playerClass to chance_choices for DBs created before it existed.
-					addColumnIfMissing(stmt, "neorogue_chance_choices", "playerClass", "VARCHAR(40) NOT NULL DEFAULT 'UNKNOWN'");
+					addColumnIfMissing(stmt, "neorogue_analytics_chance_choices", "playerClass", "VARCHAR(40) NOT NULL DEFAULT 'UNKNOWN'");
 
-					createIndex(stmt, "idx_fights_balance", "neorogue_fights", "balanceVersion");
-					createIndex(stmt, "idx_fights_region_node", "neorogue_fights", "regionType, nodeType");
-					createIndex(stmt, "idx_fightequip_lookup", "neorogue_fight_equipment", "equipmentId, upgraded, balanceVersion");
-					createIndex(stmt, "idx_fightstatus_lookup", "neorogue_fight_equipment_status", "equipmentId, statusType, balanceVersion");
-					createIndex(stmt, "idx_offers_lookup", "neorogue_equipment_offers", "equipmentId, upgraded, balanceVersion");
-					createIndex(stmt, "idx_offers_source", "neorogue_equipment_offers", "source, balanceVersion");
-					createIndex(stmt, "idx_chance_lookup", "neorogue_chance_choices", "setId, stageId, balanceVersion");
-					createIndex(stmt, "idx_chance_balance", "neorogue_chance_choices", "balanceVersion");
-					createIndex(stmt, "idx_chance_class", "neorogue_chance_choices", "setId, playerClass, balanceVersion");
+					createIndex(stmt, "idx_fights_balance", "neorogue_analytics_fights", "balanceVersion");
+					createIndex(stmt, "idx_fights_region_node", "neorogue_analytics_fights", "regionType, nodeType");
+					createIndex(stmt, "idx_fightequip_lookup", "neorogue_analytics_fight_equipment", "equipmentId, upgraded, balanceVersion");
+					createIndex(stmt, "idx_fightstatus_lookup", "neorogue_analytics_fight_equipment_status", "equipmentId, statusType, balanceVersion");
+					createIndex(stmt, "idx_offers_lookup", "neorogue_analytics_equipment_offers", "equipmentId, upgraded, balanceVersion");
+					createIndex(stmt, "idx_offers_source", "neorogue_analytics_equipment_offers", "source, balanceVersion");
+					createIndex(stmt, "idx_chance_lookup", "neorogue_analytics_chance_choices", "setId, stageId, balanceVersion");
+					createIndex(stmt, "idx_chance_balance", "neorogue_analytics_chance_choices", "balanceVersion");
+					createIndex(stmt, "idx_chance_class", "neorogue_analytics_chance_choices", "setId, playerClass, balanceVersion");
 
-					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_fight_mobs", "mobId, balanceVersion");
-					createIndex(stmt, "idx_fightmobs_class", "neorogue_fight_mobs", "mobId, playerClass, balanceVersion");
-					createIndex(stmt, "idx_fightmobs_region", "neorogue_fight_mobs", "regionType, nodeType, balanceVersion");
-					createIndex(stmt, "idx_fightmobdmg_lookup", "neorogue_fight_mob_damage", "mobId, damageType, balanceVersion");
-					createIndex(stmt, "idx_fightmobdmg_class", "neorogue_fight_mob_damage", "mobId, playerClass, damageType, balanceVersion");
+					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_analytics_fight_mobs", "mobId, balanceVersion");
+					createIndex(stmt, "idx_fightmobs_class", "neorogue_analytics_fight_mobs", "mobId, playerClass, balanceVersion");
+					createIndex(stmt, "idx_fightmobs_region", "neorogue_analytics_fight_mobs", "regionType, nodeType, balanceVersion");
+					createIndex(stmt, "idx_fightmobdmg_lookup", "neorogue_analytics_fight_mob_damage", "mobId, damageType, balanceVersion");
+					createIndex(stmt, "idx_fightmobdmg_class", "neorogue_analytics_fight_mob_damage", "mobId, playerClass, damageType, balanceVersion");
 
 					initialized = true;
 				}
@@ -241,7 +241,7 @@ public class AnalyticsManager {
 	}
 
 	private static void writeFight(Connection con, FightSnapshot snap) throws SQLException {
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fights")
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_fights")
 				.addValue("fightId", snap.fightId)
 				.addValue("ts", snap.timestamp)
 				.addValue("balanceVersion", snap.balanceVersion)
@@ -266,7 +266,7 @@ public class AnalyticsManager {
 
 	private static void writeEquipment(Connection con, FightSnapshot snap) throws SQLException {
 		if (snap.equipRows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_equipment");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_fight_equipment");
 		for (EquipRow row : snap.equipRows) {
 			sql.addValue("fightId", snap.fightId)
 					.addValue("playerUuid", row.playerUuid)
@@ -326,7 +326,7 @@ public class AnalyticsManager {
 
 	private static void writeChanceChoices(Connection con, ChanceChoiceSnapshot snap) throws SQLException {
 		if (snap.rows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_chance_choices");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_chance_choices");
 		for (ChoiceRow row : snap.rows) {
 			sql.addValue("pickId", snap.pickId)
 					.addValue("choiceIndex", row.choiceIndex)
@@ -356,7 +356,7 @@ public class AnalyticsManager {
 
 	private static void writeOffer(Connection con, OfferSnapshot snap) throws SQLException {
 		if (snap.rows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_equipment_offers");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_equipment_offers");
 		for (OfferRow row : snap.rows) {
 			sql.addValue("offerId", snap.offerId)
 					.addValue("slotIndex", row.slotIndex)
@@ -387,7 +387,7 @@ public class AnalyticsManager {
 
 	private static void writeMobs(Connection con, FightSnapshot snap) throws SQLException {
 		if (snap.mobRows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_mobs");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_fight_mobs");
 		for (MobRow row : snap.mobRows) {
 			sql.addValue("fightId", snap.fightId)
 					.addValue("mobId", row.mobId)
@@ -413,7 +413,7 @@ public class AnalyticsManager {
 
 	private static void writeMobDamage(Connection con, FightSnapshot snap) throws SQLException {
 		if (snap.mobRows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_mob_damage");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_fight_mob_damage");
 		for (MobRow row : snap.mobRows) {
 			for (Entry<DamageType, Double> ent : row.byType.entrySet()) {
 				if (ent.getValue() == null || ent.getValue() <= 0) continue;
@@ -437,7 +437,7 @@ public class AnalyticsManager {
 
 	private static void writeStatuses(Connection con, FightSnapshot snap) throws SQLException {
 		if (snap.statusRows.isEmpty()) return;
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_fight_equipment_status");
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_analytics_fight_equipment_status");
 		for (StatusRow row : snap.statusRows) {
 			sql.addValue("fightId", snap.fightId)
 					.addValue("playerUuid", row.playerUuid)
