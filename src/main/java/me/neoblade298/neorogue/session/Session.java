@@ -421,10 +421,12 @@ public class Session {
 	}
 	
 	// Players are added this way after a lobby instance starts the game
-	public void addPlayers(HashMap<UUID, EquipmentClass> players) {
+	public void addPlayers(HashMap<UUID, EquipmentClass> players, java.util.Set<UUID> commitCargo) {
 		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
 			PlayerSessionData psd = new PlayerSessionData(ent.getKey(), ent.getValue(), this);
-			moveCargoIntoRun(psd);
+			if (commitCargo.contains(ent.getKey())) {
+				moveCargoIntoRun(psd);
+			}
 			party.put(ent.getKey(), psd);
 		}
 	}

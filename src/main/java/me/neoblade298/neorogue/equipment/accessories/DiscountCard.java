@@ -14,6 +14,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class DiscountCard extends Artifact {
 	private static final String ID = "DiscountCard";
+	private static final double DISCOUNT = 0.2;
+	private static final int DISCOUNT_PERCENT = (int) (DISCOUNT * 100);
 
 	public DiscountCard() {
 		super(ID, "Discount Card", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -25,7 +27,7 @@ public class DiscountCard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.white("20%") + ".");
+		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.white(DISCOUNT_PERCENT + "%") + ".");
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class DiscountCard extends Artifact {
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.GENERATE_SHOP, (pdata, in) -> {
 			GenerateShopEvent ev = (GenerateShopEvent) in;
-			ev.addDiscount(0.5);
+			ev.addDiscount(DISCOUNT);
 		});
 	}
 }

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -131,11 +130,6 @@ public class Stormspike extends Equipment {
 			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING, 
 				DamageStatTracker.of(id + slot, eq)));
 		}
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Blackspike.get(), Mastermind.get());
 	}
 
 	@Override

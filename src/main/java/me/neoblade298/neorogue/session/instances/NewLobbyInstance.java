@@ -47,6 +47,8 @@ public class NewLobbyInstance extends LobbyInstance {
             
 	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
+	// Players who have opted to commit their persistent cargo into this run when the game starts.
+	private HashSet<UUID> commitCargo = new HashSet<UUID>();
 
     public NewLobbyInstance(Player host, Session s) {
         super(host, s, SPAWN_X, SPAWN_Z);
@@ -156,6 +158,7 @@ public class NewLobbyInstance extends LobbyInstance {
         inLobby.remove(p.getUniqueId());
         players.remove(p.getUniqueId());
         ready.remove(p.getUniqueId());
+        commitCargo.remove(p.getUniqueId());
         p.teleport(NeoRogue.spawn);
         TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
                 .append(Component.text(" was kicked from the lobby!", NamedTextColor.GRAY)).build();
@@ -213,7 +216,7 @@ public class NewLobbyInstance extends LobbyInstance {
     @Override
 	public void startGame() {
 		s.setBusy(true);
-		s.addPlayers(players);
+		s.addPlayers(players, commitCargo);
 		s.applyExpBoosts();
 		s.broadcast("Generating your game...");
         s.generateRegion();
@@ -311,7 +314,15 @@ public class NewLobbyInstance extends LobbyInstance {
 		Sign sign = (Sign) e.getClickedBlock().getState();
         e.setCancelled(true);
 
-		char c = ((TextComponent) sign.getSide(Side.FRONT).line(1)).content().charAt(0);
+        String cargoLine = ((TextComponent) sign.getSide(Side.FRONT).line(2)).content();
+        if (cargoLine.startsWith("cargo")) {
+            toggleCargo(e.getPlayer());
+            return;
+        }
+
+		String line1 = ((TextComponent) sign.getSide(Side.FRONT).line(1)).content();
+		if (line1.isEmpty()) return;
+		char c = line1.charAt(0);
 
 		switch (c) {
 		case 'W':
@@ -355,6 +366,23 @@ public class NewLobbyInstance extends LobbyInstance {
             broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
         }
         updateBoardLines();
+    }
+
+    private void toggleCargo(Player p) {
+        UUID uuid = p.getUniqueId();
+        if (s.isBusy())
+            return;
+        PlayerData data = PlayerManager.getPlayerData(uuid);
+        if (data == null || !data.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
+            Util.msgRaw(p, "<red>You haven't unlocked cargo yet!");
+            return;
+        }
+        if (commitCargo.add(uuid)) {
+            Util.msgRaw(p, "<green>You will commit your cargo when the run starts.");
+        } else {
+            commitCargo.remove(uuid);
+            Util.msgRaw(p, "<red>You will no longer commit your cargo when the run starts.");
+        }
     }
 
     private static NamedTextColor getClassColor(EquipmentClass pc) {
