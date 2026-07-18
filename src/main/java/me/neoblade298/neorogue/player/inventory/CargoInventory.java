@@ -61,9 +61,9 @@ public class CargoInventory extends CoreInventory {
 		this.multiHold = pd.getFleetSize() >= 1;
 		this.controlBase = inv.getSize() - 9;
 		this.backSlot = controlBase;
-		this.prevSlot = controlBase + 2;
-		this.holdInfoSlot = controlBase + 3;
-		this.nextSlot = controlBase + 4;
+		this.prevSlot = controlBase + 3;
+		this.holdInfoSlot = controlBase + 4;
+		this.nextSlot = controlBase + 5;
 		this.collectSlot = controlBase + 6;
 		this.lostCargoSlot = controlBase + 7;
 		this.infoSlot = controlBase + 8;
