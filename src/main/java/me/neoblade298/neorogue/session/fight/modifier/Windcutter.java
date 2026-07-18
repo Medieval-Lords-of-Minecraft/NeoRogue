@@ -42,13 +42,14 @@ public class Windcutter extends MobModifier {
 			if (ent == null || !ent.isValid()) return TriggerResult.keep();
 			Location loc = ent.getLocation().add(0, 1, 0);
 			double radiusSq = RADIUS * RADIUS;
+			double damage = DAMAGE * fd.getInstance().getSession().getMobDamageMultiplier();
 			active[0] = true;
 			try {
 				for (Player p : fd.getInstance().getSession().getOnlinePlayers()) {
 					part.play(p, loc);
 					sound.play(p, loc);
 					if (p.getWorld().equals(loc.getWorld()) && p.getLocation().distanceSquared(loc) <= radiusSq) {
-						FightInstance.dealDamage(fd, DamageType.SLASHING, DAMAGE, p, DamageStatTracker.ignored(id));
+						FightInstance.dealDamage(fd, DamageType.SLASHING, damage, p, DamageStatTracker.ignored(id));
 					}
 				}
 			} finally {

@@ -70,7 +70,8 @@ public class Sharpshooter extends MobModifier {
 				for (Player p : players) {
 					impact.play(p, to);
 				}
-				FightInstance.dealDamage(mob, DamageType.PIERCING, DAMAGE, target, DamageStatTracker.ignored(id));
+				double damage = DAMAGE * mob.getInstance().getSession().getMobDamageMultiplier();
+				FightInstance.dealDamage(mob, DamageType.PIERCING, damage, target, DamageStatTracker.ignored(id));
 				return TickResult.KEEP;
 			}
 		});

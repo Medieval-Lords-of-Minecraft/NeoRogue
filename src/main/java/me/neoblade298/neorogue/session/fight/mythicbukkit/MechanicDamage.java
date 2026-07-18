@@ -25,7 +25,6 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
-import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class MechanicDamage implements ITargetedEntitySkill {
 	protected final boolean hitBarrier, asParent, debug, ignoreShields;
@@ -70,8 +69,6 @@ public class MechanicDamage implements ITargetedEntitySkill {
 	@Override
 	public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
-			double level = data.getCaster().getLevel(); // From Session#getLevel(), basically nodes visited
-
 			// Currently assumes caster is always a mythicmob
 			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity());
 			if (asParent && !am.getParent().isPresent()) {
@@ -81,11 +78,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
-			boolean increaseDamageNotoriety = NotorietySetting.INCREASE_DAMAGE.isActive(fd.getInstance().getSession());
-			double mult = 1 + ((level - 1) * 0.2);
-			if (increaseDamageNotoriety) {
-				mult *= NotorietySetting.INCREASE_DAMAGE_MULTIPLIER;
-			}
+			double mult = fd.getInstance().getSession().getMobDamageMultiplier();
 
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				double base = ent.getValue();

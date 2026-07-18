@@ -100,65 +100,91 @@ public class RunReward {
 		return reward;
 	}
 
-	// Pays each party member their persistent per-region completion reward (a caravan upgrade). Scaled
-	// by the notoriety money multiplier like other cargo income. Called when a region is completed.
-	public static void awardRegionBaseReward(Session s) {
-		for (PlayerSessionData psd : s.getParty().values()) {
-			PlayerData pd = psd.getData();
-			if (pd == null) continue;
-			int base = pd.getCargoBaseReward();
-			if (base <= 0) continue;
-			double reward = base * s.getNotorietyMoneyMultiplier();
-			depositCargo(psd, reward);
-			Player p = psd.getPlayer();
-			if (p != null) {
-				Util.msgRaw(p, "<gray>Your caravan earned a <yellow>" + formatMoney(reward)
-						+ "</yellow> reward for completing the region!");
-			}
-		}
-	}
-
-	// Prints the per-material breakdown (most valuable first) for a cargo sale, then a notoriety-bonus
-	// note whenever the multiplier boosted the payout above the raw sale value.
-	private static void sendCargoBreakdown(Player p, Session s, PlayerSessionData.CargoSaleResult result, double reward) {
+	// Builds the MiniMessage hover text (per-material breakdown, most valuable first, plus any
+	// notoriety-bonus note) shown when a player hovers a cargo sale summary line.
+	private static String buildCargoHover(Session s, PlayerSessionData.CargoSaleResult result, double reward) {
 		List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
 				result.qtyByMaterial.entrySet());
 		lines.sort(Comparator.comparingDouble(
 				(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
 				.reversed());
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
 		for (Map.Entry<Material, Integer> line : lines) {
 			Material mat = line.getKey();
-			Util.msgRaw(p, "<gray>  - <white>" + line.getValue() + "x <yellow>" + prettyName(mat)
-					+ " <gray>for <yellow>" + formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
+			if (!first) sb.append("<newline>");
+			first = false;
+			sb.append("<white>").append(line.getValue()).append("x <yellow>").append(prettyName(mat))
+					.append(" <gray>for <yellow>").append(formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
 		}
 		if (reward > result.value) {
-			Util.msgRaw(p, "<gray>  <white>(includes <green>+" + s.getNotorietyMoneyBonusPercent()
-					+ "%<white> notoriety bonus on the <yellow>" + formatMoney(result.value) + "<white> sale value)");
+			sb.append("<newline><white>(includes <green>+").append(s.getNotorietyMoneyBonusPercent())
+					.append("%<white> notoriety bonus on the <yellow>").append(formatMoney(result.value))
+					.append("<white> sale value)");
 		}
+		return sb.toString();
+	}
+
+	// Wraps the "<count> cargo item(s)" phrase in an underlined hover that reveals the sale breakdown.
+	private static String hoverableCargoItems(String hover, int count) {
+		return "<hover:show_text:'" + hover + "'><yellow><underlined>" + count + "</underlined> cargo item"
+				+ (count == 1 ? "" : "s") + "</hover>";
+	}
+
+	// Formats the effective payout multiplier (e.g. 1.65) applied to a cargo sale's raw value.
+	private static String formatMult(double mult) {
+		return new java.text.DecimalFormat("0.##").format(mult);
 	}
 
 
-	// Sells each party member's run cargo for a completed region. The region's base percentage is
-	// randomized by +/- CARGO_SELL_VARIANCE, proceeds are paid out immediately, and the sale is
-	// logged on each PlayerSessionData for the end-of-run finance summary.
-	public static void sellCargoForRegion(Session s, RegionType completed) {
-		double base = completed.getCargoSellPercent();
-		if (base <= 0) return;
+	// Called when a region is completed: auto-sells a portion of each player's run cargo and awards
+	// their persistent per-region completion reward (a caravan upgrade), presenting both in a single
+	// message. The cargo sale is randomized by +/- CARGO_SELL_VARIANCE and logged on each
+	// PlayerSessionData for the end-of-run finance summary.
+	public static void awardRegionCompletion(Session s, RegionType completed) {
+		double sellPercent = completed.getCargoSellPercent();
 		for (PlayerSessionData psd : s.getParty().values()) {
-			if (psd.getRunCargoTotal() <= 0) continue;
-			double variance = (NeoRogue.gen.nextDouble() * 2 - 1) * CARGO_SELL_VARIANCE;
-			double fraction = Math.max(0.0, Math.min(1.0, base + variance));
-			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(fraction);
-			if (result.itemsSold <= 0) continue;
-			double reward = payoutCargoReward(s, psd, result.value);
-			Player p = psd.getPlayer();
-			if (p != null) {
-				Util.msgRaw(p, "<gray>Your caravan sold <yellow>" + result.itemsSold + "</yellow> cargo item"
-						+ (result.itemsSold == 1 ? "" : "s") + " in " + completed.getDisplay() + " for <yellow>"
-						+ formatMoney(reward) + "</yellow>:");
+			PlayerData pd = psd.getData();
 
-				// Per-material breakdown, most valuable first, plus any notoriety bonus applied.
-				sendCargoBreakdown(p, s, result, reward);
+			// Persistent per-region completion reward, independent of the region's cargo sell rate.
+			double regionReward = 0;
+			if (pd != null && pd.getCargoBaseReward() > 0) {
+				regionReward = pd.getCargoBaseReward() * s.getNotorietyMoneyMultiplier();
+				depositCargo(psd, regionReward);
+			}
+
+			// Auto-sell a portion of the player's run cargo (skipped if the region doesn't sell cargo).
+			PlayerSessionData.CargoSaleResult result = null;
+			double cargoReward = 0;
+			if (sellPercent > 0 && psd.getRunCargoTotal() > 0) {
+				double variance = (NeoRogue.gen.nextDouble() * 2 - 1) * CARGO_SELL_VARIANCE;
+				double fraction = Math.max(0.0, Math.min(1.0, sellPercent + variance));
+				PlayerSessionData.CargoSaleResult sale = psd.sellRunCargo(fraction);
+				if (sale.itemsSold > 0) {
+					result = sale;
+					cargoReward = payoutCargoReward(s, psd, sale.value);
+				}
+			}
+
+			Player p = psd.getPlayer();
+			if (p == null) continue;
+
+			boolean hasReward = regionReward > 0;
+			if (result != null) {
+				double mult = result.value > 0 ? cargoReward / result.value : 1.0;
+				String header = "<gray>Your caravan sold "
+						+ hoverableCargoItems(buildCargoHover(s, result, cargoReward), result.itemsSold)
+						+ " in " + completed.getDisplay() + " for <yellow>" + formatMoney(cargoReward)
+						+ "</yellow> <gray>(<green>\u00d7" + formatMult(mult) + "<gray>)";
+				if (hasReward) {
+					header += " plus a <yellow>" + formatMoney(regionReward)
+							+ "</yellow> region completion reward";
+				}
+				Util.msgRaw(p, header + ".");
+			}
+			else if (hasReward) {
+				Util.msgRaw(p, "<gray>Your caravan earned a <yellow>" + formatMoney(regionReward)
+						+ "</yellow> reward for completing " + completed.getDisplay() + "!");
 			}
 		}
 	}
@@ -197,12 +223,10 @@ public class RunReward {
 			double reward = payoutCargoReward(s, psd, result.value);
 			Player p = psd.getPlayer();
 			if (p != null) {
-				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining <yellow>" + result.itemsSold
-						+ "</yellow> cargo item" + (result.itemsSold == 1 ? "" : "s") + " for <yellow>"
-						+ formatMoney(reward) + "</yellow>:");
-
-				// Per-material breakdown, most valuable first, plus any notoriety bonus applied.
-				sendCargoBreakdown(p, s, result, reward);
+				double mult = result.value > 0 ? reward / result.value : 1.0;
+				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining "
+						+ hoverableCargoItems(buildCargoHover(s, result, reward), result.itemsSold) + " for <yellow>"
+						+ formatMoney(reward) + "</yellow> <gray>(<green>\u00d7" + formatMult(mult) + "<gray>).");
 			}
 		}
 	}

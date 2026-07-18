@@ -937,6 +937,18 @@ public class Session {
 	public int getLevel() {
 		return nodesVisited - 1;
 	}
+
+	// Standardized enemy damage scaling by session level (nodes visited) plus the increase-damage
+	// notoriety modifier: +20% per level beyond the first, multiplied by the notoriety damage bonus
+	// when active. Mob levels are set to getLevel() on spawn, so this is equivalent to reading a
+	// MythicMob caster's level.
+	public double getMobDamageMultiplier() {
+		double mult = 1 + ((getLevel() - 1) * 0.2);
+		if (NotorietySetting.INCREASE_DAMAGE.isActive(this)) {
+			mult *= NotorietySetting.INCREASE_DAMAGE_MULTIPLIER;
+		}
+		return mult;
+	}
 	
 	public void setNodesVisited(int nodesVisited) {
 		this.nodesVisited = nodesVisited;
