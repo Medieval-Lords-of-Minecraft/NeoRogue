@@ -1216,14 +1216,6 @@ public class PlayerData {
 			}
 			stmts.add(cargoSql.build(con));
 		}
-
-		// Save cargo limits
-		SQLInsertBuilder cargoMetaSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo_meta");
-		cargoMetaSql.addValue("uuid", uuid.toString())
-				.addValue("capacity", cargo.getCapacity())
-				.addValue("slots", cargo.getSlots())
-				.addRow();
-		stmts.add(cargoMetaSql.build(con));
 	}
 	
 	// Should only ever be displayed to the owner
