@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GoldIngot extends Artifact {
 	private static final String ID = "GoldIngot";
@@ -36,8 +37,10 @@ public class GoldIngot extends Artifact {
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.REWARD_FIGHT, (pdata, in) -> {
+			if (!pdata.hasArtifact(id)) return TriggerResult.remove();
 			RewardFightEvent ev = (RewardFightEvent) in;
 			ev.addBonusGold(25);
+			return TriggerResult.keep();
 		});
 	}
 	

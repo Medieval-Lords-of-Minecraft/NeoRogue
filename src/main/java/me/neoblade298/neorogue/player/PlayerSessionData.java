@@ -59,6 +59,7 @@ import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
@@ -76,7 +77,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private SessionEquipment[] storage = new SessionEquipment[MAX_STORAGE_SIZE];
 	private SessionEquipment[] otherBinds = new SessionEquipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
-	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
+	private HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>>();
 	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 2, accessorySlots = 2;
 	private String instanceData;
 	private SessionStatistics sessionStats = new SessionStatistics();
@@ -450,6 +451,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return artifacts;
 	}
 
+	// True if the player currently owns the artifact with the given id. Non-held artifacts key the map
+	// by their raw id, so this matches how artifacts register their session triggers.
+	public boolean hasArtifact(String id) {
+		return artifacts.containsKey(id);
+	}
+
 	public int getMaxStorage() {
 		return maxStorage;
 	}
@@ -476,17 +483,53 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void addTrigger(String id, SessionTrigger trigger, SessionAction action) {
-		ArrayList<SessionAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new ArrayList<SessionAction>();
-		actions.add(action);
-		triggers.putIfAbsent(trigger, actions);
+		triggers.computeIfAbsent(trigger, k -> new ArrayList<RegisteredSessionAction>())
+				.add(new RegisteredSessionAction(id, action));
 	}
 	
 	public void trigger(SessionTrigger trigger, Object inputs) {
-		if (!triggers.containsKey(trigger)) return;
+		ArrayList<RegisteredSessionAction> actions = triggers.get(trigger);
+		if (actions == null) return;
 		
-		for (SessionAction action : triggers.get(trigger)) {
-			action.trigger(this, inputs);
+		// Snapshot so that actions which remove themselves or an artifact (and thus mutate this
+		// list via removeTrigger/removeTriggers) don't cause a ConcurrentModificationException
+		for (RegisteredSessionAction ra : new ArrayList<RegisteredSessionAction>(actions)) {
+			TriggerResult result = ra.action.trigger(this, inputs);
+			if (result == null) continue;
+			if (result.removeTrigger()) actions.remove(ra);
+			if (result.breakLoop()) break;
+		}
+	}
+	
+	// Removes the single session trigger registered under exactly this id. Use this when a source
+	// registered one trigger, or to remove one specific trigger of a multi-trigger source.
+	public void removeTrigger(String id) {
+		for (ArrayList<RegisteredSessionAction> actions : triggers.values()) {
+			actions.removeIf(ra -> ra.id.equals(id));
+		}
+	}
+
+	// Removes every session trigger owned by the given source. A trigger is owned when its id equals
+	// ownerId or starts with "ownerId-", which is the convention for registering multiple triggers
+	// from one source (e.g. id + "-heal" and id + "-shop"). Artifact ids are dash-free PascalCase, so
+	// the "ownerId-" prefix can never collide with another artifact's id. Called automatically when an
+	// artifact is fully removed so all of its triggers stop firing mid-session.
+	public void removeTriggers(String ownerId) {
+		String prefix = ownerId + "-";
+		for (ArrayList<RegisteredSessionAction> actions : triggers.values()) {
+			actions.removeIf(ra -> ra.id.equals(ownerId) || ra.id.startsWith(prefix));
+		}
+	}
+
+	// Pairs a SessionAction with the id of the source (artifact/equipment/etc.) that registered it so
+	// the action can be torn down later via removeTrigger / removeTriggers
+	private static class RegisteredSessionAction {
+		private final String id;
+		private final SessionAction action;
+
+		private RegisteredSessionAction(String id, SessionAction action) {
+			this.id = id;
+			this.action = action;
 		}
 	}
 
@@ -500,6 +543,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			inst.add(-amount);
 			if (inst.getAmount() < 1) {
 				artifacts.remove(artifact.getId());
+				// Artifact is fully gone, so tear down every session trigger it registered (both the
+				// bare id and any id + "-suffix" variants) so they don't keep firing until restart
+				removeTriggers(artifact.getId());
 			}
 		}
 	}

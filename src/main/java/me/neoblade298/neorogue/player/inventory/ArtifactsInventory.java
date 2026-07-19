@@ -81,7 +81,7 @@ public class ArtifactsInventory extends CoreInventory {
 			contents[i] = regular.get(start + i).getItem();
 		}
 
-		if (arts.size() == 0) {
+		if (regularCount == 0) {
 			for (int i = 0; i < regularSlots; i++) {
 				contents[i] = CoreInventory.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>No artifacts to display!"));
 			}

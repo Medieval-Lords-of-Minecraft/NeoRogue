@@ -971,6 +971,12 @@ public class Session {
 	public void incrementRegionsCompleted() {
 		this.regionsCompleted++;
 	}
+
+	// False if the session is "for-fun", disables competitive aspects like winrates,
+	// balancing, rewards, and achievements.
+	public boolean isCompetitive() {
+		return !endless;
+	}
 	
 	public int getXOff() {
 		return xOff;
@@ -1108,7 +1114,7 @@ public class Session {
 	}
 
 	public void awardXp(int baseXp) {
-		if (regionsCompleted > 3) return;
+		if (!isCompetitive()) return;
 		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());

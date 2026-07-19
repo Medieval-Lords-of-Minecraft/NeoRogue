@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
 import net.kyori.adventure.text.Component;
 
@@ -40,10 +41,12 @@ public class CrossOfAntiquan extends Artifact {
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.VISIT_NODE, (pdata, in) -> {
+			if (!pdata.hasArtifact(id)) return TriggerResult.remove();
 			if (data.getSession().getInstance() instanceof ShrineInstance) {
 				Util.msgRaw(data.getPlayer(), Component.text("").append(hoverable).append(Component.text(" was activated")));
 				data.healPercent(mult);
 			}
+			return TriggerResult.keep();
 		});
 	}
 	

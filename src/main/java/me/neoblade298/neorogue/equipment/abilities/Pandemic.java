@@ -102,7 +102,7 @@ public class Pandemic extends Equipment implements Power {
 			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 
 			// Add bonus damage
-			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.POISON), 
 				Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 
 			return TriggerResult.keep();
@@ -145,7 +145,7 @@ public class Pandemic extends Equipment implements Power {
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
 				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +
-				GlossaryTag.POISON.tag(this, bonusPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] stacks and spreads " +
+				GlossaryTag.POISON.tag(this, bonusPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] and spreads " +
 				GlossaryTag.POISON.tag(this, areaPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to nearby enemies.");
 	}
 }

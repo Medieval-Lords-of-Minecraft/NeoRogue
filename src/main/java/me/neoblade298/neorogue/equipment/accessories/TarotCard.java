@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TarotCard extends Artifact {
 	private static final String ID = "TarotCard";
@@ -43,6 +44,7 @@ public class TarotCard extends Artifact {
 		data.addTrigger(id, SessionTrigger.REWARD_FIGHT, (pdata, in) -> {
 			RewardFightEvent ev = (RewardFightEvent) in;
 			ev.addBonusDrops(1);
+			return TriggerResult.keep();
 		});
 	}
 }

@@ -24,14 +24,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Plague extends Equipment implements Power {
 	private static final String ID = "Plague";
-	private int damage, thres, maxThres;
+	private int damage, thres, maxMult;
 	
 	public Plague(boolean isUpgraded) {
 		super(ID, "Plague", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		damage = 10;
-		thres = 5;
-		maxThres = isUpgraded ? 40 : 30;
+		damage = 2;
+		thres = 25;
+		maxMult = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {
@@ -67,8 +67,8 @@ public class Plague extends Equipment implements Power {
 
 		public TriggerResult calculateStacks(int added) {
 			stacksApplied += added;
-			damageStacks = Math.min(maxThres, stacksApplied / thres);
-			if (damageStacks >= maxThres) return TriggerResult.remove();
+			damageStacks = Math.min(maxMult * thres, stacksApplied / thres);
+			if (damageStacks >= maxMult * thres) return TriggerResult.remove();
 			return TriggerResult.keep();
 		}
 	}
@@ -93,6 +93,6 @@ public class Plague extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
-				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied this fight, up to " + DescUtil.yellow(maxThres * thres) + ".");
+				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied this fight, up to " + DescUtil.yellow(maxMult * thres) + " stacks.");
 	}
 }

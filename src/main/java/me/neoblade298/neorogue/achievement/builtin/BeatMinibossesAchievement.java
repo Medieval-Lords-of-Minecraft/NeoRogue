@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -57,6 +58,7 @@ public class BeatMinibossesAchievement implements Achievement {
 			if (progress.addProgress(1)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
+			return TriggerResult.keep();
 		});
 	}
 }

@@ -18,6 +18,7 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
@@ -33,7 +34,7 @@ public class ShopInventory extends CoreInventory {
 		CONSUMABLES = new int[] { 15, 16, 17 },
 		GEMS = new int[] { 24, 25, 26 },
 		ARTIFACTS = new int[] { 33, 34, 35 };
-	public static final int SELL_PRICE = 25, REMOVE_CURSE_PRICE = 100,
+	public static final int SELL_PRICE = 25, CONSUMABLE_PRICE = 10, REMOVE_CURSE_PRICE = 100,
 		GOLD_ICON = 4, SELL_ICON = 0, PURIFY_ICON = 1, SPECTATE_ICON = 2, STORAGE_ARTIFACT = 6, ARMOR_ARTIFACT = 7, ACCESSORY_ARTIFACT = 8;
 	private PlayerSessionData data;
 	private ShopContents shopItems;
@@ -77,7 +78,8 @@ public class ShopInventory extends CoreInventory {
 		contents[SELL_ICON] = CoreInventory.createButton(
 				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
-						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " coins</yellow>."
+						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " coins</yellow>." +
+						"\\nConsumables sell for <yellow>" + CONSUMABLE_PRICE + " coins</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
 		contents[PURIFY_ICON] = CoreInventory.createButton(
@@ -335,7 +337,7 @@ public class ShopInventory extends CoreInventory {
 			Util.displayError(p, restriction);
 			return false;
 		}
-		data.addCoins(SELL_PRICE);
+		data.addCoins(eq.getType() == EquipmentType.CONSUMABLE ? CONSUMABLE_PRICE : SELL_PRICE);
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 		p.setItemOnCursor(null);
 		data.getSession().broadcast(

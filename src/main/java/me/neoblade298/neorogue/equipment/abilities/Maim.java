@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -69,7 +68,7 @@ public class Maim extends Equipment {
 				hit.play(p, ev.getTarget());
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING,
 					DamageStatTracker.of(ID + slot, this)));
-				FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.damageBuffAlly(buffId, this)), 200);
+				FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 200);
 			}
 			return TriggerResult.keep();
 		});

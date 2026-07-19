@@ -1,52 +1,69 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class WristBlade extends Equipment {
 	private static final String ID = "WristBlade";
-	private int hits;
-	
+	private static final double NORMAL_THRESHOLD = 0.3, BOSS_THRESHOLD = 0.06;
+	private final int stealthDuration, shields;
+
 	public WristBlade(boolean isUpgraded) {
 		super(ID, "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND);
-		hits = isUpgraded ? 2 : 3;
+		stealthDuration = isUpgraded ? 160 : 100;
+		shields = isUpgraded ? 5 : 3;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WristBladeInstance());
-	}
-	
-	private class WristBladeInstance implements TriggerAction {
-		private int count = 0;
-		
-		@Override
-		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (++count >= hits) {
-				count = -1; // -1 so that the double trigger sets it to 0
-				data.runActions(data, Trigger.PRE_BASIC_ATTACK, inputs);
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			LivingEntity target = ev.getTarget();
+			if (target == null || target.getAttribute(Attribute.MAX_HEALTH) == null) return TriggerResult.keep();
+
+			double maxHealth = target.getAttribute(Attribute.MAX_HEALTH).getValue();
+			double threshold = NORMAL_THRESHOLD;
+			FightData targetFD = FightInstance.getFightData(target);
+			if (targetFD != null) {
+				Mob mob = targetFD.getMob();
+				if (mob != null && (mob.getType() == MobType.MINIBOSS || mob.getType() == MobType.BOSS)) {
+					threshold = BOSS_THRESHOLD;
+				}
+			}
+
+			if (ev.getTotalDamage() > maxHealth * threshold) {
+				data.applyStatus(StatusType.STEALTH, data, 1, stealthDuration, this);
+				data.addSimpleShield(data.getPlayer().getUniqueId(), shields, stealthDuration, this);
 			}
 			return TriggerResult.keep();
-		}
+		});
 	}
 
 	@Override
 	public void setupItem() {
-		String hitsString = isUpgraded ? "2nd" : "3rd";
-		item = createItem(Material.PRISMARINE_SHARD, "Every " + DescUtil.yellow(hitsString) + " basic attack will trigger"
-				+ " on-hit effects twice.");
+		item = createItem(Material.PRISMARINE_SHARD,
+				"Dealing over " + DescUtil.white("30%") + " of an enemy's health (" + DescUtil.white("6%")
+				+ " for a miniboss or boss) in one hit grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " "
+				+ DescUtil.duration(stealthDuration / 20, true) + " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
 	}
 }

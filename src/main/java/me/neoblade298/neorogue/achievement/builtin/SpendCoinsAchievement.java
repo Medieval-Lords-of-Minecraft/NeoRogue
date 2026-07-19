@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -56,6 +57,7 @@ public class SpendCoinsAchievement implements Achievement {
 			if (progress.addProgress(amount)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
+			return TriggerResult.keep();
 		});
 	}
 }

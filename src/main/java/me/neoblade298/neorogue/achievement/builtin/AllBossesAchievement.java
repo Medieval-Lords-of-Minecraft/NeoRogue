@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -91,10 +92,11 @@ public class AllBossesAchievement extends ObjectiveAchievement {
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 		data.addTrigger(id, SessionTrigger.WIN_BOSS, (pdata, in) -> {
 			String bossId = (String) in;
-			if (!getObjectiveIds().contains(bossId)) return;
+			if (!getObjectiveIds().contains(bossId)) return TriggerResult.keep();
 			if (completeObjective(progress, bossId)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
+			return TriggerResult.keep();
 		});
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -27,15 +28,16 @@ public class FirstReforgeInventoryTutorial implements Tutorial {
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
 		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
-			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return;
-			if (pdata.computeAvailableReforges().isEmpty()) return;
-			if (!TutorialManager.tryActivateSession(this, pdata)) return;
+			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return TriggerResult.remove();
+			if (pdata.computeAvailableReforges().isEmpty()) return TriggerResult.keep();
+			if (!TutorialManager.tryActivateSession(this, pdata)) return TriggerResult.keep();
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(
 					Component.text(""),
 					Component.text("Click the anvil to reforge your equipment!", NamedTextColor.YELLOW)
 			));
+			return TriggerResult.remove();
 		});
 	}
 }

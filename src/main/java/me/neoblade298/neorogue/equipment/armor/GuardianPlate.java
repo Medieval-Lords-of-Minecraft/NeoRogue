@@ -45,7 +45,7 @@ public class GuardianPlate extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_CHESTPLATE, "Reduce all damage taken by " + DescUtil.yellow(damageReduction) +
+		item = createItem(Material.IRON_CHESTPLATE, "Decrease " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.yellow(damageReduction) +
 				" while you have " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

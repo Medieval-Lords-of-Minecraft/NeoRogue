@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.GenerateShopEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DiscountCard extends Artifact {
 	private static final String ID = "DiscountCard";
@@ -45,6 +46,7 @@ public class DiscountCard extends Artifact {
 		data.addTrigger(id, SessionTrigger.GENERATE_SHOP, (pdata, in) -> {
 			GenerateShopEvent ev = (GenerateShopEvent) in;
 			ev.addDiscount(DISCOUNT);
+			return TriggerResult.keep();
 		});
 	}
 }

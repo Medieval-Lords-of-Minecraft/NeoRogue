@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -65,6 +66,7 @@ public class CailiricCrystal extends Artifact {
 					}
 				}.runTaskLater(NeoRogue.inst(), 10); // Must be delayed else this will trigger twice for some reason
 			}
+			return TriggerResult.keep();
 		});
 	}
 }

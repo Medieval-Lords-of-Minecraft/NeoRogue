@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -34,7 +35,7 @@ public class FirstNodeSelectTutorial implements Tutorial {
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
 		data.addTrigger(ID, SessionTrigger.ENTER_NODE_SELECT, (pdata, in) -> {
-			if (!TutorialManager.tryActivateSession(this, pdata)) return;
+			if (!TutorialManager.tryActivateSession(this, pdata)) return TriggerResult.keep();
 			Player p = pdata.getPlayer();
 			new BukkitRunnable() {
 				@Override
@@ -46,17 +47,19 @@ public class FirstNodeSelectTutorial implements Tutorial {
 					));
 				}
 			}.runTaskLater(NeoRogue.inst(), 100L);
+			return TriggerResult.remove();
 		});
 
 		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
-			if (!TutorialManager.isActivatedSession(this, pdata)) return;
-			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return;
+			if (!TutorialManager.isActivatedSession(this, pdata)) return TriggerResult.keep();
+			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return TriggerResult.remove();
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(
 					Component.text("Nice!", NamedTextColor.GREEN),
 					Component.text("You chose your path!", NamedTextColor.YELLOW)
 			));
+			return TriggerResult.remove();
 		});
 	}
 }

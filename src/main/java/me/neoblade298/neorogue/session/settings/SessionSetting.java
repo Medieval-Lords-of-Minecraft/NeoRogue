@@ -23,7 +23,7 @@ public class SessionSetting {
 
     public static final SessionSetting ENDLESS_MODE = new SessionSetting(
         0, "Endless Mode", Material.SCULK_CATALYST,
-        "Enable to repeatedly cycle through regions.",
+        "Enable to repeatedly cycle through regions.\nDisables competitive aspects like winrates, achievements, rewards.",
         (s, leftClick) -> s.setEndless(!s.isEndless()),
         s -> s.isEndless() ? 1 : 0
     );
@@ -51,7 +51,9 @@ public class SessionSetting {
                     .append(enabled
                             ? Component.text("Yes", NamedTextColor.GREEN)
                             : Component.text("No", NamedTextColor.RED)));
-            lore.add(Component.text(description, NamedTextColor.GRAY));
+            for (String line : description.split("\n")) {
+                lore.add(Component.text(line, NamedTextColor.GRAY));
+            }
             meta.lore(lore);
             if (enabled) {
                 meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);

@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -58,10 +59,11 @@ public class CrownsEarnedAchievement implements Achievement {
 		data.addTrigger(ID, SessionTrigger.FINISH_RUN, (pdata, in) -> {
 			boolean won = in instanceof Boolean b && b;
 			int earned = (int) Math.round(RunReward.calculateBreakdown(session, won).total);
-			if (earned <= 0) return;
+			if (earned <= 0) return TriggerResult.keep();
 			if (progress.addProgress(earned)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
+			return TriggerResult.keep();
 		});
 	}
 }

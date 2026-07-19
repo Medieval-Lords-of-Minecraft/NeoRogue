@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
 
 public class PotOfGreed extends Artifact {
@@ -54,12 +55,13 @@ public class PotOfGreed extends Artifact {
 			int skippedNonCoinRewards = (int) ev.getRewards().stream()
 					.filter(reward -> !(reward instanceof CoinsReward))
 					.count();
-			if (skippedNonCoinRewards <= 0) return;
+			if (skippedNonCoinRewards <= 0) return TriggerResult.keep();
 
 			Sounds.success.play(p, p, Audience.ORIGIN);
 			int coins = GOLD * skippedNonCoinRewards;
 			data.addCoins(coins);
 			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.yellow(coins) + " coins")));
+			return TriggerResult.keep();
 		});
 	}
 }

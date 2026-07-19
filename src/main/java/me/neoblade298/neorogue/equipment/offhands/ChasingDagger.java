@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -22,7 +21,7 @@ public class ChasingDagger extends Equipment {
 	private static final String ID = "ChasingDagger";
 	public ChasingDagger(boolean isUpgraded) {
 		super(ID, "Chasing Dagger", isUpgraded, Rarity.UNCOMMON, new EquipmentClass[] {EquipmentClass.WARRIOR, EquipmentClass.THIEF},
-				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 45 : 35, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 45 : 35, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

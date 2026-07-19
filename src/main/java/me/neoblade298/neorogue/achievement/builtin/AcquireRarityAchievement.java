@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -71,12 +72,13 @@ public class AcquireRarityAchievement implements Achievement {
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
 		data.addTrigger(id, SessionTrigger.ACQUIRE_EQUIPMENT, (pdata, in) -> {
 			Equipment eq = (Equipment) in;
-			if (eq.getRarity() != rarity) return;
+			if (eq.getRarity() != rarity) return TriggerResult.keep();
 			EquipmentType type = eq.getType();
-			if (type == EquipmentType.ARTIFACT || type == EquipmentType.CONSUMABLE) return;
+			if (type == EquipmentType.ARTIFACT || type == EquipmentType.CONSUMABLE) return TriggerResult.keep();
 			if (progress.addProgress(1)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
+			return TriggerResult.keep();
 		});
 	}
 }
