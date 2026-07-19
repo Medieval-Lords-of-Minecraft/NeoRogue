@@ -1868,15 +1868,19 @@ public abstract class Equipment implements Comparable<Equipment> {
 			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 5)] = 4;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 5)] = 1;
 
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 6)] = 1;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 6)] = 3;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 6)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 6)] = 5;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 6)] = 1;
 
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 7)] = 1;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 7)] = 1;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 7)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 7)] = 6;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 7)] = 2;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 8)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 8)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 8)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 8)] = 4;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 8)] = 4;
 		}
 

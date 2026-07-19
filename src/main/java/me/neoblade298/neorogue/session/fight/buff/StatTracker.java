@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -126,6 +127,10 @@ public class StatTracker {
 
     public static BuffStatTracker statusBuff(String id, Equipment eq) {
         return new BuffStatTracker(id, eq, "Statuses Buffed").category(StatCategory.STATUS);
+    }
+
+    public static BuffStatTracker statusBuff(String id, Equipment eq, Status status) {
+        return new BuffStatTracker(id, eq, status.getDisplay() + " Buffed").category(StatCategory.STATUS);
     }
 
     public static BuffStatTracker shield(String id, Equipment eq) {

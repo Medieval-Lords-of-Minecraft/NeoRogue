@@ -27,7 +27,7 @@ public class FirstGlossaryOpenTutorial implements Tutorial {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
-		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
+		data.addTrigger(ID, SessionTrigger.VISIT_NODE, 20, (pdata, in) -> {
 			if (!TutorialManager.tryActivateSession(this, pdata)) return TriggerResult.keep();
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(

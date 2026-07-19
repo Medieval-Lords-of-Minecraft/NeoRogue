@@ -50,7 +50,7 @@ public class FirstNodeSelectTutorial implements Tutorial {
 			return TriggerResult.remove();
 		});
 
-		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
+		data.addTrigger(ID, SessionTrigger.VISIT_NODE, 0, (pdata, in) -> {
 			if (!TutorialManager.isActivatedSession(this, pdata)) return TriggerResult.keep();
 			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return TriggerResult.remove();
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
@@ -59,7 +59,8 @@ public class FirstNodeSelectTutorial implements Tutorial {
 					Component.text("Nice!", NamedTextColor.GREEN),
 					Component.text("You chose your path!", NamedTextColor.YELLOW)
 			));
-			return TriggerResult.remove();
+			// Stop lower-priority tutorials (reforge, glossary) from also activating on this same node visit
+			return TriggerResult.removeAndConsume();
 		});
 	}
 }

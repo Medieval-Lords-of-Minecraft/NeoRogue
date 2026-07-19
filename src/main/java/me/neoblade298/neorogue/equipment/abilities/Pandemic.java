@@ -118,7 +118,7 @@ public class Pandemic extends Equipment implements Power {
 			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 
 			// Add bonus poison stacks
-			ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
+			ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this, ev2.getStatus())));
 
 			// Spread poison in area around marked target
 			Player p2 = data.getPlayer();

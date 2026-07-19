@@ -60,7 +60,7 @@ public class FightData {
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
 	protected TextDisplay hologram;
-	protected static final float HOLOGRAM_Y_OFFSET = 0.4f;
+	protected static final float HOLOGRAM_Y_OFFSET = 0.6f;
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();

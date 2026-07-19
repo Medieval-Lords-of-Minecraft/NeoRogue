@@ -49,6 +49,11 @@ public class TriggerResult {
 		return responses.get(hashCode(false, false, true));
 	}
 	
+	// Remove the trigger and stop lower priority actions from triggering off the same event
+	public static TriggerResult removeAndConsume() {
+		return responses.get(hashCode(true, false, true));
+	}
+	
 	private TriggerResult(boolean removeTrigger, boolean cancelEvent, boolean breakLoop) {
 		this.removeTrigger = removeTrigger;
 		this.cancelEvent = cancelEvent;

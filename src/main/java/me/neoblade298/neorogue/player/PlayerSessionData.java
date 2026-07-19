@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -483,8 +484,17 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void addTrigger(String id, SessionTrigger trigger, SessionAction action) {
-		triggers.computeIfAbsent(trigger, k -> new ArrayList<RegisteredSessionAction>())
-				.add(new RegisteredSessionAction(id, action));
+		addTrigger(id, trigger, RegisteredSessionAction.DEFAULT_PRIORITY, action);
+	}
+
+	// Registers a session trigger with an explicit priority. Lower priority executes first (ties broken
+	// by id), mirroring PlayerFightData's PriorityAction ordering. Actions are kept sorted so dispatch
+	// order is deterministic regardless of registration order.
+	public void addTrigger(String id, SessionTrigger trigger, int priority, SessionAction action) {
+		ArrayList<RegisteredSessionAction> actions = triggers.computeIfAbsent(trigger,
+				k -> new ArrayList<RegisteredSessionAction>());
+		actions.add(new RegisteredSessionAction(id, priority, action));
+		Collections.sort(actions);
 	}
 	
 	public void trigger(SessionTrigger trigger, Object inputs) {
@@ -522,14 +532,25 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	// Pairs a SessionAction with the id of the source (artifact/equipment/etc.) that registered it so
-	// the action can be torn down later via removeTrigger / removeTriggers
-	private static class RegisteredSessionAction {
+	// the action can be torn down later via removeTrigger / removeTriggers. A priority controls dispatch
+	// order within a trigger: lower priority runs first, ties broken by id (mirrors PriorityAction).
+	private static class RegisteredSessionAction implements Comparable<RegisteredSessionAction> {
+		private static final int DEFAULT_PRIORITY = 10;
 		private final String id;
+		private final int priority;
 		private final SessionAction action;
 
-		private RegisteredSessionAction(String id, SessionAction action) {
+		private RegisteredSessionAction(String id, int priority, SessionAction action) {
 			this.id = id;
+			this.priority = priority;
 			this.action = action;
+		}
+
+		@Override
+		public int compareTo(RegisteredSessionAction o) {
+			int comp = Integer.compare(priority, o.priority);
+			if (comp != 0) return comp;
+			return id.compareTo(o.id);
 		}
 	}
 

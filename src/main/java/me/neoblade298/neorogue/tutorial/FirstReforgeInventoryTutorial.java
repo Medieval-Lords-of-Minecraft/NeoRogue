@@ -27,7 +27,7 @@ public class FirstReforgeInventoryTutorial implements Tutorial {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data) {
-		data.addTrigger(ID, SessionTrigger.VISIT_NODE, (pdata, in) -> {
+		data.addTrigger(ID, SessionTrigger.VISIT_NODE, 10, (pdata, in) -> {
 			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return TriggerResult.remove();
 			if (pdata.computeAvailableReforges().isEmpty()) return TriggerResult.keep();
 			if (!TutorialManager.tryActivateSession(this, pdata)) return TriggerResult.keep();
@@ -37,7 +37,8 @@ public class FirstReforgeInventoryTutorial implements Tutorial {
 					Component.text(""),
 					Component.text("Click the anvil to reforge your equipment!", NamedTextColor.YELLOW)
 			));
-			return TriggerResult.remove();
+			// Stop lower-priority tutorials (glossary) from also activating on this same node visit
+			return TriggerResult.removeAndConsume();
 		});
 	}
 }
