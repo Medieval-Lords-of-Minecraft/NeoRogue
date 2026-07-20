@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -64,6 +65,7 @@ public class AchievementsMenuInventory extends CoreInventory {
 		int exp = data.getExp(ec);
 		int required = PlayerData.getXpRequired(level);
 		ItemMeta meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.lore(List.of(
 				Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE),
 				Component.text("Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)

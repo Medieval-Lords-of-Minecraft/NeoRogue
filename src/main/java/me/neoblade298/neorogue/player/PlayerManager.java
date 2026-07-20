@@ -37,7 +37,7 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerclass (uuid VARCHAR(36) NOT NULL, class VARCHAR(40) NOT NULL, level INT NOT NULL DEFAULT 1, exp INT NOT NULL DEFAULT 0, points INT NOT NULL DEFAULT 0, notoriety_max INT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, class));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_run_results (id BIGINT NOT NULL AUTO_INCREMENT, uuid VARCHAR(36) NOT NULL, ts BIGINT NOT NULL, playerClass VARCHAR(40) NOT NULL, notoriety INT NOT NULL, won TINYINT NOT NULL, PRIMARY KEY (id));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_run_results (id BIGINT NOT NULL AUTO_INCREMENT, uuid VARCHAR(36) NOT NULL, ts BIGINT NOT NULL, playerClass VARCHAR(40) NOT NULL, notoriety INT NOT NULL, partySize INT NOT NULL DEFAULT 1, won TINYINT NOT NULL, PRIMARY KEY (id));");
 			try {
 				stmt.execute("CREATE INDEX idx_neorogue_run_results_uuid ON neorogue_run_results (uuid);");
 			} catch (SQLException ignore) {

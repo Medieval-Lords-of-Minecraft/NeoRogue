@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -53,7 +54,7 @@ public class StatsMenuInventory extends CoreInventory {
 
 		inv.setItem(GLOBAL_SLOT, buildScopeItem(stats, null, Material.NETHER_STAR, "Global",
 				NamedTextColor.GOLD));
-		Material[] icons = { Material.IRON_SWORD, Material.LEATHER_BOOTS, Material.BOW, Material.BLAZE_ROD };
+		Material[] icons = { Material.IRON_SWORD, Material.IRON_INGOT, Material.BOW, Material.BLAZE_ROD };
 		for (int i = 0; i < CLASSES.length; i++) {
 			inv.setItem(CLASS_SLOTS[i],
 					buildScopeItem(stats, CLASSES[i], icons[i], CLASSES[i].getDisplay(), NamedTextColor.YELLOW));
@@ -67,6 +68,7 @@ public class StatsMenuInventory extends CoreInventory {
 			NamedTextColor titleColor) {
 		ItemStack item = CoreInventory.createButton(icon, Component.text(title + " Statistics", titleColor));
 		ItemMeta meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		List<Component> lore = new ArrayList<Component>();
 
 		RunStats.Winrate lifetime = stats.winrate(ec, null, false);

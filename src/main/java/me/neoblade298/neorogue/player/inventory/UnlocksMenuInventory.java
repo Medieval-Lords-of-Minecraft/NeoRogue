@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -65,6 +66,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 	private ItemStack createClassButton(PlayerData data, Material mat, Component name, EquipmentClass ec) {
 		ItemStack item = CoreInventory.createButton(mat, (TextComponent) name);
 		ItemMeta meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.setMaxStackSize(64);
 		item.setItemMeta(meta);
 		ArrayList<UnlockNode> nodes = UnlockRegistry.getNodesForClass(ec);

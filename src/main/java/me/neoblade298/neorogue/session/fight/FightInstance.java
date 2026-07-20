@@ -451,15 +451,15 @@ public abstract class FightInstance extends Instance {
 			boolean otherDead = od != null && od.isDead();
 			// Hide dead players from the rejoining player unless the rejoiner is also dead
 			if (otherDead && !pDead) {
-				p.hidePlayer(NeoRogue.inst(), other);
+				p.hideEntity(NeoRogue.inst(), other);
 			} else {
-				p.showPlayer(NeoRogue.inst(), other);
+				p.showEntity(NeoRogue.inst(), other);
 			}
 			// Hide the rejoining player from alive players if they're dead
 			if (pDead && !otherDead) {
-				other.hidePlayer(NeoRogue.inst(), p);
+				other.hideEntity(NeoRogue.inst(), p);
 			} else {
-				other.showPlayer(NeoRogue.inst(), p);
+				other.showEntity(NeoRogue.inst(), p);
 			}
 		}
 

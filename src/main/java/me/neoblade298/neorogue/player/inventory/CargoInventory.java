@@ -133,8 +133,8 @@ public class CargoInventory extends CoreInventory {
 			Material mat = ent.getKey();
 			int count = ent.getValue();
 
-			// Always display a single item so shift-clicking matching items in isn't blocked by a full stack.
-			ItemStack disp = new ItemStack(mat, 1);
+			// Display the actual stack size, capped at 64, so the amount is visible at a glance.
+			ItemStack disp = new ItemStack(mat, Math.min(count, 64));
 			ItemMeta meta = disp.getItemMeta();
 			List<Component> lore = new ArrayList<Component>();
 			lore.add(line(Component.text("Amount: ", NamedTextColor.GRAY)

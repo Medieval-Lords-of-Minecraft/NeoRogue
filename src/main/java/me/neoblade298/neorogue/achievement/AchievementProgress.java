@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -130,6 +131,7 @@ public class AchievementProgress {
 		List<Component> lore = buildLoreLines();
 		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
 		return item;
 	}

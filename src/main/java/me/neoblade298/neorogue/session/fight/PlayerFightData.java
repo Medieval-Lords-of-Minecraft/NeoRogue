@@ -532,19 +532,19 @@ public class PlayerFightData extends FightData {
 				// Hide this newly-dead player from alive players, but let dead players
 				// still see each other
 				if (otherDead) {
-					other.showPlayer(NeoRogue.inst(), p);
-					p.showPlayer(NeoRogue.inst(), other);
+					other.showEntity(NeoRogue.inst(), p);
+					p.showEntity(NeoRogue.inst(), other);
 				} else {
-					other.hidePlayer(NeoRogue.inst(), p);
+					other.hideEntity(NeoRogue.inst(), p);
 				}
 			} else {
 				// This player is alive again: reveal them to everyone, and hide any
 				// players still dead from them
-				other.showPlayer(NeoRogue.inst(), p);
+				other.showEntity(NeoRogue.inst(), p);
 				if (otherDead) {
-					p.hidePlayer(NeoRogue.inst(), other);
+					p.hideEntity(NeoRogue.inst(), other);
 				} else {
-					p.showPlayer(NeoRogue.inst(), other);
+					p.showEntity(NeoRogue.inst(), other);
 				}
 			}
 		}

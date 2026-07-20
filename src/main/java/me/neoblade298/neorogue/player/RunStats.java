@@ -22,16 +22,19 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 // the streak at notoriety N).
 public class RunStats {
 	// A single finished run for one player. playerClass is the class actually played (never null).
+	// partySize is the number of players in the party for that run (1 for solo).
 	public static class RunRecord {
 		public final long ts;
 		public final EquipmentClass playerClass;
 		public final int notoriety;
+		public final int partySize;
 		public final boolean won;
 
-		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, boolean won) {
+		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, boolean won) {
 			this.ts = ts;
 			this.playerClass = playerClass;
 			this.notoriety = notoriety;
+			this.partySize = partySize;
 			this.won = won;
 		}
 	}

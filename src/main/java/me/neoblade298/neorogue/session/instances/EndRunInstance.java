@@ -83,9 +83,10 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		if (s.getSessionType() == SessionType.TUTORIAL || s.isEndless()) return;
 		boolean won = isWin();
 		int notoriety = s.getNotoriety();
+		int partySize = s.getParty().size();
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, won);
+			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, won);
 		}
 	}
 

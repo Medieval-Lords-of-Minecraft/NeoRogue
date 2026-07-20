@@ -297,7 +297,7 @@ public class SessionManager implements Listener {
 		if (snap.getSessionType() == SessionType.TUTORIAL || snap.isEndless()) return;
 		EquipmentClass hostClass = snap.getPartyClasses().get(host);
 		if (hostClass == null) return;
-		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), false);
+		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), snap.getPartyClasses().size(), false);
 	}
 
 	@EventHandler
@@ -857,7 +857,7 @@ public class SessionManager implements Listener {
 					continue;
 				Player spec = Bukkit.getPlayer(specUuid);
 				if (spec != null)
-					p.hidePlayer(NeoRogue.inst(), spec);
+					p.hideEntity(NeoRogue.inst(), spec);
 			}
 		}
 	}
@@ -904,14 +904,15 @@ public class SessionManager implements Listener {
 	}
 
 	// Fully hides a player (spectator) from every other online player. Unlike
-	// setInvisible, this removes the entity entirely on other clients.
+	// setInvisible, this removes the entity entirely on other clients (but keeps
+	// them in the tab list).
 	public static void hidePlayerFromAll(Player p) {
 		if (p == null)
 			return;
 		for (Player other : Bukkit.getOnlinePlayers()) {
 			if (other.equals(p))
 				continue;
-			other.hidePlayer(NeoRogue.inst(), p);
+			other.hideEntity(NeoRogue.inst(), p);
 		}
 	}
 
@@ -923,7 +924,7 @@ public class SessionManager implements Listener {
 		for (Player other : Bukkit.getOnlinePlayers()) {
 			if (other.equals(p))
 				continue;
-			other.showPlayer(NeoRogue.inst(), p);
+			other.showEntity(NeoRogue.inst(), p);
 		}
 	}
 
