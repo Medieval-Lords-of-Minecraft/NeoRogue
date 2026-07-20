@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 // Every few times the mob deals damage, it releases a slashing wave that damages nearby players.
 public class Windcutter extends MobModifier {
 	private static final int ATTACKS_REQUIRED = 3;
-	private static final double DAMAGE = 15;
+	private static final double DAMAGE = 2;
 	private static final double RADIUS = 5.0;
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).count(3);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP);

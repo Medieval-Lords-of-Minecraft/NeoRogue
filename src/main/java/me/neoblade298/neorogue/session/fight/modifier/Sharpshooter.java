@@ -23,7 +23,7 @@ import net.kyori.adventure.text.Component;
 // Fires an arrow at a random player every few seconds, dealing piercing damage.
 public class Sharpshooter extends MobModifier {
 	private static final int INTERVAL = 5; // seconds
-	private static final double DAMAGE = 15;
+	private static final double DAMAGE = 3;
 	private static final SoundContainer shoot = new SoundContainer(Sound.ENTITY_ARROW_SHOOT);
 	private static final SoundContainer impact = new SoundContainer(Sound.ENTITY_ARROW_HIT_PLAYER);
 	private static final ParticleContainer trail = new ParticleContainer(Particle.CRIT).count(2);

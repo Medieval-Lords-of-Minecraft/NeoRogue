@@ -37,8 +37,18 @@ public class StatsMenuInventory extends CoreInventory {
 
 	public StatsMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Statistics", NamedTextColor.DARK_AQUA)));
+		setupInventory(PlayerManager.getPlayerData(p.getUniqueId()));
+	}
+
+	// Spectator view of another player's global statistics.
+	public StatsMenuInventory(Player spectator, PlayerData target) {
+		super(spectator, Bukkit.createInventory(spectator, 27,
+				Component.text(target.getDisplay() + "'s Statistics", NamedTextColor.DARK_AQUA)));
+		setupInventory(target);
+	}
+
+	private void setupInventory(PlayerData pd) {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		RunStats stats = pd != null ? pd.getRunStats() : new RunStats(new ArrayList<RunStats.RunRecord>());
 
 		inv.setItem(GLOBAL_SLOT, buildScopeItem(stats, null, Material.NETHER_STAR, "Global",

@@ -79,7 +79,7 @@ public class ShopInventory extends CoreInventory {
 				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
 						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " coins</yellow>." +
-						"\\nConsumables sell for <yellow>" + CONSUMABLE_PRICE + " coins</yellow>."
+						"\nConsumables sell for <yellow>" + CONSUMABLE_PRICE + " coins</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
 		contents[PURIFY_ICON] = CoreInventory.createButton(

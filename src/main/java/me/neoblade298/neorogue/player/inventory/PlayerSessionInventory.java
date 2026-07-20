@@ -155,7 +155,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			contents[(i + offset) % inv.getSize()] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 		}
 
-		contents[(STATS + offset) % inv.getSize()] = createStatsIcon(data);
+		contents[(STATS + offset) % inv.getSize()] = createStatsIcon(data, isSpectating);
 		contents[(STORAGE + offset) % inv.getSize()] = CoreInventory.createButton(Material.ENDER_CHEST, Component.text("Storage", NamedTextColor.GOLD));
 		contents[(TRASH + offset) % inv.getSize()] = addNbt(CoreInventory.createButton(Material.HOPPER,
 				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
@@ -315,7 +315,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				Component.text("Hotbar Slot", NamedTextColor.RED), bound, instruct, instruct2), dataSlot);
 	}
 
-	private static ItemStack createStatsIcon(PlayerSessionData data) {
+	private static ItemStack createStatsIcon(PlayerSessionData data, boolean isSpectating) {
 		TextComponent cls = Component.text("Class: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getPlayerClass().getDisplay(), NamedTextColor.WHITE));
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
@@ -330,7 +330,15 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
-		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
+		ItemStack item = CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
+		if (isSpectating) {
+			List<Component> lore = item.lore();
+			lore.add(Component.empty());
+			lore.add(Component.text("Left click to view player global stats", NamedTextColor.YELLOW)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+			item.lore(lore);
+		}
+		return item;
 	}
 
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {

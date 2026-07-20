@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -47,8 +46,8 @@ public class Bide extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, gain " + DescUtil.white(shields) + " " + GlossaryTag.SHIELDS.tag(this) + " for " + DescUtil.white(duration + "s") + ". During this time, "
-						+ "taking damage grants you " + DescUtil.yellow(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks.");
+				"On cast, gain " + DescUtil.white(shields) + " " + GlossaryTag.SHIELDS.tag(this) + " for " + DescUtil.white(duration + "s") + ". The first time you "
+						+ "take damage during this time, gain " + DescUtil.yellow(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}
 
 	@Override
@@ -72,7 +71,8 @@ public class Bide extends Equipment {
 				bpc.play(p, p);
 				data.applyStatus(StatusType.BERSERK, data, berserk, -1, Bide.this);
 				strengthGain.play(p, p);
-				return TriggerResult.keep();
+				// Berserk is granted only once per cast window
+				return TriggerResult.remove();
 			};
 		}
 		
