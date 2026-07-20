@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -33,7 +32,7 @@ public class SmallShield extends Equipment {
 	public SmallShield(boolean isUpgraded) {
 		super(ID, "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 5 : 3;
+		reduction = isUpgraded ? 3 : 2;
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class SmallShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". " +
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". " +
 		"Also creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks " + DescUtil.white(5) + " projectiles before breaking.");
 	}
 }

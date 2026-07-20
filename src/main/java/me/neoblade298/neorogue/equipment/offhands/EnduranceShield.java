@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -33,7 +32,7 @@ public class EnduranceShield extends Equipment {
 	public EnduranceShield(boolean isUpgraded) {
 		super(ID, "Endurance Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 6 : 8;
+		reduction = isUpgraded ? 4 : 3;
 		damage = isUpgraded ? 250 : 150;
 	}
 	

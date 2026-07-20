@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -33,7 +32,7 @@ public class SpikyShield extends Equipment {
 	public SpikyShield(boolean isUpgraded) {
 		super(ID, "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = 10;
+		reduction = 3;
 		amount = isUpgraded ? 75 : 50;
 	}
 	
@@ -96,7 +95,7 @@ public class SpikyShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size " + DescUtil.white("3x2")
-				+ " and reduce all damage by " + DescUtil.yellow(reduction) + ". "
+				+ " and reduce " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". "
 				+ "Also grants " + DescUtil.yellow(amount) + " " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

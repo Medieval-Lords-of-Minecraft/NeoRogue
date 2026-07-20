@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -50,7 +49,7 @@ public class BatteringRam extends Equipment {
 	public BatteringRam(boolean isUpgraded) {
 		super(ID, "Battering Ram", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 6 : 8;
+		reduction = isUpgraded ? 4 : 3;
 		damage = isUpgraded ? 120 : 80;
 		thres = 6;
 		conc = isUpgraded ? 8 : 5;

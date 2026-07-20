@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -68,7 +67,7 @@ public class LeatherBracer extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.block.play(p, p);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));
+					Buff.increase(data, 10, BuffStatTracker.defenseBuffAlly(buffId, eq)));
 
 			if (--count > 0) {
 				icon.setAmount(count);
@@ -86,6 +85,6 @@ public class LeatherBracer extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
 				"Reduces the first " + DescUtil.yellow(instances) + " instance(s) of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.white(15) + ".");
+						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.white(10) + ".");
 	}
 }

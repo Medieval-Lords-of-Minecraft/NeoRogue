@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -11,6 +9,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -28,7 +28,7 @@ public class HastyShield extends Equipment {
 	public HastyShield(boolean isUpgraded) {
 		super(ID, "Hasty Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = 15;
+		reduction = 4;
 		amount = isUpgraded ? 25 : 18;
 	}
 	
@@ -68,7 +68,7 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by " + DescUtil.white(reduction)
+		item = createItem(Material.SHIELD, "When raised, reduce " + GlossaryTag.GENERAL.tag(this) + " damage of the next hit taken by " + DescUtil.white(reduction)
 				+ " and grant " + DescUtil.yellow(amount) + " mana and stamina. " + DescUtil.white("5s") + " cooldown.");
 	}
 }

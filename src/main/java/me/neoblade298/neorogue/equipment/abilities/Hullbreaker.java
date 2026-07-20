@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -33,7 +32,7 @@ public class Hullbreaker extends Equipment {
 	private static final String ID = "Hullbreaker";
 	private static int damage = 85;
 	private int reduc;
-	private static final int THRES = 40;
+	private static final int THRES = 20;
 
 	public Hullbreaker(boolean isUpgraded) {
 		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.OFFHAND,

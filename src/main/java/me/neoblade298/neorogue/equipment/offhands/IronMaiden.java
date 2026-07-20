@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,6 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -32,8 +31,8 @@ public class IronMaiden extends Equipment {
 	public IronMaiden(boolean isUpgraded) {
 		super(ID, "Iron Maiden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 8 : 6;
-		thorns = isUpgraded ? 35 : 25;
+		reduction = isUpgraded ? 5 : 4;
+		thorns = isUpgraded ? 60 : 40;
 	}
 	
 	public static Equipment get() {
@@ -69,7 +68,7 @@ public class IronMaiden extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
 		"grants " + GlossaryTag.THORNS.tag(this, thorns, true) +  " and empowers your next basic attack to deal half your current " +
 		GlossaryTag.THORNS.tag(this) + " stacks as " + GlossaryTag.THORNS.tag(this) + " damage (" + DescUtil.white(1 + "s") + " cooldown).");
 	}

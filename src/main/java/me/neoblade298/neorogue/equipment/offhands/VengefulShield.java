@@ -31,7 +31,7 @@ public class VengefulShield extends Equipment {
 	public VengefulShield(boolean isUpgraded) {
 		super(ID, "Vengeful Shield", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 8 : 6;
+		reduction = isUpgraded ? 5 : 4;
 		damage = isUpgraded ? 250 : 150;
 		thres = isUpgraded ? 20 : 25;
 	}
@@ -73,7 +73,7 @@ public class VengefulShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Once per second, receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". Once per second, receiving damage while your shield is raised " +
 		"grants " + GlossaryTag.BERSERK.tag(this, 1, false) + " and empowers your next basic attack to deal " +
 		GlossaryTag.BLUNT.tag(this, damage, true) + ". At " + GlossaryTag.BERSERK.tag(this, thres, true) + ", you no longer need your shield raised to reduce damage.");
 	}
