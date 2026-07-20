@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -49,6 +50,6 @@ public class AuricCape extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ELYTRA,
-				"While above " + DescUtil.white("50%") + " mana, reduce all incoming damage by " + DescUtil.yellow(reduc) + ".");
+				"While above " + DescUtil.white("50%") + " mana, reduce all incoming " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduc) + ".");
 	}
 }

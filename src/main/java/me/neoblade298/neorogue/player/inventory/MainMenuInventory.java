@@ -145,8 +145,8 @@ public class MainMenuInventory extends CoreInventory {
 
 		switch (e.getSlot()) {
 		case HOST_GAME:
-			if (!pd.hasFlag("played_before")) {
-				pd.addFlag("played_before");
+			if (!pd.hasFlag(PlayerData.FLAG_PLAYED_BEFORE)) {
+				pd.addFlag(PlayerData.FLAG_PLAYED_BEFORE);
 				p.closeInventory();
 				SessionManager.createTutorialSession(p, 1);
 			} else {

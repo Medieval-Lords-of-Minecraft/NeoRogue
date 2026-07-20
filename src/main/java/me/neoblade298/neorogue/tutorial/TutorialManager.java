@@ -63,12 +63,12 @@ public class TutorialManager {
 	}
 	
 	public static String getTutorialFlag(Tutorial tutorial) {
-		return "tutorial_" + tutorial.getId();
+		return "tutorial:" + tutorial.getId();
 	}
 
-	public static List<String> getAllFlags() {
+	// All tutorial-namespace flags, used by FlagRegistry for tab-completion and listing.
+	public static List<String> getTutorialFlags() {
 		List<String> flags = new ArrayList<>();
-		flags.add("played_before");
 		for (Tutorial tutorial : tutorials) {
 			flags.add(getTutorialFlag(tutorial));
 		}

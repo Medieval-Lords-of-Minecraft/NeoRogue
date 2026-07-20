@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.Rift;
@@ -22,7 +21,7 @@ public class VoidBracelet extends Equipment {
 	public VoidBracelet(boolean isUpgraded) {
 		super(ID, "Void Bracelet", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
-		inc = isUpgraded ? 3 : 2;
+		inc = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {

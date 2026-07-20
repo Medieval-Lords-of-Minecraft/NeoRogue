@@ -94,11 +94,14 @@ public class PlayerData {
 	public static final int NOTORIETY_HARD_CAP = 10;
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
 	public static final int DEFAULT_FLEET_CAPACITY = 3000, DEFAULT_FLEET_SLOTS = 5;
-	// Flags gating the caravan/cargo system, set by caravan upgrades.
-	public static final String FLAG_CARGO_ACCESS = "cargo_access", FLAG_CARGO_INSURANCE = "cargo_insurance";
+	// All player flags follow the "namespace:key" convention (see FlagRegistry). The general namespace
+	// holds miscellaneous per-account flags such as whether the player has opened the menu before.
+	public static final String FLAG_PLAYED_BEFORE = "general:played_before";
+	// Flags gating the caravan/cargo system, derived from caravan upgrades on login.
+	public static final String FLAG_CARGO_ACCESS = "caravan:cargo_access", FLAG_CARGO_INSURANCE = "caravan:cargo_insurance";
 	// Namespaced flag prefixes: owned sellable packages and purchased caravan upgrades are stored as
-	// player flags (e.g. "caravan_pkg:ores", "caravan_upgrade:cargo_access").
-	public static final String FLAG_PREFIX_PACKAGE = "caravan_pkg:", FLAG_PREFIX_UPGRADE = "caravan_upgrade:";
+	// player flags (e.g. "caravan:pkg:ores", "caravan:upgrade:cargo_access").
+	public static final String FLAG_PREFIX_PACKAGE = "caravan:pkg:", FLAG_PREFIX_UPGRADE = "caravan:upgrade:";
 	private Cargo cargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
 	// Overflow stash for unsold cargo returned at run end that didn't fit in the main cargo.
 	// Shares its capacity/slot limits with the main cargo; withdraw-only in the GUI.
@@ -1299,6 +1302,40 @@ public class PlayerData {
 	public void removeFlag(String flag) {
 		flags.remove(flag);
 		saveFlagsDebounced();
+	}
+
+	// Read-only view of every flag currently set on this player.
+	public Set<String> getFlags() {
+		return Collections.unmodifiableSet(flags);
+	}
+
+	// Flags belonging to the given namespace (matched via FlagRegistry.namespaceOf), sorted.
+	public java.util.List<String> getFlags(String namespace) {
+		java.util.ArrayList<String> result = new java.util.ArrayList<String>();
+		for (String flag : flags) {
+			if (FlagRegistry.namespaceOf(flag).equalsIgnoreCase(namespace)) result.add(flag);
+		}
+		Collections.sort(result);
+		return result;
+	}
+
+	// Removes every flag and persists. Returns how many were removed.
+	public int clearFlags() {
+		int count = flags.size();
+		if (count > 0) {
+			flags.clear();
+			saveFlagsDebounced();
+		}
+		return count;
+	}
+
+	// Removes every flag in the given namespace and persists. Returns how many were removed.
+	public int clearFlags(String namespace) {
+		int before = flags.size();
+		flags.removeIf(f -> FlagRegistry.namespaceOf(f).equalsIgnoreCase(namespace));
+		int removed = before - flags.size();
+		if (removed > 0) saveFlagsDebounced();
+		return removed;
 	}
 
 	public void resetAll() {

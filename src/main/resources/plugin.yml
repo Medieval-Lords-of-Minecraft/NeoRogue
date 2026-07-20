@@ -17,6 +17,9 @@ commands:
       aliases: [nrl]
       description: NeoRogue analytics command
       permission: neorogue.admin
+   nrflag:
+      description: NeoRogue player flag management command
+      permission: neorogue.admin
 permissions:
    neorogue.general:
       description: Allows use of /nr commands

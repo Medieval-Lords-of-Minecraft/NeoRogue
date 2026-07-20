@@ -723,7 +723,7 @@ public class Region {
 		UUID host = s.getHost();
 		try (Statement delete = con.createStatement()) {
 			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes");
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_nodes");
 			for (int row = 0; row < rowCount; row++) {
 				for (int lane = 0; lane < LANE_COUNT; lane++) {
 					Node node = nodes[row][lane];

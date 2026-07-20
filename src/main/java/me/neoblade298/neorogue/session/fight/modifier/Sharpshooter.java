@@ -61,7 +61,7 @@ public class Sharpshooter extends MobModifier {
 				for (Player p : players) {
 					shoot.play(p, from);
 				}
-				for (double d = 0; d < dist; d += 0.5) {
+				for (double d = 0; d < dist; d += 0.3) {
 					Location point = from.clone().add(dir.clone().multiply(d));
 					for (Player p : players) {
 						trail.play(p, point);

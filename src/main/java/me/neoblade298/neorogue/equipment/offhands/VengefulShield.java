@@ -43,6 +43,7 @@ public class VengefulShield extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
+		long[] lastProc = new long[] { 0 };
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
 			int berserk = data.getStatus(StatusType.BERSERK).getStacks();
 			Player p = data.getPlayer();
@@ -50,6 +51,12 @@ public class VengefulShield extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
+
+			// The berserk gain + basic-attack empower can only proc once per second; the damage
+			// reduction above still applies to every hit while the shield is raised.
+			long now = System.currentTimeMillis();
+			if (now - lastProc[0] < 1000) return TriggerResult.keep();
+			lastProc[0] = now;
 			data.applyStatus(StatusType.BERSERK, data, 1, -1, this);
 			am.addCount(1);
 			return TriggerResult.keep();
@@ -66,7 +73,7 @@ public class VengefulShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Once per second, receiving damage while your shield is raised " +
 		"grants " + GlossaryTag.BERSERK.tag(this, 1, false) + " and empowers your next basic attack to deal " +
 		GlossaryTag.BLUNT.tag(this, damage, true) + ". At " + GlossaryTag.BERSERK.tag(this, thres, true) + ", you no longer need your shield raised to reduce damage.");
 	}

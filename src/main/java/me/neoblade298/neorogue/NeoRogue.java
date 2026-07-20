@@ -43,7 +43,6 @@ import me.neoblade298.neorogue.commands.CmdAdminDrop;
 import me.neoblade298.neorogue.commands.CmdAdminDropArtifact;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminExp;
-import me.neoblade298.neorogue.commands.CmdAdminFlag;
 import me.neoblade298.neorogue.commands.CmdAdminGlobalBoost;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminLevel;
@@ -78,6 +77,10 @@ import me.neoblade298.neorogue.commands.CmdAdminUnlocks;
 import me.neoblade298.neorogue.commands.CmdCaravan;
 import me.neoblade298.neorogue.commands.CmdCargo;
 import me.neoblade298.neorogue.commands.CmdDecline;
+import me.neoblade298.neorogue.commands.CmdFlagAdd;
+import me.neoblade298.neorogue.commands.CmdFlagClear;
+import me.neoblade298.neorogue.commands.CmdFlagList;
+import me.neoblade298.neorogue.commands.CmdFlagRemove;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdHelp;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -103,6 +106,8 @@ import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.player.FlagRegistry;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
 import me.neoblade298.neorogue.player.caravan.SellablePackageRegistry;
@@ -120,6 +125,7 @@ import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
+import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -177,6 +183,7 @@ public class NeoRogue extends JavaPlugin {
 		UnlockRegistry.reload();
 		SellablePackageRegistry.reload();
 		CaravanUpgradeRegistry.reload();
+		registerFlagNamespaces();
 		EquipmentPresets.reload();
 		PlayerManager.initializeEquipmentDroptables();
 		ChanceSet.load(); // Must load after equipment
@@ -187,6 +194,21 @@ public class NeoRogue extends JavaPlugin {
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
+	}
+
+	// Registers each system's flags under its namespace for the /nrflag command. Suppliers are queried
+	// lazily so config-driven flags (tutorials, caravan packages/upgrades) stay current across reloads.
+	private static void registerFlagNamespaces() {
+		FlagRegistry.register(FlagRegistry.GENERAL, () -> java.util.List.of(PlayerData.FLAG_PLAYED_BEFORE));
+		FlagRegistry.register(FlagRegistry.TUTORIAL, TutorialManager::getTutorialFlags);
+		FlagRegistry.register(FlagRegistry.CARAVAN, () -> {
+			java.util.ArrayList<String> flags = new java.util.ArrayList<String>();
+			flags.add(PlayerData.FLAG_CARGO_ACCESS);
+			flags.add(PlayerData.FLAG_CARGO_INSURANCE);
+			for (var pkg : SellablePackageRegistry.getPackages()) flags.add(PlayerData.FLAG_PREFIX_PACKAGE + pkg.getId());
+			for (var up : CaravanUpgradeRegistry.getUpgrades()) flags.add(PlayerData.FLAG_PREFIX_UPGRADE + up.getId());
+			return flags;
+		});
 	}
 	
 	public void onDisable() {
@@ -262,7 +284,6 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminFlag("flag", "Add or remove a player flag", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 
 		mngr = new SubcommandManager("nrlytics", "neorogue.admin", NamedTextColor.DARK_RED, this);
@@ -275,6 +296,13 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdLyticsMinibosses("minibosses", "Miniboss damage leaderboard", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsBosses("bosses", "Boss damage leaderboard", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLyticsMob("mob", "Detailed mob damage and winrate report", null, SubcommandRunner.BOTH));
+		mngr.registerCommandList("");
+
+		mngr = new SubcommandManager("nrflag", "neorogue.admin", NamedTextColor.DARK_RED, this);
+		mngr.register(new CmdFlagAdd("add", "Add a flag to a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdFlagRemove("remove", "Remove a flag from a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdFlagList("list", "List a player's flags, optionally by namespace", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdFlagClear("clear", "Clear a player's flags, optionally by namespace", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

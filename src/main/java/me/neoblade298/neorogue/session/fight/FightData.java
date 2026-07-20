@@ -138,10 +138,14 @@ public class FightData {
 		// Collidability is forced on for the same reason: a late MythicMobs Collidable option could
 		// otherwise override it, so it's set now and re-applied a tick later.
 		entity.setCollidable(true);
+		preventZombification(entity);
 		hideVanillaNameplate();
 		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
 			hideVanillaNameplate();
-			if (entity != null && entity.isValid()) entity.setCollidable(true);
+			if (entity != null && entity.isValid()) {
+				entity.setCollidable(true);
+				preventZombification(entity);
+			}
 		}, 1L);
 		updateDisplayName();
 
@@ -165,6 +169,18 @@ public class FightData {
 		if (am != null) am.setShowCustomNameplate(false);
 		entity.setCustomNameVisible(false);
 		entity.customName(Component.empty());
+	}
+
+	// Hoglins (and piglins/brutes) convert to their zombified form after a timer in non-Nether worlds.
+	// That conversion replaces the entity entirely, dropping our passenger-mounted hologram and
+	// orphaning the FightData reference. Force immunity in code so the entity is never swapped out;
+	// this doesn't rely on the MythicMobs ImmuneToZombification option being honored.
+	protected static void preventZombification(LivingEntity entity) {
+		if (entity instanceof org.bukkit.entity.Hoglin hoglin) {
+			hoglin.setImmuneToZombification(true);
+		} else if (entity instanceof org.bukkit.entity.PiglinAbstract piglin) {
+			piglin.setImmuneToZombification(true);
+		}
 	}
 	
 	public UUID getUniqueId() {
