@@ -589,6 +589,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			artifacts.put(key, inst);
 			inst.getArtifact().onInitializeSession(this);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
+			System.out.println(personalArtifacts);
 		}
 		inst.getArtifact().onAcquire(this, amount);
 

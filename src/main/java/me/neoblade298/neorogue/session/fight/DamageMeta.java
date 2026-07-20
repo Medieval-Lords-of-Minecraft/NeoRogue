@@ -616,8 +616,11 @@ public class DamageMeta {
 			PlayerFightData pdata = (PlayerFightData) recipient;
 			// Apply damage received stats
 			String mob = null; // Can be null, just won't show mob display name
-			if (NeoRogue.mythicApi.isMythicMob(owner.getEntity())) {
-				mob = NeoRogue.mythicApi.getMythicMobInstance(owner.getEntity()).getType().getInternalName();
+			// Resolve from the owner's stored ActiveMob rather than re-querying the entity: for
+			// delayed, death-triggered damage (e.g. the Martyr modifier's explosion) the entity is
+			// already dead and no longer registered with MythicMobs, which would drop attribution.
+			if (owner.getActiveMob() != null) {
+				mob = owner.getActiveMob().getType().getInternalName();
 			}
 			for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
 				pdata.getStats().addDamageTaken(mob, entry.getKey(), entry.getValue());
