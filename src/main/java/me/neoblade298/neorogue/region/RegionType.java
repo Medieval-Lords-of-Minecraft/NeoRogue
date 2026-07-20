@@ -31,6 +31,14 @@ public enum RegionType {
 		cargoSellPercent.put(HARVEST_FIELDS, 0.40);
 		cargoSellPercent.put(FROZEN_WASTES, 1.00);
 	}
+
+	// Reverse of nextRegion: the region completed to reach a given region. Built after nextRegion.
+	private static HashMap<RegionType, RegionType> previousRegion = new HashMap<RegionType, RegionType>();
+	static {
+		for (RegionType type : nextRegion.keySet()) {
+			previousRegion.put(nextRegion.get(type), type);
+		}
+	}
 	
 	private String display;
 	private int rowCount, difficulty;
@@ -61,6 +69,11 @@ public enum RegionType {
 	
 	public static RegionType getNextRegion(RegionType curr, boolean endless) {
 		return endless && !nextRegion.containsKey(curr) ? LOW_DISTRICT : nextRegion.get(curr);
+	}
+
+	// The region whose completion leads into curr, or null if curr has no predecessor (the first region).
+	public static RegionType getPreviousRegion(RegionType curr) {
+		return previousRegion.get(curr);
 	}
 
 	// Fraction (0-1) of run cargo auto-sold when this region is completed. 0 if not sellable.

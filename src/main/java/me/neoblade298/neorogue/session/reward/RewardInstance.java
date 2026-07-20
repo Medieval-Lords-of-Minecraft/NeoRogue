@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
@@ -177,6 +178,12 @@ public class RewardInstance extends EditInventoryInstance {
 								});
 								s.updateAllBoards();
 								s.incrementRegionsCompleted();
+								// Pay the caravan region-completion reward now that the party has reached the
+								// next region (its title just showed via setInstance above). Runs once here
+								// rather than in NodeSelectInstance.setup so it isn't re-paid on relog.
+								RegionType completed = RegionType.getPreviousRegion(s.getRegion().getType());
+								System.out.println("Here: " + completed);
+								if (completed != null) RunReward.awardRegionCompletion(s, completed);
 							}
 						}
 					}.runTaskLater(NeoRogue.inst(), 40L);

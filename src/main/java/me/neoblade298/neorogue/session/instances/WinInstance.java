@@ -33,6 +33,9 @@ public class WinInstance extends EndRunInstance {
 			data.trigger(SessionTrigger.WIN_RUN, null);
 			data.trigger(SessionTrigger.FINISH_RUN, true);
 		}
+		// The final region has no "next region" to pay the caravan reward at, so pay it here (before
+		// payout, matching the prior ordering where the region reward was granted before the win sale).
+		RunReward.awardRegionCompletion(s, s.getRegion().getType());
 		RunReward.payout(s, true);
 	}
 

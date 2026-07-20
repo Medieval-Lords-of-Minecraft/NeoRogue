@@ -588,9 +588,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			inst = newInst;
 			artifacts.put(key, inst);
 			inst.getArtifact().onInitializeSession(this);
-			if (!artifact.canStack()) personalArtifacts.remove(artifact);
-			System.out.println(personalArtifacts);
 		}
+		if (!artifact.canStack())
+			personalArtifacts.remove(artifact);
 		inst.getArtifact().onAcquire(this, amount);
 
 		// If you want customizable broadcast message, you'll need to refactor a bit

@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
-import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
@@ -71,9 +70,9 @@ public class BossFightInstance extends FightInstance {
 			}
 
 			RegionType bossRegion = s.getRegion().getType();
-			// Completing a region auto-sells a portion of each player's run cargo and awards their
-			// per-region completion reward, both in a single message.
-			RunReward.awardRegionCompletion(s, bossRegion);
+			// The region-completion caravan reward is no longer paid here; it's paid when the party
+			// actually reaches the next region (RewardInstance's boss-completion transition) or, for the
+			// final region, in WinInstance, so the reward message lands in a more visible spot.
 			RegionType nextRegion = RegionType.getNextRegion(bossRegion, s.isEndless());
 			if (nextRegion == null) {
 				handleWin(title, new WinInstance(s));

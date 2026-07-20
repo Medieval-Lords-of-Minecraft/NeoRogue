@@ -1,37 +1,46 @@
 package me.neoblade298.neorogue.commands;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.Lectern;
+import java.util.ArrayList;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminTest extends Subcommand {
 
 	public CmdAdminTest(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		ArrayList<String> artifactIds = new ArrayList<String>();
+		for (Equipment eq : Equipment.getAll()) {
+			if (eq instanceof Artifact) artifactIds.add(eq.getId());
+		}
+		args.add(new Arg("artifact id", false).setTabOptions(artifactIds));
+		this.enableTabComplete();
 	}
 
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		Block target = p.getTargetBlockExact(10);
-		if (target == null || !(target.getState() instanceof Lectern)) {
-			Util.msgRaw(p, "<red>You aren't looking at a lectern!");
+		Session sess = SessionManager.getSession(p);
+		if (sess == null) {
+			Util.displayError(p, "You're not in a session!");
 			return;
 		}
-
-		Lectern lectern = (Lectern) target.getState(false);
-		ItemStack book = lectern.getInventory().getItem(0);
-		if (book == null || book.getType().isAir()) {
-			Util.msgRaw(p, "<yellow>That lectern didn't have a book.");
-			return;
+		PlayerSessionData data = sess.getData(p.getUniqueId());
+		if (args.length == 0) {
+			System.out.println(data.getArtifactDroptable());
+			Util.msg(p, data.getArtifactDroptable().toString());
 		}
-
-		lectern.getInventory().clear();
-		Util.msgRaw(p, "<green>Cleared the book from the lectern.");
+		else {
+			data.getArtifactDroptable().remove((Artifact) Equipment.get(args[0], false));
+		}
 	}
 }
