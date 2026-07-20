@@ -97,7 +97,9 @@ public class FaerieGroveChance extends ChanceSet {
 		for (PlayerSessionData data : s.getParty().values()) {
 			ArrayList<EquipmentMetadata> eligible = data.aggregateEquipment((meta) -> {
 				Equipment eq = meta.getEquipment();
-				return eq.getType() != EquipmentType.CONSUMABLE && !eq.isCursed();
+				return eq.getType() != EquipmentType.CONSUMABLE && !eq.isCursed()
+						// Never offer the player's last weapon or last unlimited ammunition
+						&& data.getRemovalRestriction(eq, null, true, "trade") == null;
 			});
 
 			if (eligible.isEmpty()) continue;

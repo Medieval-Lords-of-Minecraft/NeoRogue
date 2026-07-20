@@ -88,7 +88,10 @@ public class ProvingGroundsChance extends ChanceSet {
 					NotorietySetting.rollBreakable(s, se);
 					Util.msgRaw(p, Component.text("You adapt your style, leaving behind your ", NamedTextColor.GRAY)
 							.append(removed.getHoverable())
-							.append(Component.text("...", NamedTextColor.GRAY)));
+							.append(Component.text(" and gaining ", NamedTextColor.GRAY))
+							.append(se.getHoverable())
+							.append(Component.text("!", NamedTextColor.GRAY)));
+					data.giveEquipment(se);
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> adapted their style!", p);
 					inst.advanceStage(uuid, null);
 					s.getInstance().updateBoardLines();
