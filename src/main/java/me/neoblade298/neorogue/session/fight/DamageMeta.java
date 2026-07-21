@@ -729,7 +729,7 @@ public class DamageMeta {
 				if (data == null) return damage + ignoreShieldsDamage; // Should hopefully never happen
 				data.getInstance().cancelRevives((Player) target);
 				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
-				data.updateActionBar();
+				data.refresh();
 			}
 
 			// Then handle knockback

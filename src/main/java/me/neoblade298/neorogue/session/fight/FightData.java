@@ -632,13 +632,13 @@ public class FightData {
 	public void removeStatus(StatusType type) {
 		Status s = statuses.remove(type.name());
 		if (s != null) s.cleanup();
-		if (this instanceof PlayerFightData) ((PlayerFightData) this).updateActionBar();
+		if (this instanceof PlayerFightData) ((PlayerFightData) this).refresh();
 	}
 	
 	public void removeStatus(String id) {
 		Status s = statuses.remove(id);
 		if (s != null) s.cleanup();
-		if (this instanceof PlayerFightData) ((PlayerFightData) this).updateActionBar();
+		if (this instanceof PlayerFightData) ((PlayerFightData) this).refresh();
 	}
 	
 	public boolean hasStatus(String id) {
@@ -751,8 +751,7 @@ public class FightData {
 		}
 		if (this instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) this;
-			pdata.updateActionBar();
-			pdata.updateBoardLines();
+			pdata.refresh();
 		}
 	}
 

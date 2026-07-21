@@ -65,36 +65,6 @@ public abstract class EditInventoryInstance extends Instance {
 		}.runTaskTimer(NeoRogue.inst(), ACTION_BAR_INTERVAL, ACTION_BAR_INTERVAL);
 	}
 
-	// Pushes the current action bar to every party member and spectator. Safe to call on demand (e.g. right
-	// after a money change) to force an immediate refresh outside the timer.
-	@Override
-	public void updateActionBar() {
-		for (PlayerSessionData data : s.getParty().values()) {
-			Player p = data.getPlayer();
-			if (p == null) continue;
-			Component bar = getActionBar(data);
-			if (bar != null) p.sendActionBar(bar);
-		}
-		for (MapViewer viewer : s.getSpectators().values()) {
-			Player p = Bukkit.getPlayer(viewer.getUniqueId());
-			if (p == null) continue;
-			Component bar = getSpectatorActionBar(viewer);
-			if (bar != null) p.sendActionBar(bar);
-		}
-	}
-
-	// Action bar shown to a party member. Override per instance; may be static or dynamic (e.g. money).
-	// Return null to leave the player's action bar untouched this tick (it simply fades on its own).
-	protected Component getActionBar(PlayerSessionData data) {
-		return Component.text(data.getCoins() + " coins", NamedTextColor.GOLD);
-	}
-
-	// Action bar shown to a spectator. Empty by default; override per instance to opt in.
-	// Return null to leave the spectator's action bar untouched this tick.
-	protected Component getSpectatorActionBar(MapViewer viewer) {
-		return null;
-	}
-
 	public static boolean isValid(Session s) {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();

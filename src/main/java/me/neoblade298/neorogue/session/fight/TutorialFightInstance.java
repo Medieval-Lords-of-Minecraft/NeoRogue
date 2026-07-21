@@ -30,15 +30,12 @@ public class TutorialFightInstance extends StandardFightInstance {
 	// value at the time this fight instance is generated. Edit the lists below to control exactly which map
 	// pieces each tutorial fight uses; pieces are placed in listed order via entrance matching. Return an
 	// empty list (or leave a case out) to fall back to normal random generation for that fight.
-	//
-	// TODO: replace the placeholder piece IDs with real IDs from your mappieces configs. Any ID that can't
-	// be resolved is skipped with a warning; if a fight resolves no pieces at all it falls back to random.
 	private static List<String> getTutorialPieceIds(int nodesVisited) {
 		switch (nodesVisited) {
 		case 1: // First tutorial fight
-			return List.of("meadowood_tutorial_1a", "meadowood_tutorial_1b");
+			return List.of("MDFight1");
 		case 2: // Second tutorial fight
-			return List.of("meadowood_tutorial_2a", "meadowood_tutorial_2b", "meadowood_tutorial_2c");
+			return List.of("MDFight1", "MDFight2");
 		default:
 			return List.of();
 		}

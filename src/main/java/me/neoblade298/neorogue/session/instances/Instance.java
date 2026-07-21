@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.Region;
@@ -21,6 +22,8 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.TriState;
 
 public abstract class Instance {
@@ -173,11 +176,34 @@ public abstract class Instance {
 
 	public abstract void updateBoardLines();
 
-	// Refreshes the action bar for this instance's party/spectators. Default no-op so instances without
-	// an action bar (e.g. LobbyInstance, WinInstance, LoseInstance) don't need to implement anything.
-	// Overridden by EditInventoryInstance and FightInstance, giving callers a single polymorphic entry
-	// point (s.getInstance().updateActionBar()) without needing to cast to a concrete subtype.
+	// Refreshes the action bar for this instance's party and spectators. FightInstance overrides this to
+	// render each player's PlayerFightData bar; other instances use the PlayerSessionData bar below.
 	public void updateActionBar() {
+		for (PlayerSessionData data : s.getParty().values()) {
+			Player p = data.getPlayer();
+			if (p == null) continue;
+			Component bar = getActionBar(data);
+			if (bar != null) p.sendActionBar(bar);
+		}
+		updateSpectatorActionBars();
+	}
+
+	// Sends the spectator action bar to every spectator. Shared by all instances.
+	protected void updateSpectatorActionBars() {
+		for (MapViewer viewer : s.getSpectators().values()) {
+			Player p = Bukkit.getPlayer(viewer.getUniqueId());
+			if (p == null) continue;
+			Component bar = getSpectatorActionBar(viewer);
+			if (bar != null) p.sendActionBar(bar);
+		}
+	}
+
+	public Component getActionBar(PlayerSessionData data) {
+		return Component.text(data.getCoins() + " coins", NamedTextColor.YELLOW);
+	}
+
+	protected Component getSpectatorActionBar(MapViewer viewer) {
+		return null;
 	}
 
 	public static class PlayerFlags {

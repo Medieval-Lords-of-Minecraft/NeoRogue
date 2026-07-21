@@ -68,9 +68,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 public class PlayerFightData extends FightData {
 
@@ -923,8 +921,7 @@ public class PlayerFightData extends FightData {
 				entity.getAttribute(Attribute.JUMP_STRENGTH).removeModifier(key);
 			}
 		}
-		updateActionBar();
-		updateBoardLines();
+		refresh();
 	}
 
 	@Override
@@ -940,7 +937,7 @@ public class PlayerFightData extends FightData {
 		stats.addSelfHealing(healed);
 		stats.addHealingDone(source, healed);
 		p.setHealth(after);
-		updateDisplayName();
+		refresh();
 	}
 
 	public void addMana(double amount) {
@@ -967,8 +964,7 @@ public class PlayerFightData extends FightData {
 
 	public void setManaUncapped(double amount) {
 		this.mana = amount;
-		updateActionBar();
-		updateBoardLines();
+		refresh();
 	}
 
 	public double getMana() {
@@ -1023,28 +1019,19 @@ public class PlayerFightData extends FightData {
 		this.mana = Math.max(0, Math.min(this.mana, this.maxMana));
 		p.setLevel((int) this.mana);
 		p.setExp(this.maxMana > 0 ? (float) (this.mana / this.maxMana) : 0F);
-		updateActionBar();
-		updateBoardLines();
+		refresh();
 	}
 
+	// Delegates to the instance, which renders this player's action bar via FightInstance.getActionBar.
 	public void updateActionBar() {
-		boolean invincible = hasStatus(StatusType.INVINCIBLE);
-		NamedTextColor hpColor = invincible ? NamedTextColor.AQUA : NamedTextColor.RED;
-		TextComponent hp = Component.text(invincible ? "✦ HP: " : "HP: ", hpColor)
-				.append(Component.text((int) getPlayer().getHealth(), hpColor));
-		if (invincible) {
-			hp = hp.decoration(TextDecoration.BOLD, true);
-		}
-		if (shields.getAmount() > 0) {
-			hp = hp.append(Component.text("+" + (int) getShields().getAmount(), NamedTextColor.YELLOW));
-		}
-		Component bar = hp.append(Component.text(" / " + (int) maxHealth + (invincible ? " ✦" : ""), hpColor))
-				.append(Component.text("  |  ", NamedTextColor.GRAY))
-				.append(Component.text("MP: " + (int) mana + " / " + (int) maxMana, NamedTextColor.BLUE))
-				.append(Component.text("  |  ", NamedTextColor.GRAY))
-				.append(Component.text("SP: " + (int) stamina + " / " + (int) maxStamina, NamedTextColor.GREEN));
-		p.sendActionBar(bar);
+		inst.updateActionBar();
+	}
+
+	// Consolidated visual refresh: action bar, hologram display name, and scoreboard lines.
+	public void refresh() {
+		updateActionBar();
 		updateDisplayName();
+		updateBoardLines();
 	}
 
 	public void addTrap(Trap trap) {

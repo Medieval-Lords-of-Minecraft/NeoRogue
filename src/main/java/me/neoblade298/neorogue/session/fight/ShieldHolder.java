@@ -78,7 +78,7 @@ public class ShieldHolder {
 		}
 		data.getEntity().setAbsorptionAmount(absorb);
 		if (data instanceof PlayerFightData) {
-			((PlayerFightData) data).updateActionBar();
+			((PlayerFightData) data).refresh();
 		}
 	}
 	

@@ -99,6 +99,7 @@ import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 
 public abstract class FightInstance extends Instance {
@@ -109,6 +110,7 @@ public abstract class FightInstance extends Instance {
 	private static HashSet<UUID> indicators = new HashSet<UUID>();
 	
 	protected HashSet<UUID> toTick = new HashSet<UUID>();
+	protected HashSet<PlayerFightData> players = new HashSet<PlayerFightData>();
 	private HashSet<UUID> pendingToTick = new HashSet<UUID>();
 	private boolean isIteratingToTick = false;
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
@@ -150,6 +152,10 @@ public abstract class FightInstance extends Instance {
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null) p.showBossBar(bar);
 		}
+	}
+
+	public HashSet<PlayerFightData> getPlayers() {
+		return players;
 	}
 
 	protected void hideBarFromAll(BossBar bar) {
@@ -924,15 +930,37 @@ public abstract class FightInstance extends Instance {
 		fightData.put(ent.getUniqueId(), fd);
 		return fd;
 	}
-	
-	// Refreshes the action bar for every party member currently in this fight, using each player's own
-	// PlayerFightData to render their bar (health/mana/stamina).
+
+	// Refreshes the fight action bar for every party member; spectators handled by the shared base helper.
 	@Override
 	public void updateActionBar() {
-		for (UUID uuid : s.getParty().keySet()) {
-			PlayerFightData pdata = userData.get(uuid);
-			if (pdata != null) pdata.updateActionBar();
+		for (PlayerFightData data : players) {
+			Player p = data.getPlayer();
+			if (p == null) continue;
+			Component bar = getActionBar(data);
+			if (bar != null) p.sendActionBar(bar);
 		}
+		updateSpectatorActionBars();
+	}
+
+	// Default fight action bar: HP / MP / SP. Override per fight; return null to render nothing.
+	public Component getActionBar(PlayerFightData data) {
+		Player p = data.getPlayer();
+		boolean invincible = data.hasStatus(StatusType.INVINCIBLE);
+		NamedTextColor hpColor = invincible ? NamedTextColor.AQUA : NamedTextColor.RED;
+		Component hp = Component.text(invincible ? "✦ HP: " : "HP: ", hpColor)
+				.append(Component.text((int) p.getHealth(), hpColor));
+		if (invincible) {
+			hp = hp.decoration(TextDecoration.BOLD, true);
+		}
+		if (data.getShields().getAmount() > 0) {
+			hp = hp.append(Component.text("+" + (int) data.getShields().getAmount(), NamedTextColor.YELLOW));
+		}
+		return hp.append(Component.text(" / " + (int) data.getMaxHealth() + (invincible ? " ✦" : ""), hpColor))
+				.append(Component.text("  |  ", NamedTextColor.GRAY))
+				.append(Component.text("MP: " + (int) data.getMana() + " / " + (int) data.getMaxMana(), NamedTextColor.BLUE))
+				.append(Component.text("  |  ", NamedTextColor.GRAY))
+				.append(Component.text("SP: " + (int) data.getStamina() + " / " + (int) data.getMaxStamina(), NamedTextColor.GREEN));
 	}
 
 	public static HashMap<UUID, PlayerFightData> getUserData() {
@@ -1107,6 +1135,7 @@ public abstract class FightInstance extends Instance {
 					TutorialManager.registerFightTutorials(fi, pdata);
 					AchievementManager.registerFightAchievements(fi, pdata);
 					fdata.add(pdata);
+					players.add(pdata);
 				}
 				
 				// Choose random teleport location
@@ -1297,6 +1326,8 @@ public abstract class FightInstance extends Instance {
 					data.updateHealth();
 					data.syncHealth();
 					p.setFoodLevel(20);
+					p.setLevel(0);
+					p.setExp(0);
 					data.revertMaxHealth();
 					p.clearActivePotionEffects();
 					p.getAttribute(Attribute.JUMP_STRENGTH)
