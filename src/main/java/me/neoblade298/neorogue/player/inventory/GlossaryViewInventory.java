@@ -11,6 +11,9 @@ import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 
 public class GlossaryViewInventory extends GlossaryInventory {
@@ -18,9 +21,11 @@ public class GlossaryViewInventory extends GlossaryInventory {
 	public GlossaryViewInventory(Player p, ArrayList<Equipment> equips, Component title, CoreInventory prev) {
 		super(p, calculateSize(equips.size()), title, prev);
 
+		Session session = SessionManager.getSession(p);
+		PlayerSessionData data = session != null ? session.getData(p.getUniqueId()) : null;
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < equips.size() && i < contents.length; i++) {
-			contents[i] = equips.get(i).getItem();
+			contents[i] = equips.get(i).getChoiceItem(data);
 		}
 		inv.setContents(contents);
 	}

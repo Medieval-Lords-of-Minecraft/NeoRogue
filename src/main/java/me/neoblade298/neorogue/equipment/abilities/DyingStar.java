@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
@@ -71,7 +70,6 @@ public class DyingStar extends Equipment implements Power {
 		super(ID, "Dying Star", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = isUpgraded ? 375 : 250;
-		properties.add(PropertyType.DAMAGE, damage);
 	}
 	
 	public static Equipment get() {

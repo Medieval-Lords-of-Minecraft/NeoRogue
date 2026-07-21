@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,10 +24,12 @@ public class EquipmentParentsGlossaryInventory extends GlossaryInventory {
 		eq = eq.getUnupgraded();
 		eq.getReforgeParents();
 		
+		Session session = SessionManager.getSession(viewer);
+		PlayerSessionData data = session != null ? session.getData(viewer.getUniqueId()) : null;
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 9; i++) {
 			if (i == 4) {
-				contents[i] = eq.getItem();
+				contents[i] = eq.getChoiceItem(data);
 			}
 			else {
 				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
@@ -36,8 +41,8 @@ public class EquipmentParentsGlossaryInventory extends GlossaryInventory {
 		while (iter.hasNext()) {
 			Equipment eq1 = iter.next();
 			Equipment eq2 = iter.next();
-			contents[(row * 9) + SLOT1] = eq1.getItem();
-			contents[(row * 9) + SLOT2] = eq2.getItem();
+			contents[(row * 9) + SLOT1] = eq1.getChoiceItem(data);
+			contents[(row * 9) + SLOT2] = eq2.getChoiceItem(data);
 			contents[(row * 9) + ICON] = CoreInventory.createButton(PLUS_HEAD, Component.text("Combine:", NamedTextColor.GRAY),
 				(TextComponent) eq1.getDisplay(), (TextComponent) eq2.getDisplay());
 			for (int i : FILLER) {

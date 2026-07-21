@@ -298,6 +298,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 	protected Component display, hoverable;
 	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop, restrictsOffhand, reforgeWildcard;
 	protected ItemStack item;
+	// Inputs captured from createItem(...) so getChoiceItem(...) can rebuild the tooltip on demand with an
+	// inventory-filtered reforge line. The cached `item` itself never shows reforge options.
+	private Material itemMaterial;
+	private String[] itemPreLore;
+	private String itemLoreLine;
 	protected Rarity rarity;
 	protected EquipmentClass[] ecs;
 	protected EquipmentType type;
@@ -1285,6 +1290,33 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return item.clone();
 	}
 
+	// Context-aware variant of getItem() for "choice" surfaces (rewards, chance events, shop, glossary).
+	// Adds a "Reforgeable with:" line containing only the reforge partners the player currently owns; if
+	// they own none (or data is null), it's identical to getItem() and shows no reforge line.
+	public ItemStack getChoiceItem(PlayerSessionData data) {
+		List<Equipment> owned = getOwnedReforgeOptions(data);
+		if (owned.isEmpty())
+			return item.clone();
+		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned);
+	}
+
+	// Subset of this equipment's reforge partners that the player currently owns anywhere in their
+	// inventory (matched by equipment id), preserving reforgeOptions ordering.
+	private List<Equipment> getOwnedReforgeOptions(PlayerSessionData data) {
+		ArrayList<Equipment> result = new ArrayList<Equipment>();
+		if (data == null || reforgeOptions.isEmpty())
+			return result;
+		java.util.HashSet<String> owned = new java.util.HashSet<String>();
+		for (PlayerSessionData.EquipmentMetadata meta : data.aggregateEquipment((m) -> true)) {
+			owned.add(meta.getEquipment().getId());
+		}
+		for (Equipment eq : reforgeOptions.keySet()) {
+			if (owned.contains(eq.getId()))
+				result.add(eq);
+		}
+		return result;
+	}
+
 	public boolean isUpgraded() {
 		return isUpgraded;
 	}
@@ -1386,18 +1418,38 @@ public abstract class Equipment implements Comparable<Equipment> {
 				prev = c;
 			}
 		}
+		this.itemMaterial = mat;
+		this.itemPreLore = preLoreLine;
+		this.itemLoreLine = loreLine;
+		// The cached default item never shows reforge options (null reforge list). Choice surfaces call
+		// getChoiceItem(...), which rebuilds with the player's inventory-relevant reforge partners.
+		return buildItemStack(mat, preLoreLine, loreLine, null);
+	}
+
+	// Builds the tooltip item. reforgeToShow controls the "Reforgeable with:" line: null/empty hides it
+	// entirely, otherwise only the listed equipment is shown.
+	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
-		loreItalicized.add(Component.text("Right click for glossary", NamedTextColor.GRAY));
+		Component header;
 		if (isCursed) {
-			loreItalicized.add(Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED));
+			header = Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED);
 		} else {
-			loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type.getDisplay())));
+			header = rarity.getDisplay(true).append(Component.text(" " + type.getDisplay()));
 		}
-		loreItalicized.addAll(properties.generateLore(this));
+		// Merge the compact stat line onto the rarity/type header (e.g. "Common Ability | 15 MP · 10s CD").
+		String statLine = properties.getStatLineString();
+		if (statLine != null) {
+			header = header.append(SharedUtil.color("<color:" + EquipmentProperties.PROPERTY_COLOR + "> | "))
+					.append(SharedUtil.color(statLine));
+		}
+		loreItalicized.add(header);
+		Component damageTypeLine = properties.getDamageTypeLine(this);
+		if (damageTypeLine != null)
+			loreItalicized.add(damageTypeLine);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
@@ -1407,19 +1459,26 @@ public abstract class Equipment implements Comparable<Equipment> {
 			loreItalicized.add(
 					Component.text("This item is cursed. It must be equipped to continue.", NamedTextColor.DARK_RED));
 		}
-		if (!reforgeOptions.isEmpty()) {
-			loreItalicized.add(Component.text("Reforgeable with:", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
-			for (Equipment eq : reforgeOptions.keySet()) {
+		if (reforgeToShow != null && !reforgeToShow.isEmpty()) {
+			Component reforgeLine = Component.text("Reforgeable with: ", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR));
+			boolean firstReforge = true;
+			for (Equipment eq : reforgeToShow) {
 				boolean noPostfix = isCursed || eq.isCursed;
 				String postfix = "";
 				if (!noPostfix) {
 					postfix = isUpgraded ? "(+)" : "+";
 				}
-				loreItalicized.add(Component.text("- ", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR))
-						.append(eq.getDisplay().append(Component.text(postfix))));
+				if (!firstReforge) {
+					reforgeLine = reforgeLine.append(Component.text(", ", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
+				}
+				reforgeLine = reforgeLine.append(eq.getDisplay().append(Component.text(postfix)));
+				firstReforge = false;
 			}
+			loreItalicized.add(reforgeLine);
 		}
 		if (loreLine != null) {
+			// Strikethrough divider between the stat/reforge section and the description
+			loreItalicized.add(SharedUtil.color("<dark_gray><st>                              </st></dark_gray>"));
 			for (TextComponent tc : SharedUtil.addLineBreaks(
 					(TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY),
 					200)) {

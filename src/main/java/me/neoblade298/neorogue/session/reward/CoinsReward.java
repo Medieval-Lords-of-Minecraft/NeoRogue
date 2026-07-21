@@ -28,7 +28,7 @@ public class CoinsReward implements Reward {
 	}
 
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getIcon(PlayerSessionData data) {
 		ItemStack item = new ItemStack(Material.GOLD_NUGGET);
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();

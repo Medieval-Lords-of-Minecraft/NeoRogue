@@ -132,7 +132,6 @@ public class SessionManager implements Listener {
 		Session s = createSession(p, saveSlot, true, SessionType.TUTORIAL);
 		if (s == null) return;
 		NewLobbyInstance lobby = (NewLobbyInstance) s.getInstance();
-		lobby.switchClass(p.getUniqueId(), EquipmentClass.WARRIOR);
 		lobby.startGame();
 	}
 

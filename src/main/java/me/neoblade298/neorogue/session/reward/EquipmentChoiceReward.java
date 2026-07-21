@@ -43,7 +43,7 @@ public class EquipmentChoiceReward implements Reward {
 				equips, inv, slot, spectator);
 	}
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getIcon(PlayerSessionData data) {
 		ItemStack item = icon != null ? icon : new ItemStack(Material.CHEST);
 		item.setAmount(equips.size());
 		ItemMeta meta = item.getItemMeta();

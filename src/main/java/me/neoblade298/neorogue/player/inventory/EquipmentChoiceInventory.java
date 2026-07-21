@@ -50,7 +50,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		this.equips = equips;
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < equips.size(); i++) {
-			contents[i] = equips.get(i).getItem();
+			contents[i] = equips.get(i).getChoiceItem(data);
 		}
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER, Component.text("Back", NamedTextColor.RED));
 		inv.setContents(contents);

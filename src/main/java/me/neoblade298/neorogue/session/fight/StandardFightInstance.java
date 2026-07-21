@@ -188,7 +188,7 @@ public class StandardFightInstance extends FightInstance {
 		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getKillValue());
 	}
 
-	private HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
+	protected HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		boolean dropPotion = s.rollPotionChance(10);
 		for (UUID uuid : s.getParty().keySet()) {

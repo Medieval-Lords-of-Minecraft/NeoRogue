@@ -157,39 +157,86 @@ public class EquipmentProperties {
 		return this;
 	}
 
-	public ArrayList<Component> generateLore(Equipment eq) {
-		if (lore != null)
-			return lore;
-		ArrayList<Component> lore = new ArrayList<Component>();
-		for (PropertyType type : PropertyType.values()) {
-			if (!properties.containsKey(type))
+	// Compact stat portion of the tooltip (e.g. "15 MP · 14 Range · 10s CD"), or null if this equipment
+	// has no numeric properties. The caller merges this onto the rarity/type header line.
+	public String getStatLineString() {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (PropertyType pt : PropertyType.values()) {
+			if (!properties.containsKey(pt))
 				continue;
-			lore.add(generateLoreLine(type));
+			if (!first)
+				sb.append("<color:" + PROPERTY_COLOR + "> · ");
+			sb.append(generateLoreToken(pt));
+			first = false;
 		}
-		if (type != null) {
-			lore.add(SharedUtil.color("<color:" + PROPERTY_COLOR + ">Damage Type: <white>" + type));
-			eq.addTags(type.toGlossary());
-		}
-		return lore;
+		return sb.length() > 0 ? sb.toString() : null;
 	}
 
-	private Component generateLoreLine(PropertyType type) {
+	// The "Damage Type: X" line (null if this equipment has no damage type). Also registers the damage
+	// type's glossary tags on the equipment.
+	public Component getDamageTypeLine(Equipment eq) {
+		if (type == null)
+			return null;
+		eq.addTags(type.toGlossary());
+		return SharedUtil.color("<color:" + PROPERTY_COLOR + ">Damage Type: <white>" + type);
+	}
+
+	// Builds a single compact stat token like "<yellow>15<color:...> MP" for the combined stat line.
+	// Upgradeable values are yellow, fixed values white; the abbreviated label uses the property color.
+	private String generateLoreToken(PropertyType type) {
 		Property prop = properties.get(type);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
-		String prefix = "";
+		String valueSuffix = "";
+		String label;
 		switch (type) {
+		case MANA_COST:
+			label = "MP";
+			break;
+		case STAMINA_COST:
+			label = "SP";
+			break;
+		case RANGE:
+			label = "Range";
+			break;
+		case COOLDOWN:
+			label = "CD";
+			valueSuffix = "s";
+			break;
+		case CHARGE_TIME:
+			label = "Charge";
+			valueSuffix = "s";
+			break;
+		case DAMAGE:
+			label = "Dmg";
+			break;
+		case KNOCKBACK:
+			label = "KB";
+			break;
+		case AREA_OF_EFFECT:
+			label = "AoE";
+			break;
 		case ATTACK_SPEED:
-			prefix = "/s";
+			label = "Atk Spd";
+			valueSuffix = "/s";
 			break;
 		case ARROW_SPEED:
-			prefix = "x";
+			label = "Arrow Spd";
+			valueSuffix = "x";
 			break;
 		default:
+			label = type.label;
 			break;
 		}
+		return color + formatAmount(prop.amount) + valueSuffix + "<color:" + PROPERTY_COLOR + "> " + label;
+	}
 
-		return SharedUtil
-				.color("<color:" + PROPERTY_COLOR + ">" + type.label + ": " + color + prop.amount + prefix);
+	// Formats a stat value without a trailing ".0" for whole numbers (15.0 -> "15", 1.5 -> "1.5").
+	private static String formatAmount(double amount) {
+		if (amount == Math.rint(amount) && !Double.isInfinite(amount)) {
+			return Long.toString((long) amount);
+		}
+		return Double.toString(amount);
 	}
 
 	public boolean contains(PropertyType type) {

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBT;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,6 +52,18 @@ public class SessionEquipment {
 
 	public ItemStack getItem() {
 		ItemStack item = equipment.getItem();
+		applyExtraData(item);
+		// Persist metadata onto the item so it survives being reconstructed from item form.
+		if (!metadata.isEmpty()) {
+			String serialized = serialize();
+			NBT.modify(item, nbt -> { nbt.setString(NBT_KEY, serialized); });
+		}
+		return item;
+	}
+
+	// Choice-context variant of getItem(): shows only the reforge partners the given player owns.
+	public ItemStack getChoiceItem(PlayerSessionData data) {
+		ItemStack item = equipment.getChoiceItem(data);
 		applyExtraData(item);
 		// Persist metadata onto the item so it survives being reconstructed from item form.
 		if (!metadata.isEmpty()) {

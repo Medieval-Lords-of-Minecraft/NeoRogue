@@ -57,6 +57,7 @@ import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionStatistics;
+import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
@@ -146,46 +147,56 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
-		switch (this.ec) {
-		case WARRIOR:
+		if (s.getSessionType() == SessionType.TUTORIAL) {
 			hotbar[0] = new SessionEquipment(WoodenSword.get());
-			hotbar[1] = new SessionEquipment(EmpoweredEdge.get());
-			abilitiesEquipped = 1;
+			abilitiesEquipped = 0;
 			maxStamina = 50;
-			maxMana = 25;
-			staminaRegen = 2;
-			manaRegen = 1;
-			break;
-		case THIEF:
-			hotbar[0] = new SessionEquipment(WoodenDagger.get());
-			hotbar[1] = new SessionEquipment(ShadowWalk.get());
-			abilitiesEquipped = 1;
-			maxStamina = 45;
-			maxMana = 30;
-			staminaRegen = 1.8;
-			manaRegen = 1.2;
-			break;
-		case ARCHER:
-			hotbar[0] = new SessionEquipment(BasicBow.get());
-			hotbar[1] = new SessionEquipment(PiercingShot.get());
-			hotbar[8] = new SessionEquipment(WoodenArrow.get());
-			abilitiesEquipped = 1;
-			maxStamina = 40;
-			maxMana = 35;
-			staminaRegen = 1.6;
-			manaRegen = 1.4;
-			break;
-		case MAGE:
-			hotbar[0] = new SessionEquipment(WoodenWand.get());
-			hotbar[1] = new SessionEquipment(ManaBlitz.get());
-			abilitiesEquipped = 1;
-			maxStamina = 35;
-			maxMana = 40;
-			staminaRegen = 1.4;
-			manaRegen = 1.6;
-			break;
-		default:
-			break;
+			maxMana = 50;
+			staminaRegen = 4;
+			manaRegen = 4;
+		}
+		else {
+			switch (this.ec) {
+			case WARRIOR:
+				hotbar[0] = new SessionEquipment(WoodenSword.get());
+				hotbar[1] = new SessionEquipment(EmpoweredEdge.get());
+				abilitiesEquipped = 1;
+				maxStamina = 50;
+				maxMana = 25;
+				staminaRegen = 2;
+				manaRegen = 1;
+				break;
+			case THIEF:
+				hotbar[0] = new SessionEquipment(WoodenDagger.get());
+				hotbar[1] = new SessionEquipment(ShadowWalk.get());
+				abilitiesEquipped = 1;
+				maxStamina = 45;
+				maxMana = 30;
+				staminaRegen = 1.8;
+				manaRegen = 1.2;
+				break;
+			case ARCHER:
+				hotbar[0] = new SessionEquipment(BasicBow.get());
+				hotbar[1] = new SessionEquipment(PiercingShot.get());
+				hotbar[8] = new SessionEquipment(WoodenArrow.get());
+				abilitiesEquipped = 1;
+				maxStamina = 40;
+				maxMana = 35;
+				staminaRegen = 1.6;
+				manaRegen = 1.4;
+				break;
+			case MAGE:
+				hotbar[0] = new SessionEquipment(WoodenWand.get());
+				hotbar[1] = new SessionEquipment(ManaBlitz.get());
+				abilitiesEquipped = 1;
+				maxStamina = 35;
+				maxMana = 40;
+				staminaRegen = 1.4;
+				manaRegen = 1.6;
+				break;
+			default:
+				break;
+			}
 		}
 
 		if (NotorietySetting.LESS_SLOTS.isActive(s)) {
@@ -682,7 +693,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				if (success) {
 					if (toSelf != null) Util.msgRaw(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					PlayerSessionInventory.setupInventory(p.getInventory(), this);
-					if (triggerAcquire) trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+					if (triggerAcquire) {
+						trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+						notifyReforgesAvailable(eq);
+					}
 					return;
 				}
 			}
@@ -703,7 +717,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				}.runTask(NeoRogue.inst());
 			}
 		}
-		if (triggerAcquire) trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+		if (triggerAcquire) {
+			trigger(SessionTrigger.ACQUIRE_EQUIPMENT, eq);
+			notifyReforgesAvailable(eq);
+		}
 	}
 
 	public boolean sendToStorage(SessionEquipment se) {
@@ -991,6 +1008,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 
 		return result;
+	}
+
+	// After a genuine acquisition (not upgrades/reforges), notify the player if the newly received
+	// equipment can be reforged with something they already own.
+	private void notifyReforgesAvailable(Equipment eq) {
+		if (eq == null) return;
+		String id = eq.getId();
+		for (ReforgePairData pair : computeAvailableReforges()) {
+			if (pair.getMeta1().getEquipment().getId().equals(id)
+					|| pair.getMeta2().getEquipment().getId().equals(id)) {
+				Util.msgRaw(getPlayer(), Component.text("Your new ", NamedTextColor.GRAY)
+						.append(eq.getDisplay())
+						.append(Component.text(" can be reforged with an item you own!", NamedTextColor.GRAY)));
+				return;
+			}
+		}
 	}
 
 	public boolean hasUnequippedCurses() {

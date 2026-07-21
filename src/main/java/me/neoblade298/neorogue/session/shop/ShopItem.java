@@ -49,7 +49,7 @@ public class ShopItem {
 		if (isPurchased) {
 			return PURCHASED;
 		}
-		ItemStack item = se.getItem();
+		ItemStack item = se.getChoiceItem(data);
 		update(data, item, true);
 		NBT.modify(item, nbt -> { nbt.setInteger("idx", idx); });
 		return item;

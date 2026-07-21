@@ -36,16 +36,14 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 		this.eq = equip.getUnupgraded();
 
 		Session session = SessionManager.getSession(viewer);
-		if (session != null) {
-			PlayerSessionData sd = session.getData(viewer.getUniqueId());
-			if (sd != null) {
-				sd.trigger(SessionTrigger.OPEN_GLOSSARY, null);
-			}
+		PlayerSessionData sd = session != null ? session.getData(viewer.getUniqueId()) : null;
+		if (sd != null) {
+			sd.trigger(SessionTrigger.OPEN_GLOSSARY, null);
 		}
 		
 		ItemStack[] contents = inv.getContents();
-		contents[BASIC] = eq.getUnupgraded().getItem();
-		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getItem() : null;
+		contents[BASIC] = eq.getUnupgraded().getChoiceItem(sd);
+		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getChoiceItem(sd) : null;
 		contents[TAGS] = createTagsItem(eq);
 		if (!eq.getReforgeParents().isEmpty()) contents[PARENTS] = createParentsItem(eq);
 

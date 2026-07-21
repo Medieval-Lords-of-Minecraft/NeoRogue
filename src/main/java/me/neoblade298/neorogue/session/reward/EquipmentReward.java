@@ -25,8 +25,8 @@ public class EquipmentReward implements Reward {
 	}
 
 	@Override
-	public ItemStack getIcon() {
-		return se.getItem();
+	public ItemStack getIcon(PlayerSessionData data) {
+		return se.getChoiceItem(data);
 	}
 
 	@Override

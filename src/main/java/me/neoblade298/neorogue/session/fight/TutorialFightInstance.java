@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -7,10 +9,14 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.reward.EquipmentReward;
+import me.neoblade298.neorogue.session.reward.Reward;
 
 public class TutorialFightInstance extends StandardFightInstance {
 
@@ -35,7 +41,7 @@ public class TutorialFightInstance extends StandardFightInstance {
 		case 1: // First tutorial fight
 			return List.of("MDFight1");
 		case 2: // Second tutorial fight
-			return List.of("MDFight1", "MDFight2");
+			return List.of("MDFight2");
 		default:
 			return List.of();
 		}
@@ -75,12 +81,29 @@ public class TutorialFightInstance extends StandardFightInstance {
 	@Override
 	protected void setupInstance(Session s) {
 		super.setupInstance(s);
-		scoreRequired = Math.ceil(scoreRequired / 2);
+		scoreRequired = Math.ceil(scoreRequired / 4);
 	}
 
 	@Override
 	protected double getInitialSpawnBudget() {
 		return 2;
+	}
+
+	// Tutorial fights hand out a fixed, deterministic reward (a single Empowered Edge, no coins) so the
+	// reward screen always shows the same thing regardless of fight score.
+	@Override
+	protected HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
+		int nodesVisited = s.getNodesVisited();
+		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+
+		if (nodesVisited == 1) {
+			for (UUID uuid : s.getParty().keySet()) {
+				ArrayList<Reward> playerRewards = new ArrayList<Reward>();
+				playerRewards.add(new EquipmentReward(new SessionEquipment(EmpoweredEdge.get())));
+				rewards.put(uuid, playerRewards);
+			}
+		}
+		return rewards;
 	}
 }
 

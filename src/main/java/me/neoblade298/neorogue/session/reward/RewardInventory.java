@@ -51,7 +51,7 @@ public class RewardInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		int i = 0;
 		for (Reward reward : rewards) {
-			contents[i++] = reward.getIcon();
+			contents[i++] = reward.getIcon(data);
 		}
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
