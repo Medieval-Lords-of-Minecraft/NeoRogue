@@ -173,6 +173,13 @@ public abstract class Instance {
 
 	public abstract void updateBoardLines();
 
+	// Refreshes the action bar for this instance's party/spectators. Default no-op so instances without
+	// an action bar (e.g. LobbyInstance, WinInstance, LoseInstance) don't need to implement anything.
+	// Overridden by EditInventoryInstance and FightInstance, giving callers a single polymorphic entry
+	// point (s.getInstance().updateActionBar()) without needing to cast to a concrete subtype.
+	public void updateActionBar() {
+	}
+
 	public static class PlayerFlags {
 		private HashSet<PlayerFlag> flags = new HashSet<PlayerFlag>();
 

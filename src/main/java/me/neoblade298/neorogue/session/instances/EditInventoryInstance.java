@@ -67,6 +67,7 @@ public abstract class EditInventoryInstance extends Instance {
 
 	// Pushes the current action bar to every party member and spectator. Safe to call on demand (e.g. right
 	// after a money change) to force an immediate refresh outside the timer.
+	@Override
 	public void updateActionBar() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();

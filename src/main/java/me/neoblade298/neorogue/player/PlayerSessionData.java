@@ -61,7 +61,6 @@ import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
@@ -244,7 +243,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Player p = data.getPlayer();
 		p.getInventory().clear();
 		PlayerSessionInventory.setupInventory(p.getInventory(), this);
-		((EditInventoryInstance) s.getInstance()).updateActionBar();
+		s.getInstance().updateActionBar();
 		getPlayer().setSaturation(20);
 	}
 
@@ -1035,7 +1034,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		coins = Math.max(0, coins);
 		String symbol = amount > 0 ? "+" : "";
 		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
-		((EditInventoryInstance) s.getInstance()).updateActionBar();
+		s.getInstance().updateActionBar();
 		updateBoardLines();
 	}
 

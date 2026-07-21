@@ -925,6 +925,16 @@ public abstract class FightInstance extends Instance {
 		return fd;
 	}
 	
+	// Refreshes the action bar for every party member currently in this fight, using each player's own
+	// PlayerFightData to render their bar (health/mana/stamina).
+	@Override
+	public void updateActionBar() {
+		for (UUID uuid : s.getParty().keySet()) {
+			PlayerFightData pdata = userData.get(uuid);
+			if (pdata != null) pdata.updateActionBar();
+		}
+	}
+
 	public static HashMap<UUID, PlayerFightData> getUserData() {
 		return userData;
 	}
