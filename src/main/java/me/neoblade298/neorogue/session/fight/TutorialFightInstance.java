@@ -11,12 +11,15 @@ import org.bukkit.Bukkit;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
+import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TutorialFightInstance extends StandardFightInstance {
 
@@ -46,9 +49,9 @@ public class TutorialFightInstance extends StandardFightInstance {
 	private static List<String> getTutorialPieceIds(int tutorialKey) {
 		switch (tutorialKey) {
 		case 1: // First tutorial fight (row 1)
-			return List.of("MDFight1");
+			return List.of("MWFight1");
 		case 2: // Second tutorial fight (row 2)
-			return List.of("MDFight2");
+			return List.of("MWFight2");
 		default:
 			return List.of();
 		}
@@ -86,6 +89,20 @@ public class TutorialFightInstance extends StandardFightInstance {
 	}
 
 	@Override
+	public Component getActionBar(PlayerFightData data) {
+		int node = s.getNodesVisited();
+		if (node == 1) {
+			return Component.text("Quest: Kill the enemies with your sword!", NamedTextColor.YELLOW);
+		}
+		else if (node == 2) {
+			return Component.text("Quest: Select the flint in your hotbar to use an ability!", NamedTextColor.YELLOW);
+		}
+		else {
+			return super.getActionBar(data);
+		}
+	}
+
+	@Override
 	protected void setupInstance(Session s) {
 		super.setupInstance(s);
 		scoreRequired = Math.ceil(scoreRequired / 4);
@@ -106,6 +123,13 @@ public class TutorialFightInstance extends StandardFightInstance {
 			for (UUID uuid : s.getParty().keySet()) {
 				ArrayList<Reward> playerRewards = new ArrayList<Reward>();
 				playerRewards.add(new EquipmentReward(new SessionEquipment(EmpoweredEdge.get())));
+				rewards.put(uuid, playerRewards);
+			}
+		}
+		else if (tutorialKey == 2) {
+			for (UUID uuid : s.getParty().keySet()) {
+				ArrayList<Reward> playerRewards = new ArrayList<Reward>();
+				playerRewards.add(new EquipmentReward(new SessionEquipment(LeatherHelmet.get())));
 				rewards.put(uuid, playerRewards);
 			}
 		}

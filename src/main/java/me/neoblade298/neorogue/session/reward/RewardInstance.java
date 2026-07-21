@@ -112,7 +112,7 @@ public class RewardInstance extends EditInventoryInstance {
 
 	private String createBoardLine(PlayerSessionData data, boolean isHost) {
 		UUID uuid = data.getUniqueId();
-		String line = rewards.get(uuid).isEmpty() ? "§a✓ §f" : "§c✗ §f";
+		String line = rewardsFor(uuid).isEmpty() ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
 			line += "★ ";
 		}
@@ -123,6 +123,13 @@ public class RewardInstance extends EditInventoryInstance {
 
 	public HashMap<UUID, ArrayList<Reward>> getRewards() {
 		return rewards;
+	}
+
+	// Null-safe access to a player's reward list. Missing entries (e.g. a fight that generated no rewards
+	// for someone, or an entirely empty reward map) are treated as an empty, already-claimed list, so
+	// lookups never NPE and the player can pass through the reward screen as if they had claimed all.
+	private ArrayList<Reward> rewardsFor(UUID uuid) {
+		return rewards.computeIfAbsent(uuid, k -> new ArrayList<Reward>());
 	}
 
 	@Override
@@ -152,14 +159,14 @@ public class RewardInstance extends EditInventoryInstance {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.ENDER_CHEST) {
 			Player p = e.getPlayer();
 			UUID uuid = p.getUniqueId();
-			if (rewards.get(uuid).isEmpty()) {
+			if (rewardsFor(uuid).isEmpty()) {
 				if (!onRewardClaim()) {
 					new SpectateSelectInventory(s, e.getPlayer(), s.getParty().get(uuid), true);
 				}
 				return;
 			}
 			p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
-			new RewardInventory(s.getParty().get(uuid), rewards.get(uuid));
+			new RewardInventory(s.getParty().get(uuid), rewardsFor(uuid));
 		}
 		else {
 			super.handleInteractEvent(e);
@@ -167,7 +174,7 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 	
 	public void spectateRewards(Player spectator, UUID viewed) {
-		new RewardInventory(s.getParty().get(viewed), rewards.get(viewed), spectator);
+		new RewardInventory(s.getParty().get(viewed), rewardsFor(viewed), spectator);
 	}
 	
 	public boolean onRewardClaim() {

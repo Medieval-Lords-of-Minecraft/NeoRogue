@@ -6,10 +6,10 @@ public enum RegionType {
 	LOW_DISTRICT("Low District", 16, 0, Layout.STANDARD),
 	HARVEST_FIELDS("Harvest Fields", 16, 1, Layout.STANDARD),
 	FROZEN_WASTES("Frozen Wastes", 16, 2, Layout.STANDARD),
-	MEADOWOOD("Meadowood", 7, 0, Layout.TUTORIAL),
+	MEADOWOOD("Meadowood", 8, 0, Layout.TUTORIAL),
 	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 0, 16, Layout.STANDARD),
 	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, 1, Layout.STANDARD),
-	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 7, 0, Layout.TUTORIAL),
+	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 8, 0, Layout.TUTORIAL),
 	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, 2, Layout.STANDARD),
 	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, Layout.STANDARD),
 	TESTER("Tester", 16, 0, Layout.STANDARD);
