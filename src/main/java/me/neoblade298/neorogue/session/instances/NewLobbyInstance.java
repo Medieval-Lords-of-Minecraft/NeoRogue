@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -21,6 +23,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
@@ -29,7 +32,9 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class NewLobbyInstance extends LobbyInstance {
     private static final double SPAWN_X = Session.NEW_LOBBY_X + 6.5, SPAWN_Z = Session.NEW_LOBBY_Z + 3.5, HOLO_X = 0,
@@ -378,11 +383,47 @@ public class NewLobbyInstance extends LobbyInstance {
             return;
         }
         if (commitCargo.add(uuid)) {
-            Util.msgRaw(p, "<green>You will commit your cargo when the run starts.");
+            Cargo cargo = data.getCargo();
+            if (cargo.getItems().isEmpty()) {
+                Util.msgRaw(p, Component.text("You will commit your cargo when the run starts, but you currently have none.", NamedTextColor.GRAY));
+            } else {
+                Component cargoText = Component.text("your cargo", NamedTextColor.YELLOW).decorate(TextDecoration.UNDERLINED)
+                        .hoverEvent(HoverEvent.showText(buildCargoHover(cargo)));
+                Util.msgRaw(p, Component.text("You will commit ", NamedTextColor.GRAY).append(cargoText)
+                        .append(Component.text(" when the run starts.", NamedTextColor.GRAY)));
+            }
         } else {
             commitCargo.remove(uuid);
             Util.msgRaw(p, "<red>You will no longer commit your cargo when the run starts.");
         }
+    }
+
+    // Hover text listing the player's cargo (amount + material name, most plentiful first) shown when
+    // they toggle committing cargo into a run.
+    private static Component buildCargoHover(Cargo cargo) {
+        List<Map.Entry<Material, Integer>> entries = new ArrayList<Map.Entry<Material, Integer>>(cargo.getItems().entrySet());
+        entries.sort(Comparator.comparingInt((Map.Entry<Material, Integer> e) -> e.getValue()).reversed());
+        Component hover = Component.empty();
+        boolean first = true;
+        for (Map.Entry<Material, Integer> ent : entries) {
+            if (!first) hover = hover.append(Component.newline());
+            first = false;
+            hover = hover.append(Component.text(ent.getValue() + "x ", NamedTextColor.WHITE))
+                    .append(Component.text(prettyName(ent.getKey()), NamedTextColor.YELLOW));
+        }
+        return hover;
+    }
+
+    // Turns a material enum name into a human-readable label, e.g. IRON_ORE -> "Iron Ore".
+    private static String prettyName(Material mat) {
+        String[] words = mat.name().toLowerCase().split("_");
+        StringBuilder sb = new StringBuilder();
+        for (String w : words) {
+            if (w.isEmpty()) continue;
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
+        }
+        return sb.toString();
     }
 
     private static NamedTextColor getClassColor(EquipmentClass pc) {

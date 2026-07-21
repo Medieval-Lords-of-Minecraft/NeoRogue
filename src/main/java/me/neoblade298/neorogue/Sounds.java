@@ -34,5 +34,6 @@ public class Sounds {
 			thunder = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_THUNDER),
 			piano = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_HARP),
 			shieldBreak = new SoundContainer(Sound.ITEM_SHIELD_BREAK),
+			thock = new SoundContainer(Sound.BLOCK_SHELF_ACTIVATE),
 			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }

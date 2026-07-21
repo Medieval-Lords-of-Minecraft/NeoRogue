@@ -253,6 +253,7 @@ import me.neoblade298.neorogue.equipment.offhands.PoisonPowder;
 import me.neoblade298.neorogue.equipment.offhands.Quiverthorn;
 import me.neoblade298.neorogue.equipment.offhands.RedFan;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
+import me.neoblade298.neorogue.equipment.offhands.ShockwaveTome;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfGravity;
@@ -621,6 +622,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Illusion(b);
 			new ShadowWalk(b);
 			new ShardBlast(b);
+			new ShardCloak(b);
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
@@ -645,6 +647,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpotWeakness(b);
 			new StaticSurge(b);
 			new SteadyBleed(b);
+			new Stonefang(b);
 			new Storm(b);
 			new Stormspike(b);
 			new StormweaversPromise(b);
@@ -819,6 +822,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RazorTome(b);
 			new RedFan(b);
 			new RubyArmament(b);
+			new ShockwaveTome(b);
 			new SmallShield(b);
 			new SpikyShield(b);
 			new TomeOfGravity(b);

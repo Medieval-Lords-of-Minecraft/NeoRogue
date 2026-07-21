@@ -206,7 +206,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		List<Component> lore = new ArrayList<Component>();
 		LinkedHashMap<Material, Integer> cargo = data.getRunCargo();
 		if (cargo.isEmpty()) {
-			lore.add(Component.text("You haven't collected any cargo yet.", NamedTextColor.GRAY)
+			lore.add(Component.text("No cargo committed.", NamedTextColor.GRAY)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 		} else {
 			double total = 0;

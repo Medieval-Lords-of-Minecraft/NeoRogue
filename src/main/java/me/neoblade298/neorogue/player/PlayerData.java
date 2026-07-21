@@ -88,6 +88,10 @@ public class PlayerData {
 	private boolean equipmentDroptableDirty;
 	private HashMap<String, AchievementProgress> globalAchievements = new HashMap<>();
 	private EnumMap<EquipmentClass, HashMap<String, AchievementProgress>> classAchievements = new EnumMap<>(EquipmentClass.class);
+	// True only once the DB load fully completes (or the player is confirmed brand new). If a load throws
+	// partway through, this stays false and every destructive full-table save is skipped so a partial/empty
+	// in-memory state can never overwrite the player's real saved progress.
+	private boolean loadedSuccessfully = false;
 	// Append-only finished-run history backing the winrate/winstreak stats (see RunStats).
 	private ArrayList<RunStats.RunRecord> runResults = new ArrayList<RunStats.RunRecord>();
 	private int slotsAvailable;
@@ -158,6 +162,8 @@ public class PlayerData {
 			baseStmt.setString(1, uuidStr);
 			try (ResultSet base = baseStmt.executeQuery()) {
 				if (!base.next()) {
+					// Brand new player: no rows to load, so an empty in-memory state is correct and safe to save.
+					loadedSuccessfully = true;
 					savePlayerDataAsync();
 					return;
 				}
@@ -318,7 +324,12 @@ public class PlayerData {
 
 			markEquipmentDroptableDirty();
 			initializeEquipmentDroptable();
+			// Reached only if the entire load above completed without throwing.
+			loadedSuccessfully = true;
 		} catch (SQLException e) {
+			// Load aborted partway through: leave loadedSuccessfully false so save() won't wipe real data.
+			Bukkit.getLogger().warning("[NeoRogue] Player data load failed for " + uuid
+					+ "; skipping destructive saves to protect existing progress.");
 			e.printStackTrace();
 		}
 		savePlayerDataAsync();
@@ -1030,6 +1041,11 @@ public class PlayerData {
 	}
 
 	public void saveAchievementsAsync() {
+		// Never overwrite real achievement rows from a partial/failed load.
+		if (!loadedSuccessfully) {
+			Bukkit.getLogger().warning("[NeoRogue] Skipping achievement save for " + uuid + " (load did not complete).");
+			return;
+		}
 		final String uuidStr = uuid.toString();
 		final List<Object[]> rows = new ArrayList<>();
 		for (var entry : globalAchievements.entrySet()) {
@@ -1072,6 +1088,8 @@ public class PlayerData {
 	}
 
 	private void saveUnlockNodesDebounced() {
+		// A partial/failed load would otherwise let a change wipe the player's real unlock nodes.
+		if (!loadedSuccessfully) return;
 		if (unlockNodesSaveTask != null) {
 			unlockNodesSaveTask.cancel();
 		}
@@ -1104,6 +1122,8 @@ public class PlayerData {
 	}
 
 	private void saveFlagsDebounced() {
+		// A partial/failed load would otherwise let a change wipe the player's real flags.
+		if (!loadedSuccessfully) return;
 		if (flagsSaveTask != null) {
 			flagsSaveTask.cancel();
 		}
@@ -1139,6 +1159,14 @@ public class PlayerData {
 		// Only saves player data and ascension tree, session saving is handled elsewhere
 		// neorogue_playerdata is saved in real-time via saveDisplayAsync()
 		// neorogue_unlocknodes and neorogue_playerflags are saved in real-time via debounced saves
+
+		// If the load never completed, the in-memory maps are partial/empty. Every block below does a
+		// DELETE + REPLACE, so saving now would wipe the player's real class progression, exp boosts,
+		// achievements, and cargo. Bail out entirely to preserve whatever is already in the database.
+		if (!loadedSuccessfully) {
+			Bukkit.getLogger().warning("[NeoRogue] Skipping save for " + uuid + " (load did not complete).");
+			return;
+		}
 
 		// Save class progression
 		PreparedStatement clearClass = con.prepareStatement("DELETE FROM neorogue_playerclass WHERE uuid = ?;");
