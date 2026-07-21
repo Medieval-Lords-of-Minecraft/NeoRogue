@@ -61,6 +61,7 @@ import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.text.Component;
@@ -243,7 +244,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Player p = data.getPlayer();
 		p.getInventory().clear();
 		PlayerSessionInventory.setupInventory(p.getInventory(), this);
-		updateCoinsBar();
+		((EditInventoryInstance) s.getInstance()).updateActionBar();
 		getPlayer().setSaturation(20);
 	}
 
@@ -1034,7 +1035,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		coins = Math.max(0, coins);
 		String symbol = amount > 0 ? "+" : "";
 		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
-		updateCoinsBar();
+		((EditInventoryInstance) s.getInstance()).updateActionBar();
 		updateBoardLines();
 	}
 
@@ -1112,12 +1113,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	// Used to revert temporary max health changes in fights
 	public void revertMaxHealth() {
 		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.maxHealth);
-	}
-
-	public void updateCoinsBar() {
-		Player p = getPlayer();
-		p.setLevel(coins);
-		p.setExp(0);
 	}
 
 	public void syncHealth() {

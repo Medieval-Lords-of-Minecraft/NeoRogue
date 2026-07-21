@@ -1021,6 +1021,8 @@ public class PlayerFightData extends FightData {
 
 	private void updateMana() {
 		this.mana = Math.max(0, Math.min(this.mana, this.maxMana));
+		p.setLevel((int) this.mana);
+		p.setExp(this.maxMana > 0 ? (float) (this.mana / this.maxMana) : 0F);
 		updateActionBar();
 		updateBoardLines();
 	}

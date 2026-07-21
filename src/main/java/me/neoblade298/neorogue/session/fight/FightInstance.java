@@ -1288,7 +1288,6 @@ public abstract class FightInstance extends Instance {
 					data.syncHealth();
 					p.setFoodLevel(20);
 					data.revertMaxHealth();
-					data.updateCoinsBar();
 					p.clearActivePotionEffects();
 					p.getAttribute(Attribute.JUMP_STRENGTH)
 						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));

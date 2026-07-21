@@ -835,7 +835,6 @@ public class Session {
 		for (PlayerSessionData psd : party.values()) {
 			Player p = psd.getPlayer();
 			if (p == null) continue;
-			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			Bukkit.getLogger().info("Serialization for " + p.getName());
 			Bukkit.getLogger().info(psd.serialize());
 			Bukkit.getLogger().info("Abilities: " + psd.getAbilitiesEquipped() + " / " + psd.getMaxAbilities());
@@ -1198,6 +1197,7 @@ public class Session {
 		for (PlayerSessionData psd : party.values()) {
 			psd.setMapPosition(node.getRow());
 			psd.setShouldMapRender(true);
+			psd.trigger(SessionTrigger.VISIT_NODE, node);
 		}
 		for (MapViewer viewer : spectators.values()) {
 			viewer.setMapPosition(node.getRow());

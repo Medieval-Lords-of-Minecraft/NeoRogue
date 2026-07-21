@@ -7,6 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -53,6 +54,8 @@ public class FirstNodeSelectTutorial implements Tutorial {
 		data.addTrigger(ID, SessionTrigger.VISIT_NODE, 0, (pdata, in) -> {
 			if (!TutorialManager.isActivatedSession(this, pdata)) return TriggerResult.keep();
 			if (pdata.getData().hasFlag(TutorialManager.getTutorialFlag(this))) return TriggerResult.remove();
+			Node node = (Node) in;
+			if (node.getRow() == 0) return TriggerResult.keep(); // Ignore the starting node
 			pdata.getData().addFlag(TutorialManager.getTutorialFlag(this));
 			Player p = pdata.getPlayer();
 			p.showTitle(Title.title(

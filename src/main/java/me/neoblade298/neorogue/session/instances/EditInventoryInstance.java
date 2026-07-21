@@ -13,8 +13,11 @@ import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -30,6 +33,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 public abstract class EditInventoryInstance extends Instance {
 	public static final int MAP_ID = 256;
+	// How often (in ticks) the action bar is refreshed. Action bars fade after ~2–3s, so a 1s cadence
+	// both keeps dynamic values (e.g. money) current and prevents the bar from disappearing.
+	private static final long ACTION_BAR_INTERVAL = 20L;
+	private BukkitTask actionBarTask;
 
 	public EditInventoryInstance(Session s, double spawnX, double spawnZ) {
 		super(s, spawnX, spawnZ, new PlayerFlags(PlayerFlag.SHORTER_IFRAMES, PlayerFlag.CAN_FLY));
@@ -42,6 +49,49 @@ public abstract class EditInventoryInstance extends Instance {
 			data.updateBoardLines();
 		}
 		updateBoardLines();
+		startActionBarTask();
+	}
+
+	// Starts the repeating action bar refresh. Owned by this instance and cancelled in cleanup(). Runs an
+	// immediate pass so the bar shows right away, then repeats on ACTION_BAR_INTERVAL.
+	private void startActionBarTask() {
+		if (actionBarTask != null) actionBarTask.cancel();
+		updateActionBar();
+		actionBarTask = new BukkitRunnable() {
+			@Override
+			public void run() {
+				updateActionBar();
+			}
+		}.runTaskTimer(NeoRogue.inst(), ACTION_BAR_INTERVAL, ACTION_BAR_INTERVAL);
+	}
+
+	// Pushes the current action bar to every party member and spectator. Safe to call on demand (e.g. right
+	// after a money change) to force an immediate refresh outside the timer.
+	public void updateActionBar() {
+		for (PlayerSessionData data : s.getParty().values()) {
+			Player p = data.getPlayer();
+			if (p == null) continue;
+			Component bar = getActionBar(data);
+			if (bar != null) p.sendActionBar(bar);
+		}
+		for (MapViewer viewer : s.getSpectators().values()) {
+			Player p = Bukkit.getPlayer(viewer.getUniqueId());
+			if (p == null) continue;
+			Component bar = getSpectatorActionBar(viewer);
+			if (bar != null) p.sendActionBar(bar);
+		}
+	}
+
+	// Action bar shown to a party member. Override per instance; may be static or dynamic (e.g. money).
+	// Return null to leave the player's action bar untouched this tick (it simply fades on its own).
+	protected Component getActionBar(PlayerSessionData data) {
+		return Component.text(data.getCoins() + " coins", NamedTextColor.GOLD);
+	}
+
+	// Action bar shown to a spectator. Empty by default; override per instance to opt in.
+	// Return null to leave the spectator's action bar untouched this tick.
+	protected Component getSpectatorActionBar(MapViewer viewer) {
+		return null;
 	}
 
 	public static boolean isValid(Session s) {
@@ -114,6 +164,11 @@ public abstract class EditInventoryInstance extends Instance {
 
 	@Override
 	public void cleanup(boolean pluginDisable) {
+		if (actionBarTask != null) {
+			actionBarTask.cancel();
+			actionBarTask = null;
+		}
+
 		for (PlayerSessionData data : s.getParty().values()) {
 			if (data.isViewingMap()) {
 				data.stopViewingMap();
