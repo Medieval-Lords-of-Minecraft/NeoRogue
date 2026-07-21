@@ -28,6 +28,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import de.tr7zw.nbtapi.NBT;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
@@ -206,7 +208,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		List<Component> lore = new ArrayList<Component>();
 		LinkedHashMap<Material, Integer> cargo = data.getRunCargo();
 		if (cargo.isEmpty()) {
-			lore.add(Component.text("No cargo committed.", NamedTextColor.GRAY)
+			lore.add(Component.text("No cargo committed.", NamedTextColor.RED)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 		} else {
 			double total = 0;
@@ -224,10 +226,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			lore.add(Component.text("Est. sell value: ", NamedTextColor.GRAY)
 					.append(Component.text(df.format(total), NamedTextColor.GOLD))
 					.decoration(TextDecoration.ITALIC, State.FALSE));
+			lore.add(Component.text("Sold automatically as you complete regions.", NamedTextColor.GRAY)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
 		}
-		lore.add(Component.empty());
-		lore.add(Component.text("Sold automatically as you complete regions.", NamedTextColor.DARK_GRAY)
-				.decoration(TextDecoration.ITALIC, State.FALSE));
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
@@ -371,6 +372,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay()
+				.addHiddenComponents(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER)
+				.build());
 		item.setItemMeta(meta);
 		return item;
 	}

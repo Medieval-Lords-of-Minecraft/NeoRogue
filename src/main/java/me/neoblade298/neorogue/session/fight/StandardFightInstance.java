@@ -65,8 +65,16 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	public static StandardFightInstance create(Session s, Set<UUID> players, RegionType type, int nodesVisited) {
+		// tutorialKey defaults to nodesVisited for non-node callers (e.g. chance-event fights).
+		return create(s, players, type, nodesVisited, nodesVisited);
+	}
+
+	// tutorialKey is a stable per-fight key (the fight node's row) used to select the tutorial's hardcoded
+	// map. Fight instances are pre-generated 1-2 nodes ahead of the player, so nodesVisited at generation
+	// time is ambiguous and can't distinguish tutorial fights.
+	public static StandardFightInstance create(Session s, Set<UUID> players, RegionType type, int nodesVisited, int tutorialKey) {
 		if (s.getRegion().getType().getLayout() == Layout.TUTORIAL) {
-			return new TutorialFightInstance(s, players, type, nodesVisited);
+			return new TutorialFightInstance(s, players, type, tutorialKey);
 		}
 		return new StandardFightInstance(s, players, type, nodesVisited);
 	}

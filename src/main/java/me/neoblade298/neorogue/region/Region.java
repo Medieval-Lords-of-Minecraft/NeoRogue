@@ -253,11 +253,12 @@ public class Region {
 		nodes = new Node[rowCount][LANE_COUNT];
 		Node start = createNode(0, CENTER_LANE, NodeType.START);
 		Node fight1 = createNode(1, CENTER_LANE, NodeType.FIGHT, start);
-		Node fight2 = createNode(2, 1, NodeType.FIGHT, fight1);
-		Node chance = createNode(2, 3, NodeType.CHANCE, fight1);
-		Node shrine1 = createNode(3, CENTER_LANE, NodeType.SHRINE, fight2, chance);
-		Node miniboss = createNode(4, CENTER_LANE, NodeType.MINIBOSS, shrine1);
-		Node shrine2 = createNode(5, CENTER_LANE, NodeType.SHRINE, miniboss);
+		Node fight2 = createNode(2, 2, NodeType.FIGHT, fight1);
+		Node chance = createNode(3, 2, NodeType.CHANCE, fight2);
+		Node chance2 = createNode(3, 4, NodeType.CHANCE, fight2);
+		Node shrine1 = createNode(4, CENTER_LANE, NodeType.SHRINE, chance, chance2);
+		Node miniboss = createNode(5, CENTER_LANE, NodeType.MINIBOSS, shrine1);
+		Node shrine2 = createNode(6, CENTER_LANE, NodeType.SHRINE, miniboss);
 		createNode(getBossRow(), CENTER_LANE, NodeType.BOSS, shrine2);
 	}
 

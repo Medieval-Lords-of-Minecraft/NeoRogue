@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -130,6 +132,11 @@ public class LoadLobbyInstance extends LobbyInstance {
                 Util.displayError(p, "Only the host may notify players!");
                 return;
             }
+            Sign sign = (Sign) e.getClickedBlock().getState();
+            String line = ((TextComponent) sign.getSide(Side.FRONT).line(1)).content();
+            if (line.endsWith("beacon")) {
+                return;
+            }
 
             // Add cooldown to prevent spam clicking
             if (System.currentTimeMillis() - lastInviteTime < INVITE_COOLDOWN) {
@@ -161,6 +168,22 @@ public class LoadLobbyInstance extends LobbyInstance {
             startGame();
 			return;
 		}
+    }
+
+    @Override
+    public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+        if (!e.getAction().isLeftClick() && !e.getAction().isRightClick())
+            return;
+        if (e.getHand() != EquipmentSlot.HAND)
+            return;
+        if (e.getClickedBlock() == null)
+            return;
+
+        if (e.getClickedBlock().getType() == Material.BEACON) {
+            e.setCancelled(true);
+            leavePlayer(e.getPlayer());
+            return;
+        }
     }
 
 

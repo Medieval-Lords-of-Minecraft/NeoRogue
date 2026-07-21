@@ -356,6 +356,22 @@ public class NewLobbyInstance extends LobbyInstance {
         }
 	}
 
+    @Override
+    public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+        if (!e.getAction().isLeftClick() && !e.getAction().isRightClick())
+            return;
+        if (e.getHand() != EquipmentSlot.HAND)
+            return;
+        if (e.getClickedBlock() == null)
+            return;
+
+        if (e.getClickedBlock().getType() == Material.BEACON) {
+            e.setCancelled(true);
+            leavePlayer(e.getPlayer());
+            return;
+        }
+    }
+
     private void readyPlayer(Player p) {
         UUID uuid = p.getUniqueId();
         if (s.isBusy())
