@@ -281,6 +281,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public abstract class Equipment implements Comparable<Equipment> {
 	private static TreeMap<String, Equipment> equipment = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
@@ -1440,13 +1441,20 @@ public abstract class Equipment implements Comparable<Equipment> {
 		} else {
 			header = rarity.getDisplay(true).append(Component.text(" " + type.getDisplay()));
 		}
-		// Merge the compact stat line onto the rarity/type header (e.g. "Common Ability | 15 MP · 10s CD").
-		String statLine = properties.getStatLineString();
-		if (statLine != null) {
+		// Merge the compact stat line onto the rarity/type header (e.g. "Common Ability | 15 MP · 10s CD"),
+		// wrapping the stats onto extra lines (broken at " · ") when the line grows too long.
+		int prefixLen = PlainTextComponentSerializer.plainText().serialize(header).length() + 3; // + " | "
+		ArrayList<String> statLines = properties.getStatLines(this, prefixLen, EquipmentProperties.STAT_LINE_MAX_CHARS);
+		if (!statLines.isEmpty()) {
 			header = header.append(SharedUtil.color("<color:" + EquipmentProperties.PROPERTY_COLOR + "> | "))
-					.append(SharedUtil.color(statLine));
+					.append(SharedUtil.color(statLines.get(0)));
+			loreItalicized.add(header);
+			for (int i = 1; i < statLines.size(); i++) {
+				loreItalicized.add(SharedUtil.color(statLines.get(i)));
+			}
+		} else {
+			loreItalicized.add(header);
 		}
-		loreItalicized.add(header);
 		Component damageTypeLine = properties.getDamageTypeLine(this);
 		if (damageTypeLine != null)
 			loreItalicized.add(damageTypeLine);
@@ -1476,6 +1484,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 			loreItalicized.add(reforgeLine);
 		}
+		// Bind lore is injected at this index — below the properties (incl. wrapped lines), preLore, the
+		// cursed note, and the "Reforgeable with" line — so it always sits above the description. Stored on
+		// the item so the bind line can be placed reliably regardless of how the upper section wrapped.
+		final int bindLoreIdx = loreItalicized.size();
 		if (loreLine != null) {
 			// Strikethrough divider between the stat/reforge section and the description
 			loreItalicized.add(SharedUtil.color("<dark_gray><st>                              </st></dark_gray>"));
@@ -1522,6 +1534,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			nbt.setString("equipId", id);
 			nbt.setString("type", type.getDisplay());
 			nbt.setBoolean("isUpgraded", isUpgraded);
+			nbt.setInteger("bindLoreIdx", bindLoreIdx);
 		});
 		return item;
 	}

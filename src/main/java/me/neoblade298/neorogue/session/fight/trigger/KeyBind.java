@@ -52,7 +52,7 @@ public enum KeyBind {
 			Component.text("Ability Slot", NamedTextColor.BLUE),
 			Component.text("Bound to Look down+RClick", NamedTextColor.YELLOW),
 			Component.text("Drag a weapon, ability, or consumable", NamedTextColor.GRAY),
-			Component.text("here to bind it!", NamedTextColor.GRAY))),
+			Component.text("here to bind it!", NamedTextColor.GRAY)));
 
 	private int invSlot, dataSlot;
 	private ItemStack item;

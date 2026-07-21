@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;
@@ -147,6 +148,10 @@ public class Node {
 			break;
 		case BOSS:
 			inst = new BossFightInstance(s, s.getParty().keySet(), region);
+			break;
+		case TREASURE:
+			inst = RewardInstance.createTreasure(s);
+			break;
 		default:
 			break;
 		}

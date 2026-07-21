@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -112,13 +113,16 @@ public class EquipmentInstance extends PriorityAction {
 		List<Component> lore = meta.lore();
 		if (lore == null) lore = new ArrayList<>();
 
-		// Bind lore (inserted after the first description line, matching the edit inventory)
+		// Bind lore, inserted just below the upper info section (properties + reforge line), matching the
+		// edit inventory. The insertion index is read from the "bindLoreIdx" NBT written when the item is built.
+		Integer bindLoreIdx = NBT.get(base, nbt -> nbt.hasTag("bindLoreIdx") ? nbt.getInteger("bindLoreIdx") : null);
+		int bindIdx = Math.min(bindLoreIdx != null ? bindLoreIdx : 1, lore.size());
 		if (es == EquipSlot.HOTBAR) {
-			lore.add(Math.min(1, lore.size()), Component.text("Bound to Hotbar #" + (slot + 1), NamedTextColor.YELLOW)
+			lore.add(bindIdx, Component.text("Bound to Hotbar #" + (slot + 1), NamedTextColor.YELLOW)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (es == EquipSlot.KEYBIND) {
-			lore.add(Math.min(1, lore.size()), Component.text("Bound to ", NamedTextColor.YELLOW)
+			lore.add(bindIdx, Component.text("Bound to ", NamedTextColor.YELLOW)
 					.append(KeyBind.getBindFromData(slot).getDisplay())
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 		}

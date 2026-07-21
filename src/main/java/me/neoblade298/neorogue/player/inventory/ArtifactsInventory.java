@@ -130,6 +130,16 @@ public class ArtifactsInventory extends CoreInventory {
 		return inst == null ? 0 : inst.getAmount();
 	}
 
+	// Resolves the given equipment ids into a list, skipping any that don't exist.
+	private static ArrayList<Equipment> gemList(String... ids) {
+		ArrayList<Equipment> list = new ArrayList<Equipment>();
+		for (String id : ids) {
+			Equipment eq = Equipment.get(id, false);
+			if (eq != null) list.add(eq);
+		}
+		return list;
+	}
+
 	private boolean hasPagination() {
 		return regularCount > MAX_PER_PAGE_NO_NAV;
 	}
@@ -161,6 +171,29 @@ public class ArtifactsInventory extends CoreInventory {
 		
 		int slot = e.getRawSlot();
 		if (e.getCurrentItem() == null) return;
+		
+		// Clicking an aggregate gem opens a glossary showing all 3 tiers of that gem.
+		int aggregateStart = inv.getSize() - (hasPagination() ? 18 : 9);
+		if (slot == aggregateStart + 2 || slot == aggregateStart + 4 || slot == aggregateStart + 6) {
+			final ArrayList<Equipment> gems;
+			final Component title;
+			if (slot == aggregateStart + 2) {
+				gems = gemList(RUBY_SHARD, RUBY_CLUSTER, RUBY_GEM);
+				title = Component.text("Ruby Artifacts", NamedTextColor.RED);
+			} else if (slot == aggregateStart + 4) {
+				gems = gemList(SAPPHIRE_SHARD, SAPPHIRE_CLUSTER, SAPPHIRE_GEM);
+				title = Component.text("Sapphire Artifacts", NamedTextColor.BLUE);
+			} else {
+				gems = gemList(EMERALD_SHARD, EMERALD_CLUSTER, EMERALD_GEM);
+				title = Component.text("Emerald Artifacts", NamedTextColor.GREEN);
+			}
+			new BukkitRunnable() {
+				public void run() {
+					new GlossaryViewInventory(p, gems, title, null);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
 		
 		ItemStack item = e.getCurrentItem();
 		String equipId = NBT.get(item, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null);

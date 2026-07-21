@@ -8,6 +8,7 @@ public enum NodeType {
 	SHOP(Material.EMERALD_BLOCK, MapCursor.Type.MANSION), MINIBOSS(Material.OBSIDIAN, MapCursor.Type.TARGET_X),
 	BOSS(Material.RESPAWN_ANCHOR, MapCursor.Type.RED_X),
 	SHRINE(Material.OCHRE_FROGLIGHT, MapCursor.Type.BANNER_YELLOW),
+	TREASURE(Material.DEEPSLATE_DIAMOND_ORE, MapCursor.Type.BANNER_ORANGE),
 	START(Material.IRON_BLOCK, MapCursor.Type.BLUE_MARKER);
 	
 	private Material mat;

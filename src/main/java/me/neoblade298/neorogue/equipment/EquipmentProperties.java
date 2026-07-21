@@ -20,12 +20,14 @@ import net.kyori.adventure.text.Component;
 
 public class EquipmentProperties {
 	private static final EquipmentProperties NONE = new EquipmentProperties(0, 0, 0, 0, 0, 0, 0, 0, 0, null, null);
-	private ArrayList<Component> lore;
 	private HashMap<PropertyType, Property> properties = new HashMap<PropertyType, Property>();
 	private DamageType type;
 	private SoundContainer swingSound;
 	private CastType castType = CastType.STANDARD;
 	public static final String PROPERTY_COLOR = "#C98D8D";
+	// Approximate per-line character budget for the merged rarity/type + stats line before it wraps.
+	// This is a rough visible-character estimate (not pixel-accurate); tune to taste.
+	public static final int STAT_LINE_MAX_CHARS = 42;
 
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage,
 			double attackSpeed, double knockback, double chargeTime, double area, DamageType type, SoundContainer swingSound) {
@@ -157,39 +159,64 @@ public class EquipmentProperties {
 		return this;
 	}
 
-	// Compact stat portion of the tooltip (e.g. "15 MP · 14 Range · 10s CD"), or null if this equipment
-	// has no numeric properties. The caller merges this onto the rarity/type header line.
-	public String getStatLineString() {
-		StringBuilder sb = new StringBuilder();
-		boolean first = true;
+	// Builds the compact stat portion as one or more lines, greedily packing tokens and breaking only at
+	// " · " separators. firstLineUsed is the visible character count already consumed on the first line
+	// (the rarity/type prefix + " | "); continuation lines start fresh. maxChars is the approximate
+	// per-line character budget. Returns an empty list when this equipment has no numeric properties.
+	public ArrayList<String> getStatLines(Equipment eq, int firstLineUsed, int maxChars) {
+		ArrayList<String> tokenMsgs = new ArrayList<String>();
+		ArrayList<Integer> tokenLens = new ArrayList<Integer>();
 		for (PropertyType pt : PropertyType.values()) {
 			if (!properties.containsKey(pt))
 				continue;
-			if (!first)
-				sb.append("<color:" + PROPERTY_COLOR + "> · ");
-			sb.append(generateLoreToken(pt));
-			first = false;
+			String[] tok = generateLoreToken(pt, eq);
+			tokenMsgs.add(tok[0]);
+			tokenLens.add(tok[1].length());
 		}
-		return sb.length() > 0 ? sb.toString() : null;
+
+		ArrayList<String> lines = new ArrayList<String>();
+		StringBuilder cur = new StringBuilder();
+		int used = firstLineUsed;
+		final int sepLen = 3; // visible length of " · "
+		for (int i = 0; i < tokenMsgs.size(); i++) {
+			boolean lineEmpty = cur.length() == 0;
+			int addLen = tokenLens.get(i) + (lineEmpty ? 0 : sepLen);
+			// Wrap to a new line if this token would overflow (but never wrap an empty line).
+			if (!lineEmpty && used + addLen > maxChars) {
+				lines.add(cur.toString());
+				cur.setLength(0);
+				used = 0;
+				addLen = tokenLens.get(i);
+			}
+			if (cur.length() > 0)
+				cur.append("<color:" + PROPERTY_COLOR + "> · ");
+			cur.append(tokenMsgs.get(i));
+			used += addLen;
+		}
+		if (cur.length() > 0)
+			lines.add(cur.toString());
+		return lines;
 	}
 
-	// The "Damage Type: X" line (null if this equipment has no damage type). Also registers the damage
-	// type's glossary tags on the equipment.
+	// The standalone "Damage Type: X" line. Returns null if there's no damage type, or if there's a
+	// DAMAGE property (in which case the type is folded into the "Dmg" token instead, e.g. "25 SLASHING
+	// Dmg"). Registers the damage type's glossary tags when it renders the standalone line.
 	public Component getDamageTypeLine(Equipment eq) {
-		if (type == null)
+		if (type == null || properties.containsKey(PropertyType.DAMAGE))
 			return null;
 		eq.addTags(type.toGlossary());
 		return SharedUtil.color("<color:" + PROPERTY_COLOR + ">Damage Type: <white>" + type);
 	}
 
-	// Builds a single compact stat token like "<yellow>15<color:...> MP" for the combined stat line.
-	// Upgradeable values are yellow, fixed values white; the abbreviated label uses the property color.
-	private String generateLoreToken(PropertyType type) {
-		Property prop = properties.get(type);
+	// Builds a compact stat token, returning {miniMessage, visibleText}. Upgradeable values are yellow,
+	// fixed values white; the abbreviated label uses the property color. The DAMAGE token folds in the
+	// damage type when present, e.g. "25 SLASHING Dmg". visibleText carries no color tags (used for width).
+	private String[] generateLoreToken(PropertyType pt, Equipment eq) {
+		Property prop = properties.get(pt);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
 		String valueSuffix = "";
 		String label;
-		switch (type) {
+		switch (pt) {
 		case MANA_COST:
 			label = "MP";
 			break;
@@ -209,6 +236,13 @@ public class EquipmentProperties {
 			break;
 		case DAMAGE:
 			label = "Dmg";
+			// Fold the damage type into the damage token, e.g. "25 SLASHING Dmg".
+			if (type != null) {
+				eq.addTags(type.toGlossary());
+				String dv = formatAmount(prop.amount);
+				String msg = color + dv + "<white> " + type + "<color:" + PROPERTY_COLOR + "> " + label;
+				return new String[] { msg, dv + " " + type + " " + label };
+			}
 			break;
 		case KNOCKBACK:
 			label = "KB";
@@ -225,10 +259,12 @@ public class EquipmentProperties {
 			valueSuffix = "x";
 			break;
 		default:
-			label = type.label;
+			label = pt.label;
 			break;
 		}
-		return color + formatAmount(prop.amount) + valueSuffix + "<color:" + PROPERTY_COLOR + "> " + label;
+		String val = formatAmount(prop.amount) + valueSuffix;
+		String msg = color + val + "<color:" + PROPERTY_COLOR + "> " + label;
+		return new String[] { msg, val + " " + label };
 	}
 
 	// Formats a stat value without a trailing ".0" for whole numbers (15.0 -> "15", 1.5 -> "1.5").

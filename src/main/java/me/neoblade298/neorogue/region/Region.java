@@ -276,10 +276,23 @@ public class Region {
 			createNode(1, lane, getRandomNodeType(1)).addSource(startNode);
 		}
 		
-		// Normal nodes
+		// Normal nodes, with a guaranteed pair of TREASURE checkpoints at lanes 1 and 3 on the halfway
+		// row. Previous-row nodes fan in to the nearest treasure and the treasures fan back out to the
+		// nearest lanes, so every path passes through a treasure and generation continues normally.
+		int treasureRow = rowCount / 2;
+		// Clamp so there's a row to funnel from and room to fan back out before the exit row.
+		treasureRow = Math.max(3, Math.min(treasureRow, getLastNormalRow() - 1));
 		for (int row = 2; row <= getLastNormalRow(); row++) {
-			generateNormalRow(row);
-			centralizeRow(row);
+			if (row == treasureRow) {
+				generateTreasureRow(row);
+				// Treasure nodes stay centered/symmetric; skip centralizeRow so they aren't shifted.
+			} else if (row == treasureRow + 1) {
+				fanOutFromTreasure(row);
+				centralizeRow(row);
+			} else {
+				generateNormalRow(row);
+				centralizeRow(row);
+			}
 		}
 		
 		// Exit nodes
@@ -319,6 +332,61 @@ public class Region {
 		}
 	}
 	
+	// Builds the TREASURE checkpoint row: two treasures at lanes 1 and 3. Each previous-row node connects
+	// to the nearest treasure (center-lane nodes connect to both). If a treasure ends up with no incoming
+	// path (one-sided previous row), the nearest previous-row node is connected so it stays reachable.
+	private void generateTreasureRow(int row) {
+		Node left = createNode(row, 1, NodeType.TREASURE);
+		Node right = createNode(row, 3, NodeType.TREASURE);
+		for (int lane = 0; lane < LANE_COUNT; lane++) {
+			Node n = nodes[row - 1][lane];
+			if (n == null)
+				continue;
+			if (lane < CENTER_LANE)
+				n.addDestination(left);
+			else if (lane > CENTER_LANE)
+				n.addDestination(right);
+			else {
+				n.addDestination(left); // center connects to both
+				n.addDestination(right);
+			}
+		}
+		ensureTreasureSourced(row - 1, left);
+		ensureTreasureSourced(row - 1, right);
+	}
+
+	// Connects the nearest node on prevRow to the given treasure if it has no incoming path yet.
+	private void ensureTreasureSourced(int prevRow, Node treasure) {
+		if (!treasure.getSources().isEmpty())
+			return;
+		Node nearest = null;
+		int best = Integer.MAX_VALUE;
+		for (int lane = 0; lane < LANE_COUNT; lane++) {
+			Node n = nodes[prevRow][lane];
+			if (n == null)
+				continue;
+			int dist = Math.abs(lane - treasure.getLane());
+			if (dist < best) {
+				best = dist;
+				nearest = n;
+			}
+		}
+		if (nearest != null)
+			nearest.addDestination(treasure);
+	}
+
+	// Fans the two treasures back out into a normal spread so generation can continue: the left treasure
+	// feeds lanes 1-2 and the right feeds lanes 2-3 (the center lane is shared by both).
+	private void fanOutFromTreasure(int row) {
+		Node left = nodes[row - 1][1];
+		Node right = nodes[row - 1][3];
+		createNode(row, 1, getRandomNodeType(row)).addSource(left);
+		Node mid = createNode(row, CENTER_LANE, getRandomNodeType(row));
+		mid.addSource(left);
+		mid.addSource(right);
+		createNode(row, 3, getRandomNodeType(row)).addSource(right);
+	}
+
 	public String getBoss() {
 		return boss;
 	}

@@ -107,7 +107,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ARMOR)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
 		}
 
@@ -120,7 +120,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ACCESSORY)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
 		}
 
@@ -133,14 +133,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			contents[i] = eq != null
-					? addNbt(addBindLore(eq.getItem(), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
+					? addNbt(addBindLore(eq.getChoiceItem(data), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
 							eq.getEquipment().isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
-		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getItem(), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getChoiceItem(data), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
@@ -149,7 +149,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
 				continue;
 			}
-			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getChoiceItem(data), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
 
@@ -851,20 +851,29 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static ItemStack addBindLore(ItemStack item, int invSlot, int dataSlot) {
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = meta.lore();
+		int idx = Math.min(bindLoreIndex(item), lore.size());
 		EquipSlot slotType = slotTypes.get(invSlot);
 		if (slotType == EquipSlot.KEYBIND) {
-			lore.add(1,
+			lore.add(idx,
 					Component.text("Bound to ", NamedTextColor.YELLOW)
 							.append(KeyBind.getBindFromSlot(invSlot - 18).getDisplay())
 							.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (slotType == EquipSlot.HOTBAR) {
-			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW)
+			lore.add(idx, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW)
 					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
+	}
+
+	// Index just below the equipment's upper info section (rarity/type header + wrapped stats + damage
+	// type + preLore + cursed note + "Reforgeable with" line), read from the "bindLoreIdx" NBT written
+	// when the item is built. Falls back to 1 for items without it.
+	private static int bindLoreIndex(ItemStack item) {
+		Integer n = NBT.get(item, nbt -> nbt.hasTag("bindLoreIdx") ? nbt.getInteger("bindLoreIdx") : null);
+		return n != null ? n : 1;
 	}
 
 	private static ItemStack removeBindLore(ItemStack item) {

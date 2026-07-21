@@ -1018,9 +1018,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		for (ReforgePairData pair : computeAvailableReforges()) {
 			if (pair.getMeta1().getEquipment().getId().equals(id)
 					|| pair.getMeta2().getEquipment().getId().equals(id)) {
-				Util.msgRaw(getPlayer(), Component.text("Your new ", NamedTextColor.GRAY)
-						.append(eq.getDisplay())
-						.append(Component.text(" can be reforged with an item you own!", NamedTextColor.GRAY)));
+				Util.msgRaw(getPlayer(), Component.text("Your ", NamedTextColor.GRAY)
+						.append(eq.getHoverable())
+						.append(Component.text(" can be reforged! Click the anvil in your inventory.")));
 				return;
 			}
 		}

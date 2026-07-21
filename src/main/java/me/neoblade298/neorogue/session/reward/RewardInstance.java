@@ -19,6 +19,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.region.NodeType;
@@ -51,6 +55,24 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		this.previous = previous;
 		spectatorLines = playerLines;
+	}
+
+	// Builds the reward instance for a TREASURE node: every party member gets 50 coins and one randomly
+	// generated artifact. Rewards are built directly (no REWARD_FIGHT trigger) so it stays a flat treasure.
+	public static RewardInstance createTreasure(Session s) {
+		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+		for (UUID uuid : s.getParty().keySet()) {
+			PlayerSessionData data = s.getParty().get(uuid);
+			ArrayList<Reward> list = new ArrayList<Reward>();
+			list.add(new CoinsReward(50));
+			ArrayList<Artifact> arts = Equipment.getArtifact(data.getArtifactDroptable(), s.getBaseDropValue(), 1,
+					data.getPlayerClass(), EquipmentClass.CLASSLESS);
+			if (!arts.isEmpty()) {
+				list.add(new EquipmentReward(new SessionEquipment(arts.get(0))));
+			}
+			rewards.put(uuid, list);
+		}
+		return new RewardInstance(s, rewards, NodeType.TREASURE);
 	}
 
 	@Override
