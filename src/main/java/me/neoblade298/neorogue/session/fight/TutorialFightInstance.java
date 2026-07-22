@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
@@ -16,6 +17,9 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import net.kyori.adventure.text.Component;
@@ -106,6 +110,19 @@ public class TutorialFightInstance extends StandardFightInstance {
 	protected void setupInstance(Session s) {
 		super.setupInstance(s);
 		scoreRequired = Math.ceil(scoreRequired / 4);
+
+		if (s.getNodesVisited() == 2) {
+			for (PlayerFightData pfd : players) {
+				pfd.addTrigger("tutorial", Trigger.DEAL_DAMAGE, (pdata, in) -> {
+					DealDamageEvent ev = (DealDamageEvent) in;
+					if (ev.getDamage() <= 3) {
+						Util.msgRaw(pfd.getPlayer(),
+							"<red>They're tanky! Select the flint to cast an ability, then use your sword!");
+					}
+					return TriggerResult.keep();
+				});
+			}
+		}
 	}
 
 	@Override
