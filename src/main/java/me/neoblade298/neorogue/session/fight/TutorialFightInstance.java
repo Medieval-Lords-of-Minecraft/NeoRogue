@@ -20,6 +20,8 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.TutorialWinInstance;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import net.kyori.adventure.text.Component;
@@ -110,21 +112,35 @@ public class TutorialFightInstance extends StandardFightInstance {
 	protected void setupInstance(Session s) {
 		super.setupInstance(s);
 		scoreRequired = Math.ceil(scoreRequired / 4);
+	}
 
-		System.out.println("Nodes visited: " + s.getNodesVisited());
+	@Override
+	protected void setupPlayers() {
+		super.setupPlayers();
+
 		if (s.getNodesVisited() == 2) {
 			for (PlayerFightData pfd : players) {
 				pfd.addTrigger("tutorial", Trigger.DEAL_DAMAGE, (pdata, in) -> {
 					DealDamageEvent ev = (DealDamageEvent) in;
-					System.out.println("Tutorial damage: " + ev.getDamage());
 					if (ev.getDamage() <= 3) {
 						Util.msgRaw(pfd.getPlayer(),
-							"<red>They're tanky! Select the flint to cast an ability, then use your sword!");
+								"<red>Select your <white>FLINT</white>, then use your sword!");
 					}
 					return TriggerResult.keep();
 				});
 			}
 		}
+
+	}
+
+	// The second tutorial fight (row 2) is the last node of the shortened tutorial, so winning it ends the
+	// run with the tutorial win screen instead of dropping into the reward screen / next node.
+	@Override
+	protected Instance getVictoryInstance(FightScore fightScore) {
+		if (tutorialKey == 2) {
+			return new TutorialWinInstance(s);
+		}
+		return super.getVictoryInstance(fightScore);
 	}
 
 	@Override

@@ -42,6 +42,9 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
 		e.setCancelled(true);
+		
+		// Ignore clicks outside of the inventory (e.g. hotbar, offhand, etc.)
+		if (e.getRawSlot() >= inv.getSize()) return;
 		int slot = e.getSlot();
 		if (cursor.getType().isAir() && clicked == null) return;
 		String clickedEquipId = clicked != null ? NBT.get(clicked, nbt -> nbt.hasTag("equipId") ? nbt.getString("equipId") : null) : null;

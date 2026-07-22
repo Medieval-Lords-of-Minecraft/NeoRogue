@@ -1114,11 +1114,10 @@ public abstract class FightInstance extends Instance {
 		instantiate();
 		s.broadcastTitle(Title.title(Component.text("Commencing fight..."), Component.text(" ")));
 		setupInstance(s);
-		FightInstance fi = this;
 
 		// Choose random map piece to spawn in and order spawners by distance from it
 		Coordinates spawnCoords = map.getRandomSpawn();
-		ArrayList<MapSpawnerInstance> spawnersByDist = new ArrayList<MapSpawnerInstance>(fi.spawners);
+		ArrayList<MapSpawnerInstance> spawnersByDist = new ArrayList<MapSpawnerInstance>(spawners);
 		spawnersByDist.sort(
 				(a, b) -> Double
 						.compare(spawnCoords.toLocation().distanceSquared(a.getLocation()), spawnCoords.toLocation().distanceSquared(b.getLocation()))
@@ -1127,60 +1126,14 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				// Setup triggers
-				ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
-				for (Player p : s.getOnlinePlayers()) {
-					PlayerFightData pdata = setup(p, s.getData(p.getUniqueId()));
-					AchievementManager.registerFightAchievements(fi, pdata);
-					fdata.add(pdata);
-					players.add(pdata);
-				}
-				
-				// Choose random teleport location
-				spawn = map.getRandomSpawn().toLocation();
-				spawn.add(
-						s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
-						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff()
-				);
-				spawn.setX(-spawn.getX() + (spawn.getX() % 1 != 0 ? 1 : 0));
-				
-				for (Player p : s.getOnlinePlayers()) {
-					p.teleport(spawn);
-				}
-				for (UUID uuid : s.getSpectators().keySet()) {
-					Player p = Bukkit.getPlayer(uuid);
-					p.teleport(spawn);
-				}
-				
-				for (FightRunnable runnable : initialTasks) {
-					runnable.run(fi, fdata);
-				}
-				s.setBusy(false);
+				setupPlayers();
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 		
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				double toActivate = getInitialSpawnBudget();
-				
-				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn: toActivate=" + toActivate
-						+ " spawners=" + spawners.size() + " initialSpawns=" + fi.initialSpawns.size());
-				
-				// Always spawn one of the closest spawners if it exists (it won't for minibosses and bosses)
-				if (!spawnersByDist.isEmpty()) {
-					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Spawning closest spawner");
-					spawnersByDist.getFirst().spawnMob();
-					toActivate -= spawnersByDist.getFirst().getMob().getSpawnValue();
-				}
-				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Calling activateSpawner(" + toActivate + ")");
-				activateSpawner(toActivate);
-
-				startTime = System.currentTimeMillis();
-				for (MapSpawnerInstance inst : fi.initialSpawns) {
-					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn entry: " + inst.getMob().getId());
-					inst.spawnMob();
-				}
+				startMobSpawning(spawnersByDist);
 			}
 		}.runTaskLater(NeoRogue.inst(), 40L);
 		
@@ -1226,6 +1179,63 @@ public abstract class FightInstance extends Instance {
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L));
+	}
+
+	protected void setupPlayers() {
+		// Setup triggers
+		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
+		for (Player p : s.getOnlinePlayers()) {
+			PlayerFightData pdata = setup(p, s.getData(p.getUniqueId()));
+			AchievementManager.registerFightAchievements(this, pdata);
+			fdata.add(pdata);
+			players.add(pdata);
+		}
+
+		// Choose random teleport location
+		spawn = map.getRandomSpawn().toLocation();
+		spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
+				MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
+		spawn.setX(-spawn.getX() + (spawn.getX() % 1 != 0 ? 1 : 0));
+
+		for (Player p : s.getOnlinePlayers()) {
+			p.teleport(spawn);
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
+
+		for (FightRunnable runnable : initialTasks) {
+			runnable.run(this, fdata);
+		}
+		s.setBusy(false);
+	}
+
+	protected void startMobSpawning(ArrayList<MapSpawnerInstance> spawnersByDist) {
+		double toActivate = getInitialSpawnBudget();
+
+		if (NeoRogue.isDebugFlag("spawns"))
+			Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn: toActivate=" + toActivate + " spawners="
+					+ spawners.size() + " initialSpawns=" + initialSpawns.size());
+
+		// Always spawn one of the closest spawners if it exists (it won't for
+		// minibosses and bosses)
+		if (!spawnersByDist.isEmpty()) {
+			if (NeoRogue.isDebugFlag("spawns"))
+				Bukkit.getLogger().info("[NeoRogue Spawn] Spawning closest spawner");
+			spawnersByDist.getFirst().spawnMob();
+			toActivate -= spawnersByDist.getFirst().getMob().getSpawnValue();
+		}
+		if (NeoRogue.isDebugFlag("spawns"))
+			Bukkit.getLogger().info("[NeoRogue Spawn] Calling activateSpawner(" + toActivate + ")");
+		activateSpawner(toActivate);
+
+		startTime = System.currentTimeMillis();
+		for (MapSpawnerInstance inst : initialSpawns) {
+			if (NeoRogue.isDebugFlag("spawns"))
+				Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn entry: " + inst.getMob().getId());
+			inst.spawnMob();
+		}
 	}
 	
 	protected abstract void setupInstance(Session s);

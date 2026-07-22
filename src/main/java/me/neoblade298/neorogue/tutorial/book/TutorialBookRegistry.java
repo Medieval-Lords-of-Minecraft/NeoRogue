@@ -97,7 +97,7 @@ public class TutorialBookRegistry {
 			}
 		}
 
-		Book built = book.buildChapter(COMMAND, index);
+		Book built = book.buildChapter(index);
 		if (built == null) return false;
 		p.openBook(built);
 		return true;

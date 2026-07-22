@@ -491,10 +491,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		item.setItemMeta(meta);
 		item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay()
 				.addHiddenComponents(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER)
 				.build());
-		item.setItemMeta(meta);
 		return item;
 	}
 

@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.region.RegionType.Layout;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardBuilder;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
@@ -158,11 +159,17 @@ public class StandardFightInstance extends FightInstance {
 			s.awardXp(fightScore.getXp());
 			Title title = Title.title(Component.text("Victory"),
 				Component.text("Your ranking: ").append(fightScore.getComponentDisplay()));
-			handleWin(title, new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
+			handleWin(title, getVictoryInstance(fightScore));
 			return;
 		}
 		
 		respawnMob(fd, id, false, playerKill);
+	}
+
+	// The instance the party is sent to after winning the fight. Defaults to the reward screen; subclasses
+	// (e.g. tutorial fights) can override to route the win elsewhere.
+	protected Instance getVictoryInstance(FightScore fightScore) {
+		return new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT);
 	}
 
 	@Override

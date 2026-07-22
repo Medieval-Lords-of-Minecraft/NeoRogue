@@ -79,7 +79,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 
 	// Records a finished-run result for each party member for winrate/winstreak stats. Tutorial and
 	// endless runs are excluded so they don't distort the numbers.
-	private void recordRunResults() {
+	protected void recordRunResults() {
 		if (s.getSessionType() == SessionType.TUTORIAL || s.isEndless()) return;
 		boolean won = isWin();
 		int notoriety = s.getNotoriety();

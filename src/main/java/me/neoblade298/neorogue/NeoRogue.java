@@ -125,6 +125,7 @@ import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
+import me.neoblade298.neorogue.tutorial.book.BookClickListener;
 import me.neoblade298.neorogue.tutorial.book.BookCommand;
 import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
@@ -152,12 +153,17 @@ public class NeoRogue extends JavaPlugin {
 		saveResource("caravan.yml", false);
 		saveResource("sellables.yml", false);
 		saveResource("tutorials.yml", false);
-		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
 		RunReward.setupEconomy();
+		// Must run before registering the IO component: registering the player IO
+		// component immediately loads any online player's data (relevant on hot-reload),
+		// which resolves unlock nodes and equipment. If equipment isn't loaded yet, every
+		// unlock target logs "references unknown equipment id".
+		reload();
+		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
-		reload();
+		Bukkit.getPluginManager().registerEvents(new BookClickListener(), this);
 		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 		registerBrigadierCommands();
 		new Placeholders().register();

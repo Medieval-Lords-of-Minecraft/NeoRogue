@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
@@ -56,8 +57,11 @@ public class RewardInventory extends CoreInventory {
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
 
-		// Pot of greed specifics
-		if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
+		// Pot of greed specifics. The "clear remaining rewards" button is hidden in tutorial sessions.
+		if (data.getSession().getSessionType() == SessionType.TUTORIAL) {
+			// no clear button
+		}
+		else if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
 			ItemStack item = PotOfGreed.get().getItem();
 			contents[8] = CoreInventory.createButton(item.getType(),
 					Component.text("Clear remaining rewards", NamedTextColor.RED),
@@ -104,6 +108,7 @@ public class RewardInventory extends CoreInventory {
 		}
 		else if (slot == 8) {
 			if (spectator != null) return;
+			if (data.getSession().getSessionType() == SessionType.TUTORIAL) return;
 			ClearRewardsEvent ev = new ClearRewardsEvent(rewards);
 			data.trigger(SessionTrigger.CLEAR_REWARDS, ev);
 			rewards.clear();

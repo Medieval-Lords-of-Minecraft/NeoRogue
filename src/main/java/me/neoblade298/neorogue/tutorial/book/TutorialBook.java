@@ -9,6 +9,8 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.player.FlagRegistry;
 import me.neoblade298.neorogue.player.PlayerData;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -32,6 +34,10 @@ public class TutorialBook {
 	// per book via "line-width" / "lines-per-page".
 	private static final int DEFAULT_LINE_WIDTH = 19;
 	private static final int DEFAULT_LINES_PER_PAGE = 14;
+
+	// custom click events must carry a non-null payload or the book's written_book_content fails to
+	// serialize (all navigation data is encoded in the click key, so an empty compound suffices).
+	private static final BinaryTagHolder EMPTY_PAYLOAD = BinaryTagHolder.binaryTagHolder("{}");
 
 	private final String id;
 	private final String rawTitle;
@@ -117,12 +123,12 @@ public class TutorialBook {
 
 	// Builds the book for a single chapter: page 1 is the chapter start (so openBook lands on it),
 	// content flows across as many pages as needed, and every page has a "back to contents" footer.
-	public Book buildChapter(String bookCommand, int index) {
+	public Book buildChapter(int index) {
 		Chapter chapter = getChapter(index);
 		if (chapter == null) return null;
 
 		Component back = mm("<dark_gray>\u00ab </dark_gray><gold><u>Back to Contents</u></gold>")
-				.clickEvent(ClickEvent.runCommand("/" + bookCommand + " " + id))
+				.clickEvent(ClickEvent.custom(Key.key("neorogue", "book/" + id), EMPTY_PAYLOAD))
 				.hoverEvent(HoverEvent.showText(Component.text("Return to the table of contents")));
 
 		// Header on page 1: chapter name + divider. The footer (blank + back link) sits on every page.
@@ -171,7 +177,7 @@ public class TutorialBook {
 				.append(marker)
 				.append(mm(chapter.rawName))
 				.build()
-				.clickEvent(ClickEvent.runCommand("/" + TutorialBookRegistry.COMMAND + " " + id + " " + index))
+				.clickEvent(ClickEvent.custom(Key.key("neorogue", "book/" + id + "/" + index), EMPTY_PAYLOAD))
 				.hoverEvent(HoverEvent.showText(Component.text(hover)));
 	}
 
@@ -226,8 +232,23 @@ public class TutorialBook {
 		private Chapter(String id, Section sec) {
 			this.id = id;
 			this.rawName = sec.getString("name", id);
-			List<String> list = sec.getStringList("content");
-			String content = list != null && !list.isEmpty() ? String.join("\n", list) : sec.getString("content", "");
+			// content may be a "|" block scalar (String) or a list of lines. NeoCore's getString/
+			// getStringList strictly cast, so probe both defensively and join a list with newlines.
+			String content = "";
+			try {
+				String raw = sec.getString("content", null);
+				if (raw != null) content = raw;
+			} catch (ClassCastException ignored) {
+				// content is a list, not a scalar; fall through to getStringList below
+			}
+			if (content.isEmpty()) {
+				try {
+					List<String> list = sec.getStringList("content");
+					if (list != null && !list.isEmpty()) content = String.join("\n", list);
+				} catch (ClassCastException ignored) {
+					// content is a scalar we already read (or absent)
+				}
+			}
 			this.contentLines = new ArrayList<String>();
 			for (String l : content.split("\n", -1)) {
 				this.contentLines.add(l);

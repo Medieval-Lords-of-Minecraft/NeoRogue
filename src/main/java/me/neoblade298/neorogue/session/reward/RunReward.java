@@ -36,6 +36,9 @@ public class RunReward {
 	private static final double NODE_BONUS = 10.0; // per node visited
 	private static final double REGION_BONUS = 100.0; // per region completed
 
+	// Additional payout multiplier granted per party member beyond the first (e.g. 0.10 = +10% each).
+	private static final double PARTY_SIZE_BONUS = 0.10;
+
 	// A loss with fewer than this many nodes visited earns nothing.
 	private static final int DEATH_NODE_THRESHOLD = 5;
 
@@ -282,10 +285,13 @@ public class RunReward {
 		double regionBonus = regions * REGION_BONUS;
 		double subtotal = base + nodeBonus + regionBonus;
 		double notorietyMultiplier = s.getNotorietyMoneyMultiplier();
-		double total = zeroedByDeath ? 0.0 : subtotal * notorietyMultiplier;
+		// +PARTY_SIZE_BONUS per party member beyond the first (solo runs are unaffected).
+		int partySize = s.getParty().size();
+		double partyMultiplier = 1.0 + PARTY_SIZE_BONUS * Math.max(0, partySize - 1);
+		double total = zeroedByDeath ? 0.0 : subtotal * notorietyMultiplier * partyMultiplier;
 
 		return new Breakdown(won, zeroedByDeath, nodes, regions, notoriety, base, nodeBonus, regionBonus,
-				subtotal, notorietyMultiplier, total);
+				subtotal, notorietyMultiplier, partySize, partyMultiplier, total);
 	}
 
 	// Sends a chat breakdown of a player's run earnings. Used by the win/lose "finances" gold block.
@@ -306,6 +312,11 @@ public class RunReward {
 		Util.msgRaw(p, "<gray>Subtotal: <yellow>" + formatMoney(b.subtotal));
 		Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
 				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier));
+		if (b.partySize > 1) {
+			Util.msgRaw(p, "<gray>Party bonus (<white>" + b.partySize + "<gray> players, <white>+"
+					+ Math.round(PARTY_SIZE_BONUS * 100) + "%<gray> each beyond the first): <green>\u00d7"
+					+ String.format("%.2f", b.partyMultiplier));
+		}
 		Util.msgRaw(p, "<gold>Total earned: <yellow>" + formatMoney(b.total));
 
 		// Cargo is sold and paid out per region during the run; summarize what each player sold here.
@@ -357,10 +368,12 @@ public class RunReward {
 		public final boolean won, zeroedByDeath;
 		public final int nodesVisited, regionsCompleted, notoriety;
 		public final double base, nodeBonus, regionBonus, subtotal, notorietyMultiplier, total;
+		public final int partySize;
+		public final double partyMultiplier;
 
 		private Breakdown(boolean won, boolean zeroedByDeath, int nodesVisited, int regionsCompleted, int notoriety,
 				double base, double nodeBonus, double regionBonus, double subtotal, double notorietyMultiplier,
-				double total) {
+				int partySize, double partyMultiplier, double total) {
 			this.won = won;
 			this.zeroedByDeath = zeroedByDeath;
 			this.nodesVisited = nodesVisited;
@@ -371,6 +384,8 @@ public class RunReward {
 			this.regionBonus = regionBonus;
 			this.subtotal = subtotal;
 			this.notorietyMultiplier = notorietyMultiplier;
+			this.partySize = partySize;
+			this.partyMultiplier = partyMultiplier;
 			this.total = total;
 		}
 	}
