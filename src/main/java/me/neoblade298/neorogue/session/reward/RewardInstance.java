@@ -187,7 +187,7 @@ public class RewardInstance extends EditInventoryInstance {
 		new BukkitRunnable() {
 			public void run() {
 				if (!s.isBusy() && s.canSetInstance(next)) {
-					s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
+					s.broadcast("Returning to node select...");
 					s.setBusy(true);
 					new BukkitRunnable() {
 						public void run() {

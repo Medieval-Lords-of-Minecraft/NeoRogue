@@ -125,7 +125,8 @@ import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
-import me.neoblade298.neorogue.tutorial.TutorialManager;
+import me.neoblade298.neorogue.tutorial.book.BookCommand;
+import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -150,6 +151,7 @@ public class NeoRogue extends JavaPlugin {
 		saveResource("achievements.yml", false);
 		saveResource("caravan.yml", false);
 		saveResource("sellables.yml", false);
+		saveResource("tutorials.yml", false);
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		AnalyticsManager.init();
 		RunReward.setupEconomy();
@@ -157,6 +159,7 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
 		reload();
 		initCommands(); // Must load commands AFTER map pieces due to command suggestion
+		registerBrigadierCommands();
 		new Placeholders().register();
 
 		// Load map renderer for node map
@@ -191,6 +194,7 @@ public class NeoRogue extends JavaPlugin {
 		MobModifier.registerModifiers(); // Register miniboss/boss mob modifiers
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
+		TutorialBookRegistry.reload(); // Load configurable book-UI tutorials
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
@@ -200,7 +204,6 @@ public class NeoRogue extends JavaPlugin {
 	// lazily so config-driven flags (tutorials, caravan packages/upgrades) stay current across reloads.
 	private static void registerFlagNamespaces() {
 		FlagRegistry.register(FlagRegistry.GENERAL, () -> java.util.List.of(PlayerData.FLAG_PLAYED_BEFORE));
-		FlagRegistry.register(FlagRegistry.TUTORIAL, TutorialManager::getTutorialFlags);
 		FlagRegistry.register(FlagRegistry.CARAVAN, () -> {
 			java.util.ArrayList<String> flags = new java.util.ArrayList<String>();
 			flags.add(PlayerData.FLAG_CARGO_ACCESS);
@@ -219,6 +222,16 @@ public class NeoRogue extends JavaPlugin {
 	    super.onDisable();
 	}
 	
+	// Registers Paper Brigadier commands via the lifecycle manager (works for legacy JavaPlugins on
+	// modern Paper). Used for the book-UI tutorials: /nrbook <book> [chapter].
+	@SuppressWarnings("UnstableApiUsage")
+	private void registerBrigadierCommands() {
+		this.getLifecycleManager().registerEventHandler(
+				io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents.COMMANDS, event -> {
+					event.registrar().register(BookCommand.build(), "Open a NeoRogue book-UI tutorial");
+				});
+	}
+
 	private void initCommands() {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdMenu("", "Open the main menu", null, SubcommandRunner.PLAYER_ONLY));
@@ -238,6 +251,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLostCargo("lostcargo", "Withdraw unsold cargo from past runs", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCaravan("caravan", "Purchase caravan upgrades", null, SubcommandRunner.PLAYER_ONLY));
+		
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));

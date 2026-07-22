@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -378,7 +377,6 @@ public class AchievementManager {
 		}.runTaskLater(NeoRogue.inst(), TOAST_DURATION_TICKS);
 	}
 
-	private static final AtomicInteger toastCounter = new AtomicInteger(0);
 	private static final HashMap<String, org.bukkit.advancement.Advancement> cachedToasts = new HashMap<>();
 
 	@SuppressWarnings("deprecation")
@@ -388,20 +386,26 @@ public class AchievementManager {
 
 		org.bukkit.advancement.Advancement advancement = cachedToasts.get(cacheKey);
 		if (advancement == null) {
-			NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + toastCounter.incrementAndGet());
-			String json = "{"
-					+ "\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}},"
-					+ "\"display\":{"
-					+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
-					+ "\"title\":\"" + escapeJson(title) + "\","
-					+ "\"description\":\"" + escapeJson(description) + "\","
-					+ "\"frame\":\"task\","
-					+ "\"show_toast\":true,"
-					+ "\"announce_to_chat\":false,"
-					+ "\"hidden\":true"
-					+ "}"
-					+ "}";
-			advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
+			// Deterministic key derived from content so a plugin reload reuses the same
+			// server-registered advancement instead of colliding with a stale one.
+			NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "toast_" + Integer.toHexString(cacheKey.hashCode()));
+			// Advancements persist server-wide across plugin disable/enable, so reuse if present.
+			advancement = Bukkit.getAdvancement(key);
+			if (advancement == null) {
+				String json = "{"
+						+ "\"criteria\":{\"trigger\":{\"trigger\":\"minecraft:impossible\"}},"
+						+ "\"display\":{"
+						+ "\"icon\":{\"id\":\"minecraft:" + icon.getKey().getKey() + "\"},"
+						+ "\"title\":\"" + escapeJson(title) + "\","
+						+ "\"description\":\"" + escapeJson(description) + "\","
+						+ "\"frame\":\"task\","
+						+ "\"show_toast\":true,"
+						+ "\"announce_to_chat\":false,"
+						+ "\"hidden\":true"
+						+ "}"
+						+ "}";
+				advancement = Bukkit.getUnsafe().loadAdvancement(key, json);
+			}
 			if (advancement == null) return;
 			cachedToasts.put(cacheKey, advancement);
 		}

@@ -95,7 +95,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.LoseInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
-import me.neoblade298.neorogue.tutorial.TutorialManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -1132,7 +1131,6 @@ public abstract class FightInstance extends Instance {
 				ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 				for (Player p : s.getOnlinePlayers()) {
 					PlayerFightData pdata = setup(p, s.getData(p.getUniqueId()));
-					TutorialManager.registerFightTutorials(fi, pdata);
 					AchievementManager.registerFightAchievements(fi, pdata);
 					fdata.add(pdata);
 					players.add(pdata);

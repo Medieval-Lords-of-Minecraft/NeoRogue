@@ -1,0 +1,42 @@
+# Configurable book-UI tutorials.
+#
+# Each top-level key is a book id (used by /nr tutorialbook <book>). A book has:
+#   title:         MiniMessage display name shown on the book and its table of contents.
+#   line-width:    (optional) characters per line before wrapping. Default 19.
+#   lines-per-page:(optional) lines shown per page before spilling to the next. Default 14.
+#   rewards:       Console commands run ONCE the first time a player opens each chapter.
+#                  Placeholders: %player% (name), %uuid%. Granted once per chapter.
+#   chapters:      Ordered map of chapter id -> { name, content }. Each chapter's link is
+#                  auto-added to the table of contents, and long content is automatically
+#                  spread across multiple pages. Every chapter page has a "Back to Contents"
+#                  link. Content is MiniMessage; use a "|" block or a list of lines.
+#
+# Open a book with: /nr tutorialbook <book>
+
+welcome:
+  title: "<gold><bold>Welcome to NeoRogue"
+  rewards:
+    - "nradmin coins %player% 50"
+  chapters:
+    getting_started:
+      name: "<yellow>Getting Started"
+      content: |
+        <white>Welcome, adventurer!
+        
+        NeoRogue is a session-based dungeon crawler. Pick a class, build a loadout, and delve.
+        
+        Use the table of contents to jump between chapters.
+    combat:
+      name: "<red>Combat Basics"
+      content: |
+        <white>Bind abilities to your hotbar and keybinds.
+        
+        Manage your <blue>mana</blue> and <green>stamina</green> as you fight.
+        
+        Watch enemy telegraphs and dodge!
+    equipment:
+      name: "<aqua>Equipment"
+      content: |
+        <white>Collect weapons, armor, accessories, and artifacts.
+        
+        Reforge duplicates into upgraded versions at your inventory.
