@@ -62,6 +62,9 @@ public class TutorialBook {
 				if (cs == null) continue;
 				chapters.add(new Chapter(key, cs));
 			}
+			// getKeys() isn't guaranteed to preserve YAML order, so order the table of contents by
+			// each chapter's "priority" (ascending). A stable sort keeps ties in their loaded order.
+			chapters.sort((a, b) -> Integer.compare(a.priority, b.priority));
 		}
 	}
 
@@ -227,11 +230,13 @@ public class TutorialBook {
 	public static class Chapter {
 		private final String id;
 		private final String rawName;
+		private final int priority;
 		private final List<String> contentLines;
 
 		private Chapter(String id, Section sec) {
 			this.id = id;
 			this.rawName = sec.getString("name", id);
+			this.priority = sec.getInt("priority", 0);
 			// content may be a "|" block scalar (String) or a list of lines. NeoCore's getString/
 			// getStringList strictly cast, so probe both defensively and join a list with newlines.
 			String content = "";

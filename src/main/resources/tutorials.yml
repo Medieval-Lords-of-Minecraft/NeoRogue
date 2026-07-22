@@ -6,10 +6,12 @@
 #   lines-per-page:(optional) lines shown per page before spilling to the next. Default 14.
 #   rewards:       Console commands run ONCE the first time a player opens each chapter.
 #                  Placeholders: %player% (name), %uuid%. Granted once per chapter.
-#   chapters:      Ordered map of chapter id -> { name, content }. Each chapter's link is
+#   chapters:      Map of chapter id -> { name, priority, content }. Each chapter's link is
 #                  auto-added to the table of contents, and long content is automatically
 #                  spread across multiple pages. Every chapter page has a "Back to Contents"
 #                  link. Content is MiniMessage; use a "|" block or a list of lines.
+#                  priority: (optional) integer that orders chapters in the table of contents
+#                  (ascending; lower shows first). Defaults to 0; ties keep their loaded order.
 #
 # Open a book with: /nr tutorialbook <book>
 

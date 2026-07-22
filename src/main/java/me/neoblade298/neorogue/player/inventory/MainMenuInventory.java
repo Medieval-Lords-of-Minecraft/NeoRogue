@@ -25,12 +25,13 @@ import me.neoblade298.neorogue.player.RunStats;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATS = 4;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATS = 4, TUTORIAL = 18;
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 
 	public MainMenuInventory(Player p) {
@@ -54,6 +55,8 @@ public class MainMenuInventory extends CoreInventory {
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
 		contents[CARGO] = createCargoButton(pd);
 		contents[STATS] = createStatsButton(pd);
+		contents[TUTORIAL] = CoreInventory.createButton(Material.WRITABLE_BOOK,
+				Component.text("Tutorial", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
 
@@ -175,6 +178,10 @@ public class MainMenuInventory extends CoreInventory {
 			break;
 		case STATS:
 			new StatsMenuInventory(p);
+			break;
+		case TUTORIAL:
+			p.closeInventory();
+			TutorialBookRegistry.openTableOfContents(p, "neorogue_tutorial");
 			break;
 		}
 	}
