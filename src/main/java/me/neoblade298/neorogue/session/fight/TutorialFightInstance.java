@@ -111,10 +111,12 @@ public class TutorialFightInstance extends StandardFightInstance {
 		super.setupInstance(s);
 		scoreRequired = Math.ceil(scoreRequired / 4);
 
+		System.out.println("Nodes visited: " + s.getNodesVisited());
 		if (s.getNodesVisited() == 2) {
 			for (PlayerFightData pfd : players) {
 				pfd.addTrigger("tutorial", Trigger.DEAL_DAMAGE, (pdata, in) -> {
 					DealDamageEvent ev = (DealDamageEvent) in;
+					System.out.println("Tutorial damage: " + ev.getDamage());
 					if (ev.getDamage() <= 3) {
 						Util.msgRaw(pfd.getPlayer(),
 							"<red>They're tanky! Select the flint to cast an ability, then use your sword!");

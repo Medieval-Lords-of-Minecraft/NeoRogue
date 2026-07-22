@@ -51,7 +51,7 @@ public class AchievementsInventory extends CoreInventory {
 
 	private static Component buildTitle(PlayerData pd, EquipmentClass ec) {
 		String prefix = ec != null ? ec.getDisplay() : "Global";
-		return Component.text(prefix + " Achievements", NamedTextColor.WHITE);
+		return Component.text(prefix + " Achievements", NamedTextColor.AQUA);
 	}
 
 	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec) {

@@ -43,6 +43,7 @@ import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
@@ -94,6 +95,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	
 	// Use offset when setting up another player's inventory for spectating (0 index is at top of inv for spectate, not bottom)
 	public static void setupInventory(Inventory inv, PlayerSessionData data, boolean isSpectating) {
+		if (data.getSession().getSessionType() == SessionType.TUTORIAL) {
+			setupTutorialInventory(inv, data, isSpectating);
+			return;
+		}
 		int offset = isSpectating ? 27 : 0;
 		ItemStack[] contents = inv.getContents();
 
@@ -193,6 +198,120 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon();
 		}
 		inv.setContents(contents);
+	}
+
+	// Tutorial layout: progressively unlocks inventory sections based on the session's nodes visited.
+	// Node 0: hotbar, stats, storage, artifacts, trash, save & quit.
+	// Node 1: adds the ability (keybind) slots and the offhand slot.
+	// Node 2: adds the armor and accessory slots.
+	// Reforges, settings, cargo and the node map stay hidden for the entire tutorial.
+	private static void setupTutorialInventory(Inventory inv, PlayerSessionData data, boolean isSpectating) {
+		int offset = isSpectating ? 27 : 0;
+		ItemStack[] contents = inv.getContents();
+		int node = data.getSession().getNodesVisited();
+		boolean unlockAbilities = node >= 1;
+		boolean unlockArmor = node >= 2;
+
+		// Armor slots (node 2+)
+		int iter = 0;
+		for (int i : ARMOR) {
+			slotTypes.put(i, EquipSlot.ARMOR);
+			if (!unlockArmor || iter >= data.getArmorSlots()) {
+				contents[(i + offset) % inv.getSize()] = tutorialFiller();
+				iter++;
+				continue;
+			}
+			SessionEquipment a = data.getSessionEquipment(EquipSlot.ARMOR)[iter];
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
+			iter++;
+		}
+
+		// Accessory slots (node 2+)
+		iter = 0;
+		for (int i : ACCESSORIES) {
+			slotTypes.put(i, EquipSlot.ACCESSORY);
+			if (!unlockArmor || iter >= data.getAccessorySlots()) {
+				contents[(i + offset) % inv.getSize()] = tutorialFiller();
+				iter++;
+				continue;
+			}
+			SessionEquipment a = data.getSessionEquipment(EquipSlot.ACCESSORY)[iter];
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
+			iter++;
+		}
+
+		// Ability (keybind) slots (node 1+)
+		for (KeyBind bind : KeyBind.values()) {
+			int i = (bind.getInventorySlot() + offset) % inv.getSize();
+			slotTypes.put(bind.getInventorySlot(), EquipSlot.KEYBIND);
+			if (!unlockAbilities) {
+				contents[i] = tutorialFiller();
+				continue;
+			}
+			SessionEquipment eq = data.getSessionEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
+			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot(), bind);
+				continue;
+			}
+			contents[i] = eq != null
+					? addNbt(addBindLore(eq.getChoiceItem(data), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
+							eq.getEquipment().isUpgraded(), bind.getDataSlot())
+					: addNbt(bind.getItem(), bind.getDataSlot());
+		}
+
+		// Offhand slot (node 1+)
+		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
+		if (unlockAbilities) {
+			SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
+			contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getChoiceItem(data), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+		}
+		else {
+			contents[(OFFHAND + offset) % inv.getSize()] = tutorialFiller();
+		}
+
+		// Hotbar slots (always available)
+		for (int i : HOTBAR) {
+			slotTypes.put(i, EquipSlot.HOTBAR);
+			SessionEquipment eq = data.getSessionEquipment(EquipSlot.HOTBAR)[i];
+			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
+				continue;
+			}
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getChoiceItem(data), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
+					: createHotbarIcon(i);
+		}
+
+		// Filler panes (also hides reforges/settings/cargo, which live in these slots)
+		for (int i : FILLER) {
+			contents[(i + offset) % inv.getSize()] = tutorialFiller();
+		}
+
+		// Always-available buttons
+		contents[(STATS + offset) % inv.getSize()] = createStatsIcon(data, isSpectating);
+		contents[(STORAGE + offset) % inv.getSize()] = CoreInventory.createButton(Material.ENDER_CHEST, Component.text("Storage", NamedTextColor.GOLD));
+		contents[(TRASH + offset) % inv.getSize()] = addNbt(CoreInventory.createButton(Material.HOPPER,
+				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
+				0);
+		contents[(ARTIFACTS + offset) % inv.getSize()] = addNbt(
+				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
+						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
+				0);
+
+		if (!isSpectating) {
+			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon();
+		}
+		inv.setContents(contents);
+	}
+
+	private static ItemStack tutorialFiller() {
+		return CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+	}
+
+	private static boolean contains(int[] arr, int val) {
+		for (int a : arr) {
+			if (a == val) return true;
+		}
+		return false;
 	}
 
 	private static ItemStack createLeaveIcon() {
@@ -381,6 +500,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		if (data.getSession().getSessionType() == SessionType.TUTORIAL && handleTutorialInventoryClick(e)) {
+			return;
+		}
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
 		int slot = e.getSlot();
@@ -640,6 +762,29 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		else {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		}
+	}
+
+	// Tutorial click handling: block interactions with any slot that hasn't been unlocked yet for the
+	// current tutorial node. Returns true if the click was consumed and normal handling should stop.
+	private boolean handleTutorialInventoryClick(InventoryClickEvent e) {
+		int slot = e.getSlot();
+		if (slot < 0 || slot >= 36) return false;
+		if (isTutorialLockedSlot(slot)) {
+			e.setCancelled(true);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isTutorialLockedSlot(int slot) {
+		// Reforges, settings, cargo and node map are hidden for the whole tutorial.
+		if (slot == REFORGES || slot == SETTINGS || slot == CARGO || slot == MAP) return true;
+		int node = data.getSession().getNodesVisited();
+		boolean unlockAbilities = node >= 1;
+		boolean unlockArmor = node >= 2;
+		if (!unlockAbilities && (contains(KEYBINDS, slot) || slot == OFFHAND)) return true;
+		if (!unlockArmor && (contains(ARMOR, slot) || contains(ACCESSORIES, slot))) return true;
+		return false;
 	}
 
 	private void handleReforge(InventoryClickEvent e, Equipment primary, Equipment secondary, int slot, int dataSlot) {

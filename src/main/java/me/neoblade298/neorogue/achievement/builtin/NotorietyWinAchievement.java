@@ -34,7 +34,7 @@ public class NotorietyWinAchievement implements Achievement {
 
 	@Override
 	public Material getMaterial() {
-		return Material.OMINOUS_BOTTLE;
+		return Material.NETHER_STAR;
 	}
 
 	@Override
