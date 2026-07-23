@@ -76,6 +76,13 @@ public class Node {
 			src.addDestination(this);
 		return this;
 	}
+
+	// Severs the edge between this node and dest in both directions.
+	public Node removeDestination(Node dest) {
+		dests.remove(dest);
+		dest.srcs.remove(this);
+		return this;
+	}
 	
 	@Override
 	public String toString() {

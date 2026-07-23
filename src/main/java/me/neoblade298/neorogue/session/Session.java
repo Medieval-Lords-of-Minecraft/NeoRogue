@@ -79,7 +79,6 @@ import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.instances.LoadLobbyInstance;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
-import me.neoblade298.neorogue.session.instances.LoseInstance;
 import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
@@ -346,7 +345,20 @@ public class Session {
 	}
 	
 	public void save(Connection con) {
-		if (inst instanceof FightInstance || inst instanceof LoseInstance || inst instanceof LobbyInstance)
+		save(con, null);
+	}
+
+	// fightHp: captured live health used to lower saved HP when a session ends mid-fight (null otherwise).
+	public void save(Connection con, HashMap<UUID, Double> fightHp) {
+		// Fights don't save session/player data (so reloading restarts the fight), but the region nodes must
+		// still save so committed-path pruning persists even when the player enters a fight. When ending
+		// mid-fight, also lower saved HP to the captured live health.
+		if (inst instanceof FightInstance) {
+			region.saveRelevant(con);
+			if (fightHp != null) saveHealthAfterFightEnd(con, fightHp);
+			return;
+		}
+		if (inst instanceof EndRunInstance || inst instanceof LobbyInstance)
 			return;
 		
 		try {
@@ -406,8 +418,8 @@ public class Session {
 	}
 
 	// Lowers each party member's saved health to their captured fight health, but only when it's
-	// below the previously saved value. Runs async when a session ends during a fight.
-	public void saveHealthAfterFightEnd(Connection con, HashMap<UUID, Double> capturedHp) {
+	// below the previously saved value. Called from save() when a session ends during a fight.
+	private void saveHealthAfterFightEnd(Connection con, HashMap<UUID, Double> capturedHp) {
 		for (Entry<UUID, Double> ent : capturedHp.entrySet()) {
 			try {
 				double liveHp = ent.getValue();
@@ -1213,6 +1225,16 @@ public class Session {
 	}
 	
 	public void visitNode(Node node) {
+		// Commit to this choice: sever the paths from the node being left to any sibling nodes the player
+		// didn't pick, so they can't reload the save and take a different path (anti save-scum). Only prune
+		// when the chosen node is actually one of the current node's destinations. The prune is persisted by
+		// the autosave on this transition — saveRelevant() saves the row behind the player, and save() saves
+		// region nodes even when entering a fight.
+		if (curr != null && curr.getDestinations().contains(node) && curr.getDestinations().size() > 1) {
+			for (Node dest : new ArrayList<Node>(curr.getDestinations())) {
+				if (!dest.equals(node)) curr.removeDestination(dest);
+			}
+		}
 		for (PlayerSessionData psd : party.values()) {
 			psd.setMapPosition(node.getRow());
 			psd.setShouldMapRender(true);

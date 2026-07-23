@@ -17,6 +17,7 @@ public class Lockbox extends Artifact {
 	public Lockbox() {
 		super(ID, "Lockbox", Rarity.UNCOMMON, EquipmentClass.SHOP);
 		canDrop = false;
+		removable = false;
 	}
 	
 	public static Equipment get() {

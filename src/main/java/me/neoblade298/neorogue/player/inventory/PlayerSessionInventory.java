@@ -54,6 +54,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class PlayerSessionInventory extends CorePlayerInventory implements ShiftClickableInventory {
 	private static final int[] ARMOR = new int[] { 18, 19, 20, 21 };
@@ -1021,12 +1022,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return n != null ? n : 1;
 	}
 
+	// Removes the "Bound to ..." lore line(s). Matched by text rather than a fixed index because the bind
+	// line is inserted at bindLoreIndex(...) (which varies with how many header/stat/reforge lines an item
+	// has), and matching all of them also cleans up any lines that accumulated from repeated moves.
 	private static ItemStack removeBindLore(ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = meta.lore();
-		lore.remove(1);
-		meta.lore(lore);
-		item.setItemMeta(meta);
+		if (lore != null) {
+			lore.removeIf(c -> PlainTextComponentSerializer.plainText().serialize(c).startsWith("Bound to "));
+			meta.lore(lore);
+			item.setItemMeta(meta);
+		}
 		return item;
 	}
 

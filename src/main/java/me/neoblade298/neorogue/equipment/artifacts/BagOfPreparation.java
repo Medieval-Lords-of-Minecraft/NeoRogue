@@ -15,6 +15,7 @@ public class BagOfPreparation extends Artifact {
 	
 	public BagOfPreparation() {
 		super(ID, "Bag of Preparation", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		removable = true;
 	}
 
 	public static Equipment get() {

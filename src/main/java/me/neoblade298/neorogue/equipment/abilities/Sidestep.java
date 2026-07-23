@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -26,13 +25,14 @@ public class Sidestep extends Equipment {
 	private static final String ID = "Sidestep";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
-	private int damage = 150, evade;
+	private int damage = 150, evade, evadeDuration;
 	
 	public Sidestep(boolean isUpgraded) {
 		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		evade = isUpgraded ? 2 : 1;
+		evadeDuration = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -43,7 +43,7 @@ public class Sidestep extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " and gain " + GlossaryTag.STEALTH.tag(this) +
-				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade) + " [<white>10s</white>]. "
+				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade) + " " + DescUtil.duration(evadeDuration) + ". "
 				+ "Your next " + DescUtil.val(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
@@ -58,7 +58,7 @@ public class Sidestep extends Equipment {
 			pc.play(p, p);
 			data.dash();
 			data.applyStatus(StatusType.STEALTH, data, 1, 100, this);
-			data.applyStatus(StatusType.EVADE, data, evade, 200, this);
+			data.applyStatus(StatusType.EVADE, data, evade, evadeDuration * 20, this);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});

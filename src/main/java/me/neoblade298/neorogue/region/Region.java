@@ -824,12 +824,12 @@ public class Region {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
 		try {
-			int row = s.getNode().getRow() + 1;
+			int row = Math.max(0, s.getNode().getRow() - 1);
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_nodes");
 			boolean hasRows = false;
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
-				// Saves up to two rows ahead
-				for (int i = 0; i < 2 && row + i < rowCount; i++) {
+				// Saves the row behind, the current row, and up to two rows ahead
+				for (int i = 0; i < 4 && row + i < rowCount; i++) {
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;

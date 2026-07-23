@@ -1300,13 +1300,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 	// they own none (or data is null), it's identical to getItem() and shows no reforge line.
 	public ItemStack getChoiceItem(PlayerSessionData data) {
 		List<Equipment> owned = getOwnedReforgeOptions(data);
+		// When REFORGE_REQUIRES_BOTH is active, both items must be upgraded, so the partner always needs a +
+		boolean reforgeRequiresBoth = data != null && data.getSession() != null
+				&& NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(data.getSession());
 		if (owned.isEmpty()) {
 			// No owned reforge partners, but the item can still be reforged — show a generic "Reforgeable" line.
 			if (!reforgeOptions.isEmpty())
-				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true);
+				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true, reforgeRequiresBoth);
 			return item.clone();
 		}
-		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, false);
+		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, false, reforgeRequiresBoth);
 	}
 
 	// Subset of this equipment's reforge partners that the player currently owns anywhere in their
@@ -1432,13 +1435,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.itemLoreLine = loreLine;
 		// The cached default item never shows reforge options (null reforge list). Choice surfaces call
 		// getChoiceItem(...), which rebuilds with the player's inventory-relevant reforge partners.
-		return buildItemStack(mat, preLoreLine, loreLine, null, false);
+		return buildItemStack(mat, preLoreLine, loreLine, null, false, false);
 	}
 
 	// Builds the tooltip item. reforgeToShow controls the "Reforgeable with:" line: null/empty hides it
 	// entirely, otherwise only the listed equipment is shown. When reforgeToShow is empty but
 	// showGenericReforgeable is true, a plain "Reforgeable" line is shown instead.
-	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow, boolean showGenericReforgeable) {
+	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow, boolean showGenericReforgeable, boolean reforgeRequiresBoth) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
@@ -1488,7 +1491,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				boolean noPostfix = isCursed || eq.isCursed;
 				String postfix = "";
 				if (!noPostfix) {
-					postfix = isUpgraded ? "(+)" : "+";
+					postfix = (!isUpgraded || reforgeRequiresBoth) ? "+" : "(+)";
 				}
 				if (!firstReforge) {
 					reforgeLine = reforgeLine.append(Component.text(", ", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
@@ -1654,7 +1657,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	// base and upgraded versions have run setupItem(), so resolveUpgradeColors(...) can diff them.
 	public void refreshItem() {
 		if (itemMaterial == null) return; // Item wasn't built via createItem(...), nothing to refresh
-		this.item = buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false);
+		this.item = buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false, false);
 	}
 
 	// Replaces DescUtil.val(...) tokens in a lore string with <yellow>/<white> depending on whether each

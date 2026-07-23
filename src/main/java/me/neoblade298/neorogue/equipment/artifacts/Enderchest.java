@@ -16,6 +16,7 @@ public class Enderchest extends Artifact {
 	public Enderchest() {
 		super(ID, "Enderchest", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		removable = false;
 	}
 
 	public static Equipment get() {

@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public abstract class Artifact extends Equipment {
 	protected boolean canStack; // If an artifact can be obtained from a player's droptable more than once
+	protected boolean removable = true; // If false, chance events can't select this artifact for removal or trade
 
 	// The nine post-fight gem artifacts (Ruby/Sapphire/Emerald x Shard/Cluster/Gem). They're earned
 	// only through the post-fight gem choice and must never appear in drop pools or chance trades.
@@ -22,6 +23,12 @@ public abstract class Artifact extends Equipment {
 
 	public boolean isGemArtifact() {
 		return GEM_ARTIFACT_IDS.contains(id);
+	}
+
+	// Whether chance events may select this artifact for removal or trade. Gem artifacts and specific
+	// utility artifacts (Lockbox, Armor Stand, Enderchest) are permanently non-removable.
+	public boolean isRemovable() {
+		return removable && !isGemArtifact();
 	}
 
 	public Artifact(String id, String display, Rarity rarity, EquipmentClass ec) {

@@ -966,11 +966,7 @@ public class SessionManager implements Listener {
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager")) {
-					if (capturedHp != null) {
-						s.saveHealthAfterFightEnd(con, capturedHp);
-					} else {
-						s.save(con);
-					}
+					s.save(con, capturedHp);
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}

@@ -34,7 +34,7 @@ public class DodgeRoll extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + GlossaryTag.STEALTH.tag(this, 1) + " and "
+				"On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + GlossaryTag.STEALTH.tag(this, 1) + " " + DescUtil.duration(dur) + " and "
 				+ GlossaryTag.EVADE.tag(this, 1) + " " + DescUtil.duration(dur) + ".");
 	}
 

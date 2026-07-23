@@ -36,6 +36,7 @@ public class StatTracker {
         statusOrigins.put(StatusType.INSANITY, new BuffStatTracker(StatusType.INSANITY, true, true));
         statusOrigins.put(StatusType.INJURY, new BuffStatTracker(StatusType.INJURY, true, true));
         statusOrigins.put(StatusType.CORRUPTION, new BuffStatTracker(StatusType.CORRUPTION, false, true));
+        statusOrigins.put(StatusType.WEAKENED, new BuffStatTracker(StatusType.WEAKENED, false, false).shouldCombine(false));
     }
     
     protected StatTracker(String id, Component display) {
