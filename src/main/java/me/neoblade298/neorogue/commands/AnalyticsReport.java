@@ -617,13 +617,22 @@ public class AnalyticsReport {
 
 	private static void queryChanceLeaderboard(Connection con, int version, String setId, String playerClass,
 			ArrayList<String> lines) throws SQLException {
-		StringBuilder sql = new StringBuilder("SELECT setId, stageId, choiceIndex, MAX(choiceLabel) AS label,"
-				+ " SUM(valid) AS valid, SUM(picked) AS picked,"
-				+ " (SUM(picked) / SUM(valid)) AS rate FROM neorogue_analytics_chance_choices WHERE balanceVersion = ?");
-		if (setId != null) sql.append(" AND setId = ?");
-		if (playerClass != null) sql.append(" AND playerClass = ?");
-		sql.append(" GROUP BY setId, stageId, choiceIndex HAVING valid >= ").append(MIN_OFFERS)
-				.append(" ORDER BY setId, stageId, rate DESC;");
+		// Pickrate (picked/valid) comes straight from the choice rows. Winrate joins each picked choice
+		// to its run's final outcome (neorogue_analytics_runs) so we can see how each option correlates
+		// with actually winning the run. Runs that were abandoned (no outcome row) are simply excluded
+		// from the winrate average via the LEFT JOIN producing NULL wons.
+		StringBuilder sql = new StringBuilder("SELECT c.setId AS setId, c.stageId AS stageId, c.choiceIndex AS choiceIndex,"
+				+ " MAX(c.choiceLabel) AS label, SUM(c.valid) AS valid, SUM(c.picked) AS picked,"
+				+ " (SUM(c.picked) / SUM(c.valid)) AS rate,"
+				+ " SUM(CASE WHEN c.picked = 1 AND r.won IS NOT NULL THEN 1 ELSE 0 END) AS wrSamples,"
+				+ " SUM(CASE WHEN c.picked = 1 AND r.won = 1 THEN 1 ELSE 0 END) AS wrWins"
+				+ " FROM neorogue_analytics_chance_choices c"
+				+ " LEFT JOIN neorogue_analytics_runs r ON r.runId = c.runId"
+				+ " WHERE c.balanceVersion = ?");
+		if (setId != null) sql.append(" AND c.setId = ?");
+		if (playerClass != null) sql.append(" AND c.playerClass = ?");
+		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex HAVING valid >= ").append(MIN_OFFERS)
+				.append(" ORDER BY c.setId, c.stageId, rate DESC;");
 
 		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			int idx = 1;
@@ -641,9 +650,15 @@ public class AnalyticsReport {
 					int valid = rs.getInt("valid");
 					int picked = rs.getInt("picked");
 					double rate = valid > 0 ? (100.0 * picked / valid) : 0;
+					int wrSamples = rs.getInt("wrSamples");
+					int wrWins = rs.getInt("wrWins");
+					String wr = wrSamples > 0
+							? " <green>" + df.format(100.0 * wrWins / wrSamples) + "% wr</green> <gray>(" + wrWins + "/"
+									+ wrSamples + " runs)"
+							: " <dark_gray>(no run outcomes)";
 					lines.add("  <aqua>" + rs.getString("stageId") + "</aqua> <white>" + rs.getString("label")
 							+ "</white> <yellow>" + df.format(rate) + "%</yellow> <gray>(" + picked + "/" + valid
-							+ " valid)");
+							+ " valid)" + wr);
 				}
 			}
 		}

@@ -13,10 +13,6 @@ commands:
       aliases: [nra]
       description: NeoRogue Admin command
       permission: neorogue.admin
-   nrlytics:
-      aliases: [nrl]
-      description: NeoRogue analytics command
-      permission: neorogue.admin
    nrflag:
       description: NeoRogue player flag management command
       permission: neorogue.admin

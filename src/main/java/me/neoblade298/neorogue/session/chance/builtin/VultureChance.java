@@ -54,11 +54,20 @@ public class VultureChance extends ChanceSet {
 				VultureChance::stealDescription, VultureChance::stealAction));
 		init.addChoice(leave);
 
-		// Stage: loot (returned to after each successful steal)
-		ChanceStage loot = new ChanceStage(this, "loot", "You successfully loot some items from the adventurer.");
-		loot.addChoice(new ChanceChoice(Material.FLINT, "Steal more",
+		// Stages: loot (returned to after each successful steal). Split by how many items have already
+		// been found so each escalating risk tier (50% after 1, 75% after 2) is a distinct stageId in
+		// pickrate analytics rather than being conflated under one "loot" stage.
+		ChanceStage loot1 = new ChanceStage(this, "loot1",
+				"You successfully loot an item, but each theft draws the enemy closer.");
+		loot1.addChoice(new ChanceChoice(Material.FLINT, "Steal more",
 				VultureChance::stealDescription, VultureChance::stealAction));
-		loot.addChoice(leave);
+		loot1.addChoice(leave);
+
+		ChanceStage loot2 = new ChanceStage(this, "loot2",
+				"You've grabbed most of the valuables. One more theft would be extremely risky.");
+		loot2.addChoice(new ChanceChoice(Material.FLINT, "Steal more",
+				VultureChance::stealDescription, VultureChance::stealAction));
+		loot2.addChoice(leave);
 
 		// Stage: caught (all 3 items found, enemy closing in)
 		ChanceStage caught = new ChanceStage(this, "caught",
@@ -99,7 +108,8 @@ public class VultureChance extends ChanceSet {
 			s.broadcast(nextFind.desc);
 			nextFind.action.run(s);
 			nextFind.markFound(inst);
-			return getFoundCount(inst) >= 3 ? "caught" : "loot";
+			int found = getFoundCount(inst);
+			return found >= 3 ? "caught" : (found == 1 ? "loot1" : "loot2");
 		}
 	}
 

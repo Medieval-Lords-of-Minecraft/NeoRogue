@@ -21,6 +21,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SessionStatsInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionType;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.RunSnapshot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -81,6 +83,19 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
 			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, psd.getSessionStats().getExpEarned(), won);
 		}
+		recordRunAnalytics(won);
+	}
+
+	// Records a run-level outcome row keyed by the session's stable runId so per-run analytics (e.g.
+	// chance-choice winrate) can join on it. Tutorials are excluded; endless is flagged so it can be
+	// filtered out of winrate queries.
+	private void recordRunAnalytics(boolean won) {
+		if (!AnalyticsManager.ENABLED || s.getSessionType() == SessionType.TUTORIAL) return;
+		if (s.getRunId() == null) return;
+		RunSnapshot snap = new RunSnapshot(s.getRunId(), System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION,
+				s.getHost().toString(), s.getSaveSlot(), s.getSessionType().name(), s.getRegion().getType().name(),
+				s.getRegionsCompleted(), s.getLevel(), s.getParty().size(), s.getNotoriety(), s.isEndless(), won);
+		AnalyticsManager.recordRun(snap);
 	}
 
 	@Override

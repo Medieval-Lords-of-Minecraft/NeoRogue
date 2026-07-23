@@ -14,6 +14,7 @@ public class FightSnapshot {
 	public final int balanceVersion;
 	public final String host;
 	public final int slot;
+	public final String runId;
 	public final String regionType;
 	public final String nodeType;
 	public final int level;
@@ -31,14 +32,15 @@ public class FightSnapshot {
 	public final ArrayList<StatusRow> statusRows = new ArrayList<StatusRow>();
 	public final ArrayList<MobRow> mobRows = new ArrayList<MobRow>();
 
-	public FightSnapshot(String fightId, long timestamp, int balanceVersion, String host, int slot, String regionType,
-			String nodeType, int level, int regionsCompleted, int partySize, int notoriety, boolean endless,
-			long durationMs, boolean won, double partyDamageDealt, double partyDamageTaken, String mobs) {
+	public FightSnapshot(String fightId, long timestamp, int balanceVersion, String host, int slot, String runId,
+			String regionType, String nodeType, int level, int regionsCompleted, int partySize, int notoriety,
+			boolean endless, long durationMs, boolean won, double partyDamageDealt, double partyDamageTaken, String mobs) {
 		this.fightId = fightId;
 		this.timestamp = timestamp;
 		this.balanceVersion = balanceVersion;
 		this.host = host;
 		this.slot = slot;
+		this.runId = runId;
 		this.regionType = regionType;
 		this.nodeType = nodeType;
 		this.level = level;

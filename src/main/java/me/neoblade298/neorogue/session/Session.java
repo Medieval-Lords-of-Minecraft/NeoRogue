@@ -101,6 +101,9 @@ public class Session {
 	private int saveSlot, xOff, zOff, nodesVisited, regionsCompleted, potionChance = 25;
 	private Plot plot;
 	private SessionType sessionType;
+	// Stable per-run identifier: generated once when a new run begins and persisted across save/load,
+	// so analytics rows (chance choices, fights, run outcome) from the same dungeon attempt can be joined.
+	private String runId;
 	private boolean busy;
 	private String lastMiniboss;
 	private long nextSuggest = 0L;
@@ -191,6 +194,8 @@ public class Session {
 		name = p.getName() + "'s game";
 		this.plot = plot;
 		this.sessionType = sessionType;
+		// New games start a fresh run; loaded games restore their runId from the database in load().
+		if (isNew) this.runId = UUID.randomUUID().toString();
 		this.inst = isNew ? new NewLobbyInstance(p, this) : new LoadLobbyInstance(p, this);
 		generateInterstitials();
 
@@ -248,6 +253,10 @@ public class Session {
 					endless = sessSet.getBoolean("endless");
 					notoriety = sessSet.getInt("notoriety");
 
+					// Restore the run's stable id; old saves predating this column get a fresh one.
+					runId = getRunIdFromRow(sessSet);
+					if (runId == null || runId.isEmpty()) runId = UUID.randomUUID().toString();
+
 					// Read instanceData before Region construction closes the ResultSet
 					String instanceData = sessSet.getString("instanceData");
 					RegionType regionType = RegionType.valueOf(sessSet.getString("regionType"));
@@ -286,6 +295,14 @@ public class Session {
 			return SessionType.fromStorage(sessSet.getString("sessionType"));
 		} catch (SQLException ex) {
 			return SessionType.STANDARD;
+		}
+	}
+
+	private String getRunIdFromRow(ResultSet sessSet) {
+		try {
+			return sessSet.getString("runId");
+		} catch (SQLException ex) {
+			return null;
 		}
 	}
 	
@@ -347,6 +364,7 @@ public class Session {
 					.addValue("lastSaved", System.currentTimeMillis())
 					.addValue("instanceData", inst.serialize(party))
 					.addValue("sessionType", sessionType.name())
+					.addValue("runId", runId)
 					.addValue("lastMiniboss", lastMiniboss);
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();
@@ -1227,6 +1245,11 @@ public class Session {
 	
 	public int getSaveSlot() {
 		return saveSlot;
+	}
+
+	// Stable identifier for the current run, unique per dungeon attempt and persisted across save/load.
+	public String getRunId() {
+		return runId;
 	}
 	
 	public void cleanup(boolean pluginDisable) {

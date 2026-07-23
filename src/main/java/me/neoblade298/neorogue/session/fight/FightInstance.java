@@ -1397,7 +1397,7 @@ public abstract class FightInstance extends Instance {
 			String mobs = String.join(",", mobIds);
 			if (mobs.length() > 255) mobs = mobs.substring(0, 255);
 			FightSnapshot snap = new FightSnapshot(UUID.randomUUID().toString(), now, AnalyticsManager.BALANCE_VERSION,
-					s.getHost().toString(), s.getSaveSlot(), s.getRegion().getType().name(),
+					s.getHost().toString(), s.getSaveSlot(), s.getRunId(), s.getRegion().getType().name(),
 					s.getNode().getType().name(), s.getLevel(), s.getRegionsCompleted(), s.getParty().size(),
 					s.getNotoriety(), s.isEndless(), now - startTime, fightWon, partyDamageDealt, partyDamageTaken, mobs);
 			snap.equipRows.addAll(equipRows);

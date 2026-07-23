@@ -44,7 +44,7 @@ public class PlayerManager implements IOComponent {
 				// Index already exists
 			}
 			
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessions (host VARCHAR(36) NOT NULL, slot INT NOT NULL, regionType VARCHAR(50), position INT, lane INT, nodesVisited INT, regionsCompleted INT, potionChance INT, notoriety INT, endless TINYINT, lastSaved BIGINT, instanceData TEXT, sessionType VARCHAR(40), lastMiniboss VARCHAR(100), PRIMARY KEY (host, slot));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessions (host VARCHAR(36) NOT NULL, slot INT NOT NULL, regionType VARCHAR(50), position INT, lane INT, nodesVisited INT, regionsCompleted INT, potionChance INT, notoriety INT, endless TINYINT, lastSaved BIGINT, instanceData TEXT, sessionType VARCHAR(40), lastMiniboss VARCHAR(100), runId VARCHAR(36), PRIMARY KEY (host, slot));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_nodes (host VARCHAR(36) NOT NULL, slot INT NOT NULL, type VARCHAR(40), position INT NOT NULL, lane INT NOT NULL, destinations TEXT, instanceData TEXT, PRIMARY KEY (host, slot, position, lane));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playersessiondata ("
 					+ "host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, display VARCHAR(255),"

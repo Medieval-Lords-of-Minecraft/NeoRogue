@@ -90,19 +90,11 @@ import me.neoblade298.neorogue.commands.CmdLeave;
 import me.neoblade298.neorogue.commands.CmdList;
 import me.neoblade298.neorogue.commands.CmdLoad;
 import me.neoblade298.neorogue.commands.CmdLostCargo;
-import me.neoblade298.neorogue.commands.CmdLyticsBalanceVersion;
-import me.neoblade298.neorogue.commands.CmdLyticsBosses;
-import me.neoblade298.neorogue.commands.CmdLyticsChance;
-import me.neoblade298.neorogue.commands.CmdLyticsEquipment;
-import me.neoblade298.neorogue.commands.CmdLyticsMinibosses;
-import me.neoblade298.neorogue.commands.CmdLyticsMob;
-import me.neoblade298.neorogue.commands.CmdLyticsMobs;
-import me.neoblade298.neorogue.commands.CmdLyticsPickrate;
-import me.neoblade298.neorogue.commands.CmdLyticsView;
 import me.neoblade298.neorogue.commands.CmdMenu;
 import me.neoblade298.neorogue.commands.CmdNew;
 import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.commands.EquipmentPresets;
+import me.neoblade298.neorogue.commands.LyticsCommand;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
@@ -235,6 +227,7 @@ public class NeoRogue extends JavaPlugin {
 		this.getLifecycleManager().registerEventHandler(
 				io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents.COMMANDS, event -> {
 					event.registrar().register(BookCommand.build(), "Open a NeoRogue book-UI tutorial");
+					event.registrar().register(LyticsCommand.build(), "NeoRogue analytics command", java.util.List.of("nrl"));
 				});
 	}
 
@@ -304,18 +297,6 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminAchievement("achievement", "Grant 1 mastery of an achievement to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminRevokeAchievement("revokeachievement", "Revoke 1 mastery of an achievement from a player", null, SubcommandRunner.BOTH));
-		mngr.registerCommandList("");
-
-		mngr = new SubcommandManager("nrlytics", "neorogue.admin", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdLyticsBalanceVersion("version", "View or set the balance version reports read from", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsEquipment("equipment", "View a single equipment's effectiveness", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsView("view", "Filterable analytics views (e.g. equipment damage)", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsPickrate("pickrate", "Equipment pickrate leaderboard", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsChance("chance", "Chance event pickrate leaderboard", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsMobs("mobs", "Mob damage leaderboard", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsMinibosses("minibosses", "Miniboss damage leaderboard", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsBosses("bosses", "Boss damage leaderboard", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLyticsMob("mob", "Detailed mob damage and winrate report", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 
 		mngr = new SubcommandManager("nrflag", "neorogue.admin", NamedTextColor.DARK_RED, this);

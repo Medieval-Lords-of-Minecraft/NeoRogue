@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.analytics.EquipmentContribution;
 import me.neoblade298.neorogue.session.fight.buff.StatCategory;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
@@ -17,7 +16,6 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class FightStatistics {
@@ -360,7 +358,7 @@ public class FightStatistics {
 			StatTracker stat = ent.getKey();
 			if (stat.isIgnored())
 				continue;
-			lines.add(sortedLine(stat.getEquipmentId(), stat.getDisplay(), getStatPiece(stat.getDisplay(), ent.getValue())));
+			lines.add(sortedLine(ent.getValue(), getStatPiece(stat.getDisplay(), ent.getValue())));
 			total += ent.getValue();
 			any = true;
 		}
@@ -395,7 +393,7 @@ public class FightStatistics {
 			for (Entry<DamageType, Double> ent : mobMap.getValue().entrySet()) {
 				totalDamageTaken += ent.getValue();
 				Component line = getDamageTakenStatPiece(mob, ent.getKey(), mobMap.getValue());
-				mobLines.add(sortedLine(null, mob != null ? mob.getDisplay() : null, line));
+				mobLines.add(sortedLine(ent.getValue(), line));
 				hasDetail = true;
 			}
 		}
@@ -408,7 +406,7 @@ public class FightStatistics {
 			else {
 				List<SortedLine> nullifiedLines = new ArrayList<SortedLine>();
 				for (Entry<String, Double> ent : nullifiedByEquip.entrySet()) {
-					nullifiedLines.add(sortedLine(ent.getKey(), sourceNames.get(ent.getKey()),
+					nullifiedLines.add(sortedLine(ent.getValue(),
 						getSourceAction(ent.getKey(), "Damage Nullified", ent.getValue())));
 				}
 				hover = appendSorted(hover, nullifiedLines);
@@ -425,7 +423,7 @@ public class FightStatistics {
 		if (!shieldsByEquip.isEmpty()) {
 			List<SortedLine> shieldLines = new ArrayList<SortedLine>();
 			for (Entry<String, Double> ent : shieldsByEquip.entrySet()) {
-				shieldLines.add(sortedLine(ent.getKey(), sourceNames.get(ent.getKey()),
+				shieldLines.add(sortedLine(ent.getValue(),
 					getSourceAction(ent.getKey(), "Shields Applied", ent.getValue())));
 			}
 			hover = appendSorted(hover, shieldLines);
@@ -461,7 +459,7 @@ public class FightStatistics {
 					.append(type.ctag)
 					.append(Component.text(": ", NamedTextColor.YELLOW))
 					.append(Component.text(df.format(srcEnt.getValue()), NamedTextColor.WHITE));
-				statusLines.add(sortedLine(srcEnt.getKey(), disp, line));
+				statusLines.add(sortedLine(srcEnt.getValue(), line));
 				score += srcEnt.getValue();
 				any = true;
 			}
@@ -473,7 +471,7 @@ public class FightStatistics {
 				.append(StatusType.POISON.ctag)
 				.append(Component.text(": ", NamedTextColor.YELLOW))
 				.append(Component.text(df.format(ent.getValue()), NamedTextColor.WHITE));
-			statusLines.add(sortedLine(ent.getKey(), disp, line));
+			statusLines.add(sortedLine(ent.getValue(), line));
 			any = true;
 		}
 		hover = appendSorted(hover, statusLines);
@@ -506,7 +504,7 @@ public class FightStatistics {
 			if (c != category) continue;
 			double amt = stat.isInverted() ? -ent.getValue() : ent.getValue();
 			Component line = stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE));
-			lines.add(sortedLine(stat.getEquipmentId(), stat.getDisplay(), line));
+			lines.add(sortedLine(amt, line));
 		}
 		if (lines.isEmpty()) return null;
 		lines.sort(LINE_ORDER);
@@ -577,17 +575,16 @@ public class FightStatistics {
 		return Component.text(display + ": ", NamedTextColor.YELLOW).append(Component.text(df.format(stat), NamedTextColor.WHITE));
 	}
 
-	// A hover line paired with its ordering: higher-rarity equipment first, then case-insensitive display
-	// text. Rarity-less sources (mobs, misc, status-only) fall to the end via Integer.MAX_VALUE.
-	private record SortedLine(int rarityOrder, String sortKey, Component line) {}
+	// A hover line paired with its ordering: largest numeric value first, then case-insensitive display
+	// text as a tiebreaker.
+	private record SortedLine(double value, String sortKey, Component line) {}
 
 	private static final Comparator<SortedLine> LINE_ORDER = Comparator
-			.comparingInt(SortedLine::rarityOrder)
+			.comparingDouble(SortedLine::value).reversed()
 			.thenComparing(SortedLine::sortKey, String.CASE_INSENSITIVE_ORDER);
 
-	private static SortedLine sortedLine(String key, Component rarityDisplay, Component line) {
-		return new SortedLine(rarityOrderOf(key, rarityDisplay),
-				PlainTextComponentSerializer.plainText().serialize(line), line);
+	private static SortedLine sortedLine(double value, Component line) {
+		return new SortedLine(value, PlainTextComponentSerializer.plainText().serialize(line), line);
 	}
 
 	// Sorts collected lines by rarity then name and appends each on its own line to the hover.
@@ -595,35 +592,5 @@ public class FightStatistics {
 		lines.sort(LINE_ORDER);
 		for (SortedLine sl : lines) hover = hover.appendNewline().append(sl.line());
 		return hover;
-	}
-
-	// Resolves a rarity ordering bucket (0 = legendary, higher = lower rarity). Prefers resolving the
-	// serialized equipment key, then falls back to the display color, then to a rarity-less bucket that
-	// sorts after everything else.
-	private static int rarityOrderOf(String key, Component rarityDisplay) {
-		Rarity r = null;
-		if (key != null) {
-			Equipment eq = Equipment.deserialize(key);
-			if (eq != null) r = eq.getRarity();
-		}
-		if (r == null && rarityDisplay != null) r = rarityFromColor(rarityDisplay);
-		return r != null ? (Rarity.LEGENDARY.getValue() - r.getValue()) : Integer.MAX_VALUE;
-	}
-
-	// Maps a display's color back to a rarity as a fallback. Gray is treated as no signal (the default/
-	// uncolored case shared by mobs and misc sources), so only the distinct rarity colors resolve.
-	private static Rarity rarityFromColor(Component display) {
-		TextColor color = display.color();
-		if (color == null) {
-			for (Component child : display.children()) {
-				if (child.color() != null) { color = child.color(); break; }
-			}
-		}
-		if (color == null) return null;
-		if (color.equals(NamedTextColor.GREEN)) return Rarity.UNCOMMON;
-		if (color.equals(NamedTextColor.BLUE)) return Rarity.RARE;
-		if (color.equals(NamedTextColor.GOLD)) return Rarity.EPIC;
-		if (color.equals(NamedTextColor.RED)) return Rarity.LEGENDARY;
-		return null;
 	}
 }

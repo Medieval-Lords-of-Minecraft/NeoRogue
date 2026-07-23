@@ -56,6 +56,7 @@ public class AnalyticsManager {
 							+ "balanceVersion INT NOT NULL,"
 							+ "host VARCHAR(36) NOT NULL,"
 							+ "slot INT NOT NULL,"
+							+ "runId VARCHAR(36) NOT NULL DEFAULT '',"
 							+ "regionType VARCHAR(50) NOT NULL,"
 							+ "nodeType VARCHAR(20) NOT NULL,"
 							+ "level INT NOT NULL,"
@@ -68,6 +69,24 @@ public class AnalyticsManager {
 							+ "partyDamageDealt DOUBLE NOT NULL,"
 							+ "partyDamageTaken DOUBLE NOT NULL,"
 							+ "mobs VARCHAR(255) NOT NULL"
+							+ ");");
+
+					// Run-level outcome fact: one row per finished run (win or loss). Lets any per-run
+					// analytics (e.g. chance-choice winrate) join on runId to the run's final result.
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_runs ("
+							+ "runId VARCHAR(36) NOT NULL PRIMARY KEY,"
+							+ "ts BIGINT NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "host VARCHAR(36) NOT NULL,"
+							+ "slot INT NOT NULL,"
+							+ "sessionType VARCHAR(40) NOT NULL,"
+							+ "regionType VARCHAR(50) NOT NULL,"
+							+ "regionsCompleted INT NOT NULL,"
+							+ "level INT NOT NULL,"
+							+ "partySize INT NOT NULL,"
+							+ "notoriety INT NOT NULL,"
+							+ "endless TINYINT NOT NULL,"
+							+ "won TINYINT NOT NULL"
 							+ ");");
 
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_equipment ("
@@ -170,11 +189,10 @@ public class AnalyticsManager {
 							+ "choiceLabel VARCHAR(100) NOT NULL,"
 							+ "valid TINYINT NOT NULL,"
 							+ "picked TINYINT NOT NULL,"
+							+ "runId VARCHAR(36) NOT NULL DEFAULT '',"
 							+ "PRIMARY KEY (pickId, choiceIndex)"
 							+ ");");
 
-					// Migration: add playerClass to chance_choices for DBs created before it existed.
-					addColumnIfMissing(stmt, "neorogue_analytics_chance_choices", "playerClass", "VARCHAR(40) NOT NULL DEFAULT 'UNKNOWN'");
 
 					createIndex(stmt, "idx_fights_balance", "neorogue_analytics_fights", "balanceVersion");
 					createIndex(stmt, "idx_fights_region_node", "neorogue_analytics_fights", "regionType, nodeType");
@@ -185,6 +203,9 @@ public class AnalyticsManager {
 					createIndex(stmt, "idx_chance_lookup", "neorogue_analytics_chance_choices", "setId, stageId, balanceVersion");
 					createIndex(stmt, "idx_chance_balance", "neorogue_analytics_chance_choices", "balanceVersion");
 					createIndex(stmt, "idx_chance_class", "neorogue_analytics_chance_choices", "setId, playerClass, balanceVersion");
+					createIndex(stmt, "idx_chance_run", "neorogue_analytics_chance_choices", "runId");
+					createIndex(stmt, "idx_fights_run", "neorogue_analytics_fights", "runId");
+					createIndex(stmt, "idx_runs_balance", "neorogue_analytics_runs", "balanceVersion");
 
 					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_analytics_fight_mobs", "mobId, balanceVersion");
 					createIndex(stmt, "idx_fightmobs_class", "neorogue_analytics_fight_mobs", "mobId, playerClass, balanceVersion");
@@ -247,6 +268,7 @@ public class AnalyticsManager {
 				.addValue("balanceVersion", snap.balanceVersion)
 				.addValue("host", snap.host)
 				.addValue("slot", snap.slot)
+				.addValue("runId", snap.runId)
 				.addValue("regionType", snap.regionType)
 				.addValue("nodeType", snap.nodeType)
 				.addValue("level", snap.level)
@@ -290,6 +312,42 @@ public class AnalyticsManager {
 			ps.executeBatch();
 			ps.close();
 		}
+	}
+
+	public static void recordRun(RunSnapshot snap) {
+		if (!ENABLED || !initialized || snap == null || snap.runId == null || snap.runId.isEmpty()) return;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					writeRun(con, snap);
+				}
+				catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to record run analytics " + snap.runId);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private static void writeRun(Connection con, RunSnapshot snap) throws SQLException {
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_analytics_runs")
+				.addValue("runId", snap.runId)
+				.addValue("ts", snap.timestamp)
+				.addValue("balanceVersion", snap.balanceVersion)
+				.addValue("host", snap.host)
+				.addValue("slot", snap.slot)
+				.addValue("sessionType", snap.sessionType)
+				.addValue("regionType", snap.regionType)
+				.addValue("regionsCompleted", snap.regionsCompleted)
+				.addValue("level", snap.level)
+				.addValue("partySize", snap.partySize)
+				.addValue("notoriety", snap.notoriety)
+				.addValue("endless", snap.endless ? 1 : 0)
+				.addValue("won", snap.won ? 1 : 0);
+		PreparedStatement ps = sql.build(con);
+		ps.executeBatch();
+		ps.close();
 	}
 
 	public static void recordOffer(OfferSnapshot snap) {
@@ -345,6 +403,7 @@ public class AnalyticsManager {
 					.addValue("choiceLabel", row.label)
 					.addValue("valid", row.valid ? 1 : 0)
 					.addValue("picked", row.picked ? 1 : 0)
+					.addValue("runId", snap.runId)
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
