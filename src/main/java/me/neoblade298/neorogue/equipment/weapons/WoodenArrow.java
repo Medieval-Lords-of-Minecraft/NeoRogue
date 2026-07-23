@@ -16,7 +16,6 @@ public class WoodenArrow extends Ammunition {
 		super(ID, "Wooden Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 7 : 2, 0.1, DamageType.PIERCING));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		canDrop = false;
 	}
 

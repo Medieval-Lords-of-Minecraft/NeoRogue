@@ -75,7 +75,7 @@ public class Brightshell extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>]. After " + DescUtil.white("3s") + ", deal " +
-				GlossaryTag.LIGHT.tag(this, damage, false) + " damage and apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>]. After " + DescUtil.val("3s") + ", deal " +
+				GlossaryTag.LIGHT.tag(this, damage) + " damage and apply " + GlossaryTag.SANCTIFIED.tag(this, sanct) + " to all nearby enemies.");
 	}
 }

@@ -43,7 +43,7 @@ public class AdaptiveChemvest extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Dealing " + GlossaryTag.POISON.tag(this) + " damage grants you " + 
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
 		meta.setColor(Color.GREEN);
 		item.setItemMeta(meta);

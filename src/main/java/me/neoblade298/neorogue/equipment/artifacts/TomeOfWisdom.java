@@ -45,6 +45,6 @@ public class TomeOfWisdom extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENCHANTED_BOOK, "Increases the number of abilities you can equip by " + DescUtil.white(1) + ".");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases the number of abilities you can equip by " + DescUtil.val(1) + ".");
 	}
 }

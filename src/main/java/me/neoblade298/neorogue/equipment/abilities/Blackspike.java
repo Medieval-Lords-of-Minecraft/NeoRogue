@@ -100,7 +100,7 @@ public class Blackspike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
-			GlossaryTag.DARK.tag(this, damage, true) + " damage.");
+			"On cast, throw " + DescUtil.val(3) + " projectiles in a cone that each deal " + 
+			GlossaryTag.DARK.tag(this, damage) + " damage.");
 	}
 }

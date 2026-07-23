@@ -42,6 +42,6 @@ public class MajorShieldingRelic extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_NUGGET, "Whenever you gain " + GlossaryTag.SHIELDS.tag(this) + ", increase the amount gained by "
-				+ DescUtil.yellow(multStr + "%") + " of your max health.");
+				+ DescUtil.val(multStr + "%") + " of your max health.");
 	}
 }

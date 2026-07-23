@@ -33,7 +33,6 @@ public class ShieldPike extends Equipment {
 				ID, "Shield Pike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 30, 0.75, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		thorns = isUpgraded ? 10 : 7;
 	}
 	
@@ -69,7 +68,7 @@ public class ShieldPike extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Dealing damage grants " + GlossaryTag.THORNS.tag(this, thorns, true) + "." +
+				"Melee range +1. Dealing damage grants " + GlossaryTag.THORNS.tag(this, thorns) + "." +
 				" If a shield is in offhand, this weapon does double damage."
 		);
 	}

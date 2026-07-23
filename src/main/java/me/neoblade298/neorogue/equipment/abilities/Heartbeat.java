@@ -86,7 +86,7 @@ public class Heartbeat extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				"On first cast, drop a permanent " + GlossaryTag.RIFT.tag(this) + ". This rift gets moved to you on recast. Every " + DescUtil.white("3s") + ", deal " +
-					GlossaryTag.DARK.tag(this, damage, true) + " to all enemies near every " + GlossaryTag.RIFT.tag(this) + ".");
+				"On first cast, drop a permanent " + GlossaryTag.RIFT.tag(this) + ". This rift gets moved to you on recast. Every " + DescUtil.val("3s") + ", deal " +
+					GlossaryTag.DARK.tag(this, damage) + " to all enemies near every " + GlossaryTag.RIFT.tag(this) + ".");
 	}
 }

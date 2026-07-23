@@ -50,6 +50,6 @@ public class ForgemastersMark extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL, "The first time you apply "
-				+ GlossaryTag.SHIELDS.tag(this) + " in a fight, increase the amount and duration by " + DescUtil.white((int) (buff * 100) + "%") + ".");
+				+ GlossaryTag.SHIELDS.tag(this) + " in a fight, increase the amount and duration by " + DescUtil.val((int) (buff * 100) + "%") + ".");
 	}
 }

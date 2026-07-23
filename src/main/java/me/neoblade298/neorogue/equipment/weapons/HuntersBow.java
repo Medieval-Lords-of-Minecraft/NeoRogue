@@ -29,7 +29,6 @@ public class HuntersBow extends Bow {
 		super(ID, "Hunter's Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 80 : 60, 1, 0, 12, 0, 1.2));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -62,6 +61,6 @@ public class HuntersBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Can only be fired at " + DescUtil.white("max draw") + ".");
+		item = createItem(Material.BOW, "Can only be fired at " + DescUtil.val("max draw") + ".");
 	}
 }

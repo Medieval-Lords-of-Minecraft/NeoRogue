@@ -31,6 +31,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
@@ -419,7 +420,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkTorrent(b);
 			new Deliberation(b);
 			new Dematerialize(b);
-			new DeliberantPace(b);
+			new DeliberatePace(b);
 			new Demoralize(b);
 			new DensityOrb(b);
 			new Depletion(b);
@@ -1121,7 +1122,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			Equipment up = eq.getUpgraded();
 			if (up != null) {
 				up.setupItem();
+				// Both versions now exist, so rebuild each tooltip with auto-colored (yellow/white) values
+				up.refreshItem();
 			}
+			eq.refreshItem();
 		}
 
 		for (Equipment eq : equipment.values()) {
@@ -1463,8 +1467,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		Component damageTypeLine = properties.getDamageTypeLine(this);
 		if (damageTypeLine != null)
 			loreItalicized.add(damageTypeLine);
+		// Counterpart (base<->upgraded) used to auto-color DescUtil.val(...) values in preLore and lore
+		Equipment counterpart = getCounterpart();
 		if (preLoreLine != null) {
-			for (String l : preLoreLine) {
+			String[] otherPre = counterpart != null ? counterpart.itemPreLore : null;
+			for (int i = 0; i < preLoreLine.length; i++) {
+				String other = (otherPre != null && i < otherPre.length) ? otherPre[i] : null;
+				String l = resolveUpgradeColors(preLoreLine[i], other);
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
 			}
 		}
@@ -1498,8 +1507,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (loreLine != null) {
 			// Strikethrough divider between the stat/reforge section and the description
 			loreItalicized.add(SharedUtil.color("<dark_gray><st>                              </st></dark_gray>"));
+			// Resolve DescUtil.val(...) tokens to yellow/white based on whether they change on upgrade
+			String resolvedLore = resolveUpgradeColors(loreLine, counterpart != null ? counterpart.itemLoreLine : null);
 			for (TextComponent tc : SharedUtil.addLineBreaks(
-					(TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY),
+					(TextComponent) NeoCore.miniMessage().deserialize(resolvedLore).colorIfAbsent(NamedTextColor.GRAY),
 					200)) {
 				loreItalicized.add(tc);
 			}
@@ -1637,6 +1648,75 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Equipment getUpgraded() {
 		return upgraded.get(id);
+	}
+
+	// Rebuilds the cached tooltip item from the inputs captured in createItem(...). Called after both the
+	// base and upgraded versions have run setupItem(), so resolveUpgradeColors(...) can diff them.
+	public void refreshItem() {
+		if (itemMaterial == null) return; // Item wasn't built via createItem(...), nothing to refresh
+		this.item = buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false);
+	}
+
+	// Replaces DescUtil.val(...) tokens in a lore string with <yellow>/<white> depending on whether each
+	// value changes on upgrade. Values are compared positionally against the counterpart version's matching
+	// string (base vs upgraded). With no counterpart, or on a token-count mismatch, every value defaults to
+	// white.
+	private String resolveUpgradeColors(String lore, String counterpartLore) {
+		if (lore == null || lore.indexOf(DescUtil.VAL_START) < 0) return lore;
+
+		ArrayList<String> otherTokens = counterpartLore != null ? extractValueTokens(counterpartLore) : null;
+		if (otherTokens != null) {
+			ArrayList<String> myTokens = extractValueTokens(lore);
+			if (otherTokens.size() != myTokens.size()) {
+				Bukkit.getLogger().warning("[NeoRogue] " + id + (isUpgraded ? "+" : "")
+						+ " has a mismatched number of auto-colored values between its base and upgraded"
+						+ " versions (" + myTokens.size() + " vs " + otherTokens.size() + "); defaulting to white");
+				otherTokens = null;
+			}
+		}
+
+		StringBuilder sb = new StringBuilder(lore.length());
+		int idx = 0, tokenIndex = 0;
+		while (idx < lore.length()) {
+			char c = lore.charAt(idx);
+			if (c == DescUtil.VAL_START) {
+				int end = lore.indexOf(DescUtil.VAL_END, idx + 1);
+				if (end < 0) { // Malformed token; emit the rest verbatim
+					sb.append(lore, idx, lore.length());
+					break;
+				}
+				String value = lore.substring(idx + 1, end);
+				boolean changed = otherTokens != null && !value.equals(otherTokens.get(tokenIndex));
+				String color = changed ? "yellow" : "white";
+				sb.append('<').append(color).append('>').append(value).append("</").append(color).append('>');
+				idx = end + 1;
+				tokenIndex++;
+			} else {
+				sb.append(c);
+				idx++;
+			}
+		}
+		return sb.toString();
+	}
+
+	// Returns the opposite version of this equipment (upgraded if this is the base, base if upgraded), or
+	// null if there is none.
+	public Equipment getCounterpart() {
+		return isUpgraded ? equipment.get(id) : upgraded.get(id);
+	}
+
+	// Extracts the ordered values wrapped by DescUtil.val(...) sentinels from a lore string.
+	private static ArrayList<String> extractValueTokens(String lore) {
+		ArrayList<String> tokens = new ArrayList<String>();
+		if (lore == null) return tokens;
+		int idx = 0;
+		while ((idx = lore.indexOf(DescUtil.VAL_START, idx)) >= 0) {
+			int end = lore.indexOf(DescUtil.VAL_END, idx + 1);
+			if (end < 0) break;
+			tokens.add(lore.substring(idx + 1, end));
+			idx = end + 1;
+		}
+		return tokens;
 	}
 
 	@Override

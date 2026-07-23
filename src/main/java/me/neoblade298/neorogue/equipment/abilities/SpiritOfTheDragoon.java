@@ -73,8 +73,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Grants the ability to double jump. Passively gain " + GlossaryTag.STRENGTH.tag(this, strength, true)
+				"Grants the ability to double jump. Passively gain " + GlossaryTag.STRENGTH.tag(this, strength)
 						+ " upon falling from a small height. " + "Upon double jump, gain "
-						+ GlossaryTag.SHIELDS.tag(this, shield, true) + " " + DescUtil.duration(5, false) + ".");
+						+ GlossaryTag.SHIELDS.tag(this, shield) + " " + DescUtil.duration(5) + ".");
 	}
 }

@@ -63,7 +63,7 @@ public class EverlastingHealth extends Artifact {
 	public void setupItem() {
 		item = createItem(Material.HONEY_BOTTLE,
 				"Disables your ability to gain "
-						+ GlossaryTag.SHIELDS.tag(this) + " after " + DescUtil.white(DELAY + "s") + " of a fight. "
-						+ "Heals you for " + DescUtil.white("20%") + " of your max health on winning a fight.");
+						+ GlossaryTag.SHIELDS.tag(this) + " after " + DescUtil.val(DELAY + "s") + " of a fight. "
+						+ "Heals you for " + DescUtil.val("20%") + " of your max health on winning a fight.");
 	}
 }

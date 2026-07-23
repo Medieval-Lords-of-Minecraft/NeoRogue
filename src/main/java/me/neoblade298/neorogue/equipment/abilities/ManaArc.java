@@ -129,9 +129,9 @@ public class ManaArc extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_BANNER,
-				"On cast, lose " + DescUtil.yellow(mana) + " mana per second. Until you run out of mana, "
+				"On cast, lose " + DescUtil.val(mana) + " mana per second. Until you run out of mana, "
 						+ "dealing damage fires a projectile at the target, dealing "
-						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying "
-						+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
+						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying "
+						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}
 }

@@ -40,7 +40,6 @@ public class SparkStick extends Equipment {
 				ID, "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 40, 1.5, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
-		properties.addUpgrades(PropertyType.MANA_COST);
 		pierceAmount = 1;
 	}
 	
@@ -93,7 +92,7 @@ public class SparkStick extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces through the first " + DescUtil.white(pierceAmount) + " enemy hit. Also grants " + DescUtil.white(3) + " mana per enemy hit."
+				Material.STICK, "Pierces through the first " + DescUtil.val(pierceAmount) + " enemy hit. Also grants " + DescUtil.val(3) + " mana per enemy hit."
 		);
 	}
 }

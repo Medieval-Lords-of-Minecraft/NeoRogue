@@ -24,7 +24,6 @@ public class BarbedRocket extends Ammunition {
 		super(ID, "Barbed Rocket", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 20 : 10, 0.6, DamageType.PIERCING));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -49,6 +48,6 @@ public class BarbedRocket extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over " + DescUtil.white("2s") + " on hit.");
+		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over " + DescUtil.val("2s") + " on hit.");
 	}
 }

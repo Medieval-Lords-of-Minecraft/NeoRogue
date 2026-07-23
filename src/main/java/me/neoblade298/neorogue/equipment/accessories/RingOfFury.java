@@ -52,7 +52,7 @@ public class RingOfFury extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Upon dealing at least " + DescUtil.white(THRES)
-				+ " damage, gain " + GlossaryTag.BERSERK.tag(this, berserk, true) + ".");
+		item = createItem(Material.RABBIT_FOOT, "Upon dealing at least " + DescUtil.val(THRES)
+				+ " damage, gain " + GlossaryTag.BERSERK.tag(this, berserk) + ".");
 	}
 }

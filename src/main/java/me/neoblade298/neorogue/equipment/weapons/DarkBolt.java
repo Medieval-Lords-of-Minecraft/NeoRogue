@@ -43,7 +43,6 @@ public class DarkBolt extends Equipment {
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 0, isUpgraded ? 16 : 12, 10));
 		damage = isUpgraded ? 210 : 140;
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -104,7 +103,7 @@ public class DarkBolt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COAL, "On cast, charge " + DescUtil.white("1s") + " before firing a projectile that deals "
-				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location.");
+		item = createItem(Material.COAL, "On cast, charge " + DescUtil.val("1s") + " before firing a projectile that deals "
+				+ GlossaryTag.DARK.tag(this, damage) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location.");
 	}
 }

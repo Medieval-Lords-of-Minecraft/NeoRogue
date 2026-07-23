@@ -31,7 +31,7 @@ public class Transmutation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_INGOT,
-				"Can reforge any item with reforge options into " + DescUtil.yellow("any") +
+				"Can reforge any item with reforge options into " + DescUtil.val("any") +
 				" of its possible reforge results.");
 	}
 }

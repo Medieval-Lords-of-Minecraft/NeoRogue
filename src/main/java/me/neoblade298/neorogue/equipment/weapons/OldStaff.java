@@ -92,6 +92,6 @@ public class OldStaff extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_BUSH, "Deals an additional " + DescUtil.yellow(bonus) + " damage when below " + DescUtil.white("25%") + " mana.");
+		item = createItem(Material.DEAD_BUSH, "Deals an additional " + DescUtil.val(bonus) + " damage when below " + DescUtil.val("25%") + " mana.");
 	}
 }

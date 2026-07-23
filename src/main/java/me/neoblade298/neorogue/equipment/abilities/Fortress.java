@@ -91,7 +91,7 @@ public class Fortress extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRICK,
-				"Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " while crouching. Refreshes after "
-						+ DescUtil.white(refresh + "s") + " uncrouched.");
+				"Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " while crouching. Refreshes after "
+						+ DescUtil.val(refresh + "s") + " uncrouched.");
 	}
 }

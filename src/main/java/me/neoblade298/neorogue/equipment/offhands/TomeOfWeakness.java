@@ -59,7 +59,7 @@ public class TomeOfWeakness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK, "On left click, apply " + GlossaryTag.INJURY.tag(this, inj, true)
+		item = createItem(Material.BOOK, "On left click, apply " + GlossaryTag.INJURY.tag(this, inj)
 				+ " to all enemies in a cone in front of you.");
 	}
 }

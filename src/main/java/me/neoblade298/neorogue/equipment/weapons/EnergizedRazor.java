@@ -66,7 +66,7 @@ public class EnergizedRazor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.white(3) + " times within " + DescUtil.white("1.5s") + ", gain " + DescUtil.yellow(res) + " stamina"
-						+ " and set your attack cooldown to " + DescUtil.white("1s") + ". Otherwise, the combo resets.");
+		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.val(3) + " times within " + DescUtil.val("1.5s") + ", gain " + DescUtil.val(res) + " stamina"
+						+ " and set your attack cooldown to " + DescUtil.val("1s") + ". Otherwise, the combo resets.");
 	}
 }

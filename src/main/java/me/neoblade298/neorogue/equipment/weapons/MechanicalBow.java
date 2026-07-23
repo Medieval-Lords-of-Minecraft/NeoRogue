@@ -77,7 +77,7 @@ public class MechanicalBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "If you've dealt " + GlossaryTag.TRAP.tag(this) + " damage in the last " + DescUtil.white("5s") + ", increase this bow's damage by " +
-				DescUtil.yellow(damage) + ".");
+		item = createItem(Material.BOW, "If you've dealt " + GlossaryTag.TRAP.tag(this) + " damage in the last " + DescUtil.val("5s") + ", increase this bow's damage by " +
+				DescUtil.val(damage) + ".");
 	}
 }

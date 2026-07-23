@@ -61,8 +61,8 @@ public class WindSlash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STRING,
-				"On cast, fire " + DescUtil.yellow(amount) + " projectiles in a cone in front of you that deal "
-						+ DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage.");
+				"On cast, fire " + DescUtil.val(amount) + " projectiles in a cone in front of you that deal "
+						+ DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage.");
 	}
 	
 	private class WindSlashProjectile extends Projectile {

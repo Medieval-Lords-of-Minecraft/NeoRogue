@@ -26,7 +26,6 @@ public class DoubleTap extends Bow {
 		super(ID, "Double Tap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 35 : 30, 1, 0, 12, 0, 1.4));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

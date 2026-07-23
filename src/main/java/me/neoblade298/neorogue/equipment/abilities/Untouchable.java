@@ -62,6 +62,6 @@ public class Untouchable extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(threshold) + " stacks of " + GlossaryTag.STEALTH.tag(this) + " you receive, gain " + DescUtil.white(1) + " " + GlossaryTag.EVADE.tag(this) + ".");
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.val(threshold) + " stacks of " + GlossaryTag.STEALTH.tag(this) + " you receive, gain " + DescUtil.val(1) + " " + GlossaryTag.EVADE.tag(this) + ".");
 	}
 }

@@ -41,7 +41,6 @@ public class Fissure extends Equipment {
 	public Fissure(boolean isUpgraded) {
 		super(ID, "Fissure", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 11 : 14, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 250 : 180;
 		concussed = isUpgraded ? 22 : 15;
 	}
@@ -78,7 +77,7 @@ public class Fissure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL,
-				"On cast, " + DescUtil.charge(this, 0, 1) + ", then deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and knock up in a line."
-				+ " All enemies damaged are given " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
+				"On cast, " + DescUtil.charge(this, 0, 1) + ", then deal " + GlossaryTag.EARTHEN.tag(this, damage) + " damage and knock up in a line."
+				+ " All enemies damaged are given " + GlossaryTag.CONCUSSED.tag(this, concussed) + ".");
 	}
 }

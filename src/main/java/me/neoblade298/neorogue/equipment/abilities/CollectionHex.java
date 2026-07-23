@@ -106,8 +106,8 @@ public class CollectionHex extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"On cast, for the next " + DescUtil.white("10s") + ", your non-basic attack damage marks enemies for " + DescUtil.white("8s") + ". Dealing basic attack damageto marked enemies deals " +
-				GlossaryTag.DARK.tag(this, damage, true) + " damage, grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>] and " + 
-				DescUtil.yellow(mana) + " mana, and consumes the mark. Marks do not stack.");
+				"On cast, for the next " + DescUtil.val("10s") + ", your non-basic attack damage marks enemies for " + DescUtil.val("8s") + ". Dealing basic attack damageto marked enemies deals " +
+				GlossaryTag.DARK.tag(this, damage) + " damage, grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>] and " + 
+				DescUtil.val(mana) + " mana, and consumes the mark. Marks do not stack.");
 	}
 }

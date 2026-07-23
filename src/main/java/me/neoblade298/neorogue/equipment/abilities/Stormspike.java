@@ -135,10 +135,10 @@ public class Stormspike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
-			GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. If you hit at least " + DescUtil.white(2) + " enemies, " +
-			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(empowerDur + "s") + "] and basic attacks deal " +
-			GlossaryTag.LIGHTNING.tag(this, basicLightning, true) + " damage and apply " + 
-			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " " + DescUtil.duration(empowerDur, false) + ".");
+			"On cast, throw " + DescUtil.val(3) + " projectiles in a cone that each deal " + 
+			GlossaryTag.LIGHTNING.tag(this, damage) + " damage. If you hit at least " + DescUtil.val(2) + " enemies, " +
+			"gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val(empowerDur + "s") + "] and basic attacks deal " +
+			GlossaryTag.LIGHTNING.tag(this, basicLightning) + " damage and apply " + 
+			GlossaryTag.ELECTRIFIED.tag(this, electrified) + " " + DescUtil.duration(empowerDur) + ".");
 	}
 }

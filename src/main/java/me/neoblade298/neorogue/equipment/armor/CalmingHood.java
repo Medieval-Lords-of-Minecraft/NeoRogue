@@ -40,7 +40,7 @@ public class CalmingHood extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.FOCUS.tag(this, focus, true)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + ".");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.FOCUS.tag(this, focus)
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + ".");
 	}
 }

@@ -40,7 +40,7 @@ public class BurningRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, GlossaryTag.FIRE.tag(this) + " damage is increased by " + DescUtil.yellow(inc + "%") + ", but you start fights with " +
-		GlossaryTag.CORRUPTION.tag(this, corruption, false) + ".");
+		item = createItem(Material.IRON_NUGGET, GlossaryTag.FIRE.tag(this) + " damage is increased by " + DescUtil.val(inc + "%") + ", but you start fights with " +
+		GlossaryTag.CORRUPTION.tag(this, corruption) + ".");
 	}
 }

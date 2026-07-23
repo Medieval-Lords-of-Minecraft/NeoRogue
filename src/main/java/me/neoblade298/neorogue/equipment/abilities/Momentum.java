@@ -76,7 +76,7 @@ public class Momentum extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOW_ITEM_FRAME,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(5) + " projectiles while above " + DescUtil.white("50%") + " stamina. Upon firing a projectile, if you are at least " + DescUtil.white(DISTANCE) + " blocks away from where you last fired a projectile, " +
-				"increase your damage by " + DescUtil.yellow(damage) + " " + DescUtil.duration(dur, false) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.val(5) + " projectiles while above " + DescUtil.val("50%") + " stamina. Upon firing a projectile, if you are at least " + DescUtil.val(DISTANCE) + " blocks away from where you last fired a projectile, " +
+				"increase your damage by " + DescUtil.val(damage) + " " + DescUtil.duration(dur) + ".");
 	}
 }

@@ -84,9 +84,9 @@ public class Wound extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
-						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, true) + " every "
-						+ DescUtil.white(hitReq) + " hits.");
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.val(dec)
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks) + " every "
+						+ DescUtil.val(hitReq) + " hits.");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}
 }

@@ -73,6 +73,6 @@ public class Study2 extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel, false) + " and " + DescUtil.yellow(regen) + " mana regen on kill.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. Gain " + GlossaryTag.INTELLECT.tag(this, intel) + " and " + DescUtil.val(regen) + " mana regen on kill.");
 	}
 }

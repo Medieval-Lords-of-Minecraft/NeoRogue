@@ -98,12 +98,12 @@ public class ToAshes extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " and apply " + GlossaryTag.BURN.tag(this, burn, true)
+		item = createItem(Material.BLAZE_POWDER, "On cast, deal " + GlossaryTag.FIRE.tag(this, damage)
+				+ " and apply " + GlossaryTag.BURN.tag(this, burn)
 				+ " to all enemies in a cone in front of you, but gain "
-				+ GlossaryTag.CORRUPTION.tag(this, 1, false)
-				+ ". All projectiles in the cone are destroyed. If you destroy at least " + DescUtil.white(1) + ""
-				+ " projectile, increase the damage of this ability by " + DescUtil.yellow(inc)
+				+ GlossaryTag.CORRUPTION.tag(this, 1)
+				+ ". All projectiles in the cone are destroyed. If you destroy at least " + DescUtil.val(1) + ""
+				+ " projectile, increase the damage of this ability by " + DescUtil.val(inc)
 				+ " for the rest of the fight.");
 	}
 }

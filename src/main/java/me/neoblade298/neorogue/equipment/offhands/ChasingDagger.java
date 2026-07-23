@@ -22,7 +22,6 @@ public class ChasingDagger extends Equipment {
 	public ChasingDagger(boolean isUpgraded) {
 		super(ID, "Chasing Dagger", isUpgraded, Rarity.UNCOMMON, new EquipmentClass[] {EquipmentClass.WARRIOR, EquipmentClass.THIEF},
 				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 45 : 35, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {

@@ -25,7 +25,6 @@ public class Razor extends Equipment {
 		super(ID, "Razor", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 15, 3, 0, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -72,6 +71,6 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.white(3) + " times within " + DescUtil.white("1.5s") + ", your attack cooldown is set to " + DescUtil.white("1s") + ". Otherwise, the combo resets.");
+		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.val(3) + " times within " + DescUtil.val("1.5s") + ", your attack cooldown is set to " + DescUtil.val("1s") + ". Otherwise, the combo resets.");
 	}
 }

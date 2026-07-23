@@ -60,6 +60,6 @@ public class ObsidianCharm extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN, 
-				GlossaryTag.CONCUSSED.tag(this) + " enemies take an additional " + DescUtil.white(pct + "%") + " " + GlossaryTag.MAGICAL.tag(this) + " damage from you.");
+				GlossaryTag.CONCUSSED.tag(this) + " enemies take an additional " + DescUtil.val(pct + "%") + " " + GlossaryTag.MAGICAL.tag(this) + " damage from you.");
 	}
 }

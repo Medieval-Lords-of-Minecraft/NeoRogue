@@ -84,8 +84,8 @@ public class Crystallize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, if the enemy you're looking at has at most " + DescUtil.yellow(thres)
-						+ " HP, instantly kill them " + "and apply " + GlossaryTag.FROST.tag(this, frost, true)
+				"On cast, if the enemy you're looking at has at most " + DescUtil.val(thres)
+						+ " HP, instantly kill them " + "and apply " + GlossaryTag.FROST.tag(this, frost)
 						+ " to nearby enemies.");
 	}
 }

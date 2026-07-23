@@ -49,6 +49,6 @@ public class Bloodthirster extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.IRON_SWORD,
-				"Increases its damage by " + DescUtil.yellow(mult + "x") + " " + GlossaryTag.STRENGTH.tag(this) + " and " + DescUtil.yellow(mult + "x") + " " + GlossaryTag.BERSERK.tag(this) + " .");
+				"Increases its damage by " + DescUtil.val(mult + "x") + " " + GlossaryTag.STRENGTH.tag(this) + " and " + DescUtil.val(mult + "x") + " " + GlossaryTag.BERSERK.tag(this) + " .");
 	}
 }

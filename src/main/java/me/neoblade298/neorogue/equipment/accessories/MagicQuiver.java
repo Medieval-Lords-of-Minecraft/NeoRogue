@@ -72,8 +72,8 @@ public class MagicQuiver extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT, "Every " + DescUtil.yellow(thres == 3 ? "3rd" : "2nd") + " time you launch a basic attack, also fire a " +
-				"homing projectile towards the nearest enemy using your current ammunition that deals " + DescUtil.white(damage) + " damage.");
+		item = createItem(Material.FLINT, "Every " + DescUtil.val(thres == 3 ? "3rd" : "2nd") + " time you launch a basic attack, also fire a " +
+				"homing projectile towards the nearest enemy using your current ammunition that deals " + DescUtil.val(damage) + " damage.");
 	}
 
 	private class MagicQuiverProjectile extends Projectile {

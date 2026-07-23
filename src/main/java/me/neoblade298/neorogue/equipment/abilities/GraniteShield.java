@@ -57,9 +57,9 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
-				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
+				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields) + " until "
 				+ "you lower your shield again. Apply " +
-						GlossaryTag.CONCUSSED.tag(this, conc, true) + " to enemies that damage you while your shield is raised.");
+						GlossaryTag.CONCUSSED.tag(this, conc) + " to enemies that damage you while your shield is raised.");
 	}
 	
 	private class GraniteShieldInstance extends PriorityAction {

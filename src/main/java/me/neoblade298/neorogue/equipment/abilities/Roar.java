@@ -43,8 +43,8 @@ public class Roar extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_STAR,
-				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength, true) + " and " + GlossaryTag.BERSERK.tag(this, 1, false) + "."
-						+ " If above " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + ", also heal for " + DescUtil.yellow(heal) + ".");
+				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength) + " and " + GlossaryTag.BERSERK.tag(this, 1) + "."
+						+ " If above " + GlossaryTag.BERSERK.tag(this, CUTOFF) + ", also heal for " + DescUtil.val(heal) + ".");
 	}
 
 	@Override

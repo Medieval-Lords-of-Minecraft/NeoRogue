@@ -47,7 +47,7 @@ public class HuntersVest extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Physical damage taken is reduced by " + DescUtil.yellow(reduc) + " multiplied by stacks of " +
-			GlossaryTag.FOCUS.tag(this) + ", up to " + DescUtil.white(2) + " stacks.");
+		item = createItem(Material.LEATHER_CHESTPLATE, "Physical damage taken is reduced by " + DescUtil.val(reduc) + " multiplied by stacks of " +
+			GlossaryTag.FOCUS.tag(this) + ", up to " + DescUtil.val(2) + " stacks.");
 	}
 }

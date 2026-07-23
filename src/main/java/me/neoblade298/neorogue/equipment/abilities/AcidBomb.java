@@ -89,8 +89,8 @@ public class AcidBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, drop an acid bomb that detonates after " + DescUtil.white(3) + " seconds. After detonation, every second for " + DescUtil.white(duration) + " seconds,"
-				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
+				"On cast, drop an acid bomb that detonates after " + DescUtil.val(3) + " seconds. After detonation, every second for " + DescUtil.val(duration) + " seconds,"
+				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

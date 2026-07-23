@@ -42,7 +42,7 @@ public class Overflow extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "On cast, set your mana to " + DescUtil.yellow(mult + "x") + " your max mana. Can only be used once per fight.");
+		item = createItem(Material.POTION, "On cast, set your mana to " + DescUtil.val(mult + "x") + " your max mana. Can only be used once per fight.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.BLUE);
 		item.setItemMeta(pm);

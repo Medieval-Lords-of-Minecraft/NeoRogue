@@ -30,7 +30,6 @@ public class EmpoweredEdge extends Equipment {
 	public EmpoweredEdge(boolean isUpgraded) {
 		super(ID, "Empowered Edge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 70 : 50;
 		shields = isUpgraded ? 4 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -71,7 +70,7 @@ public class EmpoweredEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ". "
-						+ "Your next basic attack deals " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage.");
+				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(5) + ". "
+						+ "Your next basic attack deals " + GlossaryTag.SLASHING.tag(this, damage) + " damage.");
 	}
 }

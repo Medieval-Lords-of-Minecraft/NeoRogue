@@ -43,7 +43,7 @@ public class LeatherArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.white(def) + ", increased by "
-				+ DescUtil.yellow(spdef) + " when in " + GlossaryTag.STEALTH.tag(this) + ".");
+		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.val(def) + ", increased by "
+				+ DescUtil.val(spdef) + " when in " + GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

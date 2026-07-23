@@ -38,7 +38,6 @@ public class StonyWand extends Equipment {
 				ID , "Stony Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		conc = isUpgraded ? 3 : 2;
 	}
 	
@@ -92,6 +91,6 @@ public class StonyWand extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_HOE, "Applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on hit.");
+		item = createItem(Material.STONE_HOE, "Applies " + GlossaryTag.CONCUSSED.tag(this, conc) + " on hit.");
 	}
 }

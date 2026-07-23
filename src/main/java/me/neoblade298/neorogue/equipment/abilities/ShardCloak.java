@@ -182,11 +182,11 @@ public class ShardCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, summon a shard that orbits you at " + DescUtil.white((int) ORBIT_RADIUS) + " blocks for "
-						+ DescUtil.duration(DURATION_TICKS / 20, false) + ". On contact it deals "
-						+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage to an enemy ("
-						+ DescUtil.white("1s") + " cooldown per enemy). Striking a "
+				"On cast, summon a shard that orbits you at " + DescUtil.val((int) ORBIT_RADIUS) + " blocks for "
+						+ DescUtil.duration(DURATION_TICKS / 20) + ". On contact it deals "
+						+ GlossaryTag.PIERCING.tag(this, damage) + " damage to an enemy ("
+						+ DescUtil.val("1s") + " cooldown per enemy). Striking a "
 						+ GlossaryTag.CONCUSSED.tag(this) + " enemy summons another shard, up to "
-						+ DescUtil.white(MAX_ORBITALS) + " at once.");
+						+ DescUtil.val(MAX_ORBITALS) + " at once.");
 	}
 }

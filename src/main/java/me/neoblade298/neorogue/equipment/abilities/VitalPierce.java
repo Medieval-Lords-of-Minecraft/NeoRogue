@@ -68,6 +68,6 @@ public class VitalPierce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, charge for " + DescUtil.white("1s") + ", then your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, true) + ".");
+				"On cast, charge for " + DescUtil.val("1s") + ", then your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage) + ".");
 	}
 }

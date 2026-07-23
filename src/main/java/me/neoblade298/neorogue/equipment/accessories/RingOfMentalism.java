@@ -47,7 +47,7 @@ public class RingOfMentalism extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, "Every " + DescUtil.white("3") + " times you deal " + GlossaryTag.MAGICAL.tag(this) + " damage, apply "
-				+ GlossaryTag.INSANITY.tag(this, stacks, true) + " to the target.");
+		item = createItem(Material.AMETHYST_SHARD, "Every " + DescUtil.val("3") + " times you deal " + GlossaryTag.MAGICAL.tag(this) + " damage, apply "
+				+ GlossaryTag.INSANITY.tag(this, stacks) + " to the target.");
 	}
 }

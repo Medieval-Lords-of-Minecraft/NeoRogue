@@ -81,7 +81,7 @@ public class Chill extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
-				"On cast, Your next basic attack projectile will apply " + GlossaryTag.FROST.tag(this, frost, true) + " and " +
-				DescUtil.potion("Slowness", 1, 3) + " to all enemies in a radius of " + DescUtil.white(5) + " around the target or block hit.");
+				"On cast, Your next basic attack projectile will apply " + GlossaryTag.FROST.tag(this, frost) + " and " +
+				DescUtil.potion("Slowness", 1, 3) + " to all enemies in a radius of " + DescUtil.val(5) + " around the target or block hit.");
 	}
 }

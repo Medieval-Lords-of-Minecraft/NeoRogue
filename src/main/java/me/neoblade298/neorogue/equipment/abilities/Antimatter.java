@@ -82,6 +82,6 @@ public class Antimatter extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, consume all your current mana and fire a bolt of dark matter dealing " + 
-				GlossaryTag.DARK.tag(this, damage, true) + " damage.");
+				GlossaryTag.DARK.tag(this, damage) + " damage.");
 	}
 }

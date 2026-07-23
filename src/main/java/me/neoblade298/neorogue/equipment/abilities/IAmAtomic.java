@@ -108,10 +108,10 @@ public class IAmAtomic extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.TOTEM_OF_UNDYING,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.RIFT.tag(this) + 
-				" damage " + DescUtil.white(ACTIVATION_THRES) + " times. " +
-				"Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " every time you deal " +
+				" damage " + DescUtil.val(ACTIVATION_THRES) + " times. " +
+				"Gain " + GlossaryTag.INTELLECT.tag(this, intel) + " every time you deal " +
 				GlossaryTag.RIFT.tag(this) + " damage. Damage dealt is increased by " + 
-				DescUtil.yellow("20%") + " for every " + DescUtil.yellow(manaThreshold) + 
+				DescUtil.val("20%") + " for every " + DescUtil.val(manaThreshold) + 
 				" mana you have.");
 	}
 }

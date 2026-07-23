@@ -36,7 +36,6 @@ public class StoneAxe extends Equipment {
 		super(ID, "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.5, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -74,7 +73,7 @@ public class StoneAxe extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_AXE, "At " + DescUtil.white(BERSERK_THRESHOLD) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
+		item = createItem(Material.STONE_AXE, "At " + DescUtil.val(BERSERK_THRESHOLD) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
 				+ " Only the closest target is affected by on-hit effects.");
 	}
 }

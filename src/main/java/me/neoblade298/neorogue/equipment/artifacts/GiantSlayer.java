@@ -59,6 +59,6 @@ public class GiantSlayer extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_AXE, "Increases damage dealt to minibosses by "
-				+ DescUtil.white((int) (buff * 100) + "%") + ".");
+				+ DescUtil.val((int) (buff * 100) + "%") + ".");
 	}
 }

@@ -34,7 +34,6 @@ public class Tailwind extends Equipment {
 	public Tailwind(boolean isUpgraded) {
 		super(ID, "Tailwind", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 5 : 10, 0, isUpgraded ? 14 : 17, 0).add(PropertyType.AREA_OF_EFFECT, radius));
-		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.COOLDOWN);
 		shields = isUpgraded ? 3 : 2;
 	}
 	
@@ -73,7 +72,7 @@ public class Tailwind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"On cast, place a circle [<white>8s</white>]. It grants you " + DescUtil.white("Speed 1") + " and " +
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>1s</white>] while you're in it.");
+				"On cast, place a circle [<white>8s</white>]. It grants you " + DescUtil.val("Speed 1") + " and " +
+				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>1s</white>] while you're in it.");
 	}
 }

@@ -28,7 +28,6 @@ public class Rapier extends Equipment {
 				EquipmentProperties
 						.ofWeapon(isUpgraded ? 55 : 45, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 9 : 6;
 	}
 
@@ -55,7 +54,7 @@ public class Rapier extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STONE_SWORD,
-				"Every " + DescUtil.white("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true)
+				"Every " + DescUtil.val("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields)
 						+ " [<white>4s</white>]."
 		);
 	}

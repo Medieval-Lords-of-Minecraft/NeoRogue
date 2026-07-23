@@ -60,7 +60,6 @@ public class StoneHammer extends Equipment {
 		super(ID, "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.add(PropertyType.AREA_OF_EFFECT, props.range);
 	}
 

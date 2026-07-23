@@ -100,7 +100,7 @@ public class Blast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, " + DescUtil.charge(this, 1, 2) + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + 
+				"On cast, " + DescUtil.charge(this, 1, 2) + " before dealing " + GlossaryTag.FIRE.tag(this, damage) + 
 				" in an area around the block you aim at.");
 	}
 }

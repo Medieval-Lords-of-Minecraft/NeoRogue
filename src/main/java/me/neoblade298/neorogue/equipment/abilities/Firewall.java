@@ -142,7 +142,7 @@ public class Firewall extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.RED_CONCRETE_POWDER,
 				"On cast, fire a projectile that travels until it hits a block or max range. Create a wall of fire along where the projectile traveled which deals "
-				+ GlossaryTag.FIRE.tag(this, damage, true) + " to enemies and applies " + GlossaryTag.BURN.tag(this, burn, true) +
-				" to enemies and " + GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself every second " + DescUtil.duration(7, false) + ".");
+				+ GlossaryTag.FIRE.tag(this, damage) + " to enemies and applies " + GlossaryTag.BURN.tag(this, burn) +
+				" to enemies and " + GlossaryTag.CORRUPTION.tag(this, corruption) + " to yourself every second " + DescUtil.duration(7) + ".");
 	}
 }

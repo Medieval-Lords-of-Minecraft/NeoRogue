@@ -49,7 +49,7 @@ public class Sturdy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " until "
+				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields) + " until "
 				+ "you lower your shield again.");
 	}
 	

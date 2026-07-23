@@ -104,10 +104,10 @@ public class EscapePlan2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active " + DescUtil.white("10s") + "."
-				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, activateDamage, true) +
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.val("10s") + "."
+				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, activateDamage) +
 				" damage to the attacker, teleport to the marker, and deactivate it."
 				+ " While the marker remains active and you are in " + GlossaryTag.STEALTH.tag(this) + ","
-				+ " deal " + GlossaryTag.PIERCING.tag(this, basicAttackDamage, true) + " additional damage on basic attacks.");
+				+ " deal " + GlossaryTag.PIERCING.tag(this, basicAttackDamage) + " additional damage on basic attacks.");
 	}
 }

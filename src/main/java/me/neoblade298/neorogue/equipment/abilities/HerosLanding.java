@@ -85,7 +85,7 @@ public class HerosLanding extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL,
-				"Grants double jump. Upon falling from a small height, deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and apply " + 
-				GlossaryTag.CONCUSSED.tag(this, conc, true) + " to nearby enemies, and gain " + GlossaryTag.STRENGTH.tag(this, str, true) + ".");
+				"Grants double jump. Upon falling from a small height, deal " + GlossaryTag.BLUNT.tag(this, damage) + " damage and apply " + 
+				GlossaryTag.CONCUSSED.tag(this, conc) + " to nearby enemies, and gain " + GlossaryTag.STRENGTH.tag(this, str) + ".");
 	}
 }

@@ -55,7 +55,7 @@ public class CatalystCrucible extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BREWING_STAND,
 				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + 
-				DescUtil.yellow(multStr + "%") + ". Whenever you apply a negative status, gain " + 
-				DescUtil.yellow(mana) + " mana.");
+				DescUtil.val(multStr + "%") + ". Whenever you apply a negative status, gain " + 
+				DescUtil.val(mana) + " mana.");
 	}
 }

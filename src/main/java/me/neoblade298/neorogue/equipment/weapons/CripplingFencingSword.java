@@ -58,8 +58,8 @@ public class CripplingFencingSword extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STONE_SWORD,
-				"Every " + DescUtil.white("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, false)
-						+ " [<white>3s</white>] and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + "."
+				"Every " + DescUtil.val("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields)
+						+ " [<white>3s</white>] and apply " + GlossaryTag.CONCUSSED.tag(this, concussed) + "."
 		);
 	}
 }

@@ -42,8 +42,8 @@ public class LimitBreak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND,
-				"On cast, double your " + GlossaryTag.STRENGTH.tag(this) + ". Can only be cast " + DescUtil.white("once")
-					+ " per fight, and not until " + DescUtil.yellow((isUpgraded ? 20 : 30) + "s") + " into the fight.");
+				"On cast, double your " + GlossaryTag.STRENGTH.tag(this) + ". Can only be cast " + DescUtil.val("once")
+					+ " per fight, and not until " + DescUtil.val((isUpgraded ? 20 : 30) + "s") + " into the fight.");
 	}
 
 	@Override

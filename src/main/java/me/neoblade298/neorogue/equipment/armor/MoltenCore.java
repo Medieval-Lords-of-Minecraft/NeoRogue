@@ -42,6 +42,6 @@ public class MoltenCore extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM, "Every time you apply " + GlossaryTag.CORRUPTION.tag(this)
-				+ ", gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("6s") + "].");
+				+ ", gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("6s") + "].");
 	}
 }

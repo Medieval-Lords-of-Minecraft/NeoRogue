@@ -47,7 +47,7 @@ public class Intuition extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + ". " +
-				"While below " + DescUtil.white(THRES) + " mana, mana regen is increased by " + DescUtil.white(regen) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.val(damage) + ". " +
+				"While below " + DescUtil.val(THRES) + " mana, mana regen is increased by " + DescUtil.val(regen) + ".");
 	}
 }

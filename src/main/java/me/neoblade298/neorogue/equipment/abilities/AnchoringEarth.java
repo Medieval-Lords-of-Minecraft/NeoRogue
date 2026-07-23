@@ -129,7 +129,7 @@ public class AnchoringEarth extends Equipment {
 		item = createItem(Material.STRING,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile that pierces enemies. "
 						+ "If it hits a block, all enemies it pierced will take "
-						+ GlossaryTag.EARTHEN.tag(this, damage, true) + ", receive " + DescUtil.potion("slowness", 1, 2, false, false)
+						+ GlossaryTag.EARTHEN.tag(this, damage) + ", receive " + DescUtil.potion("slowness", 1, 2, false, false)
 						+ ", and be pulled towards the block.");
 	}
 }

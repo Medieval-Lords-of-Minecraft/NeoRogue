@@ -33,6 +33,6 @@ public class MajorStaminaRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by " + DescUtil.yellow(regen) + " and max stamina by " + DescUtil.yellow(max) + ".");
+		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by " + DescUtil.val(regen) + " and max stamina by " + DescUtil.val(max) + ".");
 	}
 }

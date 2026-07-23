@@ -38,6 +38,6 @@ public class RingOfSharpness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.PIERCING.tag(this) + " damage is increased by " + DescUtil.yellow(buff + "%") + ".");
+		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.PIERCING.tag(this) + " damage is increased by " + DescUtil.val(buff + "%") + ".");
 	}
 }

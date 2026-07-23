@@ -40,7 +40,7 @@ public class ToughnessPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.yellow((int) reduc) + " for the rest of combat. Consumed on first use.");
+				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val((int) reduc) + " for the rest of combat. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(139, 90, 43));
 		item.setItemMeta(meta);

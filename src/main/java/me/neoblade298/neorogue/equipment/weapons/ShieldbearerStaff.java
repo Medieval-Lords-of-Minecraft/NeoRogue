@@ -48,6 +48,6 @@ public class ShieldbearerStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.BLAZE_ROD,
-				"Increases damage by " + DescUtil.yellow(mult + "x") + " of your current " + GlossaryTag.SHIELDS.tag(this) + ".");
+				"Increases damage by " + DescUtil.val(mult + "x") + " of your current " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

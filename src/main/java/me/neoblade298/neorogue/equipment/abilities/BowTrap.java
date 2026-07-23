@@ -127,8 +127,8 @@ public class BowTrap extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARCHER_POTTERY_SHERD,
 				"On cast, " + DescUtil.charge(this, 1, 1) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that lasts for " + DescUtil.white("5s") +
-				". It fires a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) +
+				" that lasts for " + DescUtil.val("5s") +
+				". It fires a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage) +
 				" damage at the nearest enemy every second.");
 	}
 }

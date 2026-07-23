@@ -140,8 +140,8 @@ public class RecklessApproach extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.BLUNT.tag(this) +
-				" damage in a small area. If an enemy is hit, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>]. " +
-				"Increase projectile damage from at most " + DescUtil.white(thres) + " blocks away by " + DescUtil.yellow(inc) + " [<white>5s</white>].");
+				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.val(damage) + " " + GlossaryTag.BLUNT.tag(this) +
+				" damage in a small area. If an enemy is hit, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>]. " +
+				"Increase projectile damage from at most " + DescUtil.val(thres) + " blocks away by " + DescUtil.val(inc) + " [<white>5s</white>].");
 	}
 }

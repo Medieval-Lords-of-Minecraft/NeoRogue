@@ -64,8 +64,8 @@ public class BasicElementMastery extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.SHIELDS.tag(this, 5, false) + ". Increase application of " + GlossaryTag.FROST.tag(this) +
-				" by " + DescUtil.white(frost) + ". Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
-				+ GlossaryTag.BURN.tag(this, burn, true) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.SHIELDS.tag(this, 5) + ". Increase application of " + GlossaryTag.FROST.tag(this) +
+				" by " + DescUtil.val(frost) + ". Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
+				+ GlossaryTag.BURN.tag(this, burn) + ".");
 	}
 }

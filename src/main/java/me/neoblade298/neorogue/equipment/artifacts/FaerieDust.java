@@ -48,7 +48,7 @@ public class FaerieDust extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SKULL_BANNER_PATTERN, 
-				"For the first " + DescUtil.white("15s") + " of a fight, your " + GlossaryTag.MAGICAL.tag(this) + " defense is " +
-				"increased by " + DescUtil.white(def) + ".");
+				"For the first " + DescUtil.val("15s") + " of a fight, your " + GlossaryTag.MAGICAL.tag(this) + " defense is " +
+				"increased by " + DescUtil.val(def) + ".");
 	}
 }

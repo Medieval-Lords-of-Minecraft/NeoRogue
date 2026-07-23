@@ -98,7 +98,7 @@ public class GetCentered extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.white(2) + " max draw projectiles. Every " + DescUtil.yellow(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1, false) + 
-				". Basic attack damage at max draw is increased by " + DescUtil.yellow(damage) + " per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.val(2) + " max draw projectiles. Every " + DescUtil.val(thres) + " shots fired at max draw grants you " + GlossaryTag.FOCUS.tag(this, 1) + 
+				". Basic attack damage at max draw is increased by " + DescUtil.val(damage) + " per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
 	}
 }

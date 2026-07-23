@@ -50,7 +50,6 @@ public class AvalonianSceptre extends Equipment {
 				ID, "Avalonian Sceptre", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 65 : 55, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
 		intellectFreq = isUpgraded ? 3 : 5;
 		maxMana = isUpgraded ? 5 : 3;
@@ -125,10 +124,10 @@ public class AvalonianSceptre extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Grants " + GlossaryTag.INTELLECT.tag(this, 1, false) + " every " + DescUtil.yellow(intellectFreq)
-						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana. While above "
-						+ DescUtil.yellow((int) (bonusThreshold * 100) + "%") + " mana, basic attacks deal "
-						+ DescUtil.white("2x") + " damage and increase max mana by " + DescUtil.yellow(maxMana) + "."
+				"Grants " + GlossaryTag.INTELLECT.tag(this, 1) + " every " + DescUtil.val(intellectFreq)
+						+ " basic attacks. Each hit grants " + DescUtil.val(manaGain) + " mana. While above "
+						+ DescUtil.val((int) (bonusThreshold * 100) + "%") + " mana, basic attacks deal "
+						+ DescUtil.val("2x") + " damage and increase max mana by " + DescUtil.val(maxMana) + "."
 		);
 	}
 }

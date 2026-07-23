@@ -199,13 +199,13 @@ public class SadisticNature extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
-				"After " + GlossaryTag.CHARGE.tag(this) + " for " + DescUtil.white((CHARGE_TIME / 20) + "s") + ", fire a projectile that deals " +
-				DescUtil.white(BASE_DAMAGE) + " damage and pierces infinitely. " +
+				"After " + GlossaryTag.CHARGE.tag(this) + " for " + DescUtil.val((CHARGE_TIME / 20) + "s") + ", fire a projectile that deals " +
+				DescUtil.val(BASE_DAMAGE) + " damage and pierces infinitely. " +
 				"If the projectile hits a block, all enemies hit are pulled towards that block, " +
-				"given " + DescUtil.white("Slowness 3") + ", and dealt an additional " + 
-				DescUtil.yellow(bonusDamage) + " damage. " +
+				"given " + DescUtil.val("Slowness 3") + ", and dealt an additional " + 
+				DescUtil.val(bonusDamage) + " damage. " +
 				"Additionally, spawn a " + GlossaryTag.TRAP.tag(this) + " [<white>5s</white>] on the block that deals " +
-				DescUtil.yellow(trapDamage) + " damage and increases your " + GlossaryTag.TRAP.tag(this) + 
-				" damage by " + DescUtil.white((int)(TRAP_DAMAGE_INC * 100) + "%") + " when it's set off.");
+				DescUtil.val(trapDamage) + " damage and increases your " + GlossaryTag.TRAP.tag(this) + 
+				" damage by " + DescUtil.val((int)(TRAP_DAMAGE_INC * 100) + "%") + " when it's set off.");
 	}
 }

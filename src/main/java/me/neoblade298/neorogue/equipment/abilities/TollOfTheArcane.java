@@ -34,7 +34,6 @@ public class TollOfTheArcane extends Equipment {
 		corruption = 3;
 		manaReduc = isUpgraded ? 0.7 : 0.5;
 		manaReducDisplay = (int) (manaReduc * 100);
-		properties.addUpgrades(PropertyType.MANA_COST);
 	}
 
 	public static Equipment get() {
@@ -70,8 +69,8 @@ public class TollOfTheArcane extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CRYING_OBSIDIAN,
-				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReducDisplay + "%")
-						+ " and apply " + GlossaryTag.CORRUPTION.tag(this, corruption, false)
+				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.val(manaReducDisplay + "%")
+						+ " and apply " + GlossaryTag.CORRUPTION.tag(this, corruption)
 						+ " to yourself.");
 	}
 }

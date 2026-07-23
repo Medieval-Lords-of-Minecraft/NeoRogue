@@ -33,7 +33,6 @@ public class LeviathanAxe extends Equipment {
 	public LeviathanAxe(boolean isUpgraded) {
 		super(ID, "Leviathan Axe", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 200 : 150, 0.7, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		thres = isUpgraded ? 30 : 45;
 	}
 	
@@ -81,7 +80,7 @@ public class LeviathanAxe extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_AXE, "Can only be used after applying " + DescUtil.yellow(thres) + " negative status stacks to enemies. " +
+		item = createItem(Material.GOLDEN_AXE, "Can only be used after applying " + DescUtil.val(thres) + " negative status stacks to enemies. " +
 		"Right click to basic attack.");
 	}
 }

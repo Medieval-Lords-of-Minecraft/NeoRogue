@@ -121,7 +121,7 @@ public class Depletion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile that deals "
-				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
-				"The new " + GlossaryTag.RIFT.tag(this) + " pulls in nearby enemies and grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>] for every enemy pulled.");
+				+ GlossaryTag.DARK.tag(this, damage) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
+				"The new " + GlossaryTag.RIFT.tag(this) + " pulls in nearby enemies and grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>] for every enemy pulled.");
 	}
 }

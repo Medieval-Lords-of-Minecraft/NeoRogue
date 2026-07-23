@@ -48,6 +48,6 @@ public class RazorTome extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK,
-				"Every " + DescUtil.white(thres + "rd") + " basic attack will apply " + GlossaryTag.REND.tag(this, rend, true) + ".");
+				"Every " + DescUtil.val(thres + "rd") + " basic attack will apply " + GlossaryTag.REND.tag(this, rend) + ".");
 	}
 }

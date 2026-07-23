@@ -115,10 +115,10 @@ public class CrushTheWeak extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRICK,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(500) + " damage and applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.white(5) + " times. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
-				DescUtil.yellow(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " damage and applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.val(5) + " times. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS) + " every " + 
+				DescUtil.val(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
 				"Enemies with " + GlossaryTag.INJURY.tag(this) + " take " + 
-				DescUtil.yellow((int)(damagePercent * 100) + "%") + " of your current " + 
+				DescUtil.val((int)(damagePercent * 100) + "%") + " of your current " + 
 				GlossaryTag.SHIELDS.tag(this) + " as additional " + GlossaryTag.BLUNT.tag(this) + " damage.");
 	}
 }

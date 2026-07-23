@@ -78,6 +78,6 @@ public class Cull extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT, "On cast, your basic attacks deals an additional "
-				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage until you don't kill an enemy with it.");
+				+ GlossaryTag.SLASHING.tag(this, damage) + " damage until you don't kill an enemy with it.");
 	}
 }

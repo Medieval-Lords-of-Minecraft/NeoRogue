@@ -109,7 +109,7 @@ public class Lightfall extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WHITE_BANNER,
 				"On cast, jump into the air before crashing to the ground, dealing "
-						+ GlossaryTag.LIGHT.tag(this, damage, true) + " damage and applying "
-						+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies.");
+						+ GlossaryTag.LIGHT.tag(this, damage) + " damage and applying "
+						+ GlossaryTag.SANCTIFIED.tag(this, sanct) + " to all nearby enemies.");
 	}
 }

@@ -28,7 +28,7 @@ public class DiscountCard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.white(DISCOUNT_PERCENT + "%") + ".");
+		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.val(DISCOUNT_PERCENT + "%") + ".");
 	}
 
 	@Override

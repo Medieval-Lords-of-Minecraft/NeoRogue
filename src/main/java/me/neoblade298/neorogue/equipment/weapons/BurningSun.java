@@ -57,7 +57,6 @@ public class BurningSun extends Bow {
 		blockDamage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 5 : 3;
 		auraBurn = isUpgraded ? 5 : 3;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -110,10 +109,10 @@ public class BurningSun extends Bow {
 		item = createItem(Material.CROSSBOW,
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
-				GlossaryTag.FIRE.tag(this, blockDamage, true) + " damage and applying " +
-				GlossaryTag.BURN.tag(this, burn, true) + " to nearby enemies. " +
-				"After hitting " + DescUtil.white(8) + " walls with a projectile that also hit at least one enemy, " +
-				"passively apply " + GlossaryTag.BURN.tag(this, auraBurn, true) + " to enemies within " + DescUtil.white(5) + " blocks every second.");
+				GlossaryTag.FIRE.tag(this, blockDamage) + " damage and applying " +
+				GlossaryTag.BURN.tag(this, burn) + " to nearby enemies. " +
+				"After hitting " + DescUtil.val(8) + " walls with a projectile that also hit at least one enemy, " +
+				"passively apply " + GlossaryTag.BURN.tag(this, auraBurn) + " to enemies within " + DescUtil.val(5) + " blocks every second.");
 		chargedIcon = item.clone();
 	}
 	

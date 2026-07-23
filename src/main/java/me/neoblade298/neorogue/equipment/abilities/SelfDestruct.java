@@ -68,6 +68,6 @@ public class SelfDestruct extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE,
 				GlossaryTag.POWER.tag(this) + ". On cast, any time a " + GlossaryTag.TRAP.tag(this) + " is removed, " +
-				"including removal on activation, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies near the trap.");
+				"including removal on activation, deal " + GlossaryTag.FIRE.tag(this, damage) + " to all enemies near the trap.");
 	}
 }

@@ -46,8 +46,8 @@ public class Bide extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, gain " + DescUtil.white(shields) + " " + GlossaryTag.SHIELDS.tag(this) + " for " + DescUtil.white(duration + "s") + ". The first time you "
-						+ "take damage during this time, gain " + DescUtil.yellow(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks.");
+				"On cast, gain " + DescUtil.val(shields) + " " + GlossaryTag.SHIELDS.tag(this) + " for " + DescUtil.val(duration + "s") + ". The first time you "
+						+ "take damage during this time, gain " + DescUtil.val(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}
 
 	@Override

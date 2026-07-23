@@ -68,8 +68,8 @@ public class CripplingPoison extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, decrease the " + GlossaryTag.PHYSICAL.tag(this)
-						+ " defense of enemies in a cone in front of you by " + DescUtil.yellow(inc)
-						+ " [<white>5s</white>], further increased by " + DescUtil.white(1) + " for every " + DescUtil.yellow(
+						+ " defense of enemies in a cone in front of you by " + DescUtil.val(inc)
+						+ " [<white>5s</white>], further increased by " + DescUtil.val(1) + " for every " + DescUtil.val(
 						poisonThreshold) + " stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
 	}
 }

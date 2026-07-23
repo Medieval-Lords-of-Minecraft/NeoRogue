@@ -47,7 +47,7 @@ public class HallowedEmbers extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "If you're below " + DescUtil.white((int) (healthThreshold * 100) + "%")
-				+ " health after winning a fight, heal for " + DescUtil.white((int) (healPercent * 100) + "%") + " of your max health.");
+		item = createItem(Material.BLAZE_POWDER, "If you're below " + DescUtil.val((int) (healthThreshold * 100) + "%")
+				+ " health after winning a fight, heal for " + DescUtil.val((int) (healPercent * 100) + "%") + " of your max health.");
 	}
 }

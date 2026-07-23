@@ -61,9 +61,9 @@ public class LeadingKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for " + DescUtil.white("2s") + "."
+		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for " + DescUtil.val("2s") + "."
 				+ " Dealing damage to them grants you"
-				+ " " + DescUtil.yellow(stamina) + " stamina and consumes the mark.");
+				+ " " + DescUtil.val(stamina) + " stamina and consumes the mark.");
 	}
 	
 	private class LeadingKnifeInstance extends PriorityAction {

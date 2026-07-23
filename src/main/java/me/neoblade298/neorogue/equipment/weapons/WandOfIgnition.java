@@ -39,7 +39,6 @@ public class WandOfIgnition extends Equipment {
 				ID , "Wand of Ignition", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 60 : 50, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		burn = isUpgraded ? 2 : 1;
 		corr = 1;
 		corrThres = isUpgraded ? 9 : 6;
@@ -102,7 +101,7 @@ public class WandOfIgnition extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD, "Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit. Applies "
-		+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to you every " + DescUtil.yellow(corrThres) + " uses.");
+		item = createItem(Material.BLAZE_ROD, "Applies " + GlossaryTag.BURN.tag(this, burn) + " on hit. Applies "
+		+ GlossaryTag.CORRUPTION.tag(this, corr) + " to you every " + DescUtil.val(corrThres) + " uses.");
 	}
 }

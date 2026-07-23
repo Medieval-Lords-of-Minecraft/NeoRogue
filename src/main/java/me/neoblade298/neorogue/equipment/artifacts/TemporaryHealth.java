@@ -50,7 +50,7 @@ public class TemporaryHealth extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPLASH_POTION,
-				"On acquire, take " + DescUtil.white("10%") + " of your max health as damage. After winning "
-						+ DescUtil.white(WINS) + " fights, heal " + DescUtil.white("30%") + " of your max health, then crumble away.");
+				"On acquire, take " + DescUtil.val("10%") + " of your max health as damage. After winning "
+						+ DescUtil.val(WINS) + " fights, heal " + DescUtil.val("30%") + " of your max health, then crumble away.");
 	}
 }

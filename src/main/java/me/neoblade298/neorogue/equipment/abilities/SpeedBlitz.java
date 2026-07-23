@@ -42,7 +42,6 @@ public class SpeedBlitz extends Equipment {
 		super(ID, "Speed Blitz", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(5, 35, isUpgraded ? 12 : 15, 0));
 		damage = isUpgraded ? 75 : 50;
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -87,7 +86,7 @@ public class SpeedBlitz extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_SWORD,
 				"On cast, with " + DescUtil.potion("Slowness", 0, 1) +
-				", deal " + GlossaryTag.PIERCING.tag(this, damage, true) +
-				" damage " + DescUtil.white(5) + " times over " + DescUtil.white("1s") + " to the nearest enemy.");
+				", deal " + GlossaryTag.PIERCING.tag(this, damage) +
+				" damage " + DescUtil.val(5) + " times over " + DescUtil.val("1s") + " to the nearest enemy.");
 	}
 }

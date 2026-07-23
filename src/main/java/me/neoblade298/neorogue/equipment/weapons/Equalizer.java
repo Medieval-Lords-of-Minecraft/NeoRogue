@@ -50,7 +50,6 @@ public class Equalizer extends Bow {
 				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 2));
 		damage = isUpgraded ? 150 : 100;
 		arrowDamage = isUpgraded ? 100 : 70;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -81,9 +80,9 @@ public class Equalizer extends Bow {
 		item = createItem(Material.CROSSBOW,
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
-				GlossaryTag.BLUNT.tag(this, damage, true) + " damage to nearby enemies. " +
-				"On hit, rains " + DescUtil.white(1) + " arrow dealing " + GlossaryTag.PIERCING.tag(this, arrowDamage, true) + 
-				" damage for every " + GlossaryTag.INJURY.tag(this, injuryThres, false) + " the enemy has " +
+				GlossaryTag.BLUNT.tag(this, damage) + " damage to nearby enemies. " +
+				"On hit, rains " + DescUtil.val(1) + " arrow dealing " + GlossaryTag.PIERCING.tag(this, arrowDamage) + 
+				" damage for every " + GlossaryTag.INJURY.tag(this, injuryThres) + " the enemy has " +
 				"[<white>10 tick initial delay, 3 tick delay between arrows</white>].");
 	}
 	

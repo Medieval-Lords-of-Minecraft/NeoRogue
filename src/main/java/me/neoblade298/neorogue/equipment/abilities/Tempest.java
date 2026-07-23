@@ -87,8 +87,8 @@ public class Tempest extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.white(5) + " times. Whenever you deal damage with " + GlossaryTag.ELECTRIFIED.tag(this) + ", drop a lightning bolt " +
-				"onto the target and deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " +
-				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " to enemies in the radius, except the original target.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.ELECTRIFIED.tag(this) + " " + DescUtil.val(5) + " times. Whenever you deal damage with " + GlossaryTag.ELECTRIFIED.tag(this) + ", drop a lightning bolt " +
+				"onto the target and deal " + GlossaryTag.LIGHTNING.tag(this, damage) + " damage and apply " +
+				GlossaryTag.ELECTRIFIED.tag(this, electrified) + " to enemies in the radius, except the original target.");
 	}
 }

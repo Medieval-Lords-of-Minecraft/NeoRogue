@@ -163,8 +163,8 @@ public class BlightTendril extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 	item = createItem(Material.VINE,
-			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
-			"applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] and marks them [<white>8s</white>]. " +
-				"Basic attacks consume the mark and apply an additional " + DescUtil.white((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.val(3) + " times. Every " + DescUtil.val(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.val(15) + " blocks that " +
+			"applies " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] and marks them [<white>8s</white>]. " +
+				"Basic attacks consume the mark and apply an additional " + DescUtil.val((int) (poisonMult * 100) + "%") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }

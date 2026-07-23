@@ -49,6 +49,6 @@ public class CrackedCrystal extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLISTERING_MELON_SLICE, 
-				"Reduce all ability cooldowns by " + DescUtil.white(1) + ".");
+				"Reduce all ability cooldowns by " + DescUtil.val(1) + ".");
 	}
 }

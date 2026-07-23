@@ -50,6 +50,6 @@ public class PhoenixfireMantle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Every " + DescUtil.yellow(thres) + " times you apply " + GlossaryTag.BURN.tag(this) + ", heal for " + DescUtil.white(heal) + ".");
+		item = createItem(Material.BLAZE_POWDER, "Every " + DescUtil.val(thres) + " times you apply " + GlossaryTag.BURN.tag(this) + ", heal for " + DescUtil.val(heal) + ".");
 	}
 }

@@ -128,7 +128,7 @@ public class Overgrowth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MOSS_BLOCK,
-				"Lob a potion that explodes on impact, dealing " + GlossaryTag.EARTHEN.tag(this, damage, true)
+				"Lob a potion that explodes on impact, dealing " + GlossaryTag.EARTHEN.tag(this, damage)
 				+ " damage to nearby enemies and turning nearby terrain to grass.");
 	}
 }

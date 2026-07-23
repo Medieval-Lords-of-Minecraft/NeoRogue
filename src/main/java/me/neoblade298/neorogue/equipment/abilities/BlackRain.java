@@ -159,9 +159,9 @@ public class BlackRain extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
-			GlossaryTag.DARK.tag(this, damage, true) + " damage. For every " +
-			GlossaryTag.INSANITY.tag(this, thres, true) + " on hit enemies combined, drop another projectile dealing " +
-			GlossaryTag.DARK.tag(this, bonusDamage, true) + " damage.");
+			"On cast, throw " + DescUtil.val(3) + " projectiles in a cone that each deal " + 
+			GlossaryTag.DARK.tag(this, damage) + " damage. For every " +
+			GlossaryTag.INSANITY.tag(this, thres) + " on hit enemies combined, drop another projectile dealing " +
+			GlossaryTag.DARK.tag(this, bonusDamage) + " damage.");
 	}
 }

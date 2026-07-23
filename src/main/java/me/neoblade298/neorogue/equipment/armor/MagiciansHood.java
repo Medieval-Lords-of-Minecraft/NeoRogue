@@ -49,8 +49,8 @@ public class MagiciansHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET,
-				"Increase your " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + " for every "
-						+ DescUtil.yellow(thres) + " max mana you have, up to " + DescUtil.white(MAX_STACKS + "x") + ".");
+				"Increase your " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + " for every "
+						+ DescUtil.val(thres) + " max mana you have, up to " + DescUtil.val(MAX_STACKS + "x") + ".");
 
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLUE);

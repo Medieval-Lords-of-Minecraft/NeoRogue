@@ -91,10 +91,10 @@ public class SteadyBleed extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DAMAGED_ANVIL,
-				"On cast, deal " + DescUtil.yellow((int) damageMult + "x") + " each enemy's current " +
+				"On cast, deal " + DescUtil.val((int) damageMult + "x") + " each enemy's current " +
 				GlossaryTag.REND.tag(this) + " stacks as " + GlossaryTag.SLASHING.tag(this) + " damage to all nearby enemies," +
 				" gain " + GlossaryTag.SHIELDS.tag(this) + " equal to " + 
-				DescUtil.yellow((int)(shieldPercent * 100) + "%") + " of the damage dealt [<white>15s</white>], " +
+				DescUtil.val((int)(shieldPercent * 100) + "%") + " of the damage dealt [<white>15s</white>], " +
 				"and remove all their " + GlossaryTag.REND.tag(this) + " stacks.");
 	}
 }

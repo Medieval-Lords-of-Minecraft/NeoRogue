@@ -77,7 +77,7 @@ public class MindShell extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
-						+ DescUtil.white(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell, true) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability. Every " + DescUtil.val(THRES) + " ability casts, increase your mana regen by "
+						+ DescUtil.val(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell) + ".");
 	}
 }

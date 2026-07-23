@@ -67,7 +67,7 @@ public class Frenzy extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times with " + DescUtil.white(5) + "+ " + GlossaryTag.BERSERK.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " you have, up to " + DescUtil.white(20) + ", increase your attack speed by"
-				+ " " + DescUtil.yellow(atkSpeed + "%") + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.val(ACTIVATION_THRES) + " times with " + DescUtil.val(5) + "+ " + GlossaryTag.BERSERK.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, CUTOFF) + " you have, up to " + DescUtil.val(20) + ", increase your attack speed by"
+				+ " " + DescUtil.val(atkSpeed + "%") + ".");
 	}
 }

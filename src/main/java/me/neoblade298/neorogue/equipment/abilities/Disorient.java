@@ -71,8 +71,8 @@ public class Disorient extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " defense of enemies in a cone in front of you by " + DescUtil.yellow(inc)
-						+ " [<white>10s</white>]. Also deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " +
-						GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
+				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " defense of enemies in a cone in front of you by " + DescUtil.val(inc)
+						+ " [<white>10s</white>]. Also deal " + GlossaryTag.DARK.tag(this, damage) + " damage and apply " +
+						GlossaryTag.INSANITY.tag(this, insanity) + ".");
 	}
 }

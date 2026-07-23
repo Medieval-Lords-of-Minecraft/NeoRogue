@@ -38,6 +38,6 @@ public class ManaMagnifier extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Increase range of all projectiles by " + DescUtil.yellow(buff) + ".");
+		item = createItem(Material.LAPIS_LAZULI, "Increase range of all projectiles by " + DescUtil.val(buff) + ".");
 	}
 }

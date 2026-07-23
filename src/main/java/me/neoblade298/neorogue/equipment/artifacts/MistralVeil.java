@@ -58,6 +58,6 @@ public class MistralVeil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHERRY_SAPLING, 
-				"Damage received from an enemy over " + DescUtil.white(range) + " blocks away is reduced by " + DescUtil.white(reduc) + ".");
+				"Damage received from an enemy over " + DescUtil.val(range) + " blocks away is reduced by " + DescUtil.val(reduc) + ".");
 	}
 }

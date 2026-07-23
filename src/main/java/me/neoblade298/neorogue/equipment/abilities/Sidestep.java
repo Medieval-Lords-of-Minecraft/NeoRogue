@@ -43,8 +43,8 @@ public class Sidestep extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " and gain " + GlossaryTag.STEALTH.tag(this) +
-				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>10s</white>]. "
-				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade) + " [<white>10s</white>]. "
+				+ "Your next " + DescUtil.val(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}

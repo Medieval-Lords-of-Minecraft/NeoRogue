@@ -143,7 +143,7 @@ public class TrinityForce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE,
-				"On cast, " + DescUtil.charge(this, 0, 1) + " before firing " + DescUtil.white(3) + " homing projectiles in a cone that each deal " + 
-				GlossaryTag.PIERCING.tag(this, DAMAGE, false) + " damage as basic attack damage " + DescUtil.yellow(hits) + " times.");
+				"On cast, " + DescUtil.charge(this, 0, 1) + " before firing " + DescUtil.val(3) + " homing projectiles in a cone that each deal " + 
+				GlossaryTag.PIERCING.tag(this, DAMAGE) + " damage as basic attack damage " + DescUtil.val(hits) + " times.");
 	}
 }

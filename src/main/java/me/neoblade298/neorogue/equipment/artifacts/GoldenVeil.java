@@ -53,7 +53,7 @@ public class GoldenVeil extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CLOCK, "Grants " + GlossaryTag.SHIELDS.tag(this, 1, false)
-				+ " for every " + DescUtil.white("3s") + " you're at above " + DescUtil.white("80%") + " mana.");
+		item = createItem(Material.CLOCK, "Grants " + GlossaryTag.SHIELDS.tag(this, 1)
+				+ " for every " + DescUtil.val("3s") + " you're at above " + DescUtil.val("80%") + " mana.");
 	}
 }

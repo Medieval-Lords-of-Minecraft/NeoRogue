@@ -51,7 +51,7 @@ public class OpalHourglass extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CLOCK, "Cooldowns that are " + DescUtil.white(thres + "s")
-				+ " or more are reduced by " + DescUtil.white(reduc) + ".");
+		item = createItem(Material.CLOCK, "Cooldowns that are " + DescUtil.val(thres + "s")
+				+ " or more are reduced by " + DescUtil.val(reduc) + ".");
 	}
 }

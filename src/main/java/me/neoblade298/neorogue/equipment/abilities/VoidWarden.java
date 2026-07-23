@@ -99,12 +99,12 @@ public class VoidWarden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACK_DYE,
-				"On cast, apply " + GlossaryTag.PROTECT.tag(this, stacks, true) + " and "
-						+ GlossaryTag.SHELL.tag(this, stacks, true) + " to yourself. Base mana cost is "
-						+ DescUtil.white((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
-						+ DescUtil.yellow(manaIncrease) + " each time you cast it. "
-						+ GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("5s") + ", gain " + GlossaryTag.SHIELDS.tag(this, 1, false)
-						+ " [" + DescUtil.white("5s") + "] for every " + DescUtil.yellow(passiveThreshold)
+				"On cast, apply " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
+						+ GlossaryTag.SHELL.tag(this, stacks) + " to yourself. Base mana cost is "
+						+ DescUtil.val((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
+						+ DescUtil.val(manaIncrease) + " each time you cast it. "
+						+ GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.val("5s") + ", gain " + GlossaryTag.SHIELDS.tag(this, 1)
+						+ " [" + DescUtil.val("5s") + "] for every " + DescUtil.val(passiveThreshold)
 						+ " combined " + GlossaryTag.PROTECT.tag(this) + " and " + GlossaryTag.SHELL.tag(this) + " you have.");
 	}
 }

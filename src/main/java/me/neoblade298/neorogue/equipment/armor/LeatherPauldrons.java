@@ -46,7 +46,7 @@ public class LeatherPauldrons extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Every " + DescUtil.yellow(threshold) +
-				" basic attacks, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>" + dur + "</white>].");
+		item = createItem(Material.LEATHER_CHESTPLATE, "Every " + DescUtil.val(threshold) +
+				" basic attacks, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>" + dur + "</white>].");
 	}
 }

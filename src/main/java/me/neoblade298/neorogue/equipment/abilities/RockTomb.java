@@ -104,7 +104,6 @@ public class RockTomb extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 6, RANGE, RADIUS));
 		damage = 250;
 		bonusDamage = isUpgraded ? 80 : 40;
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 
 	public static Equipment get() {
@@ -178,9 +177,9 @@ public class RockTomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.COBBLESTONE,
 				"On cast, " + DescUtil.charge(this, 1, 2) + " before dropping a boulder at the block you aim at, dealing "
-				+ GlossaryTag.EARTHEN.tag(this, damage, false) + " damage in a " + DescUtil.white(RADIUS)
-				+ " block radius. For every " + DescUtil.white(CONCUSSED_THRESHOLD) + " "
+				+ GlossaryTag.EARTHEN.tag(this, damage) + " damage in a " + DescUtil.val(RADIUS)
+				+ " block radius. For every " + DescUtil.val(CONCUSSED_THRESHOLD) + " "
 				+ GlossaryTag.CONCUSSED.tag(this) + " applied this fight, increase the damage by "
-				+ DescUtil.yellow(bonusDamage) + ".");
+				+ DescUtil.val(bonusDamage) + ".");
 	}
 }

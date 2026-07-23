@@ -30,7 +30,6 @@ public class WardingRune extends Equipment {
 	public WardingRune(boolean isUpgraded) {
 		super(ID, "Warding Rune", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 15 : 11, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -69,7 +68,7 @@ public class WardingRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.QUARTZ_SLAB,
-				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHELL.tag(this, reduc, false) + " " + DescUtil.duration(5, false) + ". Receiving "
-				+ GlossaryTag.MAGICAL.tag(this) + " damage during this time grants " + DescUtil.white(mana) + " mana.");
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHELL.tag(this, reduc) + " " + DescUtil.duration(5) + ". Receiving "
+				+ GlossaryTag.MAGICAL.tag(this) + " damage during this time grants " + DescUtil.val(mana) + " mana.");
 	}
 }

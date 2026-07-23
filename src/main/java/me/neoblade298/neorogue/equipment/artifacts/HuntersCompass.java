@@ -53,6 +53,6 @@ public class HuntersCompass extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COMPASS, 
-				"Any negative statuses you apply have their stacks increased by " + DescUtil.white("20%") + " for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have.");
+				"Any negative statuses you apply have their stacks increased by " + DescUtil.val("20%") + " for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have.");
 	}
 }

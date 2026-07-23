@@ -56,8 +56,8 @@ public class SparkdrainKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ". If the "
-				+ "target has over " + GlossaryTag.ELECTRIFIED.tag(this, thres, false) + ", grant " 
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>] instead.");
+		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec) + ". If the "
+				+ "target has over " + GlossaryTag.ELECTRIFIED.tag(this, thres) + ", grant " 
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>3s</white>] instead.");
 	}
 }

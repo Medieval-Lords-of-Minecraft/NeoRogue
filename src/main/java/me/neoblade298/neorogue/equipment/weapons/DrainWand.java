@@ -43,7 +43,6 @@ public class DrainWand extends Equipment {
 				ID, "Drain Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
 	}
 	
@@ -99,7 +98,7 @@ public class DrainWand extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Gain " + DescUtil.yellow(shieldAmount) + " "
+				"Gain " + DescUtil.val(shieldAmount) + " "
 						+ GlossaryTag.SHIELDS.tag(this) + " [<white>2s</white>] on hit."
 		);
 	}

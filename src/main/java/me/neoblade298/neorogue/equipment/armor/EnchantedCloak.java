@@ -39,7 +39,7 @@ public class EnchantedCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(reduc) + ". " +
-			"Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage dealt by " + DescUtil.yellow(damage) + ".");
+		item = createItem(Material.LEATHER_CHESTPLATE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + ". " +
+			"Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage dealt by " + DescUtil.val(damage) + ".");
 	}
 }

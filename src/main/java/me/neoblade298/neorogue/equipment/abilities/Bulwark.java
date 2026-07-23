@@ -56,9 +56,9 @@ public class Bulwark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
-				+ "you lower your shield again. For every second the shield remains raised, grant " + GlossaryTag.PROTECT.tag(this, prot, true) +
-				" and " + GlossaryTag.SHELL.tag(this, prot, true) + " " + DescUtil.duration(3, false) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields) + " until "
+				+ "you lower your shield again. For every second the shield remains raised, grant " + GlossaryTag.PROTECT.tag(this, prot) +
+				" and " + GlossaryTag.SHELL.tag(this, prot) + " " + DescUtil.duration(3) + ".");
 	}
 	
 	private class BulwarkInstance extends PriorityAction {

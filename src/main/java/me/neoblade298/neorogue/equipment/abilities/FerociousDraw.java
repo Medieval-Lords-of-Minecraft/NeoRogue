@@ -79,8 +79,8 @@ public class FerociousDraw extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_AXE,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(5) + " enemies within " + DescUtil.white(5) + " blocks. Basic attack projectiles that hit an enemy within " + DescUtil.white(range) + " blocks "
-						+ "pierce that enemy and deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true)
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.val(5) + " enemies within " + DescUtil.val(5) + " blocks. Basic attack projectiles that hit an enemy within " + DescUtil.val(range) + " blocks "
+						+ "pierce that enemy and deal an additional " + GlossaryTag.PIERCING.tag(this, damage)
 						+ " damage.");
 	}
 }

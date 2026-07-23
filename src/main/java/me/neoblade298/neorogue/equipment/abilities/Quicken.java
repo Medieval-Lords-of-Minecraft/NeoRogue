@@ -26,7 +26,6 @@ public class Quicken extends Equipment {
 	public Quicken(boolean isUpgraded) {
 		super(ID, "Quicken", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 15 : 25, 3, 0));
-				properties.addUpgrades(PropertyType.STAMINA_COST);
 	}
 	
 	public static Equipment get() {
@@ -101,8 +100,8 @@ public class Quicken extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRAY_DYE,
-				"Dealing " + GlossaryTag.PHYSICAL.tag(this) + " damage within " + DescUtil.white("1s") + " of a basic attack " +
+				"Dealing " + GlossaryTag.PHYSICAL.tag(this) + " damage within " + DescUtil.val("1s") + " of a basic attack " +
 				"grants a stack. On cast, " + GlossaryTag.DASH.tag(this) + " forward at the cost of a stack and gain " + 
-				GlossaryTag.EVADE.tag(this, 1, false) + " " + DescUtil.duration(5, false) + ".");
+				GlossaryTag.EVADE.tag(this, 1) + " " + DescUtil.duration(5) + ".");
 	}
 }

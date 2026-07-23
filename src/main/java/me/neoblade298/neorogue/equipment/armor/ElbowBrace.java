@@ -47,7 +47,7 @@ public class ElbowBrace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(damageReduction) + ", but " +
-				"decrease projectile range by " + DescUtil.white(2) + ".");
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.val(damageReduction) + ", but " +
+				"decrease projectile range by " + DescUtil.val(2) + ".");
 	}
 }

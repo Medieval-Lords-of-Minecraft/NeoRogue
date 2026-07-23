@@ -33,7 +33,7 @@ public class PotOfGreed extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each non-coin reward you skip (by clearing), gain " + DescUtil.white(GOLD) + " gold.");
+		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each non-coin reward you skip (by clearing), gain " + DescUtil.val(GOLD) + " gold.");
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class PotOfGreed extends Artifact {
 			Sounds.success.play(p, p, Audience.ORIGIN);
 			int coins = GOLD * skippedNonCoinRewards;
 			data.addCoins(coins);
-			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.yellow(coins) + " coins")));
+			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.val(coins) + " coins")));
 			return TriggerResult.keep();
 		});
 	}

@@ -109,7 +109,7 @@ public class Brand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, apply " + GlossaryTag.BURN.tag(this, burn, true) + " and mark [<white>5s</white>] the enemy you're looking at. Any " + GlossaryTag.BURN.tag(this) + " applied to a marked enemy is doubled. " +
-				"After the mark expires or the target is killed, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " damage per stack of " + GlossaryTag.BURN.tag(this) + " on the marked target to all enemies near it.");
+				"On cast, apply " + GlossaryTag.BURN.tag(this, burn) + " and mark [<white>5s</white>] the enemy you're looking at. Any " + GlossaryTag.BURN.tag(this) + " applied to a marked enemy is doubled. " +
+				"After the mark expires or the target is killed, deal " + GlossaryTag.FIRE.tag(this, damage) + " damage per stack of " + GlossaryTag.BURN.tag(this) + " on the marked target to all enemies near it.");
 	}
 }

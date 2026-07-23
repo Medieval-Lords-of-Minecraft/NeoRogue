@@ -78,8 +78,8 @@ public class IcicleTome extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK, "Every time you apply " + GlossaryTag.FROST.tag(this, thres, false) + ", " +
-				"left clicking will fire a projectile that deals " + GlossaryTag.ICE.tag(this, damage, true) + " damage.");
+		item = createItem(Material.BOOK, "Every time you apply " + GlossaryTag.FROST.tag(this, thres) + ", " +
+				"left clicking will fire a projectile that deals " + GlossaryTag.ICE.tag(this, damage) + " damage.");
 	}
 	
 	private class IcicleTomeProjectile extends Projectile {

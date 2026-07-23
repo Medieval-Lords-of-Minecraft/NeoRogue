@@ -55,8 +55,8 @@ public class HerculeanStrength extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.STRENGTH.tag(this) + " application by " + DescUtil.yellow(strength) +
-				", start fights with " + GlossaryTag.BERSERK.tag(this,bers, true) + ", and apply " + GlossaryTag.CONCUSSED.tag(this, conc, true) +
+				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.STRENGTH.tag(this) + " application by " + DescUtil.val(strength) +
+				", start fights with " + GlossaryTag.BERSERK.tag(this,bers) + ", and apply " + GlossaryTag.CONCUSSED.tag(this, conc) +
 				" with your basic attacks.");
 	}
 }

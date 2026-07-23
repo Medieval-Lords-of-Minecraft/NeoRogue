@@ -29,7 +29,6 @@ public class DivergentPiercer extends Ammunition {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 20 : 15, 0.1, DamageType.PIERCING));
 		bonusDamage = isUpgraded ? 35 : 15;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	public static Equipment get() {
@@ -59,7 +58,7 @@ public class DivergentPiercer extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				"Deals an additional " + GlossaryTag.PIERCING.tag(this, bonusDamage, true) + 
+				"Deals an additional " + GlossaryTag.PIERCING.tag(this, bonusDamage) + 
 				" damage if the last enemy hit with this ammunition is different from the current enemy hit.");
 	}
 }

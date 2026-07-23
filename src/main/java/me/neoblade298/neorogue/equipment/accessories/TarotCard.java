@@ -26,7 +26,7 @@ public class TarotCard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAP, "Increases the number of equipment options dropped in a fight by " + DescUtil.white(1) + ".");
+		item = createItem(Material.MAP, "Increases the number of equipment options dropped in a fight by " + DescUtil.val(1) + ".");
 	}
 
 	@Override

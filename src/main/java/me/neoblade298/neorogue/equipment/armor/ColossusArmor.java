@@ -48,7 +48,7 @@ public class ColossusArmor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_CHESTPLATE,
-				"Reduce " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.white(1) +
-				" for every " + DescUtil.yellow(threshold) + " max stamina you have.");
+				"Reduce " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.val(1) +
+				" for every " + DescUtil.val(threshold) + " max stamina you have.");
 	}
 }

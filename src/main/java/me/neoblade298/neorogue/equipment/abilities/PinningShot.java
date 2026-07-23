@@ -52,7 +52,6 @@ public class PinningShot extends Equipment {
 		super(ID, "Pinning Shot", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, range));
 		bonusDamage = isUpgraded ? 250 : 175;
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 
     @Override
@@ -152,10 +151,10 @@ public class PinningShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				GlossaryTag.CHARGE.tag(this) + " for " + DescUtil.white((CHARGE_TIME / 20) + "s") + ", then fire a projectile that deals " +
-				DescUtil.white(BASE_DAMAGE) + " damage and pierces infinitely. " +
+				GlossaryTag.CHARGE.tag(this) + " for " + DescUtil.val((CHARGE_TIME / 20) + "s") + ", then fire a projectile that deals " +
+				DescUtil.val(BASE_DAMAGE) + " damage and pierces infinitely. " +
 				"If the projectile hits a block, all enemies hit are pulled towards that block, " +
-				"given " + DescUtil.white("Slowness III") + ", and dealt an additional " + 
-				DescUtil.yellow(bonusDamage) + " damage.");
+				"given " + DescUtil.val("Slowness III") + ", and dealt an additional " + 
+				DescUtil.val(bonusDamage) + " damage.");
 	}
 }

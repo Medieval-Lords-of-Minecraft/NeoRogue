@@ -52,7 +52,7 @@ public class CatalystPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On use, activate " + DescUtil.yellow(count) + " random " + GlossaryTag.POWER.tag(this)
+				"On use, activate " + DescUtil.val(count) + " random " + GlossaryTag.POWER.tag(this)
 				+ (count == 1 ? "" : "s") + ".");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(170, 60, 220));

@@ -79,9 +79,9 @@ public class Nullify extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHITE_DYE,
-				"On cast, apply " + GlossaryTag.PROTECT.tag(this, stacks, true) + " and "
-						+ GlossaryTag.SHELL.tag(this, stacks, true) + " to yourself. Base mana cost is "
-						+ DescUtil.white((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
-						+ DescUtil.yellow(manaIncrease) + " each time you cast it.");
+				"On cast, apply " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
+						+ GlossaryTag.SHELL.tag(this, stacks) + " to yourself. Base mana cost is "
+						+ DescUtil.val((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
+						+ DescUtil.val(manaIncrease) + " each time you cast it.");
 	}
 }

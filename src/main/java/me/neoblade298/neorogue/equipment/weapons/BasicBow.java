@@ -24,7 +24,6 @@ public class BasicBow extends Bow {
 		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 23 : 18, 1, 0, 12, 0, 0.6));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		canDrop = false;
 	}
 

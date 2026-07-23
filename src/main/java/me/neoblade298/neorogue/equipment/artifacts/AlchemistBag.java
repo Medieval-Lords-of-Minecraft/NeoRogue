@@ -51,6 +51,6 @@ public class AlchemistBag extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Using a consumable additionally heals you for " + DescUtil.white(heal) + ".");
+				"Using a consumable additionally heals you for " + DescUtil.val(heal) + ".");
 	}
 }

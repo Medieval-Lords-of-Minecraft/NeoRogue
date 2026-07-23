@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -79,7 +79,7 @@ public class AlchemistsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Creates " + DescUtil.white(2) + " random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
+				"Creates " + DescUtil.val(2) + " random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(50, 205, 50));
 		item.setItemMeta(meta);

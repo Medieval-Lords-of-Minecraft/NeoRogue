@@ -116,11 +116,11 @@ public class HexingShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POLISHED_BLACKSTONE_BRICK_SLAB,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.val(dec)
 						+ ". Killing an enemy with a basic attack while active " + "drops a "
 						+ GlossaryTag.TRAP.tag(this) + " on the killed enemy that deals "
-						+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage per second for "
-						+ DescUtil.white("10s") + ".");
+						+ GlossaryTag.PIERCING.tag(this, damage) + " damage per second for "
+						+ DescUtil.val("10s") + ".");
 		activeIcon = item.withType(Material.SCULK_SENSOR);
 	}
 }

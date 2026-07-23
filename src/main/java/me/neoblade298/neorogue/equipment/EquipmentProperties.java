@@ -208,12 +208,13 @@ public class EquipmentProperties {
 		return SharedUtil.color("<color:" + PROPERTY_COLOR + ">Damage Type: <white>" + type);
 	}
 
-	// Builds a compact stat token, returning {miniMessage, visibleText}. Upgradeable values are yellow,
-	// fixed values white; the abbreviated label uses the property color. The DAMAGE token folds in the
-	// damage type when present, e.g. "25 SLASHING Dmg". visibleText carries no color tags (used for width).
+	// Builds a compact stat token, returning {miniMessage, visibleText}. Values that change on upgrade are
+	// yellow, fixed values white; the abbreviated label uses the property color. The DAMAGE token folds in
+	// the damage type when present, e.g. "25 SLASHING Dmg". visibleText carries no color tags (used for
+	// width).
 	private String[] generateLoreToken(PropertyType pt, Equipment eq) {
 		Property prop = properties.get(pt);
-		String color = prop.canUpgrade ? "<yellow>" : "<white>";
+		String color = upgradeChanges(pt, prop.amount, eq) ? "<yellow>" : "<white>";
 		String valueSuffix = "";
 		String label;
 		switch (pt) {
@@ -267,9 +268,18 @@ public class EquipmentProperties {
 		return new String[] { msg, val + " " + label };
 	}
 
+	// Whether a property's value differs between the base and upgraded versions of eq, driving the
+	// yellow (changes on upgrade) vs white (fixed) coloring of its stat token. Returns false when eq has
+	// no upgraded/base counterpart, or the counterpart lacks the property.
+	private boolean upgradeChanges(PropertyType pt, double amount, Equipment eq) {
+		Equipment counterpart = eq.getCounterpart();
+		if (counterpart == null) return false;
+		EquipmentProperties other = counterpart.getProperties();
+		return other.has(pt) && other.get(pt) != amount;
+	}
+
 	// Formats a stat value without a trailing ".0" for whole numbers (15.0 -> "15", 1.5 -> "1.5").
-	private static String formatAmount(double amount) {
-		if (amount == Math.rint(amount) && !Double.isInfinite(amount)) {
+	private static String formatAmount(double amount) {		if (amount == Math.rint(amount) && !Double.isInfinite(amount)) {
 			return Long.toString((long) amount);
 		}
 		return Double.toString(amount);
@@ -323,12 +333,6 @@ public class EquipmentProperties {
 		}
 	}
 
-	public void addUpgrades(PropertyType... types) {
-		for (PropertyType type : types) {
-			properties.get(type).canUpgrade = true;
-		}
-	}
-
 	public enum PropertyType {
 		MANA_COST("Mana Cost"), STAMINA_COST("Stamina Cost"), RANGE("Range"), COOLDOWN("Cooldown"),
 		DAMAGE("Damage"), KNOCKBACK("Knockback"), AREA_OF_EFFECT("Area of Effect"),
@@ -358,7 +362,6 @@ public class EquipmentProperties {
 
 	private class Property {
 		private double amount;
-		private boolean canUpgrade;
 
 		protected Property(double amount) {
 			this.amount = amount;

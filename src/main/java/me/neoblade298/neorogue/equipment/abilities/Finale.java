@@ -34,7 +34,6 @@ public class Finale extends Equipment {
 	public Finale(boolean isUpgraded) {
 		super(ID, "Finale", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 30 : 40, 12, 0));
-		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 300;
 		bonusDamage = 40;
 		thres = isUpgraded ? 20 : 30;
@@ -86,8 +85,8 @@ public class Finale extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, deal " + GlossaryTag.PIERCING.tag(this, damage, false) +
-				" damage on your next basic attack plus an additional " + DescUtil.white(bonusDamage) +
-				" for every " + DescUtil.yellow(thres) + " stamina you've used on abilities this fight.");
+				"On cast, deal " + GlossaryTag.PIERCING.tag(this, damage) +
+				" damage on your next basic attack plus an additional " + DescUtil.val(bonusDamage) +
+				" for every " + DescUtil.val(thres) + " stamina you've used on abilities this fight.");
 	}
 }

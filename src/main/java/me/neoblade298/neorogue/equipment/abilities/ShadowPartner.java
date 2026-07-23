@@ -161,8 +161,8 @@ public class ShadowPartner extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
-				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.white("2s") + " behind you. Anytime you apply " +
-				GlossaryTag.INSANITY.tag(this) + " " + DescUtil.white("(1s cooldown)") + ", the ball fires a projectile at them, dealing " +
-				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit.");
+				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.val("2s") + " behind you. Anytime you apply " +
+				GlossaryTag.INSANITY.tag(this) + " " + DescUtil.val("(1s cooldown)") + ", the ball fires a projectile at them, dealing " +
+				GlossaryTag.DARK.tag(this, damage) + " damage on hit.");
 	}
 }

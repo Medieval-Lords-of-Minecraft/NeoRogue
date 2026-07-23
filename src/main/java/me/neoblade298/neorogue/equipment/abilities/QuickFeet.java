@@ -53,6 +53,6 @@ public class QuickFeet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
-				"On cast, " + DescUtil.charge(this, 0, 2) + " before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
+				"On cast, " + DescUtil.charge(this, 0, 2) + " before gaining " + GlossaryTag.EVADE.tag(this, ev) + ".");
 	}
 }

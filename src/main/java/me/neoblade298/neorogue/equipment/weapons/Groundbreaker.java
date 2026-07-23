@@ -43,7 +43,6 @@ public class Groundbreaker extends Equipment {
 		super(ID, "Groundbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 175 : 140, 0.5, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 		conc = isUpgraded ? 4 : 2;
 	}
@@ -80,6 +79,6 @@ public class Groundbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE, "Only works on blocks. Left clicking a block will deal damage and apply " + 
-		GlossaryTag.CONCUSSED.tag(this, conc, true) + " to enemies near the block after " + DescUtil.white("1s") + ".");
+		GlossaryTag.CONCUSSED.tag(this, conc) + " to enemies near the block after " + DescUtil.val("1s") + ".");
 	}
 }

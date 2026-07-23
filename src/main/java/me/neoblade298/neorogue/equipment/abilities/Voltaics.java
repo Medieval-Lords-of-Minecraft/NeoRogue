@@ -61,7 +61,6 @@ public class Voltaics extends Equipment {
 	public Voltaics(boolean isUpgraded) {
 		super(ID, "Voltaics", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 12 : 24, 4, 0, RANGE));
-		properties.addUpgrades(PropertyType.MANA_COST);
 		damage = isUpgraded ? 100 : 65;
 		stackThreshold = isUpgraded ? 15 : 20;
 	}
@@ -146,8 +145,8 @@ public class Voltaics extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(TICK_INTERVAL + "s") + ", fire a bolt of lightning at the nearest enemy in sight that deals " +
-				GlossaryTag.LIGHTNING.tag(this, damage, true) + " and applies " + GlossaryTag.ELECTRIFIED.tag(this, BASE_ELECTRIFIED_STACKS, false) +
-				". The number of " + GlossaryTag.ELECTRIFIED.tag(this) + " stacks applied increases by " + DescUtil.white(STACKS_INCREASE_PER_HIT) + " for every " + DescUtil.yellow(stackThreshold) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " applied.");
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.val(TICK_INTERVAL + "s") + ", fire a bolt of lightning at the nearest enemy in sight that deals " +
+				GlossaryTag.LIGHTNING.tag(this, damage) + " and applies " + GlossaryTag.ELECTRIFIED.tag(this, BASE_ELECTRIFIED_STACKS) +
+				". The number of " + GlossaryTag.ELECTRIFIED.tag(this) + " stacks applied increases by " + DescUtil.val(STACKS_INCREASE_PER_HIT) + " for every " + DescUtil.val(stackThreshold) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " applied.");
 	}
 }

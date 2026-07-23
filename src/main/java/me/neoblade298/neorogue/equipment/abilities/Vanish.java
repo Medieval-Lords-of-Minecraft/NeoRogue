@@ -26,7 +26,7 @@ public class Vanish extends Equipment {
 		super(ID, "Vanish", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 0, 0));
 		duration = 2;
-		threshold = isUpgraded ? 5 : 3;
+		threshold = isUpgraded ? 3 : 5;
 	}
 	
 	public static Equipment get() {
@@ -60,8 +60,8 @@ public class Vanish extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + "." +
-				" Every " + DescUtil.yellow(threshold) + " times you receive " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
-				" [<white>5s</white>] and " + DescUtil.white(10) + " stamina.");
+				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.val(duration) + "." +
+				" Every " + DescUtil.val(threshold) + " times you receive " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1) +
+				" [" + DescUtil.val("5s") + "] and " + DescUtil.val(10) + " stamina.");
 	}
 }

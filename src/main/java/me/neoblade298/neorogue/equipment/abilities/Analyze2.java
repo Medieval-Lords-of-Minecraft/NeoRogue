@@ -97,10 +97,10 @@ public class Analyze2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.PASSIVE.tag(this) + ". For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS) + "). " +
-				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " +
-				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, false) + " [<white>5s</white>] per stack. " +
-				"When you reach " + DescUtil.white(staminaRegenStacks) + " stacks, permanently gain " + DescUtil.yellow(staminaRegen) + " stamina regen and " +
-				GlossaryTag.EVADE.tag(this, 1, false) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". For every second you don't basic attack, gain a stack (up to " + DescUtil.val(MAX_STACKS) + "). " +
+				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack) + " damage " +
+				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK) + " [<white>5s</white>] per stack. " +
+				"When you reach " + DescUtil.val(staminaRegenStacks) + " stacks, permanently gain " + DescUtil.val(staminaRegen) + " stamina regen and " +
+				GlossaryTag.EVADE.tag(this, 1) + ".");
 	}
 }

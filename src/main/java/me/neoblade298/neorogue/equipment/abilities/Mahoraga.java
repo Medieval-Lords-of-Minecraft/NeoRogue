@@ -120,12 +120,12 @@ public class Mahoraga extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_SAPLING, new String[] { "Adapt to anything and everything." },
-				"Gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " while crouching. Refreshes after "
-						+ DescUtil.white(refresh + "s") + " uncrouched. Taking " + GlossaryTag.PHYSICAL.tag(this)
+				"Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " while crouching. Refreshes after "
+						+ DescUtil.val(refresh + "s") + " uncrouched. Taking " + GlossaryTag.PHYSICAL.tag(this)
 						+ "/" + GlossaryTag.MAGICAL.tag(this) + " damage while crouching grants "
-						+ GlossaryTag.PROTECT.tag(this, 1, false) + "/" + GlossaryTag.SHELL.tag(this, 1, false)
-						+ " and " + GlossaryTag.BERSERK.tag(this, berserk, true) + ". Above "
-						+ GlossaryTag.BERSERK.tag(this, thres, true) + ", heal " + DescUtil.white(heal)
-						+ " over " + DescUtil.white("5s") + ".");
+						+ GlossaryTag.PROTECT.tag(this, 1) + "/" + GlossaryTag.SHELL.tag(this, 1)
+						+ " and " + GlossaryTag.BERSERK.tag(this, berserk) + ". Above "
+						+ GlossaryTag.BERSERK.tag(this, thres) + ", heal " + DescUtil.val(heal)
+						+ " over " + DescUtil.val("5s") + ".");
 	}
 }

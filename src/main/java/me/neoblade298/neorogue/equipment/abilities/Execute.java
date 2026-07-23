@@ -75,7 +75,7 @@ public class Execute extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SKULL_POTTERY_SHERD,
-				"On cast, your next basic attack while in the air deals " + DescUtil.yellow(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " killed by this attack, gain " + DescUtil.yellow(strength) + " " + GlossaryTag.STRENGTH.tag(this) + ".");
+				"On cast, your next basic attack while in the air deals " + DescUtil.val(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " killed by this attack, gain " + DescUtil.val(strength) + " " + GlossaryTag.STRENGTH.tag(this) + ".");
 	}
 }

@@ -56,6 +56,6 @@ public class HiddenBlade extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SHOVEL, 
-				"Applying " + GlossaryTag.STEALTH.tag(this) + " grants " + DescUtil.white("15%") + " damage for " + DescUtil.white("2s") + ". Does not stack.");
+				"Applying " + GlossaryTag.STEALTH.tag(this) + " grants " + DescUtil.val("15%") + " damage for " + DescUtil.val("2s") + ". Does not stack.");
 	}
 }

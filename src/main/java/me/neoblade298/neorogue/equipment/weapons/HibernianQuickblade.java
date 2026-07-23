@@ -66,7 +66,7 @@ public class HibernianQuickblade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Every " + DescUtil.white("3rd") + " hit grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>], " 
+		item = createItem(Material.GOLDEN_SWORD, "Every " + DescUtil.val("3rd") + " hit grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>], " 
 		+ DescUtil.potion("speed", 0, 3) + ", and knocks back nearby enemies.");
 	}
 }

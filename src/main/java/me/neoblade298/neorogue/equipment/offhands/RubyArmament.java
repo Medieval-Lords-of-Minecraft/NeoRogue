@@ -89,9 +89,9 @@ public class RubyArmament extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_BLOCK, "Right clicking switches stances between " + DescUtil.white("Power") + " and " + DescUtil.white("Patience") + "."
-				+ " While in " + DescUtil.white("Patience") + ", your basic attack damage is decreased by " + DescUtil.white(damageDec) + " and grant " + DescUtil.yellow(stamina) + " stamina."
-				+ " While in " + DescUtil.white("Power") + ", your basic attack damage is increased by " + DescUtil.yellow(damage) + " and cost " + DescUtil.white(stamCost)
+		item = createItem(Material.REDSTONE_BLOCK, "Right clicking switches stances between " + DescUtil.val("Power") + " and " + DescUtil.val("Patience") + "."
+				+ " While in " + DescUtil.val("Patience") + ", your basic attack damage is decreased by " + DescUtil.val(damageDec) + " and grant " + DescUtil.val(stamina) + " stamina."
+				+ " While in " + DescUtil.val("Power") + ", your basic attack damage is increased by " + DescUtil.val(damage) + " and cost " + DescUtil.val(stamCost)
 				+ " stamina.");
 	}
 }

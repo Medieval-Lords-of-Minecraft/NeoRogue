@@ -51,7 +51,7 @@ public class HavenTome extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK, "On right click, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" [<white>5s</white>] if you are within " + DescUtil.white(5) + " blocks of one of your " + GlossaryTag.RIFT.tagPlural(this) + ".");
+		item = createItem(Material.BOOK, "On right click, gain " + GlossaryTag.SHIELDS.tag(this, shields) +
+				" [<white>5s</white>] if you are within " + DescUtil.val(5) + " blocks of one of your " + GlossaryTag.RIFT.tagPlural(this) + ".");
 	}
 }

@@ -24,6 +24,6 @@ public class GlassArrow extends LimitedAmmunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Limited to " + DescUtil.yellow(uses) + " uses per fight.");
+		item = createItem(Material.ARROW, "Limited to " + DescUtil.val(uses) + " uses per fight.");
 	}
 }

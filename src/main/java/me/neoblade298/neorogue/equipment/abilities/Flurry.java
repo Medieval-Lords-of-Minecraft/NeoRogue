@@ -63,6 +63,6 @@ public class Flurry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, your next " + DescUtil.yellow(cutoff) + " basic attacks have their attack speed increased by " + DescUtil.white("1.0") + ".");
+				"On cast, your next " + DescUtil.val(cutoff) + " basic attacks have their attack speed increased by " + DescUtil.val("1.0") + ".");
 	}
 }

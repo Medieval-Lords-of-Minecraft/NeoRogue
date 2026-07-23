@@ -29,7 +29,6 @@ public class IronSword extends Equipment {
 		super(ID, "Iron Sword", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 70 : 55, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -65,6 +64,6 @@ public class IronSword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Every " + DescUtil.white("third") + " hit lowers ability cooldowns by " + DescUtil.white(1) + ".");
+		item = createItem(Material.IRON_SWORD, "Every " + DescUtil.val("third") + " hit lowers ability cooldowns by " + DescUtil.val(1) + ".");
 	}
 }

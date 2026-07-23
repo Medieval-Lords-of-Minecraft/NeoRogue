@@ -22,7 +22,6 @@ public class ForceCloak extends Equipment {
 	public ForceCloak(boolean isUpgraded) {
 		super(ID, "Force Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(isUpgraded ? 15 : 20, isUpgraded ? 1 : 5, isUpgraded ? 10 : 15, 0));
-		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN);
 	}
 
 	public static Equipment get() {
@@ -42,7 +41,7 @@ public class ForceCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "On cast, apply " + GlossaryTag.PROTECT.tag(this, 1, false) + " and "
-				+ GlossaryTag.SHELL.tag(this, 1, false) + ".");
+		item = createItem(Material.SHIELD, "On cast, apply " + GlossaryTag.PROTECT.tag(this, 1) + " and "
+				+ GlossaryTag.SHELL.tag(this, 1) + ".");
 	}
 }

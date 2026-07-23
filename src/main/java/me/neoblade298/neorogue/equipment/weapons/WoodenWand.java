@@ -42,7 +42,6 @@ public class WoodenWand extends Equipment {
 				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 35 : 25, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		canDrop = false;
 	}
 

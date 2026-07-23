@@ -57,6 +57,6 @@ public class PowerThrough extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				GlossaryTag.POWER.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, cutoff, true) + " you acquire, apply " + GlossaryTag.PROTECT.tag(this, 1, false) + " to yourself.");
+				GlossaryTag.POWER.tag(this) + ". For every " + GlossaryTag.BERSERK.tag(this, cutoff) + " you acquire, apply " + GlossaryTag.PROTECT.tag(this, 1) + " to yourself.");
 	}
 }

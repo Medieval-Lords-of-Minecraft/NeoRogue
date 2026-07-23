@@ -55,7 +55,6 @@ public class Maelstrom extends Equipment {
 	public Maelstrom(boolean isUpgraded) {
 		super(ID, "Maelstrom", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 85 : 65, 0.9, 0, 0.8, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -160,7 +159,7 @@ public class Maelstrom extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TRIDENT, "Can only be used after applying " + GlossaryTag.ELECTRIFIED.tag(this)
 				+ ". Must reapply after each use. Basic attacks that hit an " + GlossaryTag.ELECTRIFIED.tag(this)
-				+ " enemy fire a bolt to the nearest enemy within " + DescUtil.white(BOLT_RANGE)
+				+ " enemy fire a bolt to the nearest enemy within " + DescUtil.val(BOLT_RANGE)
 				+ " blocks, dealing " + GlossaryTag.LIGHTNING.tag(this, (int) properties.get(PropertyType.DAMAGE), true)
 				+ " damage. The bolt chains further if the new target is also "
 				+ GlossaryTag.ELECTRIFIED.tag(this) + ". Each bolt counts as a basic attack.");

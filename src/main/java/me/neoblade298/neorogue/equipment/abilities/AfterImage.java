@@ -58,6 +58,6 @@ public class AfterImage extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dashing once. Every time you " + GlossaryTag.DASH.tag(this) + ", gain " + 
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}
 }

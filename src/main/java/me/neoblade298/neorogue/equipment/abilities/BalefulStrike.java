@@ -106,9 +106,9 @@ public class BalefulStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.PASSIVE.tag(this) + ". If you don't basic attack for " + DescUtil.white(CHARGE_TIME + "s") + ", your next basic attack " +
-				"deals " + DescUtil.yellow(damageMultiplier + "x") + " the current " + GlossaryTag.POISON.tag(this) + " stacks on the enemy " +
-				"as " + GlossaryTag.PIERCING.tag(this) + " damage and then applies " + DescUtil.yellow(applyMultiplier + "x") + " " +
+				GlossaryTag.PASSIVE.tag(this) + ". If you don't basic attack for " + DescUtil.val(CHARGE_TIME + "s") + ", your next basic attack " +
+				"deals " + DescUtil.val(damageMultiplier + "x") + " the current " + GlossaryTag.POISON.tag(this) + " stacks on the enemy " +
+				"as " + GlossaryTag.PIERCING.tag(this) + " damage and then applies " + DescUtil.val(applyMultiplier + "x") + " " +
 				"the current " + GlossaryTag.POISON.tag(this) + " stacks [<white>5s</white>] to the target.");
 	}
 }

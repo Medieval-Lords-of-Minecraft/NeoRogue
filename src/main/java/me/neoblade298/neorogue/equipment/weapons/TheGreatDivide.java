@@ -80,7 +80,7 @@ public class TheGreatDivide extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE,
-				"Every " + DescUtil.white("3rd") + " hit, deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage, apply "
-						+ GlossaryTag.CONCUSSED.tag(this, concussed, true) + ", and knock up in a line.");
+				"Every " + DescUtil.val("3rd") + " hit, deal " + GlossaryTag.EARTHEN.tag(this, damage) + " damage, apply "
+						+ GlossaryTag.CONCUSSED.tag(this, concussed) + ", and knock up in a line.");
 	}
 }

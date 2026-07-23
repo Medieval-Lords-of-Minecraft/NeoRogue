@@ -60,6 +60,6 @@ public class BlinkRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On right click (left click for <gold>Archer</gold>), " + GlossaryTag.DASH.tag(this) + " in the direction you're looking. Works " + DescUtil.yellow(reps + "x") + " per fight.");
+				"On right click (left click for <gold>Archer</gold>), " + GlossaryTag.DASH.tag(this) + " in the direction you're looking. Works " + DescUtil.val(reps + "x") + " per fight.");
 	}
 }

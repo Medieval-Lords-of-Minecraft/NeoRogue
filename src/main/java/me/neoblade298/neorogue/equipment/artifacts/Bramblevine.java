@@ -52,6 +52,6 @@ public class Bramblevine extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.VINE, "Dealing " + GlossaryTag.THORNS.tag(this) + " damage grants you "
-				+ GlossaryTag.SHIELDS.tag(this, shield, false) + " [<white>3s</white>].");
+				+ GlossaryTag.SHIELDS.tag(this, shield) + " [<white>3s</white>].");
 	}
 }

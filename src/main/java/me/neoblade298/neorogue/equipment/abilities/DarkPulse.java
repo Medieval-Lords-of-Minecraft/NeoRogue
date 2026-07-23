@@ -122,7 +122,7 @@ public class DarkPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-				"On cast, drop a marker that pulses and deals " + GlossaryTag.DARK.tag(this, pulse, true) + " damage for every "
-				+ DescUtil.yellow(thres) + " damage you deal while in range of the marker. The marker deactivates after you leave range.");
+				"On cast, drop a marker that pulses and deals " + GlossaryTag.DARK.tag(this, pulse) + " damage for every "
+				+ DescUtil.val(thres) + " damage you deal while in range of the marker. The marker deactivates after you leave range.");
 	}
 }

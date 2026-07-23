@@ -45,7 +45,7 @@ public class TopazRing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS, "Increase stacks of " + GlossaryTag.ELECTRIFIED.tag(this) + " applied by "
-				+ DescUtil.yellow(stacks) + ". Applying " + GlossaryTag.ELECTRIFIED.tag(this) + " grants "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				+ DescUtil.val(stacks) + ". Applying " + GlossaryTag.ELECTRIFIED.tag(this) + " grants "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}
 }

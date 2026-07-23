@@ -62,8 +62,8 @@ public class BurningMantle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.yellow(reduc) + " and deal "
-		+ GlossaryTag.FIRE.tag(this, damage, false) + " damage in return. For every " +
-		GlossaryTag.FIRE.tag(this, thres, false) + " damage you deal, increase return damage by " + DescUtil.yellow(inc) + ".");
+		item = createItem(Material.BLAZE_POWDER, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + " and deal "
+		+ GlossaryTag.FIRE.tag(this, damage) + " damage in return. For every " +
+		GlossaryTag.FIRE.tag(this, thres) + " damage you deal, increase return damage by " + DescUtil.val(inc) + ".");
 	}
 }

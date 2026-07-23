@@ -65,7 +65,7 @@ public class ShoulderBash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POPPED_CHORUS_FRUIT,
-				GlossaryTag.PASSIVE.tag(this) + ". Left clicking an enemy deals " + GlossaryTag.BLUNT.tag(this, damage, false) + " damage and knocks them back. They take an additional " +
-					DescUtil.yellow(inc) + " damage " + DescUtil.duration(5, false) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Left clicking an enemy deals " + GlossaryTag.BLUNT.tag(this, damage) + " damage and knocks them back. They take an additional " +
+					DescUtil.val(inc) + " damage " + DescUtil.duration(5) + ".");
 	}
 }

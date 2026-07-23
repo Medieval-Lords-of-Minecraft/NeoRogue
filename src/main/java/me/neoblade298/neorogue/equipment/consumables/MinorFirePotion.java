@@ -49,7 +49,7 @@ public class MinorFirePotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Throw a potion that deals " + GlossaryTag.FIRE.tag(this, damage, true) + " to all nearby enemies. Consumed on first use.");
+		item = createItem(Material.POTION, "Throw a potion that deals " + GlossaryTag.FIRE.tag(this, damage) + " to all nearby enemies. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 0, 0));
 		item.setItemMeta(meta);

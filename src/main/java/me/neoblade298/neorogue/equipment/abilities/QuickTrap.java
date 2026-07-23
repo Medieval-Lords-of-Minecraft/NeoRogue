@@ -106,7 +106,7 @@ public class QuickTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PISTON,
-				"Every time you deal " + DescUtil.yellow(thres) + " damage, left clicking drops a trap " + DescUtil.duration(secs, false) + " that deals "
-				+ GlossaryTag.BLUNT.tag(this, damage, true) + " damage to the first enemy that steps on it.");
+				"Every time you deal " + DescUtil.val(thres) + " damage, left clicking drops a trap " + DescUtil.duration(secs) + " that deals "
+				+ GlossaryTag.BLUNT.tag(this, damage) + " damage to the first enemy that steps on it.");
 	}
 }

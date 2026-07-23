@@ -59,9 +59,9 @@ public class SigilOfDestruction extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "For every " + DescUtil.white(THRES) + " "
+		item = createItem(Material.RABBIT_FOOT, "For every " + DescUtil.val(THRES) + " "
 				+ GlossaryTag.PHYSICAL.tag(this) + " damage dealt, gain "
-				+ GlossaryTag.BERSERK.tag(this, 1, false) + " and "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("5s") + "].");
+				+ GlossaryTag.BERSERK.tag(this, 1) + " and "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("5s") + "].");
 	}
 }

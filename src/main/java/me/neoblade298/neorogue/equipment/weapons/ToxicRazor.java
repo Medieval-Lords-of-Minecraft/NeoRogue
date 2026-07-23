@@ -61,7 +61,7 @@ public class ToxicRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD,
-				"Deal an additional " + DescUtil.white(bonus) + " damage for every " + DescUtil.yellow(threshold) +
+				"Deal an additional " + DescUtil.val(bonus) + " damage for every " + DescUtil.val(threshold) +
 				" " + GlossaryTag.POISON.tag(this) + " stacks you have applied this fight.");
 	}
 }

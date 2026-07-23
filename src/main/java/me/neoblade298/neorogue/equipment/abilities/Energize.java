@@ -48,8 +48,8 @@ public class Energize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage " +
-		"and marks the enemy. For the next " + DescUtil.white("5s") + ", the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
+				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage) + " damage " +
+		"and marks the enemy. For the next " + DescUtil.val("5s") + ", the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec)
 		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy.");
 	}
 

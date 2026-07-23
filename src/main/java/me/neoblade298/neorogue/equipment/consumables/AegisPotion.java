@@ -51,9 +51,9 @@ public class AegisPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Applies " + GlossaryTag.SHIELDS.tag(this, upfront, true) +
-				" and then " + GlossaryTag.SHIELDS.tag(this, periodic, true) +
-				" [<white>3s</white>] every " + DescUtil.white("3s") + " for the rest of combat. Consumed on first use.");
+				"Applies " + GlossaryTag.SHIELDS.tag(this, upfront) +
+				" and then " + GlossaryTag.SHIELDS.tag(this, periodic) +
+				" [<white>3s</white>] every " + DescUtil.val("3s") + " for the rest of combat. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(100, 149, 237));
 		item.setItemMeta(meta);

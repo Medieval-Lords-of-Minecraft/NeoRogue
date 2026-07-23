@@ -96,8 +96,8 @@ public class Fireball extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before launching a fireball that deals "
-						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply "
-						+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before launching a fireball that deals "
+						+ GlossaryTag.FIRE.tag(this, damage) + " damage but apply "
+						+ GlossaryTag.CORRUPTION.tag(this, corr) + " to yourself.");
 	}
 }

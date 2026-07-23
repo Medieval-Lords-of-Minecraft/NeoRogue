@@ -42,6 +42,6 @@ public class BlindingCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", "
-				+ "grant " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>].");
+				+ "grant " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>].");
 	}
 }

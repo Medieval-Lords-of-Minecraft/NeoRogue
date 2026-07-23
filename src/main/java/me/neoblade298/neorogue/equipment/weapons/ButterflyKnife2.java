@@ -44,7 +44,7 @@ public class ButterflyKnife2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional " + DescUtil.yellow(dmg) + " damage if above "
-				+ DescUtil.yellow(stam) + " stamina.");
+		item = createItem(Material.STONE_SWORD, "Deal an additional " + DescUtil.val(dmg) + " damage if above "
+				+ DescUtil.val(stam) + " stamina.");
 	}
 }

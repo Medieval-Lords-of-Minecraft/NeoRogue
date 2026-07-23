@@ -63,6 +63,6 @@ public class Cleave extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLADE_POTTERY_SHERD,
-				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
+				"On cast, deal " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
 	}
 }

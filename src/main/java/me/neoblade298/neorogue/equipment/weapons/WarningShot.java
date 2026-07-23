@@ -126,8 +126,8 @@ public class WarningShot extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, "On cast, charge " + DescUtil.white("1s") + " before firing a projectile. If that projectile hits a block, "
+		item = createItem(Material.REDSTONE_TORCH, "On cast, charge " + DescUtil.val("1s") + " before firing a projectile. If that projectile hits a block, "
 			+ "apply " + DescUtil.potion("Slowness", 0, 3) + " to all enemies in a radius, increase damage by "
-			+ DescUtil.yellow(damage) + " [<white>8s</white>] per enemy slowed, and gain " + GlossaryTag.FOCUS.tag(this, focus, true) + " if at least one enemy was slowed.");
+			+ DescUtil.val(damage) + " [<white>8s</white>] per enemy slowed, and gain " + GlossaryTag.FOCUS.tag(this, focus) + " if at least one enemy was slowed.");
 	}
 }

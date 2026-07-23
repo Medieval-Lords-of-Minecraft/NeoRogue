@@ -90,6 +90,6 @@ public class DarkLance extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACK_DYE,
-				"On cast, drop a bomb that detonates after " + DescUtil.white("2s") + " and deals " + GlossaryTag.DARK.tag(this, damage, true) + " damage to enemies in the area.");
+				"On cast, drop a bomb that detonates after " + DescUtil.val("2s") + " and deals " + GlossaryTag.DARK.tag(this, damage) + " damage to enemies in the area.");
 	}
 }

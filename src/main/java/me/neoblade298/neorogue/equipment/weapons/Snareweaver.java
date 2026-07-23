@@ -45,7 +45,6 @@ public class Snareweaver extends Bow {
 				EquipmentProperties.ofBow(80, 1, 0, 12, 1, 1));
 		explosionDamage = isUpgraded ? 150 : 100;
 		bonusDamagePerTrap = isUpgraded ? 15 : 10;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -103,9 +102,9 @@ public class Snareweaver extends Bow {
 		item = createItem(Material.CROSSBOW,
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
-				GlossaryTag.BLUNT.tag(this, explosionDamage, true) + " damage to nearby enemies. " +
-				"Deals an additional " + GlossaryTag.BLUNT.tag(this, bonusDamagePerTrap, true) + " bonus damage per trap you've set. " +
-				"If you've set a trap in the last " + DescUtil.white("5s") + ", fires " + DescUtil.white(5) + " projectiles in a cone.");
+				GlossaryTag.BLUNT.tag(this, explosionDamage) + " damage to nearby enemies. " +
+				"Deals an additional " + GlossaryTag.BLUNT.tag(this, bonusDamagePerTrap) + " bonus damage per trap you've set. " +
+				"If you've set a trap in the last " + DescUtil.val("5s") + ", fires " + DescUtil.val(5) + " projectiles in a cone.");
 	}
 	
 	private class SnareweaverProjectile extends BowProjectile {

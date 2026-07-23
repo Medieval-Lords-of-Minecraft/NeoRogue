@@ -72,7 +72,7 @@ public class TacticiansDagger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " if "
-				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in " + DescUtil.white(3) + " seconds.");
+		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " if "
+				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in " + DescUtil.val(3) + " seconds.");
 	}
 }

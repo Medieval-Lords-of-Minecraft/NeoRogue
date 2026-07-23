@@ -70,7 +70,7 @@ public class EnderEye extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
 				"On right click, decrease " + GlossaryTag.MAGICAL.tag(this)
-						+ " defense of all enemies in a cone in front of you by " + DescUtil.yellow(inc)
+						+ " defense of all enemies in a cone in front of you by " + DescUtil.val(inc)
 						+ " [<white>8s</white>].");
 	}
 }

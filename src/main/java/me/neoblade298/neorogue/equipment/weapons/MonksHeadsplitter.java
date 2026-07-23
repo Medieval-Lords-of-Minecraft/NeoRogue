@@ -28,7 +28,6 @@ public class MonksHeadsplitter extends Equipment {
 		super(ID, "Monk's Headsplitter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE ,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(0, 2, 65, 1, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		bonus = isUpgraded ? 40 : 20;
 	}
 	
@@ -49,6 +48,6 @@ public class MonksHeadsplitter extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Deals an additional " + DescUtil.yellow(bonus) + " damage to " + GlossaryTag.CONCUSSED.tag(this) + " enemies.");
+		item = createItem(Material.STICK, "Deals an additional " + DescUtil.val(bonus) + " damage to " + GlossaryTag.CONCUSSED.tag(this) + " enemies.");
 	}
 }

@@ -115,7 +115,7 @@ public class GroundLance extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing "
-						+ GlossaryTag.EARTHEN.tag(this, damage, true)
+						+ GlossaryTag.EARTHEN.tag(this, damage)
 						+ " in an area around the block you aim at. Deal triple damage if you hit exactly one target.");
 	}
 }

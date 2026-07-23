@@ -141,9 +141,9 @@ public class StoneSpear extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Can be thrown to deal " + DescUtil.yellow(throwDamage) + " " + GlossaryTag.PIERCING.tag(this) + " "
-						+ "damage to all enemies hit, but disabling the weapon " + DescUtil.duration(5, false) + ". "
-						+ "Basic attacks and throw damage are affected by strength " + DescUtil.yellow(strMult + "x") + "."
+				"Melee range +1. Can be thrown to deal " + DescUtil.val(throwDamage) + " " + GlossaryTag.PIERCING.tag(this) + " "
+						+ "damage to all enemies hit, but disabling the weapon " + DescUtil.duration(5) + ". "
+						+ "Basic attacks and throw damage are affected by strength " + DescUtil.val(strMult + "x") + "."
 		);
 	}
 }

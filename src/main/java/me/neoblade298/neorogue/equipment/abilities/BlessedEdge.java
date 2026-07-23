@@ -67,7 +67,7 @@ public class BlessedEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				"On cast, your next basic attack deals " + DescUtil.white(damage) + " " + GlossaryTag.LIGHT.tag(this) + " damage and applies " + DescUtil.yellow(sanct) +
+				"On cast, your next basic attack deals " + DescUtil.val(damage) + " " + GlossaryTag.LIGHT.tag(this) + " damage and applies " + DescUtil.val(sanct) +
 				" " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

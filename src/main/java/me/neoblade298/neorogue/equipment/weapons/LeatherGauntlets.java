@@ -22,7 +22,6 @@ public class LeatherGauntlets extends Equipment {
 		super(ID, "Leather Gauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 25 : 20, 1.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {

@@ -42,7 +42,7 @@ public class Footpads extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def)
-				+ ". Receiving damage grants you " + DescUtil.yellow(stamina) + " stamina.");
+		item = createItem(Material.LEATHER_BOOTS, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def)
+				+ ". Receiving damage grants you " + DescUtil.val(stamina) + " stamina.");
 	}
 }

@@ -79,7 +79,7 @@ public class FrostbiteBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "If you've applied " + GlossaryTag.FROST.tag(this) + " in the last " + DescUtil.white("5s") + ", increase this bow's damage by " +
-				DescUtil.yellow(damage) + ".");
+		item = createItem(Material.BOW, "If you've applied " + GlossaryTag.FROST.tag(this) + " in the last " + DescUtil.val("5s") + ", increase this bow's damage by " +
+				DescUtil.val(damage) + ".");
 	}
 }

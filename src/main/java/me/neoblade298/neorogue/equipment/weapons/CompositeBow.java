@@ -57,6 +57,6 @@ public class CompositeBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "At " + GlossaryTag.FOCUS.tag(this, thres, false) + ", deal an additional " + DescUtil.yellow(damage) + " damage");
+		item = createItem(Material.BOW, "At " + GlossaryTag.FOCUS.tag(this, thres) + ", deal an additional " + DescUtil.val(damage) + " damage");
 	}
 }

@@ -32,7 +32,6 @@ public class SiphoningStrike extends Equipment {
 	public SiphoningStrike(boolean isUpgraded) {
 		super(ID, "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 150;
 		buff = isUpgraded ? 20 : 12;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -73,8 +72,8 @@ public class SiphoningStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BROWN_DYE,
-				"On cast, your next basic attack while in the air deals " + DescUtil.white(damage) + " " + GlossaryTag.PIERCING.tag(this)
+				"On cast, your next basic attack while in the air deals " + DescUtil.val(damage) + " " + GlossaryTag.PIERCING.tag(this)
 				+ " damage. If the enemy is killed with this damage, increase " + GlossaryTag.STRENGTH.tag(this) + 
-				" by " + DescUtil.yellow(buff) + " and halve the ability cooldown.");
+				" by " + DescUtil.val(buff) + " and halve the ability cooldown.");
 	}
 }

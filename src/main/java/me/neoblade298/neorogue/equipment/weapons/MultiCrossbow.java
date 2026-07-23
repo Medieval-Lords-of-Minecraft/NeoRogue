@@ -24,7 +24,6 @@ public class MultiCrossbow extends Bow {
 		super(ID, "Multi-Crossbow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 35 : 30, 1, 0, 7, 0, 0));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -68,6 +67,6 @@ public class MultiCrossbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CROSSBOW,
-			"Additionally fires " + DescUtil.white(4) + " projectiles in a circle around the cursor.");
+			"Additionally fires " + DescUtil.val(4) + " projectiles in a circle around the cursor.");
 	}
 }

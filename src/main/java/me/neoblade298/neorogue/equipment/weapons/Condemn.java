@@ -102,8 +102,8 @@ public class Condemn extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.POINTED_DRIPSTONE,
-				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " and knock back enemies in a line. " +
-				"If the line includes a wall, deal " + DescUtil.yellow(bonus) + " bonus damage to all enemies hit, apply " + DescUtil.potion("Slowness", 2, 2) +
-				", and reduce their " + GlossaryTag.PHYSICAL.tag(this) + " defense by " + DescUtil.yellow(multStr + "%") + " for " + DescUtil.white("5s") + ".");
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage) + " and knock back enemies in a line. " +
+				"If the line includes a wall, deal " + DescUtil.val(bonus) + " bonus damage to all enemies hit, apply " + DescUtil.potion("Slowness", 2, 2) +
+				", and reduce their " + GlossaryTag.PHYSICAL.tag(this) + " defense by " + DescUtil.val(multStr + "%") + " for " + DescUtil.val("5s") + ".");
 	}
 }

@@ -41,6 +41,6 @@ public class StoneArrow extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage if it travels at least " + DescUtil.white(thres) + " blocks.");
+		item = createItem(Material.ARROW, "Deals an additional " + GlossaryTag.PIERCING.tag(this, damage) + " damage if it travels at least " + DescUtil.val(thres) + " blocks.");
 	}
 }

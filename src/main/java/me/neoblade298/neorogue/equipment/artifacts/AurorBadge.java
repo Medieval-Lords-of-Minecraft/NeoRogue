@@ -56,7 +56,7 @@ public class AurorBadge extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SKULL_BANNER_PATTERN, 
-				"Upon dealing a basic attack, if your last basic attack was over " + DescUtil.white(3) + " seconds ago, your " +
-				"basic attack damage is increased by " + DescUtil.white((int) (damage * 100) + "%") + ".");
+				"Upon dealing a basic attack, if your last basic attack was over " + DescUtil.val(3) + " seconds ago, your " +
+				"basic attack damage is increased by " + DescUtil.val((int) (damage * 100) + "%") + ".");
 	}
 }

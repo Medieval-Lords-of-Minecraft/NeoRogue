@@ -80,7 +80,7 @@ public class LaceratingWave extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
 				GlossaryTag.PASSIVE.tag(this) + ". Dealing basic attack damage to an enemy with over " + 
-				DescUtil.yellow(rendThreshold) + " " + GlossaryTag.REND.tag(this) + " deals " + 
-				GlossaryTag.SLASHING.tag(this, damage, true) + " damage in an area around them.");
+				DescUtil.val(rendThreshold) + " " + GlossaryTag.REND.tag(this) + " deals " + 
+				GlossaryTag.SLASHING.tag(this, damage) + " damage in an area around them.");
 	}
 }

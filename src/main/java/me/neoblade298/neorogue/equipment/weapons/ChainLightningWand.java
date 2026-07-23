@@ -50,7 +50,6 @@ public class ChainLightningWand extends Equipment {
 				ID, "Chain Lightning Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		chainAmount = isUpgraded ? 5 : 3;
 	}
 	
@@ -83,7 +82,7 @@ public class ChainLightningWand extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Lightning chains through " + DescUtil.yellow(chainAmount) + " additional enemies.");
+		item = createItem(Material.STICK, "Lightning chains through " + DescUtil.val(chainAmount) + " additional enemies.");
 	}
 
 	// returns chains remaining

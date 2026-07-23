@@ -74,8 +74,8 @@ public class SerratedRazor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.white(3) + " times within " + DescUtil.white("1.5s") + ", deal an additional " + DescUtil.yellow(bonus) + ""
+		item = createItem(Material.WOODEN_HOE, "If you attack " + DescUtil.val(3) + " times within " + DescUtil.val("1.5s") + ", deal an additional " + DescUtil.val(bonus) + ""
 				+ " damage if the target has " + GlossaryTag.POISON.tag(this) + " or " + GlossaryTag.INSANITY.tag(this) + ", and "
-						+ "set your attack cooldown to " + DescUtil.white("1s") + ". Otherwise, the combo resets.");
+						+ "set your attack cooldown to " + DescUtil.val("1s") + ". Otherwise, the combo resets.");
 	}
 }

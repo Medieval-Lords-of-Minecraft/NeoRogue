@@ -76,8 +76,8 @@ public class FlightRing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Start every fight with " + GlossaryTag.EVADE.tag(this, evade, true) + ". " +
-				"The first " + DescUtil.yellow(evade) + " times you " + 
+				"Start every fight with " + GlossaryTag.EVADE.tag(this, evade) + ". " +
+				"The first " + DescUtil.val(evade) + " times you " + 
 				GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " away from the enemy.");
 	}
 }

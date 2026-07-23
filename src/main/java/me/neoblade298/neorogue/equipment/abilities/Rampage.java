@@ -75,7 +75,7 @@ public class Rampage extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage. This amount increases by " +
-				DescUtil.yellow(inc) + " for every time you land this attack.");
+				"On cast, your next basic attack deals an additional " + GlossaryTag.SLASHING.tag(this, damage) + " damage. This amount increases by " +
+				DescUtil.val(inc) + " for every time you land this attack.");
 	}
 }

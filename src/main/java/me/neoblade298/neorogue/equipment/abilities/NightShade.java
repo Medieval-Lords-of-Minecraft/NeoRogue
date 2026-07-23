@@ -46,10 +46,10 @@ public class NightShade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) + " [<white>5s</white>]. "
-						+ "Your next " + DescUtil.white(3) + " basic attacks deals an additional "
-						+ GlossaryTag.DARK.tag(this, damage, true) + " damage and applies "
-						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
+				"On cast, Grant speed " + DescUtil.val(1) + " and " + GlossaryTag.STEALTH.tag(this) + " [<white>5s</white>]. "
+						+ "Your next " + DescUtil.val(3) + " basic attacks deals an additional "
+						+ GlossaryTag.DARK.tag(this, damage) + " damage and applies "
+						+ GlossaryTag.INSANITY.tag(this, insanity) + ". "
 						+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 						+ " stacks every second.");
 	}

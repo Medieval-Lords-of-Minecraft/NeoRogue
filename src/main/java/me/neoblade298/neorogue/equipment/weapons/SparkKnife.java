@@ -27,7 +27,6 @@ public class SparkKnife extends Equipment {
 		super(ID, "Spark Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 30, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		elec = isUpgraded ? 3 : 2;
 	}
 
@@ -53,6 +52,6 @@ public class SparkKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
+		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}
 }

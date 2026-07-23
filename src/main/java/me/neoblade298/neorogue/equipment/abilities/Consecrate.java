@@ -106,8 +106,8 @@ public class Consecrate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHITE_GLAZED_TERRACOTTA,
-				"Can be cast after landing basic attacks on enemies with " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.white(5) + " times. " +
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " damage, gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>], " +
-				"applying " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ", and knocking back nearby enemies.");
+				"Can be cast after landing basic attacks on enemies with " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(5) + " times. " +
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.LIGHT.tag(this, damage) + " damage, gaining " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>], " +
+				"applying " + GlossaryTag.SANCTIFIED.tag(this, sanct) + ", and knocking back nearby enemies.");
 	}
 }

@@ -44,7 +44,6 @@ public class AshenHeadhunter extends Equipment {
 				ID , "Ashen Headhunter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(4, 0, isUpgraded ? 60 : 50, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		burn = isUpgraded ? 8 : 5;
 	}
 	
@@ -114,6 +113,6 @@ public class AshenHeadhunter extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Projectiles are paused for " + DescUtil.white("1s") + " before firing. Every " + DescUtil.yellow("3rd") + " hit applies " + GlossaryTag.BURN.tag(this, burn, true) + ".");
+		item = createItem(Material.STICK, "Projectiles are paused for " + DescUtil.val("1s") + " before firing. Every " + DescUtil.val("3rd") + " hit applies " + GlossaryTag.BURN.tag(this, burn) + ".");
 	}
 }

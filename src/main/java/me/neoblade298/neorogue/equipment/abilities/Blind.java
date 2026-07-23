@@ -76,6 +76,6 @@ public class Blind extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHT,
 				"On cast, throw an orb of light that applies Slowness 1 [<white>3s</white>]. During this time, dealing damage to enemies hit " +
-				"applies " + GlossaryTag.INJURY.tag(this, injure, true) + ".");
+				"applies " + GlossaryTag.INJURY.tag(this, injure) + ".");
 	}
 }

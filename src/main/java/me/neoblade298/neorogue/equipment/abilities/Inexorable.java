@@ -55,7 +55,7 @@ public class Inexorable extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BLOCK,
-				GlossaryTag.PASSIVE.tag(this) + ". This ability grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " at the start of the fight. Automatically regenerates every " + 
-				DescUtil.white(refresh + "s") + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". This ability grants " + GlossaryTag.SHIELDS.tag(this, shields) + " at the start of the fight. Automatically regenerates every " + 
+				DescUtil.val(refresh + "s") + ".");
 	}
 }

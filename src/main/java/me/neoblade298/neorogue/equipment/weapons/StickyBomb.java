@@ -42,7 +42,6 @@ public class StickyBomb extends Ammunition {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(1, 0.1, DamageType.FIRE).add(PropertyType.AREA_OF_EFFECT, isUpgraded ? 4 : 2));
 		tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false, TargetType.ENEMY);
-		properties.addUpgrades(PropertyType.AREA_OF_EFFECT);
 		explode = new ParticleContainer(Particle.EXPLOSION).count(10).spread(tp.range / 2, 0);
 		damage = 70;
 	}
@@ -80,8 +79,8 @@ public class StickyBomb extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage, false) + " damage " +
-		"(unaffected by bow) to all nearby enemies after " + DescUtil.white("1s") + ".");
+		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage) + " damage " +
+		"(unaffected by bow) to all nearby enemies after " + DescUtil.val("1s") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

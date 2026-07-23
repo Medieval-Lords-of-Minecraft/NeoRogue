@@ -62,8 +62,8 @@ public class RecklessSwing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, gain " + GlossaryTag.BERSERK.tag(this, 1, false) +
-				", and your next basic attack deals " + DescUtil.yellow(mult + "x") + " your current " + GlossaryTag.BERSERK.tag(this) + " stacks as " + 
+				"On cast, gain " + GlossaryTag.BERSERK.tag(this, 1) +
+				", and your next basic attack deals " + DescUtil.val(mult + "x") + " your current " + GlossaryTag.BERSERK.tag(this) + " stacks as " + 
 				GlossaryTag.BLUNT.tag(this) + " damage.");
 	}
 }

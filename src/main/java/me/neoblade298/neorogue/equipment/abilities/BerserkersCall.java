@@ -45,8 +45,8 @@ public class BerserkersCall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself " + DescUtil.white(strength) + " " + GlossaryTag.STRENGTH.tag(this) + " and "
-						+ GlossaryTag.BERSERK.tag(this, 1, false) + ". At " + DescUtil.white(BERSERK_CUTOFF) + " stacks, instead give yourself " + DescUtil.yellow(berserkStrength) + 
+				"On cast, give yourself " + DescUtil.val(strength) + " " + GlossaryTag.STRENGTH.tag(this) + " and "
+						+ GlossaryTag.BERSERK.tag(this, 1) + ". At " + DescUtil.val(BERSERK_CUTOFF) + " stacks, instead give yourself " + DescUtil.val(berserkStrength) + 
 						" " + GlossaryTag.STRENGTH.tag + ".");
 	}
 

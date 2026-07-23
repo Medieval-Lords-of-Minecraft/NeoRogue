@@ -108,11 +108,11 @@ public class Paranoia extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.PASSIVE.tag(this) + ". For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS)
+				GlossaryTag.PASSIVE.tag(this) + ". For every second you don't basic attack, gain a stack (up to " + DescUtil.val(MAX_STACKS)
 						+ "). " + "The next time you basic attack, deal "
-						+ GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " + "and gain "
-						+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, true) + " " + DescUtil.duration(5, false) + " per stack. "
-						+ "If you haven't basic attacked in the past " + DescUtil.white("2s") + ", apply "
-						+ GlossaryTag.INSANITY.tag(this, insanity, true) + " to enemies around you every second.");
+						+ GlossaryTag.PIERCING.tag(this, damagePerStack) + " damage " + "and gain "
+						+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK) + " " + DescUtil.duration(5) + " per stack. "
+						+ "If you haven't basic attacked in the past " + DescUtil.val("2s") + ", apply "
+						+ GlossaryTag.INSANITY.tag(this, insanity) + " to enemies around you every second.");
 	}
 }

@@ -112,6 +112,6 @@ public class RighteousHammer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, "Deals damage to enemies in a small circle in front of you. Only the closest enemy"
-				+ " to the center of the circle is affected by on-hit effects. Apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all enemies hit.");
+				+ " to the center of the circle is affected by on-hit effects. Apply " + GlossaryTag.SANCTIFIED.tag(this, sanct) + " to all enemies hit.");
 	}
 }

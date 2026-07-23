@@ -36,7 +36,7 @@ public class MinorPhysicalPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, "Increases your " + GlossaryTag.STRENGTH.tag(this) +
-				" by " + DescUtil.yellow(strength) + " for the fight. Consumed on first use.");
+				" by " + DescUtil.val(strength) + " for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 0, 255));
 		item.setItemMeta(meta);

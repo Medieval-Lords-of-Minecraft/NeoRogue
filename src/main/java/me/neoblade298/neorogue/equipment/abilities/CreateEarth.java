@@ -97,9 +97,9 @@ public class CreateEarth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIRT,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing "
-						+ GlossaryTag.BLUNT.tag(this, damage, true) + " damage, applying "
-						+ GlossaryTag.CONCUSSED.tag(this, conc, true)
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before dealing "
+						+ GlossaryTag.BLUNT.tag(this, damage) + " damage, applying "
+						+ GlossaryTag.CONCUSSED.tag(this, conc)
 						+ ", and knocking up all enemies in a radius around a targeted block.");
 	}
 }

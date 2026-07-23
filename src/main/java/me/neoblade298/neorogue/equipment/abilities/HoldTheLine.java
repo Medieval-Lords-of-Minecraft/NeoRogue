@@ -56,8 +56,8 @@ public class HoldTheLine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_BRICK_WALL,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + "."
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + "."
 						+ " During this time, your basic attacks apply "
-						+ GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
+						+ GlossaryTag.CONCUSSED.tag(this, concussed) + ".");
 	}
 }

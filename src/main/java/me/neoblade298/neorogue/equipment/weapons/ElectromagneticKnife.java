@@ -61,8 +61,8 @@ public class ElectromagneticKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + ", increased "
-				+ "by " + DescUtil.yellow(inc) + " for every time you basic attack an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) + " (checked before the weapon"
+		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec) + ", increased "
+				+ "by " + DescUtil.val(inc) + " for every time you basic attack an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) + " (checked before the weapon"
 						+ " applies it).");
 	}
 }

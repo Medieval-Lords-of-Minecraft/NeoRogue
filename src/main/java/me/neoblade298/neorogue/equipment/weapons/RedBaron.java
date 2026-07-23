@@ -87,8 +87,8 @@ public class RedBaron extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Every " + DescUtil.yellow(thres + "th") + " shot also launches a fireball randomly in front of you that arcs, " +
-			"dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage and applying " + GlossaryTag.BURN.tag(this, burn, false) + 
+		item = createItem(Material.BOW, "Every " + DescUtil.val(thres + "th") + " shot also launches a fireball randomly in front of you that arcs, " +
+			"dealing " + GlossaryTag.FIRE.tag(this, damage) + " damage and applying " + GlossaryTag.BURN.tag(this, burn) + 
 			" in an area upon hitting an enemy or block.");
 	}
 

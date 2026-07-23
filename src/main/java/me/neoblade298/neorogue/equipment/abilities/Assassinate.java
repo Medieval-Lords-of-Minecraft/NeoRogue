@@ -29,7 +29,6 @@ public class Assassinate extends Equipment {
 	public Assassinate(boolean isUpgraded) {
 		super(ID, "Assassinate", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 30 : 40, 12, 0));
-		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 150;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
@@ -67,7 +66,7 @@ public class Assassinate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, false) + ". If you kill an enemy,"
+				"On cast, your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage) + ". If you kill an enemy,"
 				+ " the stamina cost is refunded and the cooldown is reset.");
 	}
 }

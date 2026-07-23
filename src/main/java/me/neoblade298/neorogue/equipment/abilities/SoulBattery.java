@@ -129,9 +129,9 @@ public class SoulBattery extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, false) + " [<white>8s</white>] for every " + DescUtil.yellow(threshold) +
-				" " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After " + DescUtil.white("2s") + ", " +
-				"strike a bolt of lightning " + DescUtil.white(2) + " blocks in front of you and drop " + DescUtil.white(2) + " bolts at random in a " + DescUtil.white(5) + " block radius, each dealing " +
-				GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a " + DescUtil.white(3) + " block radius.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1) + " [<white>8s</white>] for every " + DescUtil.val(threshold) +
+				" " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After " + DescUtil.val("2s") + ", " +
+				"strike a bolt of lightning " + DescUtil.val(2) + " blocks in front of you and drop " + DescUtil.val(2) + " bolts at random in a " + DescUtil.val(5) + " block radius, each dealing " +
+				GlossaryTag.LIGHTNING.tag(this, damage) + " in a " + DescUtil.val(3) + " block radius.");
 	}
 }

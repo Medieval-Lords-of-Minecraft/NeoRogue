@@ -111,9 +111,9 @@ public class HailCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"On cast, after channeling for " + DescUtil.white("1s") + ", for the next " + DescUtil.white("10s") + ", you deal "
-						+ GlossaryTag.ICE.tag(this, damage, true) + " and apply "
-						+ GlossaryTag.FROST.tag(this, stacks, true)
+				"On cast, after channeling for " + DescUtil.val("1s") + ", for the next " + DescUtil.val("10s") + ", you deal "
+						+ GlossaryTag.ICE.tag(this, damage) + " and apply "
+						+ GlossaryTag.FROST.tag(this, stacks)
 						+ " to all enemies near you every second. Your projectiles also do this on hit while active.");
 	}
 }

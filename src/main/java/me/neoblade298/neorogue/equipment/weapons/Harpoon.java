@@ -40,7 +40,6 @@ public class Harpoon extends Equipment {
 				ID, "Harpoon", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -89,7 +88,7 @@ public class Harpoon extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Throwing the weapon deals damage in a line with increased range of " + DescUtil.white(2)
+				"Melee range +1. Throwing the weapon deals damage in a line with increased range of " + DescUtil.val(2)
 				+ ", but at half the attack speed."
 		);
 	}

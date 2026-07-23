@@ -118,10 +118,10 @@ public class Neckbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"On cast, your next " + DescUtil.white(3) + " basic attacks deal " + 
-				GlossaryTag.PIERCING.tag(this, damage, true) + " bonus damage and apply " +
-				GlossaryTag.INJURY.tag(this, injury, true) + ". If they all hit the same enemy, " +
-				"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>] and apply " +
-				DescUtil.yellow(mult + "x") + " the enemy's current " + GlossaryTag.INJURY.tag(this) + ".");
+				"On cast, your next " + DescUtil.val(3) + " basic attacks deal " + 
+				GlossaryTag.PIERCING.tag(this, damage) + " bonus damage and apply " +
+				GlossaryTag.INJURY.tag(this, injury) + ". If they all hit the same enemy, " +
+				"gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>] and apply " +
+				DescUtil.val(mult + "x") + " the enemy's current " + GlossaryTag.INJURY.tag(this) + ".");
 	}
 }

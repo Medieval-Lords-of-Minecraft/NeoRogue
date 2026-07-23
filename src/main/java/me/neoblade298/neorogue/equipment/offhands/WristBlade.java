@@ -62,8 +62,8 @@ public class WristBlade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD,
-				"Dealing over " + DescUtil.white("30%") + " of an enemy's health (" + DescUtil.white("6%")
-				+ " for a miniboss or boss) in one hit grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " "
-				+ DescUtil.duration(stealthDuration / 20, true) + " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				"Dealing over " + DescUtil.val("30%") + " of an enemy's health (" + DescUtil.val("6%")
+				+ " for a miniboss or boss) in one hit grants " + GlossaryTag.STEALTH.tag(this, 1) + " "
+				+ DescUtil.duration(stealthDuration / 20) + " and " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

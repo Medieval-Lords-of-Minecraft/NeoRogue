@@ -33,8 +33,8 @@ public class QuartzPrism extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.QUARTZ, "For the first " + DescUtil.white(duration + "s") +
-		" of a fight, any positive status effects applied to you are increased by " + DescUtil.white(inc) + ".");
+		item = createItem(Material.QUARTZ, "For the first " + DescUtil.val(duration + "s") +
+		" of a fight, any positive status effects applied to you are increased by " + DescUtil.val(inc) + ".");
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public class Parry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_QUARTZ_ORE,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " " + DescUtil.duration(2, false) + ". Taking damage during this "
-						+ "increases your next basic attack's damage by " + DescUtil.yellow(damage) + " once per cast.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(2) + ". Taking damage during this "
+						+ "increases your next basic attack's damage by " + DescUtil.val(damage) + " once per cast.");
 	}
 }

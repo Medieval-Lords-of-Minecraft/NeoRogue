@@ -47,7 +47,7 @@ public class BlightedEarrings extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, "Deal " + DescUtil.yellow(inc + "%") +
+		item = createItem(Material.GOLD_NUGGET, "Deal " + DescUtil.val(inc + "%") +
 				" more damage if you have " + GlossaryTag.CORRUPTION.tag(this) + ".");
 	}
 }

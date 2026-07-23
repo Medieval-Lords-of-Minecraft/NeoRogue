@@ -38,6 +38,6 @@ public class NaturesGift extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERN,
-				"Gain " + DescUtil.yellow(manaPerTick) + " mana per second while standing on grass.");
+				"Gain " + DescUtil.val(manaPerTick) + " mana per second while standing on grass.");
 	}
 }

@@ -39,7 +39,7 @@ public class BootsOfSpeed extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by " + DescUtil.yellow(stamina)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(DAMAGE_REDUCTION) + ".");
+		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by " + DescUtil.val(stamina)
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(DAMAGE_REDUCTION) + ".");
 	}
 }

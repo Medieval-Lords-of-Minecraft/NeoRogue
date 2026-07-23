@@ -42,7 +42,7 @@ public class Dexterity extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + ". " +
-				"Start fights with " + GlossaryTag.EVADE.tag(this, 1, false) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.val(damage) + ". " +
+				"Start fights with " + GlossaryTag.EVADE.tag(this, 1) + ".");
 	}
 }

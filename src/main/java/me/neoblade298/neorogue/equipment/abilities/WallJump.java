@@ -196,6 +196,6 @@ public class WallJump extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				GlossaryTag.DASH.tag(this) + " forward. If you hit a wall, recast to " + GlossaryTag.DASH.tag(this) + " a long distance and deal "
-				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage to nearby enemies.");
+				+ GlossaryTag.SLASHING.tag(this, damage) + " damage to nearby enemies.");
 	}
 }

@@ -30,7 +30,6 @@ public class RighteousFlame extends Equipment {
 		super(ID, "Righteous Flame", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 75 : 60, 1, 0.4, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		sanct = isUpgraded ? 4 : 2;
 	}
 	
@@ -59,6 +58,6 @@ public class RighteousFlame extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD, "Converts its damage into half " + GlossaryTag.LIGHT.tag(this) + " and half " +
 		GlossaryTag.FIRE.tag(this) + " damage after buffs are applied and also applies " +
-		GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
+		GlossaryTag.SANCTIFIED.tag(this, sanct) + ".");
 	}
 }

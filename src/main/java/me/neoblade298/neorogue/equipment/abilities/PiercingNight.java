@@ -166,11 +166,11 @@ public class PiercingNight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE,
-			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
-			GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " + 
-			GlossaryTag.INSANITY.tag(this, insanity, true) + ". If an enemy is hit, " +
-			DescUtil.charge(this, 1, 1) + " and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
-			" damage in a line in front of you and apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + 
-			". Enemies hit by both are applied " + DescUtil.white("2x") + " their current " + GlossaryTag.INSANITY.tag(this) + ".");
+			"On cast, throw " + DescUtil.val(3) + " projectiles in a cone that each deal " + 
+			GlossaryTag.DARK.tag(this, damage) + " damage and apply " + 
+			GlossaryTag.INSANITY.tag(this, insanity) + ". If an enemy is hit, " +
+			DescUtil.charge(this, 1, 1) + " and deal " + GlossaryTag.DARK.tag(this, lineDamage) + 
+			" damage in a line in front of you and apply " + GlossaryTag.INSANITY.tag(this, insanity) + 
+			". Enemies hit by both are applied " + DescUtil.val("2x") + " their current " + GlossaryTag.INSANITY.tag(this) + ".");
 	}
 }

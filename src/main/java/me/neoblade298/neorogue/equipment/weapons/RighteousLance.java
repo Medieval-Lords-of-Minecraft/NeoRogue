@@ -92,8 +92,8 @@ public class RighteousLance extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1, applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Throwing the weapon instead increases its range by " + DescUtil.white(2) + " and deals additional "
-				+ GlossaryTag.LIGHT.tag(this) + " damage equal to " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the target multiplied by " + DescUtil.yellow(dmgMult) + "."
+				"Melee range +1, applies " + GlossaryTag.SANCTIFIED.tag(this, sanct) + ". Throwing the weapon instead increases its range by " + DescUtil.val(2) + " and deals additional "
+				+ GlossaryTag.LIGHT.tag(this) + " damage equal to " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the target multiplied by " + DescUtil.val(dmgMult) + "."
 		);
 	}
 }

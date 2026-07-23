@@ -95,9 +95,9 @@ public class Windcutter extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ATTACKS_REQUIRED) + " basic attacks with at least " +
-				DescUtil.white(MANA_COST) + " mana. Every " + DescUtil.white(ACTIVE_ATTACKS) + " basic attacks, fire five piercing projectiles in a cone that deal " + 
-				GlossaryTag.SLASHING.tag(this, damage, true) + " damage.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.val(ATTACKS_REQUIRED) + " basic attacks with at least " +
+				DescUtil.val(MANA_COST) + " mana. Every " + DescUtil.val(ACTIVE_ATTACKS) + " basic attacks, fire five piercing projectiles in a cone that deal " + 
+				GlossaryTag.SLASHING.tag(this, damage) + " damage.");
 	}
 	
 	private class WindcutterProjectile extends Projectile {

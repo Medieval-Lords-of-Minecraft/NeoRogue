@@ -73,8 +73,8 @@ public class VengefulShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". Once per second, receiving damage while your shield is raised " +
-		"grants " + GlossaryTag.BERSERK.tag(this, 1, false) + " and empowers your next basic attack to deal " +
-		GlossaryTag.BLUNT.tag(this, damage, true) + ". At " + GlossaryTag.BERSERK.tag(this, thres, true) + ", you no longer need your shield raised to reduce damage.");
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". Once per second, receiving damage while your shield is raised " +
+		"grants " + GlossaryTag.BERSERK.tag(this, 1) + " and empowers your next basic attack to deal " +
+		GlossaryTag.BLUNT.tag(this, damage) + ". At " + GlossaryTag.BERSERK.tag(this, thres) + ", you no longer need your shield raised to reduce damage.");
 	}
 }

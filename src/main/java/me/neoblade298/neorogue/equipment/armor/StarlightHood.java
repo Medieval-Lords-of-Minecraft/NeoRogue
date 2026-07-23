@@ -35,8 +35,8 @@ public class StarlightHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET,
-				"Start fights with " + GlossaryTag.PROTECT.tag(this, stacks, true) + " and "
-						+ GlossaryTag.SHELL.tag(this, stacks, true) + " [" + DescUtil.white("20s") + "].");
+				"Start fights with " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
+						+ GlossaryTag.SHELL.tag(this, stacks) + " [" + DescUtil.val("20s") + "].");
 
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLUE);

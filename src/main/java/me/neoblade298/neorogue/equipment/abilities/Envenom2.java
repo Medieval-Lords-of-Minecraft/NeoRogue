@@ -43,6 +43,6 @@ public class Envenom2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				GlossaryTag.PASSIVE.tag(this) + ". All primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
+				GlossaryTag.PASSIVE.tag(this) + ". All primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
 	}
 }

@@ -65,7 +65,7 @@ public class Smite extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
-						+ "apply " + DescUtil.yellow(sanctified) + " " + GlossaryTag.SANCTIFIED.tag(this) + ".");
+				"On cast, deal " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
+						+ "apply " + DescUtil.val(sanctified) + " " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

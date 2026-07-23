@@ -140,10 +140,10 @@ public class Quiverthorn extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
-				"Dealing projectile damage grants a stack (max " + DescUtil.white(MAX_STACKS) + "). " +
-				"Left clicking an enemy deals " + DescUtil.white(BASE_DAMAGE) + " + " + DescUtil.yellow(bonusDamage) + " " +
+				"Dealing projectile damage grants a stack (max " + DescUtil.val(MAX_STACKS) + "). " +
+				"Left clicking an enemy deals " + DescUtil.val(BASE_DAMAGE) + " + " + DescUtil.val(bonusDamage) + " " +
 				GlossaryTag.PIERCING.tag(this) + " damage per stack and consumes all stacks. " +
-				"At max stacks, applies " + DescUtil.yellow((int)(statusPercent * 100) + "%") + " of the enemy's current " +
+				"At max stacks, applies " + DescUtil.val((int)(statusPercent * 100) + "%") + " of the enemy's current " +
 				GlossaryTag.BURN.tag(this) + ", " + GlossaryTag.FROST.tag(this) + ", " + GlossaryTag.INJURY.tag(this) + ", and " + GlossaryTag.REND.tag(this) + ".");
 	}
 }

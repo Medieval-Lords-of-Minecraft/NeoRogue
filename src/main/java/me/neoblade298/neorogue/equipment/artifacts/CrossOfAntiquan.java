@@ -52,6 +52,6 @@ public class CrossOfAntiquan extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_INGOT, "Every time you visit a shrine node, heal for " + DescUtil.white(multStr + "%") + " of your max health.");
+		item = createItem(Material.GOLD_INGOT, "Every time you visit a shrine node, heal for " + DescUtil.val(multStr + "%") + " of your max health.");
 	}
 }

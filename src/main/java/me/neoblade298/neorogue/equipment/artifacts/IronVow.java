@@ -65,7 +65,7 @@ public class IronVow extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Grants " + GlossaryTag.SHIELDS.tag(this, shields, false)
-				+ " for every " + DescUtil.white(seconds) + " seconds you don't sprint.");
+		item = createItem(Material.IRON_NUGGET, "Grants " + GlossaryTag.SHIELDS.tag(this, shields)
+				+ " for every " + DescUtil.val(seconds) + " seconds you don't sprint.");
 	}
 }

@@ -111,9 +111,9 @@ public class Darkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true)
-						+ " damage per second " + DescUtil.duration(5, false) + "."
+				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark)
+						+ " damage per second " + DescUtil.duration(5) + "."
 						+ " During this time, your basic attacks apply "
-						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
+						+ GlossaryTag.INSANITY.tag(this, insanity) + ".");
 	}
 }

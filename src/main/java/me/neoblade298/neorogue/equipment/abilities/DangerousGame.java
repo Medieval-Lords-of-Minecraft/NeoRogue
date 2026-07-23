@@ -85,8 +85,8 @@ public class DangerousGame extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(500) + " basic attack damage. When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
-				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.yellow(damage) + " damage.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " basic attack damage. When you land a basic attack on an enemy within " + DescUtil.val(range) + " blocks, " +
+				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.val(damage) + " damage.");
 	}
 
 	private class DangerousGameProjectile extends Projectile {

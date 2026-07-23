@@ -67,7 +67,7 @@ public class PoolOfLight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, drop a radius " + DescUtil.white(5) + " pool on the ground that lasts " + DescUtil.white("10s") + " and grants "
-				+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " per second to all enemies that walk through it.");
+				"On cast, drop a radius " + DescUtil.val(5) + " pool on the ground that lasts " + DescUtil.val("10s") + " and grants "
+				+ GlossaryTag.SANCTIFIED.tag(this, sanct) + " per second to all enemies that walk through it.");
 	}
 }

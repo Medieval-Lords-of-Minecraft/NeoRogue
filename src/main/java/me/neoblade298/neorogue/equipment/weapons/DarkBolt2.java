@@ -96,8 +96,8 @@ public class DarkBolt2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COAL, "On cast, charge " + DescUtil.white("1s") + " before firing a projectile that deals "
-				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location and a " +
-				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.yellow(dur + "s") + "] at your location.");
+		item = createItem(Material.COAL, "On cast, charge " + DescUtil.val("1s") + " before firing a projectile that deals "
+				+ GlossaryTag.DARK.tag(this, damage) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location and a " +
+				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.val(dur + "s") + "] at your location.");
 	}
 }

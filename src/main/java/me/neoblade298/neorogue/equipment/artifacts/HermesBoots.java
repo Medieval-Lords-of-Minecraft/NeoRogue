@@ -44,7 +44,7 @@ public class HermesBoots extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_BOOTS,
-				"Sprinting's cost is decreased by " + DescUtil.white(4) + " until you cast " + DescUtil.white(num)
+				"Sprinting's cost is decreased by " + DescUtil.val(4) + " until you cast " + DescUtil.val(num)
 						+ " abilities.");
 	}
 

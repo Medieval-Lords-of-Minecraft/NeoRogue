@@ -55,7 +55,7 @@ public class Excalibur extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + DescUtil.yellow(mult) + " damage for every stack of " +
+		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + DescUtil.val(mult) + " damage for every stack of " +
 		GlossaryTag.SANCTIFIED.tag(this) + " you've applied during the fight.");
 	}
 }

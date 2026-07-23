@@ -70,7 +70,7 @@ public class Torch extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-			GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to nearby enemies, but apply " +
-			GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
+			GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before dealing " + GlossaryTag.FIRE.tag(this, damage) + " damage to nearby enemies, but apply " +
+			GlossaryTag.CORRUPTION.tag(this, corr) + " to yourself.");
 	}
 }

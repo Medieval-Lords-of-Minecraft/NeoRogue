@@ -43,7 +43,6 @@ public class LightningWand extends Equipment {
 				ID, "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 50 : 40, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 2 : 1;
 	}
 
@@ -102,6 +101,6 @@ public class LightningWand extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Pierces the first " + DescUtil.yellow(pierceAmount) + " enemies hit.");
+		item = createItem(Material.STICK, "Pierces the first " + DescUtil.val(pierceAmount) + " enemies hit.");
 	}
 }

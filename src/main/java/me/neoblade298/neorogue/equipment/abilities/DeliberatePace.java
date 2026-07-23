@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -26,14 +25,14 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
-public class DeliberantPace extends Equipment implements Power {
-	private static final String ID = "DeliberantPace";
+public class DeliberatePace extends Equipment implements Power {
+	private static final String ID = "DeliberatePace";
 	private int seconds;
 	private double damagePerStack;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1);
 
-	public DeliberantPace(boolean isUpgraded) {
-		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+	public DeliberatePace(boolean isUpgraded) {
+		super(ID, "Deliberate Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		seconds = isUpgraded ? 5 : 6;
 		damagePerStack = isUpgraded ? 0.05 : 0.04; // 5% or 4%
@@ -112,8 +111,8 @@ public class DeliberantPace extends Equipment implements Power {
 	public void setupItem() {
 		int damagePercent = (int) (damagePerStack * 100);
 		item = createItem(Material.BOOK,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after crouching for " + DescUtil.white("3s") + ". Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
-						+ GlossaryTag.FOCUS.tag(this, 1, false) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
-						+ " increases your general damage by " + DescUtil.yellow(damagePercent + "%") + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after crouching for " + DescUtil.val("3s") + ". Whenever you don't sprint for " + DescUtil.val(seconds + "s") + ", gain a stack of "
+						+ GlossaryTag.FOCUS.tag(this, 1) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
+						+ " increases your " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(damagePercent + "%") + ".");
 	}
 }

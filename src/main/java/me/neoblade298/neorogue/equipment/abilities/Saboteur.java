@@ -71,9 +71,9 @@ public class Saboteur extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + DescUtil.white(FOCUS_STACKS) + " " + GlossaryTag.FOCUS.tag(this) + ". " +
-				GlossaryTag.TRAP.tag(this) + " damage and damage dealt to enemies within " + DescUtil.white(DISTANCE_THRESHOLD) + " blocks " +
-				"is increased by " + DescUtil.yellow((int) (damageBuff * 100) + "%") + ". " +
-				GlossaryTag.INJURY.tag(this) + " application is increased by " + DescUtil.yellow((int) (injuryBuff * 100) + "%") + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + DescUtil.val(FOCUS_STACKS) + " " + GlossaryTag.FOCUS.tag(this) + ". " +
+				GlossaryTag.TRAP.tag(this) + " damage and damage dealt to enemies within " + DescUtil.val(DISTANCE_THRESHOLD) + " blocks " +
+				"is increased by " + DescUtil.val((int) (damageBuff * 100) + "%") + ". " +
+				GlossaryTag.INJURY.tag(this) + " application is increased by " + DescUtil.val((int) (injuryBuff * 100) + "%") + ".");
 	}
 }

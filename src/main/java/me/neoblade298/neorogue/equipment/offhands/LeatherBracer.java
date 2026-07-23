@@ -84,7 +84,7 @@ public class LeatherBracer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
-				"Reduces the first " + DescUtil.yellow(instances) + " instance(s) of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.white(10) + ".");
+				"Reduces the first " + DescUtil.val(instances) + " instance(s) of receiving "
+						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.val(10) + ".");
 	}
 }

@@ -70,7 +70,7 @@ public class Cripple extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this)
-						+ " damage taken of enemies in a cone in front of you by " + DescUtil.yellow(inc)
-						+ " " + DescUtil.duration(8, false) + ".");
+						+ " damage taken of enemies in a cone in front of you by " + DescUtil.val(inc)
+						+ " " + DescUtil.duration(8) + ".");
 	}
 }

@@ -48,10 +48,10 @@ public class Contaminate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POISONOUS_POTATO,
-				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) +
+				"On cast, Grant speed " + DescUtil.val(1) + " and " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>]. "
-				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiply existing stacks of "
-				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by " + DescUtil.yellow(mult) + ", rounded down.");
+				+ "Your next " + DescUtil.val(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " damage and multiply existing stacks of "
+				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by " + DescUtil.val(mult) + ", rounded down.");
 	}
 
 	@Override

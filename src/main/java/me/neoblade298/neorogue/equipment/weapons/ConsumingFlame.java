@@ -45,7 +45,6 @@ public class ConsumingFlame extends Equipment {
 				ID, "Consuming Flame", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 50 : 40, 0.9, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
 		intellectFreq = isUpgraded ? 3 : 5;
 	}
@@ -124,8 +123,8 @@ public class ConsumingFlame extends Equipment {
 		item = createItem(
 				Material.BLAZE_ROD,
 				"Grants " + GlossaryTag.INTELLECT.tag(this) + " equal to your current "
-						+ GlossaryTag.CORRUPTION.tag(this) + " every " + DescUtil.yellow(intellectFreq)
-						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana."
+						+ GlossaryTag.CORRUPTION.tag(this) + " every " + DescUtil.val(intellectFreq)
+						+ " basic attacks. Each hit grants " + DescUtil.val(manaGain) + " mana."
 		);
 	}
 }

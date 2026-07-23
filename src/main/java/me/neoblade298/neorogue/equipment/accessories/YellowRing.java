@@ -47,7 +47,7 @@ public class YellowRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.YELLOW_DYE, "Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.white("50%") + " mana also applies " +
-		GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
+		item = createItem(Material.YELLOW_DYE, "Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.val("50%") + " mana also applies " +
+		GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}
 }

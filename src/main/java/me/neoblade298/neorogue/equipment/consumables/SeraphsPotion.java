@@ -51,7 +51,7 @@ public class SeraphsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Grants invulnerability for [" + DescUtil.yellow(duration + "s") + "]. Consumed on first use.");
+				"Grants invulnerability for [" + DescUtil.val(duration + "s") + "]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 255, 255));
 		item.setItemMeta(meta);

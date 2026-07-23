@@ -92,7 +92,7 @@ public class Plague extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.white(3) + " times. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
-				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied this fight, up to " + DescUtil.yellow(maxMult * thres) + " stacks.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.POISON.tag(this) + " " + DescUtil.val(3) + " times. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage) +
+				" damage for every " + DescUtil.val(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied this fight, up to " + DescUtil.val(maxMult * thres) + " stacks.");
 	}
 }

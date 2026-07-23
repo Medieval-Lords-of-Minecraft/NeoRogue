@@ -55,7 +55,7 @@ public class ElectrostaticVest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CHAINMAIL_CHESTPLATE,
 				GlossaryTag.PASSIVE.tag(this) + ". Upon dealing " + GlossaryTag.ELECTRIFIED.tag(this) + " damage, gain " + 
-				GlossaryTag.SHIELDS.tag(this, baseShields, true) + " [<white>5s</white>], increased by " + DescUtil.white(1) + " " +
+				GlossaryTag.SHIELDS.tag(this, baseShields) + " [<white>5s</white>], increased by " + DescUtil.val(1) + " " +
 				"every time this happens.");
 	}
 }

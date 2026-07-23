@@ -71,9 +71,9 @@ public class Exertion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
+				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage)
 						+ " to all enemies in a cone in front of you, but gain "
-						+ GlossaryTag.CORRUPTION.tag(this, corruption, false) + " if you don't kill " +
+						+ GlossaryTag.CORRUPTION.tag(this, corruption) + " if you don't kill " +
 						"at least one enemy with it.");
 	}
 }

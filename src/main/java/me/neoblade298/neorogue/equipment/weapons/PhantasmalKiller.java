@@ -190,8 +190,8 @@ public class PhantasmalKiller extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
-				"Throwable. Can only be used without an offhand. Every " + DescUtil.white(3) + " basic attacks, gain a charge, up to a max of " +
-				DescUtil.white(3) + ". Right click to consume a charge, dashing and dealing a clone of your " +
+				"Throwable. Can only be used without an offhand. Every " + DescUtil.val(3) + " basic attacks, gain a charge, up to a max of " +
+				DescUtil.val(3) + ". Right click to consume a charge, " + GlossaryTag.DASH.tag(this) + ", and deal a clone of your " +
 				"previous basic attack as damage to the nearest enemy, buffs included but not reapplied.");
 	}
 }

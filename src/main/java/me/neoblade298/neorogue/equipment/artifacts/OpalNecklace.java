@@ -77,6 +77,6 @@ public class OpalNecklace extends Artifact {
 		item = createItem(Material.GOLD_NUGGET,
 				"Whenever you deal " + GlossaryTag.MAGICAL.tag(this)
 						+ " damage that is different from your previous damage's main type, increase its damage by "
-						+ DescUtil.yellow(displayInc + "%") + ".");
+						+ DescUtil.val(displayInc + "%") + ".");
 	}
 }

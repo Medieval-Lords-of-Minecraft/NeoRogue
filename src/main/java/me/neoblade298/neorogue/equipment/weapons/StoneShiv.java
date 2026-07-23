@@ -50,6 +50,6 @@ public class StoneShiv extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Gain " + DescUtil.yellow(stamina) + " stamina on every 3rd hit.");
+		item = createItem(Material.STONE_SWORD, "Gain " + DescUtil.val(stamina) + " stamina on every 3rd hit.");
 	}
 }

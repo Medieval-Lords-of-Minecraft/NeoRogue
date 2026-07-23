@@ -49,6 +49,6 @@ public class Brace2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + ".");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + ".");
 	}
 }

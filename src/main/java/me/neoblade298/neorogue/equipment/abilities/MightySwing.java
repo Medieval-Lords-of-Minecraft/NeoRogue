@@ -32,7 +32,6 @@ public class MightySwing extends Equipment {
 	public MightySwing(boolean isUpgraded) {
 		super(ID, "Mighty Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 25 : 35, 10, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 250;
 		cdr = isUpgraded ? 4 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -74,7 +73,7 @@ public class MightySwing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				"On cast, your next basic attack while in the air deals " + DescUtil.yellow(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " above " + DescUtil.white("50%") + " health, reduce the ability's cooldown by " + DescUtil.yellow(cdr) + ".");
+				"On cast, your next basic attack while in the air deals " + DescUtil.val(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " above " + DescUtil.val("50%") + " health, reduce the ability's cooldown by " + DescUtil.val(cdr) + ".");
 	}
 }

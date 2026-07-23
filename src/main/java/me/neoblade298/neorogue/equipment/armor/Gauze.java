@@ -51,10 +51,10 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_CARPET, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(def)
-				+ ". Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(threshold) + " seconds of "
-				+ "taking health damage heals back " + DescUtil.yellow(pct + "%") + " of the last damage taken, with a maximum heal of "
-						+ DescUtil.yellow(max) + ".");
+		item = createItem(Material.WHITE_CARPET, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def)
+				+ ". Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.val(threshold) + " seconds of "
+				+ "taking health damage heals back " + DescUtil.val(pct + "%") + " of the last damage taken, with a maximum heal of "
+						+ DescUtil.val(max) + ".");
 	}
 	
 	private class GauzeInstance extends PriorityAction {

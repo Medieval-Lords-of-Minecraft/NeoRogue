@@ -90,8 +90,8 @@ public class Zone2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_GRATE,
-				"On cast, drop a zone that lasts " + DescUtil.white("8s") + " which buffs your " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) +
-				" multiplied by up to " + DescUtil.white(3) + " stacks of " + GlossaryTag.FOCUS.tag(this) + " while you're in it. Staying within the zone for the entire duration will grant " +
-				GlossaryTag.FOCUS.tag(this, 1, false) + ".");
+				"On cast, drop a zone that lasts " + DescUtil.val("8s") + " which buffs your " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.val(damage) +
+				" multiplied by up to " + DescUtil.val(3) + " stacks of " + GlossaryTag.FOCUS.tag(this) + " while you're in it. Staying within the zone for the entire duration will grant " +
+				GlossaryTag.FOCUS.tag(this, 1) + ".");
 	}
 }

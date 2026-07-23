@@ -86,9 +86,9 @@ public class Flicker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active " + DescUtil.white("3s") + "."
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.val("3s") + "."
 				+ " Dealing damage while it's active marks enemies up to 5x each. After it"
-				+ " deactivates, teleport back to the mark and deal " + GlossaryTag.DARK.tag(this, damage, true)
+				+ " deactivates, teleport back to the mark and deal " + GlossaryTag.DARK.tag(this, damage)
 				+ " damage per mark.");
 	}
 }

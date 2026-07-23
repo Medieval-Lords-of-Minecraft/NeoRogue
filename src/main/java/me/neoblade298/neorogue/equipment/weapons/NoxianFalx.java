@@ -28,7 +28,6 @@ public class NoxianFalx extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1.25, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stacks = isUpgraded ? 3 : 2;
 		poisonDuration = 40;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -62,8 +61,8 @@ public class NoxianFalx extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD,
-				"Applies " + GlossaryTag.INSANITY.tag(this, stacks, true) + ", " + 
-				GlossaryTag.ELECTRIFIED.tag(this, stacks, true) + ", and " + 
-				GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] on hit if the enemy already has the respective status.");
+				"Applies " + GlossaryTag.INSANITY.tag(this, stacks) + ", " + 
+				GlossaryTag.ELECTRIFIED.tag(this, stacks) + ", and " + 
+				GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] on hit if the enemy already has the respective status.");
 	}
 }

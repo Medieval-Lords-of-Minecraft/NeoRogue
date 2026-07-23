@@ -41,6 +41,6 @@ public class Plaguebearer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ROTTEN_FLESH, "Whenever you apply " + GlossaryTag.POISON.tag(this) + " to an enemy, gain "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>].");
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>].");
 	}
 }

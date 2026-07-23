@@ -46,7 +46,7 @@ public class GripGloves extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "While above " + DescUtil.yellow(cutoff + "%") + " stamina, decrease all damage taken by "
-				+ DescUtil.white(3) + ".");
+		item = createItem(Material.RABBIT_FOOT, "While above " + DescUtil.val(cutoff + "%") + " stamina, decrease all damage taken by "
+				+ DescUtil.val(3) + ".");
 	}
 }

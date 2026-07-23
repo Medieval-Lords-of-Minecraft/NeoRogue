@@ -426,41 +426,28 @@ EquipmentProperties.ofAmmunition(80, 40, DamageType.FIRE)
 EquipmentProperties.ofWeapon(damage, speed, type, sound)
     .add(PropertyType.RANGE, 8)
     .add(PropertyType.AREA_OF_EFFECT, 3)
-
-// Mark properties as upgradable (shows yellow values in tooltips)
-properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.AREA_OF_EFFECT);
 ```
 
-#### Understanding addUpgrades() - Tooltip Coloring System
+#### Stat Tooltip Coloring (automatic)
 
-**`properties.addUpgrades()` should ONLY be used when the property value actually changes between base and upgraded versions:**
+Stat values in the header line are colored **automatically** by diffing the base version against the
+upgraded version: a value renders **yellow** if it differs between versions and **white** if it's the
+same. There is no `addUpgrades()` call — just pass the correct per-version amounts.
 
 ```java
-// CORRECT - Cooldown changes from 12 to 8 seconds
-EquipmentProperties.ofUsable(0, isUpgraded ? 10 : 20, isUpgraded ? 8 : 12, 0)
-properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.STAMINA_COST);
-
-// INCORRECT - Mana cost is same for both versions (15)
-EquipmentProperties.ofUsable(15, 0, isUpgraded ? 8 : 12, 0)
-properties.addUpgrades(PropertyType.MANA_COST); // DON'T do this - mana doesn't change!
+// Cooldown 12→8 renders yellow automatically; stamina 20 (same both versions) renders white.
+EquipmentProperties.ofUsable(0, 20, isUpgraded ? 8 : 12, 0)
 ```
 
 **How it works:**
-- `addUpgrades()` sets the `canUpgrade` boolean on Property objects
-- In tooltips, upgradable properties show as `<yellow>value</yellow>`
-- Non-upgradable properties show as `<white>value</white>`
-- This visual distinction helps players see which values improve when upgrading
+- When an item's tooltip is built, each stat's amount is compared against the counterpart version's
+  amount for the same `PropertyType`.
+- Differ → `<yellow>`, identical (or no upgraded/base counterpart) → `<white>`.
+- You never choose the color; setting the right numbers is enough.
 
-**Pattern to follow:**
-1. Check if property values differ between `isUpgraded ? upgradeValue : baseValue`
-2. Only call `addUpgrades()` for properties that actually change
-3. Fixed values across both versions should NOT be marked as upgradable
-
-**IMPORTANT — `PropertyType.DAMAGE` and `addUpgrades()`:**
-- `PropertyType.DAMAGE` is only added to the properties map by `ofWeapon(...)` / `ofBow(...)` / `ofAmmunition(...)` factory methods.
-- `ofUsable(...)` does NOT add `DAMAGE` to properties — abilities store damage in their own fields and display it via `GlossaryTag` in `setupItem()`.
-- **Only call `addUpgrades(PropertyType.DAMAGE)` for weapons/bows/ammunition**, never for abilities. Calling it on an ability will NPE because the property doesn't exist in the map.
-- For abilities, upgradable damage is shown through `GlossaryTag.tag(this, damage, true)` in `setupItem()` — the `true` parameter makes it yellow.
+**In-description values** (things shown via `GlossaryTag`/`DescUtil`, not the stat header) use the same
+automatic system through `DescUtil.val(...)` and the boolean-free `GlossaryTag.tag(this, amount)` — see
+the description formatting section. Do not manually pick yellow/white for upgrade-varying values.
 
 #### Accessing Properties in Equipment
 ```java
@@ -485,10 +472,9 @@ Equipment properties automatically integrate with the cost/cooldown system:
 
 #### Common Patterns
 ```java
-// Area effect ability with upgradable properties
+// Area effect ability with per-version values (coloring is automatic)
 super(ID, "Name", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
     EquipmentProperties.ofUsable(manaCost, 0, cooldown, 0, areaRadius));
-properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.AREA_OF_EFFECT);
 
 // Use property in TargetProperties
 tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false);
@@ -500,7 +486,7 @@ tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false)
 #### Equipment Properties Best Practices
 - Use `EquipmentProperties.none()` for passive equipment with no costs
 - Always use `.add()` to extend base properties rather than creating custom constructors
-- Mark upgradable properties with `addUpgrades()` - these show yellow in tooltips
+- Stat coloring is automatic (yellow if a value differs between base/upgraded, white otherwise) — just set correct per-version amounts
 - Reference property values consistently in descriptions, TargetProperties, and implementation
 - Use appropriate factory methods (`ofUsable`, `ofWeapon`, etc.) based on equipment type
 

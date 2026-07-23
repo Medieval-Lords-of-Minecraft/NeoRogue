@@ -53,8 +53,8 @@ public class SilversilkCowl extends Equipment {
 	public void setupItem() {
 		int pct = (int)(mult / (1.0 + mult) * 100);
 		item = createItem(Material.CHAINMAIL_HELMET,
-				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def)
-				+ ". Start every fight with " + DescUtil.white(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
-				+ "The amount of stamina that " + GlossaryTag.EVADE.tag(this) + " consumes per damage mitigated is decreased by " + DescUtil.yellow(pct + "%") + ".");
+				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def)
+				+ ". Start every fight with " + DescUtil.val(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
+				+ "The amount of stamina that " + GlossaryTag.EVADE.tag(this) + " consumes per damage mitigated is decreased by " + DescUtil.val(pct + "%") + ".");
 	}
 }

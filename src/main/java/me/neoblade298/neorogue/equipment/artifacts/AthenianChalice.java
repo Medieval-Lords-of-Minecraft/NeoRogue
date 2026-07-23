@@ -54,8 +54,8 @@ public class AthenianChalice extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET,
-				"Casting an ability that costs mana grants " + DescUtil.white(gain) + " stamina, and casting an "
-						+ "ability that costs stamina grants " + DescUtil.white(gain)
+				"Casting an ability that costs mana grants " + DescUtil.val(gain) + " stamina, and casting an "
+						+ "ability that costs stamina grants " + DescUtil.val(gain)
 						+ " mana. Both can be triggered simultaneously.");
 	}
 }

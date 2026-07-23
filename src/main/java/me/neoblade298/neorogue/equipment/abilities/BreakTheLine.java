@@ -58,8 +58,8 @@ public class BreakTheLine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.EARTHEN.tag(this, damage, false) + ", get knocked back," +
-				" given slowness " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ", and get " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
+				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.EARTHEN.tag(this, damage) + ", get knocked back," +
+				" given slowness " + DescUtil.val(1) + " " + DescUtil.duration(3) + ", and get " + GlossaryTag.CONCUSSED.tag(this, conc) + ".");
 	}
 	
 	private class BreakTheLineInstance extends EquipmentInstance {

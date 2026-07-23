@@ -121,8 +121,8 @@ public class Electrode extends Equipment {
 		item = createItem(Material.FURNACE,
 				"On cast, " + DescUtil.charge(this, 1, 1)
 						+ " before firing a projectile that pierces and marks enemies. " + "If it hits a block, deal "
-						+ GlossaryTag.LIGHTNING.tag(this, damage, true)
+						+ GlossaryTag.LIGHTNING.tag(this, damage)
 						+ " damage in a line from yourself to the block. If the enemy is marked, "
-						+ "deal double damage and apply " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
+						+ "deal double damage and apply " + GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}
 }

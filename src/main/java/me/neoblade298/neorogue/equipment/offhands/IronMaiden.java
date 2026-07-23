@@ -68,8 +68,8 @@ public class IronMaiden extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
-		"grants " + GlossaryTag.THORNS.tag(this, thorns, true) +  " and empowers your next basic attack to deal half your current " +
-		GlossaryTag.THORNS.tag(this) + " stacks as " + GlossaryTag.THORNS.tag(this) + " damage (" + DescUtil.white(1 + "s") + " cooldown).");
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". Receiving damage while your shield is raised " +
+		"grants " + GlossaryTag.THORNS.tag(this, thorns) +  " and empowers your next basic attack to deal half your current " +
+		GlossaryTag.THORNS.tag(this) + " stacks as " + GlossaryTag.THORNS.tag(this) + " damage (" + DescUtil.val(1 + "s") + " cooldown).");
 	}
 }

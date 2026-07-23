@@ -40,6 +40,6 @@ public class LightLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Grants " + DescUtil.yellow(stamina) + " stamina for every hit.");
+		item = createItem(Material.LEATHER, "Grants " + DescUtil.val(stamina) + " stamina for every hit.");
 	}
 }

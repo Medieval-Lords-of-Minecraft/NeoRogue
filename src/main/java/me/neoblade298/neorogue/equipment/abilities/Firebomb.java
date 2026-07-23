@@ -79,8 +79,8 @@ public class Firebomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, throw a bomb that deals " + GlossaryTag.FIRE.tag(this, damage, false) + " damage, coating the area in flames and applying " +
-				GlossaryTag.BURN.tag(this, burn, true) + " to enemies who walk through it over the next " + DescUtil.white("3s") + ".");
+				"On cast, throw a bomb that deals " + GlossaryTag.FIRE.tag(this, damage) + " damage, coating the area in flames and applying " +
+				GlossaryTag.BURN.tag(this, burn) + " to enemies who walk through it over the next " + DescUtil.val("3s") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

@@ -26,7 +26,6 @@ public class Backstep extends Equipment {
 	public Backstep(boolean isUpgraded) {
 		super(ID, "Backstep", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 1 : 5, 8, 0));
-		properties.addUpgrades(PropertyType.STAMINA_COST);
 		shields = isUpgraded ? 4 : 3;
 	}
 
@@ -34,7 +33,7 @@ public class Backstep extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", and gain " +
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}
 
 	public void setupReforges() {

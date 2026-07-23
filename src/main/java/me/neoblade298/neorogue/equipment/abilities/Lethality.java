@@ -65,7 +65,7 @@ public class Lethality extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.PIERCING.tag(this) + " damage " + DescUtil.white(3) + " times while above " + DescUtil.white("50%") + " stamina. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc + "%")
-				+ " while above " + DescUtil.yellow(thres) + " stamina.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.PIERCING.tag(this) + " damage " + DescUtil.val(3) + " times while above " + DescUtil.val("50%") + " stamina. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.val(inc + "%")
+				+ " while above " + DescUtil.val(thres) + " stamina.");
 	}
 }

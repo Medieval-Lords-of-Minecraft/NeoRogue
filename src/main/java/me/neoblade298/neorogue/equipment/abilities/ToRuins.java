@@ -74,8 +74,8 @@ public class ToRuins extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, gain " + GlossaryTag.INTELLECT.tag(this, 1, false) + " for every "
-						+ DescUtil.yellow(burnPerIntellect) + " " + GlossaryTag.BURN.tag(this)
+				"On cast, gain " + GlossaryTag.INTELLECT.tag(this, 1) + " for every "
+						+ DescUtil.val(burnPerIntellect) + " " + GlossaryTag.BURN.tag(this)
 						+ " the single target you're aiming at has.");
 	}
 }

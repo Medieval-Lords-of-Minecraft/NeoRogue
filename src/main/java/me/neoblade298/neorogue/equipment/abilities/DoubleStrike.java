@@ -26,7 +26,6 @@ public class DoubleStrike extends Equipment {
 	public DoubleStrike(boolean isUpgraded) {
 		super(ID, "Double Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 10, isUpgraded ? 3 : 6, 0));
-		properties.addUpgrades(PropertyType.STAMINA_COST, PropertyType.COOLDOWN);
 		shields = 5;
 		
 		pc.count(50).spread(0.5, 0.5);
@@ -39,7 +38,7 @@ public class DoubleStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, reset your basic attack cooldown and gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>2s</white>].");
+				"On cast, reset your basic attack cooldown and gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>2s</white>].");
 	}
 
 	@Override

@@ -108,8 +108,8 @@ public class LightPulse extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.white(ACTIVATION_THRES) + " times while above " + DescUtil.white("50%") + " max mana. When above 50% max mana, every " + DescUtil.white("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
-				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.val(ACTIVATION_THRES) + " times while above " + DescUtil.val("50%") + " max mana. When above 50% max mana, every " + DescUtil.val("third") + " basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage) +
+				" damage. Costs " + DescUtil.val(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	
 	private class LightPulseProjectile extends Projectile {

@@ -120,7 +120,7 @@ public class FlashMark extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
 				"On cast, throw a projectile that ignores enemies. If it hits a block, " + GlossaryTag.DASH.tag(this) + " forwards, " +
-				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
-				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " to enemies in a line between you and the block.");
+				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying " + 
+				GlossaryTag.ELECTRIFIED.tag(this, electrified) + " to enemies in a line between you and the block.");
 	}
 }

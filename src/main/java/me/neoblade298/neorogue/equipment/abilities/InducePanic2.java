@@ -89,7 +89,7 @@ public class InducePanic2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.white("2s") + "," +
-				" apply " + GlossaryTag.INSANITY.tag(this, stacks, true) + " to enemies around them in a radius of " + DescUtil.white(10) + ".");
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
+				" apply " + GlossaryTag.INSANITY.tag(this, stacks) + " to enemies around them in a radius of " + DescUtil.val(10) + ".");
 	}
 }

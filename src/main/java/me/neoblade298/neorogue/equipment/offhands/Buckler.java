@@ -45,7 +45,7 @@ public class Buckler extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "Every " + DescUtil.yellow(threshold) + " basic attacks, gain " +
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(3, false) + ".");
+		item = createItem(Material.SHIELD, "Every " + DescUtil.val(threshold) + " basic attacks, gain " +
+				GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(3) + ".");
 	}
 }

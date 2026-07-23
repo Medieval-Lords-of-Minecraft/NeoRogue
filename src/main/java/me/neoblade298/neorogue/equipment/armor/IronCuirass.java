@@ -36,6 +36,6 @@ public class IronCuirass extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_CHESTPLATE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(damageReduction) + ".");
+		item = createItem(Material.IRON_CHESTPLATE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.val(damageReduction) + ".");
 	}
 }

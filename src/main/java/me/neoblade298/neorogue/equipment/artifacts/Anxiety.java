@@ -51,6 +51,6 @@ public class Anxiety extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases damage dealt by " + DescUtil.white("25%") + " for the first " + DescUtil.white("20s") + ". Disappears after " + DescUtil.white(1) + " fight.");
+		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases damage dealt by " + DescUtil.val("25%") + " for the first " + DescUtil.val("20s") + ". Disappears after " + DescUtil.val(1) + " fight.");
 	}
 }

@@ -26,7 +26,6 @@ public class MonksStaff2 extends Equipment {
 		super(ID, "Monk's Staff II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE ,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(0, 3, 100, 0.5, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		bonus = isUpgraded ? 100 : 60;
 	}
 	
@@ -57,6 +56,6 @@ public class MonksStaff2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Deals an additional " + DescUtil.yellow(bonus) + " damage once every time you cast an ability.");
+		item = createItem(Material.STICK, "Deals an additional " + DescUtil.val(bonus) + " damage once every time you cast an ability.");
 	}
 }

@@ -46,7 +46,7 @@ public class RingOfAnger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BRICK, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) + " every " + DescUtil.yellow(seconds + "s") + "."
-				+ " If you have at least " + DescUtil.white(3) + " stacks after you gain a stack from the ring, gain " + DescUtil.white(5) + " strength once per fight.");
+		item = createItem(Material.BRICK, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) + " every " + DescUtil.val(seconds + "s") + "."
+				+ " If you have at least " + DescUtil.val(3) + " stacks after you gain a stack from the ring, gain " + DescUtil.val(5) + " strength once per fight.");
 	}
 }

@@ -34,7 +34,6 @@ public class MagicSpear extends Equipment {
 		super(ID, "Magic Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(0, 1, isUpgraded ? 50 : 40, 0.75, 0.2, DamageType.EARTHEN,
 						Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = isUpgraded ? 120 : 90;
 	}
 
@@ -66,7 +65,7 @@ public class MagicSpear extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRIDENT, "Melee range +1. Deals an additional " + DescUtil.yellow(damage)
+		item = createItem(Material.TRIDENT, "Melee range +1. Deals an additional " + DescUtil.val(damage)
 				+ " damage if enemy is " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}
 }

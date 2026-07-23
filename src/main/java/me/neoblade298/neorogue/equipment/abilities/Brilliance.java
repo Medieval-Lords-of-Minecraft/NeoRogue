@@ -126,10 +126,10 @@ public class Brilliance extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 	item = createItem(Material.NETHER_STAR,
-			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(ACTIVATION_THRES) + 
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(ACTIVATION_THRES) + 
 			" different types of damage. Whenever you deal a damage type that is different " +
-			"from your previous damage type, gain " + GlossaryTag.PROTECT.tag(this, protectShell, true) + 
-			" and " + GlossaryTag.SHELL.tag(this, protectShell, true) + " [" + DescUtil.white("5s") + "] and " +
-			DescUtil.white("50%") + " resistance to the damage type you used [" + DescUtil.white("5s") + "].");
+			"from your previous damage type, gain " + GlossaryTag.PROTECT.tag(this, protectShell) + 
+			" and " + GlossaryTag.SHELL.tag(this, protectShell) + " [" + DescUtil.val("5s") + "] and " +
+			DescUtil.val("50%") + " resistance to the damage type you used [" + DescUtil.val("5s") + "].");
 	}
 }

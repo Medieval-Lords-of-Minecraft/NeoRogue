@@ -46,7 +46,7 @@ public class Rushdown extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_BANNER,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
+				GlossaryTag.PASSIVE.tag(this) + ". Increase stamina regen by " + DescUtil.val(inc) + " for the first " + DescUtil.val(
 				secs + "s") + " of a fight.");
 	}
 }

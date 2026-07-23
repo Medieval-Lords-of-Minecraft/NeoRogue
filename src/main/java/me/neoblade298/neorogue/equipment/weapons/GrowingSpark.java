@@ -114,8 +114,8 @@ public class GrowingSpark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.QUARTZ, "On cast, " + GlossaryTag.CHARGE.tag(this) + " <white>1s</white> before firing a projectile that deals "
-				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. Every time you cast within " + DescUtil.white("6s") + " of the last cast, increase " +
-				"its damage by " + DescUtil.yellow(growth) + ", up to " + DescUtil.white(5) + ". Otherwise, reset the stacks.");
+				+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage. Every time you cast within " + DescUtil.val("6s") + " of the last cast, increase " +
+				"its damage by " + DescUtil.val(growth) + ", up to " + DescUtil.val(5) + ". Otherwise, reset the stacks.");
 		chargedIcon = item.clone().withType(Material.NETHER_STAR);
 	}
 }

@@ -52,6 +52,6 @@ public class RodOfAges extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD, 
-				"Every " + DescUtil.white(3) + " ability casts grants you " + DescUtil.white(5) + " mana and " + DescUtil.white(5) + " max mana.");
+				"Every " + DescUtil.val(3) + " ability casts grants you " + DescUtil.val(5) + " mana and " + DescUtil.val(5) + " max mana.");
 	}
 }

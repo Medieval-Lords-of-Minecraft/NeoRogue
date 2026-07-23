@@ -62,6 +62,6 @@ public class TempestSigil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"If you use your weapon within " + DescUtil.white("2s") + " of casting an ability, gain " + DescUtil.white("20%") + " attack speed for " + DescUtil.white("3s") + ". Does not stack.");
+				"If you use your weapon within " + DescUtil.val("2s") + " of casting an ability, gain " + DescUtil.val("20%") + " attack speed for " + DescUtil.val("3s") + ". Does not stack.");
 	}
 }

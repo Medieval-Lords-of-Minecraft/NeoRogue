@@ -141,11 +141,11 @@ public class Pandemic extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " " + GlossaryTag.POISON.tag(this) + " damage. Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(300) + " " + GlossaryTag.POISON.tag(this) + " damage. Your basic attacks mark enemies " + DescUtil.duration(3) + ". " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
-				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
+				DescUtil.val((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +
-				GlossaryTag.POISON.tag(this, bonusPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] and spreads " +
-				GlossaryTag.POISON.tag(this, areaPoison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to nearby enemies.");
+				GlossaryTag.POISON.tag(this, bonusPoison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] and spreads " +
+				GlossaryTag.POISON.tag(this, areaPoison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] to nearby enemies.");
 	}
 }

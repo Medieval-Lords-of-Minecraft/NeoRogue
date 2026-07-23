@@ -77,8 +77,8 @@ public class Maim extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage"
-						+ " and increases " + GlossaryTag.PHYSICAL.tag(this) + " damage dealt to the enemy hit by " + DescUtil.yellow(inc)
-						+ " " + DescUtil.duration(10, false) + ".");
+				"On cast, your next basic attack deals an additional " + GlossaryTag.BLUNT.tag(this, damage) + " damage"
+						+ " and increases " + GlossaryTag.PHYSICAL.tag(this) + " damage dealt to the enemy hit by " + DescUtil.val(inc)
+						+ " " + DescUtil.duration(10) + ".");
 	}
 }

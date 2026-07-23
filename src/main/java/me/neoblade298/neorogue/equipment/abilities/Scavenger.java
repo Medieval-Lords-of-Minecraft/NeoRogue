@@ -142,7 +142,7 @@ public class Scavenger extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.WHEAT,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
-				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina and " + 
-				DescUtil.yellow((int)(damageBuff * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage.");
+				"Each stack grants you " + DescUtil.val(stamina) + " stamina and " + 
+				DescUtil.val((int)(damageBuff * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage.");
 	}
 }

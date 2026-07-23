@@ -90,9 +90,9 @@ public class FireBolt extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing "
-						+ GlossaryTag.LIGHTNING.tag(this, damage, true)
-						+ " in a line in front of you. If you are above " + DescUtil.yellow(thres) + " mana, also deal "
-						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage in a line slightly after.");
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before dealing "
+						+ GlossaryTag.LIGHTNING.tag(this, damage)
+						+ " in a line in front of you. If you are above " + DescUtil.val(thres) + " mana, also deal "
+						+ GlossaryTag.FIRE.tag(this, damage) + " damage in a line slightly after.");
 	}
 }

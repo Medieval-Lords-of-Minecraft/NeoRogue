@@ -96,9 +96,9 @@ public class Inflame extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile that deals "
-				+ GlossaryTag.FIRE.tag(this, damage, true) + " damage and applies " +
-				GlossaryTag.BURN.tag(this, stacks, false) + ". If the enemy hit already has " + GlossaryTag.BURN.tag(this) +
+				+ GlossaryTag.FIRE.tag(this, damage) + " damage and applies " +
+				GlossaryTag.BURN.tag(this, stacks) + ". If the enemy hit already has " + GlossaryTag.BURN.tag(this) +
 				", increase the " + GlossaryTag.BURN.tag(this) + " applied by " +
-				"this ability for the fight by " + DescUtil.yellow(growth) + ".");
+				"this ability for the fight by " + DescUtil.val(growth) + ".");
 	}
 }

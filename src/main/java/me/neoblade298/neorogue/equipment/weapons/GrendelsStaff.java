@@ -45,7 +45,6 @@ public class GrendelsStaff extends Equipment {
 				ID, "Grendel's Staff", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 65 : 55, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 5 : 3;
 		intellectFreq = isUpgraded ? 4 : 6;
 	}
@@ -117,8 +116,8 @@ public class GrendelsStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Grants " + GlossaryTag.INTELLECT.tag(this, 1, false) + " every " + DescUtil.yellow(intellectFreq)
-						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana."
+				"Grants " + GlossaryTag.INTELLECT.tag(this, 1) + " every " + DescUtil.val(intellectFreq)
+						+ " basic attacks. Each hit grants " + DescUtil.val(manaGain) + " mana."
 		);
 	}
 }

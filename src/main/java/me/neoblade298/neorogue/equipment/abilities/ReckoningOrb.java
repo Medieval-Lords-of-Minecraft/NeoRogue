@@ -75,7 +75,7 @@ public class ReckoningOrb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SLIME_BALL, "On cast, throw an orb that explodes on an enemy or block, granting all nearby enemies " + 
-		DescUtil.potion("Slowness", 2, 3) + " and increasing all damage dealt against them by " + DescUtil.yellow(multStr + "%") + " [<white>5s</white>].");
+		DescUtil.potion("Slowness", 2, 3) + " and increasing all damage dealt against them by " + DescUtil.val(multStr + "%") + " [<white>5s</white>].");
 	}
 
 	private class ReckoningOrbProjectile extends Projectile {

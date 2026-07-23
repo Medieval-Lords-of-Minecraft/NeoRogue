@@ -64,6 +64,6 @@ public class AvalonianAnchor extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Landing a melee basic attack while falling increases its damage by " + DescUtil.white("50%"));
+				"Landing a melee basic attack while falling increases its damage by " + DescUtil.val("50%"));
 	}
 }

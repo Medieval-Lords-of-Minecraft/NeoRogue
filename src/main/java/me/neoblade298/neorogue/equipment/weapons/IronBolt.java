@@ -30,7 +30,6 @@ public class IronBolt extends Ammunition {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 35 : 25, 0.1, DamageType.PIERCING));
 		mult = isUpgraded ? 0.8 : 0.4;
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -59,7 +58,7 @@ public class IronBolt extends Ammunition {
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW,
 				"Decreased arrow velocity. Applying negative statuses to enemies hit increases them by " +
-				DescUtil.yellow((int) (mult * 100) + "%") + ".");
+				DescUtil.val((int) (mult * 100) + "%") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.GRAY);
 		item.setItemMeta(pm);

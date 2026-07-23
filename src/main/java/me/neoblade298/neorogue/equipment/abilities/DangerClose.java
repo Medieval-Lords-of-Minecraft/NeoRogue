@@ -75,7 +75,7 @@ public class DangerClose extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.white("50%") + " stamina. Whenever you " + GlossaryTag.EVADE.tag(this) + ", increase your " + 
-				GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow((int)(damageIncrease * 100) + "%") + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after evading once while above " + DescUtil.val("50%") + " stamina. Whenever you " + GlossaryTag.EVADE.tag(this) + ", increase your " + 
+				GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.val((int)(damageIncrease * 100) + "%") + ".");
 	}
 }

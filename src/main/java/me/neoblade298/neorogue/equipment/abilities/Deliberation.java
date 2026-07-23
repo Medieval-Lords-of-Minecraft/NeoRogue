@@ -64,9 +64,9 @@ public class Deliberation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("2s") + " before gaining "
-						+ GlossaryTag.FOCUS.tag(this, 1, false) + " and increasing your damage by " + DescUtil.yellow(damage)
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("2s") + " before gaining "
+						+ GlossaryTag.FOCUS.tag(this, 1) + " and increasing your damage by " + DescUtil.val(damage)
 						+ " multiplied by your current " + GlossaryTag.FOCUS.tag(this)
-						+ " for " + DescUtil.white("10s") + ".");
+						+ " for " + DescUtil.val("10s") + ".");
 	}
 }

@@ -61,6 +61,6 @@ public class CloudyCrest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DEEPSLATE_BRICK_SLAB,
 				GlossaryTag.PASSIVE.tag(this) + ". Every time you " + GlossaryTag.DASH.tag(this) + ", deal " + 
-				GlossaryTag.DARK.tag(this, damage, true) + " damage to all enemies in range.");
+				GlossaryTag.DARK.tag(this, damage) + " damage to all enemies in range.");
 	}
 }

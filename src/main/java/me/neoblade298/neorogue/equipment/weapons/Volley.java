@@ -35,7 +35,6 @@ public class Volley extends Equipment {
 		super(ID, "Volley", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(10, 20, 12, 7));
-		properties.addUpgrades(PropertyType.RANGE);
 		damage = isUpgraded ? 100 : 75;
 	}
 	
@@ -104,8 +103,8 @@ public class Volley extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_ROCKET, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing " +
-			DescUtil.white(5) + " projectiles in a " + DescUtil.white("60 degree") + " cone " +
-		 	"that deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using " +
+			DescUtil.val(5) + " projectiles in a " + DescUtil.val("60 degree") + " cone " +
+		 	"that deal " + GlossaryTag.PIERCING.tag(this, damage) + " damage using " +
 			"your current ammunition.");
 	}
 }

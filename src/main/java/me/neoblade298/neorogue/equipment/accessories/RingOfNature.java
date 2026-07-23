@@ -43,7 +43,7 @@ public class RingOfNature extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.VINE, "Dealing " + GlossaryTag.EARTHEN.tag(this) + " damage grants you " + GlossaryTag.SHIELDS.tag(this, shields, true)
-				+ " for " + DescUtil.yellow(shields + "s") + ".");
+		item = createItem(Material.VINE, "Dealing " + GlossaryTag.EARTHEN.tag(this) + " damage grants you " + GlossaryTag.SHIELDS.tag(this, shields)
+				+ " for " + DescUtil.val(shields + "s") + ".");
 	}
 }

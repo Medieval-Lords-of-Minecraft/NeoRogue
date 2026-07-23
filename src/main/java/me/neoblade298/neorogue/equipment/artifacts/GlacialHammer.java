@@ -57,7 +57,7 @@ public class GlacialHammer extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
-				"Every " + DescUtil.white(5) + " basic attacks while you're above " + DescUtil.white("50%") + " mana gives the enemy slowness " + DescUtil.white(1)
+				"Every " + DescUtil.val(5) + " basic attacks while you're above " + DescUtil.val("50%") + " mana gives the enemy slowness " + DescUtil.val(1)
 				+ " [<white>1s</white>].");
 	}
 }

@@ -214,10 +214,10 @@ public class Stonefang extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + ", then send a fang of stone "
-						+ "burrowing along the ground " + DescUtil.white("3") + ", " + DescUtil.white("6") + ", and "
-						+ DescUtil.white("9") + " blocks ahead along the ground in rapid succession. Each strike deals "
-						+ GlossaryTag.BLUNT.tag(this, damage, true) + " damage and applies "
-						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + ", then send a fang of stone "
+						+ "burrowing along the ground " + DescUtil.val("3") + ", " + DescUtil.val("6") + ", and "
+						+ DescUtil.val("9") + " blocks ahead along the ground in rapid succession. Each strike deals "
+						+ GlossaryTag.BLUNT.tag(this, damage) + " damage and applies "
+						+ GlossaryTag.CONCUSSED.tag(this, conc) + ".");
 	}
 }

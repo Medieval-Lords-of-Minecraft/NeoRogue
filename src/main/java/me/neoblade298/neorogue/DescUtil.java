@@ -4,6 +4,24 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 
 public class DescUtil {
+	// Sentinel characters (Unicode private-use area) that wrap an auto-colored value emitted by val(...).
+	// Equipment.resolveUpgradeColors(...) replaces each wrapped value with <yellow> if it changes on
+	// upgrade or <white> if it stays the same, then strips the sentinels before the tooltip is rendered.
+	public static final char VAL_START = '\uE000';
+	public static final char VAL_END = '\uE001';
+
+	// Emits a value whose color (yellow/white) is decided automatically by diffing the base item against
+	// its upgraded counterpart. Use this instead of manually choosing yellow(...) / white(...).
+	public static String val(int txt) {
+		return "" + VAL_START + txt + VAL_END;
+	}
+	public static String val(double txt) {
+		return "" + VAL_START + txt + VAL_END;
+	}
+	public static String val(String txt) {
+		return "" + VAL_START + txt + VAL_END;
+	}
+
 	public static String yellow(String txt) {
 		return "<yellow>" + txt + "</yellow>";
 	}
@@ -44,5 +62,10 @@ public class DescUtil {
 
 	public static String duration(int seconds, boolean upgrade) {
 		return "[" + (upgrade ? yellow(seconds + "s") : white(seconds + "s")) + "]";
+	}
+
+	// Auto-colored duration: the value is yellow/white based on whether it changes on upgrade.
+	public static String duration(int seconds) {
+		return "[" + val(seconds + "s") + "]";
 	}
 }

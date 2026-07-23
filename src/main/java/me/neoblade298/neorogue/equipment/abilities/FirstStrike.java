@@ -46,7 +46,7 @@ public class FirstStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
-				"On cast, damage the nearest enemy for " + GlossaryTag.PIERCING.tag(this, damage, true) + " and then " + GlossaryTag.DASH.tag(this)
+				"On cast, damage the nearest enemy for " + GlossaryTag.PIERCING.tag(this, damage) + " and then " + GlossaryTag.DASH.tag(this)
 				+ " forward. Gaining " + GlossaryTag.STEALTH.tag(this) + " or " + GlossaryTag.EVADE.tag(this) + " takes it off cooldown.");
 	}
 

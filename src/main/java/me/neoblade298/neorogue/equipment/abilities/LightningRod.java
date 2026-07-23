@@ -113,11 +113,11 @@ public class LightningRod extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.YELLOW_DYE,
-				"Can be cast every " + DescUtil.yellow(hitsRequired) + " times you deal " +
+				"Can be cast every " + DescUtil.val(hitsRequired) + " times you deal " +
 				GlossaryTag.LIGHTNING.tag(this) + " damage, stackable. On cast, " +
-				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing " +
-				GlossaryTag.LIGHTNING.tag(this, damage, true) + " and applying " +
-				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) +
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before dealing " +
+				GlossaryTag.LIGHTNING.tag(this, damage) + " and applying " +
+				GlossaryTag.ELECTRIFIED.tag(this, electrified) +
 				" in a line in front of you.");
 	}
 }

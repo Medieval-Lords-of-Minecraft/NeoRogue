@@ -75,7 +75,7 @@ public class MarkTarget extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_BRICK,
-				"On cast, apply " + GlossaryTag.REND.tag(this, rend, true) + " to the enemy you're looking at. Additionally, you passively " +
-				"deal an additional " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage per stack of " + GlossaryTag.REND.tag(this) + ".");
+				"On cast, apply " + GlossaryTag.REND.tag(this, rend) + " to the enemy you're looking at. Additionally, you passively " +
+				"deal an additional " + GlossaryTag.SLASHING.tag(this, damage) + " damage per stack of " + GlossaryTag.REND.tag(this) + ".");
 	}
 }

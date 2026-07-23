@@ -45,7 +45,7 @@ public class RubyShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases max health by " + DescUtil.white(max) + " and grants " +
-				GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight.");
+		item = createItem(Material.REDSTONE, "Increases max health by " + DescUtil.val(max) + " and grants " +
+				GlossaryTag.SHIELDS.tag(this, shields) + " at the start of a fight.");
 	}
 }

@@ -90,7 +90,7 @@ public class Erupt extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TORCH,
-				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to the target you're aiming at. If they have " + GlossaryTag.BURN.tag(this) + ", " +
+				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage) + " damage to the target you're aiming at. If they have " + GlossaryTag.BURN.tag(this) + ", " +
 				"additionally deal damage to all enemies near the target.");
 	}
 }

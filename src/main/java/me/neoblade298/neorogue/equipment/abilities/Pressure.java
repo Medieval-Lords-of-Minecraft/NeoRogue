@@ -92,7 +92,7 @@ public class Pressure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_GRATE,
-				"On cast, drop a zone that lasts " + DescUtil.white("8s") + ". Dealing damage to an enemy while you are both within the zone increases " +
-				"the damage by " + DescUtil.yellow(damage) + ".");
+				"On cast, drop a zone that lasts " + DescUtil.val("8s") + ". Dealing damage to an enemy while you are both within the zone increases " +
+				"the damage by " + DescUtil.val(damage) + ".");
 	}
 }

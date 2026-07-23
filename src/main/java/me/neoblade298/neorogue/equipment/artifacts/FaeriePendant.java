@@ -41,6 +41,6 @@ public class FaeriePendant extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Gain " + GlossaryTag.PROTECT.tag(this, 5, false) + " and " + GlossaryTag.SHELL.tag(this, 5, false) + " for the first " + DescUtil.white("20s") + " of a fight.");
+				"Gain " + GlossaryTag.PROTECT.tag(this, 5) + " and " + GlossaryTag.SHELL.tag(this, 5) + " for the first " + DescUtil.val("20s") + " of a fight.");
 	}
 }

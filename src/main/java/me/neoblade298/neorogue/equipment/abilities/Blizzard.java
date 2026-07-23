@@ -162,10 +162,10 @@ public class Blizzard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SNOWBALL,
-				GlossaryTag.PASSIVE.tag(this) + ". After applying " + DescUtil.yellow(threshold) + " " + GlossaryTag.FROST.tag(this) + 
-				", summon a blizzard that follows enemies " + DescUtil.duration(10, false) + ". " +
-				"It deals " + GlossaryTag.ICE.tag(this, damage, true) + " damage and applies " + 
-				GlossaryTag.FROST.tag(this, frost, true) + " per second. " +
+				GlossaryTag.PASSIVE.tag(this) + ". After applying " + DescUtil.val(threshold) + " " + GlossaryTag.FROST.tag(this) + 
+				", summon a blizzard that follows enemies " + DescUtil.duration(10) + ". " +
+				"It deals " + GlossaryTag.ICE.tag(this, damage) + " damage and applies " + 
+				GlossaryTag.FROST.tag(this, frost) + " per second. " +
 				"On cast (only after summoned), " + DescUtil.charge(this, 1, 20) + " to teleport the blizzard to you.");
 	}
 }

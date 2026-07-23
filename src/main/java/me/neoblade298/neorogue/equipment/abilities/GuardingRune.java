@@ -44,6 +44,6 @@ public class GuardingRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COBBLESTONE,
-				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + " once per fight.");
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + " once per fight.");
 	}
 }

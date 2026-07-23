@@ -51,7 +51,7 @@ public class BasicDarkArts extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACK_CARPET,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase " + GlossaryTag.DARK.tag(this) + " damage by " + DescUtil.yellow(damage) + ". Increase " +
-				GlossaryTag.INSANITY.tag(this) + " application stacks by " + DescUtil.yellow(stacks) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Increase " + GlossaryTag.DARK.tag(this) + " damage by " + DescUtil.val(damage) + ". Increase " +
+				GlossaryTag.INSANITY.tag(this) + " application stacks by " + DescUtil.val(stacks) + ".");
 	}
 }

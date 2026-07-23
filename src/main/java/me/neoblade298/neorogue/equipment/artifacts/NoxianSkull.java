@@ -68,6 +68,6 @@ public class NoxianSkull extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL, 
-				"For every " + DescUtil.white(6) + " stacks of any negative status you apply, apply " + DescUtil.white(1) + " additional stack.");
+				"For every " + DescUtil.val(6) + " stacks of any negative status you apply, apply " + DescUtil.val(1) + " additional stack.");
 	}
 }

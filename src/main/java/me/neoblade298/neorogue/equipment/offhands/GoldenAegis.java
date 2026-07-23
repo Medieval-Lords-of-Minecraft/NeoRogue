@@ -96,6 +96,6 @@ public class GoldenAegis extends Equipment {
 		item = createItem(Material.GOLDEN_APPLE,
 				"On right click (left click for <gold>Archer</gold>), convert all current " + 
 				GlossaryTag.SHIELDS.tag(this) + " to permanent " + GlossaryTag.SHIELDS.tag(this) + ". Usable " +
-				DescUtil.yellow((isUpgraded ? "twice" : "once")) + " per fight.");
+				DescUtil.val((isUpgraded ? "twice" : "once")) + " per fight.");
 	}
 }

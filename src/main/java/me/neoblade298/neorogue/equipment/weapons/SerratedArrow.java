@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 public class SerratedArrow extends Ammunition {
 	private static final String ID = "SerratedArrow";
 
-	private double damage;
+	private int damage;
 	private int stacks;
 	
 	public SerratedArrow(boolean isUpgraded) {
@@ -45,8 +45,8 @@ public class SerratedArrow extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Applies " + GlossaryTag.REND.tag(this, stacks, true) + ". Deals an additional " + 
-		GlossaryTag.REND.tag(this, damage, false) + " damage for every stack of " + 
+		item = createItem(Material.ARROW, "Applies " + GlossaryTag.REND.tag(this, stacks) + ". Deals an additional " + 
+		GlossaryTag.REND.tag(this, damage) + " damage for every stack of " + 
 		GlossaryTag.REND.tag(this) + " the target has.");
 	}
 }

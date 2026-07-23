@@ -53,6 +53,6 @@ public class StormSigil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DISC_FRAGMENT_5, 
-				"Changing to a different ammunition buffs your damage by " + DescUtil.yellow(damage) + " " + DescUtil.duration(secs, false) + ".");
+				"Changing to a different ammunition buffs your damage by " + DescUtil.val(damage) + " " + DescUtil.duration(secs) + ".");
 	}
 }

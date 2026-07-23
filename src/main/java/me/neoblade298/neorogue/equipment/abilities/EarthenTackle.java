@@ -116,9 +116,9 @@ public class EarthenTackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
+				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.val(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
-						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ", and become invulnerable [" + DescUtil.white("0.5s") + "]. "
-						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.white(10) + ".");
+						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed) + ", and become invulnerable [" + DescUtil.val("0.5s") + "]. "
+						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.val(10) + ".");
 	}
 }

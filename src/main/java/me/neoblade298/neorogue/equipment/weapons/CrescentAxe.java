@@ -25,7 +25,6 @@ public class CrescentAxe extends Equipment {
 		super(ID, "Crescent Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 0.5, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
 	}
 	
@@ -46,6 +45,6 @@ public class CrescentAxe extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_AXE, "Increases damage dealt by number of " + GlossaryTag.BERSERK.tag(this) + " "
-				+ "stacks you have multiplied by " + DescUtil.white(3) + ".");
+				+ "stacks you have multiplied by " + DescUtil.val(3) + ".");
 	}
 }

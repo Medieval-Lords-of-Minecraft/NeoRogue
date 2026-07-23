@@ -60,7 +60,7 @@ public class PoisonPowder extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to enemies you"
-				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next " + DescUtil.white(5) + " seconds.");
+		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] to enemies you"
+				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next " + DescUtil.val(5) + " seconds.");
 	}
 }

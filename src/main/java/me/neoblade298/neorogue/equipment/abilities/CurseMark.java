@@ -96,8 +96,8 @@ public class CurseMark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.white("2s") + "," +
-				" apply " + GlossaryTag.INSANITY.tag(this, stacks, false) + " to them and increase " + GlossaryTag.DARK.tag(this) + " damage dealt to them by " +
-				DescUtil.yellow(buff + "%") + " [<white>5s</white>].");
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
+				" apply " + GlossaryTag.INSANITY.tag(this, stacks) + " to them and increase " + GlossaryTag.DARK.tag(this) + " damage dealt to them by " +
+				DescUtil.val(buff + "%") + " [<white>5s</white>].");
 	}
 }

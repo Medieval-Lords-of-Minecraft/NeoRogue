@@ -81,8 +81,8 @@ public class FormAPlan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				GlossaryTag.PASSIVE.tag(this) + ". After " + DescUtil.white("10s") + " (+" + DescUtil.white("1s") + " for every time you deal "
-				+ GlossaryTag.GENERAL + " damage), gain " + GlossaryTag.STEALTH.tag(this, 3, false) +
-				" [<white>5s</white>] and increase your damage by " + DescUtil.yellow(buff + "%") + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". After " + DescUtil.val("10s") + " (+" + DescUtil.val("1s") + " for every time you deal "
+				+ GlossaryTag.GENERAL + " damage), gain " + GlossaryTag.STEALTH.tag(this, 3) +
+				" [<white>5s</white>] and increase your damage by " + DescUtil.val(buff + "%") + ".");
 	}
 }

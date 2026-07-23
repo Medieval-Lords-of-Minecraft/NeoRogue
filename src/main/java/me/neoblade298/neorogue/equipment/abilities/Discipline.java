@@ -44,8 +44,8 @@ public class Discipline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Every " + DescUtil.white(INTERVAL + "s") + ", give yourself " + DescUtil.white(stamina) + " stamina, " + DescUtil.yellow(staminaGain) + " max stamina, and"
-						+ " take " + DescUtil.white(damageReduc) + " less damage " + DescUtil.duration(10, false) + ".");
+				"Every " + DescUtil.val(INTERVAL + "s") + ", give yourself " + DescUtil.val(stamina) + " stamina, " + DescUtil.val(staminaGain) + " max stamina, and"
+						+ " take " + DescUtil.val(damageReduc) + " less damage " + DescUtil.duration(10) + ".");
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class CrystallineFlask extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Heal for " + DescUtil.white("10%") + " of your max health when you start a fight against a miniboss or boss.");
+				"Heal for " + DescUtil.val("10%") + " of your max health when you start a fight against a miniboss or boss.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(11, 112, 227));
 		item.setItemMeta(meta);

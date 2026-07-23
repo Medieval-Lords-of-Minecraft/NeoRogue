@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -185,6 +186,18 @@ public enum GlossaryTag implements GlossaryIcon {
 		eq.addTags(this);
 		String color = upgradable ? "yellow" : "white";
 		return "<" + color + ">" + amt + "</" + color + "> " + this.tag;
+	}
+
+	// Auto-colored variants: the value's yellow/white color is decided automatically by diffing the base
+	// item against its upgraded counterpart (see DescUtil.val / Equipment.resolveUpgradeColors).
+	public String tag(Equipment eq, int amt) {
+		eq.addTags(this);
+		return DescUtil.val(amt) + " " + this.tag;
+	}
+
+	public String tag(Equipment eq, double amt) {
+		eq.addTags(this);
+		return DescUtil.val(amt) + " " + this.tag;
 	}
 	
 	@Override

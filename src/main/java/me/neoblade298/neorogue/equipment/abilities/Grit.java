@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -89,7 +88,8 @@ public class Grit extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range damage " + DescUtil.white(5) + " times. Dealing damage from at most " + DescUtil.white(5) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
-				DescUtil.yellow(inc) + ". Killing an enemy within " + DescUtil.white(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("8s") + "].");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range " + GlossaryTag.GENERAL.tag(this) + " damage " + DescUtil.val(5) + " times. " +
+				GlossaryTag.GENERAL.tag(this) + " damage dealt within "  + DescUtil.val(5) + " blocks of the target is increased by " +
+				DescUtil.val(inc) + ". Killing an enemy within " + DescUtil.val(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("8s") + "].");
 	}
 }

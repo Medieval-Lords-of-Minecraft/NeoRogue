@@ -100,8 +100,8 @@ public class Storm extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
 				"Toggleable, off by default. While active, aim at a block to deal "
-						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage to all enemies near it for "
-						+ DescUtil.white(mana) + " mana each second.");
+						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage to all enemies near it for "
+						+ DescUtil.val(mana) + " mana each second.");
 
 		activeIcon = item.withType(Material.BLAZE_POWDER);
 	}

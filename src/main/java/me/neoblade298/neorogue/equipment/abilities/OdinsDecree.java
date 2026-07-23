@@ -86,9 +86,9 @@ public class OdinsDecree extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.white("50%") + " mana. Every " + DescUtil.white("2s") + ", " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.val("50%") + " mana. Every " + DescUtil.val("2s") + ", " + DescUtil.val((int)(chance * 100) + "%") + " " +
 				"chance to drop a lightning bolt on the nearest enemy, dealing " + 
-				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
-				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");
+				GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying " + 
+				GlossaryTag.ELECTRIFIED.tag(this, electrified) + ".");
 	}
 }

@@ -39,7 +39,7 @@ public class LeatherCowl extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + ".");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + DescUtil.val(evade) + " " + GlossaryTag.EVADE.tag(this)
+				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + ".");
 	}
 }

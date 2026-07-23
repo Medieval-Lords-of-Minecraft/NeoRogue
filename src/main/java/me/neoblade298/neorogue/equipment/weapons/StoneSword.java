@@ -26,7 +26,6 @@ public class StoneSword extends Equipment {
 		super(ID, "Stone Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		shields = isUpgraded ? 15 : 10;
 		shieldsBonus = isUpgraded ? 10 : 5;
@@ -53,7 +52,7 @@ public class StoneSword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Start the fight with " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "
-				+ "Deal an additional " + DescUtil.yellow(shieldsBonus) + " damage if you have shields when you attack with this weapon.");
+		item = createItem(Material.STONE_SWORD, "Start the fight with " + GlossaryTag.SHIELDS.tag(this, shields) + ". "
+				+ "Deal an additional " + DescUtil.val(shieldsBonus) + " damage if you have shields when you attack with this weapon.");
 	}
 }

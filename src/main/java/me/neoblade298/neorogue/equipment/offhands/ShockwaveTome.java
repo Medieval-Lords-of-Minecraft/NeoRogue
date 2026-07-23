@@ -116,8 +116,8 @@ public class ShockwaveTome extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On right click, push all enemies in a cone in front of you away and apply "
-				+ GlossaryTag.CONCUSSED.tag(this, BASE_CONCUSSED, false) + ". For each enemy pushed into a wall, deal "
-				+ GlossaryTag.BLUNT.tag(this, wallDamage, true) + " damage and apply an additional "
-				+ GlossaryTag.CONCUSSED.tag(this, wallConcussed, true) + ".");
+				+ GlossaryTag.CONCUSSED.tag(this, BASE_CONCUSSED) + ". For each enemy pushed into a wall, deal "
+				+ GlossaryTag.BLUNT.tag(this, wallDamage) + " damage and apply an additional "
+				+ GlossaryTag.CONCUSSED.tag(this, wallConcussed) + ".");
 	}
 }

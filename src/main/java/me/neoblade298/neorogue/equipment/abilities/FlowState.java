@@ -62,7 +62,7 @@ public class FlowState extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.white("50%") + " max stamina. Increase stamina regen by " + DescUtil.yellow(inc) + " when above "
-				+ DescUtil.yellow(thres) + " stamina.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after reaching " + DescUtil.val("50%") + " max stamina. Increase stamina regen by " + DescUtil.val(inc) + " when above "
+				+ DescUtil.val(thres) + " stamina.");
 	}
 }

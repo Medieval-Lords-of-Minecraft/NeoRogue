@@ -85,9 +85,9 @@ public class ManaInfusion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LAPIS_LAZULI,
-				"Toggleable, off by default. When active, your basic attacks consume " + DescUtil.white(mana)
-						+ " mana in exchange for increasing their damage by " + DescUtil.yellow(damage)
-						+ ", and killing an enemy grants you " + DescUtil.yellow(drain) + " mana.");
+				"Toggleable, off by default. When active, your basic attacks consume " + DescUtil.val(mana)
+						+ " mana in exchange for increasing their damage by " + DescUtil.val(damage)
+						+ ", and killing an enemy grants you " + DescUtil.val(drain) + " mana.");
 
 		activeIcon = item.withType(Material.LAPIS_BLOCK);
 	}

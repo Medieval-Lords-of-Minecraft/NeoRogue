@@ -64,8 +64,8 @@ public class Fortify extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"On cast, your next basic attack while in the air deals " + DescUtil.white(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. "
-								+ "After which, gain " + GlossaryTag.SHIELDS.tag(this, fortitude, true) + 
+				"On cast, your next basic attack while in the air deals " + DescUtil.val(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. "
+								+ "After which, gain " + GlossaryTag.SHIELDS.tag(this, fortitude) + 
 								" [<white>5s</white>] for every time you've landed this ability this fight.");
 	}
 }

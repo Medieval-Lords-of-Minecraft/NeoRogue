@@ -141,10 +141,10 @@ public class ThunderclapAndFlash extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
 				GlossaryTag.PASSIVE.tag(this) + ". Upon " + GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " toward the attacker, " +
-				"deal " + GlossaryTag.LIGHTNING.tag(this, evadeDamage, true) + " damage, and gain a stack " +
-				"(" + DescUtil.white(2) + " stacks if you've applied " + DescUtil.white(ELECTRIFIED_THRESHOLD) + " " + 
+				"deal " + GlossaryTag.LIGHTNING.tag(this, evadeDamage) + " damage, and gain a stack " +
+				"(" + DescUtil.val(2) + " stacks if you've applied " + DescUtil.val(ELECTRIFIED_THRESHOLD) + " " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " this fight). On cast, consume a stack to " +
-				GlossaryTag.DASH.tag(this) + " forward and deal " + GlossaryTag.LIGHTNING.tag(this, castDamage, true) + 
+				GlossaryTag.DASH.tag(this) + " forward and deal " + GlossaryTag.LIGHTNING.tag(this, castDamage) + 
 				" damage in a line.");
 	}
 }

@@ -65,7 +65,7 @@ public class BodyDouble extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, drop an armor stand " + DescUtil.duration(dur, true) + 
+				"On cast, drop an armor stand " + DescUtil.duration(dur) + 
 				" that taunts all nearby enemies.");
 	}
 }

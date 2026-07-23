@@ -120,8 +120,8 @@ public class TwinBolt extends Equipment {
 		item = createItem(Material.CAMPFIRE,
 				"On cast, " + DescUtil.charge(this, 1, 1)
 						+ " before firing two projectiles that split and then curve back inwards. They deal "
-						+ GlossaryTag.FIRE.tag(this, damage, true)
+						+ GlossaryTag.FIRE.tag(this, damage)
 						+ " damage. Additionally, if both projectiles hit the same enemy, apply "
-						+ GlossaryTag.BURN.tag(this, burn, true) + ".");
+						+ GlossaryTag.BURN.tag(this, burn) + ".");
 	}
 }

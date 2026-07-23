@@ -79,6 +79,6 @@ public class AthenasLongbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW, GlossaryTag.PASSIVE.tag(this) + ". Increase non-basic attack damage by " + 
-							DescUtil.yellow((int)(damageBuff * 100) + "%") + ".");
+							DescUtil.val((int)(damageBuff * 100) + "%") + ".");
 	}
 }

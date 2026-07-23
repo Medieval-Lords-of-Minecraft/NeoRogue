@@ -89,8 +89,8 @@ public class SpotWeakness extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing damage to " +
-				DescUtil.white(ACTIVATION_THRES) + " different enemies below " + DescUtil.white("50%") + " health. Afterwards, dealing damage to an enemy below " +
-				DescUtil.white("50%") + " health grants you " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) +
+				DescUtil.val(ACTIVATION_THRES) + " different enemies below " + DescUtil.val("50%") + " health. Afterwards, dealing damage to an enemy below " +
+				DescUtil.val("50%") + " health grants you " + GlossaryTag.STRENGTH.tag(this, strength) + " " + DescUtil.duration(10) +
 				". Each enemy can only grant strength once, and the enemies used to activate cannot grant strength.");
 	}
 }

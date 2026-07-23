@@ -95,9 +95,9 @@ public class Malice extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
-						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, false)
-						+ " every " + DescUtil.white(hitReq) + " hits, increased by " + DescUtil.white(1) + " for every " + GlossaryTag.INJURY.tag(this, thres, true)
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.val(dec)
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks)
+						+ " every " + DescUtil.val(hitReq) + " hits, increased by " + DescUtil.val(1) + " for every " + GlossaryTag.INJURY.tag(this, thres)
 						+ " you apply.");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}

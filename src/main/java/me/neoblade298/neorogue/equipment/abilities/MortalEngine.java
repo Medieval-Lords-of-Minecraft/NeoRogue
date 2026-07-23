@@ -70,8 +70,8 @@ public class MortalEngine extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.white(cutoff) + "+ stamina. When you cast an ability with base cost of at least " + DescUtil.white(cutoff)
-						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.yellow(reduc)
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.val(cutoff) + "+ stamina. When you cast an ability with base cost of at least " + DescUtil.val(cutoff)
+						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.val(reduc)
 						+ ".");
 	}
 }

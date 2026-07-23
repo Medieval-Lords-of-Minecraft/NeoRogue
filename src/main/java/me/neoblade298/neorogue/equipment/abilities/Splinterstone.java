@@ -116,10 +116,10 @@ public class Splinterstone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRIPSTONE_BLOCK,
-				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before launching a projectile that deals "
-						+ GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and applies "
-						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". If an enemy is hit, " + "deal "
-						+ GlossaryTag.PIERCING.tag(this, pierce, true)
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before launching a projectile that deals "
+						+ GlossaryTag.EARTHEN.tag(this, damage) + " damage and applies "
+						+ GlossaryTag.CONCUSSED.tag(this, conc) + ". If an enemy is hit, " + "deal "
+						+ GlossaryTag.PIERCING.tag(this, pierce)
 						+ " damage to all enemies in a cone behind them.");
 	}
 }

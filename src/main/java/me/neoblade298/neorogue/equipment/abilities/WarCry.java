@@ -39,8 +39,8 @@ public class WarCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength, true) + " [<white>5s<white>] and "
-						+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s<white>].");
+				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength) + " [<white>5s<white>] and "
+						+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s<white>].");
 	}
 
 	@Override

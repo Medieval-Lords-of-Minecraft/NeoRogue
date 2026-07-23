@@ -33,7 +33,6 @@ public class ShadowWalk extends Equipment {
 	public ShadowWalk(boolean isUpgraded) {
 		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, isUpgraded ? 17 : 21, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		canDrop = false;
 	}
@@ -52,9 +51,9 @@ public class ShadowWalk extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) +
+				"On cast, Grant speed " + DescUtil.val(1) + " and " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>]. "
-				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				+ "Your next " + DescUtil.val(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}

@@ -40,6 +40,6 @@ public class RingOfFerocity extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Increases your attack speed by " + DescUtil.yellow(display + "%") + ".");
+		item = createItem(Material.RABBIT_FOOT, "Increases your attack speed by " + DescUtil.val(display + "%") + ".");
 	}
 }

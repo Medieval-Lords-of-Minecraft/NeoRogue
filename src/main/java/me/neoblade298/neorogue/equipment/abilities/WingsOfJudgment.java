@@ -160,7 +160,7 @@ public class WingsOfJudgment extends Equipment {
 		item = createItem(Material.FEATHER,
 				"On cast, " + DescUtil.charge(this, 1, 1) + ". Afterwards, fire <white>" + ARROW_COUNT + 
 				"</white> arrows upward in a wing pattern that home towards the nearest enemy. " +
-				"Uses your equipped ammunition and deals " + GlossaryTag.PIERCING.tag(this, damage, true) + 
+				"Uses your equipped ammunition and deals " + GlossaryTag.PIERCING.tag(this, damage) + 
 				" base damage.");
 	}
 }

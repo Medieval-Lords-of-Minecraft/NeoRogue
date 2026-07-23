@@ -74,8 +74,8 @@ public class FivePointStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
-				"On cast, fire " + DescUtil.white(5) + " needles in a cone in front of you that deal "
-						+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
+				"On cast, fire " + DescUtil.val(5) + " needles in a cone in front of you that deal "
+						+ GlossaryTag.PIERCING.tag(this, damage) + " damage.");
 	}
 	
 	private class FivePointStrikeProjectile extends Projectile {

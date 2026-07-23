@@ -86,8 +86,8 @@ public class HolySpear extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GLOWSTONE_DUST,
-				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, false) + " to all enemies in a line. " +
-				"Deal " + DescUtil.yellow(bonus) + " bonus damage to enemies with over " + GlossaryTag.SANCTIFIED.tag(this, thres, false) + ". Apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + 
+				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage) + " to all enemies in a line. " +
+				"Deal " + DescUtil.val(bonus) + " bonus damage to enemies with over " + GlossaryTag.SANCTIFIED.tag(this, thres) + ". Apply " + GlossaryTag.SANCTIFIED.tag(this, sanct) + 
 				" to all enemies hit after.");
 	}
 }

@@ -52,8 +52,8 @@ public class EnchantedCrystalArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW,
-				"Deals " + DescUtil.yellow(bonusDamage) + " more damage to enemies with " + GlossaryTag.FROST.tag(this) + 
-				". Applies " + GlossaryTag.FROST.tag(this, frost, false) + " on hit.");
+				"Deals " + DescUtil.val(bonusDamage) + " more damage to enemies with " + GlossaryTag.FROST.tag(this) + 
+				". Applies " + GlossaryTag.FROST.tag(this, frost) + " on hit.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.AQUA);
 		item.setItemMeta(pm);

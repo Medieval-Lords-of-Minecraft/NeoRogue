@@ -96,7 +96,7 @@ public class Demoralize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				"On cast, if you do not take health damage for the next " + DescUtil.white("3s") + ", all nearby enemies are granted " + GlossaryTag.INJURY.tag(this, injure, true) + " and have " +
-				"their damage decreased by " + DescUtil.yellow(dec + "%") + " [<white>8s</white>]." );
+				"On cast, if you do not take health damage for the next " + DescUtil.val("3s") + ", all nearby enemies are granted " + GlossaryTag.INJURY.tag(this, injure) + " and have " +
+				"their damage decreased by " + DescUtil.val(dec + "%") + " [<white>8s</white>]." );
 	}
 }

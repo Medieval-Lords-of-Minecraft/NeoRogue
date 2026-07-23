@@ -50,7 +50,6 @@ public class FireStaff extends Equipment {
 				.add(PropertyType.RANGE, 10)
 				.add(PropertyType.AREA_OF_EFFECT, props.range)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {

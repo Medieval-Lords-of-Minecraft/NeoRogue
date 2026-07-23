@@ -44,6 +44,6 @@ public class SapphireShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by " + DescUtil.white(max) + " and mana regen by " + DescUtil.white(regen) + ".");
+		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by " + DescUtil.val(max) + " and mana regen by " + DescUtil.val(regen) + ".");
 	}
 }

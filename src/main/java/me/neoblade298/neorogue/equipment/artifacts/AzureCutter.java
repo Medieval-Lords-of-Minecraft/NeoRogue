@@ -105,7 +105,7 @@ public class AzureCutter extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLUE_BANNER, 
-				"Every " + DescUtil.white(thres) + " basic attacks, launch a projectile at the nearest enemy "
-				+ "that deals " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage.");
+				"Every " + DescUtil.val(thres) + " basic attacks, launch a projectile at the nearest enemy "
+				+ "that deals " + GlossaryTag.PIERCING.tag(this, damage) + " damage.");
 	}
 }

@@ -62,7 +62,7 @@ public class Titan extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_BUSH, GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.white(CUTOFF) + "+ stamina. Abilities that cost at least " + DescUtil.white(CUTOFF)
-				+ " stamina have their stamina cost reduced by " + DescUtil.yellow(staminaReduction) + ".");
+		item = createItem(Material.DEAD_BUSH, GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability that costs " + DescUtil.val(CUTOFF) + "+ stamina. Abilities that cost at least " + DescUtil.val(CUTOFF)
+				+ " stamina have their stamina cost reduced by " + DescUtil.val(staminaReduction) + ".");
 	}
 }

@@ -81,7 +81,7 @@ public class PocketBallista extends Bow {
 		item = createItem(Material.CROSSBOW,
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
-				GlossaryTag.BLUNT.tag(this, damage, true) + " damage to nearby enemies.");
+				GlossaryTag.BLUNT.tag(this, damage) + " damage to nearby enemies.");
 	}
 	
 	private class PocketBallistaProjectile extends BowProjectile {

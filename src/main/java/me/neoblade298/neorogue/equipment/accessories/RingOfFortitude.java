@@ -39,7 +39,7 @@ public class RingOfFortitude extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Your basic attacks deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage if you have " + 
+		item = createItem(Material.IRON_NUGGET, "Your basic attacks deal " + GlossaryTag.BLUNT.tag(this, damage) + " damage if you have " + 
 			GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

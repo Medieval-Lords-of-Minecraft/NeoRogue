@@ -85,8 +85,8 @@ public class TargetAcquisition extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " damage. Killing an enemy grants your next basic attack an additional " +
-				GlossaryTag.PIERCING.tag(this, damage, true) + " damage and grants " +
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(300) + " damage. Killing an enemy grants your next basic attack an additional " +
+				GlossaryTag.PIERCING.tag(this, damage) + " damage and grants " +
+				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}
 }

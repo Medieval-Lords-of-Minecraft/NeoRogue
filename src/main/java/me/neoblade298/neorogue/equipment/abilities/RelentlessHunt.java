@@ -135,8 +135,8 @@ public class RelentlessHunt extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
 				"On cast, mark the first enemy in a line. Only one enemy can be marked at a time. " +
-				"While the marked enemy is alive, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every " + DescUtil.white("2s") + ". " +
+				"While the marked enemy is alive, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " every " + DescUtil.val("2s") + ". " +
 				"Non-basic damage dealt to the marked enemy is increased by " + 
-				DescUtil.yellow((int)(damageIncrease * 100)) + "% per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
+				DescUtil.val((int)(damageIncrease * 100)) + "% per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
 	}
 }

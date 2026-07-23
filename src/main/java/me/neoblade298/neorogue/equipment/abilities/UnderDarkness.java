@@ -92,9 +92,9 @@ public class UnderDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after " + DescUtil.white("1s") + ". After detonation, for " + DescUtil.white("5s") + ","
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>], buffs"
-						+ " your damage by " + DescUtil.yellow(damage) + " [<white>1s</white>], and grants "
-						+ GlossaryTag.SHIELDS.tag(this, 8, false) + " [<white>2s</white>].");
+				"On cast, drop a smoke bomb that detonates after " + DescUtil.val("1s") + ". After detonation, for " + DescUtil.val("5s") + ","
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>], buffs"
+						+ " your damage by " + DescUtil.val(damage) + " [<white>1s</white>], and grants "
+						+ GlossaryTag.SHIELDS.tag(this, 8) + " [<white>2s</white>].");
 	}
 }

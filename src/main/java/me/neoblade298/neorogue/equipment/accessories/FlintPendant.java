@@ -47,7 +47,7 @@ public class FlintPendant extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT, "Every " + DescUtil.yellow(thres) + " times you deal projectile damage, gain " +
-				DescUtil.yellow(stamina) + " stamina.");
+		item = createItem(Material.FLINT, "Every " + DescUtil.val(thres) + " times you deal projectile damage, gain " +
+				DescUtil.val(stamina) + " stamina.");
 	}
 }

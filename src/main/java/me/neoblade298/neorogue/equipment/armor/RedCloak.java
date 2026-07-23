@@ -45,6 +45,6 @@ public class RedCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage is decreased by " + DescUtil.yellow(def) + " while you have " + GlossaryTag.CORRUPTION.tag(this) + ".");
+		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage is decreased by " + DescUtil.val(def) + " while you have " + GlossaryTag.CORRUPTION.tag(this) + ".");
 	}
 }

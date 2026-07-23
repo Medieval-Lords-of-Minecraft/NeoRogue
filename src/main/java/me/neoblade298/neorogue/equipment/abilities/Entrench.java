@@ -69,7 +69,7 @@ public class Entrench extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BLOCK,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after placing a " + GlossaryTag.TRAP.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every time you place or remove a " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after placing a " + GlossaryTag.TRAP.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " every time you place or remove a " +
 				GlossaryTag.TRAP.tag(this) + ".");
 	}
 }

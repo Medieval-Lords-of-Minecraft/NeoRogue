@@ -72,7 +72,7 @@ public class Advantage extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.white(3) + " times. For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
-				"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INJURY.tag(this) + " " + DescUtil.val(3) + " times. For every " + DescUtil.val(thres) + " stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
+				"gain " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

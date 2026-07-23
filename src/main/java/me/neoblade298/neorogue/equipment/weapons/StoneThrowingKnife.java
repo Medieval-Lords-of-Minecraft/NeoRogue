@@ -32,7 +32,6 @@ public class StoneThrowingKnife extends Equipment {
 		super(ID, "Stone Throwing Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofRangedWeapon(30, 1.25, 0, isUpgraded ? 5 : 3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.RANGE);
 	}
 	
 	public static Equipment get() {

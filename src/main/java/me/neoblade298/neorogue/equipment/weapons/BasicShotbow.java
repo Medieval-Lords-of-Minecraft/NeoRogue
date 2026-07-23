@@ -26,7 +26,6 @@ public class BasicShotbow extends Bow {
 		super(ID, "Basic Shotbow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 30 : 25, isUpgraded ? 1.5 : 1, 0, 8, 0, 0.8));
-		properties.addUpgrades(PropertyType.DAMAGE, PropertyType.ARROW_SPEED);
 	}
 
 	@Override
@@ -63,6 +62,6 @@ public class BasicShotbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-		"Every third shot, fire two additional arrows in a " + DescUtil.white(30) + " degree cone.");
+		"Every third shot, fire two additional arrows in a " + DescUtil.val(30) + " degree cone.");
 	}
 }

@@ -78,7 +78,7 @@ public class Expunge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before applying " + GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "] to nearby enemies. "
-				+ "Then, deal " + GlossaryTag.POISON.tag(this) + " damage based on " + GlossaryTag.POISON.tag(this) + " stacks on the enemy multiplied by " + DescUtil.yellow(bonus) + ".");
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before applying " + GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] to nearby enemies. "
+				+ "Then, deal " + GlossaryTag.POISON.tag(this) + " damage based on " + GlossaryTag.POISON.tag(this) + " stacks on the enemy multiplied by " + DescUtil.val(bonus) + ".");
 	}
 }

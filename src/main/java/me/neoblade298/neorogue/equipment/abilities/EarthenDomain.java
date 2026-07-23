@@ -135,8 +135,8 @@ public class EarthenDomain extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.STRING,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile. "
-						+ "If it hits a block, it will deal " + GlossaryTag.BLUNT.tag(this, damage, true)
-						+ " damage and apply " + GlossaryTag.CONCUSSED.tag(this, conc, true)
+						+ "If it hits a block, it will deal " + GlossaryTag.BLUNT.tag(this, damage)
+						+ " damage and apply " + GlossaryTag.CONCUSSED.tag(this, conc)
 						+ " to enemies near the block once per second until no enemies are nearby.");
 	}
 }

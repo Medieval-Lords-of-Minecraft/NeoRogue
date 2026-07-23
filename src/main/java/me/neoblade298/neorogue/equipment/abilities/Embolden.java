@@ -62,8 +62,8 @@ public class Embolden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SOUL_TORCH,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "+
-						"Your next basic attack additionally deals " + DescUtil.white(damage) + " " + GlossaryTag.SLASHING.tag(this) +
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + ". "+
+						"Your next basic attack additionally deals " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) +
 				" damage.");
 	}
 }

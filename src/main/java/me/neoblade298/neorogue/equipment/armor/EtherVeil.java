@@ -34,6 +34,6 @@ public class EtherVeil extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BELL,
-				"Start fights with " + DescUtil.yellow(defStr + "%") + " of your max mana in " + GlossaryTag.SHIELDS.tag(this) + ". ");
+				"Start fights with " + DescUtil.val(defStr + "%") + " of your max mana in " + GlossaryTag.SHIELDS.tag(this) + ". ");
 	}
 }

@@ -54,7 +54,7 @@ public class ThrowPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + " [" + DescUtil.white(poisonDuration / 20 + "s") + "].");
+				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

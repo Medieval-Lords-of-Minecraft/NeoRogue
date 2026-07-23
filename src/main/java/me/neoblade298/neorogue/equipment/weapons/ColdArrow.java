@@ -39,6 +39,6 @@ public class ColdArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				"Applies " + GlossaryTag.FROST.tag(this, frost, true) + " on hit.");
+				"Applies " + GlossaryTag.FROST.tag(this, frost) + " on hit.");
 	}
 }

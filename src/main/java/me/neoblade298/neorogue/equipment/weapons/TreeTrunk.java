@@ -54,7 +54,6 @@ public class TreeTrunk extends Equipment {
 		super(ID, "Tree Trunk", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofRangedWeapon(isUpgraded ? 140 : 110, 0.5, 0, left.range, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		conc = isUpgraded ? 8 : 5;
 		this.restrictsOffhand = true;
 	}
@@ -140,7 +139,7 @@ public class TreeTrunk extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_LOG, "Can only be used without an offhand. Left click deals damage in a line,"
-				+ " right click can only be used with " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + ", deals damage in a circle and "
-				+ "applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ", but at half the attack speed.");
+				+ " right click can only be used with " + GlossaryTag.BERSERK.tag(this, CUTOFF) + ", deals damage in a circle and "
+				+ "applies " + GlossaryTag.CONCUSSED.tag(this, conc) + ", but at half the attack speed.");
 	}
 }

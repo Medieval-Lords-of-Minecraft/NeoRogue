@@ -42,7 +42,7 @@ public class EngineersCap extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Decrease " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(dec) + ". Any " + GlossaryTag.TRAP.tagPlural(this) +
-				" you lay will deal " + DescUtil.yellow(damage + "%") + " more damage.");
+		item = createItem(Material.LEATHER_HELMET, "Decrease " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.val(dec) + ". Any " + GlossaryTag.TRAP.tagPlural(this) +
+				" you lay will deal " + DescUtil.val(damage + "%") + " more damage.");
 	}
 }

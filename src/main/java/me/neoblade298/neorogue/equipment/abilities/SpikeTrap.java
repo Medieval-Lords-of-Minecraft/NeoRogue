@@ -39,7 +39,6 @@ public class SpikeTrap extends Equipment {
 	public SpikeTrap(boolean isUpgraded) {
 		super(ID, "Spike Trap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, isUpgraded ? 10 : 13, tp.range));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -78,7 +77,7 @@ public class SpikeTrap extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
 				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that repeatedly deals " + GlossaryTag.PIERCING.tag(this, damage, false) +
-				" damage to enemies on it every second " + DescUtil.duration(20, false) + ".");
+				" that repeatedly deals " + GlossaryTag.PIERCING.tag(this, damage) +
+				" damage to enemies on it every second " + DescUtil.duration(20) + ".");
 	}
 }

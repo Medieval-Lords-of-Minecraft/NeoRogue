@@ -41,7 +41,7 @@ public class ForcePotion extends Consumable {
 	public void setupItem() {
 		int buffPct = (int) (damageBuff * 100);
 		item = createItem(Material.POTION,
-				"Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(buffPct + "%") + " for [<white>20s</white>]. Consumed on first use.");
+				"Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(buffPct + "%") + " for [<white>20s</white>]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 69, 0));
 		item.setItemMeta(meta);

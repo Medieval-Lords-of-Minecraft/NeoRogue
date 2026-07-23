@@ -46,6 +46,6 @@ public class EarthenTome extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.EARTHEN.tag(this) + " damage by " + DescUtil.white("20%") + ".");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.EARTHEN.tag(this) + " damage by " + DescUtil.val("20%") + ".");
 	}
 }

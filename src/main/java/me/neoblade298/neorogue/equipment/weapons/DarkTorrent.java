@@ -123,7 +123,7 @@ public class DarkTorrent extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL, "On cast, fire a projectile that deals "
-				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
-				"The new " + GlossaryTag.RIFT.tag(this) + " deals " + GlossaryTag.DARK.tag(this, aoeDamage, true) + " damage to nearby enemies every second for " + DescUtil.white("5s") + ".");
+				+ GlossaryTag.DARK.tag(this, damage) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
+				"The new " + GlossaryTag.RIFT.tag(this) + " deals " + GlossaryTag.DARK.tag(this, aoeDamage) + " damage to nearby enemies every second for " + DescUtil.val("5s") + ".");
 	}
 }

@@ -26,7 +26,6 @@ public class DodgeRoll extends Equipment {
 	public DodgeRoll(boolean isUpgraded) {
 		super(ID, "Dodge Roll", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 10 : 20, isUpgraded ? 8 : 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN, PropertyType.STAMINA_COST);
 		dur = isUpgraded ? 10 : 5;
 	}
 	
@@ -37,8 +36,8 @@ public class DodgeRoll extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + GlossaryTag.STEALTH.tag(this, 1, false) + " and "
-				+ GlossaryTag.EVADE.tag(this, 1, false) + " " + DescUtil.duration(dur, true) + ".");
+				"On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + GlossaryTag.STEALTH.tag(this, 1) + " and "
+				+ GlossaryTag.EVADE.tag(this, 1) + " " + DescUtil.duration(dur) + ".");
 	}
 
 	@Override

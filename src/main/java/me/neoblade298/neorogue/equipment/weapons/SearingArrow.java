@@ -54,7 +54,7 @@ public class SearingArrow extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit.");
+		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. Applies " + GlossaryTag.BURN.tag(this, burn) + " on hit.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

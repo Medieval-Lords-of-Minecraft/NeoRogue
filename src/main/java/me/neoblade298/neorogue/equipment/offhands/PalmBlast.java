@@ -77,8 +77,8 @@ public class PalmBlast extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT_AND_STEEL, "On cast, " + DescUtil.charge(this, 2, 1) + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " damage and applying " + GlossaryTag.BURN.tag(this, burn, true) + " to all enemies in a thin cone in front of you. Apply "
-				+ GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself.");
+		item = createItem(Material.FLINT_AND_STEEL, "On cast, " + DescUtil.charge(this, 2, 1) + " before dealing " + GlossaryTag.FIRE.tag(this, damage)
+				+ " damage and applying " + GlossaryTag.BURN.tag(this, burn) + " to all enemies in a thin cone in front of you. Apply "
+				+ GlossaryTag.CORRUPTION.tag(this, corruption) + " to yourself.");
 	}
 }

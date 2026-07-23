@@ -75,7 +75,7 @@ public class MiasmaInABottle extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, 
-				"Every " + DescUtil.white(3) + " seconds, enemies within " + DescUtil.white(5) + " blocks of you take " + GlossaryTag.DARK.tag(this, damage, false)
+				"Every " + DescUtil.val(3) + " seconds, enemies within " + DescUtil.val(5) + " blocks of you take " + GlossaryTag.DARK.tag(this, damage)
 				+ " damage for every stack of " + GlossaryTag.INSANITY.tag(this) + " they have.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.fromRGB(139, 69, 19));

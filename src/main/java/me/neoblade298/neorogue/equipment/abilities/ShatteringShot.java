@@ -73,8 +73,8 @@ public class ShatteringShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POWDER_SNOW_BUCKET,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.ICE.tag(this, damage, true) + " and pierces " +
-				DescUtil.white(1) + " enemy. Targets hit with this projectile that have " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
-				DescUtil.white(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, iceDamagePerFrost, true) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
+				"On cast, your next basic attack deals an additional " + GlossaryTag.ICE.tag(this, damage) + " and pierces " +
+				DescUtil.val(1) + " enemy. Targets hit with this projectile that have " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
+				DescUtil.val(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, iceDamagePerFrost) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
 	}
 }

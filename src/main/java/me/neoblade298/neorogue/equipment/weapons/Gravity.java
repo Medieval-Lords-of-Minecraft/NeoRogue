@@ -104,7 +104,7 @@ public class Gravity extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL, "On cast, " + DescUtil.charge(this, 1, 2) + " before dropping a " +  GlossaryTag.RIFT.tag(this) + " [<white>8s</white>] on the block you aim at. " +
-				"Then, deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage, pull in, and apply " + DescUtil.potion("Slowness", 1, 2) + " to " +
+				"Then, deal " + GlossaryTag.DARK.tag(this, damage) + " damage, pull in, and apply " + DescUtil.potion("Slowness", 1, 2) + " to " +
 				"nearby enemies of all your " + GlossaryTag.RIFT.tagPlural(this) + ".");
 	}
 }

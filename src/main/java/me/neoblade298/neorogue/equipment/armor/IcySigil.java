@@ -55,7 +55,7 @@ public class IcySigil extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(def) + ". " +
-				"Double this effect for " + DescUtil.white("5s") + " (unstackable) every time you apply " + GlossaryTag.FROST.tag(this, thres, false) + ".");
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(def) + ". " +
+				"Double this effect for " + DescUtil.val("5s") + " (unstackable) every time you apply " + GlossaryTag.FROST.tag(this, thres) + ".");
 	}
 }

@@ -33,7 +33,6 @@ public class Quickfire extends Equipment {
 		super(ID, "Quickfire", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(5, 5, 8, 6));
-		properties.addUpgrades(PropertyType.RANGE);
 		damage = isUpgraded ? 60 : 40;
 	}
 	
@@ -90,7 +89,7 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using "
+		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage) + " damage using "
 			+ "your current ammunition.");
 	}
 }

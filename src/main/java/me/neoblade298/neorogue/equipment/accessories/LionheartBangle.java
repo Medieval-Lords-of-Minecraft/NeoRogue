@@ -26,8 +26,8 @@ public class LionheartBangle extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAGMA_BLOCK, "For every " + DescUtil.white(thres) + " max HP you have, " +
-		"gain " + GlossaryTag.STRENGTH.tag(this, 1, true) + " at the start of a fight.");
+		item = createItem(Material.MAGMA_BLOCK, "For every " + DescUtil.val(thres) + " max HP you have, " +
+		"gain " + GlossaryTag.STRENGTH.tag(this, 1) + " at the start of a fight.");
 	}
 
 	@Override

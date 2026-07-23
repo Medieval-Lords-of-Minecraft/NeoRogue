@@ -42,7 +42,6 @@ public class SmokeBomb extends Equipment {
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 12, 0));
-		properties.addUpgrades(PropertyType.MANA_COST);
 		delay = isUpgraded ? 3 : 1;
 		shields = isUpgraded ? 5 : 3;
 	}
@@ -92,9 +91,9 @@ public class SmokeBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after " + DescUtil.yellow(delay + "s")
-				+ ". After detonation, for " + DescUtil.white("5s") + ","
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>] and "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>2s</white>].");
+				"On cast, drop a smoke bomb that detonates after " + DescUtil.val(delay + "s")
+				+ ". After detonation, for " + DescUtil.val("5s") + ","
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>] and "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>2s</white>].");
 	}
 }

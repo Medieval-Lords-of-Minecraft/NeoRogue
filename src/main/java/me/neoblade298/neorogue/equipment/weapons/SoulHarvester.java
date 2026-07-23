@@ -49,6 +49,6 @@ public class SoulHarvester extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Gain " + GlossaryTag.STRENGTH.tag(this, str, true) + " on basic attack kill.");
+		item = createItem(Material.GOLDEN_SWORD, "Gain " + GlossaryTag.STRENGTH.tag(this, str) + " on basic attack kill.");
 	}
 }

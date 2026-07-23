@@ -53,7 +53,7 @@ public class GuardianSpirit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.SHIELDS.tag(this) + " application by " + DescUtil.yellow(shields) +
-				" and " + GlossaryTag.SANCTIFIED.tag(this) + " application by " + DescUtil.yellow(sanct) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Increase all " + GlossaryTag.SHIELDS.tag(this) + " application by " + DescUtil.val(shields) +
+				" and " + GlossaryTag.SANCTIFIED.tag(this) + " application by " + DescUtil.val(sanct) + ".");
 	}
 }

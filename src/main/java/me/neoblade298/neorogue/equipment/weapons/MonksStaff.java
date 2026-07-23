@@ -24,7 +24,6 @@ public class MonksStaff extends Equipment {
 		super(ID, "Monk's Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE ,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(0, 1.5, isUpgraded ? 60 : 40, 1, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

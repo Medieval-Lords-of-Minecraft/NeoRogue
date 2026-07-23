@@ -37,7 +37,7 @@ public class CailiricCrystal extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_CLUSTER, "Visiting a shrine will increase your starting " +
-		GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.white(str) + " and " + GlossaryTag.INTELLECT.tag(this) + " by " + DescUtil.white(intel) + ".");
+		GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.val(str) + " and " + GlossaryTag.INTELLECT.tag(this) + " by " + DescUtil.val(intel) + ".");
 	}
 
 	@Override

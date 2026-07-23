@@ -138,10 +138,10 @@ public class FlashSpark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, drop a marker at your location. After " + DescUtil.white("1s") + ", a lightning bolt strikes the marker, " +
-				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage to enemies " +
+				"On cast, drop a marker at your location. After " + DescUtil.val("1s") + ", a lightning bolt strikes the marker, " +
+				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage) + " damage to enemies " +
 				"nearby. If you're also in range, gain " + 
 				DescUtil.potion("Speed", 1, 3) + " and your basic attacks apply " + 
-				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " for the next " + DescUtil.white("10s") + ".");
+				GlossaryTag.ELECTRIFIED.tag(this, electrified) + " for the next " + DescUtil.val("10s") + ".");
 	}
 }

@@ -104,8 +104,8 @@ public class ChargeBolt extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, fire a bolt that deals " + GlossaryTag.LIGHTNING.tag(this, damage, true) +
+				"On cast, fire a bolt that deals " + GlossaryTag.LIGHTNING.tag(this, damage) +
 				" damage. If you hit an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) +
-				", your next ability cast costs " + DescUtil.yellow(manaReduction) + " less mana.");
+				", your next ability cast costs " + DescUtil.val(manaReduction) + " less mana.");
 	}
 }

@@ -59,7 +59,7 @@ public class BasicInfusionMastery extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LAPIS_LAZULI,
-				GlossaryTag.PASSIVE.tag(this) + ". Any " + GlossaryTag.CONCUSSED.tag(this) + " you apply is increased by " + DescUtil.yellow(conc) + ". If you apply any " +
-				GlossaryTag.SANCTIFIED.tag(this) + " during the fight, heal for " + DescUtil.yellow(heal) + " at the end of the fight.");
+				GlossaryTag.PASSIVE.tag(this) + ". Any " + GlossaryTag.CONCUSSED.tag(this) + " you apply is increased by " + DescUtil.val(conc) + ". If you apply any " +
+				GlossaryTag.SANCTIFIED.tag(this) + " during the fight, heal for " + DescUtil.val(heal) + " at the end of the fight.");
 	}
 }

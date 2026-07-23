@@ -51,7 +51,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Reaching " + DescUtil.white(50) + " stamina in a fight increases your stamina regen by " + DescUtil.white(regen)
+				"Reaching " + DescUtil.val(50) + " stamina in a fight increases your stamina regen by " + DescUtil.val(regen)
 						+ " for the remainder of the fight.");
 	}
 }

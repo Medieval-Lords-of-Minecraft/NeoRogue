@@ -232,15 +232,6 @@ public class AnalyticsManager {
 		}
 	}
 
-	private static void addColumnIfMissing(Statement stmt, String table, String column, String definition) {
-		try {
-			stmt.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition + ";");
-		}
-		catch (SQLException ignore) {
-			// Column already exists
-		}
-	}
-
 	public static void recordFight(FightSnapshot snap) {
 		if (!ENABLED || !initialized || snap == null) return;
 		new BukkitRunnable() {

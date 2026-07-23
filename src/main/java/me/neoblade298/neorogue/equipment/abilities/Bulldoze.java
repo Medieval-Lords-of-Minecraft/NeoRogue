@@ -103,7 +103,7 @@ public class Bulldoze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_CHESTPLATE,
-				"On cast, gain speed " + DescUtil.duration(3, false) + ", dealing " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage plus any "
+				"On cast, gain speed " + DescUtil.duration(3) + ", dealing " + GlossaryTag.BLUNT.tag(this, damage) + " damage plus any "
 						+ GlossaryTag.SHIELDS.tag(this) + " you have to enemies you touch and knock them back, once per enemy.");
 	}
 }

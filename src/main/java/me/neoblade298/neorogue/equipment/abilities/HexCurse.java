@@ -106,7 +106,7 @@ public class HexCurse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"On cast, for the next " + DescUtil.white("10s") + ", your non-basic attack damage marks enemies " + DescUtil.duration(8, false) + ". Dealing basic attack damage to marked enemies deals " +
-				GlossaryTag.DARK.tag(this, damage, true) + " damage and consumes the mark. Marks do not stack.");
+				"On cast, for the next " + DescUtil.val("10s") + ", your non-basic attack damage marks enemies " + DescUtil.duration(8) + ". Dealing basic attack damage to marked enemies deals " +
+				GlossaryTag.DARK.tag(this, damage) + " damage and consumes the mark. Marks do not stack.");
 	}
 }

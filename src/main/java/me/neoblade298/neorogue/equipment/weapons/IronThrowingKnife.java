@@ -38,7 +38,6 @@ public class IronThrowingKnife extends Equipment {
 		super(ID, "Iron Throwing Knife", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofRangedWeapon(isUpgraded ? 50 : 45, 1.25, 0, 5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		dur = isUpgraded ? 10 : 5;
 	}
 	
@@ -104,7 +103,7 @@ public class IronThrowingKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Throwable. Every " + DescUtil.white(3) + " hits grant " + DescUtil.white(1) + " " 
-				+ GlossaryTag.STEALTH.tag(this) + " [" + DescUtil.yellow(dur + "s") + "].");
+		item = createItem(Material.IRON_SWORD, "Throwable. Every " + DescUtil.val(3) + " hits grant " + DescUtil.val(1) + " " 
+				+ GlossaryTag.STEALTH.tag(this) + " [" + DescUtil.val(dur + "s") + "].");
 	}
 }

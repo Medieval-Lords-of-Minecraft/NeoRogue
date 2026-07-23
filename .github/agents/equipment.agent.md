@@ -64,12 +64,13 @@ EquipmentProperties.ofUsable(mana, stam, 0, 0) // Power (one-time activation pas
 ### PropertyTypes
 `MANA_COST`, `STAMINA_COST`, `COOLDOWN`, `RANGE`, `AREA_OF_EFFECT`, `DAMAGE`, `KNOCKBACK`, `ATTACK_SPEED`, `CHARGE_TIME`
 
-### addUpgrades() — Tooltip Coloring
-Only mark properties that **actually change** between base and upgraded:
+### Stat Tooltip Coloring (automatic)
+Stat values in the header line (cost/cooldown/damage/etc.) are colored automatically: a value is
+**yellow** if it differs between the base and upgraded versions, **white** if it's the same. Just set
+the correct per-version amounts via the factory method — there is no `addUpgrades()` call anymore.
 ```java
-// Cooldown: 12→8, Damage: 100→150. Mana: always 20
+// Cooldown: 12→8 renders yellow automatically; mana stays 20 so it renders white.
 EquipmentProperties.ofUsable(20, 0, isUpgraded ? 8 : 12, 10)
-properties.addUpgrades(PropertyType.COOLDOWN); // Only cooldown changes
 ```
 
 ### Accessing Properties
@@ -451,7 +452,6 @@ For particle effects and sound design beyond basic `pc.play()` calls, delegate t
 - DO NOT create ParticleContainers/TargetProperties in instance methods
 - DO NOT schedule BukkitRunnables without `data.addTask()`
 - DO NOT forget equipment registration in `Equipment.java`
-- DO NOT use `addUpgrades()` for properties that don't change between versions
 - DO NOT use `EquipmentInstance` for inner triggers in powers — it re-deducts mana/stamina on every fire
 - DO NOT return anything other than `TriggerResult.keep()` unless intentionally removing the trigger
 - DO NOT use `data.charge(20)` for wands — use `data.charge(properties.get(PropertyType.CHARGE_TIME))`
@@ -460,7 +460,7 @@ For particle effects and sound design beyond basic `pc.play()` calls, delegate t
 
 1. Identify equipment type (ability/accessory/weapon/armor/artifact/consumable) and class
 2. Define all balance-relevant values as instance fields with upgraded ternaries
-3. Set up EquipmentProperties with appropriate factory method and addUpgrades
+3. Set up EquipmentProperties with the appropriate factory method (stat coloring is automatic)
 4. Implement `initialize()` with correct trigger types and patterns
 5. Write `setupItem()` with proper GlossaryTag/DescUtil formatting
 6. Add `setupReforges()` if applicable

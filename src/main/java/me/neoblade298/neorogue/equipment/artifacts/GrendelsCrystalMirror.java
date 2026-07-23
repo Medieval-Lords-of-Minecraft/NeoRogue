@@ -62,6 +62,6 @@ public class GrendelsCrystalMirror extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLASS_PANE,
-				"Every " + DescUtil.white("5th") + " projectile you fire will be fired twice.");
+				"Every " + DescUtil.val("5th") + " projectile you fire will be fired twice.");
 	}
 }

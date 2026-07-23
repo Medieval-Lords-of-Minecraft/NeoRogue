@@ -52,7 +52,6 @@ public class Riftmaker extends Equipment {
 				ID, "Riftmaker", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
 		intellectFreq = isUpgraded ? 3 : 5;
 	}
@@ -156,10 +155,10 @@ proj.getMeta().addDamageSlice(new DamageSlice(data, properties.get(PropertyType.
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Every " + DescUtil.yellow(intellectFreq) + " hits, gain " + GlossaryTag.INTELLECT.tag(this, 1, false)
-						+ " and create a " + GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "]. Each hit grants "
-						+ DescUtil.yellow(manaGain) + " mana. Basic attacks also fire from your nearest "
-						+ GlossaryTag.RIFT.tag(this) + " toward " + DescUtil.white("7") + " blocks in front of you."
+				"Every " + DescUtil.val(intellectFreq) + " hits, gain " + GlossaryTag.INTELLECT.tag(this, 1)
+						+ " and create a " + GlossaryTag.RIFT.tag(this) + " [" + DescUtil.val("10s") + "]. Each hit grants "
+						+ DescUtil.val(manaGain) + " mana. Basic attacks also fire from your nearest "
+						+ GlossaryTag.RIFT.tag(this) + " toward " + DescUtil.val("7") + " blocks in front of you."
 		);
 	}
 }

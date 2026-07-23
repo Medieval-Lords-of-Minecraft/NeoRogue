@@ -62,7 +62,7 @@ public class Absorb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.HOPPER,
-				"On cast, deal " + GlossaryTag.DARK.tag(this, damage, true) + " to the enemy you're looking at. If they're killed, " +
-				"gain " + DescUtil.yellow(mana) + " mana.");
+				"On cast, deal " + GlossaryTag.DARK.tag(this, damage) + " to the enemy you're looking at. If they're killed, " +
+				"gain " + DescUtil.val(mana) + " mana.");
 	}
 }

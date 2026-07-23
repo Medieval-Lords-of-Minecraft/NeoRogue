@@ -21,7 +21,6 @@ public class WoodenSword extends Equipment {
 		super(ID, "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		canDrop = false;
 	}
 

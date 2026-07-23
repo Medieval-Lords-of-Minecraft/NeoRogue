@@ -106,8 +106,8 @@ public class BreakingPoint extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRICK,
-				"Gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " while crouching. Refreshes after "
-						+ DescUtil.white(refresh + "s") + " uncrouched. If the shield is reduced to half, gain a "
-						+ DescUtil.yellow(multStr + "%") + " damage buff for the rest of the fight.");
+				"Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " while crouching. Refreshes after "
+						+ DescUtil.val(refresh + "s") + " uncrouched. If the shield is reduced to half, gain a "
+						+ DescUtil.val(multStr + "%") + " damage buff for the rest of the fight.");
 	}
 }

@@ -26,7 +26,6 @@ public class Nightmare extends Equipment {
 		super(ID, "Nightmare", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1.5, 0.2, DamageType.PIERCING, Sounds.attackSweep));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		stacks = isUpgraded ? 3 : 2;
 		canDrop = false;
 	}
@@ -47,6 +46,6 @@ public class Nightmare extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Applies " + GlossaryTag.INSANITY.tag(this, stacks, true) + " on hit.");
+		item = createItem(Material.GOLDEN_SWORD, "Applies " + GlossaryTag.INSANITY.tag(this, stacks) + " on hit.");
 	}
 }

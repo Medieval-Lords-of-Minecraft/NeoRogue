@@ -66,8 +66,8 @@ public class TomeOfScorchedEarth extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " damage to all enemies in a cone in front of you. If you hit less than " + DescUtil.white(2) + " enemies, "
-				+ "gain " + GlossaryTag.CORRUPTION.tag(this, corr, false) + ".");
+		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage)
+				+ " damage to all enemies in a cone in front of you. If you hit less than " + DescUtil.val(2) + " enemies, "
+				+ "gain " + GlossaryTag.CORRUPTION.tag(this, corr) + ".");
 	}
 }

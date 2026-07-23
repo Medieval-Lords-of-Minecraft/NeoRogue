@@ -102,10 +102,10 @@ public class Cauterize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
-						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, false)
-						+ " every " + DescUtil.white(hitReq) + " hits. When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of "
-						+ GlossaryTag.INJURY.tag(this) + " and deals " + GlossaryTag.FIRE.tag(this, damage, true)
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.val(dec)
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks)
+						+ " every " + DescUtil.val(hitReq) + " hits. When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of "
+						+ GlossaryTag.INJURY.tag(this) + " and deals " + GlossaryTag.FIRE.tag(this, damage)
 						+ " damage per stack removed.");
 		activeIcon = item.withType(Material.TORCH);
 	}

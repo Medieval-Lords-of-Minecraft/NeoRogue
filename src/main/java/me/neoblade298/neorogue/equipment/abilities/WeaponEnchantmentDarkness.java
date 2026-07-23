@@ -71,8 +71,8 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white("3rd") + " time you deal physical damage, launch a slash projectile that deals "
-						+ DescUtil.yellow(damage) + " " + GlossaryTag.DARK.tag(this) + " damage and pierces.");
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.val("3rd") + " time you deal physical damage, launch a slash projectile that deals "
+						+ DescUtil.val(damage) + " " + GlossaryTag.DARK.tag(this) + " damage and pierces.");
 	}
 	
 	private class DarknessSlashProjectile extends Projectile {

@@ -164,9 +164,9 @@ public class SparkTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Drop a marker that explodes after " + DescUtil.white("2s") + ", dealing " + 
-				GlossaryTag.LIGHTNING.tag(this, explosionDamage, false) + " damage to nearby enemies. " +
+				"Drop a marker that explodes after " + DescUtil.val("2s") + ", dealing " + 
+				GlossaryTag.LIGHTNING.tag(this, explosionDamage) + " damage to nearby enemies. " +
 				"If any damaged enemy is " + GlossaryTag.ELECTRIFIED.tag(this) + ", recast to teleport to the bomb and deal " +
-				GlossaryTag.LIGHTNING.tag(this, lineDamage, true) + " damage in a line.");
+				GlossaryTag.LIGHTNING.tag(this, lineDamage) + " damage in a line.");
 	}
 }

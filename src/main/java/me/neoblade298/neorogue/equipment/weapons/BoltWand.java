@@ -46,7 +46,6 @@ public class BoltWand extends Equipment {
 				ID, "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
 		elec = 3;
 	}
@@ -102,7 +101,7 @@ public class BoltWand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces the first " + DescUtil.white(pierceAmount) + " enemies hit, and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + " to all."
+				Material.STICK, "Pierces the first " + DescUtil.val(pierceAmount) + " enemies hit, and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec) + " to all."
 		);
 	}
 }

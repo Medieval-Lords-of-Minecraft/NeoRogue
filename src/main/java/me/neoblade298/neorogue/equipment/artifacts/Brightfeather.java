@@ -57,6 +57,6 @@ public class Brightfeather extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARCHER_POTTERY_SHERD, 
-				"After " + DescUtil.white(20) + " seconds in a fight, increase your stamina regen by " + DescUtil.white("20%") + " of your base regen.");
+				"After " + DescUtil.val(20) + " seconds in a fight, increase your stamina regen by " + DescUtil.val("20%") + " of your base regen.");
 	}
 }

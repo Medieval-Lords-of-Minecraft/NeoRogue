@@ -104,8 +104,8 @@ public class PowerOverwhelmingII extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.white(2) + " abilities while above " + DescUtil.white("50%") + " mana. Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
-						+ ", up to " + DescUtil.white("half") + " of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.yellow(cdReduc)
-						+ " seconds. Every ability cast grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(shieldDuration + "s") + "].");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting " + DescUtil.val(2) + " abilities while above " + DescUtil.val("50%") + " mana. Decrease mana costs of all castable abilities by " + DescUtil.val(manaReduc)
+						+ ", up to " + DescUtil.val("half") + " of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.val(cdReduc)
+						+ " seconds. Every ability cast grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val(shieldDuration + "s") + "].");
 	}
 }

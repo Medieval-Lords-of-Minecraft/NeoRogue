@@ -33,6 +33,6 @@ public class RingOfNight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACK_BANNER,
-				"Start every fight with " + GlossaryTag.STEALTH.tag(this, stealth, true) + ".");
+				"Start every fight with " + GlossaryTag.STEALTH.tag(this, stealth) + ".");
 	}
 }

@@ -87,9 +87,9 @@ public class ForceBracer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_HIDE,
-				"Reduces the first " + DescUtil.white(instances) + " instances of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.white(15) + ". Upon breaking, grants a " +
-						DescUtil.yellow(multStr + "%") + " damage buff, " + GlossaryTag.STRENGTH.tag(this, strength, true) + ", and " + 
-						GlossaryTag.BERSERK.tag(this, berserk, true) + ".");
+				"Reduces the first " + DescUtil.val(instances) + " instances of receiving "
+						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.val(15) + ". Upon breaking, grants a " +
+						DescUtil.val(multStr + "%") + " damage buff, " + GlossaryTag.STRENGTH.tag(this, strength) + ", and " + 
+						GlossaryTag.BERSERK.tag(this, berserk) + ".");
 	}
 }

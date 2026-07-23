@@ -161,8 +161,8 @@ public class Ricochet extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.white(300) + " projectile damage. Dealing basic attack damage to an enemy within " + DescUtil.white(DISTANCE) + " blocks " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(300) + " projectile damage. Dealing basic attack damage to an enemy within " + DescUtil.val(DISTANCE) + " blocks " +
 				"fires a projectile from that target to the nearest enemy, dealing " + 
-				DescUtil.yellow(damage) + " damage.");
+				DescUtil.val(damage) + " damage.");
 	}
 }

@@ -126,9 +126,9 @@ public class BrightestFlame extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Fire " + DescUtil.yellow("5") + " homing projectiles in an upward fan that each deal " +
-				GlossaryTag.FIRE.tag(this, damage, true) + " damage and apply " +
-				GlossaryTag.BURN.tag(this, burn, true) + ". Gain " +
-				GlossaryTag.CORRUPTION.tag(this, corr, false) + ".");
+				"Fire " + DescUtil.val("5") + " homing projectiles in an upward fan that each deal " +
+				GlossaryTag.FIRE.tag(this, damage) + " damage and apply " +
+				GlossaryTag.BURN.tag(this, burn) + ". Gain " +
+				GlossaryTag.CORRUPTION.tag(this, corr) + ".");
 	}
 }

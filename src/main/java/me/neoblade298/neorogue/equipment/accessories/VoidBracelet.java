@@ -45,7 +45,7 @@ public class VoidBracelet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "After " + DescUtil.white("5s") + ", drop a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>]. Gain " +
-			GlossaryTag.INTELLECT.tag(this, inc, true) + " every time you create a rift.");
+		item = createItem(Material.IRON_NUGGET, "After " + DescUtil.val("5s") + ", drop a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>]. Gain " +
+			GlossaryTag.INTELLECT.tag(this, inc) + " every time you create a rift.");
 	}
 }

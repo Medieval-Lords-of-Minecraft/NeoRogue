@@ -118,9 +118,9 @@ public class Firestarter extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Charge for " + DescUtil.white("1s") + " to fire a piercing projectile that applies " + 
-				GlossaryTag.BURN.tag(this, burn, true) + " to enemies. Upon hitting a block, deals " +
-				GlossaryTag.FIRE.tag(this, EXPLOSION_DAMAGE, false) + " damage to enemies in a " + 
-				DescUtil.white(EXPLOSION_RADIUS) + " block radius.");
+				"Charge for " + DescUtil.val("1s") + " to fire a piercing projectile that applies " + 
+				GlossaryTag.BURN.tag(this, burn) + " to enemies. Upon hitting a block, deals " +
+				GlossaryTag.FIRE.tag(this, EXPLOSION_DAMAGE) + " damage to enemies in a " + 
+				DescUtil.val(EXPLOSION_RADIUS) + " block radius.");
 	}
 }

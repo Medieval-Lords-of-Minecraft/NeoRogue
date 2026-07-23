@@ -37,6 +37,6 @@ public class RedRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, GlossaryTag.FIRE.tag(this) + " damage is increased by " + DescUtil.yellow(inc + "%") + ".");
+		item = createItem(Material.IRON_NUGGET, GlossaryTag.FIRE.tag(this) + " damage is increased by " + DescUtil.val(inc + "%") + ".");
 	}
 }

@@ -58,6 +58,6 @@ public class AmuletOfOffering extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SWEET_BERRIES, 
-				"The first time you take health damage in a fight, max out your stamina and mana, and gain " + DescUtil.white("50%") + " bonus damage " + DescUtil.duration(15, false) + ".");
+				"The first time you take health damage in a fight, max out your stamina and mana, and gain " + DescUtil.val("50%") + " bonus damage " + DescUtil.duration(15) + ".");
 	}
 }

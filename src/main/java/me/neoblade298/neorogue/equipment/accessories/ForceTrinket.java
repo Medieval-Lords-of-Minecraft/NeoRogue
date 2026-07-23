@@ -29,7 +29,7 @@ public class ForceTrinket extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, "Increases damage dealt by " + DescUtil.white(multStr + "%") + ".");
+		item = createItem(Material.REDSTONE_TORCH, "Increases damage dealt by " + DescUtil.val(multStr + "%") + ".");
 	}
 
 	@Override

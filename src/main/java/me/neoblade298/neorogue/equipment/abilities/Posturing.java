@@ -86,6 +86,6 @@ public class Posturing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
-				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, increase your damage by " + DescUtil.yellow(inc) + ".");
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.val(time +"s") + " spent crouched during a fight, increase your damage by " + DescUtil.val(inc) + ".");
 	}
 }

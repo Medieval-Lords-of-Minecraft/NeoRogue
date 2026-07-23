@@ -55,7 +55,7 @@ public class SaviorsHelm extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(def) + ". Passively applies "
-		+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies every " + DescUtil.white("3s") + ".");
+		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(def) + ". Passively applies "
+		+ GlossaryTag.SANCTIFIED.tag(this, sanct) + " to all nearby enemies every " + DescUtil.val("3s") + ".");
 	}
 }

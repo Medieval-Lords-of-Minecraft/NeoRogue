@@ -94,8 +94,8 @@ public class SpikyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size " + DescUtil.white("3x2")
-				+ " and reduce " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduction) + ". "
-				+ "Also grants " + DescUtil.yellow(amount) + " " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size " + DescUtil.val("3x2")
+				+ " and reduce " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". "
+				+ "Also grants " + DescUtil.val(amount) + " " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

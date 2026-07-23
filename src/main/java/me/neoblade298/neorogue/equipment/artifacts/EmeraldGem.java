@@ -44,6 +44,6 @@ public class EmeraldGem extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Increases max stamina by " + DescUtil.white(max) + " and stamina regen by " + DescUtil.white(regen) + ".");
+		item = createItem(Material.EMERALD, "Increases max stamina by " + DescUtil.val(max) + " and stamina regen by " + DescUtil.val(regen) + ".");
 	}
 }

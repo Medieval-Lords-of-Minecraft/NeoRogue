@@ -162,8 +162,8 @@ public class PreySeeker extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
 				GlossaryTag.PASSIVE.tag(this) + ". Upon firing a basic attack straight up, cancel the basic attack and drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that lasts for " + DescUtil.duration(dur, false) +
-				". If an enemy steps on the trap, they take " + DescUtil.yellow(damage) +
+				" that lasts for " + DescUtil.duration(dur) +
+				". If an enemy steps on the trap, they take " + DescUtil.val(damage) +
 				" damage using the current ammunition and deactivate the trap.");
 	}
 }

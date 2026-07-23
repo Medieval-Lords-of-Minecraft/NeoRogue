@@ -59,6 +59,6 @@ public class AvalonianMace extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.MACE,
-				"Affected by " + GlossaryTag.STRENGTH.tag(this) + " " + DescUtil.yellow(mult + "x")  + ".");
+				"Affected by " + GlossaryTag.STRENGTH.tag(this) + " " + DescUtil.val(mult + "x")  + ".");
 	}
 }

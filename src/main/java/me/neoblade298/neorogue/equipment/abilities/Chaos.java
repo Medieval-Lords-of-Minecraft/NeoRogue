@@ -108,6 +108,6 @@ public class Chaos extends Equipment {
 				"On cast, fire a bolt of magic that deals random " + GlossaryTag.FIRE.tag(this) + ", " +
 				GlossaryTag.LIGHTNING.tag(this) + ", " + GlossaryTag.DARK.tag(this) + ", or " +
 				GlossaryTag.EARTHEN.tag(this) + " damage for " +
-				DescUtil.yellow(damage) + " and applies " + DescUtil.yellow(stacks) + " of that element's status.");
+				DescUtil.val(damage) + " and applies " + DescUtil.val(stacks) + " of that element's status.");
 	}
 }

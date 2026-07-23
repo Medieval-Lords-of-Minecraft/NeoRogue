@@ -24,7 +24,6 @@ public class Firefly extends Ammunition {
 		super(ID, "Firefly", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 15 : 10, 0.1, DamageType.FIRE));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

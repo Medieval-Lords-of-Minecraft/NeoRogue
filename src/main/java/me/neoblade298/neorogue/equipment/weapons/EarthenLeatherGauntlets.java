@@ -52,6 +52,6 @@ public class EarthenLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Applies " + GlossaryTag.CONCUSSED.tag(this, concuss, true) + " for every 3rd hit.");
+		item = createItem(Material.LEATHER, "Applies " + GlossaryTag.CONCUSSED.tag(this, concuss) + " for every 3rd hit.");
 	}
 }

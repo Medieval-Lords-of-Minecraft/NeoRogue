@@ -37,6 +37,6 @@ public class BagOfPreparation extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BUNDLE, "Increases storage size by " + DescUtil.white(3) + ".");
+		item = createItem(Material.BUNDLE, "Increases storage size by " + DescUtil.val(3) + ".");
 	}
 }

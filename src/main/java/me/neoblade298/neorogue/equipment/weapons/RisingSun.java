@@ -102,6 +102,6 @@ public class RisingSun extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.NETHER_STAR,
-				"On cast, " + DescUtil.charge(this, 1, 1) + ", then spin clockwise, dealing " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage to and knocking up all enemies in a circle.");
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then spin clockwise, dealing " + GlossaryTag.SLASHING.tag(this, damage) + " damage to and knocking up all enemies in a circle.");
 	}
 }

@@ -90,7 +90,7 @@ public class CompoundingInjury extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 	item = createItem(Material.REDSTONE_ORE,
-			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.white(ACTIVATION_THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
-			+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.val(ACTIVATION_THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " stacks. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres) + " will cause the damage to happen again, but "
+			+ "multiplied by " + DescUtil.val(multStr + "%") + ".");
 	}
 }

@@ -24,7 +24,6 @@ public class BasicCrossbow extends Bow {
 		super(ID, "Basic Crossbow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(isUpgraded ? 120 : 90, 1, 0, 12, 0, 0));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

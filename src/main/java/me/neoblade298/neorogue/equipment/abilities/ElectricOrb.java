@@ -68,8 +68,8 @@ public class ElectricOrb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD, "On cast, launch a projectile that applies " + DescUtil.potion("Slowness", 2, 1) + " and " + 
-		GlossaryTag.ELECTRIFIED.tag(this, elec, true) + " to enemies it passes through, once per enemy, and deals " + 
-		GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage in a line between you and the projectile every second.");
+		GlossaryTag.ELECTRIFIED.tag(this, elec) + " to enemies it passes through, once per enemy, and deals " + 
+		GlossaryTag.LIGHTNING.tag(this, damage) + " damage in a line between you and the projectile every second.");
 	}
 
 	private class ElectricOrbProjectile extends Projectile {

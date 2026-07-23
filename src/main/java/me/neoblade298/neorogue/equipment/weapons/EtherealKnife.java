@@ -53,6 +53,6 @@ public class EtherealKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Has " + DescUtil.yellow(durability) + " uses per fight.");
+		item = createItem(Material.GOLDEN_SWORD, "Has " + DescUtil.val(durability) + " uses per fight.");
 	}
 }

@@ -29,6 +29,6 @@ public class MinorManaRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Increases mana regen by " + DescUtil.yellow(regen) + ".");
+		item = createItem(Material.IRON_NUGGET, "Increases mana regen by " + DescUtil.val(regen) + ".");
 	}
 }

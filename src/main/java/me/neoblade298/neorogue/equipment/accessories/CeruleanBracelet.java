@@ -29,6 +29,6 @@ public class CeruleanBracelet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "At the start of the fight, increase your max mana and starting mana by " + DescUtil.yellow(mp) + ".");
+		item = createItem(Material.LAPIS_LAZULI, "At the start of the fight, increase your max mana and starting mana by " + DescUtil.val(mp) + ".");
 	}
 }

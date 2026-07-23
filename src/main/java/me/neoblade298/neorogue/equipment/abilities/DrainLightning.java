@@ -82,9 +82,9 @@ public class DrainLightning extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.HOPPER, GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing "
-				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a line in front of you. If you are above "
-				+ DescUtil.yellow(thres) + " mana, regain the mana cost of this ability and reduce its "
-				+ "cooldown by " + DescUtil.yellow(cdr + "s") + ".");
+		item = createItem(Material.HOPPER, GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.val("1s") + " before dealing "
+				+ GlossaryTag.LIGHTNING.tag(this, damage) + " in a line in front of you. If you are above "
+				+ DescUtil.val(thres) + " mana, regain the mana cost of this ability and reduce its "
+				+ "cooldown by " + DescUtil.val(cdr + "s") + ".");
 	}
 }

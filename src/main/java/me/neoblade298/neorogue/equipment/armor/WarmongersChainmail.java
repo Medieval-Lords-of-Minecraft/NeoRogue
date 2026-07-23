@@ -41,8 +41,8 @@ public class WarmongersChainmail extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CHAINMAIL_CHESTPLATE, "Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" " + DescUtil.duration(6, false) + " every time you gain a stack of " + GlossaryTag.BERSERK.tag(this) +
+		item = createItem(Material.CHAINMAIL_CHESTPLATE, "Gain " + GlossaryTag.SHIELDS.tag(this, shields) +
+				" " + DescUtil.duration(6) + " every time you gain a stack of " + GlossaryTag.BERSERK.tag(this) +
 				". Multiplied by stacks gained.");
 	}
 }

@@ -43,7 +43,7 @@ public class ExplosiveArrow extends LimitedAmmunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW, "Explodes on hitting an enemy or block, " +
-			"dealing damage to all nearby enemies. Limited to " + DescUtil.yellow(uses) + " uses per fight.");
+			"dealing damage to all nearby enemies. Limited to " + DescUtil.val(uses) + " uses per fight.");
 	}
 
 	@Override

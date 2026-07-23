@@ -82,7 +82,7 @@ public class StormweaversPromise extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing projectile damage " + DescUtil.white(8) + " times while above " + DescUtil.white("50%") + " stamina. Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>] whenever you deal projectile damage. " +
-				"Increase the shield duration by " + DescUtil.white("5s") + " if you've dealt damage at least twice in the past second.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing projectile damage " + DescUtil.val(8) + " times while above " + DescUtil.val("50%") + " stamina. Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>3s</white>] whenever you deal projectile damage. " +
+				"Increase the shield duration by " + DescUtil.val("5s") + " if you've dealt damage at least twice in the past second.");
 	}
 }

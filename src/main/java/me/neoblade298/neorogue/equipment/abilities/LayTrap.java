@@ -98,10 +98,10 @@ public class LayTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " [<white>5s</white>] and " + 
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS) + " [<white>5s</white>] and " + 
 				DescUtil.charge(this, 1, 2) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that lasts for " + DescUtil.white("10s") +
-				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, false) +
+				" that lasts for " + DescUtil.val("10s") +
+				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage) +
 				" damage and receive " + DescUtil.potion("Slowness", 3, secs, false, true) + ".");
 	}
 }

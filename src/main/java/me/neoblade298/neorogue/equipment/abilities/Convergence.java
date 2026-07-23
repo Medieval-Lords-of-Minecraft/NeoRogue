@@ -186,11 +186,11 @@ public class Convergence extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.white(ACTIVATION_THRES) + " kills. " +
-				"Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after " + DescUtil.val(ACTIVATION_THRES) + " kills. " +
+				"Gain " + GlossaryTag.INTELLECT.tag(this, intel) + " on kill. " +
 				"Whenever you deal a different damage type from your previous type, " +
-				"heal for " + DescUtil.yellow(heal) + " and fire " + DescUtil.white(3) + " " +
-				"projectiles in a cone dealing " + DescUtil.yellow(PROJECTILE_DAMAGE) + 
+				"heal for " + DescUtil.val(heal) + " and fire " + DescUtil.val(3) + " " +
+				"projectiles in a cone dealing " + DescUtil.val(PROJECTILE_DAMAGE) + 
 				" damage of the same type.");
 	}
 }

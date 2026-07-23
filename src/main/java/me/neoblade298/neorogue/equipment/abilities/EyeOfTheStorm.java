@@ -85,8 +85,8 @@ public class EyeOfTheStorm extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing "
-						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying "
-						+ GlossaryTag.ELECTRIFIED.tag(this, elec, true)
-						+ " to enemies near you " + DescUtil.white("3x") + " over " + DescUtil.white("3s") + ".");
+						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying "
+						+ GlossaryTag.ELECTRIFIED.tag(this, elec)
+						+ " to enemies near you " + DescUtil.val("3x") + " over " + DescUtil.val("3s") + ".");
 	}
 }

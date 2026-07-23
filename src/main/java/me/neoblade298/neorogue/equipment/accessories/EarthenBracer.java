@@ -43,6 +43,6 @@ public class EarthenBracer extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CACTUS, "Increase application of " + GlossaryTag.CONCUSSED.tag(this) + " by " + DescUtil.yellow(multStr + "%") + ".");
+		item = createItem(Material.CACTUS, "Increase application of " + GlossaryTag.CONCUSSED.tag(this) + " by " + DescUtil.val(multStr + "%") + ".");
 	}
 }

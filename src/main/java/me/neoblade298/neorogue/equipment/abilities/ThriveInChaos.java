@@ -79,9 +79,9 @@ public class ThriveInChaos extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INSANITY.tag(this) + " " + DescUtil.white(5) + " times. Every " + DescUtil.white("3s") + ", count the " + GlossaryTag.INSANITY.tag(this) + 
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.INSANITY.tag(this) + " " + DescUtil.val(5) + " times. Every " + DescUtil.val("3s") + ", count the " + GlossaryTag.INSANITY.tag(this) + 
 				" stacks of all enemies in range. For every " + 
-				GlossaryTag.INSANITY.tag(this, insanityPerStack, true) + ", gain " + 
-				GlossaryTag.STEALTH.tag(this, 1, false) + " " + DescUtil.duration(3, false) + ".");
+				GlossaryTag.INSANITY.tag(this, insanityPerStack) + ", gain " + 
+				GlossaryTag.STEALTH.tag(this, 1) + " " + DescUtil.duration(3) + ".");
 	}
 }

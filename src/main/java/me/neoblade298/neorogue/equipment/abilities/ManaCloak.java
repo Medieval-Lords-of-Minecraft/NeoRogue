@@ -27,7 +27,6 @@ public class ManaCloak extends Equipment {
 	public ManaCloak(boolean isUpgraded) {
 		super(ID, "Mana Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(isUpgraded ? 16 : 24, 8, 5, 0));
-		properties.addUpgrades(PropertyType.MANA_COST);
 		shields = 12;
 	}
 
@@ -51,8 +50,8 @@ public class ManaCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + ", "
-						+ GlossaryTag.PROTECT.tag(this, 1, false) + ", and " + GlossaryTag.SHELL.tag(this, 1, false)
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + ", "
+						+ GlossaryTag.PROTECT.tag(this, 1) + ", and " + GlossaryTag.SHELL.tag(this, 1)
 						+ ".");
 	}
 }

@@ -43,6 +43,6 @@ public class RingOfLight extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Casting abilities applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to nearby enemies.");
+		item = createItem(Material.IRON_NUGGET, "Casting abilities applies " + GlossaryTag.SANCTIFIED.tag(this, sanct) + " to nearby enemies.");
 	}
 }

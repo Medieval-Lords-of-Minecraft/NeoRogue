@@ -58,7 +58,7 @@ public class RingOfScalding extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAVA_BUCKET, "Every " + DescUtil.yellow(thres) + " " + GlossaryTag.FIRE.tag(this) + " damage dealt, apply " + 
-			GlossaryTag.BURN.tag(this, burn, false) + ".");
+		item = createItem(Material.LAVA_BUCKET, "Every " + DescUtil.val(thres) + " " + GlossaryTag.FIRE.tag(this) + " damage dealt, apply " + 
+			GlossaryTag.BURN.tag(this, burn) + ".");
 	}
 }

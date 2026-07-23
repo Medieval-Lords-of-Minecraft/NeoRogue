@@ -53,9 +53,9 @@ public class OmniGem extends Artifact {
 	public void setupItem() {
 		item = createItem(
 				Material.DIAMOND,
-				"Increases max health, stamina, and mana by " + DescUtil.white(flat)
-						+ ", increases stamina and mana regen by " + DescUtil.white(regen) + ", and grants "
-						+ GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight."
+				"Increases max health, stamina, and mana by " + DescUtil.val(flat)
+						+ ", increases stamina and mana regen by " + DescUtil.val(regen) + ", and grants "
+						+ GlossaryTag.SHIELDS.tag(this, shields) + " at the start of a fight."
 		);
 	}
 }

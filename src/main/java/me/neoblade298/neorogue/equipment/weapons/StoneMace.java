@@ -27,7 +27,6 @@ public class StoneMace extends Equipment {
 		super(ID, "Stone Mace", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 65 : 50, 0.75, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
 		conc = isUpgraded ? 3 : 2;
 		concMult = 5;
@@ -52,6 +51,6 @@ public class StoneMace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SHOVEL, "Increases damage dealt by number of " + GlossaryTag.CONCUSSED.tag(this) + " "
-				+ "stacks the enemy has multiplied by " + DescUtil.white(concMult) + ". Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
+				+ "stacks the enemy has multiplied by " + DescUtil.val(concMult) + ". Also applies " + GlossaryTag.CONCUSSED.tag(this, conc) + " on basic attack.");
 	}
 }

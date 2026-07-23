@@ -29,7 +29,6 @@ public class CrimsonBlade extends Equipment {
 		super(ID, "Crimson Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 35, 1, 0.4, DamageType.SLASHING, Sounds.attackSweep));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		heal = isUpgraded ? 3 : 2;
 	}
 	
@@ -79,6 +78,6 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "For the first " + DescUtil.white(DURATION + "s") + " of a fight, every 5 basic attacks with this weapon heals you for " + DescUtil.yellow(heal) + ".");
+		item = createItem(Material.IRON_SWORD, "For the first " + DescUtil.val(DURATION + "s") + " of a fight, every 5 basic attacks with this weapon heals you for " + DescUtil.val(heal) + ".");
 	}
 }

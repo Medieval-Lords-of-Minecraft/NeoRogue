@@ -65,7 +65,6 @@ public class Fracturer extends Equipment {
 		super(ID, "Fracturer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 110 : 85, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.add(PropertyType.AREA_OF_EFFECT, props.range);
 		earth = isUpgraded ? 50 : 35;
 		concussed = isUpgraded ? 4 : 2;
@@ -137,8 +136,8 @@ public class Fracturer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SHOVEL, "Deals damage to enemies in a small circle in front of you. Only the closest enemy"
-				+ " to the center of the circle is affected by on-hit effects. Every third hit, deal " + GlossaryTag.EARTHEN.tag(this, earth, true) +
-				" to all enemies between you and the center of the circle and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true)
+				+ " to the center of the circle is affected by on-hit effects. Every third hit, deal " + GlossaryTag.EARTHEN.tag(this, earth) +
+				" to all enemies between you and the center of the circle and apply " + GlossaryTag.CONCUSSED.tag(this, concussed)
 				+ ".");
 	}
 }

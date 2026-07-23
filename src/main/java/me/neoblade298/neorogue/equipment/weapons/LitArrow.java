@@ -16,7 +16,6 @@ public class LitArrow extends Ammunition {
 		super(ID, "Lit Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 13 : 8, 0.1, DamageType.FIRE));
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {

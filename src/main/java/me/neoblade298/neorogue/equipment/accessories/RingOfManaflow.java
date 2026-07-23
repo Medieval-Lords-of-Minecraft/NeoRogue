@@ -41,6 +41,6 @@ public class RingOfManaflow extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, "Your mana regen while crouching is increased by " + DescUtil.yellow(regen) + ".");
+		item = createItem(Material.AMETHYST_SHARD, "Your mana regen while crouching is increased by " + DescUtil.val(regen) + ".");
 	}
 }

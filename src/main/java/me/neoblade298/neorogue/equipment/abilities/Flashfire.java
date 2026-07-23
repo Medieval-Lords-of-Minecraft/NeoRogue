@@ -71,9 +71,9 @@ public class Flashfire extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, double (triple if above " + DescUtil.white("50%") + " mana) the " + GlossaryTag.BURN.tag(this)
-						+ " of all nearby enemies, then deal " + GlossaryTag.FIRE.tag(this, damage, true)
-						+ " damage and apply " + GlossaryTag.BURN.tag(this, burn, true)
+				"On cast, double (triple if above " + DescUtil.val("50%") + " mana) the " + GlossaryTag.BURN.tag(this)
+						+ " of all nearby enemies, then deal " + GlossaryTag.FIRE.tag(this, damage)
+						+ " damage and apply " + GlossaryTag.BURN.tag(this, burn)
 						+ " to all nearby enemies.");
 	}
 }

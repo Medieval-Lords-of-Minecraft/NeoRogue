@@ -66,8 +66,8 @@ public class LightningCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive damage, apply " + GlossaryTag.ELECTRIFIED.tag(this, base, true) + ". "
-				+ "Upon applying " + GlossaryTag.ELECTRIFIED.tag(this, threshold, true) + ", gain "
-				+ DescUtil.white(def) + " " + GlossaryTag.MAGICAL.tag(this) + " defense.");
+		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive damage, apply " + GlossaryTag.ELECTRIFIED.tag(this, base) + ". "
+				+ "Upon applying " + GlossaryTag.ELECTRIFIED.tag(this, threshold) + ", gain "
+				+ DescUtil.val(def) + " " + GlossaryTag.MAGICAL.tag(this) + " defense.");
 	}
 }

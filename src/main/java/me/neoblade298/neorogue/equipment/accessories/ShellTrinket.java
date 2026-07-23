@@ -28,7 +28,7 @@ public class ShellTrinket extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, "Decreases damage taken by " + DescUtil.white(dec) + ".");
+		item = createItem(Material.REDSTONE_TORCH, "Decreases damage taken by " + DescUtil.val(dec) + ".");
 	}
 
 	@Override

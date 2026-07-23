@@ -110,7 +110,7 @@ public class TrappersEssence extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.IRON_TRAPDOOR,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>]. " +
-				"When triggered, the trap deals " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
-				"and grants you " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				"When triggered, the trap deals " + GlossaryTag.BLUNT.tag(this, damage) + " damage " +
+				"and grants you " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}
 }

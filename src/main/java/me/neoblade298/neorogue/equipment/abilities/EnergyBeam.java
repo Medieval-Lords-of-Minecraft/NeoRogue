@@ -104,8 +104,8 @@ public class EnergyBeam extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_CLUSTER,
-				"On cast, fire a beam of lightning dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + 
+				"On cast, fire a beam of lightning dealing " + GlossaryTag.LIGHTNING.tag(this, damage) + 
 				" in a line in front of you. If the beam hits an " + GlossaryTag.ELECTRIFIED.tag(this) + 
-				" enemy, the next ability you cast costs " + DescUtil.yellow(manaCostReduction) + " less mana.");
+				" enemy, the next ability you cast costs " + DescUtil.val(manaCostReduction) + " less mana.");
 	}
 }

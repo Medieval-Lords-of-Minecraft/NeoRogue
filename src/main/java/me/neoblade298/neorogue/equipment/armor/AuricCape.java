@@ -50,6 +50,6 @@ public class AuricCape extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ELYTRA,
-				"While above " + DescUtil.white("50%") + " mana, reduce all incoming " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.yellow(reduc) + ".");
+				"While above " + DescUtil.val("50%") + " mana, reduce all incoming " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduc) + ".");
 	}
 }

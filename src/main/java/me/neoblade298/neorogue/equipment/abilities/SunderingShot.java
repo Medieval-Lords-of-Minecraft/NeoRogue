@@ -123,7 +123,7 @@ public class SunderingShot extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"On cast, " + DescUtil.charge(this, 1, 2) + " before firing a piercing projectile that deals " +
-					GlossaryTag.PIERCING.tag(this, damage, true) + " damage for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have, up to " +
-					DescUtil.white(MAX) + ". Uses your current ammunition.");
+					GlossaryTag.PIERCING.tag(this, damage) + " damage for every stack of " + GlossaryTag.FOCUS.tag(this) + " you have, up to " +
+					DescUtil.val(MAX) + ". Uses your current ammunition.");
 	}
 }

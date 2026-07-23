@@ -45,7 +45,7 @@ public class VermillionBelt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIRE_CORAL_FAN, "Every " + DescUtil.yellow(thres) + " basic attacks, apply " + GlossaryTag.BERSERK.tag(this, berserk, false) +
+		item = createItem(Material.FIRE_CORAL_FAN, "Every " + DescUtil.val(thres) + " basic attacks, apply " + GlossaryTag.BERSERK.tag(this, berserk) +
 		" to yourself.");
 	}
 }

@@ -100,10 +100,10 @@ public class Fury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals " + DescUtil.white(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage, heals for " + DescUtil.white(
+				"On cast, your next basic attack deals " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage, heals for " + DescUtil.val(
 				heal) + ", and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
-				"At " + DescUtil.yellow(berserk) + " stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to " + DescUtil.yellow(
+				"At " + DescUtil.val(berserk) + " stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to " + DescUtil.val(
 				berserkHeal) + ".");
 	}
 }

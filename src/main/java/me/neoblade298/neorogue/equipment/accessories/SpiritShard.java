@@ -31,7 +31,7 @@ public class SpiritShard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LIGHT_BLUE_BANNER, "Decreases your stamina regen by " + DescUtil.white(stam)
-				+ " and increases your mana regen by " + DescUtil.yellow(mana) + ".");
+		item = createItem(Material.LIGHT_BLUE_BANNER, "Decreases your stamina regen by " + DescUtil.val(stam)
+				+ " and increases your mana regen by " + DescUtil.val(mana) + ".");
 	}
 }

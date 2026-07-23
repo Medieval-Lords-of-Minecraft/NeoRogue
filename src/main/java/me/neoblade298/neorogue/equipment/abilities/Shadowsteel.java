@@ -132,8 +132,8 @@ public class Shadowsteel extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
-				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
-				" damage " + DescUtil.white("(2s cooldown)") + ", deal " + GlossaryTag.DARK.tag(this, damage, true) + 
-				" damage in a line from the ball to " + DescUtil.white(3) + " blocks in front of you and teleport the ball there.");
+				GlossaryTag.POWER.tag(this) + ". On cast, a ball of darkness follows " + DescUtil.val("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
+				" damage " + DescUtil.val("(2s cooldown)") + ", deal " + GlossaryTag.DARK.tag(this, damage) + 
+				" damage in a line from the ball to " + DescUtil.val(3) + " blocks in front of you and teleport the ball there.");
 	}
 }

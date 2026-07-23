@@ -39,6 +39,6 @@ public class EagleFeather extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FEATHER, "Increase range of all projectiles by " + DescUtil.yellow(buff) + ".");
+		item = createItem(Material.FEATHER, "Increase range of all projectiles by " + DescUtil.val(buff) + ".");
 	}
 }

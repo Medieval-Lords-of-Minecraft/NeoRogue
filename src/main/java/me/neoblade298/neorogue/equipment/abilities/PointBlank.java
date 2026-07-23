@@ -73,7 +73,7 @@ public class PointBlank extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE_SLAB,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage twice while above " + DescUtil.white("50%") + " stamina. Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
-				DescUtil.yellow(damage) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage twice while above " + DescUtil.val("50%") + " stamina. Dealing damage via projectile from at most " + DescUtil.val(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
+				DescUtil.val(damage) + ".");
 	}
 }

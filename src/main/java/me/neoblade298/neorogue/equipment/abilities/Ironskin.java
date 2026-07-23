@@ -37,7 +37,7 @@ public class Ironskin extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COBBLESTONE,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 
 	@Override

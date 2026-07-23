@@ -38,6 +38,6 @@ public class Enderchest extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_CHEST, "Increases storage size by " + DescUtil.white(2) + ".");
+		item = createItem(Material.ENDER_CHEST, "Increases storage size by " + DescUtil.val(2) + ".");
 	}
 }

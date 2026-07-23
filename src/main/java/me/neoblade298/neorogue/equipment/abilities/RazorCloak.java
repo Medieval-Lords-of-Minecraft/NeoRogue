@@ -47,6 +47,6 @@ public class RazorCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TWISTING_VINES,
-				"On cast, gain " + GlossaryTag.THORNS.tag(this, thorns, true) + ".");
+				"On cast, gain " + GlossaryTag.THORNS.tag(this, thorns) + ".");
 	}
 }

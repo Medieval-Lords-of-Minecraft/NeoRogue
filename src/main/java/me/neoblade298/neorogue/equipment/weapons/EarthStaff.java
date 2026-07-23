@@ -46,7 +46,6 @@ public class EarthStaff extends Equipment {
 				ID, "Earth Staff", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(3, 0.5, isUpgraded ? 100 : 80, 0.5, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
 	public static Equipment get() {
@@ -101,7 +100,7 @@ public class EarthStaff extends Equipment {
 		item = createItem(
 				Material.STICK,
 				"After a windup where you can't jump, smash the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
-						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". Must be cast while on the ground."
+						+ GlossaryTag.CONCUSSED.tag(this, conc) + ". Must be cast while on the ground."
 		);
 	}
 }

@@ -48,7 +48,7 @@ public class SaboteursRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COBWEB, "Damage dealt to enemies with " + GlossaryTag.INJURY.tag(this) + " is increased by "  + DescUtil.yellow(inc) +
+		item = createItem(Material.COBWEB, "Damage dealt to enemies with " + GlossaryTag.INJURY.tag(this) + " is increased by "  + DescUtil.val(inc) +
 		" for every stack of " + GlossaryTag.INJURY.tag(this) + " they have.");
 	}
 }

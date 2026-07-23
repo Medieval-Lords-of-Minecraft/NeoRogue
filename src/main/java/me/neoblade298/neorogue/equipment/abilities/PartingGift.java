@@ -94,6 +94,6 @@ public class PartingGift extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a bomb that detonates and deals " + GlossaryTag.DARK.tag(this) + " damage after you get out of range of it." +
-				" For every second you stay in range, up to " + DescUtil.white(MAX + "s") + ", increase damage dealt by " + DescUtil.yellow(damage) + ".");
+				" For every second you stay in range, up to " + DescUtil.val(MAX + "s") + ", increase damage dealt by " + DescUtil.val(damage) + ".");
 	}
 }

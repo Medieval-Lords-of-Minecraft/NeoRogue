@@ -46,6 +46,6 @@ public class DarkArtsTreatise extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.DARK.tag(this) + " damage by " + DescUtil.white("20%") + ".");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.DARK.tag(this) + " damage by " + DescUtil.val("20%") + ".");
 	}
 }

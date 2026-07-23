@@ -39,6 +39,6 @@ public class BluntedArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				"Applies " + GlossaryTag.INJURY.tag(this, stacks, true) + " on hit.");
+				"Applies " + GlossaryTag.INJURY.tag(this, stacks) + " on hit.");
 	}
 }

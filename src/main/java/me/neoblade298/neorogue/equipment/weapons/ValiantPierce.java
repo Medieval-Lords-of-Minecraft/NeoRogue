@@ -91,7 +91,7 @@ public class ValiantPierce extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.POINTED_DRIPSTONE,
-				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage to all enemies in a line. " +
-				"If more than one enemy is hit, deal " + DescUtil.yellow(bonus) + " bonus damage to the first enemy hit.");
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage) + " damage to all enemies in a line. " +
+				"If more than one enemy is hit, deal " + DescUtil.val(bonus) + " bonus damage to the first enemy hit.");
 	}
 }

@@ -51,6 +51,6 @@ public class InsanityPowder extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD, GlossaryTag.PASSIVE.tag(this) + ". Gaining " + GlossaryTag.STEALTH.tag(this) + " applies "
-				+ GlossaryTag.INSANITY.tag(this, stacks, true) + " to enemies around you.");
+				+ GlossaryTag.INSANITY.tag(this, stacks) + " to enemies around you.");
 	}
 }

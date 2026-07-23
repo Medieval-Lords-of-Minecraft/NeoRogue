@@ -65,7 +65,7 @@ public class CopperFunnel extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.HOPPER,
-				GlossaryTag.PASSIVE.tag(this) + ". The first " + DescUtil.yellow(reps) + " times you receive " + GlossaryTag.MAGICAL.tag(this) + " damage, " +
-				"reduce it by " + DescUtil.white(reduc) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". The first " + DescUtil.val(reps) + " times you receive " + GlossaryTag.MAGICAL.tag(this) + " damage, " +
+				"reduce it by " + DescUtil.val(reduc) + ".");
 	}
 }

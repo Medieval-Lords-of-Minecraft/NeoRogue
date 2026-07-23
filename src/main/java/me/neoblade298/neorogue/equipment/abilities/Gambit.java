@@ -88,7 +88,7 @@ public class Gambit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRAGON_HEAD,
-				"Requires " + GlossaryTag.FOCUS.tag(this) + ". On cast, lose " + GlossaryTag.FOCUS.tag(this, 1, false) + ". If you kill " + DescUtil.white(2) + " " +
-				"enemies within " + DescUtil.white("3s") + ", permanently increase your damage by " + DescUtil.yellow(damage) + ".");
+				"Requires " + GlossaryTag.FOCUS.tag(this) + ". On cast, lose " + GlossaryTag.FOCUS.tag(this, 1) + ". If you kill " + DescUtil.val(2) + " " +
+				"enemies within " + DescUtil.val("3s") + ", permanently increase your damage by " + DescUtil.val(damage) + ".");
 	}
 }

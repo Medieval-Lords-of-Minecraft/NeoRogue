@@ -70,7 +70,7 @@ public class EnduranceShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
-		"empowers your next basic attack to deal " + GlossaryTag.BLUNT.tag(this, damage, true) + ".");
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.val(reduction) + ". Receiving damage while your shield is raised " +
+		"empowers your next basic attack to deal " + GlossaryTag.BLUNT.tag(this, damage) + ".");
 	}
 }
