@@ -14,7 +14,7 @@ public class Sharpshooter extends MobModifier {
 
 	public Sharpshooter() {
 		super("Sharpshooter", Component.text("Sharpshooter"),
-				Component.text("Fires an arrow at a random enemy every " + INTERVAL + "s."), false);
+				Component.text("Fires an arrow at a random enemy every " + INTERVAL + "s."));
 	}
 
 	@Override

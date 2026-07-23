@@ -33,7 +33,7 @@ public class StandardFightInstance extends FightInstance {
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
 	// Chance for each mob in a standard fight to spawn with the fight's modifier. Configurable.
-	public static double MODIFIER_SPAWN_CHANCE = 0.2;
+	public static double MODIFIER_SPAWN_CHANCE = 0.5;
 
 	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private BossBar timeBar, scoreBar;

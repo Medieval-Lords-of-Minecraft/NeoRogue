@@ -16,7 +16,7 @@ public class Beefy extends MobModifier {
 
 	public Beefy() {
 		super("Beefy", Component.text("Beefy"),
-				Component.text("Has 20% more health."), false);
+				Component.text("Has 20% more health."));
 	}
 
 	@Override

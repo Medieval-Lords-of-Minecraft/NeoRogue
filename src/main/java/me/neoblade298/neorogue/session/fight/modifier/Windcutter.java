@@ -16,7 +16,7 @@ public class Windcutter extends MobModifier {
 
 	public Windcutter() {
 		super("Windcutter", Component.text("Windcutter"),
-				Component.text("Every " + ATTACKS_REQUIRED + " times it deals damage, releases a slashing wave."), false);
+				Component.text("Every " + ATTACKS_REQUIRED + " times it deals damage, releases a slashing wave."));
 	}
 
 	@Override

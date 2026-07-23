@@ -28,7 +28,8 @@ public class Martyr extends MobModifier {
 
 	public Martyr() {
 		super("Martyr", Component.text("Martyr"),
-				Component.text("Explodes on death, dealing damage to nearby players."), false);
+				Component.text("Explodes on death, dealing damage to nearby players."),
+				Scope.MOB_ONLY);
 	}
 
 	@Override

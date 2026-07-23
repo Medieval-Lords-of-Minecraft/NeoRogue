@@ -15,7 +15,8 @@ public class Alacrity extends MobModifier {
 
 	public Alacrity() {
 		super("Alacrity", Component.text("Alacrity"),
-				Component.text("Reduces its ability cooldowns by 1s every 10s."), false);
+				Component.text("Reduces its ability cooldowns by 1s every 10s."),
+				Scope.BOSS_ONLY);
 	}
 
 	@Override

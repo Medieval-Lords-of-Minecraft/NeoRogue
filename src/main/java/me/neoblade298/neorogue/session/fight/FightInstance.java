@@ -1543,10 +1543,10 @@ public abstract class FightInstance extends Instance {
 
 	// Rolls this fight's mob modifier if the notoriety setting is active. Only called on fresh
 	// creation (never on deserialization), so an existing assignment is preserved across relogs.
-	// Standard fights pass allowBossModifiers=false to exclude boss-only modifiers.
-	public void generateModifier(boolean allowBossModifiers) {
+	// Boss/miniboss fights pass forBoss=true; standard fights pass false to only roll mob-eligible modifiers.
+	public void generateModifier(boolean forBoss) {
 		if (!NotorietySetting.MOB_MODIFIERS.isActive(s)) return;
-		modifier = MobModifier.generate(allowBossModifiers);
+		modifier = MobModifier.generate(forBoss);
 	}
 
 	public MobModifier getModifier() {

@@ -33,19 +33,39 @@ import net.kyori.adventure.text.format.TextDecoration.State;
  * {@link #initialize(FightData)}, and register the singleton in {@link #registerModifiers()}.
  */
 public abstract class MobModifier {
+	// Defines which kinds of mobs a modifier is allowed to roll on.
+	public enum Scope {
+		MOB_ONLY, // Only regular mobs (excluded from miniboss/boss fights)
+		BOSS_ONLY, // Only minibosses and bosses
+		BOTH; // Any mob
+
+		public boolean allowsBoss() {
+			return this == BOSS_ONLY || this == BOTH;
+		}
+
+		public boolean allowsMob() {
+			return this == MOB_ONLY || this == BOTH;
+		}
+	}
+
 	// Registry of every modifier singleton, keyed by id. Insertion-ordered for stable random selection.
 	private static final LinkedHashMap<String, MobModifier> registry = new LinkedHashMap<String, MobModifier>();
 
 	protected final String id;
 	protected final TextComponent title;
 	protected final ArrayList<TextComponent> description;
-	protected final boolean isBossModifier; // Whether this modifier is exclusive to miniboss and boss
+	protected final Scope scope; // Which kinds of mobs this modifier can roll on
 
-	protected MobModifier(String id, TextComponent title, TextComponent description, boolean isBossModifier) {
+	// Convenience constructor: defaults the modifier to Scope.BOTH.
+	protected MobModifier(String id, TextComponent title, TextComponent description) {
+		this(id, title, description, Scope.BOTH);
+	}
+
+	protected MobModifier(String id, TextComponent title, TextComponent description, Scope scope) {
 		this.id = id;
 		this.title = title;
 		this.description = SharedUtil.addLineBreaks(description, 200);
-		this.isBossModifier = isBossModifier;
+		this.scope = scope;
 	}
 
 	// Registers all built-in modifiers. Called once at startup (and on reload).
@@ -69,12 +89,13 @@ public abstract class MobModifier {
 		return registry.get(id);
 	}
 
-	// Picks a random registered modifier, or null if none qualify. When allowBossModifiers is false,
-	// modifiers flagged as boss-only are excluded (used by standard fights).
-	public static MobModifier generate(boolean allowBossModifiers) {
+	// Picks a random registered modifier valid for the given context, or null if none qualify.
+	// When forBoss is true, only modifiers allowed on bosses/minibosses are considered; otherwise
+	// only modifiers allowed on regular mobs are considered (used by standard fights).
+	public static MobModifier generate(boolean forBoss) {
 		ArrayList<MobModifier> mods = new ArrayList<MobModifier>();
 		for (MobModifier mod : registry.values()) {
-			if (!allowBossModifiers && mod.isBossModifier) continue;
+			if (forBoss ? !mod.scope.allowsBoss() : !mod.scope.allowsMob()) continue;
 			mods.add(mod);
 		}
 		if (mods.isEmpty()) return null;
@@ -96,8 +117,8 @@ public abstract class MobModifier {
 		return description;
 	}
 
-	public boolean isBossModifier() {
-		return isBossModifier;
+	public Scope getScope() {
+		return scope;
 	}
 
 	// Appends the modifier's title and description to an item's lore for the Fight Info inventory.

@@ -14,7 +14,7 @@ public class IronWall extends MobModifier {
 
 	public IronWall() {
 		super("IronWall", Component.text("Iron Wall"),
-				Component.text("Takes 20% less physical damage."), false);
+				Component.text("Takes 20% less physical damage."));
 	}
 
 	@Override

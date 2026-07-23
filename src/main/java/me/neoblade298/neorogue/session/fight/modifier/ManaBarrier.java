@@ -14,7 +14,7 @@ public class ManaBarrier extends MobModifier {
 
 	public ManaBarrier() {
 		super("ManaBarrier", Component.text("Mana Barrier"),
-				Component.text("Takes 20% less magical damage."), false);
+				Component.text("Takes 20% less magical damage."));
 	}
 
 	@Override
