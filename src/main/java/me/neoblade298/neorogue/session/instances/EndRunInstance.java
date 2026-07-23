@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,7 +21,6 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SessionStatsInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionType;
-import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -33,8 +31,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
  */
 public abstract class EndRunInstance extends EditInventoryInstance {
 	protected static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
-	protected TextDisplay holo, leaveHolo, financeHolo, expHolo;
-	protected Location financeBlock, expBlock;
+	protected TextDisplay holo, leaveHolo;
 
 	public EndRunInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -64,18 +61,9 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		recordRunResults();
 
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
-				Component.text("Right click to view stats!", NamedTextColor.WHITE));
+				Component.text("Right click to view stats, finances & experience!", NamedTextColor.WHITE));
 		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
 				Component.text("Right click to leave!", NamedTextColor.WHITE));
-		// Finances gold block, offset to the side of the stats/leave axis (adjust offset if it clips geometry)
-		financeBlock = spawn.clone().add(2, -0.5, 0);
-		financeHolo = NeoRogue.createHologram(spawn.clone().add(-3, 2, 0),
-				Component.text("Right click to view finances!", NamedTextColor.GOLD));
-		// Experience emerald block, mirrored across the stats/leave axis from the finances block
-		expBlock = spawn.clone().add(-2, -0.5, 0);
-		expBlock.getBlock().setType(Material.EMERALD_BLOCK);
-		expHolo = NeoRogue.createHologram(spawn.clone().add(3, 2, 0),
-				Component.text("Right click to view experience!", NamedTextColor.GREEN));
 
 		s.broadcast(getResultMessage());
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
@@ -125,10 +113,6 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		super.cleanup(pluginDisable);
 		holo.remove();
 		leaveHolo.remove();
-		financeHolo.remove();
-		if (expHolo != null) expHolo.remove();
-		if (financeBlock != null) financeBlock.getBlock().setType(Material.AIR);
-		if (expBlock != null) expBlock.getBlock().setType(Material.AIR);
 	}
 
 	@Override
@@ -146,15 +130,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 				return;
 			}
 			if (e.getClickedBlock().getType() == Material.LECTERN) {
-				new SessionStatsInventory(p, s);
-				return;
-			}
-			if (e.getClickedBlock().getType() == Material.GOLD_BLOCK) {
-				RunReward.sendFinancesSummary(p, s, isWin());
-				return;
-			}
-			if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK) {
-				RunReward.sendExpSummary(p, s);
+				new SessionStatsInventory(p, s, isWin());
 				return;
 			}
 		}
@@ -173,17 +149,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 			}
 			if (type == Material.LECTERN) {
 				e.setCancelled(true);
-				new SessionStatsInventory(p, s);
-				return;
-			}
-			if (type == Material.GOLD_BLOCK) {
-				e.setCancelled(true);
-				RunReward.sendFinancesSummary(p, s, isWin());
-				return;
-			}
-			if (type == Material.EMERALD_BLOCK) {
-				e.setCancelled(true);
-				RunReward.sendExpSummary(p, s);
+				new SessionStatsInventory(p, s, isWin());
 				return;
 			}
 		}

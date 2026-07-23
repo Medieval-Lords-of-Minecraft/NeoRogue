@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -20,6 +21,8 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.milkbowl.vault2.economy.Economy;
 
 // Handles paying out real (VaultUnlocked) currency to party members when a run ends.
@@ -295,77 +298,80 @@ public class RunReward {
 				subtotal, notorietyMultiplier, partySize, partyMultiplier, total);
 	}
 
-	// Sends a chat breakdown of a player's run earnings. Used by the win/lose "finances" gold block.
-	public static void sendFinancesSummary(Player p, Session s, boolean won) {
+	// Builds the run-finances breakdown as item lore for the session summary inventory. The breakdown
+	// itself is session-wide; psd is only used for the viewer's personal cargo sales. Pass the viewer's
+	// PlayerSessionData (null for spectators, who shouldn't see personal finances).
+	public static List<Component> buildFinancesLore(Session s, PlayerSessionData psd, boolean won) {
+		List<Component> lore = new ArrayList<Component>();
 		Breakdown b = calculateBreakdown(s, won);
-		Util.msgRaw(p, "<gold><st>                    </st>[ <yellow>Run Finances</yellow> ]<st>                    </st>");
 		if (b.zeroedByDeath) {
-			Util.msgRaw(p, "<red>You fell before visiting <yellow>" + DEATH_NODE_THRESHOLD
-					+ "<red> nodes, so you earned nothing this run.");
-			return;
+			lore.add(loreLine("<red>You fell before visiting <yellow>" + DEATH_NODE_THRESHOLD
+					+ "<red> nodes, so you earned nothing this run."));
+			return lore;
 		}
 
-		Util.msgRaw(p, "<gray>Base (" + (won ? "victory" : "completion") + "): <green>+" + formatMoney(b.base));
-		Util.msgRaw(p, "<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 " + formatMoney(NODE_BONUS)
-				+ "): <green>+" + formatMoney(b.nodeBonus));
-		Util.msgRaw(p, "<gray>Regions completed (<white>" + b.regionsCompleted + "<gray> \u00d7 " + formatMoney(REGION_BONUS)
-				+ "): <green>+" + formatMoney(b.regionBonus));
-		Util.msgRaw(p, "<gray>Subtotal: <yellow>" + formatMoney(b.subtotal));
-		Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
-				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier));
+		lore.add(loreLine("<gray>Base (" + (won ? "victory" : "completion") + "): <green>+" + formatMoney(b.base)));
+		lore.add(loreLine("<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 " + formatMoney(NODE_BONUS)
+				+ "): <green>+" + formatMoney(b.nodeBonus)));
+		lore.add(loreLine("<gray>Regions completed (<white>" + b.regionsCompleted + "<gray> \u00d7 " + formatMoney(REGION_BONUS)
+				+ "): <green>+" + formatMoney(b.regionBonus)));
+		lore.add(loreLine("<gray>Subtotal: <yellow>" + formatMoney(b.subtotal)));
+		lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
+				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier)));
 		if (b.partySize > 1) {
-			Util.msgRaw(p, "<gray>Party bonus (<white>" + b.partySize + "<gray> players, <white>+"
+			lore.add(loreLine("<gray>Party bonus (<white>" + b.partySize + "<gray> players, <white>+"
 					+ Math.round(PARTY_SIZE_BONUS * 100) + "%<gray> each beyond the first): <green>\u00d7"
-					+ String.format("%.2f", b.partyMultiplier));
+					+ String.format("%.2f", b.partyMultiplier)));
 		}
-		Util.msgRaw(p, "<gold>Total earned: <yellow>" + formatMoney(b.total));
+		lore.add(loreLine("<gold>Total earned: <yellow>" + formatMoney(b.total)));
 
-		// Cargo is sold and paid out per region during the run; summarize what each player sold here.
+		// Cargo is sold and paid out per region during the run; summarize what the viewer sold here.
 		// Cargo income counts as run-reward base, so the notoriety multiplier applies to it too.
-		PlayerSessionData psd = s.getParty().get(p.getUniqueId());
 		if (psd != null && psd.hasSoldCargo()) {
-			Util.msgRaw(p, "<gold><st>          </st>[ <yellow>Cargo Sold</yellow> ]<st>          </st>");
+			lore.add(Component.empty());
+			lore.add(loreLine("<gold>Cargo Sold"));
 			double cargoTotal = 0;
 			for (Map.Entry<Material, Integer> ent : psd.getSoldCargoQty().entrySet()) {
 				Material mat = ent.getKey();
 				int qty = ent.getValue();
 				double value = psd.getSoldCargoValue().getOrDefault(mat, 0.0);
 				cargoTotal += value;
-				Util.msgRaw(p, "<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
-						+ formatMoney(value));
+				lore.add(loreLine("<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
+						+ formatMoney(value)));
 			}
 			double cargoMultiplier = s.getNotorietyMoneyMultiplier();
 			double cargoReward = cargoTotal * cargoMultiplier;
 			if (cargoReward > cargoTotal) {
-				Util.msgRaw(p, "<gray>Sale value: <yellow>" + formatMoney(cargoTotal));
-				Util.msgRaw(p, "<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
-						+ "%<gray>): <green>\u00d7" + String.format("%.2f", cargoMultiplier));
+				lore.add(loreLine("<gray>Sale value: <yellow>" + formatMoney(cargoTotal)));
+				lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
+						+ "%<gray>): <green>\u00d7" + String.format("%.2f", cargoMultiplier)));
 			}
-			Util.msgRaw(p, "<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward));
+			lore.add(loreLine("<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward)));
 		}
+		return lore;
 	}
 
-	// Sends a chat breakdown of a player's experience earned this run. Used by the end-of-run "experience" block.
-	public static void sendExpSummary(Player p, Session s) {
-		PlayerSessionData psd = s.getParty().get(p.getUniqueId());
-		Util.msgRaw(p, "<gold><st>                    </st>[ <yellow>Run Experience</yellow> ]<st>                    </st>");
-		if (psd == null) return;
+	// Builds the run-experience breakdown as item lore for the session summary inventory. Pass the
+	// viewer's PlayerSessionData (null for spectators, who shouldn't see personal experience).
+	public static List<Component> buildExpLore(Session s, PlayerSessionData psd) {
+		List<Component> lore = new ArrayList<Component>();
+		if (psd == null) return lore;
 		if (!s.isCompetitive()) {
-			Util.msgRaw(p, "<gray>This run doesn't award experience.");
-			return;
+			lore.add(loreLine("<gray>This run doesn't award experience."));
+			return lore;
 		}
 		EquipmentClass ec = psd.getPlayerClass();
 		int earned = psd.getSessionStats().getExpEarned();
-		Util.msgRaw(p, "<gray>Class: <white>" + ec.getDisplay());
-		Util.msgRaw(p, "<gray>Total exp earned: <green>+" + earned);
+		lore.add(loreLine("<gray>Class: <white>" + ec.getDisplay()));
+		lore.add(loreLine("<gray>Total exp earned: <green>+" + earned));
 
 		int notorietyPct = s.getNotorietyXpBonusPercent();
 		if (notorietyPct > 0) {
-			Util.msgRaw(p, "<gray>  Includes notoriety bonus: <green>+" + notorietyPct + "%");
+			lore.add(loreLine("<gray>  Includes notoriety bonus: <green>+" + notorietyPct + "%"));
 		}
 		double boost = psd.getRunExpBoostMultiplier();
 		if (boost > 1.0) {
-			Util.msgRaw(p, "<gray>  Includes exp boost: <green>\u00d7" + String.format("%.2f", boost));
+			lore.add(loreLine("<gray>  Includes exp boost: <green>\u00d7" + String.format("%.2f", boost)));
 		}
 
 		PlayerData pd = psd.getData();
@@ -373,9 +379,15 @@ public class RunReward {
 			int level = pd.getLevel(ec);
 			int exp = pd.getExp(ec);
 			int req = PlayerData.getXpRequired(level);
-			Util.msgRaw(p, "<gold>" + ec.getDisplay() + " level <yellow>" + level + " <gray>(<white>" + exp
-					+ "<gray>/<white>" + req + "<gray>)");
+			lore.add(loreLine("<gold>" + ec.getDisplay() + " level <yellow>" + level + " <gray>(<white>" + exp
+					+ "<gray>/<white>" + req + "<gray>)"));
 		}
+		return lore;
+	}
+
+	// Deserializes a MiniMessage line into a non-italic lore Component.
+	private static Component loreLine(String miniMessage) {
+		return NeoCore.miniMessage().deserialize(miniMessage).decoration(TextDecoration.ITALIC, false);
 	}
 
 	// Converts an enum material name (e.g. IRON_INGOT) to a readable label (e.g. Iron Ingot).

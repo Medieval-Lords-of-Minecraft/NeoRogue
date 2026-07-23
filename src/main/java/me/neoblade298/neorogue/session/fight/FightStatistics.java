@@ -1,11 +1,15 @@
 package me.neoblade298.neorogue.session.fight;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.analytics.EquipmentContribution;
 import me.neoblade298.neorogue.session.fight.buff.StatCategory;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
@@ -13,6 +17,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class FightStatistics {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
@@ -55,6 +61,14 @@ public class FightStatistics {
 			key = source.serialize();
 			sourceNames.putIfAbsent(key, source.getDisplay());
 		}
+		nullifiedByEquip.merge(key, amount, Double::sum);
+	}
+
+	// Records nullified damage under a named (non-equipment) source, e.g. a status effect.
+	public void addDamageNullified(String key, Component display, double amount) {
+		this.damageNullified += amount;
+		if (key == null) key = UNATTRIBUTED;
+		else if (display != null) sourceNames.putIfAbsent(key, display);
 		nullifiedByEquip.merge(key, amount, Double::sum);
 	}
 
@@ -341,14 +355,16 @@ public class FightStatistics {
 		Component hover = Component.text("Damage dealt post buff and mitigation:", NamedTextColor.GRAY);
 		double total = 0;
 		boolean any = false;
+		List<SortedLine> lines = new ArrayList<SortedLine>();
 		for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
 			StatTracker stat = ent.getKey();
 			if (stat.isIgnored())
 				continue;
-			hover = hover.appendNewline().append(getStatPiece(stat.getDisplay(), ent.getValue()));
+			lines.add(sortedLine(stat.getEquipmentId(), stat.getDisplay(), getStatPiece(stat.getDisplay(), ent.getValue())));
 			total += ent.getValue();
 			any = true;
 		}
+		hover = appendSorted(hover, lines);
 		// Buff-added damage is credited to the buffing equipment; include it in the headline total so it
 		// still reflects the full amount dealt (source base + buffs).
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
@@ -373,23 +389,29 @@ public class FightStatistics {
 		Component hover = Component.text("Damage taken post buff and mitigation:", NamedTextColor.GRAY);
 		double totalDamageTaken = 0;
 		boolean hasDetail = false;
+		List<SortedLine> mobLines = new ArrayList<SortedLine>();
 		for (Entry<String, HashMap<DamageType, Double>> mobMap : damageTaken.entrySet()) {
 			Mob mob = Mob.get(mobMap.getKey());
 			for (Entry<DamageType, Double> ent : mobMap.getValue().entrySet()) {
 				totalDamageTaken += ent.getValue();
-				hover = hover.appendNewline().append(getDamageTakenStatPiece(mob, ent.getKey(), mobMap.getValue()));
+				Component line = getDamageTakenStatPiece(mob, ent.getKey(), mobMap.getValue());
+				mobLines.add(sortedLine(null, mob != null ? mob.getDisplay() : null, line));
 				hasDetail = true;
 			}
 		}
+		hover = appendSorted(hover, mobLines);
 		if (damageBarriered != 0) { hover = hover.appendNewline().append(getStatPiece("Damage Barriered", damageBarriered)); hasDetail = true; }
 		if (damageNullified != 0) {
 			if (nullifiedByEquip.isEmpty()) {
 				hover = hover.appendNewline().append(getStatPiece("Damage Nullified", damageNullified));
 			}
 			else {
+				List<SortedLine> nullifiedLines = new ArrayList<SortedLine>();
 				for (Entry<String, Double> ent : nullifiedByEquip.entrySet()) {
-					hover = hover.appendNewline().append(getSourceAction(ent.getKey(), "Damage Nullified", ent.getValue()));
+					nullifiedLines.add(sortedLine(ent.getKey(), sourceNames.get(ent.getKey()),
+						getSourceAction(ent.getKey(), "Damage Nullified", ent.getValue())));
 				}
+				hover = appendSorted(hover, nullifiedLines);
 			}
 			hasDetail = true;
 		}
@@ -401,9 +423,12 @@ public class FightStatistics {
 			hasDetail = true;
 		}
 		if (!shieldsByEquip.isEmpty()) {
+			List<SortedLine> shieldLines = new ArrayList<SortedLine>();
 			for (Entry<String, Double> ent : shieldsByEquip.entrySet()) {
-				hover = hover.appendNewline().append(getSourceAction(ent.getKey(), "Shields Applied", ent.getValue()));
+				shieldLines.add(sortedLine(ent.getKey(), sourceNames.get(ent.getKey()),
+					getSourceAction(ent.getKey(), "Shields Applied", ent.getValue())));
 			}
+			hover = appendSorted(hover, shieldLines);
 			hasDetail = true;
 		}
 
@@ -426,15 +451,17 @@ public class FightStatistics {
 		double score = 0;
 		boolean any = false;
 		Component hover = Component.text("Statuses applied:", NamedTextColor.GRAY);
+		List<SortedLine> statusLines = new ArrayList<SortedLine>();
 		for (Entry<StatusType, HashMap<String, Integer>> typeEnt : statusesApplied.entrySet()) {
 			StatusType type = typeEnt.getKey();
 			if (type.hidden) continue;
 			for (Entry<String, Integer> srcEnt : typeEnt.getValue().entrySet()) {
 				Component disp = sourceNames.getOrDefault(srcEnt.getKey(), Component.text("Misc", NamedTextColor.GRAY));
-				hover = hover.appendNewline().append(disp.append(Component.text(" - ", NamedTextColor.GRAY))
+				Component line = disp.append(Component.text(" - ", NamedTextColor.GRAY))
 					.append(type.ctag)
 					.append(Component.text(": ", NamedTextColor.YELLOW))
-					.append(Component.text(df.format(srcEnt.getValue()), NamedTextColor.WHITE)));
+					.append(Component.text(df.format(srcEnt.getValue()), NamedTextColor.WHITE));
+				statusLines.add(sortedLine(srcEnt.getKey(), disp, line));
 				score += srcEnt.getValue();
 				any = true;
 			}
@@ -442,12 +469,14 @@ public class FightStatistics {
 		// Effective poison (stacks x seconds) is tracked separately since poison damage scales with duration
 		for (Entry<String, Double> ent : effectivePoisonApplied.entrySet()) {
 			Component disp = sourceNames.getOrDefault(ent.getKey(), Component.text("Misc", NamedTextColor.GRAY));
-			hover = hover.appendNewline().append(disp.append(Component.text(" - Effective ", NamedTextColor.GRAY))
+			Component line = disp.append(Component.text(" - Effective ", NamedTextColor.GRAY))
 				.append(StatusType.POISON.ctag)
 				.append(Component.text(": ", NamedTextColor.YELLOW))
-				.append(Component.text(df.format(ent.getValue()), NamedTextColor.WHITE)));
+				.append(Component.text(df.format(ent.getValue()), NamedTextColor.WHITE));
+			statusLines.add(sortedLine(ent.getKey(), disp, line));
 			any = true;
 		}
+		hover = appendSorted(hover, statusLines);
 		// Buffer contributions are credited to the buffing equipment; include them in the headline total
 		// so it still reflects the full amount applied (base + buffs).
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
@@ -468,7 +497,7 @@ public class FightStatistics {
 	// Builds a hover section for non-ignored buff trackers in the given category (OTHER folds into
 	// damage dealt). Each line is "<equipment> - <suffix>: value". Returns null if no buffs match.
 	private Component buffSection(StatCategory category) {
-		Component section = null;
+		List<SortedLine> lines = new ArrayList<SortedLine>();
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
 			StatTracker stat = ent.getKey();
 			if (stat.isIgnored()) continue;
@@ -477,7 +506,13 @@ public class FightStatistics {
 			if (c != category) continue;
 			double amt = stat.isInverted() ? -ent.getValue() : ent.getValue();
 			Component line = stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE));
-			section = section == null ? line : section.appendNewline().append(line);
+			lines.add(sortedLine(stat.getEquipmentId(), stat.getDisplay(), line));
+		}
+		if (lines.isEmpty()) return null;
+		lines.sort(LINE_ORDER);
+		Component section = null;
+		for (SortedLine sl : lines) {
+			section = section == null ? sl.line() : section.appendNewline().append(sl.line());
 		}
 		return section;
 	}
@@ -540,5 +575,55 @@ public class FightStatistics {
 	
 	private Component getStatPiece(String display, double stat) {
 		return Component.text(display + ": ", NamedTextColor.YELLOW).append(Component.text(df.format(stat), NamedTextColor.WHITE));
+	}
+
+	// A hover line paired with its ordering: higher-rarity equipment first, then case-insensitive display
+	// text. Rarity-less sources (mobs, misc, status-only) fall to the end via Integer.MAX_VALUE.
+	private record SortedLine(int rarityOrder, String sortKey, Component line) {}
+
+	private static final Comparator<SortedLine> LINE_ORDER = Comparator
+			.comparingInt(SortedLine::rarityOrder)
+			.thenComparing(SortedLine::sortKey, String.CASE_INSENSITIVE_ORDER);
+
+	private static SortedLine sortedLine(String key, Component rarityDisplay, Component line) {
+		return new SortedLine(rarityOrderOf(key, rarityDisplay),
+				PlainTextComponentSerializer.plainText().serialize(line), line);
+	}
+
+	// Sorts collected lines by rarity then name and appends each on its own line to the hover.
+	private static Component appendSorted(Component hover, List<SortedLine> lines) {
+		lines.sort(LINE_ORDER);
+		for (SortedLine sl : lines) hover = hover.appendNewline().append(sl.line());
+		return hover;
+	}
+
+	// Resolves a rarity ordering bucket (0 = legendary, higher = lower rarity). Prefers resolving the
+	// serialized equipment key, then falls back to the display color, then to a rarity-less bucket that
+	// sorts after everything else.
+	private static int rarityOrderOf(String key, Component rarityDisplay) {
+		Rarity r = null;
+		if (key != null) {
+			Equipment eq = Equipment.deserialize(key);
+			if (eq != null) r = eq.getRarity();
+		}
+		if (r == null && rarityDisplay != null) r = rarityFromColor(rarityDisplay);
+		return r != null ? (Rarity.LEGENDARY.getValue() - r.getValue()) : Integer.MAX_VALUE;
+	}
+
+	// Maps a display's color back to a rarity as a fallback. Gray is treated as no signal (the default/
+	// uncolored case shared by mobs and misc sources), so only the distinct rarity colors resolve.
+	private static Rarity rarityFromColor(Component display) {
+		TextColor color = display.color();
+		if (color == null) {
+			for (Component child : display.children()) {
+				if (child.color() != null) { color = child.color(); break; }
+			}
+		}
+		if (color == null) return null;
+		if (color.equals(NamedTextColor.GREEN)) return Rarity.UNCOMMON;
+		if (color.equals(NamedTextColor.BLUE)) return Rarity.RARE;
+		if (color.equals(NamedTextColor.GOLD)) return Rarity.EPIC;
+		if (color.equals(NamedTextColor.RED)) return Rarity.LEGENDARY;
+		return null;
 	}
 }

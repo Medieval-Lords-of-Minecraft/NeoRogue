@@ -331,12 +331,16 @@ public class DamageMeta {
 		}
 
 		// See if any of our effects cancel damage after barrier
-		boolean cancelDamage = false;
+		boolean cancelDamage = false, invincibleCancel = false;
 		ReceiveDamageEvent rdev = new ReceiveDamageEvent(owner, this);
 		if (recipient instanceof PlayerFightData && !nullifiedByBarrier) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, rdev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
+			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, rdev)) {
 				cancelDamage = true;
+			}
+			else if (pdata.hasStatus(StatusType.INVINCIBLE)) {
+				cancelDamage = true;
+				invincibleCancel = true;
 			}
 		}
 		if (!(recipient instanceof PlayerFightData)) {
@@ -545,9 +549,14 @@ public class DamageMeta {
 		// General damage nullification
 		if (cancelDamage && recipient instanceof PlayerFightData) {
 			PlayerFightData pl = (PlayerFightData) recipient;
-			Equipment nullifiedSource = rdev.getNullifiedSourceId() == null ? null
-					: Equipment.get(rdev.getNullifiedSourceId(), false);
-			pl.getStats().addDamageNullified(nullifiedSource, damage + ignoreShieldsDamage);
+			if (invincibleCancel) {
+				pl.getStats().addDamageNullified(StatusType.INVINCIBLE.name(), StatusType.INVINCIBLE.ctag, damage + ignoreShieldsDamage);
+			}
+			else {
+				Equipment nullifiedSource = rdev.getNullifiedSourceId() == null ? null
+						: Equipment.get(rdev.getNullifiedSourceId(), false);
+				pl.getStats().addDamageNullified(nullifiedSource, damage + ignoreShieldsDamage);
+			}
 			damage = 0;
 			ignoreShieldsDamage = 0;
 			rawDamage = 0;
