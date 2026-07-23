@@ -42,7 +42,7 @@ public class MirrorSickle extends Equipment {
 	public MirrorSickle(boolean isUpgraded) {
 		super(ID, "Mirror Sickle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofRangedWeapon(60, 1, 0.2, tp.range, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofRangedWeapon(40, 1, 0.2, tp.range, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		dash = isUpgraded ? 150 : 100;
 		this.restrictsOffhand = true;
 	}
