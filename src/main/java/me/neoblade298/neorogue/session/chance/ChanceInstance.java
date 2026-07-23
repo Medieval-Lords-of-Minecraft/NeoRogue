@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.Instance;
+import me.neoblade298.neorogue.session.instances.InstanceType;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
@@ -436,7 +437,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		}
 		
 		String next = nextInstance instanceof FightInstance ? "-" + ((FightInstance) nextInstance).serializeInstanceData() : "";
-		return "CHANCE:" + set.getId() + eventDataStr + next;
+		return InstanceType.CHANCE.prefix() + set.getId() + eventDataStr + next;
 	}
 
 	private static String getStageIdFromInstanceData(String raw) {

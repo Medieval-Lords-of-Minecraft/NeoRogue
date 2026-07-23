@@ -42,6 +42,9 @@ public class ShrineInstance extends EditInventoryInstance {
 	private Block blockBottom, blockMiddle, blockTop;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
 	private TextDisplay holo;
+	// True when this shrine was restored from a save, so setup() preserves the loaded state (notUsed,
+	// chosen block layout) instead of resetting to a fresh INIT shrine.
+	private boolean deserialized = false;
 	
 	public ShrineInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -50,6 +53,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	
 	public ShrineInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
+		deserialized = true;
 		state = Integer.parseInt(data.substring(data.length() - 1));
 		
 		for (PlayerSessionData pd : party.values()) {
@@ -67,7 +71,9 @@ public class ShrineInstance extends EditInventoryInstance {
 		blockTop = blockMiddle.getRelative(BlockFace.UP);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
-			notUsed.add(p.getUniqueId());
+			// A fresh shrine starts with everyone yet to use it; a deserialized shrine already has its
+			// notUsed set restored from the save, so don't clobber it here.
+			if (!deserialized) notUsed.add(p.getUniqueId());
 			teleportRandomly(p);
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
@@ -76,9 +82,21 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
-		// Setup hologram
-		Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));
-		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+		// Restore the block layout + hologram for the current state. A fresh (or INIT) shrine shows the
+		// emerald blocks from the schematic; a shrine saved mid-upgrade shows the anvil, and one saved
+		// mid-rest shows the rest layout (in practice rest sends players straight back to node select,
+		// so a rest-state save is unlikely).
+		if (state == UPGRADE_STATE) {
+			applyUpgradeLayout();
+			holo = createUpgradeHologram();
+		}
+		else if (state == REST_STATE) {
+			applyRestLayout();
+		}
+		else {
+			Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));
+			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+		}
 	}
 
 	@Override
@@ -114,7 +132,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		blockBottom.setType(Material.EMERALD_BLOCK);
 		blockMiddle.setType(Material.EMERALD_BLOCK);
 		blockTop.setType(Material.AIR);
-		holo.remove();
+		if (holo != null) holo.remove();
 	}
 
 	@Override
@@ -172,13 +190,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 		holo.remove();
 		if (rest) {
-			blockBottom.setType(Material.LODESTONE);
-			blockMiddle.setType(Material.DIORITE_WALL);
-			Wall wall = (Wall) blockMiddle.getBlockData();
-			wall.setHeight(BlockFace.EAST, Height.LOW);
-			wall.setHeight(BlockFace.WEST, Height.LOW);
-			blockMiddle.setBlockData(wall);
-			blockTop.setType(Material.SKELETON_SKULL);
+			applyRestLayout();
 			notUsed.clear();
 			
 			for (PlayerSessionData data : s.getParty().values()) {
@@ -189,17 +201,37 @@ public class ShrineInstance extends EditInventoryInstance {
 			returnToNodes();
 		}
 		else {
-			blockBottom.setType(Material.REINFORCED_DEEPSLATE);
-			blockMiddle.setType(Material.ANVIL);
-			Directional anvil = (Directional) blockMiddle.getBlockData();
-			anvil.setFacing(BlockFace.EAST);
-			blockMiddle.setBlockData(anvil);
-			blockTop.setType(Material.WITHER_SKELETON_SKULL);
-
-			Component text = Component.text("Use the anvil!").appendNewline()
-				.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift right click paper!"));
-			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+			applyUpgradeLayout();
+			holo = createUpgradeHologram();
 		}
+	}
+
+	// Sets the shrine blocks to the "upgrade" (anvil) layout. Shared by chooseState() and setup() so a
+	// deserialized upgrade-state shrine shows the anvil instead of the default emerald blocks.
+	private void applyUpgradeLayout() {
+		blockBottom.setType(Material.REINFORCED_DEEPSLATE);
+		blockMiddle.setType(Material.ANVIL);
+		Directional anvil = (Directional) blockMiddle.getBlockData();
+		anvil.setFacing(BlockFace.EAST);
+		blockMiddle.setBlockData(anvil);
+		blockTop.setType(Material.WITHER_SKELETON_SKULL);
+	}
+
+	// Sets the shrine blocks to the "rest" (lodestone/skull) layout. Shared by chooseState() and setup().
+	private void applyRestLayout() {
+		blockBottom.setType(Material.LODESTONE);
+		blockMiddle.setType(Material.DIORITE_WALL);
+		Wall wall = (Wall) blockMiddle.getBlockData();
+		wall.setHeight(BlockFace.EAST, Height.LOW);
+		wall.setHeight(BlockFace.WEST, Height.LOW);
+		blockMiddle.setBlockData(wall);
+		blockTop.setType(Material.SKELETON_SKULL);
+	}
+
+	private TextDisplay createUpgradeHologram() {
+		Component text = Component.text("Use the anvil!").appendNewline()
+			.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift right click paper!"));
+		return NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 	
 	public void useUpgrade(UUID uuid) {
@@ -232,7 +264,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			ent.getValue().setInstanceData(notUsed.contains(ent.getKey()) ? "F" : "T");
 		}
-		return "CAMPFIRE:" + state;
+		return InstanceType.SHRINE.prefix() + state;
 	}
 
 	@Override

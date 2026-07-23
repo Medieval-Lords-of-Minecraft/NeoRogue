@@ -37,18 +37,25 @@ public class UnlockClassInventory extends CoreInventory {
 	private final ArrayList<UnlockNode> nodes;
 	private Player spectator;
 	private PlayerData targetData;
+	// Reopens the inventory the back button should return to. Null falls back to the unlocks menu.
+	private Runnable prevInventory;
 
 	public UnlockClassInventory(Player p, EquipmentClass ec) {
 		this(p, ec, null);
 	}
 
 	public UnlockClassInventory(Player viewer, EquipmentClass ec, PlayerData targetData) {
+		this(viewer, ec, targetData, null);
+	}
+
+	public UnlockClassInventory(Player viewer, EquipmentClass ec, PlayerData targetData, Runnable prevInventory) {
 		super(viewer, Bukkit.createInventory(viewer, 54,
 				Component.text((ec != null ? ec.getDisplay() : "Global") + " Unlocks", NamedTextColor.LIGHT_PURPLE)));
 		this.ec = ec;
 		this.nodes = UnlockRegistry.getNodesForClass(ec);
 		this.targetData = targetData;
 		this.spectator = targetData != null ? viewer : null;
+		this.prevInventory = prevInventory;
 		setupInventory();
 	}
 
@@ -128,7 +135,9 @@ public class UnlockClassInventory extends CoreInventory {
 		int slot = e.getSlot();
 
 		if (slot == BACK) {
-			if (spectator != null) {
+			if (prevInventory != null) {
+				prevInventory.run();
+			} else if (spectator != null) {
 				new UnlocksMenuInventory(spectator, targetData);
 			} else {
 				new UnlocksMenuInventory(p);

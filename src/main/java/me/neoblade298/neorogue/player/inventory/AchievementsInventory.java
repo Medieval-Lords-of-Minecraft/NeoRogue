@@ -36,16 +36,23 @@ public class AchievementsInventory extends CoreInventory {
 	private List<AchievementProgress> sorted;
 	private Player spectator;
 	private PlayerData targetData;
+	// Reopens the inventory the back button should return to. Null falls back to the achievements menu.
+	private Runnable prevInventory;
 
 	public AchievementsInventory(Player p, PlayerData pd, EquipmentClass ec) {
 		this(p, pd, ec, null);
 	}
 
 	public AchievementsInventory(Player viewer, PlayerData pd, EquipmentClass ec, PlayerData targetData) {
+		this(viewer, pd, ec, targetData, null);
+	}
+
+	public AchievementsInventory(Player viewer, PlayerData pd, EquipmentClass ec, PlayerData targetData, Runnable prevInventory) {
 		super(viewer, Bukkit.createInventory(viewer, 54, buildTitle(pd, ec)));
 		this.sorted = buildSortedList(pd, ec);
 		this.targetData = targetData;
 		this.spectator = targetData != null ? viewer : null;
+		this.prevInventory = prevInventory;
 		setupInventory();
 	}
 
@@ -149,7 +156,9 @@ public class AchievementsInventory extends CoreInventory {
 
 		int slot = e.getRawSlot();
 		if (slot == BACK) {
-			if (spectator != null) {
+			if (prevInventory != null) {
+				prevInventory.run();
+			} else if (spectator != null) {
 				new AchievementsMenuInventory(spectator, targetData);
 			} else {
 				new AchievementsMenuInventory(p);

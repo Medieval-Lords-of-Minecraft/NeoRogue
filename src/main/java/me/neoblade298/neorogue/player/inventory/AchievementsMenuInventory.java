@@ -26,18 +26,30 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class AchievementsMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
 	private PlayerData targetData;
+	// Reopens the inventory the back button should return to. Null falls back to the main menu.
+	private Runnable prevInventory;
 
 	public AchievementsMenuInventory(Player p) {
-		super(p, Bukkit.createInventory(p, 27, Component.text("Achievements", NamedTextColor.AQUA)));
-		setupInventory();
+		this(p, null, null);
 	}
 
 	// No different besides inventory title
 	public AchievementsMenuInventory(Player spectator, PlayerData target) {
-		super(spectator, Bukkit.createInventory(spectator, 27,
-				Component.text(target.getDisplay() + "'s Achievements", NamedTextColor.AQUA)));
+		this(spectator, target, null);
+	}
+
+	// Spectator view with a custom back target.
+	public AchievementsMenuInventory(Player viewer, PlayerData target, Runnable prevInventory) {
+		super(viewer, Bukkit.createInventory(viewer, 27, buildTitle(target)));
 		this.targetData = target;
+		this.prevInventory = prevInventory;
 		setupInventory();
+	}
+
+	private static Component buildTitle(PlayerData target) {
+		return target != null
+				? Component.text(target.getDisplay() + "'s Achievements", NamedTextColor.AQUA)
+				: Component.text("Achievements", NamedTextColor.AQUA);
 	}
 
 	private void setupInventory() {
@@ -83,24 +95,27 @@ public class AchievementsMenuInventory extends CoreInventory {
 		PlayerData pd = targetData != null ? targetData : PlayerManager.getPlayerData(p.getUniqueId());
 		if (pd == null) return;
 
+		// Reopens this menu (preserving spectator context and back target) for the leaf's back button.
+		Runnable back = () -> new AchievementsMenuInventory(p, targetData, prevInventory);
 		switch (e.getSlot()) {
 		case WARRIOR:
-			new AchievementsInventory(p, pd, EquipmentClass.WARRIOR, targetData);
+			new AchievementsInventory(p, pd, EquipmentClass.WARRIOR, targetData, back);
 			break;
 		case THIEF:
-			new AchievementsInventory(p, pd, EquipmentClass.THIEF, targetData);
+			new AchievementsInventory(p, pd, EquipmentClass.THIEF, targetData, back);
 			break;
 		case ARCHER:
-			new AchievementsInventory(p, pd, EquipmentClass.ARCHER, targetData);
+			new AchievementsInventory(p, pd, EquipmentClass.ARCHER, targetData, back);
 			break;
 		case MAGE:
-			new AchievementsInventory(p, pd, EquipmentClass.MAGE, targetData);
+			new AchievementsInventory(p, pd, EquipmentClass.MAGE, targetData, back);
 			break;
 		case GLOBAL:
-			new AchievementsInventory(p, pd, null, targetData);
+			new AchievementsInventory(p, pd, null, targetData, back);
 			break;
 		case BACK:
-			new MainMenuInventory(p);
+			if (prevInventory != null) prevInventory.run();
+			else new MainMenuInventory(p);
 			break;
 		}
 	}

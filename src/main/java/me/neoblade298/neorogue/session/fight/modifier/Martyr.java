@@ -21,7 +21,7 @@ import net.kyori.adventure.text.Component;
 public class Martyr extends MobModifier {
 	private static final double RADIUS = 4.0;
 	private static final double DAMAGE = 2;
-	private static final long WINDUP = 10L;
+	private static final long WINDUP = 20L;
 	private static final ParticleContainer explosion = new ParticleContainer(Particle.EXPLOSION).count(1);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_GENERIC_EXPLODE);
 	private static final SoundContainer windup = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);

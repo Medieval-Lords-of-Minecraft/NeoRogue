@@ -16,12 +16,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.TriState;
@@ -146,24 +143,12 @@ public abstract class Instance {
 	}
 
 	public static Instance deserialize(Session s, String data, HashMap<UUID, PlayerSessionData> party) throws SQLException {
-		
-		if (data.startsWith("SHRINE")) {
-			return new ShrineInstance(s, data, party);
+		InstanceType type = InstanceType.fromData(data);
+		if (type == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Cannot deserialize instance, unknown data prefix: " + data);
+			return null;
 		}
-		else if (data.startsWith("NODESELECT")) {
-			return NodeSelectInstance.create(s);
-		}
-		else if (data.startsWith("REWARD")) {
-			String type = data.substring(data.indexOf(":") + 1);
-			return new RewardInstance(s, party, NodeType.valueOf(type), false); // boolean is literally just to differentiate constructors
-		}
-		else if (data.startsWith("SHOP")) {
-			return new ShopInstance(s, party);
-		}
-		else if (data.startsWith("CHANCE")) {
-			return new ChanceInstance(s, data, party);
-		}
-		return null;
+		return type.deserialize(s, data, party);
 	}
 
 	public ArrayList<String> getPlayerLines() {

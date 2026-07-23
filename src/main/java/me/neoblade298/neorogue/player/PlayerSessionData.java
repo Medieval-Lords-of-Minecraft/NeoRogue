@@ -1345,6 +1345,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("statDeaths", sessionStats.getDeaths())
 					.addValue("statStatusesApplied", sessionStats.getStatusesApplied())
 					.addValue("statDmgHealthRegionStart", sessionStats.getDamageTakenHealthAtRegionStart())
+					.addValue("statExpEarned", sessionStats.getExpEarned())
 					.addValue("runExpBoostMultiplier", runExpBoostMultiplier);
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();

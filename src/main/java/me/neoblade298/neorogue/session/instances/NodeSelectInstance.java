@@ -228,7 +228,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
-		return "NODESELECT";
+		return InstanceType.NODESELECT.key();
 	}
 
 	@Override

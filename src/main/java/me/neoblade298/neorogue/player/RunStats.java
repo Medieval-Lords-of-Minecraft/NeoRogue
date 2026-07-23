@@ -28,13 +28,15 @@ public class RunStats {
 		public final EquipmentClass playerClass;
 		public final int notoriety;
 		public final int partySize;
+		public final int exp;
 		public final boolean won;
 
-		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, boolean won) {
+		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, boolean won) {
 			this.ts = ts;
 			this.playerClass = playerClass;
 			this.notoriety = notoriety;
 			this.partySize = partySize;
+			this.exp = exp;
 			this.won = won;
 		}
 	}

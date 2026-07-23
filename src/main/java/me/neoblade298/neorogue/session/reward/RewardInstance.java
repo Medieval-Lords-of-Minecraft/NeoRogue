@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
+import me.neoblade298.neorogue.session.instances.InstanceType;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
@@ -233,7 +234,7 @@ public class RewardInstance extends EditInventoryInstance {
 			PlayerSessionData data = party.get(ent.getKey());
 			data.setInstanceData(serialized);
 		}
-		return "REWARD:" + previous.name();
+		return InstanceType.REWARD.prefix() + previous.name();
 	}
 
 	@Override

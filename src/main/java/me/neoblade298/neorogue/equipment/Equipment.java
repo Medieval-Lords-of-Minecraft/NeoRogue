@@ -1296,9 +1296,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 	// they own none (or data is null), it's identical to getItem() and shows no reforge line.
 	public ItemStack getChoiceItem(PlayerSessionData data) {
 		List<Equipment> owned = getOwnedReforgeOptions(data);
-		if (owned.isEmpty())
+		if (owned.isEmpty()) {
+			// No owned reforge partners, but the item can still be reforged — show a generic "Reforgeable" line.
+			if (!reforgeOptions.isEmpty())
+				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true);
 			return item.clone();
-		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned);
+		}
+		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, false);
 	}
 
 	// Subset of this equipment's reforge partners that the player currently owns anywhere in their
@@ -1424,12 +1428,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.itemLoreLine = loreLine;
 		// The cached default item never shows reforge options (null reforge list). Choice surfaces call
 		// getChoiceItem(...), which rebuilds with the player's inventory-relevant reforge partners.
-		return buildItemStack(mat, preLoreLine, loreLine, null);
+		return buildItemStack(mat, preLoreLine, loreLine, null, false);
 	}
 
 	// Builds the tooltip item. reforgeToShow controls the "Reforgeable with:" line: null/empty hides it
-	// entirely, otherwise only the listed equipment is shown.
-	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow) {
+	// entirely, otherwise only the listed equipment is shown. When reforgeToShow is empty but
+	// showGenericReforgeable is true, a plain "Reforgeable" line is shown instead.
+	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow, boolean showGenericReforgeable) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
@@ -1483,6 +1488,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 				firstReforge = false;
 			}
 			loreItalicized.add(reforgeLine);
+		} else if (showGenericReforgeable) {
+			loreItalicized.add(Component.text("Reforgeable", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
 		}
 		// Bind lore is injected at this index — below the properties (incl. wrapped lines), preLore, the
 		// cursed note, and the "Reforgeable with" line — so it always sits above the description. Stored on

@@ -24,7 +24,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 public class Discharge extends Equipment implements Power {
 	private static final String ID = "Discharge";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);;
-	private SessionEquipment sessionEq;
 	private int intel, elec;
 	
 	public Discharge(boolean isUpgraded) {
@@ -40,7 +39,6 @@ public class Discharge extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		this.sessionEq = sessionEq;
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
@@ -51,7 +49,7 @@ public class Discharge extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
 			Player p2 = data.getPlayer();
 			am.addCount(1);

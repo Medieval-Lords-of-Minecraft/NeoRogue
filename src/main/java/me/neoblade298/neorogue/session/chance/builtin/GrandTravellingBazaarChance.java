@@ -46,7 +46,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		ChanceChoice tradeArtifact = new ChanceChoice(Material.ENDER_EYE, "Trade an artifact",
 				GrandTravellingBazaarChance::desc1,
 				"You have no artifacts to offer!",
-				(s, inst, data) -> getValue(data, "c1") != null,
+				(s, inst, data) -> getValue(data, "c1") != null && getValue(data, "r1") != null,
 				(s, inst, data) -> {
 					String c1 = getValue(data, "c1");
 					String r1 = getValue(data, "r1");
@@ -68,7 +68,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		ChanceChoice buyWithGold = new ChanceChoice(Material.GOLD_INGOT, "Buy with " + GOLD_COST + " gold",
 				GrandTravellingBazaarChance::desc2,
 				"You don't have " + GOLD_COST + " coins!",
-				(s, inst, data) -> data.hasCoins(GOLD_COST),
+				(s, inst, data) -> data.hasCoins(GOLD_COST) && getValue(data, "r2") != null,
 				(s, inst, data) -> {
 					String r2 = getValue(data, "r2");
 					Artifact reward = (Artifact) Equipment.get(r2, false);
@@ -85,7 +85,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		ChanceChoice tradeEquipment = new ChanceChoice(Material.IRON_SWORD, "Trade equipment",
 				GrandTravellingBazaarChance::desc3,
 				"You have no equipped or hotbar items to offer!",
-				(s, inst, data) -> getValue(data, "c3") != null,
+				(s, inst, data) -> getValue(data, "c3") != null && getValue(data, "r3") != null,
 				(s, inst, data) -> {
 					String c3 = getValue(data, "c3");
 					String r3 = getValue(data, "r3");
@@ -144,13 +144,13 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		for (PlayerSessionData data : s.getParty().values()) {
 			HashMap<String, String> values = parseData(data);
 
-			// Roll 3 independent reward artifacts (one per choice, duplicates allowed)
-			DropTableSet<Artifact> pool1 = Equipment.copyArtifactsDropSet(data.getPlayerClass(), EquipmentClass.CLASSLESS);
-			DropTableSet<Artifact> pool2 = Equipment.copyArtifactsDropSet(data.getPlayerClass(), EquipmentClass.CLASSLESS);
-			DropTableSet<Artifact> pool3 = Equipment.copyArtifactsDropSet(data.getPlayerClass(), EquipmentClass.CLASSLESS);
-			values.put("r1", Equipment.getArtifact(pool1, s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0).getId());
-			values.put("r2", Equipment.getArtifact(pool2, s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0).getId());
-			values.put("r3", Equipment.getArtifact(pool3, s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0).getId());
+			// Roll 3 independent reward artifacts (one per choice, duplicates allowed).
+			// Draw from the player's personal artifact droptable so artifacts they already
+			// own (non-stackable) are never offered as a reward.
+			DropTableSet<Artifact> pool = data.getArtifactDroptable();
+			putReward(values, "r1", pool, s, data);
+			putReward(values, "r2", pool, s, data);
+			putReward(values, "r3", pool, s, data);
 
 			// Choice 1 cost: pick a random non-gem artifact the player currently has
 			ArrayList<ArtifactInstance> ownedNonGem = new ArrayList<ArtifactInstance>();
@@ -186,6 +186,16 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 
 			data.setInstanceData(INIT_ID + "::" + serializeData(values));
 		}
+	}
+
+	// Rolls a single reward artifact from the player's personal droptable (which already
+	// excludes owned non-stackable artifacts). Removes the key if no artifact is available.
+	private static void putReward(HashMap<String, String> values, String key, DropTableSet<Artifact> pool,
+			Session s, PlayerSessionData data) {
+		ArrayList<Artifact> rolled = Equipment.getArtifact(pool, s.getBaseDropValue(), 1,
+				data.getPlayerClass(), EquipmentClass.CLASSLESS);
+		if (rolled.isEmpty()) values.remove(key);
+		else values.put(key, rolled.get(0).getId());
 	}
 
 	private static List<TextComponent> desc1(Session s, ChanceInstance inst, PlayerSessionData data) {

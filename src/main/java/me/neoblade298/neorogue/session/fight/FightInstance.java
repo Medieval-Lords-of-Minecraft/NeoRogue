@@ -517,6 +517,7 @@ public abstract class FightInstance extends Instance {
 		isActive = false;
 		fightWon = true;
 
+		s.setBusy(true);
 		broadcastStatistics();
 		s.launchFireworks();
 		cleanupHelper(false);
@@ -527,6 +528,7 @@ public abstract class FightInstance extends Instance {
 			@Override
 			public void run() {
 				s.setInstance(next);
+				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 	}

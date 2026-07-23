@@ -1121,6 +1121,7 @@ public class Session {
 			EquipmentClass ec = entry.getValue().getPlayerClass();
 			int playerXp = (int) Math.round(finalXp * entry.getValue().getRunExpBoostMultiplier());
 			pdata.addExp(ec, playerXp);
+			entry.getValue().getSessionStats().addExpEarned(playerXp);
 			pdata.saveAchievementsAsync();
 		}
 	}

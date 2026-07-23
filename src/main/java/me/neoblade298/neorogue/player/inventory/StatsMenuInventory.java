@@ -36,6 +36,9 @@ public class StatsMenuInventory extends CoreInventory {
 	private static final EquipmentClass[] CLASSES = { EquipmentClass.WARRIOR, EquipmentClass.THIEF,
 			EquipmentClass.ARCHER, EquipmentClass.MAGE };
 
+	// Reopens the inventory the back button should return to. Null falls back to the main menu.
+	private Runnable prevInventory;
+
 	public StatsMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Statistics", NamedTextColor.DARK_AQUA)));
 		setupInventory(PlayerManager.getPlayerData(p.getUniqueId()));
@@ -43,8 +46,14 @@ public class StatsMenuInventory extends CoreInventory {
 
 	// Spectator view of another player's global statistics.
 	public StatsMenuInventory(Player spectator, PlayerData target) {
+		this(spectator, target, null);
+	}
+
+	// Spectator view of another player's global statistics, with a custom back target.
+	public StatsMenuInventory(Player spectator, PlayerData target, Runnable prevInventory) {
 		super(spectator, Bukkit.createInventory(spectator, 27,
 				Component.text(target.getDisplay() + "'s Statistics", NamedTextColor.DARK_AQUA)));
+		this.prevInventory = prevInventory;
 		setupInventory(target);
 	}
 
@@ -125,7 +134,8 @@ public class StatsMenuInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getSlot() == BACK_SLOT) {
-			new MainMenuInventory(p);
+			if (prevInventory != null) prevInventory.run();
+			else new MainMenuInventory(p);
 		}
 	}
 

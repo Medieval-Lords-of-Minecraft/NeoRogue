@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Dismantle extends Equipment implements Power {
 	private static final String ID = "Dismantle";
-	private SessionEquipment sessionEq;
 	private int stacks;
 	
 	public Dismantle(boolean isUpgraded) {
@@ -39,7 +38,6 @@ public class Dismantle extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		this.sessionEq = sessionEq;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -53,7 +51,7 @@ public class Dismantle extends Equipment implements Power {
 
 	private class DismantleInstance extends PriorityAction {
 		private LivingEntity target;
-		public DismantleInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		public DismantleInstance(PlayerFightData data, int slot, EquipSlot es) {
 			super(ID);
 			action = (pdata, in) -> {
 				DealDamageEvent ev = (DealDamageEvent) in;
@@ -72,7 +70,7 @@ public class Dismantle extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, new DismantleInstance(data, sessionEq, slot, es));
+				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, new DismantleInstance(data, slot, es));
 			}
 		}.runTask(NeoRogue.inst()));
 	}

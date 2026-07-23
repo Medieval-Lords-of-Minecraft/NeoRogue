@@ -296,7 +296,7 @@ public class SessionManager implements Listener {
 		if (snap.getSessionType() == SessionType.TUTORIAL || snap.isEndless()) return;
 		EquipmentClass hostClass = snap.getPartyClasses().get(host);
 		if (hostClass == null) return;
-		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), snap.getPartyClasses().size(), false);
+		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), snap.getPartyClasses().size(), 0, false);
 	}
 
 	@EventHandler

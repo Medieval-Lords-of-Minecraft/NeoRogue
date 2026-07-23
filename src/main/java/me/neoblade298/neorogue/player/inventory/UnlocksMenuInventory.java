@@ -30,18 +30,30 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class UnlocksMenuInventory extends CoreInventory {
 	private static final int BACK = 10, GLOBAL = 11, WARRIOR = 13, THIEF = 14, ARCHER = 15, MAGE = 16;
 	private PlayerData targetData;
+	// Reopens the inventory the back button should return to. Null falls back to the main menu.
+	private Runnable prevInventory;
 
 	public UnlocksMenuInventory(Player p) {
-		super(p, Bukkit.createInventory(p, 27, Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE)));
-		setupInventory();
+		this(p, null, null);
 	}
 
 	// No different besides inventory title
 	public UnlocksMenuInventory(Player spectator, PlayerData target) {
-		super(spectator, Bukkit.createInventory(spectator, 27,
-				Component.text(target.getDisplay() + "'s Unlocks", NamedTextColor.LIGHT_PURPLE)));
+		this(spectator, target, null);
+	}
+
+	// Spectator view with a custom back target.
+	public UnlocksMenuInventory(Player viewer, PlayerData target, Runnable prevInventory) {
+		super(viewer, Bukkit.createInventory(viewer, 27, buildTitle(target)));
 		this.targetData = target;
+		this.prevInventory = prevInventory;
 		setupInventory();
+	}
+
+	private static Component buildTitle(PlayerData target) {
+		return target != null
+				? Component.text(target.getDisplay() + "'s Unlocks", NamedTextColor.LIGHT_PURPLE)
+				: Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE);
 	}
 
 	private void setupInventory() {
@@ -101,24 +113,27 @@ public class UnlocksMenuInventory extends CoreInventory {
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 
+		// Reopens this menu (preserving spectator context and back target) for the leaf's back button.
+		Runnable back = () -> new UnlocksMenuInventory(p, targetData, prevInventory);
 		switch (e.getSlot()) {
 		case WARRIOR:
-			new UnlockClassInventory(p, EquipmentClass.WARRIOR, targetData);
+			new UnlockClassInventory(p, EquipmentClass.WARRIOR, targetData, back);
 			break;
 		case THIEF:
-			new UnlockClassInventory(p, EquipmentClass.THIEF, targetData);
+			new UnlockClassInventory(p, EquipmentClass.THIEF, targetData, back);
 			break;
 		case ARCHER:
-			new UnlockClassInventory(p, EquipmentClass.ARCHER, targetData);
+			new UnlockClassInventory(p, EquipmentClass.ARCHER, targetData, back);
 			break;
 		case MAGE:
-			new UnlockClassInventory(p, EquipmentClass.MAGE, targetData);
+			new UnlockClassInventory(p, EquipmentClass.MAGE, targetData, back);
 			break;
 		case GLOBAL:
-			new UnlockClassInventory(p, null, targetData);
+			new UnlockClassInventory(p, null, targetData, back);
 			break;
 		case BACK:
-			new MainMenuInventory(p);
+			if (prevInventory != null) prevInventory.run();
+			else new MainMenuInventory(p);
 			break;
 		}
 	}

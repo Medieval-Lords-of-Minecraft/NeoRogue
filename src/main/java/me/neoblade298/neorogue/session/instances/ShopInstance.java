@@ -231,7 +231,7 @@ public class ShopInstance extends EditInventoryInstance {
 			String ser = ent.getValue().serialize();
 			data.setInstanceData(ser);
 		}
-		return "SHOP:";
+		return InstanceType.SHOP.prefix();
 	}
 
 	@Override

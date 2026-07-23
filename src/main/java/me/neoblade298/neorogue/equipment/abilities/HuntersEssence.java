@@ -37,7 +37,6 @@ public class HuntersEssence extends Equipment implements Power {
 			.count(30).spread(0.2, 0.2).offsetY(0.5);
 	private static final ParticleContainer collectParticle = new ParticleContainer(Particle.ENCHANTED_HIT)
 			.count(30).spread(0.5, 0.5).offsetY(1);
-	private SessionEquipment sessionEq;
 	
 	private int stamina;
 	private double damageBuff;
@@ -57,7 +56,6 @@ public class HuntersEssence extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		this.sessionEq = sessionEq;
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			if (activatePower(data, slot, es)) return TriggerResult.remove();
 			return TriggerResult.keep();
@@ -136,7 +134,7 @@ public class HuntersEssence extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta count = new ActionMeta();
 		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.KILL, (pdata2, in2) -> {

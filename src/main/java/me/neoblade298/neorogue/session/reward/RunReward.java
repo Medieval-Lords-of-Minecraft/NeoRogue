@@ -14,6 +14,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -341,6 +342,39 @@ public class RunReward {
 						+ "%<gray>): <green>\u00d7" + String.format("%.2f", cargoMultiplier));
 			}
 			Util.msgRaw(p, "<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward));
+		}
+	}
+
+	// Sends a chat breakdown of a player's experience earned this run. Used by the end-of-run "experience" block.
+	public static void sendExpSummary(Player p, Session s) {
+		PlayerSessionData psd = s.getParty().get(p.getUniqueId());
+		Util.msgRaw(p, "<gold><st>                    </st>[ <yellow>Run Experience</yellow> ]<st>                    </st>");
+		if (psd == null) return;
+		if (!s.isCompetitive()) {
+			Util.msgRaw(p, "<gray>This run doesn't award experience.");
+			return;
+		}
+		EquipmentClass ec = psd.getPlayerClass();
+		int earned = psd.getSessionStats().getExpEarned();
+		Util.msgRaw(p, "<gray>Class: <white>" + ec.getDisplay());
+		Util.msgRaw(p, "<gray>Total exp earned: <green>+" + earned);
+
+		int notorietyPct = s.getNotorietyXpBonusPercent();
+		if (notorietyPct > 0) {
+			Util.msgRaw(p, "<gray>  Includes notoriety bonus: <green>+" + notorietyPct + "%");
+		}
+		double boost = psd.getRunExpBoostMultiplier();
+		if (boost > 1.0) {
+			Util.msgRaw(p, "<gray>  Includes exp boost: <green>\u00d7" + String.format("%.2f", boost));
+		}
+
+		PlayerData pd = psd.getData();
+		if (pd != null) {
+			int level = pd.getLevel(ec);
+			int exp = pd.getExp(ec);
+			int req = PlayerData.getXpRequired(level);
+			Util.msgRaw(p, "<gold>" + ec.getDisplay() + " level <yellow>" + level + " <gray>(<white>" + exp
+					+ "<gray>/<white>" + req + "<gray>)");
 		}
 	}
 

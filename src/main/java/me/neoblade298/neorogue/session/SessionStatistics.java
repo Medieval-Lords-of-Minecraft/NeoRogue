@@ -33,6 +33,8 @@ public class SessionStatistics {
 	private int deaths;
 	private int statusesApplied;
 	private double damageTakenHealthAtRegionStart;
+	// Total class experience awarded to this player over the course of the run (post-multipliers).
+	private int expEarned;
 
 	public void aggregate(FightStatistics fs, FightInstance fight) {
 		// Sum this fight's damage dealt into the bucket for its fight type
@@ -86,6 +88,12 @@ public class SessionStatistics {
 		deaths = rs.getInt("statDeaths");
 		statusesApplied = rs.getInt("statStatusesApplied");
 		damageTakenHealthAtRegionStart = rs.getDouble("statDmgHealthRegionStart");
+		expEarned = rs.getInt("statExpEarned");
+	}
+
+	// Accumulates experience awarded this run (used for the end-of-run experience summary).
+	public void addExpEarned(int amount) {
+		if (amount > 0) expEarned += amount;
 	}
 
 	public double getDamageDealt() { return damageDealtStandard + damageDealtMiniboss + damageDealtBoss; }
@@ -101,6 +109,7 @@ public class SessionStatistics {
 	public int getDeaths() { return deaths; }
 	public int getStatusesApplied() { return statusesApplied; }
 	public double getDamageTakenHealthAtRegionStart() { return damageTakenHealthAtRegionStart; }
+	public int getExpEarned() { return expEarned; }
 
 	public void markRegionStart() {
 		damageTakenHealthAtRegionStart = damageTakenHealth;
@@ -119,6 +128,7 @@ public class SessionStatistics {
 		p.sendMessage(statLine("Healing Done", df.format(healingDone)));
 		p.sendMessage(statLine("Damage Barriered", df.format(damageBarriered)));
 		p.sendMessage(statLine("Statuses Applied", String.valueOf(statusesApplied)));
+		p.sendMessage(statLine("Exp Earned", String.valueOf(expEarned)));
 	}
 
 	// Builds the full list of stat lines used as item lore in the session stats inventory UI.
@@ -141,6 +151,7 @@ public class SessionStatistics {
 		lore.add(loreLine("Healing Done", df.format(healingDone), max != null && healingDone > 0 && healingDone >= max.healingDone));
 		lore.add(loreLine("Damage Barriered", df.format(damageBarriered), max != null && damageBarriered > 0 && damageBarriered >= max.damageBarriered));
 		lore.add(loreLine("Statuses Applied", String.valueOf(statusesApplied), max != null && statusesApplied > 0 && statusesApplied >= max.statusesApplied));
+		lore.add(loreLine("Exp Earned", String.valueOf(expEarned), max != null && expEarned > 0 && expEarned >= max.expEarned));
 		return lore;
 	}
 
@@ -161,6 +172,7 @@ public class SessionStatistics {
 			max.healingDone = Math.max(max.healingDone, s.healingDone);
 			max.damageBarriered = Math.max(max.damageBarriered, s.damageBarriered);
 			max.statusesApplied = Math.max(max.statusesApplied, s.statusesApplied);
+			max.expEarned = Math.max(max.expEarned, s.expEarned);
 		}
 		return any ? max : null;
 	}

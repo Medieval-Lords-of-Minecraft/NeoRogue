@@ -53,15 +53,16 @@ public class MainSpectateMenu extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 
 		PlayerData targetData = PlayerManager.getPlayerData(data.getUniqueId());
+		Runnable back = () -> new MainSpectateMenu(data, spectator);
 		switch (e.getSlot()) {
 		case STATS:
-			if (targetData != null) new StatsMenuInventory(spectator, targetData);
+			if (targetData != null) new StatsMenuInventory(spectator, targetData, back);
 			break;
 		case ACHIEVEMENTS:
-			if (targetData != null) new AchievementsMenuInventory(spectator, targetData);
+			if (targetData != null) new AchievementsMenuInventory(spectator, targetData, back);
 			break;
 		case UNLOCKS:
-			if (targetData != null) new UnlocksMenuInventory(spectator, targetData);
+			if (targetData != null) new UnlocksMenuInventory(spectator, targetData, back);
 			break;
 		case BACK:
 			new BukkitRunnable() {

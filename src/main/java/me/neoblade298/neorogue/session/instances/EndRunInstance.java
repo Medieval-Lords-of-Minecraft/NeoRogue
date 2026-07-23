@@ -33,8 +33,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
  */
 public abstract class EndRunInstance extends EditInventoryInstance {
 	protected static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
-	protected TextDisplay holo, leaveHolo, financeHolo;
-	protected Location financeBlock;
+	protected TextDisplay holo, leaveHolo, financeHolo, expHolo;
+	protected Location financeBlock, expBlock;
 
 	public EndRunInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -71,6 +71,11 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		financeBlock = spawn.clone().add(2, -0.5, 0);
 		financeHolo = NeoRogue.createHologram(spawn.clone().add(-3, 2, 0),
 				Component.text("Right click to view finances!", NamedTextColor.GOLD));
+		// Experience emerald block, mirrored across the stats/leave axis from the finances block
+		expBlock = spawn.clone().add(-2, -0.5, 0);
+		expBlock.getBlock().setType(Material.EMERALD_BLOCK);
+		expHolo = NeoRogue.createHologram(spawn.clone().add(3, 2, 0),
+				Component.text("Right click to view experience!", NamedTextColor.GREEN));
 
 		s.broadcast(getResultMessage());
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
@@ -86,7 +91,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		int partySize = s.getParty().size();
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, won);
+			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, psd.getSessionStats().getExpEarned(), won);
 		}
 	}
 
@@ -121,7 +126,9 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		holo.remove();
 		leaveHolo.remove();
 		financeHolo.remove();
+		if (expHolo != null) expHolo.remove();
 		if (financeBlock != null) financeBlock.getBlock().setType(Material.AIR);
+		if (expBlock != null) expBlock.getBlock().setType(Material.AIR);
 	}
 
 	@Override
@@ -146,6 +153,10 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 				RunReward.sendFinancesSummary(p, s, isWin());
 				return;
 			}
+			if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK) {
+				RunReward.sendExpSummary(p, s);
+				return;
+			}
 		}
 		super.handleInteractEvent(e);
 	}
@@ -168,6 +179,11 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 			if (type == Material.GOLD_BLOCK) {
 				e.setCancelled(true);
 				RunReward.sendFinancesSummary(p, s, isWin());
+				return;
+			}
+			if (type == Material.EMERALD_BLOCK) {
+				e.setCancelled(true);
+				RunReward.sendExpSummary(p, s);
 				return;
 			}
 		}

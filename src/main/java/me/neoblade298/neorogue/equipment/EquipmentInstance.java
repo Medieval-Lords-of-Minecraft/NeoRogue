@@ -90,9 +90,20 @@ public class EquipmentInstance extends PriorityAction {
 		init(data, sessionEq, slot, es);
 	}
 
+	// Variant for cases without a per-player SessionEquipment wrapper — e.g. a passive Power updating its
+	// own slot icon. The equipment is used directly and sessionEquipment stays null (no durability lore).
+	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+		super(eq.id);
+		init(data, eq, slot, es);
+	}
+
 	private void init(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
 		this.sessionEquipment = sessionEq;
-		this.eq = sessionEq.getEquipment();
+		init(data, sessionEq.getEquipment(), slot, es);
+	}
+
+	private void init(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+		this.eq = eq;
 		this.data = data;
 		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
 		this.staminaCost = eq.getProperties().get(PropertyType.STAMINA_COST);
