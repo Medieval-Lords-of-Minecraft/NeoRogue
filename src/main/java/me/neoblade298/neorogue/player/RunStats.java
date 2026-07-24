@@ -18,9 +18,27 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 //   - EquipmentClass ec != null  -> only runs played on that class.
 //   - Integer notoriety == null  -> all notoriety levels combined (used for headline winrates).
 //   - Integer notoriety != null  -> only runs at that notoriety level (the "notoriety context").
+//   - PartyMode.COMBINED -> all runs; PartyMode.SOLO -> partySize <= 1; PartyMode.MULTIPLAYER ->
+//     partySize > 1.
 // Winstreaks are always bucketed by a specific notoriety level (a loss at notoriety N only breaks
 // the streak at notoriety N).
 public class RunStats {
+	// Whether to count solo runs, multiplayer runs, or both.
+	public enum PartyMode {
+		COMBINED, SOLO, MULTIPLAYER;
+
+		// Whether a run with the given party size belongs to this mode.
+		public boolean matches(int partySize) {
+			switch (this) {
+			case SOLO:
+				return partySize <= 1;
+			case MULTIPLAYER:
+				return partySize > 1;
+			default:
+				return true;
+			}
+		}
+	}
 	// A single finished run for one player. playerClass is the class actually played (never null).
 	// partySize is the number of players in the party for that run (1 for solo).
 	public static class RunRecord {
@@ -75,13 +93,14 @@ public class RunStats {
 	}
 
 	// wins/total for a scope. ec == null => all classes; notoriety == null => all notoriety levels;
-	// monthOnly restricts to the current calendar month.
-	public Winrate winrate(EquipmentClass ec, Integer notoriety, boolean monthOnly) {
+	// monthOnly restricts to the current calendar month; mode filters by party size.
+	public Winrate winrate(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode) {
 		long monthStart = monthOnly ? startOfMonth() : Long.MIN_VALUE;
 		int wins = 0, total = 0;
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
 			if (notoriety != null && r.notoriety != notoriety) continue;
+			if (!mode.matches(r.partySize)) continue;
 			if (r.ts < monthStart) continue;
 			total++;
 			if (r.won) wins++;
@@ -90,11 +109,12 @@ public class RunStats {
 	}
 
 	// Current (trailing) and best consecutive win run at a single notoriety level for the scope.
-	public Streak streak(EquipmentClass ec, int notoriety) {
+	public Streak streak(EquipmentClass ec, int notoriety, PartyMode mode) {
 		int best = 0, run = 0;
 		for (RunRecord r : records) { // ascending, so run ends holding the trailing win count
 			if (ec != null && r.playerClass != ec) continue;
 			if (r.notoriety != notoriety) continue;
+			if (!mode.matches(r.partySize)) continue;
 			if (r.won) {
 				run++;
 				if (run > best) best = run;
@@ -107,19 +127,20 @@ public class RunStats {
 	}
 
 	// The best win run across every notoriety level in the scope (a scope-level headline number).
-	public int bestStreakAnyNotoriety(EquipmentClass ec) {
+	public int bestStreakAnyNotoriety(EquipmentClass ec, PartyMode mode) {
 		int best = 0;
-		for (int n : playedNotorieties(ec)) {
-			best = Math.max(best, streak(ec, n).best);
+		for (int n : playedNotorieties(ec, mode)) {
+			best = Math.max(best, streak(ec, n, mode).best);
 		}
 		return best;
 	}
 
 	// Notoriety levels the scope has at least one recorded run at, ascending.
-	public TreeSet<Integer> playedNotorieties(EquipmentClass ec) {
+	public TreeSet<Integer> playedNotorieties(EquipmentClass ec, PartyMode mode) {
 		TreeSet<Integer> out = new TreeSet<Integer>();
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
+			if (!mode.matches(r.partySize)) continue;
 			out.add(r.notoriety);
 		}
 		return out;

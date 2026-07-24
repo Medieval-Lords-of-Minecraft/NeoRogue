@@ -89,6 +89,11 @@ public abstract class MobModifier {
 		return registry.get(id);
 	}
 
+	// All registered modifier ids, in registration order. Used for command tab completion.
+	public static ArrayList<String> getIds() {
+		return new ArrayList<String>(registry.keySet());
+	}
+
 	// Picks a random registered modifier valid for the given context, or null if none qualify.
 	// When forBoss is true, only modifiers allowed on bosses/minibosses are considered; otherwise
 	// only modifiers allowed on regular mobs are considered (used by standard fights).

@@ -324,9 +324,14 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public static void debugInitialize(Player host, @Nullable Collection<Player> others, EquipmentClass ec, RegionType regionType) {
+		debugInitialize(host, others, ec, regionType, 0);
+	}
+
+	public static void debugInitialize(Player host, @Nullable Collection<Player> others, EquipmentClass ec, RegionType regionType, int notoriety) {
 		Session s = SessionManager.createSession(host, 1);
 		s.generateRegion(regionType);
 		s.addPlayer(host.getUniqueId(), ec);
+		s.setNotoriety(notoriety);
 		s.setNodesVisited(regionType == RegionType.FROZEN_WASTES ? 32 : regionType == RegionType.HARVEST_FIELDS ? 16 : 0);
 		s.setRegionsCompleted(regionType == RegionType.FROZEN_WASTES ? 2 : regionType == RegionType.HARVEST_FIELDS ? 1 : 0);
 

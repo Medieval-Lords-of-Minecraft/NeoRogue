@@ -95,7 +95,7 @@ public class MainMenuInventory extends CoreInventory {
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.text("  Exp: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-		RunStats.Winrate wr = pd.getRunStats().winrate(null, null, false);
+		RunStats.Winrate wr = pd.getRunStats().winrate(null, null, false, RunStats.PartyMode.COMBINED);
 		if (wr.hasRuns()) {
 			lore.add(Component.text("Winrate: " + pct.format(wr.rate() * 100) + "% (" + wr.wins + "/" + wr.total + ")", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
 		}

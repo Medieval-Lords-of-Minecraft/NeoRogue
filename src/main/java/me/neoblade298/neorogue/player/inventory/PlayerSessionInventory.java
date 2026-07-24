@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -925,34 +924,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private void handleInventoryDrop(InventoryClickEvent e) {
-		ItemStack clicked = e.getCurrentItem();
-		int slot = e.getRawSlot();
-
-		if (clicked.getType().isAir()) return;
-		Inventory iclicked = e.getClickedInventory();
-		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
-		String clickedEquipId = NBT.get(clicked, nbt -> { return nbt.hasTag("equipId") ? nbt.getString("equipId") : null; });
-		int clickedDataSlot = NBT.get(clicked, nbt -> { return nbt.hasTag("dataSlot") ? nbt.getInteger("dataSlot") : 0; });
-
-		if (clickedEquipId == null) {
-			e.setCancelled(true);
-			return;
-		}
-		else {
-			e.setCancelled(true);
-			EquipSlot type = slotTypes.get(slot);
-			if (isBindable(type)) clicked = removeBindLore(clicked);
-			p.getWorld().dropItem(p.getLocation(), clicked).setPickupDelay(40);
-			removeEquipment(type, clickedDataSlot, slot, e.getClickedInventory());
-			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-		}
+		e.setCancelled(true);
 	}
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		handleInventoryClose();
-	}
-	
+	}	
 	public void handleInventoryClose() {
 		clearHighlights();
 		InventoryListener.unregisterPlayerInventory(p);

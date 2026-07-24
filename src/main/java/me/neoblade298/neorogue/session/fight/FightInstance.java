@@ -1553,6 +1553,12 @@ public abstract class FightInstance extends Instance {
 		return modifier;
 	}
 
+	// Forces this fight's mob modifier directly (used by admin test commands to bypass the
+	// notoriety roll)
+	public void setModifier(MobModifier modifier) {
+		this.modifier = modifier;
+	}
+
 	// Decides whether a newly spawned mob should receive this fight's modifier. The base behavior
 	// (miniboss/boss) applies it to every non-normal mob. StandardFightInstance overrides this to
 	// apply it to any mob with a configurable chance.

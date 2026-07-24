@@ -17,9 +17,14 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.chance.builtin.TestChance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
+import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class CmdAdminMiniboss extends Subcommand {
 	private ArrayList<String> minibossSet = new ArrayList<String>();
+	private static final ArrayList<String> notorietyTab = new ArrayList<String>();
+	static {
+		for (int i = 0; i <= 10; i++) notorietyTab.add(String.valueOf(i));
+	}
 
 	public CmdAdminMiniboss(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
@@ -30,7 +35,9 @@ public class CmdAdminMiniboss extends Subcommand {
 		}
 		this.enableTabComplete();
 		args.add(new Arg("miniboss map ID").setTabOptions(minibossSet),
-				new Arg("level", false));
+				new Arg("level", false),
+				new Arg("notoriety (0-10)", false).setTabOptions(notorietyTab),
+				new Arg("mob modifier", false).setTabOptions(MobModifier.getIds()));
 	}
 
 	@Override
@@ -44,7 +51,14 @@ public class CmdAdminMiniboss extends Subcommand {
 		if (args.length > 1) {
 			sess.setNodesVisited(Integer.parseInt(args[1]));
 		}
+		if (args.length > 2) {
+			sess.setNotoriety(Integer.parseInt(args[2]));
+		}
 		MinibossFightInstance inst = new MinibossFightInstance(sess, sess.getParty().keySet(), Map.generate(RegionType.LOW_DISTRICT, 0, MapPiece.get(args[0]), true));
+		if (args.length > 3) {
+			MobModifier mod = MobModifier.get(args[3]);
+			if (mod != null) inst.setModifier(mod);
+		}
 		ChanceInstance ci = new ChanceInstance(sess, new TestChance(inst));
 		ci.setNextInstance(inst);
 		sess.setInstance(ci);

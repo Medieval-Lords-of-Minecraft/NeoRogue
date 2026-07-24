@@ -342,6 +342,16 @@ public class SessionManager implements Listener {
 			e.setCancelled(true);
 			return;
 		}
+		// Keep the spectator hotbar tools (map / party heads / leave barrier) working when clicked in the
+		// spectator's own inventory even while a spectate GUI (a CoreInventory) is open on top. Handled
+		// centrally here, before the CoreInventory early-return below, so each spectate inventory doesn't
+		// have to forward these bottom-inventory clicks itself. Top-inventory (GUI) clicks fall through to
+		// the open CoreInventory's own handler.
+		if (s.isSpectator(uuid) && e.getClickedInventory() == p.getInventory()) {
+			e.setCancelled(true);
+			s.handleSpectatorInventoryClick(p, e);
+			return;
+		}
 		if (InventoryListener.hasOpenCoreInventory(p))
 			return;
 		// Spectators can never edit their own inventory, but their hotbar tools (map / party heads /
