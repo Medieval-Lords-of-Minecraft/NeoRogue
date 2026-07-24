@@ -32,13 +32,13 @@ public class GamblingDenChance extends ChanceSet {
 				DescUtil.white("50%") + " chance to win " + DescUtil.white("100 " + PlayerSessionData.CURRENCY) + ", "
 						+ DescUtil.white("50%") + " chance to win nothing.",
 				"You don't have 50 " + PlayerSessionData.CURRENCY + "!",
-				(s, inst, data) -> data.hasCoins(50),
+				(s, inst, data) -> data.hasCurrency(50),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
-					data.addCoins(-50);
+					data.addCurrency(-50);
 					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>50 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					if (NeoRogue.gen.nextBoolean()) {
-						data.addCoins(100);
+						data.addCurrency(100);
 						s.broadcast("The cards fall in <yellow>" + name + "'s</yellow> favor! They rake in <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.");
 					}
 					else {
@@ -53,10 +53,10 @@ public class GamblingDenChance extends ChanceSet {
 						+ DescUtil.white("200 " + PlayerSessionData.CURRENCY) + ", " + DescUtil.white("25%") + " chance to lose "
 						+ DescUtil.white("10%") + " health, " + DescUtil.white("25%") + " chance to win nothing.",
 				"You don't have 100 " + PlayerSessionData.CURRENCY + "!",
-				(s, inst, data) -> data.hasCoins(100),
+				(s, inst, data) -> data.hasCurrency(100),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
-					data.addCoins(-100);
+					data.addCurrency(-100);
 					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
@@ -64,7 +64,7 @@ public class GamblingDenChance extends ChanceSet {
 						s.broadcast("A dealer slides a curious trinket across the table to <yellow>" + name + "</yellow>. A win!");
 						break;
 					case 1:
-						data.addCoins(200);
+						data.addCurrency(200);
 						s.broadcast("The pot is <yellow>" + name + "'s</yellow>! They scoop up <yellow>200 " + PlayerSessionData.CURRENCY + "</yellow>.");
 						break;
 					case 2:
@@ -85,10 +85,10 @@ public class GamblingDenChance extends ChanceSet {
 						+ DescUtil.white("25%") + " chance to lose a random equipment, " + DescUtil.white("25%")
 						+ " chance to win nothing.",
 				"You don't have 200 " + PlayerSessionData.CURRENCY + "!",
-				(s, inst, data) -> data.hasCoins(200),
+				(s, inst, data) -> data.hasCurrency(200),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
-					data.addCoins(-200);
+					data.addCurrency(-200);
 					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>200 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
@@ -96,7 +96,7 @@ public class GamblingDenChance extends ChanceSet {
 						s.broadcast("Three glittering trinkets are pushed toward <yellow>" + name + "</yellow>. What a haul!");
 						break;
 					case 1:
-						data.addCoins(400);
+						data.addCurrency(400);
 						data.healPercent(1.0);
 						s.broadcast("The table erupts! <yellow>" + name + "</yellow> wins <yellow>400 " + PlayerSessionData.CURRENCY + "</yellow> and a round of healing drinks on the house.");
 						break;

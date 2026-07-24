@@ -1438,6 +1438,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return buildItemStack(mat, preLoreLine, loreLine, null, false, false);
 	}
 
+	// Hook for subclasses to customize the item's ItemMeta (e.g. potion/leather dye color). Called on
+	// every build inside buildItemStack(...), so the customization survives refreshItem()/getChoiceItem()
+	// rebuilds. Do NOT mutate the item's meta directly in setupItem() after createItem(...) — that change
+	// is lost when the item is rebuilt. Default: no-op.
+	protected void modifyMeta(ItemMeta meta) {}
+
 	// Builds the tooltip item. reforgeToShow controls the "Reforgeable with:" line: null/empty hides it
 	// entirely, otherwise only the listed equipment is shown. When reforgeToShow is empty but
 	// showGenericReforgeable is true, a plain "Reforgeable" line is shown instead.
@@ -1533,6 +1539,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		meta.setEnchantmentGlintOverride(isUpgraded);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
+		modifyMeta(meta);
 		item.setItemMeta(meta);
 		// The HIDE_* ItemFlags above are deprecated and no longer suppress these lines in the
 		// data-component tooltip system, so hide the underlying components directly. NOTE: a smithing

@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.Sounds;
@@ -50,8 +51,10 @@ public class MinorFirePotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, "Throw a potion that deals " + GlossaryTag.FIRE.tag(this, damage) + " to all nearby enemies. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(255, 0, 0));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(255, 0, 0));
 	}
 }

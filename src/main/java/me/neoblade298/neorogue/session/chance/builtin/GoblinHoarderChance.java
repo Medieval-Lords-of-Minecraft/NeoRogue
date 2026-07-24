@@ -47,8 +47,8 @@ public class GoblinHoarderChance extends ChanceSet {
 				"The goblin steals up to <yellow>30 " + PlayerSessionData.CURRENCY + "</yellow> on the way out.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					int stolen = Math.min(30, data.getCoins());
-					data.addCoins(-stolen);
+					int stolen = Math.min(30, data.getCurrency());
+					data.addCurrency(-stolen);
 					Util.msgRaw(p, "The goblin grumbles and skulks off — but not before lifting <yellow>" + stolen + " " + PlayerSessionData.CURRENCY + "</yellow> from your pocket.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> refused the goblin, who stole <yellow>" + stolen + " " + PlayerSessionData.CURRENCY + "</yellow> from them.", p);
 					return null;

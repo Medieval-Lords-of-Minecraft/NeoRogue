@@ -82,7 +82,7 @@ public class ShopItem {
 			return; // Purchased item
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = meta.lore();
-		NamedTextColor color = data.hasCoins(price) ? NamedTextColor.GREEN : NamedTextColor.RED;
+		NamedTextColor color = data.hasCurrency(price) ? NamedTextColor.GREEN : NamedTextColor.RED;
 		Component cmp = Component.text(price + " " + PlayerSessionData.CURRENCY, color).decoration(TextDecoration.ITALIC, State.FALSE);
 		if (sale) {
 			cmp = cmp.append(saleCmp);

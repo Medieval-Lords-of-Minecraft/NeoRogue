@@ -1,13 +1,13 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -38,9 +38,10 @@ public class LeatherHood extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.STEALTH.tag(this, 1)
 		+ " [" + DescUtil.val(dur + "s") + "] and " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>10s</white>].");
-		
-		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
-		dye.setColor(Color.BLACK);
-		item.setItemMeta(dye);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((LeatherArmorMeta) meta).setColor(Color.BLACK);
 	}
 }

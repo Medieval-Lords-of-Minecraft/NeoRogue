@@ -1,13 +1,13 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -44,8 +44,10 @@ public class AdaptiveChemvest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Dealing " + GlossaryTag.POISON.tag(this) + " damage grants you " + 
 				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
-		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-		meta.setColor(Color.GREEN);
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((LeatherArmorMeta) meta).setColor(Color.GREEN);
 	}
 }

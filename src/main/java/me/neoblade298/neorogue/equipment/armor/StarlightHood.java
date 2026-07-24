@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -37,9 +38,10 @@ public class StarlightHood extends Equipment {
 		item = createItem(Material.LEATHER_HELMET,
 				"Start fights with " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
 						+ GlossaryTag.SHELL.tag(this, stacks) + " [" + DescUtil.val("20s") + "].");
+	}
 
-		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
-		dye.setColor(Color.BLUE);
-		item.setItemMeta(dye);
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((LeatherArmorMeta) meta).setColor(Color.BLUE);
 	}
 }

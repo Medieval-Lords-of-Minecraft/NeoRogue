@@ -22,14 +22,14 @@ public class CoinsReward implements Reward {
 
 	@Override
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
-		data.addCoins(amount);
+		data.addCurrency(amount);
 		data.getPlayer().playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 		return true;
 	}
 
 	@Override
 	public ItemStack getIcon(PlayerSessionData data) {
-		ItemStack item = new ItemStack(Material.GOLD_NUGGET);
+		ItemStack item = new ItemStack(Material.NETHERITE_SCRAP);
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text(amount + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW));

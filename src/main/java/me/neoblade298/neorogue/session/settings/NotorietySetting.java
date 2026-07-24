@@ -38,7 +38,7 @@ public class NotorietySetting {
     );
 
     public static final double BREAKABLE_CHANCE = 0.2;
-    public static final int BREAKABLE_DURABILITY = 7;
+    public static final int BREAKABLE_DURABILITY = 5;
     public static final NotorietySetting BREAKABLE_EQUIPMENT = new NotorietySetting(
             Component.text("Equipment has a chance to spawn breakable, meaning it will break after ").color(NamedTextColor.GRAY)
                     .append(Component.text(BREAKABLE_DURABILITY).color(NamedTextColor.YELLOW))

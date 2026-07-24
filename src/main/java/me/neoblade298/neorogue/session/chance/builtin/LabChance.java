@@ -40,7 +40,7 @@ public class LabChance extends ChanceSet {
 					for (PlayerSessionData data : s.getParty().values()) {
 						Equipment consumable = Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).getFirst();
 						data.giveEquipment(new SessionEquipment(consumable));
-						data.addCoins(50);
+						data.addCurrency(50);
 					}
 					s.broadcast("You all get to work scouring the place, finding the coolest-looking potion, and picking up spare " + PlayerSessionData.CURRENCY + ".");
 					return null;

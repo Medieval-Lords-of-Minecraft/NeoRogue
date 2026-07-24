@@ -30,7 +30,7 @@ public class GreedChance extends ChanceSet {
 					s.broadcast("<yellow>" + data.getData().getDisplay() + "</yellow><gray> reaches in, losing <red>10 </red>health but "
 							+ "netting everybody <yellow>50 " + PlayerSessionData.CURRENCY + "</yellow>!");
 					for (PlayerSessionData pd : s.getParty().values()) {
-						pd.addCoins(50);
+						pd.addCurrency(50);
 					}
 					return null;
 				});
@@ -49,7 +49,7 @@ public class GreedChance extends ChanceSet {
 					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.setHealth(pd.getHealth() - HEALTH_LOSS);
-						pd.addCoins(50);
+						pd.addCurrency(50);
 					}
 					s.broadcast("Everyone takes a little damage, but they're all <yellow>50 " + PlayerSessionData.CURRENCY + " </yellow>richer.");
 					return null;

@@ -101,7 +101,7 @@ public class ShopInstance extends EditInventoryInstance {
 		if (isHost) {
 			line += "★ ";
 		}
-		line += data.getData().getDisplay() + "§7 - §e" + data.getCoins() + " " + PlayerSessionData.CURRENCY;
+		line += data.getData().getDisplay() + "§7 - §e" + data.getCurrency() + " " + PlayerSessionData.CURRENCY;
 		return line;
 	}
 

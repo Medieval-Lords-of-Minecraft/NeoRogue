@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -54,8 +55,10 @@ public class EnchantedCrystalArrow extends Ammunition {
 		item = createItem(Material.TIPPED_ARROW,
 				"Deals " + DescUtil.val(bonusDamage) + " more damage to enemies with " + GlossaryTag.FROST.tag(this) + 
 				". Applies " + GlossaryTag.FROST.tag(this, frost) + " on hit.");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.AQUA);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.AQUA);
 	}
 }

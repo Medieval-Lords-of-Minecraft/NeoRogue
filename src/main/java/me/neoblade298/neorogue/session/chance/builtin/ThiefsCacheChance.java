@@ -51,7 +51,7 @@ public class ThiefsCacheChance extends ChanceSet {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You pick up <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> and go on your way.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>!", p);
-					data.addCoins(100);
+					data.addCurrency(100);
 					return null;
 				});
 		stage.addChoice(choice);

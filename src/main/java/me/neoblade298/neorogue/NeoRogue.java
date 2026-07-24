@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.commands.CmdAdminAchievement;
 import me.neoblade298.neorogue.commands.CmdAdminBoost;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
-import me.neoblade298.neorogue.commands.CmdAdminCoins;
+import me.neoblade298.neorogue.commands.CmdAdminCurrency;
 import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.commands.CmdAdminDebugMode;
@@ -263,7 +263,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminChance("chance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminMiniboss("miniboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminEquipment("equip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminCoins("coins", "Gives the player coins", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminCurrency("currency", "Gives the player currency", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTrash("trash", "Opens up an admin trash inventory for the player", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminBoss("boss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));

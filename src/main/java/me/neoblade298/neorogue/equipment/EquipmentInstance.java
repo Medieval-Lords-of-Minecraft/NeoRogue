@@ -204,6 +204,12 @@ public class EquipmentInstance extends PriorityAction {
 			p.getInventory().setItem(invSlot, icon);
 			return;
 		}
+		// Schedule the overlay + candle removal from the precise remaining time (nextUsable) rather than
+		// getCooldownSeconds(), which rounds UP to a whole second. Using the rounded value made the candle
+		// linger past the real cooldown by the fractional remainder (up to ~1s) for non-integer cooldowns.
+		// Round the tick count UP and add 1 extra tick so the icon never reverts to "off cooldown" before
+		// the ability actually is (tasks only fire on tick boundaries, which can land before nextUsable).
+		int cooldownTicks = (int) Math.ceil((nextUsable - System.currentTimeMillis()) / 50.0) + 1;
 		Material mat = COOLDOWN_MATERIALS.get(invSlot);
 		if (inv.getItem(invSlot) == null)
 			return;
@@ -211,7 +217,7 @@ public class EquipmentInstance extends PriorityAction {
 		item.setAmount(1);
 		inv.setItem(invSlot, item);
 
-		p.setCooldown(mat, cooldownSeconds * 20);
+		p.setCooldown(mat, cooldownTicks);
 
 		if (cooldownTaskId != null) {
 			cooldownTask.cancel();
@@ -225,7 +231,7 @@ public class EquipmentInstance extends PriorityAction {
 				cooldownTaskId = null;
 				cooldownTask = null;
 			}
-		}.runTaskLater(NeoRogue.inst(), cooldownSeconds * 20);
+		}.runTaskLater(NeoRogue.inst(), cooldownTicks);
 		data.addTask(cooldownTask);
 	}
 

@@ -49,7 +49,7 @@ public class ForgottenWellChance extends ChanceSet {
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You feel a gust of wind, and then spot <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> laying on the ground.");
-					data.addCoins(100);
+					data.addCurrency(100);
 					return null;
 				}));
 				

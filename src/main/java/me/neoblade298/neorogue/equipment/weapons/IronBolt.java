@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -57,8 +58,10 @@ public class IronBolt extends Ammunition {
 		item = createItem(Material.TIPPED_ARROW,
 				"Decreased arrow velocity. Applying negative statuses to enemies hit increases them by " +
 				DescUtil.val((int) (mult * 100) + "%") + ".");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.GRAY);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.GRAY);
 	}
 }

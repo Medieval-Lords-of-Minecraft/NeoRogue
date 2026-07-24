@@ -30,7 +30,7 @@ public class CaravanRobberyChance extends ChanceSet {
 				},
 				(s, inst, data) -> {
 					for (PlayerSessionData pd: s.getParty().values()) {
-						pd.addCoins(300);
+						pd.addCurrency(300);
 						if (pd.getAbilitiesEquipped() + 1 >= pd.getMaxAbilities()) {
 							pd.unequip(EquipmentType.ABILITY);
 						}

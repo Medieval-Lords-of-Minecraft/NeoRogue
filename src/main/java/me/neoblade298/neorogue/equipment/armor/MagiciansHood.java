@@ -3,6 +3,7 @@ import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -51,9 +52,10 @@ public class MagiciansHood extends Equipment {
 		item = createItem(Material.LEATHER_HELMET,
 				"Increase your " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + " for every "
 						+ DescUtil.val(thres) + " max mana you have, up to " + DescUtil.val(MAX_STACKS + "x") + ".");
+	}
 
-		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
-		dye.setColor(Color.BLUE);
-		item.setItemMeta(dye);
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((LeatherArmorMeta) meta).setColor(Color.BLUE);
 	}
 }

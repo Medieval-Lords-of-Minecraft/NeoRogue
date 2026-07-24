@@ -79,7 +79,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private SessionEquipment[] otherBinds = new SessionEquipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>>();
-	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 2, accessorySlots = 2;
+	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, currency = 100, armorSlots = 2, accessorySlots = 2;
 	private String instanceData;
 	private SessionStatistics sessionStats = new SessionStatistics();
 	private DropTableSet<Artifact> personalArtifacts;
@@ -125,7 +125,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.artifacts = ArtifactInstance.deserializeMap(rs.getString("artifacts"));
 		this.maxAbilities = rs.getInt("maxAbilities");
 		this.maxStorage = rs.getInt("maxStorage");
-		this.coins = rs.getInt("coins");
+		this.currency = rs.getInt("coins");
 		this.armorSlots = rs.getInt("armorSlots");
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
@@ -1056,24 +1056,24 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return false;
 	}
 
-	public boolean hasCoins(int amount) {
-		return coins >= amount;
+	public boolean hasCurrency(int amount) {
+		return currency >= amount;
 	}
 
-	public void addCoins(int amount) {
-		coins += amount;
+	public void addCurrency(int amount) {
+		currency += amount;
 		if (amount < 0) {
 			trigger(SessionTrigger.SPEND_COINS, -amount);
 		}
-		coins = Math.max(0, coins);
+		currency = Math.max(0, currency);
 		String symbol = amount > 0 ? "+" : "";
-		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " " + CURRENCY + " </yellow>(<gold>" + coins + "</gold>)");
+		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " " + CURRENCY + " </yellow>(<gold>" + currency + "</gold>)");
 		s.getInstance().updateActionBar();
 		updateBoardLines();
 	}
 
-	public int getCoins() {
-		return coins;
+	public int getCurrency() {
+		return currency;
 	}
 
 	public EquipmentClass getPlayerClass() {
@@ -1194,7 +1194,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		boardLines.add("§cHP§7: §f" + (int) health + "§7 / §f" + (int) maxHealth);
 		boardLines.add("§9MP§7: §f" + (int) maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + (int) maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
-		boardLines.add("§e" + CURRENCY_CAP + "§7: §f" + coins);
+		boardLines.add("§e" + CURRENCY_CAP + "§7: §f" + currency);
 		s.updateSpectatorLines();
 		if (s.getParty().size() <= 1) return;
 		boardLines.add("§8§m-----");
@@ -1339,7 +1339,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("maxStorage", maxStorage)
 					.addValue("armorSlots", armorSlots)
 					.addValue("accessorySlots", accessorySlots)
-					.addValue("coins", coins)
+					.addValue("coins", currency)
 					.addValue("instanceData", instanceData)
 					.addValue("statDamageDealt", sessionStats.getDamageDealt())
 					.addValue("statDamageDealtStandard", sessionStats.getDamageDealtStandard())
@@ -1453,7 +1453,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return ec.name() + "," + getSerializableHealth() + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
 			SessionEquipment.serialize(hotbar) + "," + SessionEquipment.serialize(armors) + "," + SessionEquipment.serialize(offhand) + "," +
 			SessionEquipment.serialize(accessories) + "," + SessionEquipment.serialize(storage) + "," + SessionEquipment.serialize(otherBinds) + "," +
-			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + armorSlots + "," + accessorySlots + "," + coins;
+			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + armorSlots + "," + accessorySlots + "," + currency;
 	}
 
 	public void deserialize(String str) throws Exception {
@@ -1477,7 +1477,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		maxStorage = Integer.parseInt(arr[i++]);
 		armorSlots = Integer.parseInt(arr[i++]);
 		accessorySlots = Integer.parseInt(arr[i++]);
-		coins = Integer.parseInt(arr[i++]);
+		currency = Integer.parseInt(arr[i++]);
 
 		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
 		getPlayer().setHealth(health);

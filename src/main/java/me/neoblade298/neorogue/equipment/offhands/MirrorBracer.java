@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -8,6 +6,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -42,6 +41,6 @@ public class MirrorBracer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER, GlossaryTag.PASSIVE.tag(this) + ". Start fights with " + GlossaryTag.REFLECT.tag(this, reflect)
-				+ ". " + "Also reduces magic damage taken by " + DescUtil.val(mr) + ".");
+				+ ". " + "Also reduces " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(mr) + ".");
 	}
 }

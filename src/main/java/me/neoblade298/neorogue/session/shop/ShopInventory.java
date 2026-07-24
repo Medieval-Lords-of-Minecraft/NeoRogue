@@ -73,7 +73,7 @@ public class ShopInventory extends CoreInventory {
 	private void setupInventory(PlayerSessionData data) {
 		ItemStack[] contents = inv.getContents();
 		contents[GOLD_ICON] = CoreInventory.createButton(
-				Material.GOLD_INGOT, Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
+				Material.GOLD_INGOT, Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 		);
 		contents[SELL_ICON] = CoreInventory.createButton(
 				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
@@ -196,12 +196,12 @@ public class ShopInventory extends CoreInventory {
 				return;
 			}
 			
-			if (!data.hasCoins(price)) {
-				Util.displayError(p, "You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (price - data.getCoins()) + " more.");
+			if (!data.hasCurrency(price)) {
+				Util.displayError(p, "You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (price - data.getCurrency()) + " more.");
 				return;
 			}
 			shopItem.setPurchased(true);
-			data.addCoins(-price);
+			data.addCurrency(-price);
 			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
 					shopItem.getSessionEquipment(),
@@ -219,7 +219,7 @@ public class ShopInventory extends CoreInventory {
 			updateAll(contents);
 			contents[GOLD_ICON] = CoreInventory.createButton(
 					Material.GOLD_INGOT,
-					Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
+					Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 			);
 			inv.setContents(contents);
 		}
@@ -230,7 +230,7 @@ public class ShopInventory extends CoreInventory {
 						GOLD_ICON,
 						CoreInventory.createButton(
 								Material.GOLD_INGOT,
-								Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
+								Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 						)
 				);
 				data.getSession().getInstance().updateBoardLines();
@@ -245,22 +245,22 @@ public class ShopInventory extends CoreInventory {
 					return;
 				}
 
-				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
+				if (!data.hasCurrency(REMOVE_CURSE_PRICE)) {
 					Util.displayError(
 							p,
-							"You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more."
+							"You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (REMOVE_CURSE_PRICE - data.getCurrency()) + " more."
 					);
 					return;
 				}
 	
-				data.addCoins(-REMOVE_CURSE_PRICE);
+				data.addCurrency(-REMOVE_CURSE_PRICE);
 				Equipment eq = Equipment.get(NBT.get(e.getCursor(), nbt -> { return nbt.getString("equipId"); }), false);
 				if (!eq.isCursed()) {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
 				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_INGOT,
-						Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)));
+						Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)));
 				data.getSession().broadcast(
 						SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
 								.append(eq.getHoverable()).append(Component.text("."))
@@ -337,7 +337,7 @@ public class ShopInventory extends CoreInventory {
 			Util.displayError(p, restriction);
 			return false;
 		}
-		data.addCoins(eq.getType() == EquipmentType.CONSUMABLE ? CONSUMABLE_PRICE : SELL_PRICE);
+		data.addCurrency(eq.getType() == EquipmentType.CONSUMABLE ? CONSUMABLE_PRICE : SELL_PRICE);
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 		p.setItemOnCursor(null);
 		data.getSession().broadcast(

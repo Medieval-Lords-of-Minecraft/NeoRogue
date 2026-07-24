@@ -68,12 +68,12 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		ChanceChoice buyWithGold = new ChanceChoice(Material.GOLD_INGOT, "Buy with " + GOLD_COST + " gold",
 				GrandTravellingBazaarChance::desc2,
 				"You don't have " + GOLD_COST + " " + PlayerSessionData.CURRENCY + "!",
-				(s, inst, data) -> data.hasCoins(GOLD_COST) && getValue(data, "r2") != null,
+				(s, inst, data) -> data.hasCurrency(GOLD_COST) && getValue(data, "r2") != null,
 				(s, inst, data) -> {
 					String r2 = getValue(data, "r2");
 					Artifact reward = (Artifact) Equipment.get(r2, false);
 					Player p = data.getPlayer();
-					data.addCoins(-GOLD_COST);
+					data.addCurrency(-GOLD_COST);
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> bought an artifact from the merchant.", p);
 					data.giveArtifact(reward, 1);
 					return null;
