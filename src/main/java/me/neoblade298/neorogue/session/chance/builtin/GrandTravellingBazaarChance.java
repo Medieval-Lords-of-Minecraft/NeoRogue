@@ -67,7 +67,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		// Choice 2: Trade 150 gold for a reward artifact
 		ChanceChoice buyWithGold = new ChanceChoice(Material.GOLD_INGOT, "Buy with " + GOLD_COST + " gold",
 				GrandTravellingBazaarChance::desc2,
-				"You don't have " + GOLD_COST + " coins!",
+				"You don't have " + GOLD_COST + " " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCoins(GOLD_COST) && getValue(data, "r2") != null,
 				(s, inst, data) -> {
 					String r2 = getValue(data, "r2");
@@ -220,7 +220,7 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 		}
 		Equipment reward = Equipment.get(r2Id, false);
 		return List.of((TextComponent) Component.text("Spend ", NamedTextColor.GRAY)
-				.append(Component.text(GOLD_COST + " coins", NamedTextColor.YELLOW))
+				.append(Component.text(GOLD_COST + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW))
 				.append(Component.text(" for ", NamedTextColor.GRAY))
 				.append(reward.getDisplay())
 				.append(Component.text(".", NamedTextColor.GRAY)));

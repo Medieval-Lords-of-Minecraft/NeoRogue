@@ -35,14 +35,14 @@ public class LabChance extends ChanceSet {
 		stage.addChoice(choice);
 		
 		choice = new ChanceChoice(Material.GOLD_BLOCK, "Loot the place",
-				"Everyone receives a consumable and <white>50</white> coins.",
+				"Everyone receives a consumable and <white>50</white> " + PlayerSessionData.CURRENCY + ".",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
 						Equipment consumable = Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).getFirst();
 						data.giveEquipment(new SessionEquipment(consumable));
 						data.addCoins(50);
 					}
-					s.broadcast("You all get to work scouring the place, finding the coolest-looking potion, and picking up spare coins.");
+					s.broadcast("You all get to work scouring the place, finding the coolest-looking potion, and picking up spare " + PlayerSessionData.CURRENCY + ".");
 					return null;
 				});
 		stage.addChoice(choice);

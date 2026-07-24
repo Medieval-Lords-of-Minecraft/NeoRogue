@@ -98,6 +98,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
+	// Single source of truth for the in-session currency name. Change these to rename the currency everywhere.
+	public static final String CURRENCY = "hexmetal";
+	public static final String CURRENCY_CAP = Character.toUpperCase(CURRENCY.charAt(0)) + CURRENCY.substring(1);
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -1064,7 +1067,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 		coins = Math.max(0, coins);
 		String symbol = amount > 0 ? "+" : "";
-		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
+		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " " + CURRENCY + " </yellow>(<gold>" + coins + "</gold>)");
 		s.getInstance().updateActionBar();
 		updateBoardLines();
 	}
@@ -1118,6 +1121,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public double getHealth() {
 		return health;
+	}
+
+	// Guards against persisting a dead/invalid HP value. A saved session must never restore a player
+	// at <= 0 health, so the serialized value is clamped to a minimum of 1.
+	private double getSerializableHealth() {
+		return Math.max(1, health);
 	}
 	
 	public int getArmorSlots() {
@@ -1185,7 +1194,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		boardLines.add("§cHP§7: §f" + (int) health + "§7 / §f" + (int) maxHealth);
 		boardLines.add("§9MP§7: §f" + (int) maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + (int) maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
-		boardLines.add("§eCoins§7: §f" + coins);
+		boardLines.add("§e" + CURRENCY_CAP + "§7: §f" + coins);
 		s.updateSpectatorLines();
 		if (s.getParty().size() <= 1) return;
 		boardLines.add("§8§m-----");
@@ -1314,7 +1323,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("maxHealth", maxHealth)
 					.addValue("maxMana", maxMana)
 					.addValue("maxStamina", maxStamina)
-					.addValue("health", health)
+					.addValue("health", getSerializableHealth())
 					.addValue("startingMana", startingMana)
 					.addValue("startingStamina", startingStamina)
 					.addValue("manaRegen", manaRegen)
@@ -1441,7 +1450,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// Notably, this isn't used for saving to SQL, only for the admin command
 	public String serialize() {
-		return ec.name() + "," + health + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
+		return ec.name() + "," + getSerializableHealth() + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
 			SessionEquipment.serialize(hotbar) + "," + SessionEquipment.serialize(armors) + "," + SessionEquipment.serialize(offhand) + "," +
 			SessionEquipment.serialize(accessories) + "," + SessionEquipment.serialize(storage) + "," + SessionEquipment.serialize(otherBinds) + "," +
 			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + armorSlots + "," + accessorySlots + "," + coins;

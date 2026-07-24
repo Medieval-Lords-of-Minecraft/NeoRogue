@@ -104,6 +104,9 @@ public class Session {
 	// so analytics rows (chance choices, fights, run outcome) from the same dungeon attempt can be joined.
 	private String runId;
 	private boolean busy;
+	// Set once the session is torn down (endSession or plugin disable). Prevents orphaned delayed
+	// transition runnables (e.g. handleWin's 60-tick setInstance) from resurrecting a dead session.
+	private boolean ended;
 	private String lastMiniboss;
 	private long nextSuggest = 0L;
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
@@ -422,7 +425,8 @@ public class Session {
 	private void saveHealthAfterFightEnd(Connection con, HashMap<UUID, Double> capturedHp) {
 		for (Entry<UUID, Double> ent : capturedHp.entrySet()) {
 			try {
-				double liveHp = ent.getValue();
+				// Never persist a dead/invalid HP value; a saved session must not restore <= 0 health
+				double liveHp = Math.max(1, ent.getValue());
 				double savedHp;
 				try (PreparedStatement sel = con.prepareStatement(
 						"SELECT health FROM neorogue_playersessiondata WHERE host = ? AND slot = ? AND uuid = ?;")) {
@@ -487,6 +491,10 @@ public class Session {
 	public boolean isBusy() {
 		return busy;
 	}
+
+	public boolean isEnded() {
+		return ended;
+	}
 	
 	public void addSpectator(Player p) {
 		MapViewer viewer = new MapViewer(this, p.getUniqueId());
@@ -494,7 +502,7 @@ public class Session {
 		this.spectators.put(p.getUniqueId(), viewer);
 		SessionManager.addToSession(p.getUniqueId(), this);
 		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
-		p.setGameMode(GameMode.ADVENTURE);
+		p.setGameMode(GameMode.SURVIVAL);
 		p.teleport(inst.getSpawn());
 		inst.getSpectatorFlags().applyFlags(p);
 		SessionManager.hidePlayerFromAll(p);
@@ -850,6 +858,11 @@ public class Session {
 			Bukkit.getLogger().severe("[NeoRogue] Attempted to setInstance with null! Ignoring.");
 			return false;
 		}
+		// A delayed transition runnable may fire after the session was ended (e.g. the last player quit
+		// during a win/reward/shop transition). Don't resurrect a torn-down session.
+		if (ended) {
+			return false;
+		}
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
 			if (!canSetInstance(next)) {
@@ -1126,20 +1139,21 @@ public class Session {
 	}
 
 	public double getNotorietyXpMultiplier() {
-		return 1.0 + notoriety * 0.05;
+		return 1.0 + getNotorietyXpBonusPercent() / 100.0;
 	}
 
+	// Notoriety 1-5 each grant +6% exp, notoriety 6-10 each grant +14% exp
 	public int getNotorietyXpBonusPercent() {
-		return notoriety * 5;
+		return 6 * Math.min(notoriety, 5) + 14 * Math.max(0, notoriety - 5);
 	}
 
-	// Each notoriety level grants a 2% bonus to run money earnings
 	public double getNotorietyMoneyMultiplier() {
-		return 1.0 + notoriety * 0.02;
+		return 1.0 + getNotorietyMoneyBonusPercent() / 100.0;
 	}
 
+	// Notoriety 1-5 each grant +3% crowns, notoriety 6-10 each grant +5% crowns
 	public int getNotorietyMoneyBonusPercent() {
-		return notoriety * 2;
+		return 3 * Math.min(notoriety, 5) + 5 * Math.max(0, notoriety - 5);
 	}
 
 	public void awardXp(int baseXp) {
@@ -1275,6 +1289,7 @@ public class Session {
 	}
 	
 	public void cleanup(boolean pluginDisable) {
+		ended = true;
 		inst.unloadChunks();
 		inst.cleanup(pluginDisable);
 

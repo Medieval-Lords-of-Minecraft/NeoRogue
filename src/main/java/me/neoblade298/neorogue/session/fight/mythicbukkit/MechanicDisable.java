@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -50,6 +51,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 
 			// Collect candidates: castable abilities + weapons
 			ArrayList<DisableCandidate> candidates = new ArrayList<>();
+			HashSet<PriorityAction> castableActions = new HashSet<>();
 
 			// Castable abilities from getActiveEquipment
 			for (Map.Entry<String, EquipmentInstance> entry : pdata.getActiveEquipment().entrySet()) {
@@ -69,28 +71,26 @@ public class MechanicDisable implements ITargetedEntitySkill {
 				if (list == null || !list.contains(ei)) continue;
 
 				int invSlot = EquipSlot.convertSlot(es, ei.getSlot());
-				candidates.add(new DisableCandidate(ei, list, invSlot));
+				DisableCandidate c = new DisableCandidate(invSlot);
+				c.add(ei, list);
+				candidates.add(c);
+				castableActions.add(ei);
 			}
 
-			// Weapons from slotBasedTriggers
+			// Weapons from slotBasedTriggers. All actions bound to a single slot belong to the same
+			// weapon (e.g. a basic attack on LEFT_CLICK_HIT and a dash on RIGHT_CLICK), so they must be
+			// disabled together — otherwise disabling one action leaves the weapon's other action usable.
 			for (Map.Entry<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotEntry : pdata.getSlotBasedTriggers().entrySet()) {
 				int slot = slotEntry.getKey();
+				DisableCandidate c = new DisableCandidate(slot);
 				for (Map.Entry<Trigger, ArrayList<PriorityAction>> trigEntry : slotEntry.getValue().entrySet()) {
 					for (PriorityAction pa : trigEntry.getValue()) {
-						if (pa instanceof EquipmentInstance) {
-							// Skip if already added as a castable
-							boolean alreadyAdded = false;
-							for (DisableCandidate c : candidates) {
-								if (c.action == pa) {
-									alreadyAdded = true;
-									break;
-								}
-							}
-							if (alreadyAdded) continue;
-						}
-						candidates.add(new DisableCandidate(pa, trigEntry.getValue(), slot));
+						// Skip if already added as a castable
+						if (castableActions.contains(pa)) continue;
+						c.add(pa, trigEntry.getValue());
 					}
 				}
+				if (!c.isEmpty()) candidates.add(c);
 			}
 
 			if (candidates.isEmpty()) return SkillResult.CONDITION_FAILED;
@@ -98,12 +98,13 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			// Pick a random candidate
 			DisableCandidate chosen = candidates.get(ThreadLocalRandom.current().nextInt(candidates.size()));
 
-			// Remove the specific PriorityAction from its list
-			chosen.list.remove(chosen.action);
-
-			// Suppress icon updates so a finishing cooldown can't override the barrier placeholder
-			if (chosen.action instanceof EquipmentInstance) {
-				((EquipmentInstance) chosen.action).setDisabled(true);
+			// Remove every PriorityAction in the candidate from its list
+			for (int i = 0; i < chosen.actions.size(); i++) {
+				chosen.lists.get(i).remove(chosen.actions.get(i));
+				// Suppress icon updates so a finishing cooldown can't override the barrier placeholder
+				if (chosen.actions.get(i) instanceof EquipmentInstance) {
+					((EquipmentInstance) chosen.actions.get(i)).setDisabled(true);
+				}
 			}
 			// Prevent the player from switching to the disabled slot
 			pdata.setSlotDisabled(chosen.invSlot, true);
@@ -114,13 +115,7 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			p.setCooldown(Material.BARRIER, (int) (seconds * 20));
 
 			// Send disable message
-			Component name;
-			if (chosen.action instanceof EquipmentInstance) {
-				name = ((EquipmentInstance) chosen.action).getEquipment().getHoverable();
-			} else {
-				Equipment eq = Equipment.get(chosen.action.getId(), false);
-				name = eq != null ? eq.getHoverable() : Component.text(chosen.action.getId(), NamedTextColor.RED);
-			}
+			Component name = chosen.getDisplayName();
 			p.sendMessage(Component.text("").append(name).append(Component.text(" was disabled for " + (int) seconds + "s!", NamedTextColor.RED)));
 
 			// Schedule revert
@@ -129,15 +124,21 @@ public class MechanicDisable implements ITargetedEntitySkill {
 			pdata.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
-					finalChosen.list.add(finalChosen.action);
+					boolean hasEquipmentInstance = false;
+					for (int i = 0; i < finalChosen.actions.size(); i++) {
+						finalChosen.lists.get(i).add(finalChosen.actions.get(i));
+						if (finalChosen.actions.get(i) instanceof EquipmentInstance) {
+							EquipmentInstance ei = (EquipmentInstance) finalChosen.actions.get(i);
+							ei.setDisabled(false);
+							ei.updateIcon();
+							hasEquipmentInstance = true;
+						}
+					}
 					pdata.setSlotDisabled(finalChosen.invSlot, false);
-					Player current = pdata.getPlayer();
-					if (finalChosen.action instanceof EquipmentInstance) {
-						EquipmentInstance ei = (EquipmentInstance) finalChosen.action;
-						ei.setDisabled(false);
-						ei.updateIcon();
-					} else {
-						current.getInventory().setItem(finalChosen.invSlot, original);
+					// EquipmentInstances restore their own icon via updateIcon(); a plain (lambda) weapon
+					// slot has no managed icon, so put the saved item back manually.
+					if (!hasEquipmentInstance) {
+						pdata.getPlayer().getInventory().setItem(finalChosen.invSlot, original);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));
@@ -149,15 +150,36 @@ public class MechanicDisable implements ITargetedEntitySkill {
 		}
 	}
 
+	// Represents one disable target. A castable ability holds a single action; a weapon holds every
+	// slot-based action bound to its inventory slot so they're all disabled and restored together.
 	private static class DisableCandidate {
-		final PriorityAction action;
-		final ArrayList<PriorityAction> list;
+		final ArrayList<PriorityAction> actions = new ArrayList<>();
+		final ArrayList<ArrayList<PriorityAction>> lists = new ArrayList<>();
 		final int invSlot;
 
-		DisableCandidate(PriorityAction action, ArrayList<PriorityAction> list, int invSlot) {
-			this.action = action;
-			this.list = list;
+		DisableCandidate(int invSlot) {
 			this.invSlot = invSlot;
+		}
+
+		void add(PriorityAction action, ArrayList<PriorityAction> list) {
+			actions.add(action);
+			lists.add(list);
+		}
+
+		boolean isEmpty() {
+			return actions.isEmpty();
+		}
+
+		// Prefer an EquipmentInstance's display name; fall back to the first action's equipment/id.
+		Component getDisplayName() {
+			for (PriorityAction pa : actions) {
+				if (pa instanceof EquipmentInstance) {
+					return ((EquipmentInstance) pa).getEquipment().getHoverable();
+				}
+			}
+			PriorityAction first = actions.get(0);
+			Equipment eq = Equipment.get(first.getId(), false);
+			return eq != null ? eq.getHoverable() : Component.text(first.getId(), NamedTextColor.RED);
 		}
 	}
 }

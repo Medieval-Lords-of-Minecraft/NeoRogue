@@ -184,7 +184,7 @@ public abstract class Instance {
 	}
 
 	public Component getActionBar(PlayerSessionData data) {
-		return Component.text(data.getCoins() + " coins", NamedTextColor.YELLOW);
+		return Component.text(data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW);
 	}
 
 	protected Component getSpectatorActionBar(MapViewer viewer) {

@@ -42,7 +42,7 @@ public class SpendCoinsAchievement implements Achievement {
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
-		return List.of(Component.text("Spend " + target + " coins at shops.", NamedTextColor.GRAY));
+		return List.of(Component.text("Spend " + target + " " + PlayerSessionData.CURRENCY + " at shops.", NamedTextColor.GRAY));
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.reward.CoinsReward;
 
 public class PotOfGreed extends Artifact {
 	public static final String ID = "PotOfGreed";
-	public static final int GOLD = 40;
+	public static final int GOLD = 25;
 
 	public PotOfGreed() {
 		super(ID, "Pot of Greed", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -60,7 +60,7 @@ public class PotOfGreed extends Artifact {
 			Sounds.success.play(p, p, Audience.ORIGIN);
 			int coins = GOLD * skippedNonCoinRewards;
 			data.addCoins(coins);
-			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.val(coins) + " coins")));
+			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.val(coins) + " " + PlayerSessionData.CURRENCY)));
 			return TriggerResult.keep();
 		});
 	}

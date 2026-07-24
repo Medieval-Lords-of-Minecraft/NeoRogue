@@ -188,7 +188,12 @@ public class Mob implements Comparable<Mob> {
 			mhealth *= NotorietySetting.INCREASE_HEALTH_MULTIPLIER;
 		}
 
-		return Math.round(mhealth);
+		double result = Math.round(mhealth);
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] getMaxHealthScale: mob=" + id
+				+ " baseHealth=" + baseHealth + " lvl=" + lvl + " (sessionLevel=" + s.getLevel() + ")"
+				+ " regionsCompleted=" + s.getRegionsCompleted() + " partySize=" + s.getParty().size()
+				+ " scale=" + scale + " result=" + result);
+		return result;
 	}
 
 	public double getBaseHealth() {
@@ -220,9 +225,9 @@ public class Mob implements Comparable<Mob> {
 
 		// Add 1 to session level to show next node's health if it's next node. If it's a chance, don't
 		Component health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text("" + getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
+				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
 		
-		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.spawnValue, NamedTextColor.YELLOW));
+		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + (int) this.spawnValue, NamedTextColor.YELLOW));
 		lore.add(health.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		lore.add(value.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		if (!resistances.isEmpty()) {

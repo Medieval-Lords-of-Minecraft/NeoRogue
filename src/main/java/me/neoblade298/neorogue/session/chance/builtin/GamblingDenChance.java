@@ -28,36 +28,36 @@ public class GamblingDenChance extends ChanceSet {
 				+ "Inside, shady figures are playing card games and betting chips. They eye you with hostility, asking if you're joining.");
 
 		// Choice 1: Bet 50 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "Bet 50 Coins",
-				DescUtil.white("50%") + " chance to win " + DescUtil.white("100 coins") + ", "
+		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "Bet 50 " + PlayerSessionData.CURRENCY_CAP,
+				DescUtil.white("50%") + " chance to win " + DescUtil.white("100 " + PlayerSessionData.CURRENCY) + ", "
 						+ DescUtil.white("50%") + " chance to win nothing.",
-				"You don't have 50 coins!",
+				"You don't have 50 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCoins(50),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
 					data.addCoins(-50);
-					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>50 coins</yellow> on a card game.");
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>50 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					if (NeoRogue.gen.nextBoolean()) {
 						data.addCoins(100);
-						s.broadcast("The cards fall in <yellow>" + name + "'s</yellow> favor! They rake in <yellow>100 coins</yellow>.");
+						s.broadcast("The cards fall in <yellow>" + name + "'s</yellow> favor! They rake in <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.");
 					}
 					else {
-						s.broadcast("Lady luck isn't with <yellow>" + name + "</yellow> tonight. Their <yellow>50 coins</yellow> are gone.");
+						s.broadcast("Lady luck isn't with <yellow>" + name + "</yellow> tonight. Their <yellow>50 " + PlayerSessionData.CURRENCY + "</yellow> are gone.");
 					}
 					return null;
 				}));
 
 		// Choice 2: Bet 100 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Bet 100 Coins",
+		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Bet 100 " + PlayerSessionData.CURRENCY_CAP,
 				DescUtil.white("25%") + " chance for a random artifact, " + DescUtil.white("25%") + " chance to win "
-						+ DescUtil.white("200 coins") + ", " + DescUtil.white("25%") + " chance to lose "
+						+ DescUtil.white("200 " + PlayerSessionData.CURRENCY) + ", " + DescUtil.white("25%") + " chance to lose "
 						+ DescUtil.white("10%") + " health, " + DescUtil.white("25%") + " chance to win nothing.",
-				"You don't have 100 coins!",
+				"You don't have 100 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCoins(100),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
 					data.addCoins(-100);
-					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>100 coins</yellow> on a card game.");
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
 						giveRandomArtifacts(s, data, 1);
@@ -65,31 +65,31 @@ public class GamblingDenChance extends ChanceSet {
 						break;
 					case 1:
 						data.addCoins(200);
-						s.broadcast("The pot is <yellow>" + name + "'s</yellow>! They scoop up <yellow>200 coins</yellow>.");
+						s.broadcast("The pot is <yellow>" + name + "'s</yellow>! They scoop up <yellow>200 " + PlayerSessionData.CURRENCY + "</yellow>.");
 						break;
 					case 2:
 						loseHealth(data, 0.10);
 						s.broadcast("A sore loser shoves <yellow>" + name + "</yellow> hard against the table. They lose <yellow>10%</yellow> health.");
 						break;
 					default:
-						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>100 coins</yellow> are gone.");
+						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> are gone.");
 						break;
 					}
 					return null;
 				}));
 
 		// Choice 3: Bet 200 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_BLOCK, "Bet 200 Coins",
+		stage.addChoice(new ChanceChoice(Material.GOLD_BLOCK, "Bet 200 " + PlayerSessionData.CURRENCY_CAP,
 				DescUtil.white("25%") + " chance for " + DescUtil.white("3") + " random artifacts, "
-						+ DescUtil.white("25%") + " chance to win " + DescUtil.white("400 coins") + " and fully heal, "
+						+ DescUtil.white("25%") + " chance to win " + DescUtil.white("400 " + PlayerSessionData.CURRENCY) + " and fully heal, "
 						+ DescUtil.white("25%") + " chance to lose a random equipment, " + DescUtil.white("25%")
 						+ " chance to win nothing.",
-				"You don't have 200 coins!",
+				"You don't have 200 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCoins(200),
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();
 					data.addCoins(-200);
-					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>200 coins</yellow> on a card game.");
+					s.broadcast("<yellow>" + name + "</yellow> bets <yellow>200 " + PlayerSessionData.CURRENCY + "</yellow> on a card game.");
 					switch (NeoRogue.gen.nextInt(4)) {
 					case 0:
 						giveRandomArtifacts(s, data, 3);
@@ -98,13 +98,13 @@ public class GamblingDenChance extends ChanceSet {
 					case 1:
 						data.addCoins(400);
 						data.healPercent(1.0);
-						s.broadcast("The table erupts! <yellow>" + name + "</yellow> wins <yellow>400 coins</yellow> and a round of healing drinks on the house.");
+						s.broadcast("The table erupts! <yellow>" + name + "</yellow> wins <yellow>400 " + PlayerSessionData.CURRENCY + "</yellow> and a round of healing drinks on the house.");
 						break;
 					case 2:
 						loseRandomEquipment(s, data);
 						break;
 					default:
-						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>200 coins</yellow> are gone.");
+						s.broadcast("The hand goes nowhere for <yellow>" + name + "</yellow>. Their <yellow>200 " + PlayerSessionData.CURRENCY + "</yellow> are gone.");
 						break;
 					}
 					return null;

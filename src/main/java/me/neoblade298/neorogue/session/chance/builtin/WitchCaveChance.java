@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.artifacts.EverlastingHealth;
 import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -44,12 +45,12 @@ public class WitchCaveChance extends ChanceSet {
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Leave",
-				"Pay " + DescUtil.white(LEAVE_COST + " coins") + " to convince the witch to let you live.",
-				"You don't have " + LEAVE_COST + " coins!",
+				"Pay " + DescUtil.white(LEAVE_COST + " " + PlayerSessionData.CURRENCY) + " to convince the witch to let you live.",
+				"You don't have " + LEAVE_COST + " " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCoins(LEAVE_COST),
 				(s, inst, data) -> {
 					data.addCoins(-LEAVE_COST);
-					Util.msgRaw(data.getPlayer(), "You toss the witch some coins. She waves you off with a chuckle, and you slip back into the cold.");
+					Util.msgRaw(data.getPlayer(), "You toss the witch some " + PlayerSessionData.CURRENCY + ". She waves you off with a chuckle, and you slip back into the cold.");
 					return null;
 				}));
 	}

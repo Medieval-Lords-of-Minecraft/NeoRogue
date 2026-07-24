@@ -124,7 +124,7 @@ public class SessionSettingsInventory extends CoreInventory {
 				.decoration(TextDecoration.ITALIC, State.FALSE)
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(inst.getHostClass()), NamedTextColor.WHITE)));
 		ArrayList<Component> lore = new ArrayList<>();
-		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
+		lore.add(Component.text("Exp Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.text("Crowns Bonus: ", NamedTextColor.GRAY)

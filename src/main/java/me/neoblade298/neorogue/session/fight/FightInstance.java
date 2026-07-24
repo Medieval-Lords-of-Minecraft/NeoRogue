@@ -1624,6 +1624,8 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static ActiveMob spawnScaledMob(Session s, Location loc, MythicMob mythicMob) {
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] spawnScaledMob (INITIAL): mob="
+				+ mythicMob.getInternalName() + " sessionLevel=" + s.getLevel());
 		return scaleMob(
 				s, Mob.get(mythicMob.getInternalName()), mythicMob,
 				mythicMob.spawn(BukkitAdapter.adapt(loc), s.getLevel())
@@ -1633,10 +1635,15 @@ public abstract class FightInstance extends Instance {
 	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {
 		double lvl = s.getLevel();
 		am.setLevel(lvl);
-		if (mythicMob.getHealth() == null)
+		if (mythicMob.getHealth() == null) {
+			if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] scaleMob: mob=" + mob.getId()
+					+ " sessionLevel=" + lvl + " -> no health defined on MythicMob, skipping health override");
 			return am; // Some summoned mobs don't have health
-			
+		}
+
 		double mhealth = mob.getMaxHealthScale(s);
+		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] scaleMob: mob=" + mob.getId()
+				+ " sessionLevel=" + lvl + " appliedHealth=" + mhealth);
 		am.getEntity().setMaxHealth(mhealth);
 		am.getEntity().setHealth(mhealth);
 		am.setDespawnMode(DespawnMode.NEVER);

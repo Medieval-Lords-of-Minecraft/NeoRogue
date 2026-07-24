@@ -7,6 +7,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -44,10 +45,10 @@ public class ForgottenWellChance extends ChanceSet {
 					return null;
 				});
 		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "I wish to become rich.",
-				"Acquire <yellow>100 coins</yellow>.",
+				"Acquire <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You feel a gust of wind, and then spot <yellow>100 coins</yellow> laying on the ground.");
+					Util.msgRaw(p, "You feel a gust of wind, and then spot <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> laying on the ground.");
 					data.addCoins(100);
 					return null;
 				}));

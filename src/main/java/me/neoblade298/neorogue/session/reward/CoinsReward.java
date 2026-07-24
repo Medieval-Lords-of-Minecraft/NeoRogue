@@ -32,7 +32,7 @@ public class CoinsReward implements Reward {
 		ItemStack item = new ItemStack(Material.GOLD_NUGGET);
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text(amount + " coins", NamedTextColor.YELLOW));
+		meta.displayName(Component.text(amount + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW));
 		item.setItemMeta(meta);
 		return item;
 	}

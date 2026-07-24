@@ -73,20 +73,20 @@ public class ShopInventory extends CoreInventory {
 	private void setupInventory(PlayerSessionData data) {
 		ItemStack[] contents = inv.getContents();
 		contents[GOLD_ICON] = CoreInventory.createButton(
-				Material.GOLD_INGOT, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+				Material.GOLD_INGOT, Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 		);
 		contents[SELL_ICON] = CoreInventory.createButton(
 				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
-						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " coins</yellow>." +
-						"\nConsumables sell for <yellow>" + CONSUMABLE_PRICE + " coins</yellow>."
+						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " " + PlayerSessionData.CURRENCY + "</yellow>." +
+						"\nConsumables sell for <yellow>" + CONSUMABLE_PRICE + " " + PlayerSessionData.CURRENCY + "</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
 		contents[PURIFY_ICON] = CoreInventory.createButton(
 				Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
 						"Drag curses here to remove them " + "in exchange for <yellow>" + REMOVE_CURSE_PRICE
-								+ " coins</yellow>."
+								+ " " + PlayerSessionData.CURRENCY + "</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
 		if (data.getSession().getParty().size() > 1)
@@ -197,7 +197,7 @@ public class ShopInventory extends CoreInventory {
 			}
 			
 			if (!data.hasCoins(price)) {
-				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
+				Util.displayError(p, "You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (price - data.getCoins()) + " more.");
 				return;
 			}
 			shopItem.setPurchased(true);
@@ -205,10 +205,10 @@ public class ShopInventory extends CoreInventory {
 			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
 					shopItem.getSessionEquipment(),
-					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
+					SharedUtil.color("You spent <yellow>" + price + " " + PlayerSessionData.CURRENCY + "</yellow> to purchase a(n) "),
 					SharedUtil.color(
 							"<yellow>" + p.getName() + "</yellow> spent <yellow>" + price
-									+ " coins</yellow> to purchase a(n) "
+									+ " " + PlayerSessionData.CURRENCY + "</yellow> to purchase a(n) "
 					)
 			);
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
@@ -219,7 +219,7 @@ public class ShopInventory extends CoreInventory {
 			updateAll(contents);
 			contents[GOLD_ICON] = CoreInventory.createButton(
 					Material.GOLD_INGOT,
-					Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+					Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 			);
 			inv.setContents(contents);
 		}
@@ -230,7 +230,7 @@ public class ShopInventory extends CoreInventory {
 						GOLD_ICON,
 						CoreInventory.createButton(
 								Material.GOLD_INGOT,
-								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+								Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 						)
 				);
 				data.getSession().getInstance().updateBoardLines();
@@ -248,7 +248,7 @@ public class ShopInventory extends CoreInventory {
 				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
 					Util.displayError(
 							p,
-							"You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more."
+							"You don't have enough " + PlayerSessionData.CURRENCY + "! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more."
 					);
 					return;
 				}
@@ -260,7 +260,7 @@ public class ShopInventory extends CoreInventory {
 					return;
 				}
 				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_INGOT,
-						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
+						Component.text("You have " + data.getCoins() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)));
 				data.getSession().broadcast(
 						SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
 								.append(eq.getHoverable()).append(Component.text("."))

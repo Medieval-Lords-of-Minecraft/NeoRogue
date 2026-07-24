@@ -19,7 +19,7 @@ public class CaravanRobberyChance extends ChanceSet {
 			"protect the merchants would undoubtedly be dangerous.");
 
 		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Save the Merchants",
-				"Gain <yellow>300 coins</yellow> but reduce your max abilities by <white>1</white> for 3 fights.",
+				"Gain <yellow>300 " + PlayerSessionData.CURRENCY + "</yellow> but reduce your max abilities by <white>1</white> for 3 fights.",
 				"Someone in your party is already exhausted.",
 				(s, inst, data) -> {
 					String exhaustionId = Exhaustion.get().getId();
@@ -41,7 +41,7 @@ public class CaravanRobberyChance extends ChanceSet {
 						// Shows player the max abilities panes properly
 						pd.setupInventory(); 
 					}
-					s.broadcast("You save the merchants and are rewarded <yellow>300 coins</yellow>, but you feel exhausted.");
+					s.broadcast("You save the merchants and are rewarded <yellow>300 " + PlayerSessionData.CURRENCY + "</yellow>, but you feel exhausted.");
 					return null;
 				}));
 

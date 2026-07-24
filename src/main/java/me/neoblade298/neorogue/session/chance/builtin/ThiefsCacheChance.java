@@ -7,6 +7,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -46,10 +47,10 @@ public class ThiefsCacheChance extends ChanceSet {
 		stage.addChoice(choice);
 		
 		choice = new ChanceChoice(Material.GOLD_NUGGET, "Pick up the gold",
-				"Receive <yellow>100 coins</yellow>.", (s, inst, data) -> {
+				"Receive <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You pick up <yellow>100 coins</yellow> and go on your way.");
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 coins</yellow>!", p);
+					Util.msgRaw(p, "You pick up <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> and go on your way.");
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>!", p);
 					data.addCoins(100);
 					return null;
 				});

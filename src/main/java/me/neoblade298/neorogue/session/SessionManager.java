@@ -812,6 +812,8 @@ public class SessionManager implements Listener {
 				}
 				// Delay 1 tick so MythicMobs finishes applying mob options (health) before we override
 				Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] scaleMob (SUMMON): mob="
+							+ mob.getId() + " spawnReason=" + e.getSpawnReason() + " sessionLevel=" + s.getLevel());
 					FightInstance.scaleMob(s, mob, mythicMob, am);
 				});
 				((FightInstance) s.getInstance()).addSpawnCounter(mob.getSpawnValue());

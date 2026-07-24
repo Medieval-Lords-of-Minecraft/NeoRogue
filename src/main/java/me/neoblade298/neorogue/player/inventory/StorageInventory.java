@@ -84,7 +84,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			contents[sellSlot] = CoreInventory.createButton(
 					Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 					(TextComponent) NeoCore.miniMessage().deserialize(
-							"Drag equipment here to sell them " + "for <yellow>" + ShopInventory.SELL_PRICE + " coins</yellow>."
+							"Drag equipment here to sell them " + "for <yellow>" + ShopInventory.SELL_PRICE + " " + PlayerSessionData.CURRENCY + "</yellow>."
 					), 250, NamedTextColor.GRAY
 			);
 		}

@@ -6,6 +6,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -26,7 +27,7 @@ public class NotorietySetting {
         Component.text("Enemies drop ")
             .color(NamedTextColor.GRAY)
             .append(Component.text("30%").color(NamedTextColor.YELLOW))
-            .append(Component.text(" less coins").color(NamedTextColor.GRAY)),
+            .append(Component.text(" less " + PlayerSessionData.CURRENCY).color(NamedTextColor.GRAY)),
         Component.text("Your caravan is a promising payday for the impoverished.")
     );
 

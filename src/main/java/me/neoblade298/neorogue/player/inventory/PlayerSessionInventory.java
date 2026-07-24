@@ -448,7 +448,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				.append(Component.text(df.format(data.getManaRegen()), NamedTextColor.WHITE));
 		TextComponent sr = Component.text("Stamina Regen: ", NamedTextColor.GOLD)
 				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
-		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
+		TextComponent coins = Component.text(PlayerSessionData.CURRENCY_CAP + ": ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		ItemStack item = CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
 		if (isSpectating) {
@@ -470,7 +470,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				.append(Component.text(notoriety + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE))
 				.decoration(TextDecoration.ITALIC, false));
 		java.util.ArrayList<Component> lore = new java.util.ArrayList<>();
-		lore.add(Component.text("XP Bonus: ", NamedTextColor.GRAY)
+		lore.add(Component.text("Exp Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.text("Money Bonus: ", NamedTextColor.GRAY)

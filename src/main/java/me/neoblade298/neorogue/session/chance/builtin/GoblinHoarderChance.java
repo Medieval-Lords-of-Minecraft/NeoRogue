@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -21,7 +22,7 @@ public class GoblinHoarderChance extends ChanceSet {
 				"A scrawny goblin scrambles out from behind a hay bale, clutching a worn satchel. "
 				+ "\"I need your potions!\" it shrieks, eyes wild with conviction. \"Doomsday is coming — "
 				+ "only I can stop it, but I need the supplies!\" It offers to mend your wounds in exchange. "
-				+ "If you refuse, it begrudgingly lets you pass — but not before swiping a few coins on the way out.");
+				+ "If you refuse, it begrudgingly lets you pass — but not before swiping a few " + PlayerSessionData.CURRENCY + " on the way out.");
 
 		stage.addChoice(new ChanceChoice(Material.GLASS_BOTTLE, "Trade all potions",
 				"Give all potions for a <yellow>+30 HP</yellow> heal.",
@@ -43,13 +44,13 @@ public class GoblinHoarderChance extends ChanceSet {
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.BARRIER, "Refuse",
-				"The goblin steals up to <yellow>30 coins</yellow> on the way out.",
+				"The goblin steals up to <yellow>30 " + PlayerSessionData.CURRENCY + "</yellow> on the way out.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					int stolen = Math.min(30, data.getCoins());
 					data.addCoins(-stolen);
-					Util.msgRaw(p, "The goblin grumbles and skulks off — but not before lifting <yellow>" + stolen + " coins</yellow> from your pocket.");
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> refused the goblin, who stole <yellow>" + stolen + " coins</yellow> from them.", p);
+					Util.msgRaw(p, "The goblin grumbles and skulks off — but not before lifting <yellow>" + stolen + " " + PlayerSessionData.CURRENCY + "</yellow> from your pocket.");
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> refused the goblin, who stole <yellow>" + stolen + " " + PlayerSessionData.CURRENCY + "</yellow> from them.", p);
 					return null;
 				}));
 	}
