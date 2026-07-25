@@ -19,15 +19,32 @@ public class CmdAdminBoost extends Subcommand {
 	public CmdAdminBoost(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		ArrayList<String> typeTab = new ArrayList<String>();
+		typeTab.add("reset");
 		for (ExpBoostType type : ExpBoostType.values()) {
 			typeTab.add(type.name());
 		}
-		args.add(new Arg("type").setTabOptions(typeTab), new Arg("duration"), new Arg("player", false));
+		args.add(new Arg("type").setTabOptions(typeTab), new Arg("duration", false), new Arg("player", false));
 		this.enableTabComplete();
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
+		if (args[0].equalsIgnoreCase("reset")) {
+			Player target = args.length > 1 ? Bukkit.getPlayer(args[1]) : (s instanceof Player ? (Player) s : null);
+			if (target == null) {
+				Util.msgRaw(s, "<red>That player isn't online!");
+				return;
+			}
+			PlayerData tdata = PlayerManager.getPlayerData(target.getUniqueId());
+			if (tdata == null) {
+				Util.msgRaw(s, "<red>That player has no data!");
+				return;
+			}
+			tdata.clearExpBoosts();
+			Util.msgRaw(s, "<green>Cleared all exp boosts from " + target.getName());
+			return;
+		}
+
 		ExpBoostType type;
 		try {
 			type = ExpBoostType.valueOf(args[0].toUpperCase());
@@ -36,6 +53,10 @@ public class CmdAdminBoost extends Subcommand {
 			return;
 		}
 
+		if (args.length < 2) {
+			Util.msgRaw(s, "<red>You must provide a duration!");
+			return;
+		}
 		long duration;
 		try {
 			duration = Long.parseLong(args[1]);

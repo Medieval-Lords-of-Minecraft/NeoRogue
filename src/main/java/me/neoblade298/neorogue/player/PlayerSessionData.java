@@ -1063,7 +1063,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void addCurrency(int amount) {
 		currency += amount;
 		if (amount < 0) {
-			trigger(SessionTrigger.SPEND_COINS, -amount);
+			trigger(SessionTrigger.SPEND_CURRENCY, -amount);
 		}
 		currency = Math.max(0, currency);
 		String symbol = amount > 0 ? "+" : "";

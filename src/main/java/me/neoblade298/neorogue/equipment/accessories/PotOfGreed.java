@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.reward.CoinsReward;
+import me.neoblade298.neorogue.session.reward.CurrencyReward;
 
 public class PotOfGreed extends Artifact {
 	public static final String ID = "PotOfGreed";
@@ -53,7 +53,7 @@ public class PotOfGreed extends Artifact {
 			Player p = data.getPlayer();
 			ClearRewardsEvent ev = (ClearRewardsEvent) in;
 			int skippedNonCoinRewards = (int) ev.getRewards().stream()
-					.filter(reward -> !(reward instanceof CoinsReward))
+					.filter(reward -> !(reward instanceof CurrencyReward))
 					.count();
 			if (skippedNonCoinRewards <= 0) return TriggerResult.keep();
 

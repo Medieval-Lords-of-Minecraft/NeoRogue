@@ -9,14 +9,14 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class CoinsReward implements Reward {
+public class CurrencyReward implements Reward {
 	private int amount;
 	
-	public CoinsReward(int amount) {
+	public CurrencyReward(int amount) {
 		this.amount = amount;
 	}
 	
-	public CoinsReward(String str) {
+	public CurrencyReward(String str) {
 		this.amount = Integer.parseInt(str);
 	}
 

@@ -36,9 +36,8 @@ public class WinInstance extends EndRunInstance {
 		// The final boss has no reward screen (RewardInstance), which is where regions completed is
 		// normally incremented, so bump it here to account for clearing the final region.
 		s.incrementRegionsCompleted();
-		// The final region has no "next region" to pay the caravan reward at, so pay it here (before
-		// payout, matching the prior ordering where the region reward was granted before the win sale).
-		RunReward.awardRegionCompletion(s, s.getRegion().getType());
+		// payout handles the final region's caravan reward (no next region grants it) and sells all
+		// remaining cargo once at full value before awarding the run-completion reward.
 		RunReward.payout(s, true);
 	}
 

@@ -54,6 +54,6 @@ public class CalculatingGaze extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
 				GlossaryTag.PASSIVE.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " at the start of a fight. " +
-				"Increase defense by " + DescUtil.val(def) + " when above " + DescUtil.val(THRES) + " mana.");
+				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + " when above " + DescUtil.val(THRES) + " mana.");
 	}
 }

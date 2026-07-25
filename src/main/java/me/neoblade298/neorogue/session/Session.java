@@ -325,7 +325,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 	Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.ORANGE_WOOL; // Change this when interstitials change to regen them
+		Material versionCheck = Material.GREEN_WOOL; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
@@ -1158,12 +1158,15 @@ public class Session {
 
 	public void awardXp(int baseXp) {
 		if (!isCompetitive()) return;
-		int finalXp = (int) Math.round(baseXp * getRegionXpMultiplier() * getNotorietyXpMultiplier());
+		// Combine multipliers additively rather than multiplicatively. Each multiplier is
+		// of the form (1 + bonus), so the combined bonus is the sum of individual bonuses.
+		double sharedBonus = (getRegionXpMultiplier() - 1.0) + (getNotorietyXpMultiplier() - 1.0);
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
 			if (pdata == null) continue;
 			EquipmentClass ec = entry.getValue().getPlayerClass();
-			int playerXp = (int) Math.round(finalXp * entry.getValue().getRunExpBoostMultiplier());
+			double totalMultiplier = 1.0 + sharedBonus + (entry.getValue().getRunExpBoostMultiplier() - 1.0);
+			int playerXp = (int) Math.round(baseXp * totalMultiplier);
 			pdata.addExp(ec, playerXp);
 			entry.getValue().getSessionStats().addExpEarned(playerXp);
 			pdata.saveAchievementsAsync();

@@ -480,6 +480,12 @@ public class PlayerData {
 		expBoosts.removeIf(ExpBoost::isExpired);
 	}
 
+	// Removes all active boosts and persists the change.
+	public void clearExpBoosts() {
+		expBoosts.clear();
+		saveExpBoostsAsync();
+	}
+
 	// Returns the combined exp multiplier from all currently-active boosts, e.g. 1.30
 	// for a single +30% boost. Additive stacking across boosts.
 	public double getExpBoostMultiplier() {
@@ -1370,6 +1376,18 @@ public class PlayerData {
 	}
 
 	public void resetAll() {
+		resetProgress();
+		resetRunHistory();
+		resetSavedRuns();
+		resetExpBoosts();
+		resetCaravan();
+	}
+
+	// Resets core account progress: unlock nodes, flags, achievements (global + class), and class
+	// progression, then rebuilds the default progression and equipment droptable. Clears the state
+	// directly (not via the add/remove helpers that schedule saves), so it persists the cleared state
+	// immediately; otherwise the reset would only reach the DB on the next logout save.
+	public void resetProgress() {
 		unlockNodes.clear();
 		flags.clear();
 		globalAchievements.clear();
@@ -1378,6 +1396,79 @@ public class PlayerData {
 		initializeDefaultProgression();
 		markEquipmentDroptableDirty();
 		initializeEquipmentDroptable();
+		saveUnlockNodesDebounced();
+		saveFlagsDebounced();
+		saveAchievementsAsync();
+		saveClassProgressionAsync();
+	}
+
+	// Clears this player's finished-run history (backing winrate/winstreak stats) in memory and in the DB.
+	// The run history is append-only and reloaded from the DB on login, so an in-memory clear alone would
+	// be undone on the next login; the DB rows must be deleted for the reset to stick.
+	public void resetRunHistory() {
+		runResults.clear();
+		final String uuidStr = uuid.toString();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement("DELETE FROM neorogue_run_results WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to reset run history for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// Deletes every saved in-progress run for this player (snapshots + all session tables) without
+	// recording losses. SessionManager owns the session DB tables, so the delete is delegated there.
+	public void resetSavedRuns() {
+		SessionManager.deleteAllSaves(uuid);
+	}
+
+	// Clears the in-memory saved-run snapshot cache. The DB deletion is handled by SessionManager.
+	public void clearSnapshots() {
+		snapshots.clear();
+	}
+
+	// Removes all active exp boosts in memory and in the DB.
+	public void resetExpBoosts() {
+		expBoosts.clear();
+		saveExpBoostsAsync();
+	}
+
+	// Empties the main and lost cargo stashes. Fleet holds are left untouched (see resetFleet).
+	public void resetCargo() {
+		cargo.clear();
+		lostCargo.clear();
+		saveCargoAsync();
+	}
+
+	// Empties every fleet hold and discards any uncollected pending fleet-sale proceeds.
+	public void resetFleet() {
+		for (FleetHold hold : fleetHolds) hold.clear();
+		pendingFleetSales.clear();
+		saveCargoAsync();
+	}
+
+	// Full caravan wipe: removes purchased upgrades and owned packages, empties all cargo and fleet
+	// holds, discards pending fleet sales, then recomputes the derived caravan scalars (base reward,
+	// sell multiplier, fleet configuration) from the now-empty upgrade set back to their defaults.
+	public void resetCaravan() {
+		flags.removeIf(f -> f.startsWith(FLAG_PREFIX_UPGRADE) || f.startsWith(FLAG_PREFIX_PACKAGE));
+		flags.remove(FLAG_CARGO_ACCESS);
+		flags.remove(FLAG_CARGO_INSURANCE);
+		cargo.clear();
+		lostCargo.clear();
+		for (FleetHold hold : fleetHolds) hold.clear();
+		pendingFleetSales.clear();
+		recomputeCaravanState();
+		saveFlagsDebounced();
+		saveCargoAsync();
 	}
 
 	public AchievementProgress getAchievementProgress(String id) {

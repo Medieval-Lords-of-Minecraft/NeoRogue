@@ -32,7 +32,7 @@ public class RewardBuilder {
 		if (NotorietySetting.REDUCE_COINS.isActive(s)) {
 			coins = (int) (coins * NotorietySetting.REDUCE_COINS_MULTIPLIER);
 		}
-		rewards.add(new CoinsReward(coins));
+		rewards.add(new CurrencyReward(coins));
 		return this;
 	}
 

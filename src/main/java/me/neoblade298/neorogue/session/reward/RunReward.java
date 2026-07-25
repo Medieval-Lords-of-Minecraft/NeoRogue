@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -176,6 +177,8 @@ public class RunReward {
 			Player p = psd.getPlayer();
 			if (p == null) continue;
 
+			if (result != null) PlayerSessionInventory.updateCargoIcon(psd);
+
 			boolean hasReward = regionReward > 0;
 			if (result != null) {
 				double mult = result.value > 0 ? cargoReward / result.value : 1.0;
@@ -196,12 +199,34 @@ public class RunReward {
 		}
 	}
 
+	// On a victory, pays each party member the persistent per-region completion reward (caravan upgrade)
+	// for the final region. The final region has no subsequent RewardInstance to grant it, so it's paid
+	// here as part of the end-of-run payout instead.
+	private static void awardFinalRegionReward(Session s) {
+		RegionType completed = s.getRegion().getType();
+		for (PlayerSessionData psd : s.getParty().values()) {
+			PlayerData pd = psd.getData();
+			if (pd == null || pd.getCargoBaseReward() <= 0) continue;
+			double regionReward = pd.getCargoBaseReward() * s.getNotorietyMoneyMultiplier();
+			depositCargo(psd, regionReward);
+			Player p = psd.getPlayer();
+			if (p != null) {
+				Util.msgRaw(p, "<gray>Your caravan earned a <yellow>" + formatMoney(regionReward)
+						+ "</yellow> reward for completing " + completed.getDisplay() + "!");
+			}
+		}
+	}
+
 	// Pays out each party member the calculated amount for finishing a run.
 	// won = true for a run victory, false for a run loss.
 	public static void payout(Session s, boolean won) {
-		// On a victory the caravan reaches safety and sells all remaining cargo at full value,
-		// ignoring region sell rates. Runs before returnUnsoldCargo so nothing is left to return.
-		if (won) sellRemainingCargo(s);
+		// On a victory the caravan reaches safety: pay the final region's completion reward, then sell all
+		// remaining cargo at full value (ignoring region sell rates). Runs before returnUnsoldCargo so
+		// nothing is left to return.
+		if (won) {
+			awardFinalRegionReward(s);
+			sellRemainingCargo(s);
+		}
 		returnUnsoldCargo(s, won);
 		if (economy == null) return;
 
@@ -215,7 +240,7 @@ public class RunReward {
 			Player p = psd.getPlayer();
 			if (p != null) {
 				Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(b.total) + "</yellow> for "
-						+ (won ? "winning" : "completing") + " your run! (click the gold block for a breakdown)");
+						+ (won ? "winning" : "completing") + " your run!");
 			}
 		}
 	}
@@ -228,6 +253,7 @@ public class RunReward {
 			PlayerSessionData.CargoSaleResult result = psd.sellRunCargo(1.0);
 			if (result.itemsSold <= 0) continue;
 			double reward = payoutCargoReward(s, psd, result.value);
+			PlayerSessionInventory.updateCargoIcon(psd);
 			Player p = psd.getPlayer();
 			if (p != null) {
 				double mult = result.value > 0 ? reward / result.value : 1.0;
@@ -250,6 +276,7 @@ public class RunReward {
 			// Without caravan insurance, unsold run cargo is lost when the run ends in defeat.
 			if (!won && !pd.hasFlag(PlayerData.FLAG_CARGO_INSURANCE)) {
 				remaining.clear();
+				PlayerSessionInventory.updateCargoIcon(psd);
 				Player p = psd.getPlayer();
 				if (p != null) Util.msgRaw(p, "<red>Without caravan insurance, your unsold cargo was lost!");
 				continue;
@@ -266,6 +293,7 @@ public class RunReward {
 				}
 			}
 			remaining.clear();
+			PlayerSessionInventory.updateCargoIcon(psd);
 			pd.saveCargoAsync();
 			pd.saveLostCargoAsync();
 			Player p = psd.getPlayer();

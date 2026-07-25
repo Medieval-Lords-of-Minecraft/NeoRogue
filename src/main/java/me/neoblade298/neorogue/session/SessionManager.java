@@ -289,6 +289,23 @@ public class SessionManager implements Listener {
 		}
 	}
 
+	// Deletes every saved run for a host from both the in-memory snapshot cache and the database.
+	// Unlike deleteSave(), this does NOT record losses; it's an administrative wipe used by /nra reset.
+	public static void deleteAllSaves(UUID host) {
+		PlayerData pd = PlayerManager.getPlayerData(host);
+		if (pd != null) pd.clearSnapshots();
+		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
+			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_nodes WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "';");
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to delete all saves for " + host);
+			ex.printStackTrace();
+		}
+	}
+
 	// Records a deleted (abandoned) run as a loss for the host who deleted it. Tutorial and endless
 	// runs are excluded, consistent with EndRunInstance.
 	private static void recordDeletedRunAsLoss(UUID host, SessionSnapshot snap) {

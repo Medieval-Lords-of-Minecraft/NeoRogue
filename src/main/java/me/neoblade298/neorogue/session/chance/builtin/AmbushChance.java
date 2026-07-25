@@ -68,7 +68,7 @@ public class AmbushChance extends ChanceSet {
 							PlayerSessionData pdata = s.getParty().get(uuid);
 							RewardBuilder rb = new RewardBuilder(s, pdata, NodeType.FIGHT);
 							int value = rb.getBaseValue();
-							rb.coins(FightScore.S.getCoins());
+							rb.coins(FightScore.S.getCurrency());
 							rb.equipmentDropsRaw(value + 1, 2);
 							rb.equipmentDrops(value, 2, rb.getEquipDrops());
 							rb.upgradeDrops(FightScore.S.getUpgradeModifier());

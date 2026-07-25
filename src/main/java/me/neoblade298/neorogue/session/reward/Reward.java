@@ -14,7 +14,7 @@ public interface Reward {
 	
 	public static Reward deserialize(String str) {
 		if (str.startsWith("coins")) {
-			return new CoinsReward(str.substring("coins:".length()));
+			return new CurrencyReward(str.substring("coins:".length()));
 		}
 		else if (str.startsWith("choice")) {
 			return new EquipmentChoiceReward(str.substring("choice:".length()));

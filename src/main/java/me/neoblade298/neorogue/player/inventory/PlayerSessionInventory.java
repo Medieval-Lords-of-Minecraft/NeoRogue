@@ -319,6 +319,15 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				"Save and quit your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
 	}
 
+	// Refreshes just the cargo icon in the player's own (non-spectating) inventory. Call after run cargo
+	// is sold so the displayed cargo summary stays accurate. No-op in tutorials, where cargo is hidden.
+	public static void updateCargoIcon(PlayerSessionData data) {
+		Player p = data.getPlayer();
+		if (p == null) return;
+		if (data.getSession().getSessionType() == SessionType.TUTORIAL) return;
+		p.getInventory().setItem(CARGO, createCargoIcon(data));
+	}
+
 	// Read-only summary of the cargo collected this run. Run cargo is sold automatically as regions
 	// are completed, so there's nothing to click here.
 	private static ItemStack createCargoIcon(PlayerSessionData data) {
@@ -458,6 +467,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 			item.lore(lore);
 		}
+		else {
+			List<Component> lore = item.lore();
+			lore.add(Component.empty());
+			lore.add(Component.text("Click to view achievements, unlocks & stats", NamedTextColor.YELLOW)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+			item.lore(lore);
+		}
 		return item;
 	}
 
@@ -476,6 +492,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		lore.add(Component.text("Money Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyMoneyBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
+		// Exp boosts (personal + global) are locked in for the run at run start, so surface the captured
+		// bonus here alongside the notoriety bonuses. Only shown when a boost is actually active.
+		int expBoostPercent = (int) Math.round((data.getRunExpBoostMultiplier() - 1.0) * 100);
+		if (expBoostPercent > 0) {
+			lore.add(Component.text("Exp Boost: ", NamedTextColor.GRAY)
+					.append(Component.text("+" + expBoostPercent + "%", NamedTextColor.GREEN))
+					.decoration(TextDecoration.ITALIC, false));
+		}
 		if (notoriety > 0) {
 			lore.add(Component.empty());
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
@@ -558,6 +582,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				public void run() {
 					handleInventoryClose();
 					new ArtifactsInventory(data);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == STATS) {
+			// Open the in-session hub to view global achievements, unlocks, and stats.
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					handleInventoryClose();
+					new MainSessionMenu(data);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class SpendCoinsAchievement implements Achievement {
+public class SpendCurrencyAchievement implements Achievement {
 	private static final int[] THRESHOLDS = { 100, 1000, 10000, 100000 };
 
 	@Override
@@ -52,7 +52,7 @@ public class SpendCoinsAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger("big_spender", SessionTrigger.SPEND_COINS, (pdata, in) -> {
+		data.addTrigger("big_spender", SessionTrigger.SPEND_CURRENCY, (pdata, in) -> {
 			int amount = (int) in;
 			if (progress.addProgress(amount)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);

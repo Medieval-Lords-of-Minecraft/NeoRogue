@@ -18,18 +18,28 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-// Hub menu reached by clicking a spectated player's stats icon. Lets the spectator view that
-// player's global achievements, unlocks, and statistics.
-public class MainSpectateMenu extends CoreInventory {
+// In-session hub for viewing a player's global achievements, unlocks, and statistics (read-only)
+// without leaving the run. Serves both the owner viewing their own menu (spectator == null; closing
+// returns to their inventory) and a spectator viewing another player's menu (spectator != null;
+// back returns to the spectate inventory).
+public class MainSessionMenu extends CoreInventory {
 	private static final int STATS = 11, ACHIEVEMENTS = 13, UNLOCKS = 15, BACK = 22;
-	private PlayerSessionData data;
-	private Player spectator;
+	private final PlayerSessionData data;
+	// Null when the player is viewing their own menu; otherwise the spectator viewing this player's hub.
+	private final Player spectator;
 
-	public MainSpectateMenu(PlayerSessionData data, Player spectator) {
-		super(spectator, Bukkit.createInventory(spectator, 27, title(data)));
+	// Owner viewing their own in-session hub.
+	public MainSessionMenu(PlayerSessionData data) {
+		this(data, null);
+	}
+
+	// Spectator (non-null) viewing the given player's hub, or the owner themselves when spectator is null.
+	public MainSessionMenu(PlayerSessionData data, Player spectator) {
+		super(spectator != null ? spectator : data.getPlayer(),
+				Bukkit.createInventory(spectator != null ? spectator : data.getPlayer(), 27, title(data)));
 		this.data = data;
 		this.spectator = spectator;
-		spectator.playSound(spectator, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
+		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		inv.setItem(STATS, CoreInventory.createButton(Material.EXPERIENCE_BOTTLE,
 				Component.text("Stats", NamedTextColor.GREEN)));
 		inv.setItem(ACHIEVEMENTS, CoreInventory.createButton(Material.DIAMOND,
@@ -53,23 +63,29 @@ public class MainSpectateMenu extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 
 		PlayerData targetData = PlayerManager.getPlayerData(data.getUniqueId());
-		Runnable back = () -> new MainSpectateMenu(data, spectator);
+		// The viewer (p) is the owner for a self view and the spectator otherwise; passing the target's
+		// own PlayerData keeps these sub-menus read-only. Back reopens this hub for the same viewer.
+		Runnable back = () -> new MainSessionMenu(data, spectator);
 		switch (e.getSlot()) {
 		case STATS:
-			if (targetData != null) new StatsMenuInventory(spectator, targetData, back);
+			if (targetData != null) new StatsMenuInventory(p, targetData, back);
 			break;
 		case ACHIEVEMENTS:
-			if (targetData != null) new AchievementsMenuInventory(spectator, targetData, back);
+			if (targetData != null) new AchievementsMenuInventory(p, targetData, back);
 			break;
 		case UNLOCKS:
-			if (targetData != null) new UnlocksMenuInventory(spectator, targetData, back);
+			if (targetData != null) new UnlocksMenuInventory(p, targetData, back);
 			break;
 		case BACK:
-			new BukkitRunnable() {
-				public void run() {
-					new PlayerSessionSpectateInventory(data, spectator);
-				}
-			}.runTask(NeoRogue.inst());
+			if (spectator != null) {
+				new BukkitRunnable() {
+					public void run() {
+						new PlayerSessionSpectateInventory(data, spectator);
+					}
+				}.runTask(NeoRogue.inst());
+			} else {
+				p.closeInventory();
+			}
 			break;
 		}
 	}

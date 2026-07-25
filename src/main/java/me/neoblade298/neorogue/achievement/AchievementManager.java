@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.achievement.builtin.NotorietyTenWinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyWinAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ShieldsInFightAchievement;
-import me.neoblade298.neorogue.achievement.builtin.SpendCoinsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SpendCurrencyAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinRunsAchievement;
@@ -74,7 +74,7 @@ public class AchievementManager {
 			new BeatRegionAchievement("frozen_wastes_victor", Component.text("Frozen Wastes Victor", NamedTextColor.GOLD),
 					Material.PACKED_ICE, RegionType.FROZEN_WASTES),
 			new FullPartyAchievement(),
-			new SpendCoinsAchievement(),
+			new SpendCurrencyAchievement(),
 			new NotorietyWinAchievement(),
 			new NotorietyTenWinsAchievement(),
 			new CrownsEarnedAchievement(),

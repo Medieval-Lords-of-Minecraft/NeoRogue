@@ -40,7 +40,7 @@ public enum FightScore {
 		return threshold;
 	}
 	
-	public int getCoins() {
+	public int getCurrency() {
 		return coins;
 	}
 

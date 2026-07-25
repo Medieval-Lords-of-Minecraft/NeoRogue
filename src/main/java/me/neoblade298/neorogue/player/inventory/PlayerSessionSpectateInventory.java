@@ -61,7 +61,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
-					new MainSpectateMenu(data, spectator);
+					new MainSessionMenu(data, spectator);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

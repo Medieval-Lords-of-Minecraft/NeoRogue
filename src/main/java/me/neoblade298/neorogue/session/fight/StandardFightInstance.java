@@ -211,7 +211,7 @@ public class StandardFightInstance extends FightInstance {
 			RewardBuilder rb = new RewardBuilder(s, data, NodeType.FIGHT);
 			int value = rb.getBaseValue();
 
-			rb.coins(fightScore.getCoins());
+			rb.coins(fightScore.getCurrency());
 
 			switch (fightScore) {
 			case S:

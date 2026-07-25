@@ -65,7 +65,7 @@ public class RewardInstance extends EditInventoryInstance {
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			ArrayList<Reward> list = new ArrayList<Reward>();
-			list.add(new CoinsReward(50));
+			list.add(new CurrencyReward(50));
 			ArrayList<Artifact> arts = Equipment.getArtifact(data.getArtifactDroptable(), s.getBaseDropValue(), 1,
 					data.getPlayerClass(), EquipmentClass.CLASSLESS);
 			if (!arts.isEmpty()) {
