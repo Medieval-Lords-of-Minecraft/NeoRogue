@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.consumables;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -41,8 +42,10 @@ public class ToughnessPotion extends Consumable {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val((int) reduc) + " for the rest of combat. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(139, 90, 43));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(139, 90, 43));
 	}
 }

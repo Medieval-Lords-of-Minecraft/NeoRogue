@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -81,8 +82,10 @@ public class StickyBomb extends Ammunition {
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage) + " damage " +
 		"(unaffected by bow) to all nearby enemies after " + DescUtil.val("1s") + ".");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.RED);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.RED);
 	}
 }

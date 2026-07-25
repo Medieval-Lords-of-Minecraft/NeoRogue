@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.consumables;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -64,8 +65,10 @@ public class DropOfInsanity extends Consumable {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"Your next casted ability becomes free to cast for the rest of the fight. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(72, 0, 102));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(72, 0, 102));
 	}
 }

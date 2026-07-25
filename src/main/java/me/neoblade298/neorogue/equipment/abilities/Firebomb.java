@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -17,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -81,8 +81,10 @@ public class Firebomb extends Equipment {
 		item = createItem(Material.POTION,
 				"On cast, throw a bomb that deals " + GlossaryTag.FIRE.tag(this, damage) + " damage, coating the area in flames and applying " +
 				GlossaryTag.BURN.tag(this, burn) + " to enemies who walk through it over the next " + DescUtil.val("3s") + ".");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.RED);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.RED);
 	}
 }

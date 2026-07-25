@@ -144,6 +144,32 @@ public class RunReward {
 		return new java.text.DecimalFormat("0.##").format(mult);
 	}
 
+	// Builds the hover text breaking the effective cargo sale multiplier into its component sources
+	// (notoriety money bonus and the player's caravan sell multiplier).
+	private static String buildMultHover(Session s, PlayerSessionData psd) {
+		PlayerData pd = psd != null ? psd.getData() : null;
+		int notorietyPct = s.getNotorietyMoneyBonusPercent();
+		int sellPct = pd != null ? pd.getSellMultiplierBonus() : 0;
+		StringBuilder sb = new StringBuilder();
+		sb.append("<gray>Base sale value <yellow>\u00d71");
+		if (notorietyPct != 0) {
+			sb.append("<newline><white>+").append(notorietyPct).append("%<gray> notoriety bonus");
+		}
+		if (sellPct != 0) {
+			sb.append("<newline><white>+").append(sellPct).append("%<gray> caravan sell bonus");
+		}
+		if (notorietyPct == 0 && sellPct == 0) {
+			sb.append("<newline><gray>No bonuses applied");
+		}
+		return sb.toString();
+	}
+
+	// Wraps the effective payout multiplier in an underlined hover revealing its component sources.
+	private static String hoverableMult(Session s, PlayerSessionData psd, double mult) {
+		return "<hover:show_text:'" + buildMultHover(s, psd) + "'><green><underlined>\u00d7" + formatMult(mult)
+				+ "</underlined></green>";
+	}
+
 
 	// Called when a region is completed: auto-sells a portion of each player's run cargo and awards
 	// their persistent per-region completion reward (a caravan upgrade), presenting both in a single
@@ -185,7 +211,7 @@ public class RunReward {
 				String header = "<gray>Your caravan sold "
 						+ hoverableCargoItems(buildCargoHover(s, result, cargoReward), result.itemsSold)
 						+ " in " + completed.getDisplay() + " for <yellow>" + formatMoney(cargoReward)
-						+ "</yellow> <gray>(<green>\u00d7" + formatMult(mult) + "<gray>)";
+						+ "</yellow> <gray>(" + hoverableMult(s, psd, mult) + "<gray>)";
 				if (hasReward) {
 					header += " plus a <yellow>" + formatMoney(regionReward)
 							+ "</yellow> region completion reward";
@@ -259,7 +285,7 @@ public class RunReward {
 				double mult = result.value > 0 ? reward / result.value : 1.0;
 				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining "
 						+ hoverableCargoItems(buildCargoHover(s, result, reward), result.itemsSold) + " for <yellow>"
-						+ formatMoney(reward) + "</yellow> <gray>(<green>\u00d7" + formatMult(mult) + "<gray>).");
+						+ formatMoney(reward) + "</yellow> <gray>(" + hoverableMult(s, psd, mult) + "<gray>).");
 			}
 		}
 	}
@@ -392,15 +418,6 @@ public class RunReward {
 		int earned = psd.getSessionStats().getExpEarned();
 		lore.add(loreLine("<gray>Class: <white>" + ec.getDisplay()));
 		lore.add(loreLine("<gray>Total exp earned: <green>+" + earned));
-
-		int notorietyPct = s.getNotorietyXpBonusPercent();
-		if (notorietyPct > 0) {
-			lore.add(loreLine("<gray>  Includes notoriety bonus: <green>+" + notorietyPct + "%"));
-		}
-		double boost = psd.getRunExpBoostMultiplier();
-		if (boost > 1.0) {
-			lore.add(loreLine("<gray>  Includes exp boost: <green>\u00d7" + String.format("%.2f", boost)));
-		}
 
 		PlayerData pd = psd.getData();
 		if (pd != null) {

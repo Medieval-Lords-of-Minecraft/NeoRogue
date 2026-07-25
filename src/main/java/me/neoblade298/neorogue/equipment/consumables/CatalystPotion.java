@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -54,8 +55,10 @@ public class CatalystPotion extends Consumable {
 		item = createItem(Material.POTION,
 				"On use, activate " + DescUtil.val(count) + " random " + GlossaryTag.POWER.tag(this)
 				+ (count == 1 ? "" : "s") + ".");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(170, 60, 220));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(170, 60, 220));
 	}
 }

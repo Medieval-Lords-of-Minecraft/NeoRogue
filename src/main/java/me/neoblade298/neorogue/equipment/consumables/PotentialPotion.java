@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.consumables;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -63,8 +64,10 @@ public class PotentialPotion extends Consumable {
 		item = createItem(Material.POTION, isUpgraded
 				? "Your next [" + DescUtil.yellow(uses) + "] " + GlossaryTag.POWER.tag(this) + " activations are each triggered twice. Consumed on first use."
 				: "Your next power activation is triggered twice. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(255, 69, 0));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(255, 69, 0));
 	}
 }

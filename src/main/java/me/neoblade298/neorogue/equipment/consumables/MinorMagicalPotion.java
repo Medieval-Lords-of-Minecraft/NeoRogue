@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -43,8 +44,10 @@ public class MinorMagicalPotion extends Consumable {
 	public void setupItem() {
 		item = createItem(Material.POTION, "Increases your " + GlossaryTag.MAGICAL.tag(this)
 		+ " damage by " + DescUtil.val(intel) + " for the fight. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(0, 0, 255));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(0, 0, 255));
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -80,8 +81,10 @@ public class AlchemistsPotion extends Consumable {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"Creates " + DescUtil.val(2) + " random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
-		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(50, 205, 50));
-		item.setItemMeta(meta);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.fromRGB(50, 205, 50));
 	}
 }

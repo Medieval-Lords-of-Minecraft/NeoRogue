@@ -30,10 +30,11 @@ public class CurrencyReward implements Reward {
 	@Override
 	public ItemStack getIcon(PlayerSessionData data) {
 		ItemStack item = new ItemStack(Material.NETHERITE_SCRAP);
-		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
+		meta.setMaxStackSize(99); // Highest stack size Minecraft supports
 		meta.displayName(Component.text(amount + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW));
 		item.setItemMeta(meta);
+		item.setAmount(amount);
 		return item;
 	}
 

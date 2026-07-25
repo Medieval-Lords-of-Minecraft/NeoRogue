@@ -832,6 +832,11 @@ public class SessionManager implements Listener {
 					if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] scaleMob (SUMMON): mob="
 							+ mob.getId() + " spawnReason=" + e.getSpawnReason() + " sessionLevel=" + s.getLevel());
 					FightInstance.scaleMob(s, mob, mythicMob, am);
+					// The FightData hologram was rendered when the FightData was created above, before
+					// scaleMob applied the scaled health. Refresh it now so it shows the scaled health
+					// rather than the mob's un-scaled (level 1) health.
+					FightData fd = FightInstance.getFightData(ent.getUniqueId());
+					if (fd != null) fd.updateDisplayName();
 				});
 				((FightInstance) s.getInstance()).addSpawnCounter(mob.getSpawnValue());
 			}

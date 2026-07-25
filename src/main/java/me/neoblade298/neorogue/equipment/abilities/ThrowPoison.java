@@ -3,6 +3,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -55,8 +56,10 @@ public class ThrowPoison extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.LIME);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.LIME);
 	}
 }

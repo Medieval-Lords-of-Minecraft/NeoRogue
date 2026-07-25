@@ -77,6 +77,10 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			}
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
+			if (fd == null) {
+				if (debug) Bukkit.getLogger().info("[NeoRogue] Nrdamage failed, caster no longer exists (likely died/despawned during a delay)");
+				return SkillResult.CONDITION_FAILED;
+			}
 			DamageMeta meta = new DamageMeta(fd);
 			double mult = fd.getInstance().getSession().getMobDamageMultiplier();
 

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -55,8 +56,10 @@ public class SearingArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. Applies " + GlossaryTag.BURN.tag(this, burn) + " on hit.");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.RED);
-		item.setItemMeta(pm);
+	}
+
+	@Override
+	protected void modifyMeta(ItemMeta meta) {
+		((PotionMeta) meta).setColor(Color.RED);
 	}
 }

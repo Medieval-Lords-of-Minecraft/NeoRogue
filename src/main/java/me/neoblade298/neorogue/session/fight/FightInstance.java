@@ -909,6 +909,9 @@ public abstract class FightInstance extends Instance {
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
 			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
+			if (ent == null) {
+				return null;
+			}
 			ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(ent);
 			if (am == null) {
 				Bukkit.getLogger().info(
