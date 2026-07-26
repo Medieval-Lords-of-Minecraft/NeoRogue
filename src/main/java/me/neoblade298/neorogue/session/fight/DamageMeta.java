@@ -631,9 +631,6 @@ public class DamageMeta {
 			if (owner.getActiveMob() != null) {
 				mob = owner.getActiveMob().getType().getInternalName();
 			}
-			for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
-				pdata.getStats().addDamageTaken(mob, entry.getKey(), entry.getValue());
-			}
 
 			// trigger received health damage and received damage events
 			if (damage > 0 || ignoreShieldsDamage > 0) {
@@ -652,6 +649,21 @@ public class DamageMeta {
 				if (fullEvade) Sounds.flap.play((Player) recipient.getEntity(), recipient.getEntity());
 				else Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
+
+			// Credit damage-taken stats only after RECEIVE_HEALTH_DAMAGE has had its chance to cancel the
+			// hit. If it cancels (clearing statSlices), nothing is credited here, so fully-nullified
+			// damage no longer leaks into the "shielded" catch-all of the damage-taken display.
+			// Also skip crediting while the player is still inside their vanilla invulnerability window:
+			// a hit landing now is combined/blocked by i-frames and won't reduce health, so counting it
+			// would inflate that same "shielded" catch-all.
+			boolean blockedByIframes = target instanceof Player
+					&& ((Player) target).getNoDamageTicks() > ((Player) target).getMaximumNoDamageTicks() / 2;
+			if (!blockedByIframes) {
+				for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
+					pdata.getStats().addDamageTaken(mob, entry.getKey(), entry.getValue());
+				}
+			}
+
 			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
 			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);
 		}
