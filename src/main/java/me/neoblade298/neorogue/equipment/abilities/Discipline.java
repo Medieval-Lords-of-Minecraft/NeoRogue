@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -44,7 +45,7 @@ public class Discipline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Every " + DescUtil.val(INTERVAL + "s") + ", give yourself " + DescUtil.val(stamina) + " stamina, " + DescUtil.val(staminaGain) + " max stamina, and"
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.val(INTERVAL + "s") + ", give yourself " + DescUtil.val(stamina) + " stamina, " + DescUtil.val(staminaGain) + " max stamina, and"
 						+ " take " + DescUtil.val(damageReduc) + " less damage " + DescUtil.duration(10) + ".");
 	}
 

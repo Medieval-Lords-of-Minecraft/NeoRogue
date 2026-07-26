@@ -28,7 +28,7 @@ public class GamblingDenChance extends ChanceSet {
 				+ "Inside, shady figures are playing card games and betting chips. They eye you with hostility, asking if you're joining.");
 
 		// Choice 1: Bet 50 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "Bet 50 " + PlayerSessionData.CURRENCY_CAP,
+		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "Bet 50 " + PlayerSessionData.CURRENCY,
 				DescUtil.white("50%") + " chance to win " + DescUtil.white("100 " + PlayerSessionData.CURRENCY) + ", "
 						+ DescUtil.white("50%") + " chance to win nothing.",
 				"You don't have 50 " + PlayerSessionData.CURRENCY + "!",
@@ -48,7 +48,7 @@ public class GamblingDenChance extends ChanceSet {
 				}));
 
 		// Choice 2: Bet 100 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Bet 100 " + PlayerSessionData.CURRENCY_CAP,
+		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Bet 100 " + PlayerSessionData.CURRENCY,
 				DescUtil.white("25%") + " chance for a random artifact, " + DescUtil.white("25%") + " chance to win "
 						+ DescUtil.white("200 " + PlayerSessionData.CURRENCY) + ", " + DescUtil.white("25%") + " chance to lose "
 						+ DescUtil.white("10%") + " health, " + DescUtil.white("25%") + " chance to win nothing.",
@@ -79,7 +79,7 @@ public class GamblingDenChance extends ChanceSet {
 				}));
 
 		// Choice 3: Bet 200 coins
-		stage.addChoice(new ChanceChoice(Material.GOLD_BLOCK, "Bet 200 " + PlayerSessionData.CURRENCY_CAP,
+		stage.addChoice(new ChanceChoice(Material.GOLD_BLOCK, "Bet 200 " + PlayerSessionData.CURRENCY,
 				DescUtil.white("25%") + " chance for " + DescUtil.white("3") + " random artifacts, "
 						+ DescUtil.white("25%") + " chance to win " + DescUtil.white("400 " + PlayerSessionData.CURRENCY) + " and fully heal, "
 						+ DescUtil.white("25%") + " chance to lose a random equipment, " + DescUtil.white("25%")

@@ -457,7 +457,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				.append(Component.text(df.format(data.getManaRegen()), NamedTextColor.WHITE));
 		TextComponent sr = Component.text("Stamina Regen: ", NamedTextColor.GOLD)
 				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
-		TextComponent coins = Component.text(PlayerSessionData.CURRENCY_CAP + ": ", NamedTextColor.GOLD)
+		TextComponent coins = Component.text(PlayerSessionData.CURRENCY + ": ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCurrency(), NamedTextColor.WHITE));
 		ItemStack item = CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
 		if (isSpectating) {
