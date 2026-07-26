@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -8,6 +6,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,7 +56,7 @@ public class Warmup extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after surviving " + DescUtil.val(timer + "s") + " without taking damage. Gain " + DescUtil.val(1) + " stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields) + "."
-				+ " Taking health damage increases the timer by " + DescUtil.val(1) + ".");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after surviving " + DescUtil.val(timer + "s") + ", taking health damage increases the timer by " + DescUtil.val(1) +
+				". Gain " + DescUtil.val(1) + " stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

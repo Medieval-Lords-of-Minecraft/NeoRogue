@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -190,6 +191,9 @@ public class StatsMenuInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		// A double-click fires an extra DOUBLE_CLICK action on top of the two underlying clicks, which would
+		// cycle the mode a third time. Ignore it so only the real clicks count.
+		if (e.getAction() == InventoryAction.DOUBLE_CLICK) return;
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getSlot() == BACK_SLOT) {
 			if (prevInventory != null) prevInventory.run();

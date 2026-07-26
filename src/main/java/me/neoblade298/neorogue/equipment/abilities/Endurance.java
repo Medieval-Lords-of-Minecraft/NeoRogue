@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.Shield;
@@ -44,9 +43,12 @@ public class Endurance extends Equipment {
 			return TriggerResult.keep();
 		});
 		
+		long[] nextBerserk = new long[] { 0 };
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
+			if (System.currentTimeMillis() < nextBerserk[0]) return TriggerResult.keep();
 			data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
+			nextBerserk[0] = System.currentTimeMillis() + 1000;
 			return TriggerResult.keep();
 		});
 	}
@@ -56,7 +58,7 @@ public class Endurance extends Equipment {
 		item = createItem(Material.COAL,
 				GlossaryTag.PASSIVE.tag(this) + ". Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields) + " until "
 				+ "you lower your shield again. Give yourself " +
-						GlossaryTag.BERSERK.tag(this, berserk) + " anytime an enemy hits you with your shield raised.");
+						GlossaryTag.BERSERK.tag(this, berserk) + " (<white>1s</white> cd) anytime an enemy hits you with your shield raised.");
 	}
 	
 	private class EndureInstance extends PriorityAction {

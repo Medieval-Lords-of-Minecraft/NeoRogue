@@ -92,7 +92,7 @@ public class RewardBuilder {
 
 	public RewardBuilder consumable(int value, double bonusUpgradeChance) {
 		EquipmentClass ec = data.getPlayerClass();
-		Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
+		Consumable cons = Equipment.getConsumable(data.getData().getConsumableDroptable(), value, ec, EquipmentClass.CLASSLESS);
 		SessionEquipment se = s.rollUpgrade(new SessionEquipment(cons), bonusUpgradeChance + ev.getBonusUpgradeChance());
 		rewards.add(new EquipmentReward(se));
 		return this;

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -48,7 +47,8 @@ public class Ferocity extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
+		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
@@ -56,9 +56,14 @@ public class Ferocity extends Equipment {
 			if (pdata.getStatus(StatusType.BERSERK).getStacks() >= cutoff) {
 				Sounds.roar.play(p, p);
 				p.getInventory().setItem(slot, null);
+				// Permanently consumed: disabling cancels the pending cooldown-restore task and suppresses
+				// further updateIcon() calls, so the emptied slot doesn't get the ability icon back when the
+				// (now-irrelevant) cooldown would have finished.
+				inst.setDisabled(true);
 				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, inst);
 	}
 }

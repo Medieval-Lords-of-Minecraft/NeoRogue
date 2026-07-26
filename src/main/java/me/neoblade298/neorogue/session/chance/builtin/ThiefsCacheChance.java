@@ -26,7 +26,7 @@ public class ThiefsCacheChance extends ChanceSet {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You pick up the potions and leave with haste.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the potions!", p);
-					data.giveEquipment(SessionEquipment.fromEquipment(Equipment.getConsumable(s.getBaseDropValue() * 2, 2, data.getPlayerClass(), EquipmentClass.CLASSLESS)));
+					data.giveEquipment(SessionEquipment.fromEquipment(Equipment.getConsumable(data.getData().getConsumableDroptable(), s.getBaseDropValue() * 2, 2, data.getPlayerClass(), EquipmentClass.CLASSLESS)));
 					return null;
 				});
 		stage.addChoice(choice);

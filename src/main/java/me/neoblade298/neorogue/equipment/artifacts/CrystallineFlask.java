@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
@@ -50,5 +51,7 @@ public class CrystallineFlask extends Artifact {
 	@Override
 	protected void modifyMeta(ItemMeta meta) {
 		((PotionMeta) meta).setColor(Color.fromRGB(11, 112, 227));
+		// POTION items show a "No effects" line by default; hide the built-in potion tooltip.
+		meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 	}
 }

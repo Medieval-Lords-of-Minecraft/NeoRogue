@@ -502,8 +502,14 @@ public class MountainPathGenerator {
 			long terrainTime = System.currentTimeMillis() - phaseStart;
 			Bukkit.getLogger().info("[MountainPath/FW] Terrain blocks: " + terrainTime + "ms (" + blocksPlaced + " blocks)");
 			phaseStart = System.currentTimeMillis();
+		}
 
-			// 6. Generate 1-block-thick barrier wall and roof
+		// 6. Generate 1-block-thick barrier wall and roof.
+		// Runs in a SEPARATE EditSession created after the terrain session above has flushed to the world.
+		// This is required so the air checks below actually see the freshly placed mountain terrain: reads
+		// within a single buffered/batched EditSession don't reliably reflect its own pending writes, which
+		// previously let the barriers overwrite ("cut through") mountain blocks.
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 			// Pre-compute which blocks are inside the barrier boundary
 			boolean[][] insideBarrier = new boolean[width][depth];
 			for (int lx = 0; lx < width; lx++) {

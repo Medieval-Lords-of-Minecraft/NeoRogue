@@ -33,7 +33,7 @@ public class ShopContents {
 		int value = s.getBaseDropValue();
 		EquipmentClass ec = data.getPlayerClass();
 		generateEquips(s, data, ec, value, discountMult); // 0-9
-		generateConsumables(ec, value, discountMult); // 10-12
+		generateConsumables(data, ec, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(data, value, discountMult); // 16-18
 		generateShopArtifacts(ec, value, discountMult); // 19-21
@@ -73,7 +73,7 @@ public class ShopContents {
 			sc.generateEquips(s, null, EquipmentClass.THIEF, rand.nextInt(4), 1.0);
 			sc.generateEquips(s, null, EquipmentClass.ARCHER, rand.nextInt(4), 1.0);
 			sc.generateEquips(s, null, EquipmentClass.MAGE, rand.nextInt(4), 1.0);
-			sc.generateConsumables(EquipmentClass.CLASSLESS, rand.nextInt(4), 1.0);
+			sc.generateConsumables(null, EquipmentClass.CLASSLESS, rand.nextInt(4), 1.0);
 		}
 	}
 
@@ -115,9 +115,10 @@ public class ShopContents {
 		}
 	}
 
-	private void generateConsumables(EquipmentClass ec, int value, double discountMult) {
+	private void generateConsumables(PlayerSessionData data, EquipmentClass ec, int value, double discountMult) {
 		int idx = 10;
-		for (Consumable cons : Equipment.getConsumable(value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
+		DropTableSet<Consumable> dropTable = data == null || data.getData() == null ? Equipment.copyConsumablesDropSet() : data.getData().getConsumableDroptable();
+		for (Consumable cons : Equipment.getConsumable(dropTable, value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (30 * discountMult), (int) (60 * discountMult));
 			Equipment resolved = NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons;
 			shopItems.put(idx++, new ShopItem(new SessionEquipment(resolved), price, false));

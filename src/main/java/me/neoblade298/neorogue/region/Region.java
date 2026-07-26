@@ -938,7 +938,8 @@ public class Region {
 	public void cleanup(Node node, NodeSelectInstance inst) {
 		int row = node.getRow();
 
-		// Clean lecterns all the way to the end including boss node
+		// Clean lecterns for the next row up to (but not including) the boss row. The boss lectern is left
+		// intact here and only reset when the region is regenerated (see Session.generateNextRegion).
 		int nextRow = row + 1;
 		if (nextRow < getBossRow()) {
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
@@ -949,8 +950,7 @@ public class Region {
 					loc.add(0, -2, -1);
 					Block lecternBlock = loc.getBlock();
 					clearLecternBook(lecternBlock);
-					lecternBlock
-							.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
+					lecternBlock.setType(Material.POLISHED_ANDESITE); // Lectern
 				}
 			}
 		}
@@ -997,8 +997,12 @@ public class Region {
 				meta.setAuthor("MLMC");
 				meta.setTitle("Fight Info");
 				book.setItemMeta(meta);
-				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
-				lc.getInventory().addItem(book);
+				// Write to the live tile entity (getState(false)) rather than a snapshot (getState()), matching
+				// clearLecternBook(). A snapshot's inventory change isn't persisted unless update() is called,
+				// which made the book unreliable for lecterns placed only once (notably the boss lectern).
+				if (b.getState(false) instanceof org.bukkit.block.Lectern lc) {
+					lc.getInventory().addItem(book);
+				}
 			}
 
 			// Heads

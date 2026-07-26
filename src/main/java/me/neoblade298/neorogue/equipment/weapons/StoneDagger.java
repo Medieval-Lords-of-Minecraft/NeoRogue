@@ -25,8 +25,8 @@ public class StoneDagger extends Equipment {
 	public StoneDagger(boolean isUpgraded) {
 		super(ID, "Stone Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 25, 1.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		damage = isUpgraded ? 10 : 6;
+				EquipmentProperties.ofWeapon(30, 1.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		damage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

@@ -38,7 +38,7 @@ public class LabChance extends ChanceSet {
 				"Everyone receives a consumable and <white>50</white> " + PlayerSessionData.CURRENCY + ".",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						Equipment consumable = Equipment.getConsumable(s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).getFirst();
+						Equipment consumable = Equipment.getConsumable(data.getData().getConsumableDroptable(), s.getBaseDropValue(), 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).getFirst();
 						data.giveEquipment(new SessionEquipment(consumable));
 						data.addCurrency(50);
 					}

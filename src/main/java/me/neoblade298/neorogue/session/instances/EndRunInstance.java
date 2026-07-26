@@ -62,14 +62,22 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		onRunEnd();
 		recordRunResults();
 
-		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4),
-				Component.text("Right click to view stats, finances & experience!", NamedTextColor.WHITE));
-		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4),
-				Component.text("Right click to leave!", NamedTextColor.WHITE));
+		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4), getStatsHologramText());
+		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4), getLeaveHologramText());
 
 		s.broadcast(getResultMessage());
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
+	}
+
+	/** Text for the stats/finance hologram shown at the run-end spawn. */
+	protected Component getStatsHologramText() {
+		return Component.text("Right click to view stats, finances & experience!", NamedTextColor.WHITE);
+	}
+
+	/** Text for the leave hologram shown at the run-end spawn. */
+	protected Component getLeaveHologramText() {
+		return Component.text("Right click to leave!", NamedTextColor.WHITE);
 	}
 
 	// Records a finished-run result for each party member for winrate/winstreak stats. Tutorial and

@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.armor;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -42,6 +41,6 @@ public class BlindingCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", "
-				+ "grant " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>].");
+				+ "gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>].");
 	}
 }

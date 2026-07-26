@@ -22,8 +22,8 @@ public class StoneShiv extends Equipment {
 	public StoneShiv(boolean isUpgraded) {
 		super(ID, "Stone Shiv", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(35, 1.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		stamina = isUpgraded ? 6 : 4;
+				EquipmentProperties.ofWeapon(30, 1.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		stamina = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

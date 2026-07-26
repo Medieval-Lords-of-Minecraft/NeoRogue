@@ -84,6 +84,10 @@ public class LimitBreak extends Equipment {
 				int str = data.getStatus(StatusType.STRENGTH).getStacks();
 				data.applyStatus(StatusType.STRENGTH, data, str, -1, LimitBreak.this);
 				if (es == EquipSlot.HOTBAR) pl.getInventory().setItem(slot, null);
+				// Permanently consumed: disabling cancels the pending cooldown-restore task and suppresses
+				// further updateIcon() calls, so the emptied slot doesn't get the ability icon back when the
+				// (now-irrelevant) cooldown would have finished.
+				setDisabled(true);
 				return TriggerResult.remove();
 			};
 		}

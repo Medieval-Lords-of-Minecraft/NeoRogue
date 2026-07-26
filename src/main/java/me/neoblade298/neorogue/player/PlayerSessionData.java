@@ -99,7 +99,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
 	// Single source of truth for the in-session currency name. Change these to rename the currency everywhere.
-	public static final String CURRENCY = "hexmetal";
+	public static final String CURRENCY = "Hexmetal";
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {

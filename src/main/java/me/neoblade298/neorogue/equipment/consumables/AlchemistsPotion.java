@@ -52,7 +52,7 @@ public class AlchemistsPotion extends Consumable {
 			}
 		}
 
-		ArrayList<Consumable> consumables = Equipment.getConsumable(value, emptySlots.size(), sdata.getPlayerClass(), EquipmentClass.CLASSLESS);
+		ArrayList<Consumable> consumables = Equipment.getConsumable(sdata.getData().getConsumableDroptable(), value, emptySlots.size(), sdata.getPlayerClass(), EquipmentClass.CLASSLESS);
 		Component received = Component.text("You received potions: ", NamedTextColor.GRAY);
 		for (int i = 0; i < consumables.size(); i++) {
 			int emptySlot = emptySlots.get(i);

@@ -1760,6 +1760,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return consumables.getMultiple(value, numDrops, ec);
 	}
 
+	public static ArrayList<Consumable> getConsumable(DropTableSet<Consumable> set, int value, int numDrops, EquipmentClass... ec) {
+		return set.getMultiple(value, numDrops, ec);
+	}
+
+	public static Consumable getConsumable(DropTableSet<Consumable> set, int value, EquipmentClass... ec) {
+		return getConsumable(set, value, 1, ec).get(0);
+	}
+
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, EquipmentClass... ec) {
 		return droptables.getMultiple(value, numDrops, ec);
 	}
