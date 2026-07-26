@@ -135,7 +135,7 @@ public class StatsMenuInventory extends CoreInventory {
 				.append(Component.text(stats.bestStreakAnyNotoriety(ec, mode), NamedTextColor.AQUA))
 				.append(Component.text(" (any notoriety)", NamedTextColor.DARK_GRAY))));
 		lore.add(line(Component.text("Total playtime: ", NamedTextColor.GRAY)
-				.append(Component.text(SessionSnapshot.formatPlaytime(stats.totalPlaytime(ec, false, mode)), NamedTextColor.AQUA))));
+				.append(Component.text(SessionSnapshot.formatPlaytime(stats.totalPlaytime(ec, null, false, mode)), NamedTextColor.AQUA))));
 		lore.add(Component.empty());
 		lore.add(line(Component.text("By notoriety ", NamedTextColor.GRAY)
 				.append(Component.text("(lifetime | month | streak cur/best)", NamedTextColor.DARK_GRAY))));
@@ -151,6 +151,22 @@ public class StatsMenuInventory extends CoreInventory {
 					.append(monthPart)
 					.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
 					.append(Component.text(streak.current + "/" + streak.best, NamedTextColor.AQUA))));
+		}
+
+		lore.add(Component.empty());
+		lore.add(line(Component.text("Playtime by notoriety ", NamedTextColor.GRAY)
+				.append(Component.text("(total | fastest clear)", NamedTextColor.DARK_GRAY))));
+
+		for (int notoriety : stats.playedNotorieties(ec, mode)) {
+			long total = stats.totalPlaytime(ec, notoriety, false, mode);
+			long fastest = stats.fastestClear(ec, notoriety, mode);
+			Component fastestPart = fastest > 0L
+					? Component.text(SessionSnapshot.formatPlaytime(fastest), NamedTextColor.AQUA)
+					: Component.text("-", NamedTextColor.DARK_GRAY);
+			lore.add(line(Component.text("  N" + notoriety + ": ", NamedTextColor.WHITE)
+					.append(Component.text(SessionSnapshot.formatPlaytime(total), NamedTextColor.AQUA))
+					.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+					.append(fastestPart)));
 		}
 
 		meta.lore(lore);

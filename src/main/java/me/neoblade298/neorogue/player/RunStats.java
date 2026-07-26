@@ -149,18 +149,33 @@ public class RunStats {
 		return out;
 	}
 
-	// Total active playtime (ms) across the scope. ec == null => all classes; monthOnly restricts to
-	// the current calendar month; mode filters by party size.
-	public long totalPlaytime(EquipmentClass ec, boolean monthOnly, PartyMode mode) {
+	// Total active playtime (ms) across the scope. ec == null => all classes; notoriety == null => all
+	// notoriety levels; monthOnly restricts to the current calendar month; mode filters by party size.
+	public long totalPlaytime(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode) {
 		long monthStart = monthOnly ? startOfMonth() : Long.MIN_VALUE;
 		long total = 0L;
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
+			if (notoriety != null && r.notoriety != notoriety) continue;
 			if (!mode.matches(r.partySize)) continue;
 			if (r.ts < monthStart) continue;
 			total += r.playtime;
 		}
 		return total;
+	}
+
+	// Fastest winning-run playtime (ms) in the scope, or 0 if there are no recorded wins. ec == null =>
+	// all classes; notoriety == null => all notoriety levels; mode filters by party size.
+	public long fastestClear(EquipmentClass ec, Integer notoriety, PartyMode mode) {
+		long fastest = 0L;
+		for (RunRecord r : records) {
+			if (!r.won) continue;
+			if (ec != null && r.playerClass != ec) continue;
+			if (notoriety != null && r.notoriety != notoriety) continue;
+			if (!mode.matches(r.partySize)) continue;
+			if (fastest == 0L || r.playtime < fastest) fastest = r.playtime;
+		}
+		return fastest;
 	}
 
 	public boolean isEmpty() {

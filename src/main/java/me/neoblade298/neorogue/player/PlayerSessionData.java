@@ -100,7 +100,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 4, ACCESSORY_SIZE = 5;
 	// Single source of truth for the in-session currency name. Change these to rename the currency everywhere.
 	public static final String CURRENCY = "hexmetal";
-	public static final String CURRENCY_CAP = Character.toUpperCase(CURRENCY.charAt(0)) + CURRENCY.substring(1);
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -1194,7 +1193,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		boardLines.add("§cHP§7: §f" + (int) health + "§7 / §f" + (int) maxHealth);
 		boardLines.add("§9MP§7: §f" + (int) maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + (int) maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
-		boardLines.add("§e" + CURRENCY_CAP + "§7: §f" + currency);
+		boardLines.add("§e" + CURRENCY + "§7: §f" + currency);
 		s.updateSpectatorLines();
 		if (s.getParty().size() <= 1) return;
 		boardLines.add("§8§m-----");
