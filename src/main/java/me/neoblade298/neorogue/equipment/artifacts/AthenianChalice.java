@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class AthenianChalice extends Artifact {
 	private static final String ID = "AthenianChalice";
@@ -28,8 +28,8 @@ public class AthenianChalice extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			PreCastUsableEvent ev = (PreCastUsableEvent) in;
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getManaCost() > 0) {
 				data.addStamina(gain);

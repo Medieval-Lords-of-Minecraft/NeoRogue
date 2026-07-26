@@ -1,5 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import java.util.HashMap;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -21,15 +20,16 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Engulf extends Equipment implements Power {
@@ -44,7 +44,7 @@ public class Engulf extends Equipment implements Power {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		damage = isUpgraded ? 45 : 30;
-		thres = isUpgraded ? 200 : 300;
+		thres = isUpgraded ? 15 : 20;
 	}
 
 	public static Equipment get() {
@@ -67,33 +67,17 @@ public class Engulf extends Equipment implements Power {
 		});
 	}
 
-	private static final int COOLDOWN_TICKS = 100; // 5 seconds
-
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta am = new ActionMeta();
-		boolean[] onCooldown = new boolean[] { false };
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				data.addTrigger(id + "-active", Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
-					if (onCooldown[0]) return TriggerResult.keep();
-					DealDamageEvent ev2 = (DealDamageEvent) in2;
-					// Don't count Engulf's own damage
-					for (DamageSlice slice : ev2.getMeta().getSlices()) {
-						if (slice.getTracker().getId().equals(id + slot)) return TriggerResult.keep();
-					}
-					HashMap<DamageType, Double> dmg = ev2.getMeta().getPostMitigationDamage();
-					if (!dmg.containsKey(DamageType.FIRE))
-						return TriggerResult.keep();
-					am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
+				data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata2, in2) -> {
+					ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
+					if (!ev2.isStatus(StatusType.BURN)) return TriggerResult.keep();
+					am.addCount(ev2.getStacks());
 					if (am.getCount() >= thres) {
 						am.addCount(-thres);
-						onCooldown[0] = true;
-						data.addTask(new BukkitRunnable() {
-							public void run() {
-								onCooldown[0] = false;
-							}
-						}.runTaskLater(NeoRogue.inst(), COOLDOWN_TICKS));
 						data.addTask(new BukkitRunnable() {
 							private int count = 0;
 							public void run() {
@@ -120,8 +104,8 @@ public class Engulf extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.val(3) + " times. Every time you deal " + GlossaryTag.FIRE.tag(this, thres) + " damage from other sources, deal "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + GlossaryTag.FIRE.tag(this) + " damage " + DescUtil.val(3) + " times. Every time you apply " + GlossaryTag.BURN.tag(this, thres) + ", deal "
 						+ GlossaryTag.FIRE.tag(this, damage)
-						+ " damage to all enemies near you " + DescUtil.val(3) + " times over " + DescUtil.val("3s") + ". " + DescUtil.val("5s") + " cooldown.");
+						+ " damage to all enemies near you " + DescUtil.val(3) + " times over " + DescUtil.val("3s") + ".");
 	}
 }

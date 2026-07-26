@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -39,7 +38,7 @@ public class Parry extends Equipment {
 		super(ID, "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 5, 0));
 		shields = 15;
-		damage = isUpgraded ? 60 : 40;
+		damage = isUpgraded ? 180 : 120;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		hit.count(50).spread(0.5, 0.5);

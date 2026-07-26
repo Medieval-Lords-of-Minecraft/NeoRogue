@@ -378,7 +378,7 @@ public class ChanceInstance extends EditInventoryInstance {
 					}
 					s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
 				} else {
-					s.broadcast(Component.text("Sending you back to node select..."));
+					s.broadcast(Component.text("Returning to node select..."));
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);

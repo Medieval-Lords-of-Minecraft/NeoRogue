@@ -103,7 +103,9 @@ public class RunReward {
 	private static double payoutCargoReward(Session s, PlayerSessionData psd, double cargoValue) {
 		PlayerData pd = psd.getData();
 		double sellMult = pd != null ? pd.getSellMultiplier() : 1.0;
-		double reward = cargoValue * s.getNotorietyMoneyMultiplier() * sellMult;
+		// Notoriety and cargo sale bonuses stack additively rather than multiplicatively:
+		// e.g. +50% notoriety and +20% sell bonus yield a x1.7 multiplier (not x1.8).
+		double reward = cargoValue * (s.getNotorietyMoneyMultiplier() + sellMult - 1.0);
 		depositCargo(psd, reward);
 		return reward;
 	}

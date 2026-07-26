@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -43,7 +42,7 @@ public class RuneHarvester extends Equipment {
 	public RuneHarvester(boolean isUpgraded) {
 		super(
 				ID, "Rune Harvester", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 50 : 40, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		cooldownReduction = isUpgraded ? 5 : 3;
 	}

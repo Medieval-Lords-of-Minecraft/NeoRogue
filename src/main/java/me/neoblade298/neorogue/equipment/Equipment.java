@@ -120,7 +120,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.LeatherHood;
-import me.neoblade298.neorogue.equipment.armor.LeatherPauldrons;
+import me.neoblade298.neorogue.equipment.armor.LeatherPauldron;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.MagiciansHood;
 import me.neoblade298.neorogue.equipment.armor.MoltenCore;
@@ -783,7 +783,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);
 			new LeatherHood(b);
-			new LeatherPauldrons(b);
+			new LeatherPauldron(b);
 			new LightningCloak(b);
 			new MagiciansHood(b);
 			new MoltenCore(b);

@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class LeatherPauldrons extends Equipment {
+public class LeatherPauldron extends Equipment {
 	private static final String ID = "LeatherPauldrons";
 	private int threshold, shields, dur;
 
-	public LeatherPauldrons(boolean isUpgraded) {
+	public LeatherPauldron(boolean isUpgraded) {
 		super(ID, "Leather Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		threshold = isUpgraded ? 5 : 6;
@@ -38,7 +38,7 @@ public class LeatherPauldrons extends Equipment {
 				count[0] = 0;
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
-				data.addSimpleShield(p.getUniqueId(), shields, dur * 20);
+				data.addSimpleShield(p.getUniqueId(), shields, dur * 20, this);
 			}
 			return TriggerResult.keep();
 		});

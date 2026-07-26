@@ -247,7 +247,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			public void run() {
 				NodeSelectInstance next = NodeSelectInstance.create(s);
 				if (!s.canSetInstance(next)) return;
-				s.broadcast("Everyone is ready! Returning you to node select...");
+				s.broadcast("Returning to node select...");
 				state = RETURNING_STATE;
 				new BukkitRunnable() {
 					public void run() {

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -46,7 +45,7 @@ public class FireStaff extends Equipment {
 	public FireStaff(boolean isUpgraded) {
 		super(
 				ID, "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 80 : 60, 0.5, DamageType.FIRE, Sound.ENTITY_BLAZE_SHOOT)
+				EquipmentProperties.ofWeapon(4, 0, isUpgraded ? 80 : 60, 0.5, DamageType.FIRE, Sound.ENTITY_BLAZE_SHOOT)
 				.add(PropertyType.RANGE, 10)
 				.add(PropertyType.AREA_OF_EFFECT, props.range)
 		);

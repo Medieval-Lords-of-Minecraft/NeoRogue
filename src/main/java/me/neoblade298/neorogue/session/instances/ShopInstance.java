@@ -213,7 +213,7 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	private void handleNextInstance(NodeSelectInstance next) {
-		s.broadcast("Everyone is ready! Teleporting back to node select...");
+		s.broadcast("Returning to node select...");
 		s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 		s.setBusy(true);
 		new BukkitRunnable() {
@@ -238,7 +238,7 @@ public class ShopInstance extends EditInventoryInstance {
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		ready.remove(p.getUniqueId());
 		if (ready.size() == s.getParty().size()) {
-			s.broadcast("Everyone is ready! Teleporting back to node select...");
+			s.broadcast("Returning to node select...");
 			s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 			s.setBusy(true);
 			new BukkitRunnable() {

@@ -510,16 +510,8 @@ public class FightData {
 	}
 	
 	// No decay
-	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, boolean isSecondary) {
-		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary, null);
-	}
-	// No decay
 	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, boolean isSecondary, Equipment source) {
 		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary, source);
-	}
-	// No decay
-	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks) {
-		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false, null);
 	}
 	// No decay
 	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, Equipment source) {
@@ -531,25 +523,12 @@ public class FightData {
 		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false, sourceKey, sourceDisplay);
 	}
 	
-	public Shield addPermanentShield(UUID applier, double amt, boolean isSecondary) {
-		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary, null);
-	}
-	
 	public Shield addPermanentShield(UUID applier, double amt, boolean isSecondary, Equipment source) {
 		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary, source);
 	}
 	
-	public Shield addPermanentShield(UUID applier, double amt) {
-		return addShield(applier, amt, true, 0, 0, 0, 0, false, null);
-	}
-	
 	public Shield addPermanentShield(UUID applier, double amt, Equipment source) {
 		return addShield(applier, amt, true, 0, 0, 0, 0, false, source);
-	}
-	
-	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
-			int decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
-		return addShield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions, isSecondary, null);
 	}
 	
 	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 

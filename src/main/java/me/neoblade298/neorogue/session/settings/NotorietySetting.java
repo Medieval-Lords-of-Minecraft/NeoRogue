@@ -37,8 +37,8 @@ public class NotorietySetting {
         Component.text("The caravan demands higher quality equipment be sold instead of used.")
     );
 
-    public static final double BREAKABLE_CHANCE = 0.2;
-    public static final int BREAKABLE_DURABILITY = 7;
+    public static final double BREAKABLE_CHANCE = 0.35;
+    public static final int BREAKABLE_DURABILITY = 5;
     public static final NotorietySetting BREAKABLE_EQUIPMENT = new NotorietySetting(
             Component.text("Equipment has a chance to spawn breakable, meaning it will break after ").color(NamedTextColor.GRAY)
                     .append(Component.text(BREAKABLE_DURABILITY).color(NamedTextColor.YELLOW))
