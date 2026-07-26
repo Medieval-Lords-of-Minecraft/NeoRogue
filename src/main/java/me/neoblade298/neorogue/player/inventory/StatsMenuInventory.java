@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.RunStats;
 import me.neoblade298.neorogue.player.RunStats.PartyMode;
+import me.neoblade298.neorogue.player.SessionSnapshot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -133,6 +134,8 @@ public class StatsMenuInventory extends CoreInventory {
 		lore.add(line(Component.text("Best winstreak: ", NamedTextColor.GRAY)
 				.append(Component.text(stats.bestStreakAnyNotoriety(ec, mode), NamedTextColor.AQUA))
 				.append(Component.text(" (any notoriety)", NamedTextColor.DARK_GRAY))));
+		lore.add(line(Component.text("Total playtime: ", NamedTextColor.GRAY)
+				.append(Component.text(SessionSnapshot.formatPlaytime(stats.totalPlaytime(ec, false, mode)), NamedTextColor.AQUA))));
 		lore.add(Component.empty());
 		lore.add(line(Component.text("By notoriety ", NamedTextColor.GRAY)
 				.append(Component.text("(lifetime | month | streak cur/best)", NamedTextColor.DARK_GRAY))));

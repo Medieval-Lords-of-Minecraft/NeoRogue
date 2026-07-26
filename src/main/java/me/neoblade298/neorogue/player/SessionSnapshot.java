@@ -33,6 +33,7 @@ public class SessionSnapshot {
 
 
 	private long lastSaved;
+	private long playtime;
 	private int nodesVisited;
 	private RegionType regionType;
 	private int notoriety;
@@ -43,6 +44,7 @@ public class SessionSnapshot {
 	
 	public SessionSnapshot(Session s) {
 		this.lastSaved = System.currentTimeMillis();
+		this.playtime = s.getPlaytime();
 		this.nodesVisited = s.getNodesVisited();
 		this.regionType = s.getRegion().getType();
 		this.notoriety = s.getNotoriety();
@@ -57,6 +59,7 @@ public class SessionSnapshot {
 	
 	public SessionSnapshot(ResultSet save, ResultSet party) throws SQLException {
 		this.lastSaved = save.getLong("lastSaved");
+		this.playtime = getPlaytime(save);
 		this.nodesVisited = save.getInt("nodesVisited");
 		this.regionType = RegionType.valueOf(save.getString("regionType"));
 		this.notoriety = save.getInt("notoriety");
@@ -104,6 +107,8 @@ public class SessionSnapshot {
 				.append(Component.text(regionType.getDisplay(), NamedTextColor.GOLD))
 				.append(Component.text("\nNodes visited: ", NamedTextColor.GRAY))
 				.append(Component.text(nodesVisited, NamedTextColor.GOLD))
+				.append(Component.text("\nPlaytime: ", NamedTextColor.GRAY))
+				.append(Component.text(formatPlaytime(playtime), NamedTextColor.GOLD))
 				.append(Component.text("\nParty members:", NamedTextColor.GRAY));
 		for (Entry<String, EquipmentClass> ent : party.entrySet()) {
 			b.append(Component.text("\n- ", NamedTextColor.GRAY))
@@ -121,6 +126,28 @@ public class SessionSnapshot {
 
 	public long getLastSaved() {
 		return lastSaved;
+	}
+
+	// Total active playtime in milliseconds for the saved run.
+	public long getPlaytime() {
+		return playtime;
+	}
+
+	// Reads the playtime column, defaulting to 0 for saves created before the column existed.
+	private static long getPlaytime(ResultSet save) {
+		try {
+			return save.getLong("playtime");
+		} catch (SQLException ex) {
+			return 0L;
+		}
+	}
+
+	// Formats a playtime duration (in ms) as "Hh Mm" or "Mm" for display.
+	public static String formatPlaytime(long ms) {
+		long totalMinutes = ms / 60000L;
+		long hours = totalMinutes / 60L;
+		long minutes = totalMinutes % 60L;
+		return hours > 0 ? hours + "h " + minutes + "m" : minutes + "m";
 	}
 
 	public RegionType getRegionType() {

@@ -14,8 +14,6 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -23,14 +21,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Prayer extends Equipment implements Power {
 	private static final String ID = "Prayer";
-	private int heal, thres, inc;
+	private int heal, thres, shields;
 	
 	public Prayer(boolean isUpgraded) {
 		super(ID, "Prayer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		heal = isUpgraded ? 15 : 10;
 		thres = isUpgraded ? 55 : 80;
-		inc = isUpgraded ? 5 : 3;
+		shields = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -43,7 +41,8 @@ public class Prayer extends Equipment implements Power {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.SANCTIFIED.name())) return TriggerResult.keep();
-			ev.getStacksBuffList().add(Buff.increase(data, inc, BuffStatTracker.of(ID + slot, this, "Sanctified Increased")));
+			Player p = data.getPlayer();
+			data.addSimpleShield(p.getUniqueId(), shields, 60, this); // 3s
 			if (am.addCount(ev.getStacks()) > thres && !am.getBool()) {
 				if (activatePower(data, slot, es)) {
 					am.setBool(true);
@@ -63,7 +62,7 @@ public class Prayer extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this, thres) + " stacks. Increase " + GlossaryTag.SANCTIFIED.tag(this) + " application by " + DescUtil.val(inc) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this, thres) + " heals you for "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this) + " grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white("3s") + "]. Activates after applying " + GlossaryTag.SANCTIFIED.tag(this, thres) + " stacks, healing you for "
 				+ DescUtil.val(heal) + " once per fight.");
 	}
 }

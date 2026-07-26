@@ -14,11 +14,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LeatherPauldron extends Equipment {
-	private static final String ID = "LeatherPauldrons";
+	private static final String ID = "LeatherPauldron";
 	private int threshold, shields, dur;
 
 	public LeatherPauldron(boolean isUpgraded) {
-		super(ID, "Leather Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Pauldron", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		threshold = isUpgraded ? 5 : 6;
 		shields = isUpgraded ? 5 : 3;

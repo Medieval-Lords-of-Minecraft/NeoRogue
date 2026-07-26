@@ -1552,7 +1552,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 						DataComponentTypes.ENCHANTMENTS,
 						DataComponentTypes.STORED_ENCHANTMENTS,
 						DataComponentTypes.DYED_COLOR,
-						DataComponentTypes.TRIM)
+						DataComponentTypes.TRIM,
+						DataComponentTypes.BUNDLE_CONTENTS)
 				.build());
 
 		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())

@@ -86,6 +86,7 @@ public class AnalyticsManager {
 							+ "partySize INT NOT NULL,"
 							+ "notoriety INT NOT NULL,"
 							+ "endless TINYINT NOT NULL,"
+							+ "playtime BIGINT NOT NULL DEFAULT 0,"
 							+ "won TINYINT NOT NULL"
 							+ ");");
 
@@ -335,6 +336,7 @@ public class AnalyticsManager {
 				.addValue("partySize", snap.partySize)
 				.addValue("notoriety", snap.notoriety)
 				.addValue("endless", snap.endless ? 1 : 0)
+				.addValue("playtime", snap.playtime)
 				.addValue("won", snap.won ? 1 : 0);
 		PreparedStatement ps = sql.build(con);
 		ps.executeBatch();

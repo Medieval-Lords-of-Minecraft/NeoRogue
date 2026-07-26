@@ -40,21 +40,24 @@ public class RunStats {
 		}
 	}
 	// A single finished run for one player. playerClass is the class actually played (never null).
-	// partySize is the number of players in the party for that run (1 for solo).
+	// partySize is the number of players in the party for that run (1 for solo). playtime is the run's
+	// total active duration in milliseconds.
 	public static class RunRecord {
 		public final long ts;
 		public final EquipmentClass playerClass;
 		public final int notoriety;
 		public final int partySize;
 		public final int exp;
+		public final long playtime;
 		public final boolean won;
 
-		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, boolean won) {
+		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won) {
 			this.ts = ts;
 			this.playerClass = playerClass;
 			this.notoriety = notoriety;
 			this.partySize = partySize;
 			this.exp = exp;
+			this.playtime = playtime;
 			this.won = won;
 		}
 	}
@@ -144,6 +147,20 @@ public class RunStats {
 			out.add(r.notoriety);
 		}
 		return out;
+	}
+
+	// Total active playtime (ms) across the scope. ec == null => all classes; monthOnly restricts to
+	// the current calendar month; mode filters by party size.
+	public long totalPlaytime(EquipmentClass ec, boolean monthOnly, PartyMode mode) {
+		long monthStart = monthOnly ? startOfMonth() : Long.MIN_VALUE;
+		long total = 0L;
+		for (RunRecord r : records) {
+			if (ec != null && r.playerClass != ec) continue;
+			if (!mode.matches(r.partySize)) continue;
+			if (r.ts < monthStart) continue;
+			total += r.playtime;
+		}
+		return total;
 	}
 
 	public boolean isEmpty() {

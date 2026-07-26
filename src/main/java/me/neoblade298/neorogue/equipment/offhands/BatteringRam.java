@@ -62,6 +62,7 @@ public class BatteringRam extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
+		long[] nextCone = { 0 };
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			if (am.getCount() >= 5) return TriggerResult.remove();
 			Player p = data.getPlayer();
@@ -106,6 +107,9 @@ public class BatteringRam extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
+			long now = System.currentTimeMillis();
+			if (now < nextCone[0]) return TriggerResult.keep();
+			nextCone[0] = now + 1000L;
 			Location loc = p.getLocation().clone();
 			LocalAxes axes = LocalAxes.usingGroundedEyeLocation(p);
 			cone.play(pc, loc, axes, pc);
@@ -121,6 +125,6 @@ public class BatteringRam extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.val(reduction) + " and " +
 		"creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks " + DescUtil.val(thres) + " projectiles before breaking. Receiving damage while your shield is raised " +
-		"deals " + GlossaryTag.BLUNT.tag(this, damage) + " and applies " + GlossaryTag.CONCUSSED.tag(this, conc) + " in a cone in front of you.");
+		"deals " + GlossaryTag.BLUNT.tag(this, damage) + " and applies " + GlossaryTag.CONCUSSED.tag(this, conc) + " in a cone in front of you. Has a brief cooldown.");
 	}
 }

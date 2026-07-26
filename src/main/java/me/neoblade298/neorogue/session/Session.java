@@ -103,6 +103,10 @@ public class Session {
 	// Stable per-run identifier: generated once when a new run begins and persisted across save/load,
 	// so analytics rows (chance choices, fights, run outcome) from the same dungeon attempt can be joined.
 	private String runId;
+	// Accumulated active playtime in milliseconds (persisted). playtimeResumed is the timestamp the timer
+	// last resumed, or 0 when paused; getPlaytime() sums the accumulated total with the running segment.
+	private long playtime = 0L;
+	private long playtimeResumed = 0L;
 	private boolean busy;
 	// Set once the session is torn down (endSession or plugin disable). Prevents orphaned delayed
 	// transition runnables (e.g. handleWin's 60-tick setInstance) from resurrecting a dead session.
@@ -204,6 +208,10 @@ public class Session {
 		if (!isNew) {
 			load(saveSlot, host, xOff, zOff, (LoadLobbyInstance) this.inst);
 		}
+		else {
+			// Loaded sessions resume the timer once load() completes; new runs start it immediately.
+			resumePlaytime();
+		}
 	}
 	
 	// Load from existing data
@@ -259,6 +267,10 @@ public class Session {
 					runId = getRunIdFromRow(sessSet);
 					if (runId == null || runId.isEmpty()) runId = UUID.randomUUID().toString();
 
+					// Restore accumulated playtime; the timer is resumed on the main thread after load.
+					playtime = getPlaytimeFromRow(sessSet);
+					playtimeResumed = 0L;
+
 					// Read instanceData before Region construction closes the ResultSet
 					String instanceData = sessSet.getString("instanceData");
 					RegionType regionType = RegionType.valueOf(sessSet.getString("regionType"));
@@ -273,6 +285,7 @@ public class Session {
 					// Complete load on main thread for thread safety
 					Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
 						busy = false;
+						resumePlaytime();
 						lobby.completeLoad(inst);
 					});
 				} catch (Exception e) {
@@ -305,6 +318,14 @@ public class Session {
 			return sessSet.getString("runId");
 		} catch (SQLException ex) {
 			return null;
+		}
+	}
+
+	private long getPlaytimeFromRow(ResultSet sessSet) {
+		try {
+			return sessSet.getLong("playtime");
+		} catch (SQLException ex) {
+			return 0L;
 		}
 	}
 	
@@ -380,6 +401,7 @@ public class Session {
 					.addValue("instanceData", inst.serialize(party))
 					.addValue("sessionType", sessionType.name())
 					.addValue("runId", runId)
+					.addValue("playtime", getPlaytime())
 					.addValue("lastMiniboss", lastMiniboss);
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();
@@ -1290,9 +1312,28 @@ public class Session {
 	public String getRunId() {
 		return runId;
 	}
+
+	// Total active playtime in ms, including the currently-running segment if the timer isn't paused.
+	public long getPlaytime() {
+		return playtime + (playtimeResumed != 0L ? System.currentTimeMillis() - playtimeResumed : 0L);
+	}
+
+	// Starts (or resumes) the playtime timer. No-op if already running.
+	public void resumePlaytime() {
+		if (playtimeResumed == 0L) playtimeResumed = System.currentTimeMillis();
+	}
+
+	// Folds the running segment into the accumulated total and pauses the timer. No-op if already paused.
+	public void pausePlaytime() {
+		if (playtimeResumed != 0L) {
+			playtime += System.currentTimeMillis() - playtimeResumed;
+			playtimeResumed = 0L;
+		}
+	}
 	
 	public void cleanup(boolean pluginDisable) {
 		ended = true;
+		pausePlaytime();
 		inst.unloadChunks();
 		inst.cleanup(pluginDisable);
 

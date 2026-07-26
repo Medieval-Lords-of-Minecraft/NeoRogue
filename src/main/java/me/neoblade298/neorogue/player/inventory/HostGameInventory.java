@@ -67,6 +67,7 @@ public class HostGameInventory extends CoreInventory {
 				lore.add(Component.text("Last saved: " + sdf.format(new Date(snap.getLastSaved())), NamedTextColor.GRAY));
 				lore.add(Component.text("Region: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
 				lore.add(Component.text("Nodes visited: " + snap.getNodesVisited(), NamedTextColor.GRAY));
+				lore.add(Component.text("Playtime: " + SessionSnapshot.formatPlaytime(snap.getPlaytime()), NamedTextColor.GRAY));
 				lore.add(Component.text("Party:", NamedTextColor.GRAY));
 				for (Entry<String, EquipmentClass> ent : snap.getParty().entrySet()) {
 					lore.add(Component.text("  " + ent.getKey() + " [" + ent.getValue().getDisplay() + "]", NamedTextColor.GRAY));
