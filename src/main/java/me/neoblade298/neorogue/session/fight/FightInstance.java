@@ -1233,7 +1233,9 @@ public abstract class FightInstance extends Instance {
 		}
 		if (NeoRogue.isDebugFlag("spawns"))
 			Bukkit.getLogger().info("[NeoRogue Spawn] Calling activateSpawner(" + toActivate + ")");
-		activateSpawner(toActivate);
+		// Carry any budget the cooldown gating deferred into spawnCounter so it isn't lost; it flushes
+		// on the next kill/despawn rather than being force-spawned all at once.
+		spawnCounter += activateSpawner(toActivate);
 
 		startTime = System.currentTimeMillis();
 		for (MapSpawnerInstance inst : initialSpawns) {
@@ -1511,6 +1513,13 @@ public abstract class FightInstance extends Instance {
 		return rngBonus + (map.getEffectiveSize() / 2) + 2;
 	}
 	
+	// Spawn-location weighting tunables. A spawner's selection weight peaks when the nearest player is
+	// IDEAL_DISTANCE blocks away (a "sweet spot" band), tapering for closer/farther spawners. FLOOR_WEIGHT
+	// keeps distant spawners from ever hitting zero probability.
+	private static final double IDEAL_DISTANCE = 11.0;
+	private static final double DISTANCE_SIGMA = 4.0;
+	private static final double FLOOR_WEIGHT = 0.1;
+
 	// Returns attempted - actual spawns
 	protected double activateSpawner(double value) {
 		double current = 0;
@@ -1520,10 +1529,18 @@ public abstract class FightInstance extends Instance {
 			return value;
 		int spawnCount = 0;
 		while (current < value) {
-			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
-			if (!spawner.canSpawn()) {
-				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
+			MapSpawnerInstance spawner = selectSpawner();
+			// Every spawner is capped or on cooldown; return the unspent budget so the next kill
+			// carries it forward (via spawnCounter) rather than force-spawning or looping forever.
+			if (spawner == null) {
+				if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info(
+						"[NeoRogue Spawn] activateSpawner: no selectable spawner, deferring " + (value - current));
+				break;
 			}
+			if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] selected spawner mob="
+					+ spawner.getMob().getId() + " nearestPlayer="
+					+ String.format("%.1f", nearestPlayerDistance(spawner.getLocation()))
+					+ " weight=" + String.format("%.3f", spawnerWeight(spawner)));
 			spawner.spawnMob();
 			current += spawner.getMob().getSpawnValue();
 			spawnCount++;
@@ -1531,6 +1548,54 @@ public abstract class FightInstance extends Instance {
 		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] activateSpawner: budget=" + value
 				+ " spent=" + current + " spawnCalls=" + spawnCount + " leftover=" + (value - current));
 		return value - current;
+	}
+
+	// Picks the next spawner to fire: selectable limited spawners are preferred and weighted by distance
+	// to the nearest player; falls back to selectable unlimited spawners. Returns null if none are ready.
+	private MapSpawnerInstance selectSpawner() {
+		MapSpawnerInstance picked = weightedPick(spawners);
+		if (picked == null) picked = weightedPick(unlimitedSpawners);
+		return picked;
+	}
+
+	// Weighted-random pick over the selectable spawners in the pool. Returns null if none are selectable.
+	private MapSpawnerInstance weightedPick(ArrayList<MapSpawnerInstance> pool) {
+		ArrayList<MapSpawnerInstance> candidates = new ArrayList<MapSpawnerInstance>();
+		ArrayList<Double> weights = new ArrayList<Double>();
+		double total = 0;
+		for (MapSpawnerInstance sp : pool) {
+			if (!sp.isSelectable()) continue;
+			double w = spawnerWeight(sp);
+			candidates.add(sp);
+			weights.add(w);
+			total += w;
+		}
+		if (candidates.isEmpty()) return null;
+		double roll = NeoRogue.gen.nextDouble() * total;
+		for (int i = 0; i < candidates.size(); i++) {
+			roll -= weights.get(i);
+			if (roll <= 0) return candidates.get(i);
+		}
+		return candidates.get(candidates.size() - 1);
+	}
+
+	// Sweet-spot band weight: peaks at IDEAL_DISTANCE from the nearest player, floored by FLOOR_WEIGHT.
+	private double spawnerWeight(MapSpawnerInstance spawner) {
+		double nearest = nearestPlayerDistance(spawner.getLocation());
+		if (Double.isInfinite(nearest)) return 1.0; // No players online: uniform weighting
+		double norm = (nearest - IDEAL_DISTANCE) / DISTANCE_SIGMA;
+		return FLOOR_WEIGHT + (1 - FLOOR_WEIGHT) * Math.exp(-(norm * norm));
+	}
+
+	// Distance from the given location to the closest online party member; +inf if none are in-world.
+	private double nearestPlayerDistance(Location loc) {
+		double best = Double.POSITIVE_INFINITY;
+		for (Player p : s.getOnlinePlayers()) {
+			if (p.getWorld() != loc.getWorld()) continue;
+			double d = p.getLocation().distance(loc);
+			if (d < best) best = d;
+		}
+		return best;
 	}
 	
 	@Override

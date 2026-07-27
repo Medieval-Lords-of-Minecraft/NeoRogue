@@ -24,6 +24,9 @@ import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawnerInstance {
 	private static final int SPAWN_DELAY = 14;
+	// Hardcoded cooldown (ms) applied after a spawner fires, so it can't be selected again
+	// immediately. Covers the telegraph window and prevents clumping at one spawner.
+	private static final long SPAWN_COOLDOWN = 1000L;
 	private static final Circle circ = new Circle(0.75);
 	private static final ParticleContainer ring = new ParticleContainer(Particle.SOUL_FIRE_FLAME)
 			.count(1).spread(0, 0).speed(0).forceVisible(Audience.ALL);
@@ -34,6 +37,7 @@ public class MapSpawnerInstance {
 	private MapSpawner origin;
 	private Location loc;
 	private int maxMobs, activeMobs;
+	private long cooldownUntil;
 	
 	public MapSpawnerInstance(Session s, MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
 		this.s = s;
@@ -60,6 +64,15 @@ public class MapSpawnerInstance {
 		return maxMobs == -1 || activeMobs < maxMobs;
 	}
 	
+	public boolean isOnCooldown() {
+		return System.currentTimeMillis() < cooldownUntil;
+	}
+	
+	// Whether this spawner may be picked right now: not at capacity and not on cooldown.
+	public boolean isSelectable() {
+		return canSpawn() && !isOnCooldown();
+	}
+	
 	public int getMaxMobs() {
 		return maxMobs;
 	}
@@ -76,6 +89,8 @@ public class MapSpawnerInstance {
 		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] spawnMob() called for " + origin.getMob().getId()
 				+ " amount=" + origin.getMob().getAmount() + " activeMobs=" + activeMobs + "/" + maxMobs
 				+ " at " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
+		// Put the spawner on cooldown so it isn't re-selected during/right after this spawn
+		cooldownUntil = System.currentTimeMillis() + SPAWN_COOLDOWN;
 		for (int i = 0; i < origin.getMob().getAmount(); i++) {
 			Location spawnLoc = this.loc;
 			if (origin.getRadius() > 0) {
@@ -84,8 +99,8 @@ public class MapSpawnerInstance {
 						.add(NeoRogue.gen.nextDouble(-radius, radius), 0, NeoRogue.gen.nextDouble(-radius, radius));
 			}
 			final Location fLoc = spawnLoc;
-			// Reserve the slot up front so canSpawn() stays accurate during the spawn delay
-			activeMobs += origin.getMob().getAmount();
+			// Reserve one slot per mob up front so canSpawn() stays accurate during the spawn delay
+			activeMobs++;
 			// Show a summoning telegraph for 1 second, then spawn the mob
 			new BukkitRunnable() {
 				int ticks = 0;
@@ -93,13 +108,13 @@ public class MapSpawnerInstance {
 				public void run() {
 					// Abort if the fight ended during the telegraph
 					if (!(s.getInstance() instanceof FightInstance fi) || !fi.isActive()) {
-						activeMobs -= origin.getMob().getAmount();
+						activeMobs--;
 						this.cancel();
 						return;
 					}
 					if (ticks >= SPAWN_DELAY) {
 						this.cancel();
-						if (!spawnMobAt(fLoc)) activeMobs -= origin.getMob().getAmount();
+						if (!spawnMobAt(fLoc)) activeMobs--;
 						return;
 					}
 					circ.play(ring, fLoc, LocalAxes.xz(), null);

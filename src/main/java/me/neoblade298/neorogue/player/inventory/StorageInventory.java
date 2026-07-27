@@ -69,7 +69,9 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		int itemSlot = 0;
 		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) continue;
-			contents[itemSlot++] = storage[i].getItem();
+			// Use getChoiceItem so the "Reforgeable with:" line (based on currently owned partners) shows
+			// here just like it does in the main inventory; plain getItem() would omit it.
+			contents[itemSlot++] = storage[i].getChoiceItem(data);
 		}
 
 		if (!isShop) {

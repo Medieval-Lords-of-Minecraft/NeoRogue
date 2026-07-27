@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -73,7 +72,7 @@ public class PointBlank extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE_SLAB,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage twice while above " + DescUtil.val("50%") + " stamina. Dealing damage via projectile from at most " + DescUtil.val(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage " + DescUtil.val(2) + " times while above " + DescUtil.val("50%") + " stamina. Projectile " + GlossaryTag.GENERAL.tag(this) + " damage dealt within " + DescUtil.val(thres) + " blocks of the target is increased by " +
 				DescUtil.val(damage) + ".");
 	}
 }

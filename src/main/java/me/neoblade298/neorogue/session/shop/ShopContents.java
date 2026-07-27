@@ -16,7 +16,6 @@ import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
-import me.neoblade298.neorogue.equipment.artifacts.Enderchest;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -143,11 +142,8 @@ public class ShopContents {
 
 	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
-		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) Enderchest.get() }) {
-			// Enderchest is priced at half the cost of the other shop artifacts
-			boolean isEnderchest = art instanceof Enderchest;
-			double priceMult = isEnderchest ? 0.5 * discountMult : discountMult;
-			int price = NeoRogue.gen.nextInt((int) (100 * priceMult), (int) (200 * priceMult));
+		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get() }) {
+			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
 			shopItems.put(idx++, new ShopItem(new SessionEquipment(art), price, false));
 		}
 	}

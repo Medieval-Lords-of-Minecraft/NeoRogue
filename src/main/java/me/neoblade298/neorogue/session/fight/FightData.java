@@ -540,6 +540,13 @@ public class FightData {
 	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
 			int decayPeriodTicks, int decayRepetitions, boolean isSecondary, String sourceKey, Component sourceDisplay) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
+		// During PlayerFightData construction (equipment/artifact initialize()), userData isn't registered
+		// yet, so getUserData returns null for self-applied shields. Fall back to this instance so
+		// start-of-fight shields (e.g. Ruby Shard/Cluster/Gem) still record their shieldsApplied stat.
+		if (applierData == null && this instanceof PlayerFightData
+				&& ((PlayerFightData) this).getPlayer().getUniqueId().equals(applier)) {
+			applierData = (PlayerFightData) this;
+		}
 		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		ShieldsEvent ev = new ShieldsEvent(applierData, this, shield, isSecondary);
 		if (applierData != null) {

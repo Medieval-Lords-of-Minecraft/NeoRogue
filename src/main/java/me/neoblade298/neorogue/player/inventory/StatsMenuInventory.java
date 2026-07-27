@@ -191,9 +191,9 @@ public class StatsMenuInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		// A double-click fires an extra DOUBLE_CLICK action on top of the two underlying clicks, which would
-		// cycle the mode a third time. Ignore it so only the real clicks count.
-		if (e.getAction() == InventoryAction.DOUBLE_CLICK) return;
+		// A double-click fires an extra COLLECT_TO_CURSOR action on top of the two underlying clicks, which
+		// would cycle the mode a third time. Ignore it so only the real clicks count.
+		if (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.NOTHING) return;
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getSlot() == BACK_SLOT) {
 			if (prevInventory != null) prevInventory.run();

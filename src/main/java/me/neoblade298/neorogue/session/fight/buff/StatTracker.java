@@ -26,11 +26,7 @@ public class StatTracker {
             statusOrigins.put(type, new BuffStatTracker(type, false));
         }
         
-        // Inverted statuses (negative defense buff or negative damage buff)
         statusOrigins.put(StatusType.FROST, new BuffStatTracker(StatusType.FROST, false, true));
-        // Burn is a fire-defense debuff the player lands on enemies, so the extra damage is player-facing
-        // "damage dealt" even though the underlying buff is a defense debuff. Keep the "Damage Increased"
-        // display but override the column to DAMAGE_DEALT.
         statusOrigins.put(StatusType.BURN, new BuffStatTracker(StatusType.BURN, false, true)
                 .category(StatCategory.DAMAGE_DEALT));
         statusOrigins.put(StatusType.CONCUSSED, new BuffStatTracker(StatusType.CONCUSSED.name(),
@@ -38,7 +34,9 @@ public class StatTracker {
                 .category(StatCategory.DAMAGE_TAKEN));
         statusOrigins.put(StatusType.CORRUPTION, new BuffStatTracker(StatusType.CORRUPTION, false, true));
         statusOrigins.put(StatusType.INSANITY, new BuffStatTracker(StatusType.INSANITY, true, true));
-        statusOrigins.put(StatusType.INJURY, new BuffStatTracker(StatusType.INJURY, true, true));
+        statusOrigins.put(StatusType.INJURY, new BuffStatTracker(StatusType.INJURY.name(),
+                StatusType.INJURY.ctag.append(Component.text(" - Damage Buffed", NamedTextColor.GRAY)), true, false)
+                .category(StatCategory.DAMAGE_DEALT));
         statusOrigins.put(StatusType.CORRUPTION, new BuffStatTracker(StatusType.CORRUPTION, false, true));
         statusOrigins.put(StatusType.WEAKENED, new BuffStatTracker(StatusType.WEAKENED, false, false).shouldCombine(false));
     }

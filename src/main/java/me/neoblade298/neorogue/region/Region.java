@@ -971,6 +971,7 @@ public class Region {
 	// Called whenever a player advances to a new node
 	public void update(Node node, NodeSelectInstance inst) {
 		// Add buttons, lecterns, and heads to new paths and generate them
+		org.bukkit.block.Lectern temp = null;
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s, type);
 
@@ -986,9 +987,13 @@ public class Region {
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
 					|| dest.getType() == NodeType.BOSS) {
+						System.out.println("Node type: " + dest.getType() + " at row: " + dest.getRow() + ", lane: " + dest.getLane());
 				loc.add(0, -2, -1);
 				Block b = loc.getBlock();
-				b.setType(Material.LECTERN);
+				System.out.println(b.getType());
+				if (b.getType() != Material.LECTERN) {
+					b.setType(Material.LECTERN);
+				}
 				Lectern lec = (Lectern) b.getBlockData();
 				lec.setFacing(BlockFace.NORTH);
 				b.setBlockData(lec);
@@ -1002,6 +1007,8 @@ public class Region {
 				// which made the book unreliable for lecterns placed only once (notably the boss lectern).
 				if (b.getState(false) instanceof org.bukkit.block.Lectern lc) {
 					lc.getInventory().addItem(book);
+					temp = lc;
+					System.out.println(lc.getInventory().getItem(0).getType());
 				}
 			}
 
@@ -1031,6 +1038,11 @@ public class Region {
 		}
 
 		blackTicks.clear();
+
+		if (temp != null) {
+			System.out.println("1: " + temp);
+			System.out.println("2: " + temp.getInventory().getItem(0).getType());
+		}
 	}
 	
 	public void tickParticles(Node curr) {

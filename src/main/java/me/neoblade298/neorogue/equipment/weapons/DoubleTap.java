@@ -25,7 +25,7 @@ public class DoubleTap extends Bow {
 	public DoubleTap(boolean isUpgraded) {
 		super(ID, "Double Tap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 35 : 30, 1, 0, 12, 0, 1.4));
+				EquipmentProperties.ofBow(isUpgraded ? 35 : 25, 1, 0, 12, 0, 1.4));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class DoubleTap extends Bow {
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			am.addCount(1);
 			if (am.getCount() >= THRESHOLD) {
-				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(-properties.get(PropertyType.DAMAGE) / 2));
+				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(-properties.get(PropertyType.DAMAGE)));
 				am.addCount(-THRESHOLD);
 				data.addExtraShot(second);
 			}
@@ -61,6 +61,6 @@ public class DoubleTap extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Every third shot fires a second projectile after a short delay that deals half bow damage.");
+		item = createItem(Material.BOW, "Every third shot fires a second projectile after a short delay that deals only ammunition damage.");
 	}
 }

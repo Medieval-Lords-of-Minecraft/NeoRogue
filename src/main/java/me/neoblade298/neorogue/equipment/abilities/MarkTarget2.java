@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -47,14 +46,15 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class MarkTarget2 extends Equipment {
 	private static final String ID = "MarkTarget2";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	private int rend, damage;
+	private int rend;
+	private double damage;
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.CRIMSON_SPORE).count(50).spread(0.3, 0.3).offsetY(2);
 	
 	public MarkTarget2(boolean isUpgraded) {
 		super(ID, "Mark Target II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
 		rend = isUpgraded ? 18 : 12;
-		damage = 3;
+		damage = isUpgraded ? 1.5 : 1.0;
 	}
 	
 	public static Equipment get() {

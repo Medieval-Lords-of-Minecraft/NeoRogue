@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -9,9 +7,11 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.weapons.Quickfire;
 import me.neoblade298.neorogue.equipment.weapons.RapidFire;
 import me.neoblade298.neorogue.equipment.weapons.SerratedArrow;
+import me.neoblade298.neorogue.equipment.weapons.StoneArrow;
 import me.neoblade298.neorogue.equipment.weapons.Volley;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -41,7 +41,7 @@ public class AgilityTraining extends Equipment {
 	public void setupReforges() {
 		addReforge(PointBlank.get(), Grit.get());
 		addReforge(Quickfire.get(), Volley.get(), RapidFire.get());
-		addReforge(WoodenArrow.get(), SerratedArrow.get());
+		addReforge(WoodenArrow.get(), SerratedArrow.get(), StoneArrow.get());
 	}
 	
 	public static Equipment get() {

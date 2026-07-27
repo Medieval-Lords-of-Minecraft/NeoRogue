@@ -20,15 +20,15 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 public class SerratedArrow extends Ammunition {
 	private static final String ID = "SerratedArrow";
 
-	private int damage;
+	private double damage;
 	private int stacks;
 	
 	public SerratedArrow(boolean isUpgraded) {
 		super(ID, "Serrated Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(8, 0.1, DamageType.PIERCING));
-				damage = 2;
-				stacks = isUpgraded ? 3 : 2;
+				damage = isUpgraded ? 0.9 : 0.6;
+				stacks = 1;
 	}
 	
 	public static Equipment get() {

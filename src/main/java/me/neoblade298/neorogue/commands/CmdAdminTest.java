@@ -1,46 +1,44 @@
 package me.neoblade298.neorogue.commands;
 
-import java.util.ArrayList;
-
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.equipment.Artifact;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminTest extends Subcommand {
 
 	public CmdAdminTest(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		ArrayList<String> artifactIds = new ArrayList<String>();
-		for (Equipment eq : Equipment.getAll()) {
-			if (eq instanceof Artifact) artifactIds.add(eq.getId());
-		}
-		args.add(new Arg("artifact id", false).setTabOptions(artifactIds));
 		this.enableTabComplete();
 	}
 
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
-		Session sess = SessionManager.getSession(p);
-		if (sess == null) {
-			Util.displayError(p, "You're not in a session!");
+		Block b = p.getTargetBlockExact(5);
+		if (b == null || b.getType() != Material.LECTERN) {
+			Util.displayError(p, "You must be looking at a lectern!");
 			return;
 		}
-		PlayerSessionData data = sess.getData(p.getUniqueId());
-		if (args.length == 0) {
-			System.out.println(data.getArtifactDroptable());
-			Util.msg(p, data.getArtifactDroptable().toString());
+
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta meta = (BookMeta) book.getItemMeta();
+		meta.setAuthor("MLMC");
+		meta.setTitle("Fight Info");
+		book.setItemMeta(meta);
+
+		// Write to the live tile entity (getState(false)) rather than a snapshot so the change persists
+		if (!(b.getState(false) instanceof org.bukkit.block.Lectern lec)) {
+			Util.displayError(p, "Failed to access the lectern!");
+			return;
 		}
-		else {
-			data.getArtifactDroptable().remove((Artifact) Equipment.get(args[0], false));
-		}
+		lec.getInventory().clear();
+		lec.getInventory().addItem(book);
+		Util.msg(p, "Placed a book into the lectern.");
 	}
 }
