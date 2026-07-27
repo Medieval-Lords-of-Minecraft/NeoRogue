@@ -136,7 +136,7 @@ public class StatsMenuInventory extends CoreInventory {
 				.append(Component.text(stats.bestStreakAnyNotoriety(ec, mode), NamedTextColor.AQUA))
 				.append(Component.text(" (any notoriety)", NamedTextColor.DARK_GRAY))));
 		lore.add(line(Component.text("Total playtime: ", NamedTextColor.GRAY)
-				.append(Component.text(SessionSnapshot.formatPlaytime(stats.totalPlaytime(ec, null, false, mode)), NamedTextColor.AQUA))));
+				.append(Component.text(SessionSnapshot.formatPlaytime(target != null ? target.getClassPlaytime(ec) : 0L), NamedTextColor.AQUA))));
 		lore.add(Component.empty());
 		lore.add(line(Component.text("By notoriety ", NamedTextColor.GRAY)
 				.append(Component.text("(lifetime | month | streak cur/best)", NamedTextColor.DARK_GRAY))));

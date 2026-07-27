@@ -21,7 +21,7 @@ public class WarmongersChainmail extends Equipment {
 	public WarmongersChainmail(boolean isUpgraded) {
 		super(ID, "Warmonger's Chainmail", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		shields = isUpgraded ? 8 : 5;
+		shields = isUpgraded ? 6 : 4;
 	}
 
 	public static Equipment get() {
@@ -43,6 +43,6 @@ public class WarmongersChainmail extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CHAINMAIL_CHESTPLATE, "Gain " + GlossaryTag.SHIELDS.tag(this, shields) +
 				" " + DescUtil.duration(6) + " every time you gain a stack of " + GlossaryTag.BERSERK.tag(this) +
-				". Multiplied by stacks gained.");
+				".");
 	}
 }

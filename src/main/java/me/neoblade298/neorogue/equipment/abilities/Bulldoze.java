@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -103,7 +102,7 @@ public class Bulldoze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_CHESTPLATE,
-				"On cast, gain speed " + DescUtil.duration(3) + ", dealing " + GlossaryTag.BLUNT.tag(this, damage) + " damage plus any "
-						+ GlossaryTag.SHIELDS.tag(this) + " you have to enemies you touch and knock them back, once per enemy.");
+				"Gain speed " + DescUtil.duration(3) + ". During this time, deal " + GlossaryTag.BLUNT.tag(this, damage) + " damage plus your "
+						+ GlossaryTag.SHIELDS.tag(this) + " to enemies you touch and knock them back, once per enemy.");
 	}
 }

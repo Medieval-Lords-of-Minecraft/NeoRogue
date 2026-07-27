@@ -107,6 +107,10 @@ public class Session {
 	// last resumed, or 0 when paused; getPlaytime() sums the accumulated total with the running segment.
 	private long playtime = 0L;
 	private long playtimeResumed = 0L;
+	// How much of getPlaytime() has already been committed to each party member's lifetime playtime
+	// stat. commitPlaytime() only credits the delta since this marker, so repeated saves never double
+	// count. On load it's set to the restored playtime, since prior saves already committed that time.
+	private long playtimeCommitted = 0L;
 	private boolean busy;
 	// Set once the session is torn down (endSession or plugin disable). Prevents orphaned delayed
 	// transition runnables (e.g. handleWin's 60-tick setInstance) from resurrecting a dead session.
@@ -270,6 +274,8 @@ public class Session {
 					// Restore accumulated playtime; the timer is resumed on the main thread after load.
 					playtime = getPlaytimeFromRow(sessSet);
 					playtimeResumed = 0L;
+					// All restored playtime was already committed to lifetime stats on prior saves.
+					playtimeCommitted = playtime;
 
 					// Read instanceData before Region construction closes the ResultSet
 					String instanceData = sessSet.getString("instanceData");
@@ -374,6 +380,8 @@ public class Session {
 
 	// fightHp: captured live health used to lower saved HP when a session ends mid-fight (null otherwise).
 	public void save(Connection con, HashMap<UUID, Double> fightHp) {
+		// Tutorial sessions are never persisted to a save slot.
+		if (sessionType == SessionType.TUTORIAL) return;
 		// Fights don't save session/player data (so reloading restarts the fight), but the region nodes must
 		// still save so committed-path pruning persists even when the player enters a fight. When ending
 		// mid-fight, also lower saved HP to the captured live health.
@@ -915,6 +923,10 @@ public class Session {
 		if (inst instanceof EndRunInstance)
 			return true;
 
+		// Bank the playtime accrued since the last save into each member's lifetime stat. Done here on
+		// the main thread (the save below runs async) to keep PlayerData mutations off the async thread.
+		commitPlaytime();
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -1330,9 +1342,26 @@ public class Session {
 			playtimeResumed = 0L;
 		}
 	}
+
+	// Credits the playtime accrued since the last commit to each party member's lifetime playtime stat,
+	// keyed by the class they're currently playing (plus the global total). Called on every session save
+	// and on cleanup, so playtime is banked even for runs that are abandoned rather than finished. The
+	// committed marker guards against double counting across repeated saves.
+	public void commitPlaytime() {
+		if (sessionType == SessionType.TUTORIAL) return;
+		long now = getPlaytime();
+		long delta = now - playtimeCommitted;
+		if (delta <= 0L) return;
+		playtimeCommitted = now;
+		for (PlayerSessionData psd : party.values()) {
+			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
+			if (pd != null) pd.addPlaytime(psd.getPlayerClass(), delta);
+		}
+	}
 	
 	public void cleanup(boolean pluginDisable) {
 		ended = true;
+		commitPlaytime();
 		pausePlaytime();
 		inst.unloadChunks();
 		inst.cleanup(pluginDisable);

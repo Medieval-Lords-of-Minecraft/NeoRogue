@@ -60,6 +60,8 @@ public class PlayerData {
 		int exp = 0;
 		int points = 0;
 		int notorietyMax = 0;
+		// Lifetime active playtime (ms) accumulated on this class, committed incrementally as runs save.
+		long playtime = 0L;
 	}
 
 	private ClassProgression getOrCreateProgression(EquipmentClass ec) {
@@ -184,6 +186,8 @@ public class PlayerData {
 						prog.exp = classRs.getInt("exp");
 						prog.points = classRs.getInt("points");
 						prog.notorietyMax = classRs.getInt("notoriety_max");
+						// Defensive read: pre-migration saves may not have the playtime column yet.
+						try { prog.playtime = classRs.getLong("playtime"); } catch (SQLException ignore) {}
 					}
 				}
 			}
@@ -923,11 +927,25 @@ public class PlayerData {
 		return new RunStats(runResults);
 	}
 
-	// Total active playtime (ms) across every finished run this player has recorded.
+	// Lifetime active playtime (ms) for a class, or the global total when ec is null. Committed
+	// incrementally as runs save (see Session.commitPlaytime), so it also counts abandoned runs.
+	public long getClassPlaytime(EquipmentClass ec) {
+		ClassProgression prog = progression.get(ec);
+		return prog == null ? 0L : prog.playtime;
+	}
+
+	// Total active playtime (ms) across every class this player has played.
 	public long getTotalPlaytime() {
-		long total = 0L;
-		for (RunStats.RunRecord r : runResults) total += r.playtime;
-		return total;
+		return getClassPlaytime(null);
+	}
+
+	// Adds a chunk of active playtime (ms) to a class's lifetime total and the global total, then
+	// persists. Called by Session.commitPlaytime with the delta accumulated since the last commit.
+	public void addPlaytime(EquipmentClass ec, long deltaMs) {
+		if (deltaMs <= 0L) return;
+		getOrCreateProgression(ec).playtime += deltaMs;
+		if (ec != null) getOrCreateProgression(null).playtime += deltaMs;
+		saveClassProgressionAsync();
 	}
 
 	// Records one finished run (win or lose) for this player and persists it. Callers should skip
@@ -990,6 +1008,7 @@ public class PlayerData {
 			copy.exp = orig.exp;
 			copy.points = orig.points;
 			copy.notorietyMax = orig.notorietyMax;
+			copy.playtime = orig.playtime;
 			snapshot.put(entry.getKey(), copy);
 		}
 		new BukkitRunnable() {
@@ -1011,6 +1030,7 @@ public class PlayerData {
 								.addValue("exp", prog.exp)
 								.addValue("points", prog.points)
 								.addValue("notoriety_max", prog.notorietyMax)
+								.addValue("playtime", prog.playtime)
 								.addRow();
 					}
 					try (PreparedStatement ps = sql.build(con)) {
@@ -1198,6 +1218,7 @@ public class PlayerData {
 					.addValue("exp", prog.exp)
 					.addValue("points", prog.points)
 					.addValue("notoriety_max", prog.notorietyMax)
+					.addValue("playtime", prog.playtime)
 					.addRow();
 		}
 		stmts.add(classSql.build(con));
@@ -1426,6 +1447,42 @@ public class PlayerData {
 					}
 				} catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to reset run history for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// Resets a single class's achievements and level/exp/points progression, leaving account-wide unlock
+	// nodes, flags, global achievements, and every other class untouched. Clears the state directly and
+	// persists it immediately (like resetProgress) so the reset reaches the DB without waiting for logout.
+	public void resetClassProgress(EquipmentClass ec) {
+		if (ec == null) return;
+		classAchievements.remove(ec);
+		progression.put(ec, new ClassProgression());
+		saveAchievementsAsync();
+		saveClassProgressionAsync();
+	}
+
+	// Clears one class's finished-run history (backing that class's winrate/winstreak stats) in memory and
+	// in the DB. Like resetRunHistory, the DB rows must be deleted or the in-memory clear is undone on login.
+	public void resetClassRunHistory(EquipmentClass ec) {
+		if (ec == null) return;
+		runResults.removeIf(r -> r.playerClass == ec);
+		final String uuidStr = uuid.toString();
+		final String classKey = ec.name();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_run_results WHERE uuid = ? AND playerClass = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.setString(2, classKey);
+						clear.executeUpdate();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to reset class run history for " + uuidStr);
 					ex.printStackTrace();
 				}
 			}

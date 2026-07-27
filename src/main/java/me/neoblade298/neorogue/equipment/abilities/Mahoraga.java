@@ -36,7 +36,7 @@ public class Mahoraga extends Equipment {
 		shields = 75;
 		refresh = 10;
 		berserk = isUpgraded ? 3 : 2;
-		thres = isUpgraded ? 30 : 25;
+		thres = isUpgraded ? 25 : 30;
 		heal = 3;
 	}
 
@@ -48,6 +48,8 @@ public class Mahoraga extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
+		// Timestamp (ms) of the last heal-over-time start, gating new heals to once per second.
+		long[] lastHeal = { 0L };
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			Player p = data.getPlayer();
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
@@ -100,13 +102,14 @@ public class Mahoraga extends Equipment {
 			}
 
 			data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
-			if (data.getStatus(StatusType.BERSERK).getStacks() >= thres) {
+			if (data.getStatus(StatusType.BERSERK).getStacks() >= thres && System.currentTimeMillis() - lastHeal[0] >= 1000) {
+				lastHeal[0] = System.currentTimeMillis();
 				Sounds.fire.play(p, p);
 				data.addTask(new BukkitRunnable() {
 					private int count;
 
 					public void run() {
-						data.addHealth(heal / 5, Mahoraga.this);
+						data.addHealth(heal / 5.0, Mahoraga.this);
 						if (++count >= 5) {
 							cancel();
 						}
@@ -126,6 +129,6 @@ public class Mahoraga extends Equipment {
 						+ GlossaryTag.PROTECT.tag(this, 1) + "/" + GlossaryTag.SHELL.tag(this, 1)
 						+ " and " + GlossaryTag.BERSERK.tag(this, berserk) + ". Above "
 						+ GlossaryTag.BERSERK.tag(this, thres) + ", heal " + DescUtil.val(heal)
-						+ " over " + DescUtil.val("5s") + ".");
+						+ " over " + DescUtil.val("5s") + " (<white>1s</white> cd).");
 	}
 }

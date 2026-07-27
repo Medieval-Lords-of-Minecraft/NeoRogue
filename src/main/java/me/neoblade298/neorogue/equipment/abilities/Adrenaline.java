@@ -75,6 +75,7 @@ public class Adrenaline extends Equipment {
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);
+				setDisabled(true);
 				return TriggerResult.remove();
 			};
 		}

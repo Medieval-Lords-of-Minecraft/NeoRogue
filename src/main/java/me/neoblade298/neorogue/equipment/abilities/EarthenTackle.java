@@ -42,7 +42,7 @@ public class EarthenTackle extends Equipment {
 	
 	public EarthenTackle(boolean isUpgraded) {
 		super(ID, "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 12, 0, hc.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(8, 15, 12, 0, hc.range));
 		damage = isUpgraded ? 240 : 160;
 		concussed = isUpgraded? 15 : 10;
 		
@@ -116,9 +116,8 @@ public class EarthenTackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.val(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
-				" damage in an area "
-						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed) + ", and become invulnerable [" + DescUtil.val("0.5s") + "]. "
-						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.val(10) + ".");
+				"On cast, " + GlossaryTag.DASH.tag(this) + " forward, stopping at the first enemy hit to deal " + DescUtil.val(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
+				" damage and apply " + GlossaryTag.CONCUSSED.tag(this, concussed) + " in an area. "
+						+ "On hit, reduce this ability's cooldown by " + DescUtil.val(10) + ".");
 	}
 }
