@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Fury extends Equipment {
 	private static final String ID = "Fury";
-	private int damage, berserk, heal, berserkHeal;
+	private int damage, berserk, berserkHeal, cdReduce;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST),
 			explode = new ParticleContainer(Particle.EXPLOSION);
@@ -34,9 +34,9 @@ public class Fury extends Equipment {
 		super(ID, "Fury", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, 0));
 		damage = 120;
-		berserk = isUpgraded ? 10 : 15;
-		heal = 1;
-		berserkHeal = isUpgraded ? 3 : 2;
+		berserk = isUpgraded ? 12 : 18;
+		berserkHeal = 1;
+		cdReduce = 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		explode.count(25).spread(0.5, 0.5).speed(0.1);
@@ -66,13 +66,11 @@ public class Fury extends Equipment {
 					ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, eq)));
 					hit.play(p, target);
 					Sounds.anvil.play(p, target);
+					data.applyStatus(StatusType.BERSERK, data, 1, -1, Fury.this);
 					if (isBerserk) {
 						Sounds.explode.play(p, target);
 						explode.play(p, target);
 						FightInstance.giveHeal(p, berserkHeal, Fury.this, p);
-					}
-					else {
-						data.applyStatus(StatusType.BERSERK, data, 1, -1, Fury.this);
 					}
 					return TriggerResult.remove();
 				});
@@ -84,13 +82,13 @@ public class Fury extends Equipment {
 		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
 			boolean isBerserkAfter = data.hasStatus(StatusType.BERSERK) && data.getStatus(StatusType.BERSERK).getStacks() >= berserk;
 			if (!isBerserk && isBerserkAfter) {
-				this.cooldown = 2.5;
-				this.staminaCost = 0;
+				this.cooldown = 5 - cdReduce;
+				this.staminaCost = 15;
 				isBerserk = true;
 			}
 			else if (isBerserk && !isBerserkAfter) {
 				this.cooldown = 5;
-				this.staminaCost = 50;
+				this.staminaCost = 30;
 				isBerserk = false;
 			}
 			return super.canTrigger(p, data, in);
@@ -100,10 +98,9 @@ public class Fury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage, heals for " + DescUtil.val(
-				heal) + ", and grants"
+				"On cast, your next basic attack deals " + DescUtil.val(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
-				"At " + DescUtil.val(berserk) + " stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to " + DescUtil.val(
+				"At " + DescUtil.val(berserk) + " stacks, the cooldown of this skill is reduced by " + DescUtil.val(cdReduce) + ", the cost is halved, and your next basic attack heals for " + DescUtil.val(
 				berserkHeal) + ".");
 	}
 }

@@ -27,8 +27,8 @@ public class PoisonPowder extends Equipment {
 	public PoisonPowder(boolean isUpgraded) {
 		super(ID, "Poison Powder", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 15, 0));
-		amount = isUpgraded ? 9 : 6;
-		poisonDuration = 60;
+		amount = isUpgraded ? 5 : 3;
+		poisonDuration = 120;
 	}
 	
 	public static Equipment get() {

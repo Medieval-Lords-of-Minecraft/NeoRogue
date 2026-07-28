@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorShieldsPotion extends Consumable {
 	private static final String ID = "MinorShieldsPotion";
-	private double shields;
+	private int shields;
 	
 	public MinorShieldsPotion(boolean isUpgraded) {
 		super(ID, "Minor Shields Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);

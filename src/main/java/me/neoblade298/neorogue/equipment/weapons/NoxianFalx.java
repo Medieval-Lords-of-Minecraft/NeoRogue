@@ -19,14 +19,15 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class NoxianFalx extends Equipment {
 	private static final String ID = "NoxianFalx";
-	private int stacks, poisonDuration;
+	private int stacks, poisonStacks, poisonDuration;
 	
 	public NoxianFalx(boolean isUpgraded) {
 		super(ID, "Noxian Falx", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1.25, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stacks = isUpgraded ? 3 : 2;
-		poisonDuration = 40;
+		poisonStacks = isUpgraded ? 2 : 1;
+		poisonDuration = 80;
 	}
 	
 	public static Equipment get() {
@@ -49,7 +50,7 @@ public class NoxianFalx extends Equipment {
 					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, this);
 				}
 				if (fd.hasStatus(StatusType.POISON)) {
-					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, stacks, poisonDuration, this);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poisonStacks, poisonDuration, this);
 				}
 			}
 			
@@ -62,6 +63,6 @@ public class NoxianFalx extends Equipment {
 		item = createItem(Material.NETHERITE_SWORD,
 				"Applies " + GlossaryTag.INSANITY.tag(this, stacks) + ", " + 
 				GlossaryTag.ELECTRIFIED.tag(this, stacks) + ", and " + 
-				GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] on hit if the enemy already has the respective status.");
+				GlossaryTag.POISON.tag(this, poisonStacks) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "] on hit if the enemy already has the respective status.");
 	}
 }

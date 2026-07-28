@@ -39,8 +39,8 @@ public class CripplingPoison extends Equipment {
 		super(ID, "Crippling Poison", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 20, 15, tp.range));
 
-		inc = 12;
-		poisonThreshold = isUpgraded ? 10 : 15;
+		inc = 35;
+		poisonThreshold = isUpgraded ? 3 : 5;
 	}
 
 	public static Equipment get() {

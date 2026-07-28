@@ -277,6 +277,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		if (slots[slot] != null) removeEquipment(es, slot);
 		slots[slot] = se;
 
+		// Storage items are never counted toward equipped totals
+		if (es == EquipSlot.STORAGE) return;
+
 		switch (se.getEquipment().getType()) {
 		case ARMOR:
 			armorEquipped++;
@@ -300,6 +303,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		SessionEquipment se = slots[slot];
 		if (se == null) return null;
 		slots[slot] = null;
+
+		// Storage items are never counted toward equipped totals
+		if (es == EquipSlot.STORAGE) return se;
 
 		switch (se.getEquipment().getType()) {
 		case ARMOR:

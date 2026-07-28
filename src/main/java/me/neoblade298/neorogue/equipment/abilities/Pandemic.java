@@ -54,8 +54,8 @@ public class Pandemic extends Equipment implements Power {
 				EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, radius));
 		bonusDamage = isUpgraded ? 0.9 : 0.6;
 		bonusPoison = isUpgraded ? 35 : 25;
-		areaPoison = isUpgraded ? 25 : 15;
-		poisonDuration = 60;
+		areaPoison = isUpgraded ? 13 : 8;
+		poisonDuration = 120;
 	}
 	
 	public static Equipment get() {
