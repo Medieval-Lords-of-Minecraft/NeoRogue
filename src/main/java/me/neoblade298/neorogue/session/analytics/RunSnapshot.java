@@ -16,12 +16,13 @@ public class RunSnapshot {
 	public final int partySize;
 	public final int notoriety;
 	public final boolean endless;
+	public final boolean competitive;
 	public final long playtime;
 	public final boolean won;
 
 	public RunSnapshot(String runId, long timestamp, int balanceVersion, String host, int slot, String sessionType,
 			String regionType, int regionsCompleted, int level, int partySize, int notoriety, boolean endless,
-			long playtime, boolean won) {
+			boolean competitive, long playtime, boolean won) {
 		this.runId = runId;
 		this.timestamp = timestamp;
 		this.balanceVersion = balanceVersion;
@@ -34,6 +35,7 @@ public class RunSnapshot {
 		this.partySize = partySize;
 		this.notoriety = notoriety;
 		this.endless = endless;
+		this.competitive = competitive;
 		this.playtime = playtime;
 		this.won = won;
 	}

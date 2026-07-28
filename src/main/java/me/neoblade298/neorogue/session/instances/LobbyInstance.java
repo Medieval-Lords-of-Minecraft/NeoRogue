@@ -160,6 +160,11 @@ public abstract class LobbyInstance extends Instance {
 		broadcast(NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 	}
 
+	// Clears any readiness state so players must re-confirm they are ready. No-op by default;
+	// overridden by lobbies that track per-player readiness (e.g. NewLobbyInstance).
+	public void resetReadiness() {
+	}
+
 	public HashSet<UUID> getInLobby() {
 		return inLobby;
 	}

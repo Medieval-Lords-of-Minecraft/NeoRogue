@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.RunStats;
 import me.neoblade298.neorogue.player.RunStats.PartyMode;
+import me.neoblade298.neorogue.player.RunStats.RunMode;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -35,6 +36,7 @@ public class StatsMenuInventory extends CoreInventory {
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 	private static final int GLOBAL_SLOT = 4;
 	private static final int MODE_SLOT = 0;
+	private static final int RUNMODE_SLOT = 8;
 	private static final int BACK_SLOT = 22;
 	private static final int[] CLASS_SLOTS = { 10, 12, 14, 16 };
 	private static final EquipmentClass[] CLASSES = { EquipmentClass.WARRIOR, EquipmentClass.THIEF,
@@ -46,6 +48,8 @@ public class StatsMenuInventory extends CoreInventory {
 	private final PlayerData target;
 	// Current party-size filter applied to every tile.
 	private PartyMode mode = PartyMode.COMBINED;
+	// Current casual/competitive filter applied to every tile.
+	private RunMode runMode = RunMode.COMBINED;
 
 	public StatsMenuInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Statistics", NamedTextColor.DARK_AQUA)));
@@ -72,6 +76,7 @@ public class StatsMenuInventory extends CoreInventory {
 		RunStats stats = target != null ? target.getRunStats() : new RunStats(new ArrayList<RunStats.RunRecord>());
 
 		inv.setItem(MODE_SLOT, buildModeItem());
+		inv.setItem(RUNMODE_SLOT, buildRunModeItem());
 		inv.setItem(GLOBAL_SLOT, buildScopeItem(stats, null, Material.NETHER_STAR, "Global",
 				NamedTextColor.GOLD));
 		Material[] icons = { Material.IRON_SWORD, Material.IRON_INGOT, Material.BOW, Material.BLAZE_ROD };
@@ -112,6 +117,36 @@ public class StatsMenuInventory extends CoreInventory {
 		}
 	}
 
+	// The run-mode toggle button. Click cycles Combined -> Casual -> Competitive, highlighting the active one.
+	private ItemStack buildRunModeItem() {
+		ItemStack item = CoreInventory.createButton(Material.DIAMOND_SWORD,
+				Component.text("Mode: " + runModeLabel(runMode), NamedTextColor.LIGHT_PURPLE));
+		ItemMeta meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		List<Component> lore = new ArrayList<Component>();
+		for (RunMode m : RunMode.values()) {
+			boolean active = m == runMode;
+			lore.add(line(Component.text((active ? "\u25B6 " : "  ") + runModeLabel(m),
+					active ? NamedTextColor.WHITE : NamedTextColor.DARK_GRAY)));
+		}
+		lore.add(Component.empty());
+		lore.add(line(Component.text("Click to cycle", NamedTextColor.YELLOW)));
+		meta.lore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	private static String runModeLabel(RunMode mode) {
+		switch (mode) {
+		case CASUAL:
+			return "Casual";
+		case COMPETITIVE:
+			return "Competitive";
+		default:
+			return "Combined";
+		}
+	}
+
 	// Builds a scope tile (global or a single class). ec == null means global (all classes).
 	private ItemStack buildScopeItem(RunStats stats, EquipmentClass ec, Material icon, String title,
 			NamedTextColor titleColor) {
@@ -120,7 +155,7 @@ public class StatsMenuInventory extends CoreInventory {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		List<Component> lore = new ArrayList<Component>();
 
-		RunStats.Winrate lifetime = stats.winrate(ec, null, false, mode);
+		RunStats.Winrate lifetime = stats.winrate(ec, null, false, mode, runMode);
 		if (!lifetime.hasRuns()) {
 			lore.add(line(Component.text("No " + modeLabel(mode).toLowerCase() + " runs recorded yet.",
 					NamedTextColor.GRAY)));
@@ -129,11 +164,11 @@ public class StatsMenuInventory extends CoreInventory {
 			return item;
 		}
 
-		RunStats.Winrate month = stats.winrate(ec, null, true, mode);
+		RunStats.Winrate month = stats.winrate(ec, null, true, mode, runMode);
 		lore.add(line(Component.text("Lifetime winrate: ", NamedTextColor.GRAY).append(winrate(lifetime))));
 		lore.add(line(Component.text("This month: ", NamedTextColor.GRAY).append(winrate(month))));
 		lore.add(line(Component.text("Best winstreak: ", NamedTextColor.GRAY)
-				.append(Component.text(stats.bestStreakAnyNotoriety(ec, mode), NamedTextColor.AQUA))
+				.append(Component.text(stats.bestStreakAnyNotoriety(ec, mode, runMode), NamedTextColor.AQUA))
 				.append(Component.text(" (any notoriety)", NamedTextColor.DARK_GRAY))));
 		lore.add(line(Component.text("Total playtime: ", NamedTextColor.GRAY)
 				.append(Component.text(SessionSnapshot.formatPlaytime(target != null ? target.getClassPlaytime(ec) : 0L), NamedTextColor.AQUA))));
@@ -141,10 +176,10 @@ public class StatsMenuInventory extends CoreInventory {
 		lore.add(line(Component.text("By notoriety ", NamedTextColor.GRAY)
 				.append(Component.text("(lifetime | month | streak cur/best)", NamedTextColor.DARK_GRAY))));
 
-		for (int notoriety : stats.playedNotorieties(ec, mode)) {
-			RunStats.Winrate life = stats.winrate(ec, notoriety, false, mode);
-			RunStats.Winrate mon = stats.winrate(ec, notoriety, true, mode);
-			RunStats.Streak streak = stats.streak(ec, notoriety, mode);
+		for (int notoriety : stats.playedNotorieties(ec, mode, runMode)) {
+			RunStats.Winrate life = stats.winrate(ec, notoriety, false, mode, runMode);
+			RunStats.Winrate mon = stats.winrate(ec, notoriety, true, mode, runMode);
+			RunStats.Streak streak = stats.streak(ec, notoriety, mode, runMode);
 			Component monthPart = mon.hasRuns() ? winrate(mon) : Component.text("-", NamedTextColor.DARK_GRAY);
 			lore.add(line(Component.text("  N" + notoriety + ": ", NamedTextColor.WHITE)
 					.append(winrate(life))
@@ -158,9 +193,9 @@ public class StatsMenuInventory extends CoreInventory {
 		lore.add(line(Component.text("Playtime by notoriety ", NamedTextColor.GRAY)
 				.append(Component.text("(total | fastest clear)", NamedTextColor.DARK_GRAY))));
 
-		for (int notoriety : stats.playedNotorieties(ec, mode)) {
-			long total = stats.totalPlaytime(ec, notoriety, false, mode);
-			long fastest = stats.fastestClear(ec, notoriety, mode);
+		for (int notoriety : stats.playedNotorieties(ec, mode, runMode)) {
+			long total = stats.totalPlaytime(ec, notoriety, false, mode, runMode);
+			long fastest = stats.fastestClear(ec, notoriety, mode, runMode);
 			Component fastestPart = fastest > 0L
 					? Component.text(SessionSnapshot.formatPlaytime(fastest), NamedTextColor.AQUA)
 					: Component.text("-", NamedTextColor.DARK_GRAY);
@@ -202,6 +237,11 @@ public class StatsMenuInventory extends CoreInventory {
 		else if (e.getSlot() == MODE_SLOT) {
 			PartyMode[] modes = PartyMode.values();
 			mode = modes[(mode.ordinal() + 1) % modes.length];
+			setupInventory();
+		}
+		else if (e.getSlot() == RUNMODE_SLOT) {
+			RunMode[] runModes = RunMode.values();
+			runMode = runModes[(runMode.ordinal() + 1) % runModes.length];
 			setupInventory();
 		}
 	}

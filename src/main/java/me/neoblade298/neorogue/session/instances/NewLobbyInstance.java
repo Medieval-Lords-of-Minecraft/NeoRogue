@@ -372,6 +372,14 @@ public class NewLobbyInstance extends LobbyInstance {
         }
     }
 
+    @Override
+    public void resetReadiness() {
+        if (ready.isEmpty()) return;
+        ready.clear();
+        broadcast("<yellow>Settings changed!</yellow> Everyone must ready up again.");
+        updateBoardLines();
+    }
+
     private void readyPlayer(Player p) {
         UUID uuid = p.getUniqueId();
         if (s.isBusy())

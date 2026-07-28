@@ -39,6 +39,22 @@ public class RunStats {
 			}
 		}
 	}
+	// Whether to count casual runs, competitive runs, or both.
+	public enum RunMode {
+		COMBINED, CASUAL, COMPETITIVE;
+
+		// Whether a run with the given competitive flag belongs to this mode.
+		public boolean matches(boolean competitive) {
+			switch (this) {
+			case CASUAL:
+				return !competitive;
+			case COMPETITIVE:
+				return competitive;
+			default:
+				return true;
+			}
+		}
+	}
 	// A single finished run for one player. playerClass is the class actually played (never null).
 	// partySize is the number of players in the party for that run (1 for solo). playtime is the run's
 	// total active duration in milliseconds.
@@ -50,8 +66,9 @@ public class RunStats {
 		public final int exp;
 		public final long playtime;
 		public final boolean won;
+		public final boolean competitive;
 
-		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won) {
+		public RunRecord(long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won, boolean competitive) {
 			this.ts = ts;
 			this.playerClass = playerClass;
 			this.notoriety = notoriety;
@@ -59,6 +76,7 @@ public class RunStats {
 			this.exp = exp;
 			this.playtime = playtime;
 			this.won = won;
+			this.competitive = competitive;
 		}
 	}
 
@@ -97,13 +115,14 @@ public class RunStats {
 
 	// wins/total for a scope. ec == null => all classes; notoriety == null => all notoriety levels;
 	// monthOnly restricts to the current calendar month; mode filters by party size.
-	public Winrate winrate(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode) {
+	public Winrate winrate(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode, RunMode runMode) {
 		long monthStart = monthOnly ? startOfMonth() : Long.MIN_VALUE;
 		int wins = 0, total = 0;
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
 			if (notoriety != null && r.notoriety != notoriety) continue;
 			if (!mode.matches(r.partySize)) continue;
+			if (!runMode.matches(r.competitive)) continue;
 			if (r.ts < monthStart) continue;
 			total++;
 			if (r.won) wins++;
@@ -112,12 +131,13 @@ public class RunStats {
 	}
 
 	// Current (trailing) and best consecutive win run at a single notoriety level for the scope.
-	public Streak streak(EquipmentClass ec, int notoriety, PartyMode mode) {
+	public Streak streak(EquipmentClass ec, int notoriety, PartyMode mode, RunMode runMode) {
 		int best = 0, run = 0;
 		for (RunRecord r : records) { // ascending, so run ends holding the trailing win count
 			if (ec != null && r.playerClass != ec) continue;
 			if (r.notoriety != notoriety) continue;
 			if (!mode.matches(r.partySize)) continue;
+			if (!runMode.matches(r.competitive)) continue;
 			if (r.won) {
 				run++;
 				if (run > best) best = run;
@@ -130,20 +150,21 @@ public class RunStats {
 	}
 
 	// The best win run across every notoriety level in the scope (a scope-level headline number).
-	public int bestStreakAnyNotoriety(EquipmentClass ec, PartyMode mode) {
+	public int bestStreakAnyNotoriety(EquipmentClass ec, PartyMode mode, RunMode runMode) {
 		int best = 0;
-		for (int n : playedNotorieties(ec, mode)) {
-			best = Math.max(best, streak(ec, n, mode).best);
+		for (int n : playedNotorieties(ec, mode, runMode)) {
+			best = Math.max(best, streak(ec, n, mode, runMode).best);
 		}
 		return best;
 	}
 
 	// Notoriety levels the scope has at least one recorded run at, ascending.
-	public TreeSet<Integer> playedNotorieties(EquipmentClass ec, PartyMode mode) {
+	public TreeSet<Integer> playedNotorieties(EquipmentClass ec, PartyMode mode, RunMode runMode) {
 		TreeSet<Integer> out = new TreeSet<Integer>();
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
 			if (!mode.matches(r.partySize)) continue;
+			if (!runMode.matches(r.competitive)) continue;
 			out.add(r.notoriety);
 		}
 		return out;
@@ -151,13 +172,14 @@ public class RunStats {
 
 	// Total active playtime (ms) across the scope. ec == null => all classes; notoriety == null => all
 	// notoriety levels; monthOnly restricts to the current calendar month; mode filters by party size.
-	public long totalPlaytime(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode) {
+	public long totalPlaytime(EquipmentClass ec, Integer notoriety, boolean monthOnly, PartyMode mode, RunMode runMode) {
 		long monthStart = monthOnly ? startOfMonth() : Long.MIN_VALUE;
 		long total = 0L;
 		for (RunRecord r : records) {
 			if (ec != null && r.playerClass != ec) continue;
 			if (notoriety != null && r.notoriety != notoriety) continue;
 			if (!mode.matches(r.partySize)) continue;
+			if (!runMode.matches(r.competitive)) continue;
 			if (r.ts < monthStart) continue;
 			total += r.playtime;
 		}
@@ -166,13 +188,14 @@ public class RunStats {
 
 	// Fastest winning-run playtime (ms) in the scope, or 0 if there are no recorded wins. ec == null =>
 	// all classes; notoriety == null => all notoriety levels; mode filters by party size.
-	public long fastestClear(EquipmentClass ec, Integer notoriety, PartyMode mode) {
+	public long fastestClear(EquipmentClass ec, Integer notoriety, PartyMode mode, RunMode runMode) {
 		long fastest = 0L;
 		for (RunRecord r : records) {
 			if (!r.won) continue;
 			if (ec != null && r.playerClass != ec) continue;
 			if (notoriety != null && r.notoriety != notoriety) continue;
 			if (!mode.matches(r.partySize)) continue;
+			if (!runMode.matches(r.competitive)) continue;
 			if (fastest == 0L || r.playtime < fastest) fastest = r.playtime;
 		}
 		return fastest;

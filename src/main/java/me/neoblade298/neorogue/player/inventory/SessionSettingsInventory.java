@@ -62,6 +62,8 @@ public class SessionSettingsInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 
 		contents[0] = SessionSetting.settings.get(0).getItem(s);
+		// Competitive Mode records the run for leaderboards (mutually exclusive with Endless)
+		contents[2] = SessionSetting.settings.get(2).getItem(s);
 		// Open Lobby only applies to new lobbies (loaded lobbies auto-admit the saved party)
 		if (inst instanceof NewLobbyInstance) {
 			contents[1] = SessionSetting.settings.get(1).getItem(s);
@@ -218,6 +220,8 @@ public class SessionSettingsInventory extends CoreInventory {
 				setting.rightClick(s);
 			}
 			inv.setItem(e.getSlot(), setting.getItem(s));
+			// Toggling a setting may lock/unlock a mutually-exclusive one; refresh the whole inventory.
+			setupInventory();
 			int newValue = setting.getValue(s);
 			if (newValue != valuesBefore.get(id)) {
 				changedSettings.add(id);
@@ -246,8 +250,8 @@ public class SessionSettingsInventory extends CoreInventory {
 				String oldValue = valuesBefore.get(id).toString();
 				String newValue = "" + setting.getValue(s);
 
-				// Hardcoded for boolean toggle settings (endless mode, open lobby) because I'm lazy
-				if (id == 0 || id == 1) {
+				// Hardcoded for boolean toggle settings (endless mode, open lobby, competitive) because I'm lazy
+				if (id == 0 || id == 1 || id == 2) {
 					oldValue = oldValue.equals("1") ? "Enabled" : "Disabled";
 					newValue = newValue.equals("1") ? "Enabled" : "Disabled";
 				}
@@ -256,6 +260,10 @@ public class SessionSettingsInventory extends CoreInventory {
 						.append(Component.text(oldValue, NamedTextColor.YELLOW)
 						.append(Component.text(" -> "))
 						.append(Component.text(newValue, NamedTextColor.YELLOW))));
+			}
+			// Changing competitive status invalidates everyone's readiness; make them re-confirm.
+			if (changedSettings.contains(2)) {
+				inst.resetReadiness();
 			}
 		}
 	}

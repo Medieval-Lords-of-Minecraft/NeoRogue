@@ -88,9 +88,10 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		int notoriety = s.getNotoriety();
 		int partySize = s.getParty().size();
 		long playtime = s.getPlaytime();
+		boolean competitive = s.isCompetitiveRun();
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, psd.getSessionStats().getExpEarned(), playtime, won);
+			if (pd != null) pd.addRunResult(psd.getPlayerClass(), notoriety, partySize, psd.getSessionStats().getExpEarned(), playtime, won, competitive);
 		}
 		recordRunAnalytics(won);
 	}
@@ -103,7 +104,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		if (s.getRunId() == null) return;
 		RunSnapshot snap = new RunSnapshot(s.getRunId(), System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION,
 				s.getHost().toString(), s.getSaveSlot(), s.getSessionType().name(), s.getRegion().getType().name(),
-				s.getRegionsCompleted(), s.getLevel(), s.getParty().size(), s.getNotoriety(), s.isEndless(), s.getPlaytime(), won);
+				s.getRegionsCompleted(), s.getLevel(), s.getParty().size(), s.getNotoriety(), s.isEndless(), s.isCompetitiveRun(), s.getPlaytime(), won);
 		AnalyticsManager.recordRun(snap);
 	}
 

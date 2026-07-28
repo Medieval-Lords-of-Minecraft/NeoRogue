@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -306,14 +307,17 @@ public class SessionManager implements Listener {
 		}
 	}
 
-	// Records a deleted (abandoned) run as a loss for the host who deleted it. Tutorial and endless
-	// runs are excluded, consistent with EndRunInstance.
+	// Records a deleted (abandoned) run as a loss for every party member who was in it. Tutorial and
+	// endless runs are excluded, consistent with EndRunInstance.
 	private static void recordDeletedRunAsLoss(UUID host, SessionSnapshot snap) {
 		if (snap == null) return;
 		if (snap.getSessionType() == SessionType.TUTORIAL || snap.isEndless()) return;
-		EquipmentClass hostClass = snap.getPartyClasses().get(host);
-		if (hostClass == null) return;
-		PlayerData.recordRunResult(host, hostClass, snap.getNotoriety(), snap.getPartyClasses().size(), 0, snap.getPlaytime(), false);
+		HashMap<UUID, EquipmentClass> partyClasses = snap.getPartyClasses();
+		int partySize = partyClasses.size();
+		boolean competitive = snap.isCompetitiveRun();
+		for (Entry<UUID, EquipmentClass> ent : partyClasses.entrySet()) {
+			PlayerData.recordRunResult(ent.getKey(), ent.getValue(), snap.getNotoriety(), partySize, 0, snap.getPlaytime(), false, competitive);
+		}
 	}
 
 	@EventHandler

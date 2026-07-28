@@ -38,6 +38,7 @@ public class SessionSnapshot {
 	private RegionType regionType;
 	private int notoriety;
 	private boolean endless;
+	private boolean competitive;
 	private SessionType sessionType = SessionType.STANDARD;
 	private HashMap<String, EquipmentClass> party = new HashMap<String, EquipmentClass>();
 	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
@@ -49,6 +50,7 @@ public class SessionSnapshot {
 		this.regionType = s.getRegion().getType();
 		this.notoriety = s.getNotoriety();
 		this.endless = s.isEndless();
+		this.competitive = s.isCompetitiveRun();
 		this.sessionType = s.getSessionType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
@@ -64,6 +66,7 @@ public class SessionSnapshot {
 		this.regionType = RegionType.valueOf(save.getString("regionType"));
 		this.notoriety = save.getInt("notoriety");
 		this.endless = save.getInt("endless") == 1;
+		this.competitive = getCompetitive(save);
 		this.sessionType = SessionType.fromStorage(save.getString("sessionType"));
 		
 		while (party.next()) {
@@ -142,6 +145,15 @@ public class SessionSnapshot {
 		}
 	}
 
+	// Reads the competitive column, defaulting to false for saves created before the column existed.
+	private static boolean getCompetitive(ResultSet save) {
+		try {
+			return save.getInt("competitive") == 1;
+		} catch (SQLException ex) {
+			return false;
+		}
+	}
+
 	// Formats a playtime duration (in ms) as "Hh Mm" or "Mm" for display.
 	public static String formatPlaytime(long ms) {
 		long totalMinutes = ms / 60000L;
@@ -168,6 +180,11 @@ public class SessionSnapshot {
 
 	public boolean isEndless() {
 		return endless;
+	}
+
+	// True if the saved run was recorded as competitive (for leaderboards).
+	public boolean isCompetitiveRun() {
+		return competitive;
 	}
 
 	public SessionType getSessionType() {

@@ -123,6 +123,9 @@ public class Session {
 	// Settings
     private boolean debug;
 	private boolean endless;
+	// When true, this run's history is recorded as competitive (for leaderboards). Casual by default.
+	// Mutually exclusive with endless.
+	private boolean competitive = false;
 	// New-lobby only: when true, join requests are auto-accepted instead of needing host approval
 	private boolean lobbyOpen = false;
 	// Ensures the "lobby is open" join broadcast only fires once per session
@@ -265,6 +268,7 @@ public class Session {
 
 					// settings
 					endless = sessSet.getBoolean("endless");
+					competitive = getCompetitiveFromRow(sessSet);
 					notoriety = sessSet.getInt("notoriety");
 
 					// Restore the run's stable id; old saves predating this column get a fresh one.
@@ -332,6 +336,14 @@ public class Session {
 			return sessSet.getLong("playtime");
 		} catch (SQLException ex) {
 			return 0L;
+		}
+	}
+
+	private boolean getCompetitiveFromRow(ResultSet sessSet) {
+		try {
+			return sessSet.getBoolean("competitive");
+		} catch (SQLException ex) {
+			return false;
 		}
 	}
 	
@@ -405,6 +417,7 @@ public class Session {
 					.addValue("potionChance", potionChance)
 					.addValue("notoriety", notoriety)
 					.addValue("endless", endless ? 1 : 0)
+					.addValue("competitive", competitive ? 1 : 0)
 					.addValue("lastSaved", System.currentTimeMillis())
 					.addValue("instanceData", inst.serialize(party))
 					.addValue("sessionType", sessionType.name())
@@ -1050,7 +1063,7 @@ public class Session {
 
 	// False if the session is "for-fun", disables competitive aspects like winrates,
 	// balancing, rewards, and achievements.
-	public boolean isCompetitive() {
+	public boolean countsProgression() {
 		return !endless;
 	}
 	
@@ -1068,10 +1081,23 @@ public class Session {
 
 	public void setEndless(boolean endless) {
 		this.endless = endless;
+		// Endless and competitive are mutually exclusive; enabling endless clears competitive.
+		if (endless) this.competitive = false;
 	}
 
 	public boolean isEndless() {
 		return endless;
+	}
+
+	// True if this run's history should be recorded as competitive (for leaderboards). Casual otherwise.
+	public boolean isCompetitiveRun() {
+		return competitive;
+	}
+
+	public void setCompetitive(boolean competitive) {
+		this.competitive = competitive;
+		// Endless and competitive are mutually exclusive; enabling competitive clears endless.
+		if (competitive) this.endless = false;
 	}
 
 	public void setLobbyOpen(boolean lobbyOpen) {
@@ -1191,7 +1217,7 @@ public class Session {
 	}
 
 	public void awardXp(int baseXp) {
-		if (!isCompetitive()) return;
+		if (!countsProgression()) return;
 		// Combine multipliers additively rather than multiplicatively. Each multiplier is
 		// of the form (1 + bonus), so the combined bonus is the sum of individual bonuses.
 		double sharedBonus = (getRegionXpMultiplier() - 1.0) + (getNotorietyXpMultiplier() - 1.0);

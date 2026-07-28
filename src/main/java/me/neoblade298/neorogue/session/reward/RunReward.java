@@ -412,7 +412,7 @@ public class RunReward {
 	public static List<Component> buildExpLore(Session s, PlayerSessionData psd) {
 		List<Component> lore = new ArrayList<Component>();
 		if (psd == null) return lore;
-		if (!s.isCompetitive()) {
+		if (!s.countsProgression()) {
 			lore.add(loreLine("<gray>This run doesn't award experience."));
 			return lore;
 		}

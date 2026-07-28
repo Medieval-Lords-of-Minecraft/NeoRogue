@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -37,7 +36,7 @@ public class Nullify extends Equipment {
 	public Nullify(boolean isUpgraded) {
 		super(ID, "Nullify", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(16, 0, 0, 0));
-		stacks = isUpgraded ? 5 : 3;
+		stacks = isUpgraded ? 4 : 2;
 		manaIncrease = isUpgraded ? 20 : 30;
 		addTags(GlossaryTag.PROTECT, GlossaryTag.SHELL);
 	}

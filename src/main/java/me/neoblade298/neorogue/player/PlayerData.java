@@ -194,7 +194,7 @@ public class PlayerData {
 
 			// Load finished-run history for winrate/winstreak stats.
 			try (PreparedStatement runStmt = con.prepareStatement(
-					"SELECT ts, playerClass, notoriety, partySize, exp, playtime, won FROM neorogue_run_results WHERE uuid = ?;")) {
+					"SELECT ts, playerClass, notoriety, partySize, exp, playtime, won, competitive FROM neorogue_run_results WHERE uuid = ?;")) {
 				runStmt.setString(1, uuidStr);
 				try (ResultSet runRs = runStmt.executeQuery()) {
 					while (runRs.next()) {
@@ -204,8 +204,11 @@ public class PlayerData {
 						} catch (IllegalArgumentException ex) {
 							continue;
 						}
+						// Defensive read: pre-migration rows may not have the competitive column yet.
+						boolean competitive = false;
+						try { competitive = runRs.getInt("competitive") == 1; } catch (SQLException ignore) {}
 						runResults.add(new RunStats.RunRecord(runRs.getLong("ts"), ec,
-								runRs.getInt("notoriety"), runRs.getInt("partySize"), runRs.getInt("exp"), runRs.getLong("playtime"), runRs.getInt("won") == 1));
+								runRs.getInt("notoriety"), runRs.getInt("partySize"), runRs.getInt("exp"), runRs.getLong("playtime"), runRs.getInt("won") == 1, competitive));
 					}
 				}
 			}
@@ -951,27 +954,27 @@ public class PlayerData {
 	// Records one finished run (win or lose) for this player and persists it. Callers should skip
 	// runs that shouldn't count toward stats (e.g. tutorial or endless runs). partySize is the number
 	// of players in the party for that run (1 for solo). playtime is the run's active duration in ms.
-	public void addRunResult(EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won) {
+	public void addRunResult(EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won, boolean competitive) {
 		if (playerClass == null) return;
 		long ts = System.currentTimeMillis();
-		runResults.add(new RunStats.RunRecord(ts, playerClass, notoriety, partySize, exp, playtime, won));
-		persistRunResultAsync(uuid.toString(), ts, playerClass, notoriety, partySize, exp, playtime, won);
+		runResults.add(new RunStats.RunRecord(ts, playerClass, notoriety, partySize, exp, playtime, won, competitive));
+		persistRunResultAsync(uuid.toString(), ts, playerClass, notoriety, partySize, exp, playtime, won, competitive);
 	}
 
 	// Records a run result for a player by uuid whether or not their PlayerData is loaded. Used for
 	// events that affect players who may be offline, e.g. deleting an in-progress run (a loss for
 	// everyone who was in it). Loaded players also get the record reflected in memory immediately.
-	public static void recordRunResult(UUID uuid, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won) {
+	public static void recordRunResult(UUID uuid, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won, boolean competitive) {
 		if (playerClass == null) return;
 		PlayerData pd = PlayerManager.getPlayerData(uuid);
 		if (pd != null) {
-			pd.addRunResult(playerClass, notoriety, partySize, exp, playtime, won);
+			pd.addRunResult(playerClass, notoriety, partySize, exp, playtime, won, competitive);
 		} else {
-			persistRunResultAsync(uuid.toString(), System.currentTimeMillis(), playerClass, notoriety, partySize, exp, playtime, won);
+			persistRunResultAsync(uuid.toString(), System.currentTimeMillis(), playerClass, notoriety, partySize, exp, playtime, won, competitive);
 		}
 	}
 
-	private static void persistRunResultAsync(String uuidStr, long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won) {
+	private static void persistRunResultAsync(String uuidStr, long ts, EquipmentClass playerClass, int notoriety, int partySize, int exp, long playtime, boolean won, boolean competitive) {
 		final String classKey = playerClass.name();
 		new BukkitRunnable() {
 			@Override
@@ -986,6 +989,7 @@ public class PlayerData {
 							.addValue("exp", exp)
 							.addValue("playtime", playtime)
 							.addValue("won", won ? 1 : 0)
+							.addValue("competitive", competitive ? 1 : 0)
 							.addRow();
 					try (PreparedStatement ps = sql.build(con)) {
 						ps.executeBatch();
