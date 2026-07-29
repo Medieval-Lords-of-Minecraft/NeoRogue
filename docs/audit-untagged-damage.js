@@ -98,6 +98,16 @@ function isTagged(template, damageIndex) {
   return /\[\[TAG:[A-Z_]+\]\]\s*$/.test(template.slice(0, damageIndex));
 }
 
+function isBasicAttackDamage(template, damageIndex) {
+  const sentenceStart = Math.max(
+    template.lastIndexOf(".", damageIndex - 1),
+    template.lastIndexOf("!", damageIndex - 1),
+    template.lastIndexOf("?", damageIndex - 1),
+    template.lastIndexOf("\n", damageIndex - 1)
+  );
+  return /\bbasic attack\b/i.test(template.slice(sentenceStart + 1, damageIndex));
+}
+
 function cleanContext(template, damageIndex) {
   const start = Math.max(0, template.lastIndexOf(".", damageIndex - 1) + 1);
   const nextPeriod = template.indexOf(".", damageIndex);
@@ -122,7 +132,7 @@ for (const file of findJavaFiles(EQUIPMENT_DIR)) {
     const damagePattern = /\bdamage\b/gi;
     let match;
     while ((match = damagePattern.exec(template)) !== null) {
-      if (isTagged(template, match.index)) continue;
+      if (isTagged(template, match.index) || isBasicAttackDamage(template, match.index)) continue;
       findings.push({
         file: path.relative(ROOT, file).replace(/\\/g, "/"),
         line: lineForTemplateIndex(source, positions, match.index),

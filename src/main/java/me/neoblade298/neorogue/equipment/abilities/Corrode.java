@@ -116,8 +116,8 @@ public class Corrode extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.SLIME_BALL,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after basic attacking " + DescUtil.val(3) + " poisoned enemies. Your basic attacks mark enemies " + DescUtil.duration(3) + ". " +
-				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " + 
-				DescUtil.val((int)(bonusDamage * 100) + "%") + " increased damage. " +
+				GlossaryTag.POISON.tag(this) + " damage against marked enemies is increased by  " + 
+				DescUtil.val((int)(bonusDamage * 100) + "%") + ". " +
 				GlossaryTag.POISON.tag(this) + " applied to marked enemies is increased by " + DescUtil.val(bonusPoison) + ".");
 	}
 }
