@@ -1471,7 +1471,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Merge the compact stat line onto the rarity/type header (e.g. "Common Ability | 15 MP · 10s CD"),
 		// wrapping the stats onto extra lines (broken at " · ") when the line grows too long.
 		int prefixLen = PlainTextComponentSerializer.plainText().serialize(header).length() + 3; // + " | "
-		ArrayList<String> statLines = properties.getStatLines(this, prefixLen, EquipmentProperties.STAT_LINE_MAX_CHARS);
+		ArrayList<String> statLines = properties.getStatLines(this, prefixLen, EquipmentProperties.STAT_LINE_MAX_CHARS, preview);
 		if (!statLines.isEmpty()) {
 			header = header.append(SharedUtil.color("<color:" + EquipmentProperties.PROPERTY_COLOR + "> | "))
 					.append(SharedUtil.color(statLines.get(0)));
@@ -1709,8 +1709,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 				String value = lore.substring(idx + 1, end);
 				boolean changed = otherTokens != null && !value.equals(otherTokens.get(tokenIndex));
 				if (preview && changed) {
-					// Upgrade preview: render the change as "base » upgraded" (e.g. 25 » 35)
-					sb.append("<white>").append(value).append("</white> <gray>»</gray> <yellow>")
+					// Upgrade preview: render the change as "base » upgraded" (e.g. 25 » 35). Both values are
+					// yellow to match the "yellow = changes on upgrade" convention; the red arrow shows direction.
+					sb.append("<yellow>").append(value).append("</yellow> <red>»</red> <yellow>")
 							.append(otherTokens.get(tokenIndex)).append("</yellow>");
 				} else {
 					String color = changed ? "yellow" : "white";

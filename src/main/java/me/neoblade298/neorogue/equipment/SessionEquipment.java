@@ -75,6 +75,9 @@ public class SessionEquipment {
 
 	// Choice-context variant of getItem(): shows only the reforge partners the given player owns.
 	public ItemStack getChoiceItem(PlayerSessionData data) {
+		// While the player is at a shrine upgrade UI, render the upgrade preview instead so every
+		// equipment slot (theirs and any spectator's) shows "base » upgraded" values.
+		if (data.isPreviewingUpgrades()) return getPreviewItem();
 		ItemStack item = equipment.getChoiceItem(data);
 		applyExtraData(item);
 		// Persist metadata onto the item so it survives being reconstructed from item form.

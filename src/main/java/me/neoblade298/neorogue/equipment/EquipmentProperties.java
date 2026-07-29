@@ -163,13 +163,13 @@ public class EquipmentProperties {
 	// " · " separators. firstLineUsed is the visible character count already consumed on the first line
 	// (the rarity/type prefix + " | "); continuation lines start fresh. maxChars is the approximate
 	// per-line character budget. Returns an empty list when this equipment has no numeric properties.
-	public ArrayList<String> getStatLines(Equipment eq, int firstLineUsed, int maxChars) {
+	public ArrayList<String> getStatLines(Equipment eq, int firstLineUsed, int maxChars, boolean preview) {
 		ArrayList<String> tokenMsgs = new ArrayList<String>();
 		ArrayList<Integer> tokenLens = new ArrayList<Integer>();
 		for (PropertyType pt : PropertyType.values()) {
 			if (!properties.containsKey(pt))
 				continue;
-			String[] tok = generateLoreToken(pt, eq);
+			String[] tok = generateLoreToken(pt, eq, preview);
 			tokenMsgs.add(tok[0]);
 			tokenLens.add(tok[1].length());
 		}
@@ -211,10 +211,11 @@ public class EquipmentProperties {
 	// Builds a compact stat token, returning {miniMessage, visibleText}. Values that change on upgrade are
 	// yellow, fixed values white; the abbreviated label uses the property color. The DAMAGE token folds in
 	// the damage type when present, e.g. "25 SLASHING Dmg". visibleText carries no color tags (used for
-	// width).
-	private String[] generateLoreToken(PropertyType pt, Equipment eq) {
+	// width). When preview is true, a value that changes on upgrade is rendered as "base » upgraded".
+	private String[] generateLoreToken(PropertyType pt, Equipment eq, boolean preview) {
 		Property prop = properties.get(pt);
-		String color = upgradeChanges(pt, prop.amount, eq) ? "<yellow>" : "<white>";
+		boolean changed = upgradeChanges(pt, prop.amount, eq);
+		String color = changed ? "<yellow>" : "<white>";
 		String valueSuffix = "";
 		String label;
 		switch (pt) {
@@ -241,6 +242,12 @@ public class EquipmentProperties {
 			if (type != null) {
 				eq.addTags(type.toGlossary());
 				String dv = formatAmount(prop.amount);
+				if (preview && changed) {
+					String up = formatAmount(counterpartAmount(pt, eq));
+					String msg = "<yellow>" + dv + "</yellow> <red>»</red> <yellow>" + up + "</yellow><white> "
+							+ type + "<color:" + PROPERTY_COLOR + "> " + label;
+					return new String[] { msg, dv + " » " + up + " " + type + " " + label };
+				}
 				String msg = color + dv + "<white> " + type + "<color:" + PROPERTY_COLOR + "> " + label;
 				return new String[] { msg, dv + " " + type + " " + label };
 			}
@@ -264,8 +271,20 @@ public class EquipmentProperties {
 			break;
 		}
 		String val = formatAmount(prop.amount) + valueSuffix;
+		if (preview && changed) {
+			String up = formatAmount(counterpartAmount(pt, eq)) + valueSuffix;
+			String msg = "<yellow>" + val + "</yellow> <red>»</red> <yellow>" + up + "</yellow><color:"
+					+ PROPERTY_COLOR + "> " + label;
+			return new String[] { msg, val + " » " + up + " " + label };
+		}
 		String msg = color + val + "<color:" + PROPERTY_COLOR + "> " + label;
 		return new String[] { msg, val + " " + label };
+	}
+
+	// The counterpart (base<->upgraded) version's amount for a property. Only valid when upgradeChanges(...)
+	// returned true, which guarantees a counterpart that has the property.
+	private double counterpartAmount(PropertyType pt, Equipment eq) {
+		return eq.getCounterpart().getProperties().get(pt);
 	}
 
 	// Whether a property's value differs between the base and upgraded versions of eq, driving the

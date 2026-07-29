@@ -85,6 +85,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
 
+	// When true, equipment slots in the session inventory (and spectator views) render an upgrade
+	// preview ("base » upgraded") instead of the normal item. Toggled while at a shrine upgrade UI.
+	private boolean previewUpgrades = false;
+
 	// Combined exp boost multiplier captured for the current run (1.0 = no boost).
 	// Computed and consumed at run start, then persisted so it survives relogs/restarts.
 	private double runExpBoostMultiplier = 1.0;
@@ -256,6 +260,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		PlayerSessionInventory.setupInventory(p.getInventory(), this);
 		s.getInstance().updateActionBar();
 		getPlayer().setSaturation(20);
+	}
+
+	public boolean isPreviewingUpgrades() {
+		return previewUpgrades;
+	}
+
+	public void setPreviewingUpgrades(boolean previewUpgrades) {
+		this.previewUpgrades = previewUpgrades;
 	}
 
 	public Player getPlayer() {

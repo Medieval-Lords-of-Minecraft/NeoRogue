@@ -35,7 +35,10 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		super(p, Bukkit.createInventory(p, InventoryType.SMITHING, Component.text("Upgrade Equipment", NamedTextColor.BLUE)));
 		this.inst = inst;
 		this.data = data;
+		// Render the player's equipment (and any spectator's view) as upgrade previews while this UI is open.
+		data.setPreviewingUpgrades(true);
 		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+		data.setupInventory();
 		ItemStack[] contents = inv.getContents();
 		contents[1] = CoreInventory.createButton(Material.PAPER, Component.text("Upgrade", NamedTextColor.BLUE),
 				(TextComponent) NeoCore.miniMessage().deserialize("<gray>Place an item on the left to see what it upgrades into. "
@@ -107,6 +110,8 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
+		// Stop previewing and restore the normal equipment display.
+		data.setPreviewingUpgrades(false);
 		if (inv.getItem(0) != null) {
 			ItemStack placed = inv.getItem(0);
 			String equipId = NBT.get(placed, nbt -> { return nbt.getString("equipId"); });
@@ -115,6 +120,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			// Returning the item the player placed in - it was already owned, don't re-fire acquire
 			data.giveEquipment(eq, null, null, false);
 		}
+		data.setupInventory();
 	}
 
 	@Override
