@@ -176,6 +176,17 @@ public class NewLobbyInstance extends LobbyInstance {
         return players;
     }
 
+    @Override
+    protected Component getLobbyActionBar(UUID uuid) {
+        EquipmentClass playerClass = players.get(uuid);
+        if (playerClass == null) return null;
+        return Component.text("Class: ", NamedTextColor.GRAY)
+                .append(Component.text(playerClass.getDisplay(), NamedTextColor.YELLOW))
+                .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(ready.contains(uuid) ? "Ready" : "Not Ready",
+                        ready.contains(uuid) ? NamedTextColor.GREEN : NamedTextColor.RED));
+    }
+
     // Displays anytime a player joins and on command
     @Override
     public void displayInfo(Player viewer) {

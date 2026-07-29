@@ -10,6 +10,8 @@ import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -24,6 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public abstract class LobbyInstance extends Instance {
 	public static final int MAX_SIZE = 4;
+	private static final long ACTION_BAR_INTERVAL = 20L;
 
 	protected Session session;
 	protected HashSet<UUID> joinRequests = new HashSet<UUID>(), inLobby = new HashSet<UUID>();
@@ -32,6 +35,7 @@ public abstract class LobbyInstance extends Instance {
 	protected UUID host;
 	protected Component partyInfoHeader;
 	protected TextDisplay holo;
+	private BukkitTask actionBarTask;
 
 	// Clickable prompt sent to players so they can request to join a lobby
 	protected static String joinPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
@@ -62,6 +66,13 @@ public abstract class LobbyInstance extends Instance {
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
 				.append(Component.text("\nPlayers:")).build();
+
+		actionBarTask = new BukkitRunnable() {
+			@Override
+			public void run() {
+				updateActionBar();
+			}
+		}.runTaskTimer(NeoRogue.inst(), 1L, ACTION_BAR_INTERVAL);
 	}
 
 	public abstract void addPlayer(Player p);
@@ -188,6 +199,22 @@ public abstract class LobbyInstance extends Instance {
 		return Component.text(data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW);
 	}
 
+	@Override
+	public void updateActionBar() {
+		for (UUID uuid : inLobby) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p == null) continue;
+			Component bar = getLobbyActionBar(uuid);
+			if (bar != null) p.sendActionBar(bar);
+		}
+		updateSpectatorActionBars();
+	}
+
+	protected Component getLobbyActionBar(UUID uuid) {
+		PlayerSessionData data = session.getData(uuid);
+		return data == null ? null : getActionBar(data);
+	}
+
 	public HashSet<UUID> getJoinRequests() {
 		return joinRequests;
 	}
@@ -292,6 +319,10 @@ public abstract class LobbyInstance extends Instance {
 
 	@Override
 	public void cleanup(boolean pluginDisable) {
+		if (actionBarTask != null) {
+			actionBarTask.cancel();
+			actionBarTask = null;
+		}
 		holo.remove();
 	}
 
