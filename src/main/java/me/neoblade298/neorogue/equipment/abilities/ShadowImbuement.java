@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -41,6 +40,6 @@ public class ShadowImbuement extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				GlossaryTag.PASSIVE.tag(this) + ". Any time you deal damage, deal an additional " + GlossaryTag.DARK.tag(this, damage) + " damage.");
+				GlossaryTag.PASSIVE.tag(this) + ". Any time you deal " + GlossaryTag.GENERAL.tag(this) + " damage, deal an additional " + GlossaryTag.DARK.tag(this, damage) + " damage.");
 	}
 }

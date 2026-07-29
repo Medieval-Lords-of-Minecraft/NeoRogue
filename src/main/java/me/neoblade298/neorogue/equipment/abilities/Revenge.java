@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
@@ -25,6 +26,7 @@ public class Revenge extends Equipment implements Power {
 	private static final String ID = "Revenge";
 	private int strength, heal;
 	private static final int CUTOFF = 20;
+	private static final int ATTACKS_PER_HEAL = 5;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);
 	
 	public Revenge(boolean isUpgraded) {
@@ -67,8 +69,11 @@ public class Revenge extends Equipment implements Power {
 		});
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, inst);
 
+		ActionMeta healCounter = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
 			if (!data.hasStatus("Revenge")) return TriggerResult.keep();
+			if (healCounter.addCount(1) < ATTACKS_PER_HEAL) return TriggerResult.keep();
+			healCounter.setCount(0);
 			Player p3 = data.getPlayer();
 			FightInstance.giveHeal(p3, heal, this, p3);
 			return TriggerResult.keep();
@@ -79,7 +84,8 @@ public class Revenge extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after taking damage. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength) + " " + DescUtil.duration(10) + ". Additionally, if you're below "
-				+ GlossaryTag.BERSERK.tag(this, CUTOFF) + " stacks, gain " + GlossaryTag.BERSERK.tag(this, 1) + ". Otherwise, your basic attacks heal you "
-						+ "for " + DescUtil.val(heal) + " " + DescUtil.duration(10) + ".");
+				+ GlossaryTag.BERSERK.tag(this, CUTOFF) + " stacks, gain " + GlossaryTag.BERSERK.tag(this, 1) + ". Otherwise, for " + DescUtil.duration(10) +
+				", every " + DescUtil.val(ATTACKS_PER_HEAL)
+				+ " basic attacks heal you for " + DescUtil.val(heal) + ".");
 	}
 }

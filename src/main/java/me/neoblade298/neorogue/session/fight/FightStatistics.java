@@ -429,6 +429,15 @@ public class FightStatistics {
 			hover = appendSorted(hover, shieldLines);
 			hasDetail = true;
 		}
+		if (!healingByEquip.isEmpty()) {
+			List<SortedLine> healingLines = new ArrayList<SortedLine>();
+			for (Entry<String, Double> ent : healingByEquip.entrySet()) {
+				healingLines.add(sortedLine(ent.getValue(),
+					getSourceAction(ent.getKey(), "Healing Done", ent.getValue())));
+			}
+			hover = appendSorted(hover, healingLines);
+			hasDetail = true;
+		}
 
 		// Split incoming damage into what was absorbed (shields/rounding) vs. what actually hit health.
 		// Uses the real post-shield health damage instead of reconstructing it, so the HP number matches

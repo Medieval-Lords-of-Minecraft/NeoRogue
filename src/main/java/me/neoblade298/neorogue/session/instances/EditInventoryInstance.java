@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.session.instances;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -212,10 +215,13 @@ public abstract class EditInventoryInstance extends Instance {
 				}
 
 				Node[][] nodes = a.getNodes();
+				Set<Node> visibleNodes = a.getVisibleNodes();
+				List<Node> traveledPath = a.getTraveledPath(s.getNode());
+				Set<Node> traveledNodes = new HashSet<Node>(traveledPath);
 				for (int lane = 0; lane < Region.LANE_COUNT; lane++) {
 					for (int pos = mapPos; pos < a.getRowCount() && pos < mapPos + MAP_Y_SLOTS.length; pos++) {
 						Node n = nodes[pos][lane];
-						if (n == null)
+						if (n == null || !visibleNodes.contains(n))
 							continue;
 						byte x = (byte) MAP_X_SLOTS[lane];
 						byte y = (byte) MAP_Y_SLOTS[pos - mapPos];
@@ -248,7 +254,8 @@ public abstract class EditInventoryInstance extends Instance {
 							drawLine(
 									canvas, MAP_X_SLOTS[lane], MAP_Y_SLOTS[pos - mapPos], MAP_X_SLOTS[dest.getLane()],
 									MAP_Y_SLOTS[dest.getRow() - mapPos],
-									n.equals(s.getNode()) ? java.awt.Color.red : java.awt.Color.black
+									traveledNodes.contains(n) && traveledNodes.contains(dest)
+											? java.awt.Color.red : java.awt.Color.black
 							);
 						}
 					}

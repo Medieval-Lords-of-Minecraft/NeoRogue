@@ -133,6 +133,11 @@ public class Node {
 		return false;
 	}
 
+	@Override
+	public int hashCode() {
+		return 31 * row + lane;
+	}
+
 	public Instance generateInstance(Session s, RegionType region) {
 		if (inst != null)
 			return inst;

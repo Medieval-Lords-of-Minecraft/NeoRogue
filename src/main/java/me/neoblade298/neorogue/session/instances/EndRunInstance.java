@@ -50,6 +50,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 
 	@Override
 	public void setup() {
+		s.pausePlaytime();
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
 		}

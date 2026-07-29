@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -787,6 +789,36 @@ public class Region {
 		return nodes;
 	}
 
+	public Set<Node> getVisibleNodes() {
+		Set<Node> visible = new HashSet<Node>();
+		addVisibleNodes(nodes[0][CENTER_LANE], visible);
+		return visible;
+	}
+
+	private void addVisibleNodes(Node node, Set<Node> visible) {
+		if (node == null || !visible.add(node)) return;
+		for (Node dest : node.getDestinations()) {
+			addVisibleNodes(dest, visible);
+		}
+	}
+
+	public List<Node> getTraveledPath(Node current) {
+		List<Node> path = new ArrayList<Node>();
+		findPath(nodes[0][CENTER_LANE], current, path);
+		return path;
+	}
+
+	private boolean findPath(Node node, Node target, List<Node> path) {
+		if (node == null) return false;
+		path.add(node);
+		if (node.equals(target)) return true;
+		for (Node dest : node.getDestinations()) {
+			if (findPath(dest, target, path)) return true;
+		}
+		path.remove(path.size() - 1);
+		return false;
+	}
+
 	public void saveAll(Connection con) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
@@ -955,6 +987,7 @@ public class Region {
 			}
 		}
 
+		
 		// Fight heads stop one row before the boss row
 		int skipRow = row + 2;
 		if (skipRow < getPreBossRow()) {
@@ -1046,10 +1079,18 @@ public class Region {
 	}
 	
 	public void tickParticles(Node curr) {
+		List<Node> traveledPath = getTraveledPath(curr);
+		for (int i = 0; i + 1 < traveledPath.size(); i++) {
+			Node source = traveledPath.get(i);
+			Node dest = traveledPath.get(i + 1);
+			LinkedList<Player> cache = Effect.calculateCache(nodeToLocation(source, 0));
+			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(source, 0.5), nodeToLocation(dest, 0.5), 0.5);
+		}
+
 		LinkedList<Player> cache = Effect.calculateCache(nodeToLocation(curr, 0));
-		// Draw red lines for any locations that can immediately be visited
+		// Draw black lines and button particles for immediately available paths
 		for (Node dest : curr.getDestinations()) {
-			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
+			ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 1);
 			button.playWithCache(cache, nodeToLocation(dest, 1.5));
 		}
 		

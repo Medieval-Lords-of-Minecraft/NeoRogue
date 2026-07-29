@@ -1187,7 +1187,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		setHealth(this.health + (percent * maxHealth));
 		heal.play(p, p);
 		Sounds.levelup.play(p, p);
-		updateBoardLines();
+		s.getInstance().updateBoardLines();
 	}
 
 	public void damagePercent(double percent) {

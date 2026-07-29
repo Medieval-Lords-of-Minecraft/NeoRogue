@@ -1,5 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
+import java.text.DecimalFormat;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -42,6 +43,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreKillEvent;
 
 public class Conflagration extends Equipment implements Power {
 	private static final String ID = "Conflagration";
+	private static final DecimalFormat df = new DecimalFormat("#.#");
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 100, 0), 1F))
@@ -166,10 +168,9 @@ public class Conflagration extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		String burnMultStr = burnMult == 1.0 ? DescUtil.val("1x") : DescUtil.val("1.5x");
 		item = createItem(Material.FIRE_CHARGE,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.val(5) + " times. Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
 				"at the nearest enemy that deals " + DescUtil.val(damage) + " " + GlossaryTag.FIRE.tag(this) + 
-				" damage and applies " + burnMultStr + " of its " + GlossaryTag.BURN.tag(this) + ".");
+				" damage and applies " + DescUtil.val(df.format(burnMult) + "x") + " of its " + GlossaryTag.BURN.tag(this) + ".");
 	}
 }

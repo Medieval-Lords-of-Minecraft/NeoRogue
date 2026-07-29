@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGr
 public class MagicQuiver extends Equipment {
 	private static final String ID = "MagicQuiver";
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
+	private static final TargetProperties coneTp = TargetProperties.cone(90, 12, false, TargetType.ENEMY);
 	private int thres, damage;
 	
 	public MagicQuiver(boolean isUpgraded) {
@@ -58,8 +59,9 @@ public class MagicQuiver extends Equipment {
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			action.addCount(1);
 			Player p = data.getPlayer();
-			LivingEntity trg = TargetHelper.getNearest(p, tp);
-			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
+			LivingEntity trg = TargetHelper.getEntitiesInCone(p, coneTp).peekFirst();
+			if (trg == null) trg = TargetHelper.getNearest(p, tp);
+			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot, trg));
 			if (action.getCount() >= thres && data.hasAmmoInstance() && trg != null) {
 				action.addCount(-thres);
 				data.addExtraShot(group);
@@ -80,7 +82,8 @@ public class MagicQuiver extends Equipment {
 		private PlayerFightData data;
 		private Equipment eq;
 		private int slot;
-		public MagicQuiverProjectile(PlayerFightData data, Equipment eq, int slot) {
+		private LivingEntity target;
+		public MagicQuiverProjectile(PlayerFightData data, Equipment eq, int slot, LivingEntity target) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
 			this.homing(0.02);
@@ -88,6 +91,7 @@ public class MagicQuiver extends Equipment {
 			ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
+			this.target = target;
 		}
 
 		@Override
@@ -103,6 +107,7 @@ public class MagicQuiver extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			proj.setHomingTarget(target);
 			Sounds.shoot.play(data.getPlayer(), data.getPlayer());
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();

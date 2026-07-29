@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.reward.RunReward;
@@ -31,7 +32,7 @@ public class SessionStatsInventory extends CoreInventory {
 		// combat stats. Spectators (not in the party) only see the public head row.
 		super(viewer, Bukkit.createInventory(viewer,
 				s.getParty().containsKey(viewer.getUniqueId()) ? 27 : 9,
-				Component.text("Session Statistics", NamedTextColor.GOLD)));
+				Component.text("Session Stats | " + SessionSnapshot.formatPlaytime(s.getPlaytime()), NamedTextColor.GOLD)));
 		viewer.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 
 		// Host first, then everyone else sorted by display order

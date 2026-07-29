@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.chance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -18,7 +19,9 @@ import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.ChanceGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
+import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot;
@@ -72,6 +75,25 @@ public final class ChanceDialog {
 						if (currentViewer == null) return;
 						currentViewer.closeDialog();
 						new FightInfoInventory(currentViewer, inst.getSession(), data, fight, fight.getMap().getMobs(), true);
+					}, ClickCallback.Options.builder().uses(1).build()))
+					.build());
+		}
+
+		// Combine glossary tags across every choice in this stage into a single glossary inventory.
+		TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
+		for (ChanceChoice choice : stage.choices) {
+			tags.addAll(choice.getTags());
+		}
+		if (!tags.isEmpty()) {
+			buttons.add(ActionButton.builder(Component.text("Glossary", NamedTextColor.LIGHT_PURPLE))
+					.width(200)
+					.tooltip(Component.text("View definitions for the terms used in these options."))
+					.action(DialogAction.customClick((response, audience) -> {
+						Player currentViewer = Bukkit.getPlayer(viewerId);
+						if (currentViewer == null) return;
+						currentViewer.closeDialog();
+						new ChanceGlossaryInventory(currentViewer, tags, set.getDisplay(),
+								() -> show(currentViewer, data, inst, set, stage, spectator));
 					}, ClickCallback.Options.builder().uses(1).build()))
 					.build());
 		}
