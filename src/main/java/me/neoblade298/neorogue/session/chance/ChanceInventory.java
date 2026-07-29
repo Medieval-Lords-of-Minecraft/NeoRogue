@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
@@ -28,6 +30,7 @@ import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.analytics.ChanceChoiceSnapshot;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInventory extends CoreInventory {
@@ -65,7 +68,8 @@ public class ChanceInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
 		ItemMeta meta = title.getItemMeta();
-		meta.lore(stage.description);
+		ArrayList<TextComponent> description = SharedUtil.addLineBreaks(stage.description, 250);
+		meta.lore(description);
 		title.setItemMeta(meta);
 
 		contents[4] = title;
@@ -95,7 +99,7 @@ public class ChanceInventory extends CoreInventory {
 		// Fill unused slots with description filler
 		ItemStack filler = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, set.getDisplay());
 		ItemMeta fillerMeta = filler.getItemMeta();
-		fillerMeta.lore(stage.description);
+		fillerMeta.lore(description);
 		filler.setItemMeta(fillerMeta);
 		for (int i = 0; i < contents.length; i++) {
 			if (contents[i] == null) {

@@ -40,10 +40,10 @@ public final class ChanceDialog {
 			ChanceStage stage, boolean spectator) {
 		if (stage == null) return;
 
-		List<DialogBody> body = new ArrayList<DialogBody>();
-		for (Component line : stage.description) {
-			body.add(DialogBody.plainMessage(line));
-		}
+		Component choiceType = Component.text(set.isIndividual() ? "Individual Choice" : "Host Choice",
+				NamedTextColor.YELLOW);
+		List<DialogBody> body = List.of(DialogBody.plainMessage(choiceType),
+				DialogBody.plainMessage(stage.description));
 
 		List<ActionButton> buttons = new ArrayList<ActionButton>();
 		UUID viewerId = viewer.getUniqueId();

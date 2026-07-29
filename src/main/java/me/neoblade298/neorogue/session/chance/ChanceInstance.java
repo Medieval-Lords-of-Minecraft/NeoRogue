@@ -42,7 +42,6 @@ import me.neoblade298.neorogue.session.instances.ShopInstance;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
@@ -326,9 +325,9 @@ public class ChanceInstance extends EditInventoryInstance {
 	
 	private Component buildHologramText(ChanceStage stg) {
 		Component text = set.getDisplay().append(Component.newline());
-		for (TextComponent line : stg.description) {
-			text = text.append(((TextComponent) line.colorIfAbsent(NamedTextColor.GRAY)
-					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE))).append(Component.newline());
+		for (Component line : SharedUtil.addLineBreaks(stg.description, 250)) {
+			text = text.append(line.colorIfAbsent(NamedTextColor.GRAY)
+					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE)).append(Component.newline());
 		}
 		text = text.append(Component.text("Right click the pillar below!", NamedTextColor.GOLD));
 		return text;
