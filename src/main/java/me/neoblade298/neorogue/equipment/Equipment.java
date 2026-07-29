@@ -405,7 +405,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CripplingPoison(b);
 			new CrushTheWeak(b);
 			new Crystallize(b);
-			new Cull(b);
+			new Spellsword(b);
 			new CurseMark(b);
 			new DangerClose(b);
 			new DangerousGame(b);
