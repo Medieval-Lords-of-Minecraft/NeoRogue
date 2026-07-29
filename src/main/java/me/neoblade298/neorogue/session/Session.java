@@ -1374,6 +1374,10 @@ public class Session {
 	// and on cleanup, so playtime is banked even for runs that are abandoned rather than finished. The
 	// committed marker guards against double counting across repeated saves.
 	public void commitPlaytime() {
+		commitPlaytime(true);
+	}
+
+	private void commitPlaytime(boolean asyncSave) {
 		if (sessionType == SessionType.TUTORIAL) return;
 		long now = getPlaytime();
 		long delta = now - playtimeCommitted;
@@ -1381,13 +1385,13 @@ public class Session {
 		playtimeCommitted = now;
 		for (PlayerSessionData psd : party.values()) {
 			PlayerData pd = PlayerManager.getPlayerData(psd.getUniqueId());
-			if (pd != null) pd.addPlaytime(psd.getPlayerClass(), delta);
+			if (pd != null) pd.addPlaytime(psd.getPlayerClass(), delta, asyncSave);
 		}
 	}
 	
 	public void cleanup(boolean pluginDisable) {
 		ended = true;
-		commitPlaytime();
+		commitPlaytime(!pluginDisable);
 		pausePlaytime();
 		inst.unloadChunks();
 		inst.cleanup(pluginDisable);

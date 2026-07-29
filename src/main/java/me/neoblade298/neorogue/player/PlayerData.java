@@ -945,10 +945,15 @@ public class PlayerData {
 	// Adds a chunk of active playtime (ms) to a class's lifetime total and the global total, then
 	// persists. Called by Session.commitPlaytime with the delta accumulated since the last commit.
 	public void addPlaytime(EquipmentClass ec, long deltaMs) {
+		addPlaytime(ec, deltaMs, true);
+	}
+
+	public void addPlaytime(EquipmentClass ec, long deltaMs, boolean asyncSave) {
 		if (deltaMs <= 0L) return;
 		getOrCreateProgression(ec).playtime += deltaMs;
 		if (ec != null) getOrCreateProgression(null).playtime += deltaMs;
-		saveClassProgressionAsync();
+		if (asyncSave) saveClassProgressionAsync();
+		else saveClassProgression(false);
 	}
 
 	// Records one finished run (win or lose) for this player and persists it. Callers should skip
@@ -1003,6 +1008,10 @@ public class PlayerData {
 	}
 
 	private void saveClassProgressionAsync() {
+		saveClassProgression(true);
+	}
+
+	private void saveClassProgression(boolean async) {
 		final String uuidStr = uuid.toString();
 		final HashMap<EquipmentClass, ClassProgression> snapshot = new HashMap<>();
 		for (var entry : progression.entrySet()) {
@@ -1015,9 +1024,7 @@ public class PlayerData {
 			copy.playtime = orig.playtime;
 			snapshot.put(entry.getKey(), copy);
 		}
-		new BukkitRunnable() {
-			@Override
-			public void run() {
+		Runnable save = () -> {
 				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
 					try (PreparedStatement clear = con.prepareStatement(
 							"DELETE FROM neorogue_playerclass WHERE uuid = ?;")) {
@@ -1044,8 +1051,14 @@ public class PlayerData {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to save class progression for " + uuidStr);
 					ex.printStackTrace();
 				}
+		};
+		if (async) new BukkitRunnable() {
+			@Override
+			public void run() {
+				save.run();
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+		else save.run();
 	}
 
 	private void saveExpBoostsAsync() {

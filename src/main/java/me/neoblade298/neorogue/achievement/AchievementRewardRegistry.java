@@ -19,10 +19,10 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
 
 /**
- * Loads and dispatches command rewards for achievements from achievements.yml.
+ * Loads and dispatches command rewards for achievements from achievement-rewards.yml.
  *
  * <ul>
- *   <li>{@code global-commands}: run every time a player gains any achievement mastery tier.</li>
+ *   <li>{@code default-commands}: run when a gained achievement mastery tier has no matching reward.</li>
  *   <li>{@code rewards}: each runs its commands when the just-gained achievement tier exactly
  *       matches one of its {@code requirements} (id + class + tier) and every requirement is met
  *       at or above its tier. The exact-tier match means a reward fires once, without persistence.</li>
@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
  * Command placeholders: {@code %player%} (name), {@code %uuid%}. Commands run from console.
  */
 public class AchievementRewardRegistry {
-	private static final List<String> globalCommands = new ArrayList<>();
+	private static final List<String> defaultCommands = new ArrayList<>();
 	private static final Map<String, AchievementReward> rewards = new HashMap<>();
 	// achievement id -> rewards that require it (so we only re-check affected rewards)
 	private static final Map<String, List<AchievementReward>> rewardsByRequirement = new HashMap<>();
@@ -40,13 +40,13 @@ public class AchievementRewardRegistry {
 	}
 
 	public static void reload() {
-		globalCommands.clear();
+		defaultCommands.clear();
 		rewards.clear();
 		rewardsByRequirement.clear();
 
-		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "achievements.yml"), (yml, file) -> {
-			List<String> global = yml.getStringList("global-commands");
-			if (global != null) globalCommands.addAll(global);
+		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "achievement-rewards.yml"), (yml, file) -> {
+			List<String> defaults = yml.getStringList("default-commands");
+			if (defaults != null) defaultCommands.addAll(defaults);
 
 			Section rewardsSec = yml.getSection("rewards");
 			if (rewardsSec == null) return;
@@ -82,26 +82,30 @@ public class AchievementRewardRegistry {
 	}
 
 	/**
-	 * Called whenever a player gains an achievement mastery tier. Runs the global reward commands,
-	 * then grants any reward whose requirements this exact gain (id + class + tier) completes.
+	 * Called whenever a player gains an achievement mastery tier. Grants every reward whose
+	 * requirements this exact gain (id + class + tier) completes, or the default commands when none do.
 	 */
 	public static void handleAchievementGained(Player p, Achievement achievement, AchievementProgress progress) {
 		if (p == null) return;
 
-		// Global reward runs on every achievement mastery gained
-		if (!globalCommands.isEmpty()) runCommands(p, globalCommands);
-
 		// Only rewards that reference the just-gained achievement can trigger
 		List<AchievementReward> candidates = rewardsByRequirement.get(achievement.getId());
-		if (candidates == null || candidates.isEmpty()) return;
+		if (candidates == null || candidates.isEmpty()) {
+			runCommands(p, defaultCommands);
+			return;
+		}
 
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
-		if (pd == null) return;
+		if (pd == null) {
+			runCommands(p, defaultCommands);
+			return;
+		}
 
 		String eventId = achievement.getId();
 		EquipmentClass eventScope = progress.getScope(); // null = global
 		int eventMastery = progress.getMastery();
 
+		boolean grantedSpecificReward = false;
 		for (AchievementReward reward : candidates) {
 			// This exact gain (id + class scope + tier) must match one requirement, so a reward
 			// triggers only on the precise tier it asks for and never re-fires.
@@ -125,8 +129,13 @@ public class AchievementRewardRegistry {
 					break;
 				}
 			}
-			if (all) runCommands(p, reward.getCommands());
+			if (all) {
+				runCommands(p, reward.getCommands());
+				grantedSpecificReward = true;
+			}
 		}
+
+		if (!grantedSpecificReward) runCommands(p, defaultCommands);
 	}
 
 	// Parses a requirement key ("id" or "id@CLASS") with its required tier. Class-scoped achievements

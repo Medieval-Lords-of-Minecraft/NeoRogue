@@ -7,7 +7,7 @@ import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
 /**
  * A configurable command reward. Its commands run when a player gains an achievement tier that
  * exactly matches one of its requirements and every requirement is met at or above its tier.
- * Loaded from achievements.yml.
+ * Loaded from achievement-rewards.yml.
  */
 public class AchievementReward {
 	private final String id;

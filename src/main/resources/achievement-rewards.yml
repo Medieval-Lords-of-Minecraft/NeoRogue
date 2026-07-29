@@ -11,8 +11,8 @@
 # Achievement ids can be viewed in-game via /nr achievements.
 # ============================================================================
 
-# Commands run every time a player gains ANY achievement mastery tier.
-global-commands: []
+# Default commands run when a gained achievement mastery tier does not complete a specific reward.
+default-commands: []
 #  - "broadcast %player% earned an achievement!"
 #  - "give %player% diamond 1"
 

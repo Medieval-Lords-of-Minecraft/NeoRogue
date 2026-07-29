@@ -141,7 +141,7 @@ public class NeoRogue extends JavaPlugin {
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
-		saveResource("achievements.yml", false);
+		saveResource("achievement-rewards.yml", false);
 		saveResource("caravan.yml", false);
 		saveResource("sellables.yml", false);
 		saveResource("tutorials.yml", false);
@@ -213,8 +213,14 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		for (Session s : SessionManager.getSessions()) {
-			s.cleanup(true);
+		Collection<Session> sessions = new ArrayList<Session>(SessionManager.getSessions());
+		for (Session s : sessions) {
+			try {
+				s.cleanup(true);
+			} catch (Throwable ex) {
+				getLogger().log(java.util.logging.Level.SEVERE,
+						"Failed to clean up session at plot " + s.getPlot() + " during shutdown", ex);
+			}
 		}
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();
