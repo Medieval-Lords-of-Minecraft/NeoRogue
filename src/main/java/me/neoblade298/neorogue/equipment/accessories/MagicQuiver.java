@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -40,7 +39,7 @@ public class MagicQuiver extends Equipment {
 	private int thres, damage;
 	
 	public MagicQuiver(boolean isUpgraded) {
-		super(ID, "Magic Quiver", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+		super(ID, "Magic Quiver", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);
 		thres = isUpgraded ? 2 : 3;
 		damage = 20;

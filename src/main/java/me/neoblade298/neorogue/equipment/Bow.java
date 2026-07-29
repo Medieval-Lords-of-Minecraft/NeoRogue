@@ -47,7 +47,7 @@ public abstract class Bow extends Equipment {
 		}
 
 		// Low draw, don't shoot
-		if (arrowVelocity.length() < 1) {
+		if (arrowVelocity.length() < 2) {
 			Player p = data.getPlayer();
 
 			// Play smoke slightly in front of player
