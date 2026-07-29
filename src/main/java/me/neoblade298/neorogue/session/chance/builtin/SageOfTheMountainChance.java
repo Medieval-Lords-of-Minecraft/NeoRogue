@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
-import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
@@ -41,7 +40,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 				(s, inst, data) -> data.aggregateEquipment(SageOfTheMountainChance::isStorablePassive).size() > 0
 						&& data.getHealth() >= 0.3 * data.getMaxHealth(),
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
-		gaze.setOnInteract((prev, data) -> openGaze(prev, data, stage));
+		gaze.setOnInteract((inst, data, reopen) -> openGaze(inst, data, reopen));
 		stage.addChoice(gaze);
 
 		// Choice 2: Meditate Together - heal 20% of max health
@@ -54,9 +53,8 @@ public class SageOfTheMountainChance extends ChanceSet {
 				}));
 	}
 
-	private void openGaze(ChanceInventory prev, PlayerSessionData data, ChanceStage stage) {
+	private void openGaze(ChanceInstance inst, PlayerSessionData data, Runnable reopen) {
 		Player p = data.getPlayer();
-		ChanceInstance inst = prev.getInst();
 		Session s = inst.getSession();
 		UUID uuid = p.getUniqueId();
 
@@ -75,7 +73,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 					s.getInstance().updateBoardLines();
 					p.closeInventory();
 				},
-				() -> new ChanceInventory(p, inst, this, stage));
+				reopen);
 	}
 
 	// Eligible to store: any owned equipment carrying the Passive glossary tag

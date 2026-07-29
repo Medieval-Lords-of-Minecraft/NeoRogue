@@ -265,7 +265,8 @@ public class ChanceInstance extends EditInventoryInstance {
 				}
 				return;
 			}
-			new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
+			// new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
+			ChanceDialog.show(p, this, set, stage.get(p.getUniqueId()));
 		}
 		else {
 			super.handleInteractEvent(e);
@@ -277,7 +278,12 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 	
 	public void spectatePlayer(Player spectator, UUID uuid) {
-		new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
+		// new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
+		ChanceDialog.show(spectator, s.getParty().get(uuid), this, set, stage.get(uuid), true);
+	}
+
+	public ChanceStage getStage(UUID uuid) {
+		return stage.get(uuid);
 	}
 
 	// Stashes a choice snapshot captured at click time; flushed to analytics on the next

@@ -171,7 +171,7 @@ public class ChanceInventory extends CoreInventory {
 			ChanceInteractiveAction ia = choice.getInteractiveAction();
 			new BukkitRunnable() {
 				public void run() {
-					ia.open(ci, data);
+					ia.open(inst, data, () -> new ChanceInventory(data.getPlayer(), inst, set, stage));
 				}
 			}.runTask(NeoRogue.inst());
 			return;

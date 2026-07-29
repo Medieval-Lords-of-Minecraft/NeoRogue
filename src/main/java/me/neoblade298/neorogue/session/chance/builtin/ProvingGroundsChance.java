@@ -17,7 +17,6 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
-import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
@@ -37,7 +36,7 @@ public class ProvingGroundsChance extends ChanceSet {
 				"You have no gear that can be upgraded!",
 				(s, inst, data) -> data.aggregateEquipment(ProvingGroundsChance::isUpgradable).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
-		hone.setOnInteract((prev, data) -> openHone(prev, data, stage));
+		hone.setOnInteract((inst, data, reopen) -> openHone(inst, data, reopen));
 		stage.addChoice(hone);
 
 		// Choice 2: Adapt your style - transform one chosen piece of gear
@@ -46,13 +45,12 @@ public class ProvingGroundsChance extends ChanceSet {
 				"You have no gear that can be transformed!",
 				(s, inst, data) -> data.aggregateEquipment((meta) -> isTransformable(meta, data)).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
-		adapt.setOnInteract((prev, data) -> openAdapt(prev, data, stage));
+		adapt.setOnInteract((inst, data, reopen) -> openAdapt(inst, data, reopen));
 		stage.addChoice(adapt);
 	}
 
-	private void openHone(ChanceInventory prev, PlayerSessionData data, ChanceStage stage) {
+	private void openHone(ChanceInstance inst, PlayerSessionData data, Runnable reopen) {
 		Player p = data.getPlayer();
-		ChanceInstance inst = prev.getInst();
 		Session s = inst.getSession();
 		UUID uuid = p.getUniqueId();
 
@@ -69,12 +67,11 @@ public class ProvingGroundsChance extends ChanceSet {
 					s.getInstance().updateBoardLines();
 					p.closeInventory();
 				},
-				() -> new ChanceInventory(p, inst, this, stage), true);
+				reopen);
 	}
 
-	private void openAdapt(ChanceInventory prev, PlayerSessionData data, ChanceStage stage) {
+	private void openAdapt(ChanceInstance inst, PlayerSessionData data, Runnable reopen) {
 		Player p = data.getPlayer();
-		ChanceInstance inst = prev.getInst();
 		Session s = inst.getSession();
 		UUID uuid = p.getUniqueId();
 
@@ -97,7 +94,7 @@ public class ProvingGroundsChance extends ChanceSet {
 					s.getInstance().updateBoardLines();
 					p.closeInventory();
 				},
-				() -> new ChanceInventory(p, inst, this, stage));
+				reopen);
 	}
 
 	// Eligible for upgrade: has an upgraded variant, not already upgraded, and not cursed

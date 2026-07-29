@@ -18,7 +18,6 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
-import me.neoblade298.neorogue.session.chance.ChanceInventory;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
@@ -38,7 +37,7 @@ public class FrozenForgeChance extends ChanceSet {
 				"You have no equipment that can be reforged!",
 				(s, inst, data) -> data.aggregateEquipment(FrozenForgeChance::isReforgeable).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
-		forge.setOnInteract((prev, data) -> openForge(prev, data, stage));
+		forge.setOnInteract((inst, data, reopen) -> openForge(inst, data, reopen));
 		stage.addChoice(forge);
 
 		// Choice 2: Sit and warm yourself - obtain a common reforge item
@@ -52,9 +51,8 @@ public class FrozenForgeChance extends ChanceSet {
 				}));
 	}
 
-	private void openForge(ChanceInventory prev, PlayerSessionData data, ChanceStage stage) {
+	private void openForge(ChanceInstance inst, PlayerSessionData data, Runnable reopen) {
 		Player p = data.getPlayer();
-		ChanceInstance inst = prev.getInst();
 		Session s = inst.getSession();
 		UUID uuid = p.getUniqueId();
 
@@ -75,7 +73,7 @@ public class FrozenForgeChance extends ChanceSet {
 					s.getInstance().updateBoardLines();
 					p.closeInventory();
 				},
-				() -> new ChanceInventory(p, inst, this, stage));
+				reopen);
 	}
 
 	// Eligible for reforge: not cursed and has at least one reforge result
