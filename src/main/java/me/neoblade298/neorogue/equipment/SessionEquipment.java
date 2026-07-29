@@ -61,6 +61,18 @@ public class SessionEquipment {
 		return item;
 	}
 
+	// Upgrade-preview variant of getItem(): values that change on upgrade show as "base » upgraded".
+	public ItemStack getPreviewItem() {
+		ItemStack item = equipment.getPreviewItem();
+		applyExtraData(item);
+		// Persist metadata onto the item so it survives being reconstructed from item form.
+		if (!metadata.isEmpty()) {
+			String serialized = serialize();
+			NBT.modify(item, nbt -> { nbt.setString(NBT_KEY, serialized); });
+		}
+		return item;
+	}
+
 	// Choice-context variant of getItem(): shows only the reforge partners the given player owns.
 	public ItemStack getChoiceItem(PlayerSessionData data) {
 		ItemStack item = equipment.getChoiceItem(data);

@@ -150,7 +150,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 				return;
 			}
 			
-			inv.setItem(2, Equipment.get(id, true).getItem());
+			inv.setItem(2, Equipment.get(id, false).getPreviewItem());
 		}
 	}
 }

@@ -33,16 +33,25 @@ public class EquipmentSelectInventory extends CoreInventory {
 	private final List<EquipmentMetadata> options;
 	private final Consumer<EquipmentMetadata> onSelect;
 	private final Runnable onCancel;
+	private final boolean previewUpgrade;
 	private int page;
 	private boolean resolved;
 
 	public EquipmentSelectInventory(PlayerSessionData data, Component title, List<EquipmentMetadata> options,
 			Consumer<EquipmentMetadata> onSelect, Runnable onCancel) {
+		this(data, title, options, onSelect, onCancel, false);
+	}
+
+	// previewUpgrade: when true, each option's tooltip shows "base » upgraded" for values that change on
+	// upgrade (used by the "upgrade one equipment" chance choices).
+	public EquipmentSelectInventory(PlayerSessionData data, Component title, List<EquipmentMetadata> options,
+			Consumer<EquipmentMetadata> onSelect, Runnable onCancel, boolean previewUpgrade) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 54, title));
 		this.data = data;
 		this.options = options;
 		this.onSelect = onSelect;
 		this.onCancel = onCancel;
+		this.previewUpgrade = previewUpgrade;
 		setup();
 	}
 
@@ -54,7 +63,8 @@ public class EquipmentSelectInventory extends CoreInventory {
 		int maxItems = Math.min(options.size() - start, PAGE_SIZE);
 		for (int i = 0; i < maxItems; i++) {
 			int idx = start + i;
-			ItemStack item = options.get(idx).getSessionEquipment().getItem();
+			ItemStack item = previewUpgrade ? options.get(idx).getSessionEquipment().getPreviewItem()
+					: options.get(idx).getSessionEquipment().getItem();
 			final int selIdx = idx + 1;
 			NBT.modify(item, nbt -> { nbt.setInteger("selIdx", selIdx); });
 			contents[i] = item;

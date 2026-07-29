@@ -69,7 +69,7 @@ public class ProvingGroundsChance extends ChanceSet {
 					s.getInstance().updateBoardLines();
 					p.closeInventory();
 				},
-				() -> new ChanceInventory(p, inst, this, stage));
+				() -> new ChanceInventory(p, inst, this, stage), true);
 	}
 
 	private void openAdapt(ChanceInventory prev, PlayerSessionData data, ChanceStage stage) {

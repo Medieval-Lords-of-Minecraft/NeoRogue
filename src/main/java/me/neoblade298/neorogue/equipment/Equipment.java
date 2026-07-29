@@ -1293,6 +1293,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return item.clone();
 	}
 
+	// Builds a tooltip item that previews the upgrade: each value that changes on upgrade is rendered as
+	// "base » upgraded" (e.g. 25 » 35). Only meaningful on a base item that has an upgraded counterpart;
+	// otherwise it returns the normal item. Used by upgrade-context surfaces (shrine upgrade slot, the
+	// "upgrade one equipment" chance events).
+	public ItemStack getPreviewItem() {
+		if (isUpgraded || itemMaterial == null || getCounterpart() == null) return getItem();
+		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false, false, true);
+	}
+
 	// Context-aware variant of getItem() for "choice" surfaces (rewards, chance events, shop, glossary).
 	// Adds a "Reforgeable with:" line containing only the reforge partners the player currently owns; if
 	// they own none (or data is null), it's identical to getItem() and shows no reforge line.
@@ -1304,10 +1313,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (owned.isEmpty()) {
 			// No owned reforge partners, but the item can still be reforged — show a generic "Reforgeable" line.
 			if (!reforgeOptions.isEmpty())
-				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true, reforgeRequiresBoth);
+				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true, reforgeRequiresBoth, false);
 			return item.clone();
 		}
-		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, false, reforgeRequiresBoth);
+		return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, false, reforgeRequiresBoth, false);
 	}
 
 	// Subset of this equipment's reforge partners that the player currently owns anywhere in their
@@ -1433,7 +1442,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.itemLoreLine = loreLine;
 		// The cached default item never shows reforge options (null reforge list). Choice surfaces call
 		// getChoiceItem(...), which rebuilds with the player's inventory-relevant reforge partners.
-		return buildItemStack(mat, preLoreLine, loreLine, null, false, false);
+		return buildItemStack(mat, preLoreLine, loreLine, null, false, false, false);
 	}
 
 	// Hook for subclasses to customize the item's ItemMeta (e.g. potion/leather dye color). Called on
@@ -1444,8 +1453,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	// Builds the tooltip item. reforgeToShow controls the "Reforgeable with:" line: null/empty hides it
 	// entirely, otherwise only the listed equipment is shown. When reforgeToShow is empty but
-	// showGenericReforgeable is true, a plain "Reforgeable" line is shown instead.
-	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow, boolean showGenericReforgeable, boolean reforgeRequiresBoth) {
+	// showGenericReforgeable is true, a plain "Reforgeable" line is shown instead. When preview is true,
+	// DescUtil.val(...) values that change on upgrade are rendered as "base » upgraded" instead of just
+	// coloring the value yellow.
+	private ItemStack buildItemStack(Material mat, String[] preLoreLine, String loreLine, List<Equipment> reforgeToShow, boolean showGenericReforgeable, boolean reforgeRequiresBoth, boolean preview) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
@@ -1480,7 +1491,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			String[] otherPre = counterpart != null ? counterpart.itemPreLore : null;
 			for (int i = 0; i < preLoreLine.length; i++) {
 				String other = (otherPre != null && i < otherPre.length) ? otherPre[i] : null;
-				String l = resolveUpgradeColors(preLoreLine[i], other);
+				String l = resolveUpgradeColors(preLoreLine[i], other, preview);
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
 			}
 		}
@@ -1515,7 +1526,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Strikethrough divider between the stat/reforge section and the description
 			loreItalicized.add(SharedUtil.color("<dark_gray><st>                              </st></dark_gray>"));
 			// Resolve DescUtil.val(...) tokens to yellow/white based on whether they change on upgrade
-			String resolvedLore = resolveUpgradeColors(loreLine, counterpart != null ? counterpart.itemLoreLine : null);
+			String resolvedLore = resolveUpgradeColors(loreLine, counterpart != null ? counterpart.itemLoreLine : null, preview);
 			for (TextComponent tc : SharedUtil.addLineBreaks(
 					(TextComponent) NeoCore.miniMessage().deserialize(resolvedLore).colorIfAbsent(NamedTextColor.GRAY),
 					200)) {
@@ -1664,14 +1675,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 	// base and upgraded versions have run setupItem(), so resolveUpgradeColors(...) can diff them.
 	public void refreshItem() {
 		if (itemMaterial == null) return; // Item wasn't built via createItem(...), nothing to refresh
-		this.item = buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false, false);
+		this.item = buildItemStack(itemMaterial, itemPreLore, itemLoreLine, null, false, false, false);
 	}
 
 	// Replaces DescUtil.val(...) tokens in a lore string with <yellow>/<white> depending on whether each
 	// value changes on upgrade. Values are compared positionally against the counterpart version's matching
 	// string (base vs upgraded). With no counterpart, or on a token-count mismatch, every value defaults to
 	// white.
-	private String resolveUpgradeColors(String lore, String counterpartLore) {
+	private String resolveUpgradeColors(String lore, String counterpartLore, boolean preview) {
 		if (lore == null || lore.indexOf(DescUtil.VAL_START) < 0) return lore;
 
 		ArrayList<String> otherTokens = counterpartLore != null ? extractValueTokens(counterpartLore) : null;
@@ -1697,8 +1708,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 				}
 				String value = lore.substring(idx + 1, end);
 				boolean changed = otherTokens != null && !value.equals(otherTokens.get(tokenIndex));
-				String color = changed ? "yellow" : "white";
-				sb.append('<').append(color).append('>').append(value).append("</").append(color).append('>');
+				if (preview && changed) {
+					// Upgrade preview: render the change as "base » upgraded" (e.g. 25 » 35)
+					sb.append("<white>").append(value).append("</white> <gray>»</gray> <yellow>")
+							.append(otherTokens.get(tokenIndex)).append("</yellow>");
+				} else {
+					String color = changed ? "yellow" : "white";
+					sb.append('<').append(color).append('>').append(value).append("</").append(color).append('>');
+				}
 				idx = end + 1;
 				tokenIndex++;
 			} else {
