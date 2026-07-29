@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -88,6 +87,6 @@ public class RedFan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CORAL_FAN, "Every " + DescUtil.val(thres) + " times you deal " + GlossaryTag.FIRE.tag(this) + " damage, " +
-				"left clicking will deal " + GlossaryTag.FIRE.tag(this, damage) + " damage to all enemies in a cone in front of you.");
+				"left clicking will deal " + GlossaryTag.FIRE.tag(this, damage) + " damage to all enemies in a cone in front of you. Stackable.");
 	}
 }

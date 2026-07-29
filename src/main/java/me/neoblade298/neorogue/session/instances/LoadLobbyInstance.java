@@ -95,6 +95,7 @@ public class LoadLobbyInstance extends LobbyInstance {
 	@Override
 	public void updateBoardLines() {
 		playerLines.clear();
+        playerLines.add(getCompetitiveBoardLine());
 
         // Host at top
         PlayerSessionData hostData = session.getParty().get(host);
@@ -286,7 +287,7 @@ public class LoadLobbyInstance extends LobbyInstance {
 
         // Replace to add party name to header
         boolean first = true;
-        Util.msgRaw(viewer, partyInfoHeader.replaceText(config -> {
+        Util.msgRaw(viewer, getPartyInfoHeader().replaceText(config -> {
             config.match("%");
             config.replacement(Component.text(name, NamedTextColor.RED));
         }));

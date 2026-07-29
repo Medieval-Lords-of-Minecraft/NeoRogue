@@ -111,6 +111,7 @@ public class NewLobbyInstance extends LobbyInstance {
 	@Override
 	public void updateBoardLines() {
 		playerLines.clear();
+        playerLines.add(getCompetitiveBoardLine());
 		Player hostp = Bukkit.getPlayer(host);
 		playerLines.add(createBoardLine(hostp, true));
 
@@ -183,7 +184,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
         // Replace to add party name to header
         boolean first = true;
-        Util.msgRaw(viewer, partyInfoHeader.replaceText(config -> {
+        Util.msgRaw(viewer, getPartyInfoHeader().replaceText(config -> {
             config.match("%");
             config.replacement(Component.text(name, NamedTextColor.RED));
         }));
@@ -374,9 +375,10 @@ public class NewLobbyInstance extends LobbyInstance {
 
     @Override
     public void resetReadiness() {
-        if (ready.isEmpty()) return;
-        ready.clear();
-        broadcast("<yellow>Settings changed!</yellow> Everyone must ready up again.");
+        if (!ready.isEmpty()) {
+            ready.clear();
+            broadcast("<yellow>Settings changed!</yellow> Everyone must ready up again.");
+        }
         updateBoardLines();
     }
 

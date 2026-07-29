@@ -77,6 +77,16 @@ public abstract class LobbyInstance extends Instance {
 		return null;
 	}
 
+	protected String getCompetitiveBoardLine() {
+		return (s.isCompetitiveRun() ? "§cCompetitive Lobby" : "§aCasual Lobby");
+	}
+
+	protected Component getPartyInfoHeader() {
+		return partyInfoHeader.append(Component.newline())
+				.append(Component.text(s.isCompetitiveRun() ? "Competitive Lobby" : "Casual Lobby",
+						s.isCompetitiveRun() ? NamedTextColor.RED : NamedTextColor.GREEN));
+	}
+
 	public void leavePlayer(Player p) {
 		if (s.isBusy()) {
 			// Session is loading — mark for deferred cleanup
@@ -171,6 +181,11 @@ public abstract class LobbyInstance extends Instance {
 
 	public boolean hasHostLeft() {
 		return hostLeft;
+	}
+
+	@Override
+	public Component getActionBar(PlayerSessionData data) {
+		return Component.text(data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW);
 	}
 
 	public HashSet<UUID> getJoinRequests() {
