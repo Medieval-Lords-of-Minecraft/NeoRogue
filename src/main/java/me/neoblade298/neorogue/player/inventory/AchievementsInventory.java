@@ -26,7 +26,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class AchievementsInventory extends CoreInventory {
-	private static final int BACK = 0;
+	private static final int BACK = 0, FILTER = 1;
 	private static final int PROGRESS_START = 2, PROGRESS_END = 8;
 	private static final int ITEMS_START = 18, ITEMS_END = 44;
 	private static final int PAGE_SIZE = ITEMS_END - ITEMS_START + 1; // 27
@@ -34,6 +34,9 @@ public class AchievementsInventory extends CoreInventory {
 
 	private int page;
 	private List<AchievementProgress> sorted;
+	private PlayerData progressData;
+	private EquipmentClass achievementClass;
+	private ClassFilter filter = ClassFilter.ALL;
 	private Player spectator;
 	private PlayerData targetData;
 	// Reopens the inventory the back button should return to. Null falls back to the achievements menu.
@@ -49,7 +52,9 @@ public class AchievementsInventory extends CoreInventory {
 
 	public AchievementsInventory(Player viewer, PlayerData pd, EquipmentClass ec, PlayerData targetData, Runnable prevInventory) {
 		super(viewer, Bukkit.createInventory(viewer, 54, buildTitle(pd, ec)));
-		this.sorted = buildSortedList(pd, ec);
+		this.progressData = pd;
+		this.achievementClass = ec;
+		this.sorted = buildSortedList(pd, ec, filter);
 		this.targetData = targetData;
 		this.spectator = targetData != null ? viewer : null;
 		this.prevInventory = prevInventory;
@@ -61,10 +66,11 @@ public class AchievementsInventory extends CoreInventory {
 		return Component.text(prefix + " Achievements", NamedTextColor.AQUA);
 	}
 
-	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec) {
+	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec, ClassFilter filter) {
 		List<Achievement> visible = AchievementManager.getForScope(ec);
 		List<AchievementProgress> list = new ArrayList<>(visible.size());
 		for (Achievement ach : visible) {
+			if (!filter.includes(ach, ec)) continue;
 			list.add(getProgress(pd, ach, ec));
 		}
 		// Achievements are shown in registration order (see AchievementManager's list)
@@ -85,6 +91,9 @@ public class AchievementsInventory extends CoreInventory {
 		// Back button
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER,
 				Component.text("Back", NamedTextColor.RED));
+		if (achievementClass != null) {
+			contents[FILTER] = createFilterButton();
+		}
 
 		// Progress bar (slots 2-8)
 		fillProgressBar(contents);
@@ -107,6 +116,17 @@ public class AchievementsInventory extends CoreInventory {
 		}
 
 		inv.setContents(contents);
+	}
+
+	private ItemStack createFilterButton() {
+		ItemStack item = CoreInventory.createButton(filter.material,
+				Component.text("Filter: " + filter.display, NamedTextColor.YELLOW));
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(List.of(
+				Component.text(filter.description, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE),
+				Component.text("Click to change", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, State.FALSE)));
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private void fillProgressBar(ItemStack[] contents) {
@@ -165,6 +185,14 @@ public class AchievementsInventory extends CoreInventory {
 			}
 			return;
 		}
+		if (slot == FILTER && achievementClass != null) {
+			filter = filter.next();
+			sorted = buildSortedList(progressData, achievementClass, filter);
+			page = 0;
+			inv.clear();
+			setupInventory();
+			return;
+		}
 
 		int totalPages = Math.max(1, (int) Math.ceil((double) sorted.size() / PAGE_SIZE));
 		if (slot == PREVIOUS && page > 0) {
@@ -185,5 +213,32 @@ public class AchievementsInventory extends CoreInventory {
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
+	}
+
+	private enum ClassFilter {
+		ALL("All", "Show all achievements for this class.", Material.HOPPER),
+		CLASS_ONLY("Class Only", "Show achievements unique to this class.", Material.DIAMOND),
+		SHARED("Shared", "Show achievements available to every class.", Material.ENDER_EYE);
+
+		private final String display, description;
+		private final Material material;
+
+		ClassFilter(String display, String description, Material material) {
+			this.display = display;
+			this.description = description;
+			this.material = material;
+		}
+
+		private boolean includes(Achievement achievement, EquipmentClass achievementClass) {
+			return switch (this) {
+			case ALL -> true;
+			case CLASS_ONLY -> achievement.getRequiredClass() == achievementClass;
+			case SHARED -> achievement.getRequiredClass() == null;
+			};
+		}
+
+		private ClassFilter next() {
+			return values()[(ordinal() + 1) % values().length];
+		}
 	}
 }

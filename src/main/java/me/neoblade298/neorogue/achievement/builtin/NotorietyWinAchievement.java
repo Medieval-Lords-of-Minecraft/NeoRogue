@@ -19,7 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 // Tracks the highest notoriety a run was won at. Mastery tiers correspond to winning at
 // notoriety 1, 5, and 10.
 public class NotorietyWinAchievement implements Achievement {
-	private static final String ID = "notorious_victor";
+	private static final String ID = "rising_notoriety";
 	private static final int[] THRESHOLDS = { 1, 5, 10 };
 
 	@Override
@@ -29,7 +29,7 @@ public class NotorietyWinAchievement implements Achievement {
 
 	@Override
 	public Component getDisplayName() {
-		return Component.text("Notorious Victor", NamedTextColor.GOLD);
+		return Component.text("Rising Notoriety", NamedTextColor.GOLD);
 	}
 
 	@Override
