@@ -18,7 +18,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class WinRunsAchievement implements Achievement {
 	private static final String ID = "conqueror";
-	private static final int[] THRESHOLDS = { 1, 5, 10, 50 };
+	private static final int[] THRESHOLDS = { 1, 5, 10, 20 };
 
 	@Override
 	public String getId() {
