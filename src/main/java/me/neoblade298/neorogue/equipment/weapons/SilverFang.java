@@ -1,7 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -11,10 +8,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
-import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -45,11 +40,8 @@ public class SilverFang extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			DamageMeta dm = new DamageMeta(pdata);
-			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.LIGHT, DamageStatTracker.of(id + slot, this)));
-			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(p, data);
-			FightInstance.dealDamage(dm, ev.getTarget());
+			weaponDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE));
 			FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1, this);
 			return TriggerResult.keep();
 		});
@@ -57,7 +49,6 @@ public class SilverFang extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "This weapon converts its damage into " + GlossaryTag.LIGHT.tag(this) + " damage after buffs are applied and "
-				+ "applies " + GlossaryTag.SANCTIFIED.tag(this, sanct) + ".");
+		item = createItem(Material.IRON_SWORD, "Basic attacks apply " + GlossaryTag.SANCTIFIED.tag(this, sanct) + ".");
 	}
 }

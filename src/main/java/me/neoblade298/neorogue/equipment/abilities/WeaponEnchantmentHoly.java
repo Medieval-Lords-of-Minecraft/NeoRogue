@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -11,6 +9,7 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -42,7 +41,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(5).speed(0.02);
 	
 	public WeaponEnchantmentHoly(boolean isUpgraded) {
-		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
 		sanct = isUpgraded ? 5 : 3;

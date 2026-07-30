@@ -1063,6 +1063,8 @@ private class SparkTrapInstance extends EquipmentInstance {
 When creating equipment descriptions in `setupItem()`, follow these patterns:
 
 **GlossaryTag Usage:**
+- For new equipment, usually prefix damage amounts or damage modifiers with `GlossaryTag.GENERAL`, or with a more specific applicable glossary tag such as `PHYSICAL`, `MAGICAL`, or an elemental damage tag.
+- Omit that prefix when the wording already names a distinct damage concept, such as "basic attack damage", or when a glossary prefix would make the description redundant or misleading.
 ```java
 // Basic status/effect tags
 GlossaryTag.POISON.tag(this)  // Just the tag name
@@ -1087,6 +1089,10 @@ GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if
 
 // Damage values
 GlossaryTag.FIRE.tag(this, damage, true) + " damage"
+GlossaryTag.GENERAL.tag(this) + " damage is increased by " + DescUtil.yellow(increase)
+
+// Exception: the phrase already identifies the damage concept
+"increase basic attack damage by " + DescUtil.yellow(increase)
 
 // Defensive values  
 "reduces damage by " + DescUtil.yellow(reduction)

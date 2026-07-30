@@ -134,6 +134,7 @@ import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.armor.StarlightHood;
 import me.neoblade298.neorogue.equipment.armor.StonyCloak;
 import me.neoblade298.neorogue.equipment.armor.WarmongersChainmail;
+import me.neoblade298.neorogue.equipment.armor.WhiteCape;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
@@ -236,6 +237,7 @@ import me.neoblade298.neorogue.equipment.offhands.EnderEye;
 import me.neoblade298.neorogue.equipment.offhands.EnduranceShield;
 import me.neoblade298.neorogue.equipment.offhands.ForceBracer;
 import me.neoblade298.neorogue.equipment.offhands.GoldenAegis;
+import me.neoblade298.neorogue.equipment.offhands.GuidingLight;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.HavenTome;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
@@ -250,6 +252,7 @@ import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.PalmBlast;
 import me.neoblade298.neorogue.equipment.offhands.PocketWatch;
 import me.neoblade298.neorogue.equipment.offhands.PoisonPowder;
+import me.neoblade298.neorogue.equipment.offhands.PureEmber;
 import me.neoblade298.neorogue.equipment.offhands.Quiverthorn;
 import me.neoblade298.neorogue.equipment.offhands.RedFan;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
@@ -369,6 +372,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BreakingPoint(b);
 			new BreakTheLine(b);
 			new BrightestFlame(b);
+			new BrightJavelin(b);
 			new Brilliance(b);
 			new Brightshell(b);
 			new Bulldoze(b);
@@ -404,11 +408,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Cripple(b);
 			new CripplingPoison(b);
 			new CrushTheWeak(b);
+			new Crusade(b);
 			new Crystallize(b);
 			new Spellsword(b);
 			new CurseMark(b);
 			new DangerClose(b);
 			new DangerousGame(b);
+			new Dawnbringer(b);
 			new DarkBolt(b);
 			new DarkBolt2(b);
 			new DarkLance(b);
@@ -603,6 +609,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Pressure(b);
 			new PreySeeker(b);
 			new PredatorDrive(b);
+			new Radiance(b);
 			new Rampage(b);
 			new RapidFire(b);
 			new RazorCloak(b);
@@ -611,6 +618,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RelentlessHunt(b);
 			new Resourcefulness(b);
 			new Revenge(b);
+			new Requiem(b);
 			new RisingSun(b);
 			new Roar(b);
 			new RockTomb(b);
@@ -645,6 +653,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Smite(b);
 			new SmokeBomb(b);
 			new SoulBattery(b);
+			new SparkOfLight(b);
 			new SparkTrap(b);
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
@@ -796,6 +805,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StarlightHood(b);
 			new StonyCloak(b);
 			new WarmongersChainmail(b);
+			new WhiteCape(b);
 
 			// Offhands
 			new BatteringRam(b);
@@ -809,6 +819,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EnduranceShield(b);
 			new ForceBracer(b);
 			new GoldenAegis(b);
+			new GuidingLight(b);
 			new GuardingRune(b);
 			new HastyShield(b);
 			new HavenTome(b);
@@ -823,6 +834,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PaladinsShield(b);
 			new PocketWatch(b);
 			new PoisonPowder(b);
+			new PureEmber(b);
 			new QuickTrap(b);
 			new Quiverthorn(b);
 			new RazorTome(b);

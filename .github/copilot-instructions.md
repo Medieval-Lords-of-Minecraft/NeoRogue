@@ -129,6 +129,8 @@ private Player p;  // ❌ Never store Player as field
 When creating equipment descriptions in `setupItem()`, follow these patterns:
 
 **GlossaryTag Usage:**
+- For new equipment, usually prefix damage amounts or damage modifiers with `GlossaryTag.GENERAL`, or with a more specific applicable glossary tag such as `PHYSICAL`, `MAGICAL`, or an elemental damage tag.
+- Omit that prefix when the wording already names a distinct damage concept, such as "basic attack damage", or when a glossary prefix would make the description redundant or misleading.
 ```java
 // Basic status/effect tags
 GlossaryTag.POISON.tag(this)  // Just the tag name

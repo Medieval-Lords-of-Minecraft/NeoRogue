@@ -1,0 +1,54 @@
+package me.neoblade298.neorogue.equipment.armor;
+
+import java.util.UUID;
+
+import org.bukkit.Material;
+
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+
+public class WhiteCape extends Equipment {
+	private static final String ID = "WhiteCape";
+	private static final int REFLECT = 40;
+	private int def;
+
+	public WhiteCape(boolean isUpgraded) {
+		super(ID, "White Cape", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ARMOR);
+		def = isUpgraded ? 3 : 2;
+	}
+
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
+				Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
+			data.applyStatus(StatusType.REFLECT, data, REFLECT, -1, this);
+			return TriggerResult.keep();
+		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER_CHESTPLATE,
+				"Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(def) + ". Applying "
+				+ GlossaryTag.SANCTIFIED.tag(this) + " grants " + GlossaryTag.REFLECT.tag(this, REFLECT) + ".");
+	}
+}

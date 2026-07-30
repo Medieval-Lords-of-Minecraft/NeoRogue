@@ -26,7 +26,7 @@ public class CompositeBow extends Bow {
 	public CompositeBow(boolean isUpgraded) {
 		super(ID, "Composite Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(30, 1, 0, 12, 0, 1.2));
+				EquipmentProperties.ofBow(35, 1, 0, 12, 0, 1.2));
 			thres = 2;
 			damage = isUpgraded ? 15 : 10;
 	}

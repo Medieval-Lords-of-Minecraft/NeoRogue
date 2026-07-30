@@ -31,7 +31,7 @@ public class FrostbiteBow extends Bow {
 	public FrostbiteBow(boolean isUpgraded) {
 		super(ID, "Frostbite Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(35, 1, 0, 12, 0, 1.2));
+				EquipmentProperties.ofBow(40, 1, 0, 12, 0, 1.2));
 				damage = isUpgraded ? 15 : 5;
 	}
 
