@@ -500,6 +500,14 @@ public abstract class FightInstance extends Instance {
 		if (e.getEntityType() != EntityType.PLAYER)
 			return;
 		Player p = (Player) e.getEntity();
+		if (e.getCause() == DamageCause.SUFFOCATION) {
+			PlayerFightData data = userData.get(p.getUniqueId());
+			if (data == null)
+				return;
+			e.setCancelled(true);
+			p.teleport(data.getInstance().getSpawn());
+			return;
+		}
 		if (e.getCause() == DamageCause.FALL) {
 			e.setCancelled(true);
 			trigger(p, Trigger.FALL_DAMAGE, e);
