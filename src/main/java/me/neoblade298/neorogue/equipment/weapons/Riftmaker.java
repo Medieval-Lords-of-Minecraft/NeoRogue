@@ -130,7 +130,7 @@ public class Riftmaker extends Equipment {
 
 			if (count % intellectFreq == 0) {
 				data.applyStatus(StatusType.INTELLECT, data, 1, -1, Riftmaker.this);
-				data.addRift(new Rift(data, data.getPlayer().getLocation(), RIFT_DURATION));
+				data.addRift(new Rift(data, data.getPlayer().getLocation(), RIFT_DURATION, eq));
 			}
 
 			sc.play(data.getPlayer(), hit.getEntity());

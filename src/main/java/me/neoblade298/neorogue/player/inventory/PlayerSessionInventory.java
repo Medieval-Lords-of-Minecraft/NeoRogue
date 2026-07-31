@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.SessionType;
@@ -314,9 +315,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return false;
 	}
 
-	private static ItemStack createLeaveIcon() {
-		return CoreInventory.createButton(Material.COMPASS, Component.text("Save & Quit", NamedTextColor.RED),
-				"Save and quit your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
+	private static ItemStack createLeaveIcon(Session s) {
+		return CoreInventory.createButton(Material.COMPASS, Component.text(s.getRegion().getType() == RegionType.MEADOWOOD ? "Quit" : "Save & Quit", NamedTextColor.RED),
+				"Stop your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
 	}
 
 	// Refreshes just the cargo icon in the player's own (non-spectating) inventory. Call after run cargo

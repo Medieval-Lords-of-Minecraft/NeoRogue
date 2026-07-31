@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Color;
@@ -26,6 +24,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -80,7 +79,7 @@ public class Gravity extends Equipment {
 					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), in, last.getTags()));
 					Location loc = b.getLocation().add(0, 1, 0);
 					Sounds.fire.play(p, loc);
-					data.addRift(new Rift(data, loc, 160));
+					data.addRift(new Rift(data, loc, 160, eq));
 
 					for (Rift rift : data.getRifts().values()) {
 						circ.play(pc, rift.getLocation(), LocalAxes.xz(), null);

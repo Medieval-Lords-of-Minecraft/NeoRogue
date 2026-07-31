@@ -49,7 +49,7 @@ public class SparkOfLight extends Equipment {
 
 	public SparkOfLight(boolean isUpgraded) {
 		super(ID, "Spark of Light", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 0, 0, tp.range));
 		attacks = isUpgraded ? 3 : 5;
 		damage = isUpgraded ? 50 : 30;
 	}

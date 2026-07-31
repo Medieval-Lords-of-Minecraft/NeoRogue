@@ -62,7 +62,7 @@ public class SpikeTrap extends Equipment {
 		Player p = data.getPlayer();
 		Sounds.equip.play(p, p);
 		Location loc = p.getLocation();
-		data.addTrap(new Trap(data, loc, 400) {
+		data.addTrap(new Trap(data, loc, 400, eq) {
 			@Override
 			public void tick() {
 				spike.play(p, loc);

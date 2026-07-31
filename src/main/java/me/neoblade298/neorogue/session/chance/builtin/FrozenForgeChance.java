@@ -64,10 +64,9 @@ public class FrozenForgeChance extends ChanceSet {
 					ArrayList<Equipment> results = removed.getAllReforgeResults();
 					Equipment result = results.get(NeoRogue.gen.nextInt(results.size()));
 					SessionEquipment se = new SessionEquipment(result);
-					data.giveEquipment(se);
-					Util.msgRaw(p, Component.text("You feed your ", NamedTextColor.GRAY)
-							.append(removed.getHoverable())
+					Util.msgRaw(p, Component.text("You feed your ", NamedTextColor.GRAY).append(removed.getHoverable())
 							.append(Component.text(" into the blue flames, reforging it anew.", NamedTextColor.GRAY)));
+					data.giveEquipment(se);
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> used the forge!", p);
 					inst.advanceStage(uuid, null);
 					s.getInstance().updateBoardLines();

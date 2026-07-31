@@ -38,13 +38,16 @@ public class BurningMantle extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		ActionMeta tracker = new ActionMeta(), damageCount = new ActionMeta();
+		ActionMeta tracker = new ActionMeta(), damageCount = new ActionMeta(), returnCooldown = new ActionMeta();
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(id + slot, this)));
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
+			long now = System.currentTimeMillis();
+			if (now < returnCooldown.getTime()) return TriggerResult.keep();
 			DamageMeta dm = ev.getMeta().getReturnDamage();
 			dm.addDamageSlice(new DamageSlice(data, damage + (damageCount.getCount() * inc), DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
+			returnCooldown.setTime(now + 1000);
 			return TriggerResult.keep();
 		});
 
@@ -62,7 +65,7 @@ public class BurningMantle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + " and deal "
+		item = createItem(Material.BLAZE_POWDER, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + " and, on a " + DescUtil.val("1s") + " cooldown, deal "
 		+ GlossaryTag.FIRE.tag(this, damage) + " damage in return. For every " +
 		GlossaryTag.FIRE.tag(this, thres) + " damage you deal, increase return damage by " + DescUtil.val(inc) + ".");
 	}

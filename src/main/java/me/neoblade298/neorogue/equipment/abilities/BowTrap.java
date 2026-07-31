@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -73,7 +72,7 @@ public class BowTrap extends Equipment {
 	private void initTrap(Player p, PlayerFightData data, int slot) {
 		Location loc = p.getLocation();
 		ProjectileGroup proj = new ProjectileGroup(new BowTrapProjectile(data, ID + slot, this));
-		data.addTrap(new Trap(data, loc, 100) {
+		data.addTrap(new Trap(data, loc, 100, this) {
 			@Override
 			public void tick() {
 				trap.play(p, loc);

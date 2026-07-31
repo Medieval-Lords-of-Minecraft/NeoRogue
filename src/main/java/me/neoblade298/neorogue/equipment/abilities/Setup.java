@@ -73,7 +73,7 @@ public class Setup extends Equipment implements Power {
 
 	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
 		Location loc = p.getLocation();
-		data.addTrap(new Trap(data, loc, 200) {
+		data.addTrap(new Trap(data, loc, 200, eq) {
 			@Override
 			public void tick() {
 				trap.play(data.getPlayer(), loc);

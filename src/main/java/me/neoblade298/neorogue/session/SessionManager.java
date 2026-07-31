@@ -444,7 +444,8 @@ public class SessionManager implements Listener {
 		} else if (e.getEntity() instanceof AbstractArrow) {
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
-			if (item.getType() != Material.ARROW) {
+			boolean firedFromCrossbow = p.getInventory().getItemInMainHand().getType() == Material.CROSSBOW;
+			if (item.getType() != Material.ARROW && !firedFromCrossbow) {
 				p.getInventory().addItem(item);
 			}
 		}

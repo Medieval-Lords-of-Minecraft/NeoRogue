@@ -97,6 +97,13 @@ public final class ChanceDialog {
 					}, ClickCallback.Options.builder().uses(1).build()))
 					.build());
 		}
+		buttons.add(ActionButton.builder(Component.text("Close", NamedTextColor.RED))
+				.width(200)
+				.action(DialogAction.customClick((response, audience) -> {
+					Player currentViewer = Bukkit.getPlayer(viewerId);
+					if (currentViewer != null) currentViewer.closeDialog();
+				}, ClickCallback.Options.builder().uses(1).build()))
+				.build());
 
 		Component title = spectator
 				? Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)

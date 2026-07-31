@@ -67,7 +67,7 @@ public class Entropy extends Equipment implements Power {
 			pc.play(p2, p2);
 			if (am.getCount() % riftThres == 0) {
 				Sounds.fire.play(p2, p2);
-				data.addRift(new Rift(data, p2.getLocation(), 160));
+				data.addRift(new Rift(data, p2.getLocation(), 160, this));
 			}
 			icon.setAmount(am.getCount());
 			inst.setIcon(icon);

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -48,7 +47,7 @@ public class WindTrap extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			Location loc = p.getLocation().add(0, 0.5, 0);
-			data.addTrap(new Trap(data, loc, secs * 20) {
+			data.addTrap(new Trap(data, loc, secs * 20, this) {
 				@Override
 				public void tick() {
 					trap.play(p, loc);

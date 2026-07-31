@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -102,7 +101,7 @@ public class HexingShot extends Equipment {
 
 	private void initTrap(Player p, PlayerFightData data, Location loc, int slot, Equipment eq) {
 		Sounds.equip.play(p, p);
-		data.addTrap(new Trap(data, loc, 200) {
+		data.addTrap(new Trap(data, loc, 200, eq) {
 			@Override
 			public void tick() {
 				spike.play(p, loc);

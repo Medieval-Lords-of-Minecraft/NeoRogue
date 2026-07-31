@@ -31,6 +31,8 @@ public class FightStatistics {
 	private HashMap<String, Double> shieldsByEquip = new HashMap<String, Double>();
 	private HashMap<String, Double> healingByEquip = new HashMap<String, Double>();
 	private HashMap<String, Double> nullifiedByEquip = new HashMap<String, Double>();
+	private HashMap<String, Integer> trapsByEquip = new HashMap<String, Integer>();
+	private HashMap<String, Integer> riftsByEquip = new HashMap<String, Integer>();
 	private HashMap<String, Component> sourceNames = new HashMap<String, Component>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified, healthDamageTaken;
 	private int deaths, revives;
@@ -92,6 +94,14 @@ public class FightStatistics {
 		String id = source.serialize();
 		sourceNames.putIfAbsent(id, source.getDisplay());
 		return id;
+	}
+
+	public void addTrapCreated(Equipment source) {
+		trapsByEquip.merge(recordSource(source), 1, Integer::sum);
+	}
+
+	public void addRiftCreated(Equipment source) {
+		riftsByEquip.merge(recordSource(source), 1, Integer::sum);
 	}
 
 	// Records per-equipment healing for analytics attribution (totals are tracked separately via
@@ -546,7 +556,21 @@ public class FightStatistics {
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);
 		cmp = appendIfNotEmpty(cmp, "Deaths", deaths);
 		cmp = appendIfNotEmpty(cmp, "Revives", revives);
+		cmp = appendSourceCounts(cmp, "Traps Laid", trapsByEquip);
+		cmp = appendSourceCounts(cmp, "Rifts Created", riftsByEquip);
 		return cmp;
+	}
+
+	private Component appendSourceCounts(Component base, String display, HashMap<String, Integer> counts) {
+		int total = counts.values().stream().mapToInt(Integer::intValue).sum();
+		if (total == 0) return base;
+
+		base = base.appendNewline().append(getStatPiece(display, total));
+		List<SortedLine> lines = new ArrayList<SortedLine>();
+		for (Entry<String, Integer> ent : counts.entrySet()) {
+			lines.add(sortedLine(ent.getValue(), getSourceAction(ent.getKey(), display, ent.getValue())));
+		}
+		return appendSorted(base, lines);
 	}
 
 	private Component appendIfNotEmpty(Component base, String display, double stat) {

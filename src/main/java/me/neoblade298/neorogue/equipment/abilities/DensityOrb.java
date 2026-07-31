@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.LinkedList;
 
 import org.bukkit.Location;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -116,7 +115,7 @@ public class DensityOrb extends Equipment {
 			for (LivingEntity ent : trgs) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 2));
 			}
-			data.addRift(new Rift(data, loc.add(0, 1, 0), 300));
+			data.addRift(new Rift(data, loc.add(0, 1, 0), 300, DensityOrb.this));
 			if (!trgs.isEmpty()) data.addPermanentShield(p.getUniqueId(), shields, DensityOrb.this);
 		}
 		

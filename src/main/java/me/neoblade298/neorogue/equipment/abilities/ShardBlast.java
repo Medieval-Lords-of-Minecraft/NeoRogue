@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -87,7 +86,7 @@ public class ShardBlast extends Equipment {
 	private Marker initTrap(Player p, PlayerFightData data, EquipmentInstance ei, ItemStack icon) {
 		ei.setIcon(icon);
 		Location loc = p.getLocation();
-		Trap t = new Trap(data, loc, 200) {
+		Trap t = new Trap(data, loc, 200, this) {
 			@Override
 			public void tick() {
 				trap.play(p, loc);

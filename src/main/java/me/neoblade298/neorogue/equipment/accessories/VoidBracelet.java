@@ -33,7 +33,7 @@ public class VoidBracelet extends Equipment {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				Player p = data.getPlayer();
-				data.addRift(new Rift(data, p.getLocation(), 200));
+				data.addRift(new Rift(data, p.getLocation(), 200, VoidBracelet.this));
 			}
 		}.runTaskLater(NeoRogue.inst(), 100));
 

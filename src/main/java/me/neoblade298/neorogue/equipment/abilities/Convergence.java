@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -68,11 +67,6 @@ public class Convergence extends Equipment implements Power {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Entropy.get());
 	}
 
 	@Override

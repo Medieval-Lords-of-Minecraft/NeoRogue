@@ -98,7 +98,7 @@ public class Depletion extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Player p = data.getPlayer();
 			Location loc = hit.getEntity().getLocation();
-			data.addRift(new Rift(data, loc, 200));
+			data.addRift(new Rift(data, loc, 200, eq));
 			Sounds.infect.play(p, loc);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);

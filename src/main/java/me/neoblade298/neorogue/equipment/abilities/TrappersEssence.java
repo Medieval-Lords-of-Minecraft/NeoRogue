@@ -62,7 +62,7 @@ public class TrappersEssence extends Equipment implements Power {
 	}
 	
 	private void initTrap(Location loc, PlayerFightData data, Equipment eq, int slot) {
-		data.addTrap(new Trap(data, loc, TRAP_DURATION) {
+		data.addTrap(new Trap(data, loc, TRAP_DURATION, eq) {
 			@Override
 			public void tick() {
 				Player p = data.getPlayer();

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -80,7 +79,7 @@ public class LayExplosive extends Equipment {
 					Player p = data.getPlayer();
 					Sounds.equip.play(p, p);
 					loc = p.getLocation();
-					tr = new Trap(data, loc, -1) {
+					tr = new Trap(data, loc, -1, LayExplosive.this) {
 						@Override
 						public void tick() {
 							trap.play(data.getPlayer(), loc);

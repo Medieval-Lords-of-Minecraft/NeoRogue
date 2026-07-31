@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -78,7 +77,7 @@ public class LayTrap extends Equipment {
 
 	private void initTrap(Player p, PlayerFightData data, int slot, Equipment eq) {
 		Location loc = p.getLocation();
-		data.addTrap(new Trap(data, loc, 200) {
+		data.addTrap(new Trap(data, loc, 200, eq) {
 			@Override
 			public void tick() {
 				trap.play(p, loc);

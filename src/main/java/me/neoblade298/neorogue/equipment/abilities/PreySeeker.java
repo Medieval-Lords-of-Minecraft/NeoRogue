@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -19,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -84,7 +83,7 @@ public class PreySeeker extends Equipment {
 		private void initTrap(PlayerFightData data) {
 			Location loc = data.getPlayer().getLocation();
 			AmmunitionInstance ammo = data.getAmmoInstance();
-			data.addTrap(new Trap(data, loc, dur * 20) {
+			data.addTrap(new Trap(data, loc, dur * 20, eq) {
 				@Override
 				public void tick() {
 					Player p = data.getPlayer();

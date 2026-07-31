@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -83,8 +82,8 @@ public class DarkBolt2 extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			data.addRift(new Rift(data, hit.getEntity().getLocation(), 200));
-			data.addRift(new Rift(data, data.getPlayer().getLocation(), 20 * dur));
+			data.addRift(new Rift(data, hit.getEntity().getLocation(), 200, eq));
+			data.addRift(new Rift(data, data.getPlayer().getLocation(), 20 * dur, eq));
 		}
 
 		@Override

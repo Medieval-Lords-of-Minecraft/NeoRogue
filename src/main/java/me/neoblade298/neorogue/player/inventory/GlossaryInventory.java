@@ -48,7 +48,7 @@ public class GlossaryInventory extends CoreInventory {
 		openOther = false;
 		new BukkitRunnable() {
 			public void run() {
-				new EquipmentGlossaryInventory(p, Equipment.get(equipId, false), prev);
+				new EquipmentGlossaryInventory(p, Equipment.get(equipId, false), GlossaryInventory.this);
 			}
 		}.runTask(NeoRogue.inst());
 	}
@@ -60,6 +60,9 @@ public class GlossaryInventory extends CoreInventory {
 			new BukkitRunnable() {
 				public void run() {
 					if (prev != null) {
+						if (prev instanceof GlossaryInventory) {
+							((GlossaryInventory) prev).openOther = true;
+						}
 						prev.openInventory();
 						if (prev instanceof ShopInventory) {
 							((ShopInventory) prev).onOpenInventory();

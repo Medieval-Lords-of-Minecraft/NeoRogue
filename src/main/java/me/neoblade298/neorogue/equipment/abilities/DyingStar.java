@@ -82,7 +82,7 @@ public class DyingStar extends Equipment implements Power {
 		// from re-entering CREATE_RIFT triggers while the list is being iterated)
 		new BukkitRunnable() {
 			public void run() {
-				data.addRift(new Rift(data, data.getPlayer().getLocation(), 100));
+				data.addRift(new Rift(data, data.getPlayer().getLocation(), 100, DyingStar.this));
 			}
 		}.runTaskLater(NeoRogue.inst(), 1L);
 
@@ -118,7 +118,7 @@ public class DyingStar extends Equipment implements Power {
 						if (!riftCreated && ent.getHealth() <= 0) {
 							riftCreated = true;
 							Sounds.equip.play(p3, riftLoc);
-							data.addRift(new Rift(data, riftLoc.clone(), 200));
+							data.addRift(new Rift(data, riftLoc.clone(), 200, DyingStar.this));
 						}
 					}
 				}

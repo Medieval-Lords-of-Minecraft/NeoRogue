@@ -275,7 +275,12 @@ public class NewLobbyInstance extends LobbyInstance {
         updateBoardLines();
         if (uuid.equals(s.getHost()) && data != null) {
             int newMax = data.getMaxNotoriety(pc);
-            if (s.getNotoriety() > newMax) s.setNotoriety(newMax);
+            if (s.getNotoriety() > newMax) {
+                s.setNotoriety(newMax);
+                broadcast(Component.text("Notoriety was lowered to ", NamedTextColor.GRAY)
+                        .append(Component.text(newMax, NamedTextColor.YELLOW))
+                        .append(Component.text(" to match " + pc.getDisplay() + "'s maximum.", NamedTextColor.GRAY)));
+            }
         }
     }
 

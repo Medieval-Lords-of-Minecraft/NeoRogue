@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -172,7 +171,7 @@ public class SadisticNature extends Equipment {
 	
 	private void initTrap(Location loc, PlayerFightData data, Equipment eq, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrap(new Trap(data, loc, TRAP_DURATION) {
+		data.addTrap(new Trap(data, loc, TRAP_DURATION, eq) {
 			@Override
 			public void tick() {
 				trapParticle.play(data.getPlayer(), loc);
