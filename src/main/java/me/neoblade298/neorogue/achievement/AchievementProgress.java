@@ -129,6 +129,14 @@ public class AchievementProgress {
 		meta.displayName(achievement.getDisplayName().decoration(TextDecoration.ITALIC, false));
 
 		List<Component> lore = buildLoreLines();
+		List<String> displayRewards = AchievementRewardRegistry.getDisplayNames(achievement.getId(), scope);
+		if (!displayRewards.isEmpty()) {
+			lore.add(Component.empty());
+			lore.add(Component.text("Rewards:", NamedTextColor.GOLD));
+			for (String displayReward : displayRewards) {
+				lore.add(Component.text("- " + displayReward, NamedTextColor.GRAY));
+			}
+		}
 		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));
 		meta.lore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

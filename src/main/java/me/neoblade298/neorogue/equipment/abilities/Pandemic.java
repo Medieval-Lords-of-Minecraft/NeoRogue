@@ -79,6 +79,8 @@ public class Pandemic extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		Player p = data.getPlayer();
 		String statusName = p.getName() + "-pandemic";
+		BuffStatTracker damageTracker = BuffStatTracker.damageBuffAlly(id, this);
+		BuffStatTracker statusTracker = BuffStatTracker.statusBuff(id, this);
 
 		// Mark enemies on basic attack
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
@@ -103,7 +105,7 @@ public class Pandemic extends Equipment implements Power {
 
 			// Add bonus damage
 			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.POISON), 
-				Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+				Buff.multiplier(data, bonusDamage, damageTracker));
 
 			return TriggerResult.keep();
 		});
@@ -118,7 +120,7 @@ public class Pandemic extends Equipment implements Power {
 			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 
 			// Add bonus poison stacks
-			ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this, ev2.getStatus())));
+			ev2.getStacksBuffList().add(Buff.increase(data, bonusPoison, statusTracker));
 
 			// Spread poison in area around marked target
 			Player p2 = data.getPlayer();

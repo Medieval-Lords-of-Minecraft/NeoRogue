@@ -71,14 +71,33 @@ public class AchievementRewardRegistry {
 				List<String> cmds = new ArrayList<>();
 				List<String> rawCmds = sec.getStringList("commands");
 				if (rawCmds != null) cmds.addAll(rawCmds);
+				List<String> displayNames = new ArrayList<>();
+				List<String> rawDisplayNames = sec.getStringList("display-names");
+				if (rawDisplayNames != null) displayNames.addAll(rawDisplayNames);
 
-				AchievementReward reward = new AchievementReward(key, reqs, cmds);
+				AchievementReward reward = new AchievementReward(key, reqs, cmds, displayNames);
 				rewards.put(key, reward);
 				for (AchievementRequirement req : reqs) {
 					rewardsByRequirement.computeIfAbsent(req.id(), k -> new ArrayList<>()).add(reward);
 				}
 			}
 		});
+	}
+
+	public static List<String> getDisplayNames(String achievementId, EquipmentClass classScope) {
+		List<AchievementReward> candidates = rewardsByRequirement.get(achievementId);
+		if (candidates == null || candidates.isEmpty()) return List.of();
+
+		List<String> displayNames = new ArrayList<>();
+		for (AchievementReward reward : candidates) {
+			for (AchievementRequirement requirement : reward.getRequirements()) {
+				if (requirement.id().equals(achievementId) && requirement.classScope() == classScope) {
+					displayNames.addAll(reward.getDisplayNames());
+					break;
+				}
+			}
+		}
+		return displayNames;
 	}
 
 	/**

@@ -22,16 +22,20 @@ default-commands: []
 #
 # Requirement keys mirror unlocks: "achievement_id: <tier>" for global (or auto-resolved class)
 # scope, or "achievement_id@CLASS: <tier>" to require a specific class's version.
+# Display names are user-facing descriptions of the command rewards. The list may be empty.
 rewards: {}
 #  completionist:
 #    requirements:
 #      victorious: 4
 #      conqueror: 1
+#    display-names:
+#      - "1 Nether Star"
 #    commands:
 #      - "give %player% nether_star 1"
 #      - "broadcast %player% is a completionist!"
 #  thief_low_district:
 #    requirements:
 #      low_district_victor@THIEF: 1
+#    display-names: []
 #    commands:
 #      - "give %player% diamond 1"
