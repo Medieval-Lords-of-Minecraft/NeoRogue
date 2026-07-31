@@ -35,7 +35,7 @@ public class EdgeOfHorizon extends Bow {
 	public EdgeOfHorizon(boolean isUpgraded) {
 		super(ID, "Edge of Horizon", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(55, 1, 0, 15, 0, 2));
+				EquipmentProperties.ofBow(50, 1, 0, 15, 0, 2));
 		basicDamagePerFocus = isUpgraded ? 10 : 5;
 	}
 

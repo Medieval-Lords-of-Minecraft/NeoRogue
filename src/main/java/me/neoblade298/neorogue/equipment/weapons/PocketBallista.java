@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.abilities.Emberhail;
 import me.neoblade298.neorogue.equipment.abilities.Saboteur;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -42,7 +41,7 @@ public class PocketBallista extends Bow {
 	public PocketBallista(boolean isUpgraded) {
 		super(ID, "Pocket Ballista", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 1));
+				EquipmentProperties.ofBow(55, 1, 0, 12, 0, 1));
 		damage = isUpgraded ? 65 : 35;
 		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 	}

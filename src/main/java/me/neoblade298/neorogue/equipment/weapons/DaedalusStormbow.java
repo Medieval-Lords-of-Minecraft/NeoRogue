@@ -45,7 +45,7 @@ public class DaedalusStormbow extends Bow {
 	public DaedalusStormbow(boolean isUpgraded) {
 		super(ID, "Daedalus Stormbow", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(55, 1, 0, 14, 0, 2));
+				EquipmentProperties.ofBow(50, 1, 0, 14, 0, 2));
 		threshold = isUpgraded ? 7 : 10;
 		damage = (int) properties.get(PropertyType.DAMAGE);
 	}

@@ -45,7 +45,7 @@ public class Equalizer extends Bow {
 	public Equalizer(boolean isUpgraded) {
 		super(ID, "Equalizer", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 2));
+				EquipmentProperties.ofBow(75, 1, 0, 12, 0, 2));
 		damage = isUpgraded ? 150 : 100;
 		arrowDamage = isUpgraded ? 100 : 70;
 	}

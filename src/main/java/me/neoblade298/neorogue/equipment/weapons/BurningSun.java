@@ -52,7 +52,7 @@ public class BurningSun extends Bow {
 	public BurningSun(boolean isUpgraded) {
 		super(ID, "Burning Sun", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 2));
+				EquipmentProperties.ofBow(55, 1, 0, 12, 0, 2));
 		blockDamage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 5 : 3;
 		auraBurn = isUpgraded ? 5 : 3;
