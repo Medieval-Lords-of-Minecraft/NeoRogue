@@ -42,7 +42,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class TreeTrunk extends Equipment {
 	private static final String ID = "TreeTrunk";
 	private static final int CUTOFF = 1;
-	private double conc;
+	private int conc;
 	private static final Circle hitShape = new Circle(4);
 	private static final ParticleAnimation swing = StoneHammer.swing;
 	private static final ParticleContainer hitLine = new ParticleContainer(Particle.BLOCK).blockData(Material.OAK_LOG.createBlockData()).count(10).spread(0.4, 0.1),

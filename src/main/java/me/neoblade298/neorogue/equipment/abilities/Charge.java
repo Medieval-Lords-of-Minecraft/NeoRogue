@@ -38,43 +38,28 @@ public class Charge extends Equipment implements Power {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		ChargeInstance inst = new ChargeInstance(id);
-		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			if (inst.isActive()) return TriggerResult.remove();
-			if (activatePower(data, slot, es)) {
-				inst.activate();
-				pdata.addSprintCost(1);
-			}
+			activatePower(data, slot, es);
 			return TriggerResult.remove();
 		}));
 	}
 
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
-		// Effect handled in ChargeInstance tick
+		data.addSprintCost(1);
+		data.addTrigger(id, Trigger.PLAYER_TICK, new ChargeInstance(id));
 	}
 	
 	private class ChargeInstance extends PriorityAction {
 		private long lastUsed = 0L;
-		private boolean active;
 		public ChargeInstance(String id) {
 			super(id);
 			action = (pdata, in) -> {
-				if (!active) return TriggerResult.keep();
 				Player p = pdata.getPlayer();
 				if (!p.isSprinting()) return TriggerResult.keep();
 				addShield(pdata);
 				return TriggerResult.keep();
 			};
-		}
-
-		private void activate() {
-			active = true;
-		}
-
-		private boolean isActive() {
-			return active;
 		}
 		
 		private void addShield(PlayerFightData pdata) {

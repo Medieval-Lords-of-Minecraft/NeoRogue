@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class Cauterize extends Equipment {
 	private static final String ID = "Cauterize";
 	private int dec = 15, stacks, hitReq = 3;
-	private double damage;
+	private int damage;
 	private ItemStack activeIcon;
 
 	public Cauterize(boolean isUpgraded) {

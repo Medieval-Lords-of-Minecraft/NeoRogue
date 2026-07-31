@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorMagicalPotion extends Consumable {
 	private static final String ID = "MinorMagicalPotion";
-	private double intel;
+	private int intel;
 	
 	public MinorMagicalPotion(boolean isUpgraded) {
 		super(ID, "Minor Magical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);

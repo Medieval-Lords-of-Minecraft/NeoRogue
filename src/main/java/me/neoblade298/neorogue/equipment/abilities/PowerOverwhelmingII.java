@@ -64,6 +64,9 @@ public class PowerOverwhelmingII extends Equipment implements Power {
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			if (ev.getInstance().getEquipment().getType() != EquipmentType.ABILITY) return TriggerResult.keep();
 
+			ev.addBuff(PropertyType.COOLDOWN, cdProcId,
+					Buff.increase(data, cdReduc, BuffStatTracker.of(cdProcId, this, PropertyType.COOLDOWN.getDisplay() + " reduced")));
+
 			double baseManaCost = ev.getInstance().getManaCost();
 			if (baseManaCost <= 0) return TriggerResult.keep();
 
@@ -71,8 +74,6 @@ public class PowerOverwhelmingII extends Equipment implements Power {
 			double reduc = Math.min(manaReduc, maxReduc);
 			ev.addBuff(PropertyType.MANA_COST, procId,
 					Buff.increase(data, reduc, BuffStatTracker.of(procId, this, PropertyType.MANA_COST.getDisplay() + " reduced")));
-			ev.addBuff(PropertyType.COOLDOWN, cdProcId,
-					Buff.increase(data, -cdReduc, BuffStatTracker.of(cdProcId, this, PropertyType.COOLDOWN.getDisplay() + " reduced")));
 
 			return TriggerResult.keep();
 		});

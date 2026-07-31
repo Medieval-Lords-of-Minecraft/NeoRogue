@@ -267,7 +267,8 @@ public class RunReward {
 
 			Player p = psd.getPlayer();
 			if (p != null) {
-				Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(b.total) + "</yellow> for "
+				String expSummary = "</yellow> and <green>" + psd.getSessionStats().getExpEarned() + " exp</green>";
+				Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(b.total) + expSummary + " for "
 						+ (won ? "winning" : "completing") + " your run!");
 			}
 		}

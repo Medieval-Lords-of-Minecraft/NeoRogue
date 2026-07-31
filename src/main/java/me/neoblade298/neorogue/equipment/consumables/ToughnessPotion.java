@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ToughnessPotion extends Consumable {
 	private static final String ID = "ToughnessPotion";
-	private double reduc;
+	private int reduc;
 
 	public ToughnessPotion(boolean isUpgraded) {
 		super(ID, "Toughness Potion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -41,7 +41,7 @@ public class ToughnessPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val((int) reduc) + " for the rest of combat. Consumed on first use.");
+				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + " for the rest of combat. Consumed on first use.");
 	}
 
 	@Override

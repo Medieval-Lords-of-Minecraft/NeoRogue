@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class LeatherArmguard extends Equipment {
 	private static final String ID = "LeatherArmguard";
-	private double def, spdef;
+	private int def, spdef;
 	
 	public LeatherArmguard(boolean isUpgraded) {
 		super(ID, "Leather Armguard", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,

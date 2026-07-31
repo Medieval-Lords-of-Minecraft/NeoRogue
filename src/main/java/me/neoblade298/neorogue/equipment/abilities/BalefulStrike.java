@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -35,7 +34,7 @@ public class BalefulStrike extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 		.dustOptions(new Particle.DustOptions(Color.GREEN, 1.5F))
 		.count(25).spread(0.5, 0.5);
-	private double damageMultiplier;
+	private int damageMultiplier;
 	private double applyMultiplier;
 	
 	public BalefulStrike(boolean isUpgraded) {

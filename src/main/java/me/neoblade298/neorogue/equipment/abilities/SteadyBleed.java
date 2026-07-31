@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -30,7 +29,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class SteadyBleed extends Equipment {
 	private static final String ID = "SteadyBleed";
 	private static final TargetProperties tp = TargetProperties.radius(7, false, TargetType.ENEMY);
-	private double damageMult, shieldPercent;
+	private int damageMult;
+	private double shieldPercent;
 	private static final ParticleContainer bleed = new ParticleContainer(Particle.DAMAGE_INDICATOR)
 			.count(50).spread(0.5, 0.5).offsetY(1);
 	private static final ParticleContainer shield = new ParticleContainer(Particle.WAX_OFF)
@@ -39,7 +39,7 @@ public class SteadyBleed extends Equipment {
 	public SteadyBleed(boolean isUpgraded) {
 		super(ID, "Steady Bleed", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
-		damageMult = isUpgraded ? 12.0 : 8.0;
+		damageMult = isUpgraded ? 12 : 8;
 		shieldPercent = isUpgraded ? 0.35 : 0.15;
 	}
 	
@@ -91,7 +91,7 @@ public class SteadyBleed extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DAMAGED_ANVIL,
-				"On cast, deal " + DescUtil.val((int) damageMult + "x") + " each enemy's current " +
+				"On cast, deal " + DescUtil.val(damageMult + "x") + " each enemy's current " +
 				GlossaryTag.REND.tag(this) + " stacks as " + GlossaryTag.SLASHING.tag(this) + " damage to all nearby enemies," +
 				" gain " + GlossaryTag.SHIELDS.tag(this) + " equal to " + 
 				DescUtil.val((int)(shieldPercent * 100) + "%") + " of the damage dealt [<white>15s</white>], " +

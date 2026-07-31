@@ -212,7 +212,6 @@ public class RewardInstance extends EditInventoryInstance {
 								// next region (its title just showed via setInstance above). Runs once here
 								// rather than in NodeSelectInstance.setup so it isn't re-paid on relog.
 								RegionType completed = RegionType.getPreviousRegion(s.getRegion().getType());
-								System.out.println("Here: " + completed);
 								if (completed != null) RunReward.awardRegionCompletion(s, completed);
 							}
 						}

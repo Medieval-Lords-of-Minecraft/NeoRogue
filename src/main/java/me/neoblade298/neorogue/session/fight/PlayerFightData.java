@@ -651,13 +651,13 @@ public class PlayerFightData extends FightData {
 
 					boolean useResources = ei.shouldUseResource(p, data, inputs);
 					// Mana
-					BuffList b = ev.getBuff(PropertyType.MANA_COST);
-					double manaCost = useResources ? Math.max(0, b.applyNegative(ei.getManaCost())) : 0;
+					BuffList manaBuff = ev.getBuff(PropertyType.MANA_COST);
+					double manaCost = useResources ? Math.max(0, manaBuff.applyNegative(ei.getManaCost())) : 0;
 					boolean needsMana = manaCost > data.getMana() && manaCost > 0;
 
 					// Stamina
-					b = ev.getBuff(PropertyType.STAMINA_COST);
-					double staminaCost = useResources ? Math.max(0, b.applyNegative(ei.getStaminaCost())) : 0;
+					BuffList staminaBuff = ev.getBuff(PropertyType.STAMINA_COST);
+					double staminaCost = useResources ? Math.max(0, staminaBuff.applyNegative(ei.getStaminaCost())) : 0;
 					boolean needsStamina = staminaCost > data.getStamina() && staminaCost > 0;
 					Component msg = Component.text("You need ").color(NamedTextColor.RED);
 					if (needsMana && needsStamina) {
@@ -682,15 +682,15 @@ public class PlayerFightData extends FightData {
 					}
 
 					// Cooldown
-					b = ev.getBuff(PropertyType.COOLDOWN);
-					double cooldown = Math.max(0, b.applyNegative(ei.getBaseCooldown()));
+					BuffList cooldownBuff = ev.getBuff(PropertyType.COOLDOWN);
+					double cooldown = Math.max(0, cooldownBuff.applyNegative(ei.getBaseCooldown()));
 					
 					// Passed checks, run stat trackers
 					if (useResources) {
-						calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - staminaCost, b);
-						calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - manaCost, b);
+						calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - staminaCost, staminaBuff);
+						calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - manaCost, manaBuff);
 					}
-					calculateStatTrackers(ei.getBaseCooldown(), ei.getBaseCooldown() - cooldown, b);
+					calculateStatTrackers(ei.getBaseCooldown(), ei.getBaseCooldown() - cooldown, cooldownBuff);
 
 					CastType type = ei.getEquipment().getProperties().getCastType();
 					// If the cast type is not standard, it's up to the equipment to run the action
@@ -1068,6 +1068,7 @@ public class PlayerFightData extends FightData {
 		runActions(this, Trigger.CREATE_RIFT, ev);
 		rift.setDuration((int) ev.getDurationBuffList().apply(rift.getDuration()));
 		rift.activate();
+		getStats().addRiftCreated(rift.getSourceEquipment());
 	}
 
 	public void removeRift(Rift rift) {

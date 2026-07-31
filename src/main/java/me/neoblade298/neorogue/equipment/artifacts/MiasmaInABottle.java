@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class MiasmaInABottle extends Artifact {
 	private static final String ID = "MiasmaInABottle";
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
-	private double damage = 2;
+	private int damage = 2;
 
 	public MiasmaInABottle() {
 		super(ID, "Miasma in a Bottle", Rarity.UNCOMMON, EquipmentClass.THIEF);
@@ -55,7 +55,7 @@ public class MiasmaInABottle extends Artifact {
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(pdata.getPlayer(), tp)) {
 					FightData fd = FightInstance.getFightData(ent);
 					if (!fd.hasStatus(StatusType.INSANITY)) continue;
-					double add = fd.getStatus(StatusType.INSANITY).getStacks() * damage;
+					int add = fd.getStatus(StatusType.INSANITY).getStacks() * damage;
 					FightInstance.dealDamage(pdata, DamageType.DARK, add, ent, DamageStatTracker.of(id, eq));
 				}
 				return TriggerResult.keep();

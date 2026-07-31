@@ -127,6 +127,13 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 
 	@Override
+	public Component getActionBar(PlayerSessionData data) {
+		boolean isReady = !notUsed.contains(data.getUniqueId());
+		return getActionBar(data, isReady ? "Ready" : "Not Ready",
+				isReady ? NamedTextColor.GREEN : NamedTextColor.RED);
+	}
+
+	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
 		blockBottom.setType(Material.EMERALD_BLOCK);

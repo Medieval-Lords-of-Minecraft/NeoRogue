@@ -18,7 +18,7 @@ import net.kyori.adventure.text.Component;
 public class ThiefsCacheChance extends ChanceSet {
 	public ThiefsCacheChance() {
 		super(new RegionType[] { RegionType.LOW_DISTRICT, RegionType.HARVEST_FIELDS }, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
-		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and potions lying around. "
+		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some hexmetal, equipment, and potions lying around. "
 				+ "Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
 
 		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up two potions",
@@ -46,7 +46,7 @@ public class ThiefsCacheChance extends ChanceSet {
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.GOLD_NUGGET, "Pick up the gold",
+		choice = new ChanceChoice(Material.NETHERITE_SCRAP, "Pick up the hexmetal",
 				"Receive <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You pick up <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> and go on your way.");

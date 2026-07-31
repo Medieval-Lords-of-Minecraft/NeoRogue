@@ -43,7 +43,7 @@ public class ShardCloak extends Equipment {
 	private static final String ID = "ShardCloak";
 	private static final double ORBIT_RADIUS = 4;
 	private static final double HIT_RADIUS = 1.5;
-	private static final double ORBIT_PERIOD_TICKS = 40; // configurable orbit speed: ticks per full revolution
+	private static final int ORBIT_PERIOD_TICKS = 40; // configurable orbit speed: ticks per full revolution
 	private static final int DURATION_TICKS = 80; // each orbital lasts 4s
 	private static final int MAX_ORBITALS = 4;
 	private static final long HIT_COOLDOWN_MS = 1000; // per-enemy cooldown, shared across all orbitals

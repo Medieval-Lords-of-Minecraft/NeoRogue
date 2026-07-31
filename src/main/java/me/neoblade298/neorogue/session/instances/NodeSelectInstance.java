@@ -129,6 +129,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void updateBoardLines() {
 		// Empty as node select board is per player
 	}
+
+	@Override
+	public Component getActionBar(PlayerSessionData data) {
+		return getActionBar(data, "Flying is enabled", NamedTextColor.GREEN);
+	}
 	
 	@Override
 	public void cleanup(boolean pluginDisable) {

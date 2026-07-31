@@ -187,6 +187,12 @@ public abstract class Instance {
 		return Component.text(data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW);
 	}
 
+	protected Component getActionBar(PlayerSessionData data, String status, NamedTextColor statusColor) {
+		return Component.text(data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
+				.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+				.append(Component.text(status, statusColor));
+	}
+
 	protected Component getSpectatorActionBar(MapViewer viewer) {
 		return null;
 	}

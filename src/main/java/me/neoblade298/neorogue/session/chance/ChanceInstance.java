@@ -212,6 +212,13 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	@Override
+	public Component getActionBar(PlayerSessionData data) {
+		boolean isReady = !stage.containsKey(data.getUniqueId());
+		return getActionBar(data, isReady ? "Ready" : "Not Ready",
+				isReady ? NamedTextColor.GREEN : NamedTextColor.RED);
+	}
+
+	@Override
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
 		Candle candle = (Candle) candleBlock.getBlockData();

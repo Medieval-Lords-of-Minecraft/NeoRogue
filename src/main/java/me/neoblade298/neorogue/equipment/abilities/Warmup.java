@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,6 +52,8 @@ public class Warmup extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		data.addStaminaRegen(1);
+		Player p = data.getPlayer();
+		data.addPermanentShield(p.getUniqueId(), shields, this);
 	}
 
 	@Override
