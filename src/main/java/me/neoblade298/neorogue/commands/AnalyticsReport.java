@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -447,6 +448,8 @@ public class AnalyticsReport {
 
 	private static void queryMobLeaderboard(Connection con, int version, String regionType, String playerClass,
 			Set<String> mobIdWhitelist, ArrayList<String> lines) throws SQLException {
+		HashMap<String, Long> averageWinTimes = queryAverageWinTimes(con, version, regionType, playerClass,
+				mobIdWhitelist);
 		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
 				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_analytics_fight_mobs WHERE balanceVersion = ?");
 		if (regionType != null) sql.append(" AND regionType = ?");
@@ -461,7 +464,7 @@ public class AnalyticsReport {
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC;")) {
 			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
-			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT);
+			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT, averageWinTimes);
 		}
 		if (top.isEmpty()) return;
 
@@ -471,10 +474,34 @@ public class AnalyticsReport {
 		ArrayList<String> bottom = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg ASC;")) {
 			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
-			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT);
+			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT, averageWinTimes);
 		}
 		lines.add("<green>Least damaging:");
 		lines.addAll(bottom);
+	}
+
+	private static HashMap<String, Long> queryAverageWinTimes(Connection con, int version, String regionType,
+			String playerClass, Set<String> mobIdWhitelist) throws SQLException {
+		StringBuilder sql = new StringBuilder("SELECT appearances.mobId, AVG(f.durationMs) AS avgWinMs FROM ("
+				+ "SELECT DISTINCT mobId, fightId FROM neorogue_analytics_fight_mobs WHERE balanceVersion = ?");
+		if (regionType != null) sql.append(" AND regionType = ?");
+		if (playerClass != null) sql.append(" AND playerClass = ?");
+		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
+			sql.append(" AND mobId IN (");
+			for (int i = 0; i < mobIdWhitelist.size(); i++) sql.append(i == 0 ? "?" : ",?");
+			sql.append(")");
+		}
+		sql.append(") appearances JOIN neorogue_analytics_fights f ON f.fightId = appearances.fightId"
+				+ " WHERE f.outcome = 1 GROUP BY appearances.mobId;");
+
+		HashMap<String, Long> times = new HashMap<String, Long>();
+		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) times.put(rs.getString("mobId"), Math.round(rs.getDouble("avgWinMs")));
+			}
+		}
+		return times;
 	}
 
 	private static void bindMobLeaderboardParams(PreparedStatement ps, int version, String regionType,
@@ -488,16 +515,26 @@ public class AnalyticsReport {
 		}
 	}
 
-	private static void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit) throws SQLException {
+	private static void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit,
+			HashMap<String, Long> averageWinTimes) throws SQLException {
 		try (ResultSet rs = ps.executeQuery()) {
 			while (rs.next() && rows.size() < limit) {
 				int fights = rs.getInt("fights");
 				double avgDmg = rs.getDouble("avgDmg");
 				double winrate = 100.0 * rs.getDouble("winrate");
-				rows.add("  <yellow>" + df.format(avgDmg) + "</yellow> <white>" + rs.getString("mobId")
-						+ "</white> <gray>avg/player (" + fights + " fights, " + df.format(winrate) + "% party wr)");
+				String mobId = rs.getString("mobId");
+				Long avgWinMs = averageWinTimes.get(mobId);
+				String avgTime = avgWinMs == null ? "" : ", " + formatDuration(avgWinMs) + " avg win";
+				rows.add("  <yellow>" + df.format(avgDmg) + "</yellow> <white>" + mobId
+						+ "</white> <gray>avg/player (" + fights + " fights, " + df.format(winrate) + "% party wr"
+						+ avgTime + ")");
 			}
 		}
+	}
+
+	private static String formatDuration(long durationMs) {
+		long totalSeconds = Math.round(durationMs / 1000.0);
+		return String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
 	}
 
 	// Per-mob detail: appearances, average/total damage to the party, party winrate, and the damage

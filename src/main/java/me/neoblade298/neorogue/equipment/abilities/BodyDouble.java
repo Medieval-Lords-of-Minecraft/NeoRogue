@@ -31,7 +31,7 @@ public class BodyDouble extends Equipment {
 	
 	public BodyDouble(boolean isUpgraded) {
 		super(ID, "Body Double", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 22, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 				dur = isUpgraded ? 9 : 6;
 	}
 	
@@ -58,7 +58,7 @@ public class BodyDouble extends Equipment {
 					as.remove();
 				}
 			}, dur * 20);
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		}));
 	}
 

@@ -78,6 +78,7 @@ import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
+import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -953,6 +954,11 @@ public abstract class FightInstance extends Instance {
 			if (bar != null) p.sendActionBar(bar);
 		}
 		updateSpectatorActionBars();
+	}
+
+	@Override
+	protected Component getSpectatorActionBar(MapViewer viewer) {
+		return Component.text("Flying is enabled", NamedTextColor.GREEN);
 	}
 
 	// Default fight action bar: HP / MP / SP. Override per fight; return null to render nothing.
