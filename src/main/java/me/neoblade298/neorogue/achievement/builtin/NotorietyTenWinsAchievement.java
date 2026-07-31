@@ -18,9 +18,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 // Counts how many runs have been won at maximum notoriety (10). Mastery tiers at 3, 10, and 25 wins.
 public class NotorietyTenWinsAchievement implements Achievement {
-	private static final String ID = "infamous_champion";
+	private static final String ID = "infamous_guardian";
 	private static final int MAX_NOTORIETY = 10;
-	private static final int[] THRESHOLDS = { 3, 10, 25 };
+	private static final int[] THRESHOLDS = { 3, 5, 10 };
 
 	@Override
 	public String getId() {
@@ -29,7 +29,7 @@ public class NotorietyTenWinsAchievement implements Achievement {
 
 	@Override
 	public Component getDisplayName() {
-		return Component.text("Infamous Champion", NamedTextColor.GOLD);
+		return Component.text("Infamous Guardian", NamedTextColor.GOLD);
 	}
 
 	@Override

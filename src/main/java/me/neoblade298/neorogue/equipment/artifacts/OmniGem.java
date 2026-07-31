@@ -37,11 +37,20 @@ public class OmniGem extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.addMaxHealth(flat);
-		data.addMaxStamina(flat);
-		data.addStaminaRegen(regen);
-		data.addMaxMana(flat);
-		data.addManaRegen(regen);
+		data.addMaxHealth(flat * amount);
+		data.addMaxStamina(flat * amount);
+		data.addStaminaRegen(regen * amount);
+		data.addMaxMana(flat * amount);
+		data.addManaRegen(regen * amount);
+	}
+
+	@Override
+	public void onRemove(PlayerSessionData data, int amount) {
+		data.addMaxHealth(-flat * amount);
+		data.addMaxStamina(-flat * amount);
+		data.addStaminaRegen(-regen * amount);
+		data.addMaxMana(-flat * amount);
+		data.addManaRegen(-regen * amount);
 	}
 
 	@Override

@@ -33,7 +33,6 @@ public class Exhaustion extends Artifact {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			data.getSessionData().removeArtifact(this);
 			if (ai.getAmount() <= 0) {
-				data.getSessionData().addMaxAbilities(1);
 				return TriggerResult.remove();
 			}
 			Util.msgRaw(data.getPlayer(), Component.text("").append(hoverable).append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
@@ -43,11 +42,20 @@ public class Exhaustion extends Artifact {
 	
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.addMaxAbilities(-1);
+		if (data.getArtifacts().get(id).getAmount() == amount) {
+			data.addMaxAbilities(-1);
+		}
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
+	}
+
+	@Override
+	public void onRemove(PlayerSessionData data, int amount) {
+		if (!data.hasArtifact(id)) {
+			data.addMaxAbilities(1);
+		}
 	}
 	
 	@Override

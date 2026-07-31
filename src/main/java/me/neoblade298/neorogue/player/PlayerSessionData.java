@@ -588,15 +588,17 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void removeArtifact(Artifact artifact, int amount) {
-		if (artifacts.containsKey(artifact.getId())) {
+		if (amount > 0 && artifacts.containsKey(artifact.getId())) {
 			ArtifactInstance inst = artifacts.get(artifact.getId());
-			inst.add(-amount);
+			int removed = Math.min(amount, inst.getAmount());
+			inst.add(-removed);
 			if (inst.getAmount() < 1) {
 				artifacts.remove(artifact.getId());
 				// Artifact is fully gone, so tear down every session trigger it registered (both the
 				// bare id and any id + "-suffix" variants) so they don't keep firing until restart
 				removeTriggers(artifact.getId());
 			}
+			artifact.onRemove(this, removed);
 		}
 	}
 

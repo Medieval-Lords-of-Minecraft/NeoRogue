@@ -38,9 +38,12 @@ import me.neoblade298.neorogue.achievement.builtin.MitigateDamageAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyTenWinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyWinAchievement;
+import me.neoblade298.neorogue.achievement.builtin.PrismaticAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ShieldsInFightAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SoleSurvivorAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCurrencyAchievement;
+import me.neoblade298.neorogue.achievement.builtin.UseConsumablesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinRunsAchievement;
@@ -64,6 +67,9 @@ public class AchievementManager {
 			new VisitNodesAchievement(),
 			new WinRunsAchievement(),
 			new WinFightsAchievement(),
+			new SoleSurvivorAchievement(),
+			new UseConsumablesAchievement(),
+			new PrismaticAchievement(),
 			new ApplyNegativeStatusAchievement(),
 			new BeatMinibossesAchievement(),
 			new MitigateDamageAchievement(),
