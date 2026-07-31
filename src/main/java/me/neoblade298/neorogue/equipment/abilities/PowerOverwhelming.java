@@ -34,7 +34,7 @@ public class PowerOverwhelming extends Equipment implements Power {
 	@Override
 	public void setupReforges() {
 		addReforge(CatalystCrucible.get(), TollOfTheArcane.get());
-		addReforge(ArchmagesTome.get(), PowerOverwhelming2.get());
+		addReforge(ArchmagesTome.get(), PowerOverwhelmingII.get());
 	}
 
 	private static final int ACTIVATION_THRES = 2;

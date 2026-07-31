@@ -196,7 +196,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		if (!isSpectating) {
-			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon();
+			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon(data.getSession());
 		}
 		inv.setContents(contents);
 	}
@@ -299,7 +299,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				0);
 
 		if (!isSpectating) {
-			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon();
+			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon(data.getSession());
 		}
 		inv.setContents(contents);
 	}

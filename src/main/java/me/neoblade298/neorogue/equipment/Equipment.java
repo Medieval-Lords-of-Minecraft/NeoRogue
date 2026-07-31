@@ -644,6 +644,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Saboteur(b);
 			new Scavenger(b);
 			new SelfDestruct(b);
+			new SeraphicRain(b);
 			new Setup(b);
 			new Sidestep(b);
 			new SilentSteps(b);
