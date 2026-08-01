@@ -61,7 +61,7 @@ public class Momentum extends Equipment implements Power {
 					if (am.getLocation() != null && am.getLocation().distanceSquared(p2.getLocation()) >= distSq) {
 						LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in2;
 						for (ProjectileInstance pi : ev.getInstances()) {
-							pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
+							pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), Momentum.this)));
 						}
 					}
 					am.setLocation(p2.getLocation());

@@ -65,7 +65,7 @@ public class Posturing extends Equipment {
 				if (act.getCount() >= time) {
 					pc.play(p2, p2);
 					Sounds.enchant.play(p2, p2);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 					act.addCount(-time);
 					if (act.getBool()) {
 						icon.setAmount(icon.getAmount() + 1);

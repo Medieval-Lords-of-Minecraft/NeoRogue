@@ -67,7 +67,7 @@ public class FocusedShot extends Equipment {
 	private void primeShot(Player p, PlayerFightData data, String buffId) {
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.remove();
 		});
 	}

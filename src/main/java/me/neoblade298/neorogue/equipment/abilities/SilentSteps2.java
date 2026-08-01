@@ -62,7 +62,7 @@ public class SilentSteps2 extends Equipment implements Power {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata3, in3) -> {
 			if (!pdata3.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			PreDealDamageEvent ev3 = (PreDealDamageEvent) in3;
-			ev3.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev3.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					new Buff(pdata3, damage, 0, StatTracker.damageBuffAlly(id + slot, this)));
 			return TriggerResult.keep();
 		});
@@ -74,6 +74,6 @@ public class SilentSteps2 extends Equipment implements Power {
 		item = createItem(Material.LEATHER_BOOTS,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " twice. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.val(duration)
 						+ " and its stacks by " + DescUtil.val(1) + "." +
-						" Damage dealt is increased by " + DescUtil.val(damage) + " if you have " + GlossaryTag.STEALTH.tag(this) +".");
+						" " + GlossaryTag.DIRECT.tag(this) + " damage dealt is increased by " + DescUtil.val(damage) + " if you have " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

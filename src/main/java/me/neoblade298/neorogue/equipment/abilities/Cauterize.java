@@ -71,7 +71,7 @@ public class Cauterize extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						new Buff(data, -dec, 0, StatTracker.damageBuffAlly(buffId, this)));
 				if (++hits[0] >= hitReq) {
 					hits[0] = 0;

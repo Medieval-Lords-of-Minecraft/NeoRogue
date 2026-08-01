@@ -74,7 +74,7 @@ public class UnderDarkness extends Equipment {
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
 								data.applyStatus(StatusType.STEALTH, data, 1, 20, UnderDarkness.this);
-								data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0,
+								data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0,
 									StatTracker.damageBuffAlly(buffId, eq)), 20);
 								data.addSimpleShield(p.getUniqueId(), 8, 40, UnderDarkness.this);
 							}

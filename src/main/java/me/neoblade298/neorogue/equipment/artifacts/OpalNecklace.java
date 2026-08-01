@@ -53,7 +53,7 @@ public class OpalNecklace extends Artifact {
 					return TriggerResult.keep();
 				DamageType curr = ev.getMeta().getPrimarySlice().getPostBuffType();
 				if (lastType != curr && lastType != null) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 							Buff.multiplier(pdata, inc, StatTracker.damageBuffAlly(buffId, eq)));
 				}
 				lastType = curr;

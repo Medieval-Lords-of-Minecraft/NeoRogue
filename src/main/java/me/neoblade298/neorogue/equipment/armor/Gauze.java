@@ -38,7 +38,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 		GauzeInstance inst = new GauzeInstance(ID);
 		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
@@ -51,7 +51,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_CARPET, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def)
+		item = createItem(Material.WHITE_CARPET, "Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(def)
 				+ ". Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.val(threshold) + " seconds of "
 				+ "taking health damage heals back " + DescUtil.val(pct + "%") + " of the last damage taken, with a maximum heal of "
 						+ DescUtil.val(max) + ".");

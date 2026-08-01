@@ -82,7 +82,7 @@ public class GetCentered extends Equipment implements Power {
 			}
 
 			for (ProjectileInstance pi : ev2.getInstances()) {
-				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, GetCentered.this)));
 			}
 			return TriggerResult.keep();

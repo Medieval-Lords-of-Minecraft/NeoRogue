@@ -198,7 +198,7 @@ public class ProjectileInstance {
 		EquipmentProperties ammoProps = ammo.getProperties();
 		double dmg = bow.getProperties().get(PropertyType.DAMAGE);
 		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(bow.getId() + slot, bow)));
-		meta.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, 
+		meta.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, 
 				ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.arrowBuff(ammo.getAmmo())));
 		meta.setKnockback(bow.getProperties().get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
 		meta.isBasicAttack(bow, true);
@@ -211,7 +211,7 @@ public class ProjectileInstance {
 		double dmg = props.get(PropertyType.DAMAGE);
 		meta.addDamageSlice(
 				new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(eq.getId(), eq)));
-		meta.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		meta.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.increase(data, ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.arrowBuff(ammo.getAmmo())));
 		meta.setKnockback(
 				props.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));

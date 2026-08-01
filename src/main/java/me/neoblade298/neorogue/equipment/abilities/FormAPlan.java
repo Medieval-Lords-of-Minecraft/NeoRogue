@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -50,7 +49,7 @@ public class FormAPlan extends Equipment {
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.isActive) return TriggerResult.remove();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
+			if (!ev.getMeta().containsType(DamageCategory.DIRECT)) return TriggerResult.keep();
 			inst.timer--;
 			return TriggerResult.keep();
 		});
@@ -69,7 +68,7 @@ public class FormAPlan extends Equipment {
 						pc.play(p, p);
 						data.applyStatus(StatusType.STEALTH, data, 3, 100, FormAPlan.this);
 						Util.msgRaw(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, eq)));
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, eq)));
 						this.cancel();
 					}
 				}
@@ -82,7 +81,7 @@ public class FormAPlan extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				GlossaryTag.PASSIVE.tag(this) + ". After " + DescUtil.val("10s") + " (+" + DescUtil.val("1s") + " for every time you deal "
-				+ GlossaryTag.GENERAL + " damage), gain " + GlossaryTag.STEALTH.tag(this, 3) +
+				+ GlossaryTag.DIRECT + " damage), gain " + GlossaryTag.STEALTH.tag(this, 3) +
 				" [<white>5s</white>] and increase your damage by " + DescUtil.val(buff + "%") + ".");
 	}
 }

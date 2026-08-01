@@ -40,7 +40,7 @@ public class SaboteursRing extends Equipment {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});

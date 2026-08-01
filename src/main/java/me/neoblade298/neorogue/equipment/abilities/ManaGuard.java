@@ -44,7 +44,7 @@ public class ManaGuard extends Equipment implements Power {
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		String buffId = id + slot;
 		data.addManaRegen(-1);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.increase(data, reduc, StatTracker.defenseBuffAlly(buffId, this)));
 	}
 

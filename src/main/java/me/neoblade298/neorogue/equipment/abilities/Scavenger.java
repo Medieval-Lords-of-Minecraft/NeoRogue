@@ -98,7 +98,7 @@ public class Scavenger extends Equipment implements Power {
 			owner.addStamina(staminaReward);
 			
 			// Grant damage buff
-			owner.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			owner.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					new Buff(owner, 0, damageReward, StatTracker.damageBuffAlly(id + slot, eq, true)));
 			
 			// Increment icon count
@@ -143,6 +143,6 @@ public class Scavenger extends Equipment implements Power {
 		item = createItem(Material.WHEAT,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.val(stamina) + " stamina and " + 
-				DescUtil.val((int)(damageBuff * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage.");
+				DescUtil.val((int)(damageBuff * 100) + "%") + " " + GlossaryTag.DIRECT.tag(this) + " damage.");
 	}
 }

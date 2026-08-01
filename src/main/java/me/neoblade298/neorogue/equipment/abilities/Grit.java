@@ -66,7 +66,7 @@ public class Grit extends Equipment implements Power {
 			PreDealDamageEvent ev2 = (PreDealDamageEvent) in2;
 			double dist = ev2.getTarget().getLocation().distanceSquared(p2.getLocation());
 			if (dist <= 25) {
-				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
+				ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});
@@ -88,8 +88,8 @@ public class Grit extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range " + GlossaryTag.GENERAL.tag(this) + " damage " + DescUtil.val(5) + " times. " +
-				GlossaryTag.GENERAL.tag(this) + " damage dealt within "  + DescUtil.val(5) + " blocks of the target is increased by " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range " + GlossaryTag.DIRECT.tag(this) + " damage " + DescUtil.val(5) + " times. " +
+				GlossaryTag.DIRECT.tag(this) + " damage dealt within "  + DescUtil.val(5) + " blocks of the target is increased by " +
 				DescUtil.val(inc) + ". Killing an enemy within " + DescUtil.val(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("8s") + "].");
 	}
 }

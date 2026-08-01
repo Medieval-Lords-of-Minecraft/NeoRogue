@@ -66,7 +66,7 @@ public class LeatherBracer extends Equipment {
 			}
 			Player p = data.getPlayer();
 			Sounds.block.play(p, p);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.increase(data, 10, BuffStatTracker.defenseBuffAlly(buffId, eq)));
 
 			if (--count > 0) {
@@ -85,6 +85,6 @@ public class LeatherBracer extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
 				"Reduces the first " + DescUtil.val(instances) + " instance(s) of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.val(10) + ".");
+						+ GlossaryTag.DIRECT.tag(this) + " damage in a fight by " + DescUtil.val(10) + ".");
 	}
 }

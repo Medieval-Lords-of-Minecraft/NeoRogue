@@ -33,13 +33,13 @@ public class BootsOfSpeed extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addSprintCost(-stamina);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.increase(data, DAMAGE_REDUCTION, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by " + DescUtil.val(stamina)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(DAMAGE_REDUCTION) + ".");
+				+ ". Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(DAMAGE_REDUCTION) + ".");
 	}
 }

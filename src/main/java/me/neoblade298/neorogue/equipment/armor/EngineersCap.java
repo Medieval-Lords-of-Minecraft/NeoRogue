@@ -36,7 +36,7 @@ public class EngineersCap extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damageActual, StatTracker.damageBuffAlly(
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT, DamageOrigin.TRAP), Buff.multiplier(data, damageActual, StatTracker.damageBuffAlly(
 				UUID.randomUUID().toString(), this)));
 	}
 

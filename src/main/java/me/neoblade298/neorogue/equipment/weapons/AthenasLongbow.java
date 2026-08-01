@@ -70,7 +70,7 @@ public class AthenasLongbow extends Bow {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (ev.getMeta().isBasicAttack()) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.multiplier(data, damageBuff, BuffStatTracker.damageBuffAlly(id + slot, getUnupgraded())));
 			return TriggerResult.keep();
 		});

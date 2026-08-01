@@ -36,14 +36,14 @@ public class NullifyingCloak extends Equipment {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			int rifts = data.getRifts().size();
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, rifts * def, StatTracker.defenseBuffAlly(buffId, this, false)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, rifts * def, StatTracker.defenseBuffAlly(buffId, this, false)));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage received is decreased by " + DescUtil.val(def) + " for every " + GlossaryTag.RIFT.tag(this) + " you have active, " +
+		item = createItem(Material.LEATHER, GlossaryTag.DIRECT.tag(this) + " damage received is decreased by " + DescUtil.val(def) + " for every " + GlossaryTag.RIFT.tag(this) + " you have active, " +
 		"up to " + DescUtil.val(3) + " rifts.");
 	}
 }

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -113,7 +112,7 @@ public class SunderingShot extends Equipment {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			int stacks = Math.min(MAX, data.getStatus(StatusType.FOCUS).getStacks());
 			dm.addDamageSlice(new DamageSlice(data, damage * stacks, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, ammoProps.get(PropertyType.DAMAGE),
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, ammoProps.get(PropertyType.DAMAGE),
 				BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId(), ammo.getAmmo())));
 			ammo.onStart(proj);
 		}

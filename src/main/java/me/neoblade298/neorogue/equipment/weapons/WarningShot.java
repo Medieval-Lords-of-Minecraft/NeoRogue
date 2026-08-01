@@ -110,7 +110,7 @@ public class WarningShot extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
 			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1, WarningShot.this);
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(buffId, eq)), 160);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(buffId, eq)), 160);
 		}
 
 		@Override

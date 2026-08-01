@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.weapons;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -45,7 +44,7 @@ public class TacticiansDagger extends Equipment {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, sessionEq, slot, es);
 		timer.setAction((pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) {
+			if (!ev.getMeta().containsType(DamageCategory.DIRECT)) {
 				return TriggerResult.keep();
 			}
 			inst.setIcon(icon);
@@ -73,6 +72,6 @@ public class TacticiansDagger extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage) + " if "
-				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in " + DescUtil.val(3) + " seconds.");
+				+ "you haven't dealt " + GlossaryTag.DIRECT.tag(this) + " damage in " + DescUtil.val(3) + " seconds.");
 	}
 }

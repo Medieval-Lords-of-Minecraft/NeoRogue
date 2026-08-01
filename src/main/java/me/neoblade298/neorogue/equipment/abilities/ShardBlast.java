@@ -69,7 +69,7 @@ public class ShardBlast extends Equipment {
 					hit.play(p, ent);
 					FightData fd = FightInstance.getFightData(ent);
 					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this), DamageOrigin.TRAP), ent);
-					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -reduc, StatTracker.defenseDebuffEnemy(am.getId(), this)), 100);
+					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, -reduc, StatTracker.defenseDebuffEnemy(am.getId(), this)), 100);
 				}
 				t.deactivate();
 			}
@@ -107,6 +107,6 @@ public class ShardBlast extends Equipment {
 		item = createItem(Material.DARK_PRISMARINE,
 				"On cast, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" " + DescUtil.duration(dur) + ". Recasting activates the trap, dealing " + GlossaryTag.PIERCING.tag(this, damage) +
-				" damage to all nearby enemies and reducing their " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(reduc) + " " + DescUtil.duration(5) + ".");
+				" damage to all nearby enemies and reducing their " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(reduc) + " " + DescUtil.duration(5) + ".");
 	}
 }

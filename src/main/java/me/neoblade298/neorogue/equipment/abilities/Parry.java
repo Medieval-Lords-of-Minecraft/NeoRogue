@@ -77,7 +77,7 @@ public class Parry extends Equipment {
 			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, eq)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, eq)));
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, eq));
 				hit.play(pdata.getPlayer(), ev.getTarget().getLocation());
 				Sounds.anvil.play(pdata.getPlayer(), pdata.getPlayer());

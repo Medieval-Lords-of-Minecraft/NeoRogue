@@ -56,7 +56,7 @@ public class CurseMark extends Equipment {
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().containsType(DamageCategory.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
+			if (ev.getMeta().containsType(DamageCategory.DIRECT) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}
 			return TriggerResult.keep();
@@ -96,7 +96,7 @@ public class CurseMark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.DIRECT.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
 				" apply " + GlossaryTag.INSANITY.tag(this, stacks) + " to them and increase " + GlossaryTag.DARK.tag(this) + " damage dealt to them by " +
 				DescUtil.val(buff + "%") + " [<white>5s</white>].");
 	}

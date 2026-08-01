@@ -70,7 +70,7 @@ public class CompoundingInjury extends Equipment implements Power {
 				return TriggerResult.keep();
 			if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev2.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
 				DamageMeta dm = ev2.getMeta().clone();
-				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
+				dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, mult, 
 						BuffStatTracker.ignored(this)));
 				dm.isSecondary(true);
 

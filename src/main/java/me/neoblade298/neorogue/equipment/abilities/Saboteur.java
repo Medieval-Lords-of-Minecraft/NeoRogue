@@ -48,12 +48,12 @@ public class Saboteur extends Equipment {
 			Player p = data.getPlayer();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (ev.getMeta().hasOrigin(DamageOrigin.TRAP)) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT, DamageOrigin.TRAP), 
 						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
 			}
 			double distSq = DISTANCE_THRESHOLD * DISTANCE_THRESHOLD;
 			if (ev.getTarget().getLocation().distanceSquared(p.getLocation()) <= distSq) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), 
 						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
 			}
 			return TriggerResult.keep();

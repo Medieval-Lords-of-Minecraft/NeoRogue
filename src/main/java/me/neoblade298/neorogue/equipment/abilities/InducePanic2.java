@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -50,7 +49,7 @@ public class InducePanic2 extends Equipment {
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().containsType(DamageCategory.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
+			if (ev.getMeta().containsType(DamageCategory.DIRECT) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}
 			return TriggerResult.keep();
@@ -89,7 +88,7 @@ public class InducePanic2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.DIRECT.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
 				" apply " + GlossaryTag.INSANITY.tag(this, stacks) + " to enemies around them in a radius of " + DescUtil.val(10) + ".");
 	}
 }

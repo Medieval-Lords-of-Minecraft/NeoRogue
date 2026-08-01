@@ -82,7 +82,7 @@ public class BalefulStrike extends Equipment {
 			if (poisonStacks > 0) {
 				// Deal bonus damage based on poison stacks
 				int bonusDamage = (int) (poisonStacks * damageMultiplier);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), 
 						new Buff(data, bonusDamage, 0, StatTracker.damageBuffAlly(id + slot, this)));
 				
 				// Apply poison stacks after the attack

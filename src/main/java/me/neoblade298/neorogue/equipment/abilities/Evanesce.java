@@ -79,7 +79,7 @@ public class Evanesce extends Equipment implements Power {
 					FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration, Evanesce.this);
 					data.addTask(new BukkitRunnable() {
 						public void run() {
-							data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+							data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 								new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
 								100);
 						}
@@ -100,6 +100,6 @@ public class Evanesce extends Equipment implements Power {
 				GlossaryTag.STEALTH.tag(this, 1) + " [" + DescUtil.val(
                                 stealthDuration / 20) + "]. " +
 				"After " + DescUtil.val("1s") + ", gain " + DescUtil.val((int)(damageBuff * 100) + "%") + " increased " +
-				GlossaryTag.GENERAL.tag(this) + " damage " + DescUtil.duration(5) + ".");
+				GlossaryTag.DIRECT.tag(this) + " damage " + DescUtil.duration(5) + ".");
 	}
 }

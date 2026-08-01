@@ -86,7 +86,7 @@ public class SpikyShield extends Equipment {
 			Player p = data.getPlayer();
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(am.getId(), this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduction, 0, StatTracker.damageBarriered(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
@@ -95,7 +95,7 @@ public class SpikyShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size " + DescUtil.val("3x2")
-				+ " and reduce " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". "
+				+ " and reduce " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(reduction) + ". "
 				+ "Also grants " + DescUtil.val(amount) + " " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

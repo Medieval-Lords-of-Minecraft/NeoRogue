@@ -117,7 +117,7 @@ public class VultureChance extends ChanceSet {
 		inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getRegion().getType()));
 		((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 			for (PlayerFightData pfdata : fdata) {
-				pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("vultureChance")));
+				pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("vultureChance")));
 			}
 		});
 	}

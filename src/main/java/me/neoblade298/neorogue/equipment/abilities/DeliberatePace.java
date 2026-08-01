@@ -99,7 +99,7 @@ public class DeliberatePace extends Equipment implements Power {
 			if (focusStacks <= 0)
 				return TriggerResult.keep();
 
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
 
 			return TriggerResult.keep();
@@ -113,6 +113,6 @@ public class DeliberatePace extends Equipment implements Power {
 		item = createItem(Material.BOOK,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after crouching for " + DescUtil.val("3s") + ". Whenever you don't sprint for " + DescUtil.val(seconds + "s") + ", gain a stack of "
 						+ GlossaryTag.FOCUS.tag(this, 1) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
-						+ " increases your " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(damagePercent + "%") + ".");
+						+ " increases your " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(damagePercent + "%") + ".");
 	}
 }

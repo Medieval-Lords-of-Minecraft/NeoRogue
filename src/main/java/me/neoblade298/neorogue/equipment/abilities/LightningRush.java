@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -22,6 +20,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -54,9 +53,9 @@ public class LightningRush extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, for " + DescUtil.val("3s") + ", your basic attacks"
-						+ " grant speed " + DescUtil.val(1) + " [<white>1s</white>]," + " deals an additional "
-						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage, applies "
-						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ", and extends the duration"
+						+ " grant speed " + DescUtil.val(1) + " [<white>1s</white>]," + " deal an additional "
+						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage, apply "
+						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ", and extend the duration"
 						+ " of the skill by " + DescUtil.val("2s") + ". Once per enemy.");
 	}
 

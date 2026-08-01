@@ -40,14 +40,14 @@ public class StonyCloak extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			FightData fd = ev.getDamager();
 			int reduc = baseReduc + (fd.hasStatus(StatusType.CONCUSSED) ? concReduc : 0);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(buffId, this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(baseReduc) + ". Further reduce damage by " +
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.DIRECT.tag(this) + " damage taken by " + DescUtil.val(baseReduc) + ". Further reduce damage by " +
 		DescUtil.val(concReduc) + " if the enemy is " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}
 }

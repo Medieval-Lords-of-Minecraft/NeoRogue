@@ -40,6 +40,6 @@ public class ShadowImbuement extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				GlossaryTag.PASSIVE.tag(this) + ". Any time you deal " + GlossaryTag.GENERAL.tag(this) + " damage, deal an additional " + GlossaryTag.DARK.tag(this, damage) + " damage.");
+				GlossaryTag.PASSIVE.tag(this) + ". Any time you deal " + GlossaryTag.DIRECT.tag(this) + " damage, deal an additional " + GlossaryTag.DARK.tag(this, damage) + " damage.");
 	}
 }

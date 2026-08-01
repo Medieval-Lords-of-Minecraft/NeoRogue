@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.session.fight;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 
 public enum DamageCategory {
-	GENERAL("General", GlossaryTag.GENERAL),
+	DIRECT("Direct", GlossaryTag.DIRECT),
 	PHYSICAL("Physical", GlossaryTag.PHYSICAL),
 	MAGICAL("Magical", GlossaryTag.MAGICAL),
 	SLASHING("Slashing", GlossaryTag.SLASHING),

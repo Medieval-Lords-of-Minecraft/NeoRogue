@@ -75,7 +75,7 @@ public class Viper extends Equipment {
 				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 				
 				// Add bonus damage
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 				
 				// Grant shields and speed
 				data.addSimpleShield(p.getUniqueId(), shields, 40, this);

@@ -18,6 +18,6 @@ public class WeakenedStatus extends BasicStatus {
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
 		Buff b = new Buff(slices.first().getFightData(), 0, this.stacks >= 0 ? DAMAGE_DEBUFF : 0, BuffStatTracker.of(StatusType.WEAKENED));
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), b);
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), b);
 	}
 }

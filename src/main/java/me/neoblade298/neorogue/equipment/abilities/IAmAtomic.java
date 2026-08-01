@@ -96,7 +96,7 @@ public class IAmAtomic extends Equipment implements Power {
 			if (manaThresholds <= 0) return TriggerResult.keep();
 
 			double damageMultiplier = manaThresholds * DAMAGE_INCREASE_PER_THRESHOLD;
-			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.multiplier(data, damageMultiplier, StatTracker.damageBuffAlly(buffId, this)));
 
 			return TriggerResult.keep();

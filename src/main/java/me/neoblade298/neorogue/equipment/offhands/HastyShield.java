@@ -57,7 +57,7 @@ public class HastyShield extends Equipment {
 			if (now <= nextUsable) return TriggerResult.keep();
 			
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(buffId, eq)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduction, 0, StatTracker.damageBarriered(buffId, eq)));
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);
@@ -68,7 +68,7 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce " + GlossaryTag.GENERAL.tag(this) + " damage of the next hit taken by " + DescUtil.val(reduction)
+		item = createItem(Material.SHIELD, "When raised, reduce " + GlossaryTag.DIRECT.tag(this) + " damage of the next hit taken by " + DescUtil.val(reduction)
 				+ " and grant " + DescUtil.val(amount) + " mana and stamina. " + DescUtil.val("5s") + " cooldown.");
 	}
 }

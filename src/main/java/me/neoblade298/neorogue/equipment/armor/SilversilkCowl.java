@@ -39,7 +39,7 @@ public class SilversilkCowl extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		// Grant evade at the start of the fight
 		data.applyStatus(StatusType.EVADE, data, evade, -1, this);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 		
 		// Increase the damage mitigated per stamina
 		data.addTrigger(id, Trigger.PRE_EVADE, (pdata, in) -> {
@@ -53,7 +53,7 @@ public class SilversilkCowl extends Equipment {
 	public void setupItem() {
 		int pct = (int)(mult / (1.0 + mult) * 100);
 		item = createItem(Material.CHAINMAIL_HELMET,
-				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def)
+				"Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(def)
 				+ ". Start every fight with " + DescUtil.val(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
 				+ "The amount of stamina that " + GlossaryTag.EVADE.tag(this) + " consumes per damage mitigated is decreased by " + DescUtil.val(pct + "%") + ".");
 	}

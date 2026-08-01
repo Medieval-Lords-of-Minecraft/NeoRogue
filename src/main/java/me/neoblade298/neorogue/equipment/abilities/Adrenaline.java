@@ -71,7 +71,7 @@ public class Adrenaline extends Equipment {
 				sc.play(p, p);
 				pc.play(p, p);
 				pdata.addStamina(stamina);
-				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damageReduc, 0, StatTracker.defenseBuffAlly(id, eq, false)));
+				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pdata, damageReduc, 0, StatTracker.defenseBuffAlly(id, eq, false)));
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);

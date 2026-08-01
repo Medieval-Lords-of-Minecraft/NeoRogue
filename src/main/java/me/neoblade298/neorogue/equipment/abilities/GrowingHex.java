@@ -74,7 +74,7 @@ public class GrowingHex extends Equipment {
 				Location loc = ev.getTarget().getLocation();
 				sc.play(p, loc);
 				cons.play(p, loc);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.increase(data, damage + am.getCount(), BuffStatTracker.damageBuffAlly(id, this)));
 				am.addCount(growth);
 				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);

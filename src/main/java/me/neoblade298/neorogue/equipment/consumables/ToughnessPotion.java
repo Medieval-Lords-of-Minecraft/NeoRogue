@@ -33,7 +33,7 @@ public class ToughnessPotion extends Consumable {
 
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(id + slot, this)));
 		return TriggerResult.remove();
 	}
@@ -41,7 +41,7 @@ public class ToughnessPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Reduces " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(reduc) + " for the rest of combat. Consumed on first use.");
+				"Reduces " + GlossaryTag.DIRECT.tag(this) + " damage taken by " + DescUtil.val(reduc) + " for the rest of combat. Consumed on first use.");
 	}
 
 	@Override

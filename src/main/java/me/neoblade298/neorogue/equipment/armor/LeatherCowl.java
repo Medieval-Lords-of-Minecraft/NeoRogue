@@ -34,12 +34,12 @@ public class LeatherCowl extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.applyStatus(StatusType.EVADE, data, evade, -1, this);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + DescUtil.val(evade) + " " + GlossaryTag.EVADE.tag(this)
-				+ ". Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + ".");
+				+ ". Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(def) + ".");
 	}
 }

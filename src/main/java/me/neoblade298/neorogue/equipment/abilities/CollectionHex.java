@@ -76,7 +76,7 @@ public class CollectionHex extends Equipment {
 				Location loc = ev.getTarget().getLocation();
 				sc.play(p, loc);
 				cons.play(p, loc);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(id, this)));
 				data.addMana(mana);
 				data.addSimpleShield(p.getUniqueId(), shields, 100, this);

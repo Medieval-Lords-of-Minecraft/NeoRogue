@@ -94,7 +94,7 @@ public class BreakingPoint extends Equipment {
 			if (shield.getAmount() <= shields / 2) {
 				// Gain damage buff
 				Player p = data.getPlayer();
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this)));
 				Sounds.blazeDeath.play(p, p);
 				Util.msgRaw(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();

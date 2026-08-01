@@ -113,7 +113,7 @@ public class AvalonianSceptre extends Equipment {
 			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 			if (data.getMana() > data.getMaxMana() * bonusThreshold) {
-				proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.multiplier(data, 1.0, BuffStatTracker.of(id + slot, eq, "High mana damage")));
 				data.addMaxMana(maxMana);
 			}

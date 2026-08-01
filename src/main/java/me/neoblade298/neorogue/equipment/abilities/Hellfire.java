@@ -145,7 +145,7 @@ public class Hellfire extends Equipment implements Power {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)));
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
 			ammo.onStart(proj);
 			Sounds.fire.play(p, p);
 		}

@@ -113,7 +113,7 @@ public class MagicQuiver extends Equipment {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

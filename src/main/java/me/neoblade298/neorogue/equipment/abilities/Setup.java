@@ -101,7 +101,7 @@ public class Setup extends Equipment implements Power {
 				pc.play(p2, p2);
 				Sounds.enchant.play(p2, p2);
 				initTrap(p2, data, Setup.this, slot);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 				act.addCount(-time);
 				if (act.getBool()) {
 					icon.setAmount(icon.getAmount() + 1);

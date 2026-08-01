@@ -38,7 +38,7 @@ public class HiddenBlade extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.15, StatTracker.damageBuffAlly(buffId, this).shouldCombine(false)), 40);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 0, 0.15, StatTracker.damageBuffAlly(buffId, this).shouldCombine(false)), 40);
 			return TriggerResult.keep();
 		});
 	}

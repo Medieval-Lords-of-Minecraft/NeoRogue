@@ -39,7 +39,7 @@ public class GripGloves extends Equipment {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() / data.getMaxStamina() <= cutoffPct) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(buffId, this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

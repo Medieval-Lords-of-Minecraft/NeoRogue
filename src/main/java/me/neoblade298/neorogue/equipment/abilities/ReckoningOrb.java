@@ -122,7 +122,7 @@ public class ReckoningOrb extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 2));
 				FightData fd = FightInstance.getFightData(ent);
-				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -mult, BuffStatTracker.damageDebuffEnemy(buffId, eq, false)), 100);
+				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, -mult, BuffStatTracker.damageDebuffEnemy(buffId, eq, false)), 100);
 			}
 		}
 		

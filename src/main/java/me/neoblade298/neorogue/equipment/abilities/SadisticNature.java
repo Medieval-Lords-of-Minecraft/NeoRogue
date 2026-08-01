@@ -186,7 +186,7 @@ public class SadisticNature extends Equipment {
 					FightInstance.dealDamage(dm, trg);
 					
 					// Increase trap damage by 5%
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT, DamageOrigin.TRAP), 
 							new Buff(data, 0, TRAP_DAMAGE_INC, BuffStatTracker.damageBuffAlly(buffId, eq)));
 					
 					data.removeTrap(this);

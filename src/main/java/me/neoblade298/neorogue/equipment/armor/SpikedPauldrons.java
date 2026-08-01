@@ -33,11 +33,11 @@ public class SpikedPauldrons extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.applyStatus(StatusType.THORNS, data, thorns, -1, this);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(damageReduction) + ". Start every fight with " + DescUtil.val(thorns) + " " + GlossaryTag.THORNS.tag(this) + ".");
+		item = createItem(Material.ARMOR_STAND, "Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(damageReduction) + ". Start every fight with " + DescUtil.val(thorns) + " " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -9,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,7 +58,7 @@ public class LordOfTheNight extends Equipment implements Power {
 			}
 			PreDealDamageEvent ev2 = (PreDealDamageEvent) inputs;
 			double totalIncrease = damageIncreaseMult * stealthStacks;
-			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+			ev2.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), 
 				new Buff(data, 0, totalIncrease, StatTracker.damageBuffAlly(id, this)));
 			return TriggerResult.keep();
 		});
@@ -69,7 +68,7 @@ public class LordOfTheNight extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD, 
-			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " damage while in " + GlossaryTag.STEALTH.tag(this) + ". Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(damageIncrease + "%") + " for every stack of " + 
+			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " damage while in " + GlossaryTag.STEALTH.tag(this) + ". Increases " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(damageIncrease + "%") + " for every stack of " + 
 			GlossaryTag.STEALTH.tag(this) + " you have.");
 	}
 }

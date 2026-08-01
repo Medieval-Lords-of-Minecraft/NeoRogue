@@ -70,13 +70,13 @@ public class EdgeOfHorizon extends Bow {
 			if (ev.getMeta().isBasicAttack()) {
 				// Basic attack: flat damage increase per focus stack
 				if (focusStacks > 0) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 							Buff.increase(data, basicDamagePerFocus * focusStacks, StatTracker.damageBuffAlly(id + slot, this)));
 				}
 			} else {
 				// Non-basic attack: 30% base + 10% per focus stack
 				double totalMult = BASE_NON_BASIC_BUFF + (NON_BASIC_BUFF_PER_FOCUS * focusStacks);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.multiplier(data, totalMult, BuffStatTracker.damageBuffAlly(id + slot + 1, this)));
 			}
 			return TriggerResult.keep();

@@ -66,7 +66,7 @@ public class ManaInfusion extends Equipment {
 			if (inst.getCount() == 1 && pdata.getMana() >= mana) {
 				for (ProjectileInstance pi : ev.getInstances()) {
 					ProjectileInstance proj = (ProjectileInstance) pi;
-					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 							new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 				}
 				pdata.addMana(-mana);

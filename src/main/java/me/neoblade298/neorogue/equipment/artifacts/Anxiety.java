@@ -33,7 +33,7 @@ public class Anxiety extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -0.25, StatTracker.damageDebuffAlly(buffId, this)), 20 * 20);
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, -0.25, StatTracker.damageDebuffAlly(buffId, this)), 20 * 20);
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			data.getSessionData().removeArtifact(this);
 			return TriggerResult.remove();

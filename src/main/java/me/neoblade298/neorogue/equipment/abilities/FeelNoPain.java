@@ -66,7 +66,7 @@ public class FeelNoPain extends Equipment implements Power {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in2;
 			int stacks = data.getStatus(StatusType.BERSERK).getStacks();
 			int ct = Math.min(COUNT, stacks / THRES);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.multiplier(data, ct * reduc, null));
 			return TriggerResult.keep();
 		});

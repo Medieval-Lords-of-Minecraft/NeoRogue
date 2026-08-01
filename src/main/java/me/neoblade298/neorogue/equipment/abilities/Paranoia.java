@@ -89,7 +89,7 @@ public class Paranoia extends Equipment {
 			if (currentStacks > 0) {
 				Player p = data.getPlayer();
 				// Deal bonus damage
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						new Buff(data, damagePerStack * currentStacks, 0, StatTracker.damageBuffAlly(id + slot, this)));
 
 				// Grant shields

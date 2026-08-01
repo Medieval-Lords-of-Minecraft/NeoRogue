@@ -63,7 +63,7 @@ public class PointBlank extends Equipment implements Power {
 			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			ProjectileInstance ip = dm.getProjectile();
 			if (ip.getOrigin().distanceSquared(ev2.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -72,7 +72,7 @@ public class PointBlank extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE_SLAB,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage " + DescUtil.val(2) + " times while above " + DescUtil.val("50%") + " stamina. " + GlossaryTag.GENERAL.tag(this) + " projectile damage dealt within " + DescUtil.val(thres) + " blocks of the target is increased by " +
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range projectile damage " + DescUtil.val(2) + " times while above " + DescUtil.val("50%") + " stamina. " + GlossaryTag.DIRECT.tag(this) + " projectile damage dealt within " + DescUtil.val(thres) + " blocks of the target is increased by " +
 				DescUtil.val(damage) + ".");
 	}
 }

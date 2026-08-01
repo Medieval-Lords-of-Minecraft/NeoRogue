@@ -67,7 +67,7 @@ public class ForceBracer extends Equipment {
 			}
 			Player p = data.getPlayer();
 			Sounds.block.play(p, p);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));
 
 			if (--count > 0) {
@@ -77,7 +77,7 @@ public class ForceBracer extends Equipment {
 			} else {
 				Sounds.breaks.play(p, p);
 				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id, eq)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id, eq)));
 				data.applyStatus(StatusType.STRENGTH, data, strength, -1, ForceBracer.this);
 				return TriggerResult.remove();
 			}
@@ -88,7 +88,7 @@ public class ForceBracer extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.RABBIT_HIDE,
 				"Reduces the first " + DescUtil.val(instances) + " instances of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.val(15) + ". Upon breaking, grants a " +
+						+ GlossaryTag.DIRECT.tag(this) + " damage in a fight by " + DescUtil.val(15) + ". Upon breaking, grants a " +
 						DescUtil.val(multStr + "%") + " damage buff, " + GlossaryTag.STRENGTH.tag(this, strength) + ", and " + 
 						GlossaryTag.BERSERK.tag(this, berserk) + ".");
 	}

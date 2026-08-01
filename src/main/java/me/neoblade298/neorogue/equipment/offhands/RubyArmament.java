@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.offhands;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -76,12 +75,12 @@ public class RubyArmament extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (act.getCount() == 0) {
 				data.addStamina(stamina);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0, StatTracker.damageBuffAlly(buffId, this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pdata, -damageDec, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			else {
 				if (data.getStamina() < stamCost) return TriggerResult.keep();
 				data.addStamina(-stamCost);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

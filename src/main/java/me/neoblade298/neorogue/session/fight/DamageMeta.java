@@ -335,17 +335,17 @@ public class DamageMeta {
 		ReceiveDamageEvent rdev = new ReceiveDamageEvent(owner, this);
 		if (recipient instanceof PlayerFightData && !nullifiedByBarrier) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, rdev)) {
-				cancelDamage = true;
-			}
-			else if (pdata.hasStatus(StatusType.INVINCIBLE)) {
+			if (pdata.hasStatus(StatusType.INVINCIBLE)) {
 				cancelDamage = true;
 				invincibleCancel = true;
+			}
+			else if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, rdev)) {
+				cancelDamage = true;
 			}
 		}
 		if (!(recipient instanceof PlayerFightData)) {
 			recipient.runMobActions(recipient, Trigger.PRE_RECEIVE_DAMAGE, rdev);
-			if (slices.getFirst().getPostBuffType().getCategories().contains(DamageCategory.GENERAL)) {
+			if (slices.getFirst().getPostBuffType().getCategories().contains(DamageCategory.DIRECT)) {
 				signalMob(target, damager, "NR_PRE_RECEIVE_DAMAGE_GENERAL");
 			}
 		}
@@ -378,7 +378,7 @@ public class DamageMeta {
 			}
 		}
 		
-		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
+		boolean isStatusDamage = !DamageCategory.DIRECT.hasType(slices.getFirst().getPostBuffType());
 		boolean hasPhysical = false, hasMagical = false;
 		boolean targetDead = false;
 		// Calculate buffs for every slice of damage

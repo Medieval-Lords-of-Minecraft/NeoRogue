@@ -35,7 +35,7 @@ public class LeatherArmguard extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.increase(data, data.hasStatus(StatusType.STEALTH) ? spdef + def : def, StatTracker.defenseBuffAlly(id + slot, this)));
 			return TriggerResult.keep();
 		});
@@ -43,7 +43,7 @@ public class LeatherArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.val(def) + ", increased by "
+		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.DIRECT.tag(this) + " damage received by " + DescUtil.val(def) + ", increased by "
 				+ DescUtil.val(spdef) + " when in " + GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

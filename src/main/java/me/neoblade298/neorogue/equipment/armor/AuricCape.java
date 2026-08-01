@@ -36,11 +36,11 @@ public class AuricCape extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (pdata.getMana() > pdata.getMaxMana() / 2) {
 				// This buff doesn't have a duration because we can just set it to 0 when mana is below 50%
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.increase(data, reduc, tr));
 			}
 			else {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.empty(data, tr));
 			}
 			return TriggerResult.keep();
@@ -50,6 +50,6 @@ public class AuricCape extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ELYTRA,
-				"While above " + DescUtil.val("50%") + " mana, reduce all incoming " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduc) + ".");
+				"While above " + DescUtil.val("50%") + " mana, reduce all incoming " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(reduc) + ".");
 	}
 }

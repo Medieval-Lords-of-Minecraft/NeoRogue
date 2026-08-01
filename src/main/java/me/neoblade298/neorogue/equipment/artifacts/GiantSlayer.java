@@ -41,7 +41,7 @@ public class GiantSlayer extends Artifact {
 			if (targetFD == null) return TriggerResult.keep();
 			Mob mob = targetFD.getMob();
 			if (mob != null && mob.getType() == MobType.MINIBOSS) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.multiplier(data, buff, BuffStatTracker.ignored(this)));
 			}
 			return TriggerResult.keep();

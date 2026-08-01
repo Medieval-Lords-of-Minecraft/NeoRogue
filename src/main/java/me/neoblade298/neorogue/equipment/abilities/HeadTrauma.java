@@ -90,7 +90,7 @@ public class HeadTrauma extends Equipment implements Power {
 					fd.applyStatus(s, data, 1, -1, HeadTrauma.this);
 					Player p2 = data.getPlayer();
 					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, HeadTrauma.this)), fd.getEntity());
-					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, HeadTrauma.this, false)));
+					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, HeadTrauma.this, false)));
 					pc.play(p2, fd.getEntity());
 					sc.play(p2, fd.getEntity());
 					return TriggerResult.keep();

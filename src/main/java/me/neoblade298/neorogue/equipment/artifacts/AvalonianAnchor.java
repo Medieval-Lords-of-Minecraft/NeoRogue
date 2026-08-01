@@ -45,7 +45,7 @@ public class AvalonianAnchor extends Artifact {
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Sounds.crit.play(p, p);
 				part.play(p, ev.getTarget());
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

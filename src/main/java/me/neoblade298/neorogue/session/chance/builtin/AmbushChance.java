@@ -85,7 +85,7 @@ public class AmbushChance extends ChanceSet {
 								"</yellow> lumbers over and snaps a few twigs. You groan and prepare to fight.");
 						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("ambushChance")));
+								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("ambushChance")));
 							}
 						});
 					}

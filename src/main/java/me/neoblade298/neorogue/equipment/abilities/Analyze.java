@@ -70,7 +70,7 @@ public class Analyze extends Equipment {
 			int currentStacks = stacks.getCount();
 			
 			// Deal bonus damage
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), 
 					new Buff(data, damagePerStack * currentStacks, 0, StatTracker.damageBuffAlly(id + slot, this)));
 			
 			// Grant shields

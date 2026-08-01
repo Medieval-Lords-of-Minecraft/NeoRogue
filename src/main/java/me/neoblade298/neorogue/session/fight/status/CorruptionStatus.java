@@ -16,7 +16,7 @@ public class CorruptionStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.multiplier(applier, -0.5, BuffStatTracker.of(StatusType.CORRUPTION)));
 	}
 }

@@ -76,7 +76,7 @@ public class RecklessApproach extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)), 100);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)), 100);
 			new RecklessApproachHitbox(p, data, inst, this, slot);
 			return TriggerResult.keep();
 		});

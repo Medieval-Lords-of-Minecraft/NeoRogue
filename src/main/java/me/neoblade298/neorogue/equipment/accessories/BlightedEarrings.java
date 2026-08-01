@@ -39,7 +39,7 @@ public class BlightedEarrings extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			if (!data.hasStatus(StatusType.CORRUPTION)) return TriggerResult.keep();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.multiplier(data, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});

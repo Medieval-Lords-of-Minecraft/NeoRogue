@@ -33,7 +33,7 @@ public class ForcePotion extends Consumable {
 
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id, this)), 400);
 		return TriggerResult.remove();
 	}
@@ -42,7 +42,7 @@ public class ForcePotion extends Consumable {
 	public void setupItem() {
 		int buffPct = (int) (damageBuff * 100);
 		item = createItem(Material.POTION,
-				"Increases " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(buffPct + "%") + " for [<white>20s</white>]. Consumed on first use.");
+				"Increases " + GlossaryTag.DIRECT.tag(this) + " damage dealt by " + DescUtil.val(buffPct + "%") + " for [<white>20s</white>]. Consumed on first use.");
 	}
 
 	@Override

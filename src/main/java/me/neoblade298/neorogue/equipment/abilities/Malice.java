@@ -81,7 +81,7 @@ public class Malice extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getBool()) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(am.getId(), this)));
 				if (++hits[0] >= hitReq) {
 					hits[0] = 0;

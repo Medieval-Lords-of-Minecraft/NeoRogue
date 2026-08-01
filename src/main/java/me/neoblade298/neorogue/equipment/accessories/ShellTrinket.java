@@ -33,7 +33,7 @@ public class ShellTrinket extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dec, BuffStatTracker.defenseBuffAlly(id, this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dec, BuffStatTracker.defenseBuffAlly(id, this)));
 	}
 
 	@Override

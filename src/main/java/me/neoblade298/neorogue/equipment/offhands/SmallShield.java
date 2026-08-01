@@ -89,15 +89,15 @@ public class SmallShield extends Equipment {
 			Player p = data.getPlayer();
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
-			if (ev.getMeta().containsType(DamageCategory.GENERAL)) p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
+			if (ev.getMeta().containsType(DamageCategory.DIRECT)) p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". " +
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(reduction) + ". " +
 		"Also creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks " + DescUtil.val(5) + " projectiles before breaking.");
 	}
 }

@@ -64,7 +64,7 @@ public class PracticeDummy extends Artifact {
 			if (!eq.getId().equals(weapon)) {
 				weapon = eq.getId();
 				count = 1;
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						new Buff(data, 0, 0, StatTracker.damageBuffAlly(buffId, art, false)));
 				return TriggerResult.keep();
 			}
@@ -77,7 +77,7 @@ public class PracticeDummy extends Artifact {
 				Util.msgRaw(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art, false)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art, false)));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.keep();

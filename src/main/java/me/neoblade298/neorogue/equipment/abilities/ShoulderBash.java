@@ -56,7 +56,7 @@ public class ShoulderBash extends Equipment {
 			pc.play(p, p);
 			FightInstance.knockback(p, ev.getTarget(), 0.5);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), ev.getTarget());
-			FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 				new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 100);
 			return TriggerResult.keep();
 		}));

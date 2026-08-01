@@ -38,14 +38,14 @@ public class GuardianPlate extends Equipment {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (data.getShields().isEmpty()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(buffId, this, false)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(buffId, this, false)));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_CHESTPLATE, "Decrease " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.val(damageReduction) +
+		item = createItem(Material.IRON_CHESTPLATE, "Decrease " + GlossaryTag.DIRECT.tag(this) + " damage taken by " + DescUtil.val(damageReduction) +
 				" while you have " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

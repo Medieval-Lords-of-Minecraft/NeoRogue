@@ -82,7 +82,7 @@ public class Pressure extends Equipment {
 			if (!am.getBool()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) <= rangesq &&
 				p.getLocation().distanceSquared(am.getLocation()) <= rangesq) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
 			}
 			return TriggerResult.keep();
 
@@ -92,7 +92,7 @@ public class Pressure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_GRATE,
-				"On cast, drop a zone that lasts " + DescUtil.val("8s") + ". Dealing " + GlossaryTag.GENERAL.tag(this) + " damage to an enemy while you are both within the zone increases " +
+				"On cast, drop a zone that lasts " + DescUtil.val("8s") + ". Dealing " + GlossaryTag.DIRECT.tag(this) + " damage to an enemy while you are both within the zone increases " +
 				"the damage by " + DescUtil.val(damage) + ".");
 	}
 }

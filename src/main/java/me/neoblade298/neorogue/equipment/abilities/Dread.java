@@ -68,7 +68,7 @@ public class Dread extends Equipment implements Power {
 				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 0));
 
 				// Apply permanent damage buff
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(id + slot, eq)));
 				Sounds.wither.play(p, p);
 			}
@@ -80,6 +80,6 @@ public class Dread extends Equipment implements Power {
 		item = createItem(Material.WITHER_SKELETON_SKULL,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.val(thres) + " " + GlossaryTag.STEALTH.tag(this) + " stacks. " +
 				"Gain " + GlossaryTag.STEALTH.tag(this, stealthGained) + ", " + DescUtil.val("Speed 1") + ", and " +
-				DescUtil.val((int)(damageIncrease * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage for the rest of the fight.");
+				DescUtil.val((int)(damageIncrease * 100) + "%") + " " + GlossaryTag.DIRECT.tag(this) + " damage for the rest of the fight.");
 	}
 }

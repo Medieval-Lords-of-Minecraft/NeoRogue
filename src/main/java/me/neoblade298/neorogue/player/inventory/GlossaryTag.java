@@ -21,7 +21,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public enum GlossaryTag implements GlossaryIcon {
-	GENERAL(Material.DIAMOND_SWORD, "<white>General</white>",
+	DIRECT(Material.DIAMOND_SWORD, "<white>Direct</white>",
 			"A type of damage. Subtypes are <red>Physical</red>, <blue>Magical</blue>. Does not include status damage."),
 	PHYSICAL(Material.DIAMOND_SWORD, "<red>Physical</red>",
 			"A type of damage. Subtypes are " + DamageType.SLASHING.tag + ", " + DamageType.PIERCING.tag + ", " + DamageType.BLUNT.tag + "."),

@@ -49,7 +49,7 @@ public class VengefulShield extends Equipment {
 			Player p = data.getPlayer();
 			if ((p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) && berserk < thres) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 
 			// The berserk gain + basic-attack empower can only proc once per second; the damage
@@ -73,7 +73,7 @@ public class VengefulShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.GENERAL.tag(this) + " damage by " + DescUtil.val(reduction) + ". Once per second, receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(reduction) + ". Once per second, receiving damage while your shield is raised " +
 		"grants " + GlossaryTag.BERSERK.tag(this, 1) + " and empowers your next basic attack to deal " +
 		GlossaryTag.BLUNT.tag(this, damage) + ". At " + GlossaryTag.BERSERK.tag(this, thres) + ", you no longer need your shield raised to reduce damage.");
 	}

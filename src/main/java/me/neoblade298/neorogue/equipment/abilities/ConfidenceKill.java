@@ -55,7 +55,7 @@ public class ConfidenceKill extends Equipment {
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().containsType(DamageCategory.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
+			if (ev.getMeta().containsType(DamageCategory.DIRECT) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}
 			return TriggerResult.keep();
@@ -66,7 +66,7 @@ public class ConfidenceKill extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			if (inst.toKill != null && inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
-				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(id + this, this)), 200);
+				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(id + this, this)), 200);
 			}
 			return TriggerResult.keep();
 		});
@@ -108,7 +108,7 @@ public class ConfidenceKill extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.DIRECT.tag(this) + " damage to that enemy for " + DescUtil.val("2s") + "," +
 				" apply " + GlossaryTag.INSANITY.tag(this, stacks) + " to them. If you kill this enemy within the next " + DescUtil.val("5s") + ", buff your damage by "
 				+ DescUtil.val(buff + "%") + " [<white>10s</white>].");
 	}

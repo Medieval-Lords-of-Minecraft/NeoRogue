@@ -105,7 +105,7 @@ public class Hawkeye extends Equipment implements Power {
 			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
 			if (focusStacks <= threshold) return TriggerResult.keep();
 			Player p2 = data.getPlayer();
-			rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			rev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
 			data.applyStatus(StatusType.FOCUS, data, -1, -1, this);
 			if (rev.getDamager() != null) {

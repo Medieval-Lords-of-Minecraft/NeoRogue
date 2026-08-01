@@ -41,7 +41,7 @@ public class MagiciansHood extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			double mana = data.getMaxMana();
 			int stacks = Math.min((int) Math.floor(mana / thres), MAX_STACKS);
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.increase(data, def * stacks, StatTracker.defenseBuffAlly(buffId, this)), 40);
 			return TriggerResult.keep();
 		});
@@ -50,7 +50,7 @@ public class MagiciansHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET,
-				"Increase your " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + " for every "
+				"Increase your " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(def) + " for every "
 						+ DescUtil.val(thres) + " max mana you have, up to " + DescUtil.val(MAX_STACKS + "x") + ".");
 	}
 

@@ -141,7 +141,7 @@ public class MarkTarget2 extends Equipment {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(ID + slot + "proj", eq, "Projectile damage dealt")));
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId() + slot, ammo.getAmmo())));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dmg, BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId() + slot, ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

@@ -58,7 +58,7 @@ public class StormSigil extends Artifact {
 				return TriggerResult.keep();
 			}
 
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), 
 				Buff.increase(data, damage, StatTracker.damageBuffAlly(buffId, this).shouldCombine(false)), secs * 20);
 			pendingAmmo[0] = null;
 			return TriggerResult.keep();

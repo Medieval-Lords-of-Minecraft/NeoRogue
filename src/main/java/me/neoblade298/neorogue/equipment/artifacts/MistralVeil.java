@@ -39,7 +39,7 @@ public class MistralVeil extends Artifact {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			Player p = data.getPlayer();
 			if (p.getLocation().distanceSquared(ev.getDamager().getEntity().getLocation()) > rangeSq) {
-				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(buffId, this)));
+				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

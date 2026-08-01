@@ -57,7 +57,7 @@ public class Windcall extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightData fd = FightInstance.getFightData(ent);
 				if (ent.getLocation().distanceSquared(p.getLocation()) <= 5 * 5) {
-					fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					fd.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.increase(data, -reduc, StatTracker.damageDebuffEnemy(buffId, this)), dur * 20);
 				}
 				FightInstance.knockback(p, ent, 1);

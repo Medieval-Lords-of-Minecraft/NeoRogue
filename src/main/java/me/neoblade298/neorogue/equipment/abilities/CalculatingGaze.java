@@ -44,7 +44,7 @@ public class CalculatingGaze extends Equipment {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (data.getMana() > THRES) {
-				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
+				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});
@@ -54,6 +54,6 @@ public class CalculatingGaze extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
 				GlossaryTag.PASSIVE.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields) + " at the start of a fight. " +
-				"Increase " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.val(def) + " when above " + DescUtil.val(THRES) + " mana.");
+				"Increase " + GlossaryTag.DIRECT.tag(this) + " defense by " + DescUtil.val(def) + " when above " + DescUtil.val(THRES) + " mana.");
 	}
 }

@@ -94,7 +94,7 @@ public class DaedalusStormbow extends Bow {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasTag(PlayerFightData.EXTRA_SHOT_TAG)) return TriggerResult.keep();
 			double extraShotDamage = 40 + am.getInt();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 					Buff.increase(data, extraShotDamage, BuffStatTracker.damageBuffAlly(am.getId(), this)));
 			return TriggerResult.keep();
 		});
@@ -156,7 +156,7 @@ public class DaedalusStormbow extends Bow {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

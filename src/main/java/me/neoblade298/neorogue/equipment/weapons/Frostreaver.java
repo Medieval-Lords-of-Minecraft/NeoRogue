@@ -94,7 +94,7 @@ public class Frostreaver extends Bow {
 			double damageMultiplier = (frostStacks / (double) frostThreshold) * DAMAGE_MULT_PER_THRESHOLD;
 			
 			if (damageMultiplier > 0) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
 						Buff.multiplier(data, damageMultiplier, BuffStatTracker.damageBuffAlly(buffId, this)));
 			}
 			

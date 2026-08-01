@@ -81,7 +81,7 @@ public class Chokehold extends Equipment {
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
 			if (am.getTime() + 15000 < System.currentTimeMillis()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) > rangeSq) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(buffId, this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT, DamageOrigin.TRAP), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
