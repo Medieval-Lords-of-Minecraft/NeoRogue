@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ElectromagneticKnife extends Equipment {
 	private static final String ID = "ElectromagneticKnife";
-	private static int elec, inc;
+	private final int elec, inc;
 	
 	public ElectromagneticKnife(boolean isUpgraded) {
 		super(ID, "Electromagnetic Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
