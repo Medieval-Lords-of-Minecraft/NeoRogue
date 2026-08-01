@@ -24,6 +24,10 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 // Runs and prints aggregated effectiveness analytics from the per-fight fact tables. Invoked by the
 // /nrlytics subcommands, which handle argument parsing; each method here just reports parsed args.
@@ -37,6 +41,7 @@ public class AnalyticsReport {
 	// completion and query building stay in sync. Columns are qualified (fe = neorogue_analytics_fight_equipment,
 	// f = neorogue_analytics_fights) because the query joins the two. equipClass is comma-separated (FIND_IN_SET).
 	public static final List<AnalyticsFilters.FilterOption> EQUIPMENT_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("id", "UPPER(fe.equipmentId)", false, equipmentIds()),
 			new AnalyticsFilters.FilterOption("class", "fe.equipClass", true, enumNames(EquipmentClass.values())),
 			new AnalyticsFilters.FilterOption("rarity", "fe.rarity", false, enumNames(Rarity.values())),
 			new AnalyticsFilters.FilterOption("type", "fe.equipType", false, enumNames(EquipmentType.values())),
@@ -50,6 +55,12 @@ public class AnalyticsReport {
 		return names;
 	}
 
+	private static List<String> equipmentIds() {
+		ArrayList<String> ids = new ArrayList<String>();
+		for (String id : me.neoblade298.neorogue.equipment.Equipment.getEquipmentIds()) ids.add(id.toUpperCase());
+		return ids;
+	}
+
 	private static String lowSampleMarker(int samples) {
 		return samples < MIN_SAMPLES ? LOW_SAMPLE_MARKER : "";
 	}
@@ -60,7 +71,109 @@ public class AnalyticsReport {
 		}
 	}
 
+	private static void addReportMeta(ArrayList<String> lines, AnalyticsFilters filters) {
+		if (lines.isEmpty() && !filters.hasErrors()) return;
+		lines.add(0, "<gray>Page " + filters.getPage() + " | low samples "
+				+ (filters.filterLowSamples() ? "hidden" : "shown"));
+		for (int i = filters.getErrors().size() - 1; i >= 0; i--) {
+			lines.add(0, "<red>" + filters.getErrors().get(i));
+		}
+		if (!filters.filterLowSamples()) addLowSampleDisclaimer(lines);
+	}
+
+	private static String pageClause(AnalyticsFilters filters) {
+		return " LIMIT " + (LEADERBOARD_LIMIT + 1) + " OFFSET " + filters.getOffset(LEADERBOARD_LIMIT);
+	}
+
+	private static boolean trimPage(List<?> rows) {
+		boolean hasNext = rows.size() > LEADERBOARD_LIMIT;
+		while (rows.size() > LEADERBOARD_LIMIT) rows.remove(rows.size() - 1);
+		return hasNext;
+	}
+
+	private static void sendPageControls(CommandSender sender, String baseCommand, AnalyticsFilters filters) {
+		if (filters.getPage() <= 1 && !filters.hasNextPage()) return;
+		Component controls = Component.empty();
+		if (filters.getPage() > 1) {
+			controls = controls.append(Component.text("[Previous]", NamedTextColor.YELLOW)
+					.clickEvent(ClickEvent.runCommand(filters.pageCommand(baseCommand, filters.getPage() - 1)))
+					.hoverEvent(HoverEvent.showText(Component.text("Go to page " + (filters.getPage() - 1)))));
+		}
+		if (filters.getPage() > 1 && filters.hasNextPage()) controls = controls.append(Component.space());
+		if (filters.hasNextPage()) {
+			controls = controls.append(Component.text("[Next]", NamedTextColor.YELLOW)
+					.clickEvent(ClickEvent.runCommand(filters.pageCommand(baseCommand, filters.getPage() + 1)))
+					.hoverEvent(HoverEvent.showText(Component.text("Go to page " + (filters.getPage() + 1)))));
+		}
+		Util.msgRaw(sender, controls);
+	}
+
 	private AnalyticsReport() {}
+
+	// Class-wide run winrates. A sample is one player/class participating in one completed run;
+	// DISTINCT prevents fights and individual mobs from multiplying that run's contribution.
+	public static void classWinrates(CommandSender s, int version, AnalyticsFilters filters) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ArrayList<String> lines = new ArrayList<String>();
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					StringBuilder sql = new StringBuilder("SELECT p.playerClass, COUNT(*) AS runs, SUM(r.won) AS wins,"
+							+ " AVG(r.won) AS winrate FROM ("
+							+ " SELECT rp.playerClass, rp.playerUuid, rp.runId FROM neorogue_analytics_run_players rp"
+							+ " WHERE rp.balanceVersion = ?"
+							+ " UNION ALL"
+							+ " SELECT DISTINCT fm.playerClass, fm.playerUuid, f.runId"
+							+ " FROM neorogue_analytics_fight_mobs fm"
+							+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+							+ " WHERE fm.balanceVersion = ? AND f.runId <> ''"
+							+ " AND NOT EXISTS (SELECT 1 FROM neorogue_analytics_run_players rp2 WHERE rp2.runId = f.runId)"
+							+ ") p"
+							+ " JOIN neorogue_analytics_runs r ON r.runId = p.runId"
+							+ " WHERE r.balanceVersion = ? GROUP BY p.playerClass");
+					if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
+					sql.append(" ORDER BY winrate DESC").append(pageClause(filters)).append(";");
+					try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+						ps.setInt(1, version);
+						ps.setInt(2, version);
+						ps.setInt(3, version);
+						try (ResultSet rs = ps.executeQuery()) {
+							int row = 0;
+							while (rs.next()) {
+								if (++row > LEADERBOARD_LIMIT) {
+									filters.setHasNextPage(true);
+									break;
+								}
+								int runs = rs.getInt("runs");
+								lines.add("  <yellow>" + df.format(100.0 * rs.getDouble("winrate"))
+										+ "%</yellow> <white>" + rs.getString("playerClass") + "</white> <gray>| "
+										+ rs.getInt("wins") + "/" + runs + lowSampleMarker(runs));
+							}
+						}
+					}
+					addReportMeta(lines, filters);
+				}
+				catch (SQLException ex) {
+					lines.clear();
+					lines.add("<red>Failed to query analytics (see console).");
+					ex.printStackTrace();
+				}
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Util.msgRaw(s, "<gold>=== Class Winrates (balance v" + version + ") ===");
+						if (lines.isEmpty()) {
+							Util.msgRaw(s, "<yellow>No class run outcomes recorded.");
+							return;
+						}
+						for (String line : lines) Util.msgRaw(s, line);
+						sendPageControls(s, "/nrlytics classwinrates", filters);
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
 
 	// Single equipment id: effectiveness, statuses applied, and pickrate by source.
 	public static void equipment(CommandSender s, String equipmentId, int version) {
@@ -187,7 +300,7 @@ public class AnalyticsReport {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					queryEquipmentDamage(con, version, filters, lines);
-					addLowSampleDisclaimer(lines);
+					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -200,9 +313,6 @@ public class AnalyticsReport {
 					public void run() {
 						Util.msgRaw(s, "<gold>=== Equipment Damage (balance v" + version + ", " + filters.summary()
 								+ ") ===");
-						for (String err : filters.getErrors()) {
-							Util.msgRaw(s, "<red>" + err);
-						}
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No equipment recorded.");
 							return;
@@ -210,6 +320,7 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
+						sendPageControls(s, "/nrlytics equipment", filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
@@ -226,26 +337,29 @@ public class AnalyticsReport {
 				+ " WHERE fe.balanceVersion = ?");
 		filters.appendWhere(sql);
 		sql.append(" GROUP BY fe.equipmentId, fe.upgraded");
+		if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
 
 		ArrayList<String> top = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC;")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC" + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
 			filters.bind(ps, idx);
-			collectEquipmentDamageRows(ps, top, LEADERBOARD_LIMIT);
+			collectEquipmentDamageRows(ps, top, LEADERBOARD_LIMIT + 1);
 		}
+		filters.setHasNextPage(trimPage(top));
 		if (top.isEmpty()) return;
 
 		lines.add("<red>Most damaging:");
 		lines.addAll(top);
 
 		ArrayList<String> bottom = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg ASC;")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg ASC" + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
 			filters.bind(ps, idx);
-			collectEquipmentDamageRows(ps, bottom, LEADERBOARD_LIMIT);
+			collectEquipmentDamageRows(ps, bottom, LEADERBOARD_LIMIT + 1);
 		}
+		filters.setHasNextPage(filters.hasNextPage() | trimPage(bottom));
 		lines.add("<green>Least damaging:");
 		lines.addAll(bottom);
 	}
@@ -260,21 +374,22 @@ public class AnalyticsReport {
 				double dmg = rs.getDouble("dmg");
 				double winrate = n > 0 ? (100.0 * wins / n) : 0;
 				rows.add("  <yellow>" + df.format(dmg) + "</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>(" + n + " fights, " + df.format(winrate) + "% wr)"
+						+ (upgraded ? "+" : "") + "</white> <gray>| " + n + "F | " + df.format(winrate) + "% WR"
 						+ lowSampleMarker(n));
 			}
 		}
 	}
 
 	// Equipment pickrate leaderboard (optionally filtered to a single offer source: SHOP or REWARD).
-	public static void pickrate(CommandSender s, int version, String source, String eqClass, String sortBy) {
+	public static void pickrate(CommandSender s, int version, String source, String eqClass, String sortBy,
+			AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryLeaderboard(con, version, source, eqClass, sortBy, lines);
-					addLowSampleDisclaimer(lines);
+					queryLeaderboard(con, version, source, eqClass, sortBy, filters, lines);
+					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -296,29 +411,37 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
+						String baseCommand = "/nrlytics pickrate";
+						if (source != null) baseCommand += " " + source;
+						if (eqClass != null) baseCommand += " " + eqClass;
+						if (eqClass != null && sortBy != null) baseCommand += " " + sortBy;
+						sendPageControls(s, baseCommand, filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy, ArrayList<String> lines)
+	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy,
+			AnalyticsFilters filters, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS offered, SUM(picked) AS picked,"
 				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_analytics_equipment_offers WHERE balanceVersion = ?");
 		if (source != null) sql.append(" AND source = ?");
 		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, equipClass)");
 		sql.append(" GROUP BY equipmentId, upgraded");
+		if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
 
 		String orderClause = (sortBy != null && sortBy.equalsIgnoreCase("class")) ? " ORDER BY equipmentId ASC" : " ORDER BY rate DESC";
 		ArrayList<String[]> rows = new ArrayList<String[]>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + orderClause + ";")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + orderClause + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
 			if (source != null) ps.setString(idx++, source);
 			if (eqClass != null) ps.setString(idx++, eqClass);
-			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT);
+			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 		}
+		filters.setHasNextPage(trimPage(rows));
 		if (rows.isEmpty()) return;
 
 		if (sortBy != null && sortBy.equalsIgnoreCase("class")) {
@@ -329,13 +452,14 @@ public class AnalyticsReport {
 			for (String[] row : rows) lines.add(row[0]);
 
 			rows.clear();
-			try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate ASC;")) {
+			try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate ASC" + pageClause(filters) + ";")) {
 				int idx = 1;
 				ps.setInt(idx++, version);
 				if (source != null) ps.setString(idx++, source);
 				if (eqClass != null) ps.setString(idx++, eqClass);
-				collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT);
+				collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 			}
+			filters.setHasNextPage(filters.hasNextPage() | trimPage(rows));
 			lines.add("<red>Least picked:");
 			for (String[] row : rows) lines.add(row[0]);
 		}
@@ -349,7 +473,7 @@ public class AnalyticsReport {
 				int picked = rs.getInt("picked");
 				double rate = offered > 0 ? (100.0 * picked / offered) : 0;
 				String line = "  <yellow>" + df.format(rate) + "%</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>(" + picked + "/" + offered + ")"
+						+ (upgraded ? "+" : "") + "</white> <gray>| " + picked + "/" + offered
 						+ lowSampleMarker(offered);
 				rows.add(new String[] { line });
 			}
@@ -358,14 +482,15 @@ public class AnalyticsReport {
 
 	// Leaderboard of chance-event option pick rate, computed as picked / valid so options are only
 	// counted when they were actually selectable for the player.
-	public static void chance(CommandSender s, int version, String setId, String playerClass) {
+	public static void chance(CommandSender s, int version, String setId, String playerClass,
+			AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryChanceLeaderboard(con, version, setId, playerClass, lines);
-					addLowSampleDisclaimer(lines);
+					queryChanceLeaderboard(con, version, setId, playerClass, filters, lines);
+					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -386,6 +511,10 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
+						String baseCommand = "/nrlytics chance";
+						if (setId != null) baseCommand += " " + setId;
+						if (playerClass != null) baseCommand += " " + playerClass;
+						sendPageControls(s, baseCommand, filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
@@ -393,20 +522,24 @@ public class AnalyticsReport {
 	}
 
 	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in.
-	public static void mobs(CommandSender s, int version, String regionType, String playerClass) {
-		mobLeaderboard(s, version, regionType, playerClass, null, "Mob Damage Leaderboard");
+	public static void mobs(CommandSender s, int version, String regionType, String playerClass,
+			AnalyticsFilters filters) {
+		mobLeaderboard(s, version, regionType, playerClass, null, "Mob Damage Leaderboard",
+				"/nrlytics mobs", filters);
 	}
 
 	// Same leaderboard restricted to the boss target mobs declared by BOSS map pieces.
-	public static void bosses(CommandSender s, int version, String playerClass) {
+	public static void bosses(CommandSender s, int version, String playerClass, AnalyticsFilters filters) {
 		Set<String> ids = collectTargetMobIds(Map.getBossPieces());
-		mobLeaderboard(s, version, null, playerClass, ids, "Boss Damage Leaderboard");
+		mobLeaderboard(s, version, null, playerClass, ids, "Boss Damage Leaderboard",
+				"/nrlytics bosses", filters);
 	}
 
 	// Same leaderboard restricted to the miniboss target mobs declared by MINIBOSS map pieces.
-	public static void minibosses(CommandSender s, int version, String playerClass) {
+	public static void minibosses(CommandSender s, int version, String playerClass, AnalyticsFilters filters) {
 		Set<String> ids = collectTargetMobIds(Map.getMinibossPieces());
-		mobLeaderboard(s, version, null, playerClass, ids, "Miniboss Damage Leaderboard");
+		mobLeaderboard(s, version, null, playerClass, ids, "Miniboss Damage Leaderboard",
+				"/nrlytics minibosses", filters);
 	}
 
 	// Unions the target mob ids of every map piece across all regions. Used to scope the mob
@@ -425,7 +558,7 @@ public class AnalyticsReport {
 	}
 
 	private static void mobLeaderboard(CommandSender s, int version, String regionType, String playerClass,
-			Set<String> mobIdWhitelist, String title) {
+			Set<String> mobIdWhitelist, String title, String command, AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -433,8 +566,8 @@ public class AnalyticsReport {
 				// An empty (but non-null) whitelist means no boss/miniboss ids were found; nothing matches.
 				if (mobIdWhitelist == null || !mobIdWhitelist.isEmpty()) {
 					try (Connection con = SQLManager.getConnection("NeoRogue")) {
-						queryMobLeaderboard(con, version, regionType, playerClass, mobIdWhitelist, lines);
-						addLowSampleDisclaimer(lines);
+						queryMobLeaderboard(con, version, regionType, playerClass, mobIdWhitelist, filters, lines);
+						addReportMeta(lines, filters);
 					}
 					catch (SQLException ex) {
 						lines.clear();
@@ -456,6 +589,10 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
+						String baseCommand = command;
+						if (regionType != null) baseCommand += " " + regionType;
+						if (playerClass != null) baseCommand += " " + playerClass;
+						sendPageControls(s, baseCommand, filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
@@ -463,7 +600,7 @@ public class AnalyticsReport {
 	}
 
 	private static void queryMobLeaderboard(Connection con, int version, String regionType, String playerClass,
-			Set<String> mobIdWhitelist, ArrayList<String> lines) throws SQLException {
+			Set<String> mobIdWhitelist, AnalyticsFilters filters, ArrayList<String> lines) throws SQLException {
 		HashMap<String, Long> averageWinTimes = queryAverageWinTimes(con, version, regionType, playerClass,
 				mobIdWhitelist);
 		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
@@ -476,22 +613,27 @@ public class AnalyticsReport {
 			sql.append(")");
 		}
 		sql.append(" GROUP BY mobId");
+		if (filters.filterLowSamples()) {
+			sql.append(" HAVING COUNT(DISTINCT fightId) >= ").append(MIN_SAMPLES);
+		}
 
 		ArrayList<String> top = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC;")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC" + pageClause(filters) + ";")) {
 			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
-			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT, averageWinTimes);
+			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT + 1, averageWinTimes);
 		}
+		filters.setHasNextPage(trimPage(top));
 		if (top.isEmpty()) return;
 
 		lines.add("<red>Most damaging:");
 		lines.addAll(top);
 
 		ArrayList<String> bottom = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg ASC;")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg ASC" + pageClause(filters) + ";")) {
 			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
-			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT, averageWinTimes);
+			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT + 1, averageWinTimes);
 		}
+		filters.setHasNextPage(filters.hasNextPage() | trimPage(bottom));
 		lines.add("<green>Least damaging:");
 		lines.addAll(bottom);
 	}
@@ -540,10 +682,10 @@ public class AnalyticsReport {
 				double winrate = 100.0 * rs.getDouble("winrate");
 				String mobId = rs.getString("mobId");
 				Long avgWinMs = averageWinTimes.get(mobId);
-				String avgTime = avgWinMs == null ? "" : ", " + formatDuration(avgWinMs) + " avg win";
+				String avgTime = avgWinMs == null ? "" : " | " + formatDuration(avgWinMs);
 				rows.add("  <yellow>" + df.format(avgDmg) + "</yellow> <white>" + mobId
-						+ "</white> <gray>avg/player (" + fights + " fights, " + df.format(winrate) + "% party wr"
-						+ avgTime + ")" + lowSampleMarker(fights));
+						+ "</white> <gray>| " + fights + "F | " + df.format(winrate) + "% WR"
+						+ avgTime + lowSampleMarker(fights));
 			}
 		}
 	}
@@ -555,16 +697,17 @@ public class AnalyticsReport {
 
 	// Per-mob detail: appearances, average/total damage to the party, party winrate, and the damage
 	// type breakdown for a single mob id.
-	public static void mob(CommandSender s, String mobId, int version) {
+	public static void mob(CommandSender s, String mobId, int version, AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryMobDetail(con, mobId, version, lines);
-					queryMobByClass(con, mobId, version, lines);
-					queryMobDamageTypes(con, mobId, version, lines);
-					addLowSampleDisclaimer(lines);
+					if (queryMobDetail(con, mobId, version, filters, lines)) {
+						queryMobByClass(con, mobId, version, lines);
+						queryMobDamageTypes(con, mobId, version, lines);
+					}
+					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -590,7 +733,8 @@ public class AnalyticsReport {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryMobDetail(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
+	private static boolean queryMobDetail(Connection con, String mobId, int version, AnalyticsFilters filters,
+			ArrayList<String> lines) throws SQLException {
 		String sql = "SELECT COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total, AVG(damageDealt) AS avgDmg"
 				+ " FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
 		boolean hasData = false;
@@ -599,6 +743,7 @@ public class AnalyticsReport {
 			ps.setInt(2, version);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next() && rs.getInt("fights") > 0) {
+					if (filters.filterLowSamples() && rs.getInt("fights") < MIN_SAMPLES) return false;
 					hasData = true;
 					int fights = rs.getInt("fights");
 					lines.add("  <white>Appearances:</white> <yellow>" + fights + "</yellow> fights"
@@ -608,7 +753,7 @@ public class AnalyticsReport {
 				}
 			}
 		}
-		if (!hasData) return;
+		if (!hasData) return false;
 
 		// Party winrate over distinct fights (outcome is identical for every per-player row of a fight).
 		String wrSql = "SELECT AVG(outcome) AS winrate FROM (SELECT fightId, MAX(outcome) AS outcome"
@@ -622,6 +767,7 @@ public class AnalyticsReport {
 				}
 			}
 		}
+		return true;
 	}
 
 	// Per-class breakdown: average damage this mob deals to a single player of each class, plus the
@@ -671,7 +817,7 @@ public class AnalyticsReport {
 	}
 
 	private static void queryChanceLeaderboard(Connection con, int version, String setId, String playerClass,
-			ArrayList<String> lines) throws SQLException {
+			AnalyticsFilters filters, ArrayList<String> lines) throws SQLException {
 		// Pickrate (picked/valid) comes straight from the choice rows. Winrate joins each picked choice
 		// to its run's final outcome (neorogue_analytics_runs) so we can see how each option correlates
 		// with actually winning the run. Runs that were abandoned (no outcome row) are simply excluded
@@ -686,7 +832,12 @@ public class AnalyticsReport {
 				+ " WHERE c.balanceVersion = ?");
 		if (setId != null) sql.append(" AND c.setId = ?");
 		if (playerClass != null) sql.append(" AND c.playerClass = ?");
-		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex ORDER BY c.setId, c.stageId, rate DESC;");
+		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex");
+		if (filters.filterLowSamples()) {
+			sql.append(" HAVING SUM(c.valid) >= ").append(MIN_SAMPLES)
+					.append(" AND (wrSamples = 0 OR wrSamples >= ").append(MIN_SAMPLES).append(")");
+		}
+		sql.append(" ORDER BY c.setId, c.stageId, rate DESC").append(pageClause(filters)).append(";");
 
 		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			int idx = 1;
@@ -695,7 +846,12 @@ public class AnalyticsReport {
 			if (playerClass != null) ps.setString(idx++, playerClass);
 			try (ResultSet rs = ps.executeQuery()) {
 				String currentSet = null;
+				int row = 0;
 				while (rs.next()) {
+					if (++row > LEADERBOARD_LIMIT) {
+						filters.setHasNextPage(true);
+						break;
+					}
 					String set = rs.getString("setId");
 					if (!set.equals(currentSet)) {
 						lines.add("<gold>" + set + ":");
@@ -707,12 +863,12 @@ public class AnalyticsReport {
 					int wrSamples = rs.getInt("wrSamples");
 					int wrWins = rs.getInt("wrWins");
 					String wr = wrSamples > 0
-							? " <green>" + df.format(100.0 * wrWins / wrSamples) + "% wr</green> <gray>(" + wrWins + "/"
-									+ wrSamples + " runs)"
-							: " <dark_gray>(no run outcomes)";
+							? " <gray>|</gray> <green>" + df.format(100.0 * wrWins / wrSamples) + "% WR</green> <gray>" + wrWins + "/"
+									+ wrSamples
+							: " <dark_gray>| no outcomes";
 					lines.add("  <aqua>" + rs.getString("stageId") + "</aqua> <white>" + rs.getString("label")
-							+ "</white> <yellow>" + df.format(rate) + "%</yellow> <gray>(" + picked + "/" + valid
-							+ " valid)" + wr + lowSampleMarker(Math.min(valid, wrSamples == 0 ? valid : wrSamples)));
+							+ "</white> <yellow>" + df.format(rate) + "%</yellow> <gray>" + picked + "/" + valid
+							+ wr + lowSampleMarker(Math.min(valid, wrSamples == 0 ? valid : wrSamples)));
 				}
 			}
 		}

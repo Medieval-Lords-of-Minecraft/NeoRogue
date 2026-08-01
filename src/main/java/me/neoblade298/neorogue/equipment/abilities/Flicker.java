@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -29,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Flicker extends Equipment {
 	private static final String ID = "Flicker";
+	private static final int DURATION_SECONDS = 8;
 	private int damage;
 	
 	public Flicker(boolean isUpgraded) {
@@ -77,7 +77,7 @@ public class Flicker extends Equipment {
 						}
 						marks.clear();
 					}
-				}.runTaskLater(NeoRogue.inst(), 60L));
+				}.runTaskLater(NeoRogue.inst(), DURATION_SECONDS * 20L));
 				return TriggerResult.keep();
 			};
 		}
@@ -86,7 +86,7 @@ public class Flicker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active " + DescUtil.val("3s") + "."
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.val(DURATION_SECONDS + "s") + "."
 				+ " Dealing damage while it's active marks enemies up to 5x each. After it"
 				+ " deactivates, teleport back to the mark and deal " + GlossaryTag.DARK.tag(this, damage)
 				+ " damage per mark.");

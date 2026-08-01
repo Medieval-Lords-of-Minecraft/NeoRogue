@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.analytics;
 
+import java.util.ArrayList;
+
 // Immutable, Bukkit-free snapshot of a finished run's outcome, built on the main thread when a run
 // ends (win or loss) and handed to AnalyticsManager for asynchronous persistence. Keyed by the
 // session's stable runId so per-run analytics (e.g. chance-choice winrate) can join on it.
@@ -19,6 +21,7 @@ public class RunSnapshot {
 	public final boolean competitive;
 	public final long playtime;
 	public final boolean won;
+	public final ArrayList<PlayerRow> players = new ArrayList<PlayerRow>();
 
 	public RunSnapshot(String runId, long timestamp, int balanceVersion, String host, int slot, String sessionType,
 			String regionType, int regionsCompleted, int level, int partySize, int notoriety, boolean endless,
@@ -39,4 +42,10 @@ public class RunSnapshot {
 		this.playtime = playtime;
 		this.won = won;
 	}
+
+	public void addPlayer(String playerUuid, String playerClass) {
+		players.add(new PlayerRow(playerUuid, playerClass));
+	}
+
+	public record PlayerRow(String playerUuid, String playerClass) {}
 }

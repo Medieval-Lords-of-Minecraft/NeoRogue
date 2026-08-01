@@ -29,6 +29,10 @@ public class AnalyticsFilters {
 	private final ArrayList<String> binds = new ArrayList<String>();
 	private final ArrayList<String> summary = new ArrayList<String>();
 	private final ArrayList<String> errors = new ArrayList<String>();
+	private final ArrayList<String> navigationArgs = new ArrayList<String>();
+	private int page = 1;
+	private boolean filterLowSamples = true;
+	private boolean hasNextPage;
 
 	private AnalyticsFilters() {}
 
@@ -45,6 +49,27 @@ public class AnalyticsFilters {
 			}
 			String key = token.substring(0, eq).toLowerCase();
 			String value = token.substring(eq + 1).toUpperCase();
+			if (key.equals("page")) {
+				try {
+					f.page = Math.max(1, Integer.parseInt(value));
+					f.summary.add("page=" + f.page);
+				}
+				catch (NumberFormatException ex) {
+					f.errors.add("Invalid page '" + value + "'");
+				}
+				continue;
+			}
+			if (key.equals("filterlow")) {
+				if (!value.equals("TRUE") && !value.equals("FALSE")) {
+					f.errors.add("Invalid filterlow '" + value + "' (expected true or false)");
+				}
+				else {
+					f.filterLowSamples = Boolean.parseBoolean(value.toLowerCase());
+					f.summary.add("filterlow=" + value.toLowerCase());
+					f.navigationArgs.add("filterlow=" + value.toLowerCase());
+				}
+				continue;
+			}
 
 			FilterOption opt = null;
 			for (FilterOption o : options) {
@@ -65,6 +90,7 @@ public class AnalyticsFilters {
 			f.clauses.add(opt.multiValued ? "FIND_IN_SET(?, " + opt.column + ")" : opt.column + " = ?");
 			f.binds.add(value);
 			f.summary.add(key + "=" + value);
+			f.navigationArgs.add(key + "=" + value);
 		}
 		return f;
 	}
@@ -90,6 +116,31 @@ public class AnalyticsFilters {
 
 	public List<String> getErrors() {
 		return errors;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public int getOffset(int pageSize) {
+		return (page - 1) * pageSize;
+	}
+
+	public boolean filterLowSamples() {
+		return filterLowSamples;
+	}
+
+	public boolean hasNextPage() {
+		return hasNextPage;
+	}
+
+	public void setHasNextPage(boolean hasNextPage) {
+		this.hasNextPage = hasNextPage;
+	}
+
+	public String pageCommand(String baseCommand, int targetPage) {
+		String args = navigationArgs.isEmpty() ? "" : " " + String.join(" ", navigationArgs);
+		return baseCommand + args + " page=" + Math.max(1, targetPage);
 	}
 
 	// Human-readable summary for the report header.

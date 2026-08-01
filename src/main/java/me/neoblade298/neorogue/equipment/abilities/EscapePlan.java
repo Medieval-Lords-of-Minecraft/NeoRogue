@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -29,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class EscapePlan extends Equipment {
 	private static final String ID = "EscapePlan";
+	private static final int DURATION_SECONDS = 10;
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(50).spread(0.5, 0);
 	
@@ -79,7 +79,7 @@ public class EscapePlan extends Equipment {
 					public void run() {
 						active = false;
 					}
-				}, 100L);
+				}, DURATION_SECONDS * 20L);
 				
 				pdata1.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, (pdata2, in2) -> {
 					if (!active) return TriggerResult.remove();
@@ -99,7 +99,7 @@ public class EscapePlan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active " + DescUtil.val("5s") + "."
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.val(DURATION_SECONDS + "s") + "."
 				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, damage) +
 				" damage to the attacker, teleport to the marker, and deactivate it.");
 	}

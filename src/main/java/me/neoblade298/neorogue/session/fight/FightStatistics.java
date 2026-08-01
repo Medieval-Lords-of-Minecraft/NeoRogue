@@ -551,8 +551,6 @@ public class FightStatistics {
 	
 	private Component getNameHoverComponent() {
 		Component cmp = Component.text("General Stats:");
-		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
-		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);
 		cmp = appendIfNotEmpty(cmp, "Deaths", deaths);
 		cmp = appendIfNotEmpty(cmp, "Revives", revives);

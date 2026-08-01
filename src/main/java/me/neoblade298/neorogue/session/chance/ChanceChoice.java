@@ -1,9 +1,11 @@
 package me.neoblade298.neorogue.session.chance;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -33,6 +35,7 @@ public class ChanceChoice {
 	private ArrayList<TextComponent> desc, reqFail;
 	private ChanceDescriptionSupplier dynamicDesc;
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
+	private BiFunction<ChanceInstance, PlayerSessionData, Collection<GlossaryIcon>> dynamicTags;
 	private ChanceAction action;
 	private ChanceRequirement req;
 	private BiConsumer<Player, CoreInventory> onRightClick;
@@ -76,6 +79,14 @@ public class ChanceChoice {
 	
 	public TreeSet<GlossaryIcon> getTags() {
 		return tags;
+	}
+
+	public Collection<GlossaryIcon> getTags(ChanceInstance inst, PlayerSessionData data) {
+		return dynamicTags != null ? dynamicTags.apply(inst, data) : tags;
+	}
+
+	public void setGlossaryTags(BiFunction<ChanceInstance, PlayerSessionData, Collection<GlossaryIcon>> dynamicTags) {
+		this.dynamicTags = dynamicTags;
 	}
 	
 	// Plain-text title, used as a readable label for analytics.

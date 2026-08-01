@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.analytics.FightSnapshot.EquipRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.MobRow;
 import me.neoblade298.neorogue.session.analytics.FightSnapshot.StatusRow;
 import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferRow;
+import me.neoblade298.neorogue.session.analytics.RunSnapshot.PlayerRow;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 // Persists per-fight equipment effectiveness analytics into three normalized fact tables on the
@@ -89,6 +90,14 @@ public class AnalyticsManager {
 							+ "playtime BIGINT NOT NULL DEFAULT 0,"
 							+ "competitive TINYINT NOT NULL DEFAULT 0,"
 							+ "won TINYINT NOT NULL"
+							+ ");");
+
+					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_run_players ("
+							+ "runId VARCHAR(36) NOT NULL,"
+							+ "playerUuid VARCHAR(36) NOT NULL,"
+							+ "playerClass VARCHAR(40) NOT NULL,"
+							+ "balanceVersion INT NOT NULL,"
+							+ "PRIMARY KEY (runId, playerUuid)"
 							+ ");");
 
 					stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_analytics_fight_equipment ("
@@ -208,6 +217,7 @@ public class AnalyticsManager {
 					createIndex(stmt, "idx_chance_run", "neorogue_analytics_chance_choices", "runId");
 					createIndex(stmt, "idx_fights_run", "neorogue_analytics_fights", "runId");
 					createIndex(stmt, "idx_runs_balance", "neorogue_analytics_runs", "balanceVersion");
+					createIndex(stmt, "idx_runplayers_class", "neorogue_analytics_run_players", "playerClass, balanceVersion");
 
 					createIndex(stmt, "idx_fightmobs_lookup", "neorogue_analytics_fight_mobs", "mobId, balanceVersion");
 					createIndex(stmt, "idx_fightmobs_class", "neorogue_analytics_fight_mobs", "mobId, playerClass, balanceVersion");
@@ -314,6 +324,7 @@ public class AnalyticsManager {
 			public void run() {
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					writeRun(con, snap);
+					writeRunPlayers(con, snap);
 				}
 				catch (SQLException ex) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to record run analytics " + snap.runId);
@@ -340,6 +351,21 @@ public class AnalyticsManager {
 				.addValue("playtime", snap.playtime)
 				.addValue("competitive", snap.competitive ? 1 : 0)
 				.addValue("won", snap.won ? 1 : 0);
+		PreparedStatement ps = sql.build(con);
+		ps.executeBatch();
+		ps.close();
+	}
+
+	private static void writeRunPlayers(Connection con, RunSnapshot snap) throws SQLException {
+		if (snap.players.isEmpty()) return;
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_analytics_run_players");
+		for (PlayerRow row : snap.players) {
+			sql.addValue("runId", snap.runId)
+					.addValue("playerUuid", row.playerUuid())
+					.addValue("playerClass", row.playerClass())
+					.addValue("balanceVersion", snap.balanceVersion)
+					.addRow();
+		}
 		PreparedStatement ps = sql.build(con);
 		ps.executeBatch();
 		ps.close();

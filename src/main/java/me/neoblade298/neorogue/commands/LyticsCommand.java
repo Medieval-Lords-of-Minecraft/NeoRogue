@@ -25,7 +25,6 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferSource;
-import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 
 // Brigadier command for the analytics reports: /nrlytics <view> [args]. Each subcommand parses its
@@ -33,10 +32,9 @@ import me.neoblade298.neorogue.session.fight.Mob;
 // old NeoCore SubcommandManager registration; permission (neorogue.admin) is enforced via requires().
 @SuppressWarnings("UnstableApiUsage")
 public class LyticsCommand {
-	private static final List<String> VIEWS = List.of("equipment");
 	private static final List<String> SORTS = List.of("rate", "class");
 	// Ordered list of subcommands shown when /nrlytics is run with no arguments.
-	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "view", "pickrate", "chance",
+	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classwinrates", "pickrate", "chance",
 			"mobs", "minibosses", "bosses", "mob");
 
 	private LyticsCommand() {
@@ -53,76 +51,64 @@ public class LyticsCommand {
 						.then(Commands.argument("version", IntegerArgumentType.integer())
 								.executes(LyticsCommand::setVersion)))
 
-				// equipment <equipment>
+				// equipment [id=<equipmentId>] [key=value ...]
 				.then(Commands.literal("equipment")
-						.executes(LyticsCommand::usage)
-						.then(Commands.argument("equipment", StringArgumentType.word())
-								.executes(LyticsCommand::runEquipment)))
+						.executes(ctx -> runEquipment(ctx, ""))
+						.then(Commands.argument("filters", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestEquipmentFilters)
+								.executes(ctx -> runEquipment(ctx, StringArgumentType.getString(ctx, "filters")))))
 
-				// view <view> [key=value ...]
-				.then(Commands.literal("view")
-						.executes(LyticsCommand::usage)
-						.then(Commands.argument("view", StringArgumentType.word())
-								.suggests(suggest(() -> VIEWS))
-								.executes(ctx -> runView(ctx, ""))
-								.then(Commands.argument("filters", StringArgumentType.greedyString())
-										.suggests(LyticsCommand::suggestViewFilters)
-										.executes(ctx -> runView(ctx, StringArgumentType.getString(ctx, "filters"))))))
+				// classwinrates [page=n] [filterlow=true|false]
+				.then(Commands.literal("classwinrates")
+						.executes(ctx -> runClasses(ctx, ""))
+						.then(Commands.argument("options", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runClasses(ctx, getStr(ctx, "options")))))
 
-				// pickrate [source] [class] [sortBy]
+				// pickrate [source] [class] [sortBy] [page=n] [filterlow=true|false]
 				.then(Commands.literal("pickrate")
-						.executes(ctx -> runPickrate(ctx, null, null, "rate"))
-						.then(Commands.argument("source", StringArgumentType.word())
-								.suggests(suggest(LyticsCommand::offerSources))
-								.executes(ctx -> runPickrate(ctx, getStr(ctx, "source"), null, "rate"))
-								.then(Commands.argument("class", StringArgumentType.word())
-										.suggests(suggest(LyticsCommand::allClasses))
-										.executes(ctx -> runPickrate(ctx, getStr(ctx, "source"), getStr(ctx, "class"), "rate"))
-										.then(Commands.argument("sortBy", StringArgumentType.word())
-												.suggests(suggest(() -> SORTS))
-												.executes(ctx -> runPickrate(ctx, getStr(ctx, "source"), getStr(ctx, "class"),
-														getStr(ctx, "sortBy")))))))
+						.executes(ctx -> runPickrate(ctx, ""))
+						.then(Commands.argument("args", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runPickrate(ctx, getStr(ctx, "args")))))
 
-				// chance [setId] [class]
+				// chance [setId] [class] [page=n] [filterlow=true|false]
 				.then(Commands.literal("chance")
-						.executes(ctx -> runChance(ctx, null, null))
-						.then(Commands.argument("setId", StringArgumentType.word())
-								.suggests(suggest(ChanceSet::getSets))
-								.executes(ctx -> runChance(ctx, getStr(ctx, "setId"), null))
-								.then(Commands.argument("class", StringArgumentType.word())
-										.suggests(suggest(LyticsCommand::playerClasses))
-										.executes(ctx -> runChance(ctx, getStr(ctx, "setId"), getStr(ctx, "class"))))))
+						.executes(ctx -> runChance(ctx, ""))
+						.then(Commands.argument("args", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runChance(ctx, getStr(ctx, "args")))))
 
-				// mobs [regionType] [class]
+				// mobs [regionType] [class] [page=n] [filterlow=true|false]
 				.then(Commands.literal("mobs")
-						.executes(ctx -> runMobs(ctx, null, null))
-						.then(Commands.argument("regionType", StringArgumentType.word())
-								.suggests(suggest(LyticsCommand::regionTypes))
-								.executes(ctx -> runMobs(ctx, getStr(ctx, "regionType"), null))
-								.then(Commands.argument("class", StringArgumentType.word())
-										.suggests(suggest(LyticsCommand::playerClasses))
-										.executes(ctx -> runMobs(ctx, getStr(ctx, "regionType"), getStr(ctx, "class"))))))
+						.executes(ctx -> runMobs(ctx, ""))
+						.then(Commands.argument("args", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runMobs(ctx, getStr(ctx, "args")))))
 
 				// minibosses [class]
 				.then(Commands.literal("minibosses")
-						.executes(ctx -> runMinibosses(ctx, null))
-						.then(Commands.argument("class", StringArgumentType.word())
-								.suggests(suggest(LyticsCommand::playerClasses))
-								.executes(ctx -> runMinibosses(ctx, getStr(ctx, "class")))))
+						.executes(ctx -> runMinibosses(ctx, ""))
+						.then(Commands.argument("args", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runMinibosses(ctx, getStr(ctx, "args")))))
 
 				// bosses [class]
 				.then(Commands.literal("bosses")
-						.executes(ctx -> runBosses(ctx, null))
-						.then(Commands.argument("class", StringArgumentType.word())
-								.suggests(suggest(LyticsCommand::playerClasses))
-								.executes(ctx -> runBosses(ctx, getStr(ctx, "class")))))
+						.executes(ctx -> runBosses(ctx, ""))
+						.then(Commands.argument("args", StringArgumentType.greedyString())
+								.suggests(LyticsCommand::suggestReportOptions)
+								.executes(ctx -> runBosses(ctx, getStr(ctx, "args")))))
 
 				// mob <mobId>
 				.then(Commands.literal("mob")
 						.executes(LyticsCommand::usage)
 						.then(Commands.argument("mobId", StringArgumentType.word())
 								.suggests(suggest(Mob::getStatIds))
-								.executes(LyticsCommand::runMob)))
+								.executes(ctx -> runMob(ctx, ""))
+								.then(Commands.argument("options", StringArgumentType.greedyString())
+										.suggests(LyticsCommand::suggestReportOptions)
+										.executes(ctx -> runMob(ctx, getStr(ctx, "options"))))))
 				.build();
 	}
 
@@ -132,6 +118,8 @@ public class LyticsCommand {
 		CommandSender s = ctx.getSource().getSender();
 		Util.msgRaw(s, "<red>Usage: /nrlytics <subcommand> [args]");
 		Util.msgRaw(s, "<gray>Subcommands: <white>" + String.join(", ", SUBCOMMANDS));
+		Util.msgRaw(s, "<gray>Leaderboard options: <white>page=1 filterlow=true");
+		Util.msgRaw(s, "<gray>Equipment search: <white>/nrlytics equipment id=<equipmentId>");
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -150,55 +138,52 @@ public class LyticsCommand {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runEquipment(CommandContext<CommandSourceStack> ctx) {
-		AnalyticsReport.equipment(ctx.getSource().getSender(), getStr(ctx, "equipment"), version());
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private static int runView(CommandContext<CommandSourceStack> ctx, String filterStr) {
+	private static int runEquipment(CommandContext<CommandSourceStack> ctx, String filterStr) {
 		CommandSender s = ctx.getSource().getSender();
-		String view = getStr(ctx, "view").toLowerCase();
-		List<FilterOption> options = filterOptionsFor(view);
-		if (options == null) {
-			Util.msgRaw(s, "<red>Unknown view '" + view + "'. Available: " + String.join(", ", VIEWS));
-			return Command.SINGLE_SUCCESS;
-		}
 		String[] tokens = filterStr.isBlank() ? new String[0] : filterStr.trim().split("\\s+");
-		AnalyticsFilters filters = AnalyticsFilters.parse(tokens, 0, options);
-		if (view.equals("equipment")) {
-			AnalyticsReport.equipmentDamage(s, version(), filters);
-		}
+		AnalyticsFilters filters = AnalyticsFilters.parse(tokens, 0, AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+		AnalyticsReport.equipmentDamage(s, version(), filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runPickrate(CommandContext<CommandSourceStack> ctx, String source, String eqClass, String sortBy) {
-		AnalyticsReport.pickrate(ctx.getSource().getSender(), version(), upper(source), upper(eqClass),
-				sortBy.toLowerCase());
+	private static int runClasses(CommandContext<CommandSourceStack> ctx, String args) {
+		AnalyticsReport.classWinrates(ctx.getSource().getSender(), version(), parseArgs(args, 0).filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runChance(CommandContext<CommandSourceStack> ctx, String setId, String playerClass) {
-		AnalyticsReport.chance(ctx.getSource().getSender(), version(), setId, upper(playerClass));
+	private static int runPickrate(CommandContext<CommandSourceStack> ctx, String args) {
+		ParsedArgs parsed = parseArgs(args, 3);
+		AnalyticsReport.pickrate(ctx.getSource().getSender(), version(), upper(parsed.get(0)), upper(parsed.get(1)),
+				parsed.get(2) == null ? "rate" : parsed.get(2).toLowerCase(), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runMobs(CommandContext<CommandSourceStack> ctx, String regionType, String playerClass) {
-		AnalyticsReport.mobs(ctx.getSource().getSender(), version(), upper(regionType), upper(playerClass));
+	private static int runChance(CommandContext<CommandSourceStack> ctx, String args) {
+		ParsedArgs parsed = parseArgs(args, 2);
+		AnalyticsReport.chance(ctx.getSource().getSender(), version(), parsed.get(0), upper(parsed.get(1)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runMinibosses(CommandContext<CommandSourceStack> ctx, String playerClass) {
-		AnalyticsReport.minibosses(ctx.getSource().getSender(), version(), upper(playerClass));
+	private static int runMobs(CommandContext<CommandSourceStack> ctx, String args) {
+		ParsedArgs parsed = parseArgs(args, 2);
+		AnalyticsReport.mobs(ctx.getSource().getSender(), version(), upper(parsed.get(0)), upper(parsed.get(1)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runBosses(CommandContext<CommandSourceStack> ctx, String playerClass) {
-		AnalyticsReport.bosses(ctx.getSource().getSender(), version(), upper(playerClass));
+	private static int runMinibosses(CommandContext<CommandSourceStack> ctx, String args) {
+		ParsedArgs parsed = parseArgs(args, 1);
+		AnalyticsReport.minibosses(ctx.getSource().getSender(), version(), upper(parsed.get(0)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static int runMob(CommandContext<CommandSourceStack> ctx) {
-		AnalyticsReport.mob(ctx.getSource().getSender(), getStr(ctx, "mobId"), version());
+	private static int runBosses(CommandContext<CommandSourceStack> ctx, String args) {
+		ParsedArgs parsed = parseArgs(args, 1);
+		AnalyticsReport.bosses(ctx.getSource().getSender(), version(), upper(parsed.get(0)), parsed.filters);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runMob(CommandContext<CommandSourceStack> ctx, String args) {
+		AnalyticsReport.mob(ctx.getSource().getSender(), getStr(ctx, "mobId"), version(), parseArgs(args, 0).filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -207,10 +192,9 @@ public class LyticsCommand {
 	// Context-aware completion for the view's trailing key=value filters. The greedy argument covers
 	// the whole remaining tail, so we isolate the current (last) token and offset the builder to it,
 	// then suggest filter keys or a key's allowed values, mirroring the old getTabOptions behavior.
-	private static CompletableFuture<Suggestions> suggestViewFilters(CommandContext<CommandSourceStack> ctx,
+	private static CompletableFuture<Suggestions> suggestEquipmentFilters(CommandContext<CommandSourceStack> ctx,
 			SuggestionsBuilder builder) {
-		List<FilterOption> options = filterOptionsFor(StringArgumentType.getString(ctx, "view").toLowerCase());
-		if (options == null) return builder.buildFuture();
+		List<FilterOption> options = AnalyticsReport.EQUIPMENT_FILTER_OPTIONS;
 
 		String remaining = builder.getRemaining();
 		int lastSpace = remaining.lastIndexOf(' ');
@@ -225,6 +209,7 @@ public class LyticsCommand {
 			for (FilterOption o : options) {
 				if ((o.key + "=").toLowerCase().startsWith(lower)) b.suggest(o.key + "=");
 			}
+			suggestSharedOptions(b, lower);
 			return b.buildFuture();
 		}
 
@@ -239,6 +224,22 @@ public class LyticsCommand {
 			break;
 		}
 		return b.buildFuture();
+	}
+
+	private static CompletableFuture<Suggestions> suggestReportOptions(CommandContext<CommandSourceStack> ctx,
+			SuggestionsBuilder builder) {
+		String remaining = builder.getRemaining();
+		int lastSpace = remaining.lastIndexOf(' ');
+		String token = remaining.substring(lastSpace + 1).toLowerCase();
+		SuggestionsBuilder b = builder.createOffset(builder.getStart() + lastSpace + 1);
+		suggestSharedOptions(b, token);
+		return b.buildFuture();
+	}
+
+	private static void suggestSharedOptions(SuggestionsBuilder builder, String token) {
+		if ("page=".startsWith(token)) builder.suggest("page=");
+		if ("filterlow=true".startsWith(token)) builder.suggest("filterlow=true");
+		if ("filterlow=false".startsWith(token)) builder.suggest("filterlow=false");
 	}
 
 	private static SuggestionProvider<CommandSourceStack> suggest(Supplier<? extends Collection<String>> supplier) {
@@ -265,10 +266,22 @@ public class LyticsCommand {
 		return s == null ? null : s.toUpperCase();
 	}
 
-	// Maps a view name to its filter options (currently only the equipment view is filterable).
-	private static List<FilterOption> filterOptionsFor(String view) {
-		if (view.equalsIgnoreCase("equipment")) return AnalyticsReport.EQUIPMENT_FILTER_OPTIONS;
-		return null;
+	private static ParsedArgs parseArgs(String args, int positionalLimit) {
+		String[] tokens = args == null || args.isBlank() ? new String[0] : args.trim().split("\\s+");
+		ArrayList<String> positional = new ArrayList<String>();
+		ArrayList<String> options = new ArrayList<String>();
+		for (String token : tokens) {
+			if (token.contains("=") || positional.size() >= positionalLimit) options.add(token);
+			else positional.add(token);
+		}
+		AnalyticsFilters filters = AnalyticsFilters.parse(options.toArray(String[]::new), 0, List.of());
+		return new ParsedArgs(positional, filters);
+	}
+
+	private record ParsedArgs(List<String> positional, AnalyticsFilters filters) {
+		private String get(int index) {
+			return index < positional.size() ? positional.get(index) : null;
+		}
 	}
 
 	// The player-selectable classes, used as class filters across most lytics reports.

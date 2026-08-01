@@ -2,6 +2,9 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.Map.Entry;
 
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -12,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class PoisonStatus extends BasicStatus {
 	private static String id = "POISON";
+	private static final String POTION_CLEANUP_ID = id + "-potion";
 
 	public PoisonStatus(FightData data) {
 		super(id, data, StatusClass.NEGATIVE);
@@ -20,10 +24,30 @@ public class PoisonStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
+		if (this.stacks > 0) {
+			holder.getEntity().addPotionEffect(
+					new PotionEffect(PotionEffectType.POISON, PotionEffect.INFINITE_DURATION, 0));
+			holder.addCleanupTask(POTION_CLEANUP_ID, this::removePotionEffect);
+		}
+		else {
+			removePotionEffect();
+			holder.removeCleanupTask(POTION_CLEANUP_ID);
+		}
 		if (this.stacks > 0 && action == null) {
 			action = new PoisonTickAction();
 			holder.addTickAction(action);
 		}
+	}
+
+	@Override
+	public void cleanup() {
+		super.cleanup();
+		removePotionEffect();
+		holder.removeCleanupTask(POTION_CLEANUP_ID);
+	}
+
+	private void removePotionEffect() {
+		if (holder.getEntity() != null) holder.getEntity().removePotionEffect(PotionEffectType.POISON);
 	}
 
 	private class PoisonTickAction extends TickAction {

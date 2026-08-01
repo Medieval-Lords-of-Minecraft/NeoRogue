@@ -106,6 +106,10 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		RunSnapshot snap = new RunSnapshot(s.getRunId(), System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION,
 				s.getHost().toString(), s.getSaveSlot(), s.getSessionType().name(), s.getRegion().getType().name(),
 				s.getRegionsCompleted(), s.getLevel(), s.getParty().size(), s.getNotoriety(), s.isEndless(), s.isCompetitiveRun(), s.getPlaytime(), won);
+		for (PlayerSessionData data : s.getParty().values()) {
+			snap.addPlayer(data.getUniqueId().toString(),
+					data.getPlayerClass() != null ? data.getPlayerClass().name() : "UNKNOWN");
+		}
 		AnalyticsManager.recordRun(snap);
 	}
 

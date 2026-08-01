@@ -82,7 +82,7 @@ public final class ChanceDialog {
 		// Combine glossary tags across every choice in this stage into a single glossary inventory.
 		TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 		for (ChanceChoice choice : stage.choices) {
-			tags.addAll(choice.getTags());
+			tags.addAll(choice.getTags(inst, data));
 		}
 		if (!tags.isEmpty()) {
 			buttons.add(ActionButton.builder(Component.text("Glossary", NamedTextColor.LIGHT_PURPLE))
@@ -97,7 +97,7 @@ public final class ChanceDialog {
 					}, ClickCallback.Options.builder().uses(1).build()))
 					.build());
 		}
-		buttons.add(ActionButton.builder(Component.text("Close", NamedTextColor.RED))
+		buttons.add(ActionButton.builder(Component.text("Close", NamedTextColor.WHITE))
 				.width(200)
 				.action(DialogAction.customClick((response, audience) -> {
 					Player currentViewer = Bukkit.getPlayer(viewerId);
