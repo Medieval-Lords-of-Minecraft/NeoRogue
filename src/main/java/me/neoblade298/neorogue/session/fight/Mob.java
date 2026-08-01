@@ -224,38 +224,46 @@ public class Mob implements Comparable<Mob> {
 		int effectiveLevel = isChance ? s.getLevel() : s.getLevel() + 1;
 
 		// Add 1 to session level to show next node's health if it's next node. If it's a chance, don't
-		Component health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
-		
-		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + (int) this.spawnValue, NamedTextColor.YELLOW));
-		lore.add(health.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-		lore.add(value.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-		if (!resistances.isEmpty()) {
-			Component header = Component.text("Resistances:", NamedTextColor.GOLD);
-			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-			for (DamageCategory cat : DamageCategory.values()) {
-				if (resistances.containsKey(cat)) {
-					int pct = resistances.get(cat);
-					String sfx = pct > 0 ? "Resistant" : "Weak";
-					Component c = Component.text(cat.getDisplay() + ": ", NamedTextColor.YELLOW)
-							.append(Component.text(Math.abs(pct) + "% " + sfx, pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
-					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-				}
-			}
-		}
+		Component stats = Component.text("Health: ", NamedTextColor.GOLD)
+				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW))
+				.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+				.append(Component.text("Fight Progress: ", NamedTextColor.GOLD))
+				.append(Component.text("+" + (int) spawnValue, NamedTextColor.YELLOW));
+		lore.add(stats.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 
 		if (!damageTypes.isEmpty()) {
-			Component header = Component.text("Damage:", NamedTextColor.GOLD);
-			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+			Component damage = Component.text("Damage: ", NamedTextColor.GOLD);
+			boolean first = true;
 			for (DamageType dt : DamageType.values()) {
-				if (damageTypes.containsKey(dt)) {
-					Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
-							.append(Component.text(": ", NamedTextColor.GRAY))
-							.append(damageTypes.get(dt).getDisplay(true));
-					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-				}
+				if (!damageTypes.containsKey(dt)) continue;
+				if (!first) damage = damage.append(Component.text(", ", NamedTextColor.GRAY));
+				damage = damage.append(Component.text(dt.getDisplay() + " ", NamedTextColor.YELLOW))
+						.append(damageTypes.get(dt).getDisplay(true));
+				first = false;
+			}
+			lore.add(damage.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+		}
+
+		Component resistant = Component.text("Resists: ", NamedTextColor.GOLD);
+		Component weak = Component.text("Weaknesses: ", NamedTextColor.GOLD);
+		boolean firstResistance = true;
+		boolean firstWeakness = true;
+		for (DamageCategory cat : DamageCategory.values()) {
+			if (!resistances.containsKey(cat)) continue;
+			int pct = resistances.get(cat);
+			if (pct > 0) {
+				if (!firstResistance) resistant = resistant.append(Component.text(", ", NamedTextColor.GRAY));
+				resistant = resistant.append(Component.text(cat.getDisplay() + " " + pct + "%", NamedTextColor.RED));
+				firstResistance = false;
+			}
+			else {
+				if (!firstWeakness) weak = weak.append(Component.text(", ", NamedTextColor.GRAY));
+				weak = weak.append(Component.text(cat.getDisplay() + " " + Math.abs(pct) + "%", NamedTextColor.GREEN));
+				firstWeakness = false;
 			}
 		}
+		if (!firstResistance) lore.add(resistant.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+		if (!firstWeakness) lore.add(weak.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		
 		lore.addAll(this.lore);
 		if (modifier != null) {

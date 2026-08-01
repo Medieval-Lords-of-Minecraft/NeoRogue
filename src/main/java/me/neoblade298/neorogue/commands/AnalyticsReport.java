@@ -29,8 +29,9 @@ import me.neoblade298.neorogue.region.RegionType;
 // /nrlytics subcommands, which handle argument parsing; each method here just reports parsed args.
 public class AnalyticsReport {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
-	private static final int MIN_OFFERS = 10;
+	private static final int MIN_SAMPLES = 10;
 	private static final int LEADERBOARD_LIMIT = 10;
+	private static final String LOW_SAMPLE_MARKER = " <red>!</red>";
 
 	// Filterable columns exposed by the "equipment" view. Shared with the command layer so tab
 	// completion and query building stay in sync. Columns are qualified (fe = neorogue_analytics_fight_equipment,
@@ -49,6 +50,16 @@ public class AnalyticsReport {
 		return names;
 	}
 
+	private static String lowSampleMarker(int samples) {
+		return samples < MIN_SAMPLES ? LOW_SAMPLE_MARKER : "";
+	}
+
+	private static void addLowSampleDisclaimer(ArrayList<String> lines) {
+		if (lines.stream().anyMatch(line -> line.contains(LOW_SAMPLE_MARKER))) {
+			lines.add(0, "<red>!</red> <gray>Fewer than " + MIN_SAMPLES + " samples; interpret cautiously.");
+		}
+	}
+
 	private AnalyticsReport() {}
 
 	// Single equipment id: effectiveness, statuses applied, and pickrate by source.
@@ -62,6 +73,7 @@ public class AnalyticsReport {
 					queryEquipment(con, id, version, lines);
 					queryStatuses(con, id, version, lines);
 					queryPickrate(con, id, version, lines);
+					addLowSampleDisclaimer(lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -101,7 +113,7 @@ public class AnalyticsReport {
 					int wins = rs.getInt("wins");
 					double winrate = n > 0 ? (100.0 * wins / n) : 0;
 					lines.add("<aqua>" + (upgraded ? "Upgraded" : "Base") + "</aqua> <gray>(" + n + " fights, "
-							+ wins + " wins)");
+							+ wins + " wins)" + lowSampleMarker(n));
 					lines.add("  <white>Winrate:</white> <yellow>" + df.format(winrate) + "%");
 					lines.add("  <white>Avg Damage:</white> " + df.format(rs.getDouble("dmg"))
 							+ " <gray>| Buff:</gray> " + df.format(rs.getDouble("buff"))
@@ -134,7 +146,7 @@ public class AnalyticsReport {
 					double winrate = n > 0 ? (100.0 * wins / n) : 0;
 					lines.add("  <aqua>" + (upgraded ? "+" : " ") + "</aqua> <white>" + rs.getString("statusType")
 							+ ":</white> <yellow>" + df.format(rs.getDouble("avgStacks")) + "</yellow> avg stacks"
-							+ " <gray>(" + df.format(winrate) + "% wr, " + n + ")");
+							+ " <gray>(" + df.format(winrate) + "% wr, " + n + ")" + lowSampleMarker(n));
 				}
 			}
 		}
@@ -160,7 +172,7 @@ public class AnalyticsReport {
 					int picked = rs.getInt("picked");
 					double rate = offered > 0 ? (100.0 * picked / offered) : 0;
 					lines.add("  <aqua>" + source + (upgraded ? "+" : "") + ":</aqua> <yellow>" + df.format(rate)
-							+ "%</yellow> <gray>(" + picked + "/" + offered + " offered)");
+							+ "%</yellow> <gray>(" + picked + "/" + offered + " offered)" + lowSampleMarker(offered));
 				}
 			}
 		}
@@ -175,6 +187,7 @@ public class AnalyticsReport {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					queryEquipmentDamage(con, version, filters, lines);
+					addLowSampleDisclaimer(lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -191,7 +204,7 @@ public class AnalyticsReport {
 							Util.msgRaw(s, "<red>" + err);
 						}
 						if (lines.isEmpty()) {
-							Util.msgRaw(s, "<yellow>No equipment recorded in at least " + MIN_OFFERS + " fights.");
+							Util.msgRaw(s, "<yellow>No equipment recorded.");
 							return;
 						}
 						for (String line : lines) {
@@ -212,7 +225,7 @@ public class AnalyticsReport {
 				+ " FROM neorogue_analytics_fight_equipment fe JOIN neorogue_analytics_fights f ON fe.fightId = f.fightId"
 				+ " WHERE fe.balanceVersion = ?");
 		filters.appendWhere(sql);
-		sql.append(" GROUP BY fe.equipmentId, fe.upgraded HAVING n >= ").append(MIN_OFFERS);
+		sql.append(" GROUP BY fe.equipmentId, fe.upgraded");
 
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC;")) {
@@ -247,7 +260,8 @@ public class AnalyticsReport {
 				double dmg = rs.getDouble("dmg");
 				double winrate = n > 0 ? (100.0 * wins / n) : 0;
 				rows.add("  <yellow>" + df.format(dmg) + "</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>(" + n + " fights, " + df.format(winrate) + "% wr)");
+						+ (upgraded ? "+" : "") + "</white> <gray>(" + n + " fights, " + df.format(winrate) + "% wr)"
+						+ lowSampleMarker(n));
 			}
 		}
 	}
@@ -260,6 +274,7 @@ public class AnalyticsReport {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					queryLeaderboard(con, version, source, eqClass, sortBy, lines);
+					addLowSampleDisclaimer(lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -275,7 +290,7 @@ public class AnalyticsReport {
 								+ (eqClass != null ? ", " + eqClass : "")
 								+ (sortBy != null ? ", sorted by " + sortBy : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msgRaw(s, "<yellow>No offers recorded with at least " + MIN_OFFERS + " samples.");
+							Util.msgRaw(s, "<yellow>No offers recorded.");
 							return;
 						}
 						for (String line : lines) {
@@ -293,7 +308,7 @@ public class AnalyticsReport {
 				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_analytics_equipment_offers WHERE balanceVersion = ?");
 		if (source != null) sql.append(" AND source = ?");
 		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, equipClass)");
-		sql.append(" GROUP BY equipmentId, upgraded HAVING offered >= ").append(MIN_OFFERS);
+		sql.append(" GROUP BY equipmentId, upgraded");
 
 		String orderClause = (sortBy != null && sortBy.equalsIgnoreCase("class")) ? " ORDER BY equipmentId ASC" : " ORDER BY rate DESC";
 		ArrayList<String[]> rows = new ArrayList<String[]>();
@@ -334,7 +349,8 @@ public class AnalyticsReport {
 				int picked = rs.getInt("picked");
 				double rate = offered > 0 ? (100.0 * picked / offered) : 0;
 				String line = "  <yellow>" + df.format(rate) + "%</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>(" + picked + "/" + offered + ")";
+						+ (upgraded ? "+" : "") + "</white> <gray>(" + picked + "/" + offered + ")"
+						+ lowSampleMarker(offered);
 				rows.add(new String[] { line });
 			}
 		}
@@ -349,6 +365,7 @@ public class AnalyticsReport {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					queryChanceLeaderboard(con, version, setId, playerClass, lines);
+					addLowSampleDisclaimer(lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -363,8 +380,7 @@ public class AnalyticsReport {
 								+ (setId != null ? ", " + setId : "")
 								+ (playerClass != null ? ", " + playerClass : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msgRaw(s, "<yellow>No chance options recorded with at least " + MIN_OFFERS
-									+ " valid samples.");
+							Util.msgRaw(s, "<yellow>No chance options recorded.");
 							return;
 						}
 						for (String line : lines) {
@@ -376,8 +392,7 @@ public class AnalyticsReport {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in. Only
-	// mobs that have appeared in at least MIN_OFFERS fights are listed.
+	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in.
 	public static void mobs(CommandSender s, int version, String regionType, String playerClass) {
 		mobLeaderboard(s, version, regionType, playerClass, null, "Mob Damage Leaderboard");
 	}
@@ -419,6 +434,7 @@ public class AnalyticsReport {
 				if (mobIdWhitelist == null || !mobIdWhitelist.isEmpty()) {
 					try (Connection con = SQLManager.getConnection("NeoRogue")) {
 						queryMobLeaderboard(con, version, regionType, playerClass, mobIdWhitelist, lines);
+						addLowSampleDisclaimer(lines);
 					}
 					catch (SQLException ex) {
 						lines.clear();
@@ -434,7 +450,7 @@ public class AnalyticsReport {
 								+ (regionType != null ? ", " + regionType : "")
 								+ (playerClass != null ? ", " + playerClass : "") + ") ===");
 						if (lines.isEmpty()) {
-							Util.msgRaw(s, "<yellow>No mobs recorded in at least " + MIN_OFFERS + " fights.");
+							Util.msgRaw(s, "<yellow>No mobs recorded.");
 							return;
 						}
 						for (String line : lines) {
@@ -459,7 +475,7 @@ public class AnalyticsReport {
 			for (int i = 0; i < mobIdWhitelist.size(); i++) sql.append(i == 0 ? "?" : ",?");
 			sql.append(")");
 		}
-		sql.append(" GROUP BY mobId HAVING fights >= ").append(MIN_OFFERS);
+		sql.append(" GROUP BY mobId");
 
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC;")) {
@@ -527,7 +543,7 @@ public class AnalyticsReport {
 				String avgTime = avgWinMs == null ? "" : ", " + formatDuration(avgWinMs) + " avg win";
 				rows.add("  <yellow>" + df.format(avgDmg) + "</yellow> <white>" + mobId
 						+ "</white> <gray>avg/player (" + fights + " fights, " + df.format(winrate) + "% party wr"
-						+ avgTime + ")");
+						+ avgTime + ")" + lowSampleMarker(fights));
 			}
 		}
 	}
@@ -548,6 +564,7 @@ public class AnalyticsReport {
 					queryMobDetail(con, mobId, version, lines);
 					queryMobByClass(con, mobId, version, lines);
 					queryMobDamageTypes(con, mobId, version, lines);
+					addLowSampleDisclaimer(lines);
 				}
 				catch (SQLException ex) {
 					lines.clear();
@@ -584,7 +601,8 @@ public class AnalyticsReport {
 				if (rs.next() && rs.getInt("fights") > 0) {
 					hasData = true;
 					int fights = rs.getInt("fights");
-					lines.add("  <white>Appearances:</white> <yellow>" + fights + "</yellow> fights");
+					lines.add("  <white>Appearances:</white> <yellow>" + fights + "</yellow> fights"
+							+ lowSampleMarker(fights));
 					lines.add("  <white>Avg Damage/player:</white> <yellow>" + df.format(rs.getDouble("avgDmg"))
 							+ "</yellow> <gray>| Total:</gray> " + df.format(rs.getDouble("total")));
 				}
@@ -668,8 +686,7 @@ public class AnalyticsReport {
 				+ " WHERE c.balanceVersion = ?");
 		if (setId != null) sql.append(" AND c.setId = ?");
 		if (playerClass != null) sql.append(" AND c.playerClass = ?");
-		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex HAVING valid >= ").append(MIN_OFFERS)
-				.append(" ORDER BY c.setId, c.stageId, rate DESC;");
+		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex ORDER BY c.setId, c.stageId, rate DESC;");
 
 		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			int idx = 1;
@@ -695,7 +712,7 @@ public class AnalyticsReport {
 							: " <dark_gray>(no run outcomes)";
 					lines.add("  <aqua>" + rs.getString("stageId") + "</aqua> <white>" + rs.getString("label")
 							+ "</white> <yellow>" + df.format(rate) + "%</yellow> <gray>(" + picked + "/" + valid
-							+ " valid)" + wr);
+							+ " valid)" + wr + lowSampleMarker(Math.min(valid, wrSamples == 0 ? valid : wrSamples)));
 				}
 			}
 		}
