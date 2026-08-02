@@ -9,6 +9,7 @@ public enum NodeType {
 	BOSS(Material.RESPAWN_ANCHOR, MapCursor.Type.RED_X),
 	SHRINE(Material.OCHRE_FROGLIGHT, MapCursor.Type.BANNER_YELLOW),
 	TREASURE(Material.DEEPSLATE_DIAMOND_ORE, MapCursor.Type.BANNER_ORANGE),
+	TUTORIAL(Material.BOOKSHELF, MapCursor.Type.BANNER_WHITE),
 	START(Material.IRON_BLOCK, MapCursor.Type.BLUE_MARKER);
 	
 	private Material mat;

@@ -67,6 +67,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
+import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -709,6 +710,15 @@ public class SessionManager implements Listener {
 		((FightInstance) s.getInstance()).handleToggleSprintEvent(e);
 	}
 
+	@EventHandler
+	public void onSignOpen(PlayerOpenSignEvent e) {
+		UUID uuid = e.getPlayer().getUniqueId();
+		Session s = sessions.get(uuid);
+		if (s != null && s.isSpectator(uuid)) {
+			e.setCancelled(true);
+		}
+	}
+
 	@EventHandler(ignoreCancelled = false)
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
@@ -759,6 +769,7 @@ public class SessionManager implements Listener {
 		}
 
 		if (s.isSpectator(uuid)) {
+			e.setCancelled(true);
 			s.handleSpectatorInteract(p, e);
 			return;
 		}

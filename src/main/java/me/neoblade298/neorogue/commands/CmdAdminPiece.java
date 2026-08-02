@@ -23,6 +23,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
@@ -76,9 +77,18 @@ public class CmdAdminPiece extends Subcommand {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				Location spawn = new Location(Bukkit.getWorld(Region.TEST_WORLD_NAME), 0, MapPieceInstance.Y_OFFSET + 1, 0);
+				Coordinates[] spawns = inst.getSpawns();
+				if (spawns != null && spawns.length > 0) {
+					Coordinates spawnCoords = spawns[0].clone().applySettings(inst);
+					spawn = spawnCoords.toLocation();
+					spawn.add(xOff + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
+							MapPieceInstance.Z_FIGHT_OFFSET + zOff);
+					spawn.setX(-spawn.getX() + (spawn.getX() % 1 != 0 ? 1 : 0));
+					spawn.setWorld(Bukkit.getWorld(Region.TEST_WORLD_NAME));
+				}
 				Region.useMainWorld();
-				org.bukkit.World w = Bukkit.getWorld(Region.TEST_WORLD_NAME);
-				p.teleport(new Location(w, 0, MapPieceInstance.Y_OFFSET + 1, 0));
+				p.teleport(spawn);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20);
 	}

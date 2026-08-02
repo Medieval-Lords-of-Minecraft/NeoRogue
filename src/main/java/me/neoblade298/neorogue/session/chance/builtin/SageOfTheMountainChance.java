@@ -41,6 +41,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 						&& data.getHealth() >= 0.3 * data.getMaxHealth(),
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
 		gaze.setOnInteract((inst, data, reopen) -> openGaze(inst, data, reopen));
+		gaze.addGlossaryEquipment(EchoStone.get());
 		stage.addChoice(gaze);
 
 		// Choice 2: Meditate Together - heal 20% of max health

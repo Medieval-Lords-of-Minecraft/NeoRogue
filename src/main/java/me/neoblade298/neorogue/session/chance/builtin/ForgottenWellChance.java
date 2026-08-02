@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -54,9 +53,9 @@ public class ForgottenWellChance extends ChanceSet {
 				}));
 				
 		
-		ruby.addTag(new CustomGlossaryIcon("rubyCluster", RubyCluster.get().getItem()));
-		sapphire.addTag(new CustomGlossaryIcon("sapphireCluster", SapphireCluster.get().getItem()));
-		emerald.addTag(new CustomGlossaryIcon("emeraldCluster", EmeraldCluster.get().getItem()));
+		ruby.addGlossaryEquipment(RubyCluster.get());
+		sapphire.addGlossaryEquipment(SapphireCluster.get());
+		emerald.addGlossaryEquipment(EmeraldCluster.get());
 		stage.addChoice(ruby);
 		stage.addChoice(sapphire);
 		stage.addChoice(emerald);

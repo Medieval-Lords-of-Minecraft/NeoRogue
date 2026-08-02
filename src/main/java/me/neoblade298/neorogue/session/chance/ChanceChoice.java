@@ -19,7 +19,9 @@ import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -36,6 +38,7 @@ public class ChanceChoice {
 	private ChanceDescriptionSupplier dynamicDesc;
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private BiFunction<ChanceInstance, PlayerSessionData, Collection<GlossaryIcon>> dynamicTags;
+	private BiFunction<ChanceInstance, PlayerSessionData, Collection<Equipment>> dynamicEquipment;
 	private ChanceAction action;
 	private ChanceRequirement req;
 	private BiConsumer<Player, CoreInventory> onRightClick;
@@ -82,11 +85,30 @@ public class ChanceChoice {
 	}
 
 	public Collection<GlossaryIcon> getTags(ChanceInstance inst, PlayerSessionData data) {
-		return dynamicTags != null ? dynamicTags.apply(inst, data) : tags;
+		TreeSet<GlossaryIcon> icons = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
+		icons.addAll(dynamicTags != null ? dynamicTags.apply(inst, data) : tags);
+		if (dynamicEquipment != null) {
+			for (Equipment equipment : dynamicEquipment.apply(inst, data)) {
+				icons.add(equipmentIcon(equipment));
+			}
+		}
+		return icons;
 	}
 
 	public void setGlossaryTags(BiFunction<ChanceInstance, PlayerSessionData, Collection<GlossaryIcon>> dynamicTags) {
 		this.dynamicTags = dynamicTags;
+	}
+
+	public void addGlossaryEquipment(Equipment equipment) {
+		addTag(equipmentIcon(equipment));
+	}
+
+	public void setGlossaryEquipment(BiFunction<ChanceInstance, PlayerSessionData, Collection<Equipment>> dynamicEquipment) {
+		this.dynamicEquipment = dynamicEquipment;
+	}
+
+	private static GlossaryIcon equipmentIcon(Equipment equipment) {
+		return new CustomGlossaryIcon("equipment:" + equipment.serialize(), equipment.getItem());
 	}
 	
 	// Plain-text title, used as a readable label for analytics.

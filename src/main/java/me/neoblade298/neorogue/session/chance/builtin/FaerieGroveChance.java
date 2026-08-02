@@ -73,9 +73,9 @@ public class FaerieGroveChance extends ChanceSet {
 			if (reward == null) return;
 			new EquipmentGlossaryInventory(p, Equipment.deserialize(reward), prev);
 		});
-		tradeChoice.setGlossaryTags((inst, data) -> {
+		tradeChoice.setGlossaryEquipment((inst, data) -> {
 			String reward = inst.getEventData(data.getUniqueId() + ":reward");
-			return reward != null ? Equipment.deserialize(reward).getTags() : List.of();
+			return reward != null ? List.of(Equipment.deserialize(reward)) : List.of();
 		});
 		stage.addChoice(tradeChoice);
 

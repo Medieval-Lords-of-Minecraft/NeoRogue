@@ -137,6 +137,11 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 			if (reward == null) return;
 			new EquipmentGlossaryInventory(p, reward, prev);
 		});
+		choice.setGlossaryEquipment((inst, data) -> {
+			String rewardId = getValue(data, rewardKey);
+			Equipment reward = rewardId != null ? Equipment.get(rewardId, false) : null;
+			return reward != null ? List.of(reward) : List.of();
+		});
 	}
 
 	@Override

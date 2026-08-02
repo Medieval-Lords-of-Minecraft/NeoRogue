@@ -155,6 +155,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 
 	public void setIcon(ItemStack icon) {
+		this.icon = decorateIcon(icon != null ? icon.clone() : null);
 		updateIcon();
 	}
 

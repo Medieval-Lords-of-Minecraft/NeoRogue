@@ -158,13 +158,6 @@ public abstract class EditInventoryInstance extends Instance {
 
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
-		if (this instanceof NodeSelectInstance)
-			return;
-		if (e.getAction().isLeftClick()) {
-			s.getSpectator(e.getPlayer().getUniqueId()).scrollMapDown();
-		} else if (e.getAction().isRightClick()) {
-			s.getSpectator(e.getPlayer().getUniqueId()).scrollMapUp();
-		}
 	}
 
 	@Override

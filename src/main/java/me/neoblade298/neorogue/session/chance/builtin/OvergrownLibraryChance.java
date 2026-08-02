@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.artifacts.DarkArtsTreatise;
 import me.neoblade298.neorogue.equipment.artifacts.EarthenTome;
 import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
@@ -25,55 +26,49 @@ public class OvergrownLibraryChance extends ChanceSet {
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "Along the forest path is an overgrown stone wall that seemed to have one point " +
 			"been a shelf. On it are some books that, while old, seem surprisingly well-kept.");
 
-		stage.addChoice(new ChanceChoice(Material.BLAZE_POWDER, "Read \"Infernal Tome\"",
+		stage.addChoice(equipmentChoice(Material.BLAZE_POWDER, "Read \"Infernal Tome\"",
 				"Permanently increase " + GlossaryTag.FIRE.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(InfernalTome.get());
-					return null;
-				}));
+				InfernalTome.get()));
 
-		stage.addChoice(new ChanceChoice(Material.BLUE_ICE, "Read \"Scroll of Frost\"",
+		stage.addChoice(equipmentChoice(Material.BLUE_ICE, "Read \"Scroll of Frost\"",
 				"Permanently increase " + GlossaryTag.ICE.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(ScrollOfFrost.get());
-					return null;
-				}));
+				ScrollOfFrost.get()));
 
-		stage.addChoice(new ChanceChoice(Material.LIGHTNING_ROD, "Read \"Treatise on Electricity\"",
+		stage.addChoice(equipmentChoice(Material.LIGHTNING_ROD, "Read \"Treatise on Electricity\"",
 				"Permanently increase " + GlossaryTag.LIGHTNING.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(TreatiseOnElectricity.get());
-					return null;
-		}));
+				TreatiseOnElectricity.get()));
 
-		stage.addChoice(new ChanceChoice(Material.GRASS_BLOCK, "Read \"Earthen Tome\"",
+		stage.addChoice(equipmentChoice(Material.GRASS_BLOCK, "Read \"Earthen Tome\"",
 				"Permanently increase " + GlossaryTag.EARTHEN.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(EarthenTome.get());
-					return null;
-		}));
+				EarthenTome.get()));
 
-		stage.addChoice(new ChanceChoice(Material.NETHER_STAR, "Read \"Holy Scriptures\"",
+		stage.addChoice(equipmentChoice(Material.NETHER_STAR, "Read \"Holy Scriptures\"",
 				"Permanently increase " + GlossaryTag.LIGHT.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(HolyScriptures.get());
-					return null;
-		}));
+				HolyScriptures.get()));
 
-		stage.addChoice(new ChanceChoice(Material.OBSIDIAN, "Read \"Dark Arts Treatise\"",
+		stage.addChoice(equipmentChoice(Material.OBSIDIAN, "Read \"Dark Arts Treatise\"",
 				"Permanently increase " + GlossaryTag.DARK.tag + " by <white>20%</white>, stackable",
-				(s, inst, data) -> {
-					data.giveEquipment(DarkArtsTreatise.get());
-					return null;
-		}));
+				DarkArtsTreatise.get()));
 
-		stage.addChoice(new ChanceChoice(Material.IRON_BARS, "Reading is for nerds, I'll do some pushups",
+		ChanceChoice pushups = new ChanceChoice(Material.IRON_BARS, "Reading is for nerds, I'll do some pushups",
 				"Increase your strength by <white>25</white> for <white>2</white> fights.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					data.giveArtifact((Artifact) Pumped.get(), 2);
 					s.broadcast(SharedUtil.color("<yellow>" + p.getName() + "</yellow> thinks that reading is for nerds."));
 					return null;
-				}));
+				});
+		pushups.addGlossaryEquipment(Pumped.get());
+		stage.addChoice(pushups);
+	}
+
+	private static ChanceChoice equipmentChoice(Material material, String title, String description,
+			Equipment equipment) {
+		ChanceChoice choice = new ChanceChoice(material, title, description, (s, inst, data) -> {
+			data.giveEquipment(equipment);
+			return null;
+		});
+		choice.addGlossaryEquipment(equipment);
+		return choice;
 	}
 }

@@ -77,6 +77,7 @@ public class LostRelicChance extends ChanceSet {
 			ChanceInventory ci = (ChanceInventory) prev;
 			new EquipmentGlossaryInventory(p, items.get(ci.getData().getPlayerClass()), prev);
 		});
+		ch.setGlossaryEquipment((inst, data) -> List.of(items.get(data.getPlayerClass())));
 		stage.addChoice(ch);
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Leave it",

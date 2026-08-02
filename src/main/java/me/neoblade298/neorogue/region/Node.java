@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.instances.ShopInstance;
 import me.neoblade298.neorogue.session.instances.ShrineInstance;
+import me.neoblade298.neorogue.session.instances.TutorialInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class Node {
@@ -163,6 +164,9 @@ public class Node {
 			break;
 		case TREASURE:
 			inst = RewardInstance.createTreasure(s);
+			break;
+		case TUTORIAL:
+			inst = new TutorialInstance(s);
 			break;
 		default:
 			break;

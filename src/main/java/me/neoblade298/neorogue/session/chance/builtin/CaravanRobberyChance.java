@@ -18,7 +18,7 @@ public class CaravanRobberyChance extends ChanceSet {
 			"On a small dirt road, you see a small caravan being robbed by a group of bandits. You could probably save them for a monetary reward, though having to " +
 			"protect the merchants would undoubtedly be dangerous.");
 
-		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Save the Merchants",
+		ChanceChoice saveMerchants = new ChanceChoice(Material.DIAMOND_SWORD, "Save the Merchants",
 				"Gain <yellow>300 " + PlayerSessionData.CURRENCY + "</yellow> but reduce your max abilities by <white>1</white> for 3 fights.",
 				"Someone in your party is already exhausted.",
 				(s, inst, data) -> {
@@ -43,7 +43,9 @@ public class CaravanRobberyChance extends ChanceSet {
 					}
 					s.broadcast("You save the merchants and are rewarded <yellow>300 " + PlayerSessionData.CURRENCY + "</yellow>, but you feel exhausted.");
 					return null;
-				}));
+				});
+		saveMerchants.addGlossaryEquipment(Exhaustion.get());
+		stage.addChoice(saveMerchants);
 
 		stage.addChoice(new ChanceChoice(Material.BARRIER, "Leave before they see you",
 				"I have enough on my hands as it is.",

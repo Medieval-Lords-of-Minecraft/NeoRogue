@@ -22,7 +22,7 @@ public class WitchCaveChance extends ChanceSet {
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You wander into a frost-rimed cave where an old witch cackles by a bubbling cauldron. "
 				+ "She turns to greet you with a knowing smile. \"A potion for the road, dearie? Or would you rather pay your way out?\"");
 
-		stage.addChoice(new ChanceChoice(Material.HONEY_BOTTLE, "Everlasting Health",
+		ChanceChoice everlastingHealth = new ChanceChoice(Material.HONEY_BOTTLE, "Everlasting Health",
 				"Heal " + DescUtil.white("20%") + " of your max health after every fight, but you can no longer gain " + DescUtil.white("shields")
 						+ " after " + DescUtil.white("10s") + " of a fight.",
 				(s, inst, data) -> {
@@ -30,9 +30,11 @@ public class WitchCaveChance extends ChanceSet {
 					data.giveArtifact((Artifact) EverlastingHealth.get(), 1);
 					Util.msgRaw(data.getPlayer(), "The witch presses a warm vial into your hand. You feel energized, but oddly fragile.");
 					return null;
-				}));
+				});
+		everlastingHealth.addGlossaryEquipment(EverlastingHealth.get());
+		stage.addChoice(everlastingHealth);
 
-		stage.addChoice(new ChanceChoice(Material.SPLASH_POTION, "Temporary Health",
+		ChanceChoice temporaryHealth = new ChanceChoice(Material.SPLASH_POTION, "Temporary Health",
 				"Take " + DescUtil.white("10%") + " of your max health as damage, but heal " + DescUtil.white("30%")
 						+ " after winning " + DescUtil.white("2") + " fights.",
 				"You need at least 10% health to drink the brew!",
@@ -42,7 +44,9 @@ public class WitchCaveChance extends ChanceSet {
 					data.giveArtifact((Artifact) TemporaryHealth.get(), 2);
 					Util.msgRaw(data.getPlayer(), "The bitter brew stings going down, but you convince yourself that bitter things are healthier for you in the long run.");
 					return null;
-				}));
+				});
+		temporaryHealth.addGlossaryEquipment(TemporaryHealth.get());
+		stage.addChoice(temporaryHealth);
 
 		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Leave",
 				"Pay " + DescUtil.white(LEAVE_COST + " " + PlayerSessionData.CURRENCY) + " to convince the witch to let you live.",

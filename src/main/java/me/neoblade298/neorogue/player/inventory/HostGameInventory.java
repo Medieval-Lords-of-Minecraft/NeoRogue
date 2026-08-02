@@ -121,6 +121,14 @@ public class HostGameInventory extends CoreInventory {
 				// Confirm before deleting
 				final int fSlot = saveSlot;
 				ItemStack display = e.getCurrentItem() != null ? e.getCurrentItem().clone() : null;
+				if (display != null) {
+					ItemMeta meta = display.getItemMeta();
+					List<Component> lore = meta.lore() != null ? new ArrayList<>(meta.lore()) : new ArrayList<>();
+					lore.add(Component.empty());
+					lore.add(Component.text("Deleting this slot will count the run as a loss.", NamedTextColor.RED));
+					meta.lore(lore);
+					display.setItemMeta(meta);
+				}
 				new ConfirmInventory(p, Component.text("Delete Save Slot " + fSlot + "?", NamedTextColor.RED), display,
 						() -> {
 							SessionManager.deleteSave(p, fSlot);
