@@ -39,7 +39,7 @@ public class FightInfoInventory extends CoreInventory {
 
 		for (Mob mob : mobs) {
 			MobModifier modifier = inst != null ? inst.getDisplayModifier(mob) : null;
-			contents[pos++] = mob.getItemDisplay(s, modifier, isChance);
+			contents[pos++] = mob.getItemDisplay(s, inst, modifier, isChance);
 
 			if (mob.getSummons() != null) {
 				for (String summonStr : mob.getSummons()) {
@@ -48,7 +48,7 @@ public class FightInfoInventory extends CoreInventory {
 						Bukkit.getLogger().warning("[NeoRogue] Failed to load summon " + summonStr + " for mob " + mob.getId());
 						continue;
 					}
-					contents[pos++] = summon.getItemDisplay(s, null, isChance);
+					contents[pos++] = summon.getItemDisplay(s, inst, null, isChance);
 				}
 			}
 		}

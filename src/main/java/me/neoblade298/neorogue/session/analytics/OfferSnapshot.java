@@ -20,6 +20,7 @@ public class OfferSnapshot {
 	public final String playerUuid;
 	public final String host;
 	public final int slot;
+	public final String runId;
 	public final String source;
 	public final String regionType;
 	public final String nodeType;
@@ -28,13 +29,14 @@ public class OfferSnapshot {
 	public final ArrayList<OfferRow> rows = new ArrayList<OfferRow>();
 
 	public OfferSnapshot(String offerId, long timestamp, int balanceVersion, String playerUuid, String host, int slot,
-			OfferSource source, String regionType, String nodeType, int level) {
+			String runId, OfferSource source, String regionType, String nodeType, int level) {
 		this.offerId = offerId;
 		this.timestamp = timestamp;
 		this.balanceVersion = balanceVersion;
 		this.playerUuid = playerUuid;
 		this.host = host;
 		this.slot = slot;
+		this.runId = runId;
 		this.source = source.name();
 		this.regionType = regionType;
 		this.nodeType = nodeType;

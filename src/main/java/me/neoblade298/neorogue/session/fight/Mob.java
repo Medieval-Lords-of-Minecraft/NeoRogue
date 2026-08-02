@@ -216,7 +216,7 @@ public class Mob implements Comparable<Mob> {
 		return knockbackMultiplier;
 	}
 	
-	public ItemStack getItemDisplay(Session s, MobModifier modifier, boolean isChance) {
+	public ItemStack getItemDisplay(Session s, FightInstance inst, MobModifier modifier, boolean isChance) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
@@ -225,10 +225,12 @@ public class Mob implements Comparable<Mob> {
 
 		// Add 1 to session level to show next node's health if it's next node. If it's a chance, don't
 		Component stats = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW))
-				.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-				.append(Component.text("Fight Progress: ", NamedTextColor.GOLD))
-				.append(Component.text("+" + (int) spawnValue, NamedTextColor.YELLOW));
+				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
+		if (inst instanceof StandardFightInstance) {
+			stats = stats.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+					.append(Component.text("Fight Progress: ", NamedTextColor.GOLD))
+					.append(Component.text("+" + (int) spawnValue, NamedTextColor.YELLOW));
+		}
 		lore.add(stats.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 
 		if (!damageTypes.isEmpty()) {

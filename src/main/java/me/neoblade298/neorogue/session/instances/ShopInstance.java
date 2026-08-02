@@ -130,7 +130,7 @@ public class ShopInstance extends EditInventoryInstance {
 		int saveSlot = s.getSaveSlot();
 		for (Entry<UUID, ShopContents> ent : shops.entrySet()) {
 			OfferSnapshot snap = new OfferSnapshot(UUID.randomUUID().toString(), now,
-					AnalyticsManager.BALANCE_VERSION, ent.getKey().toString(), host, saveSlot, OfferSource.SHOP,
+					AnalyticsManager.BALANCE_VERSION, ent.getKey().toString(), host, saveSlot, s.getRunId(), OfferSource.SHOP,
 					regionType, nodeType, level);
 			ent.getValue().fillOffers(snap);
 			AnalyticsManager.recordOffer(snap);

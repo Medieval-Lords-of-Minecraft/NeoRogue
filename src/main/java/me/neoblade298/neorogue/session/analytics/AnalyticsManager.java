@@ -139,6 +139,7 @@ public class AnalyticsManager {
 							+ "playerUuid VARCHAR(36) NOT NULL,"
 							+ "host VARCHAR(36) NOT NULL,"
 							+ "slot INT NOT NULL,"
+							+ "runId VARCHAR(36) NOT NULL DEFAULT '',"
 							+ "source VARCHAR(20) NOT NULL,"
 							+ "regionType VARCHAR(50) NOT NULL,"
 							+ "nodeType VARCHAR(20) NOT NULL,"
@@ -203,7 +204,6 @@ public class AnalyticsManager {
 							+ "runId VARCHAR(36) NOT NULL DEFAULT '',"
 							+ "PRIMARY KEY (pickId, choiceIndex)"
 							+ ");");
-
 
 					createIndex(stmt, "idx_fights_balance", "neorogue_analytics_fights", "balanceVersion");
 					createIndex(stmt, "idx_fights_region_node", "neorogue_analytics_fights", "regionType, nodeType");
@@ -445,6 +445,7 @@ public class AnalyticsManager {
 					.addValue("playerUuid", snap.playerUuid)
 					.addValue("host", snap.host)
 					.addValue("slot", snap.slot)
+					.addValue("runId", snap.runId)
 					.addValue("source", snap.source)
 					.addValue("regionType", snap.regionType)
 					.addValue("nodeType", snap.nodeType)

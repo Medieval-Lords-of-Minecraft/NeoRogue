@@ -101,7 +101,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		if (sess == null) return;
 		OfferSnapshot snap = new OfferSnapshot(UUID.randomUUID().toString(), System.currentTimeMillis(),
 				AnalyticsManager.BALANCE_VERSION, data.getUniqueId().toString(), sess.getHost().toString(),
-				sess.getSaveSlot(), OfferSource.REWARD, sess.getRegion().getType().name(),
+				sess.getSaveSlot(), sess.getRunId(), OfferSource.REWARD, sess.getRegion().getType().name(),
 				sess.getNode().getType().name(), sess.getLevel());
 		for (int i = 0; i < equips.size(); i++) {
 			snap.addOffer(equips.get(i).getEquipment(), i, i == picked, 0);

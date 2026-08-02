@@ -96,7 +96,6 @@ public class PlayerData {
 	private boolean loadedSuccessfully = false;
 	// Append-only finished-run history backing the winrate/winstreak stats (see RunStats).
 	private ArrayList<RunStats.RunRecord> runResults = new ArrayList<RunStats.RunRecord>();
-	private int slotsAvailable;
 	public static final int NOTORIETY_HARD_CAP = 10;
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
 	public static final int DEFAULT_FLEET_CAPACITY = 3000, DEFAULT_FLEET_SLOTS = 5;
@@ -133,21 +132,6 @@ public class PlayerData {
 		this.display = p.getName();
 
 		initializeDefaultProgression();
-		if (p.hasPermission("neorogue.admin")) {
-			slotsAvailable = 9;
-		}
-		else if (p.hasPermission("neorogue.slots.5")) {
-			slotsAvailable = 5;
-		}
-		else if (p.hasPermission("neorogue.slots.3")) {
-			slotsAvailable = 3;
-		}
-		else if (p.hasPermission("neorogue.slots.2")) {
-			slotsAvailable = 2;
-		}
-		else {
-			slotsAvailable = 1;
-		}
 		initializeEquipmentDroptable();
 	}
 	
@@ -407,7 +391,13 @@ public class PlayerData {
 	}
 	
 	public int getSlots() {
-		return slotsAvailable;
+		Player player = getPlayer();
+		if (player == null) return 1;
+		if (player.hasPermission("neorogue.admin")) return 9;
+		if (player.hasPermission("neorogue.slots.5")) return 5;
+		if (player.hasPermission("neorogue.slots.3")) return 3;
+		if (player.hasPermission("neorogue.slots.2")) return 2;
+		return 1;
 	}
 
 	public int getLevel(EquipmentClass ec) {
@@ -1307,7 +1297,7 @@ public class PlayerData {
 	// Should only ever be displayed to the owner
 	public void displayLoadButtons(CommandSender s) {
 		Util.msgRaw(s, Component.text("Save slots (Click one to load):", NamedTextColor.GRAY));
-		for (int i = 1; i <= slotsAvailable; i++) {
+		for (int i = 1; i <= getSlots(); i++) {
 			if (snapshots.containsKey(i)) {
 				snapshots.get(i).displayLoadButton(s, i);
 			}
@@ -1320,7 +1310,7 @@ public class PlayerData {
 	// Should only ever be displayed to the owner
 	public void displayNewButtons(CommandSender s) {
 		Util.msgRaw(s, Component.text("Save slots (Click one to start a new game with):", NamedTextColor.GRAY));
-		for (int i = 1; i <= slotsAvailable; i++) {
+		for (int i = 1; i <= getSlots(); i++) {
 			if (snapshots.containsKey(i)) {
 				snapshots.get(i).displayNewButton(s, i);
 			}
@@ -1335,7 +1325,7 @@ public class PlayerData {
 	}
 
 	public boolean hasSlot(int saveSlot) {
-		return saveSlot >= 1 && saveSlot <= slotsAvailable;
+		return saveSlot >= 1 && saveSlot <= getSlots();
 	}
 	
 	public Set<String> getUnlockNodes() {

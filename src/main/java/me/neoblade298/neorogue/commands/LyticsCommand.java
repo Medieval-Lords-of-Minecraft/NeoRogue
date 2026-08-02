@@ -21,10 +21,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.commands.AnalyticsFilters.FilterOption;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
-import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
-import me.neoblade298.neorogue.session.analytics.OfferSnapshot.OfferSource;
 import me.neoblade298.neorogue.session.fight.Mob;
 
 // Brigadier command for the analytics reports: /nrlytics <view> [args]. Each subcommand parses its
@@ -32,9 +29,8 @@ import me.neoblade298.neorogue.session.fight.Mob;
 // old NeoCore SubcommandManager registration; permission (neorogue.admin) is enforced via requires().
 @SuppressWarnings("UnstableApiUsage")
 public class LyticsCommand {
-	private static final List<String> SORTS = List.of("rate", "class");
 	// Ordered list of subcommands shown when /nrlytics is run with no arguments.
-	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classwinrates", "pickrate", "chance",
+	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "pickrate", "chance",
 			"mobs", "minibosses", "bosses", "mob");
 
 	private LyticsCommand() {
@@ -58,46 +54,52 @@ public class LyticsCommand {
 								.suggests(LyticsCommand::suggestEquipmentFilters)
 								.executes(ctx -> runEquipment(ctx, StringArgumentType.getString(ctx, "filters")))))
 
-				// classwinrates [page=n] [filterlow=true|false]
-				.then(Commands.literal("classwinrates")
+				// classes [key=value ...]
+				.then(Commands.literal("classes")
 						.executes(ctx -> runClasses(ctx, ""))
 						.then(Commands.argument("options", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.CLASS_FILTER_OPTIONS))
 								.executes(ctx -> runClasses(ctx, getStr(ctx, "options")))))
 
 				// pickrate [source] [class] [sortBy] [page=n] [filterlow=true|false]
 				.then(Commands.literal("pickrate")
 						.executes(ctx -> runPickrate(ctx, ""))
 						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.PICKRATE_FILTER_OPTIONS))
 								.executes(ctx -> runPickrate(ctx, getStr(ctx, "args")))))
 
 				// chance [setId] [class] [page=n] [filterlow=true|false]
 				.then(Commands.literal("chance")
 						.executes(ctx -> runChance(ctx, ""))
 						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.CHANCE_FILTER_OPTIONS))
 								.executes(ctx -> runChance(ctx, getStr(ctx, "args")))))
 
 				// mobs [regionType] [class] [page=n] [filterlow=true|false]
 				.then(Commands.literal("mobs")
 						.executes(ctx -> runMobs(ctx, ""))
 						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.MOB_FILTER_OPTIONS))
 								.executes(ctx -> runMobs(ctx, getStr(ctx, "args")))))
 
 				// minibosses [class]
 				.then(Commands.literal("minibosses")
 						.executes(ctx -> runMinibosses(ctx, ""))
 						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.MOB_FILTER_OPTIONS))
 								.executes(ctx -> runMinibosses(ctx, getStr(ctx, "args")))))
 
 				// bosses [class]
 				.then(Commands.literal("bosses")
 						.executes(ctx -> runBosses(ctx, ""))
 						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests(LyticsCommand::suggestReportOptions)
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.MOB_FILTER_OPTIONS))
 								.executes(ctx -> runBosses(ctx, getStr(ctx, "args")))))
 
 				// mob <mobId>
@@ -107,7 +109,8 @@ public class LyticsCommand {
 								.suggests(suggest(Mob::getStatIds))
 								.executes(ctx -> runMob(ctx, ""))
 								.then(Commands.argument("options", StringArgumentType.greedyString())
-										.suggests(LyticsCommand::suggestReportOptions)
+										.suggests((ctx, builder) -> suggestFilters(builder,
+												AnalyticsReport.MOB_FILTER_OPTIONS))
 										.executes(ctx -> runMob(ctx, getStr(ctx, "options"))))))
 				.build();
 	}
@@ -147,43 +150,45 @@ public class LyticsCommand {
 	}
 
 	private static int runClasses(CommandContext<CommandSourceStack> ctx, String args) {
-		AnalyticsReport.classWinrates(ctx.getSource().getSender(), version(), parseArgs(args, 0).filters);
+		AnalyticsReport.classWinrates(ctx.getSource().getSender(), version(),
+				parseArgs(args, 0, AnalyticsReport.CLASS_FILTER_OPTIONS).filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runPickrate(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 3);
+		ParsedArgs parsed = parseArgs(args, 3, AnalyticsReport.PICKRATE_FILTER_OPTIONS);
 		AnalyticsReport.pickrate(ctx.getSource().getSender(), version(), upper(parsed.get(0)), upper(parsed.get(1)),
 				parsed.get(2) == null ? "rate" : parsed.get(2).toLowerCase(), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runChance(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 2);
+		ParsedArgs parsed = parseArgs(args, 2, AnalyticsReport.CHANCE_FILTER_OPTIONS);
 		AnalyticsReport.chance(ctx.getSource().getSender(), version(), parsed.get(0), upper(parsed.get(1)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runMobs(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 2);
+		ParsedArgs parsed = parseArgs(args, 2, AnalyticsReport.MOB_FILTER_OPTIONS);
 		AnalyticsReport.mobs(ctx.getSource().getSender(), version(), upper(parsed.get(0)), upper(parsed.get(1)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runMinibosses(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 1);
+		ParsedArgs parsed = parseArgs(args, 1, AnalyticsReport.MOB_FILTER_OPTIONS);
 		AnalyticsReport.minibosses(ctx.getSource().getSender(), version(), upper(parsed.get(0)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runBosses(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 1);
+		ParsedArgs parsed = parseArgs(args, 1, AnalyticsReport.MOB_FILTER_OPTIONS);
 		AnalyticsReport.bosses(ctx.getSource().getSender(), version(), upper(parsed.get(0)), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runMob(CommandContext<CommandSourceStack> ctx, String args) {
-		AnalyticsReport.mob(ctx.getSource().getSender(), getStr(ctx, "mobId"), version(), parseArgs(args, 0).filters);
+		AnalyticsReport.mob(ctx.getSource().getSender(), getStr(ctx, "mobId"), version(),
+				parseArgs(args, 0, AnalyticsReport.MOB_FILTER_OPTIONS).filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -194,8 +199,11 @@ public class LyticsCommand {
 	// then suggest filter keys or a key's allowed values, mirroring the old getTabOptions behavior.
 	private static CompletableFuture<Suggestions> suggestEquipmentFilters(CommandContext<CommandSourceStack> ctx,
 			SuggestionsBuilder builder) {
-		List<FilterOption> options = AnalyticsReport.EQUIPMENT_FILTER_OPTIONS;
+		return suggestFilters(builder, AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+	}
 
+	private static CompletableFuture<Suggestions> suggestFilters(SuggestionsBuilder builder,
+			List<FilterOption> options) {
 		String remaining = builder.getRemaining();
 		int lastSpace = remaining.lastIndexOf(' ');
 		String token = remaining.substring(lastSpace + 1);
@@ -223,16 +231,6 @@ public class LyticsCommand {
 			}
 			break;
 		}
-		return b.buildFuture();
-	}
-
-	private static CompletableFuture<Suggestions> suggestReportOptions(CommandContext<CommandSourceStack> ctx,
-			SuggestionsBuilder builder) {
-		String remaining = builder.getRemaining();
-		int lastSpace = remaining.lastIndexOf(' ');
-		String token = remaining.substring(lastSpace + 1).toLowerCase();
-		SuggestionsBuilder b = builder.createOffset(builder.getStart() + lastSpace + 1);
-		suggestSharedOptions(b, token);
 		return b.buildFuture();
 	}
 
@@ -266,7 +264,7 @@ public class LyticsCommand {
 		return s == null ? null : s.toUpperCase();
 	}
 
-	private static ParsedArgs parseArgs(String args, int positionalLimit) {
+	private static ParsedArgs parseArgs(String args, int positionalLimit, List<FilterOption> filterOptions) {
 		String[] tokens = args == null || args.isBlank() ? new String[0] : args.trim().split("\\s+");
 		ArrayList<String> positional = new ArrayList<String>();
 		ArrayList<String> options = new ArrayList<String>();
@@ -274,7 +272,7 @@ public class LyticsCommand {
 			if (token.contains("=") || positional.size() >= positionalLimit) options.add(token);
 			else positional.add(token);
 		}
-		AnalyticsFilters filters = AnalyticsFilters.parse(options.toArray(String[]::new), 0, List.of());
+		AnalyticsFilters filters = AnalyticsFilters.parse(options.toArray(String[]::new), 0, filterOptions);
 		return new ParsedArgs(positional, filters);
 	}
 
@@ -284,35 +282,4 @@ public class LyticsCommand {
 		}
 	}
 
-	// The player-selectable classes, used as class filters across most lytics reports.
-	private static List<String> playerClasses() {
-		ArrayList<String> classes = new ArrayList<String>();
-		for (EquipmentClass ec : EquipmentClass.values()) {
-			if (ec == EquipmentClass.SHOP || ec == EquipmentClass.CLASSLESS) continue;
-			classes.add(ec.name());
-		}
-		return classes;
-	}
-
-	// All equipment classes (including SHOP/CLASSLESS), used by the pickrate class filter.
-	private static List<String> allClasses() {
-		ArrayList<String> classes = new ArrayList<String>();
-		for (EquipmentClass ec : EquipmentClass.values()) classes.add(ec.name());
-		return classes;
-	}
-
-	private static List<String> offerSources() {
-		ArrayList<String> sources = new ArrayList<String>();
-		for (OfferSource src : OfferSource.values()) sources.add(src.name());
-		return sources;
-	}
-
-	private static List<String> regionTypes() {
-		ArrayList<String> regions = new ArrayList<String>();
-		for (RegionType rt : RegionType.values()) {
-			if (rt.name().contains("DEBUG")) continue;
-			regions.add(rt.name());
-		}
-		return regions;
-	}
 }

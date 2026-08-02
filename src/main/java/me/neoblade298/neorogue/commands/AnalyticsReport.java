@@ -47,7 +47,57 @@ public class AnalyticsReport {
 			new AnalyticsFilters.FilterOption("type", "fe.equipType", false, enumNames(EquipmentType.values())),
 			new AnalyticsFilters.FilterOption("fighttype", "f.nodeType", false,
 					List.of(NodeType.FIGHT.name(), NodeType.MINIBOSS.name(), NodeType.BOSS.name())),
-			new AnalyticsFilters.FilterOption("regions", "f.regionsCompleted", false, null));
+			new AnalyticsFilters.FilterOption("region", "f.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("level", "f.level", false, null),
+			new AnalyticsFilters.FilterOption("regions", "f.regionsCompleted", false, null),
+			new AnalyticsFilters.FilterOption("party", "f.partySize", false, null),
+			new AnalyticsFilters.FilterOption("notoriety", "f.notoriety", false, null),
+			new AnalyticsFilters.FilterOption("endless", "f.endless", false, List.of("0", "1")));
+
+	public static final List<AnalyticsFilters.FilterOption> CLASS_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("class", "p.playerClass", false, playerClasses()),
+			new AnalyticsFilters.FilterOption("region", "r.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("level", "r.level", false, null),
+			new AnalyticsFilters.FilterOption("regions", "r.regionsCompleted", false, null),
+			new AnalyticsFilters.FilterOption("party", "r.partySize", false, null),
+			new AnalyticsFilters.FilterOption("notoriety", "r.notoriety", false, null),
+			new AnalyticsFilters.FilterOption("endless", "r.endless", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("competitive", "r.competitive", false, List.of("0", "1")));
+
+	public static final List<AnalyticsFilters.FilterOption> PICKRATE_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("source", "o.source", false, offerSources()),
+			new AnalyticsFilters.FilterOption("class", "o.equipClass", true, enumNames(EquipmentClass.values())),
+			new AnalyticsFilters.FilterOption("rarity", "o.rarity", false, enumNames(Rarity.values())),
+			new AnalyticsFilters.FilterOption("type", "o.equipType", false, enumNames(EquipmentType.values())),
+			new AnalyticsFilters.FilterOption("region", "o.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("nodetype", "o.nodeType", false, enumNames(NodeType.values())),
+			new AnalyticsFilters.FilterOption("level", "o.level", false, null),
+			new AnalyticsFilters.FilterOption("upgraded", "o.upgraded", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("notoriety", "r.notoriety", false, null),
+			new AnalyticsFilters.FilterOption("party", "r.partySize", false, null),
+			new AnalyticsFilters.FilterOption("regions", "r.regionsCompleted", false, null),
+			new AnalyticsFilters.FilterOption("endless", "r.endless", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("competitive", "r.competitive", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("won", "r.won", false, List.of("0", "1")));
+
+	public static final List<AnalyticsFilters.FilterOption> CHANCE_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("set", "c.setId", false, null),
+			new AnalyticsFilters.FilterOption("class", "c.playerClass", false, playerClasses()),
+			new AnalyticsFilters.FilterOption("region", "c.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("nodetype", "c.nodeType", false, enumNames(NodeType.values())),
+			new AnalyticsFilters.FilterOption("level", "c.level", false, null),
+			new AnalyticsFilters.FilterOption("individual", "c.individual", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("notoriety", "r.notoriety", false, null));
+
+	public static final List<AnalyticsFilters.FilterOption> MOB_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("class", "fm.playerClass", false, playerClasses()),
+			new AnalyticsFilters.FilterOption("region", "f.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("fighttype", "f.nodeType", false, enumNames(NodeType.values())),
+			new AnalyticsFilters.FilterOption("level", "f.level", false, null),
+			new AnalyticsFilters.FilterOption("regions", "f.regionsCompleted", false, null),
+			new AnalyticsFilters.FilterOption("party", "f.partySize", false, null),
+			new AnalyticsFilters.FilterOption("notoriety", "f.notoriety", false, null),
+			new AnalyticsFilters.FilterOption("endless", "f.endless", false, List.of("0", "1")));
 
 	private static List<String> enumNames(Enum<?>[] values) {
 		ArrayList<String> names = new ArrayList<String>();
@@ -59,6 +109,28 @@ public class AnalyticsReport {
 		ArrayList<String> ids = new ArrayList<String>();
 		for (String id : me.neoblade298.neorogue.equipment.Equipment.getEquipmentIds()) ids.add(id.toUpperCase());
 		return ids;
+	}
+
+	private static List<String> playerClasses() {
+		ArrayList<String> classes = new ArrayList<String>();
+		for (EquipmentClass equipmentClass : EquipmentClass.values()) {
+			if (equipmentClass != EquipmentClass.SHOP && equipmentClass != EquipmentClass.CLASSLESS) {
+				classes.add(equipmentClass.name());
+			}
+		}
+		return classes;
+	}
+
+	private static List<String> offerSources() {
+		return List.of("SHOP", "REWARD");
+	}
+
+	private static List<String> regionTypes() {
+		ArrayList<String> regions = new ArrayList<String>();
+		for (RegionType regionType : RegionType.values()) {
+			if (!regionType.name().contains("DEBUG")) regions.add(regionType.name());
+		}
+		return regions;
 	}
 
 	private static String lowSampleMarker(int samples) {
@@ -130,13 +202,16 @@ public class AnalyticsReport {
 							+ " AND NOT EXISTS (SELECT 1 FROM neorogue_analytics_run_players rp2 WHERE rp2.runId = f.runId)"
 							+ ") p"
 							+ " JOIN neorogue_analytics_runs r ON r.runId = p.runId"
-							+ " WHERE r.balanceVersion = ? GROUP BY p.playerClass");
+							+ " WHERE r.balanceVersion = ?");
+					filters.appendWhere(sql);
+					sql.append(" GROUP BY p.playerClass");
 					if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
 					sql.append(" ORDER BY winrate DESC").append(pageClause(filters)).append(";");
 					try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 						ps.setInt(1, version);
 						ps.setInt(2, version);
 						ps.setInt(3, version);
+						filters.bind(ps, 4);
 						try (ResultSet rs = ps.executeQuery()) {
 							int row = 0;
 							while (rs.next()) {
@@ -168,7 +243,7 @@ public class AnalyticsReport {
 							return;
 						}
 						for (String line : lines) Util.msgRaw(s, line);
-						sendPageControls(s, "/nrlytics classwinrates", filters);
+						sendPageControls(s, "/nrlytics classes", filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
@@ -425,11 +500,14 @@ public class AnalyticsReport {
 	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy,
 			AnalyticsFilters filters, ArrayList<String> lines)
 			throws SQLException {
-		StringBuilder sql = new StringBuilder("SELECT equipmentId, upgraded, COUNT(*) AS offered, SUM(picked) AS picked,"
-				+ " (SUM(picked) / COUNT(*)) AS rate FROM neorogue_analytics_equipment_offers WHERE balanceVersion = ?");
-		if (source != null) sql.append(" AND source = ?");
-		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, equipClass)");
-		sql.append(" GROUP BY equipmentId, upgraded");
+		StringBuilder sql = new StringBuilder("SELECT o.equipmentId AS equipmentId, o.upgraded AS upgraded,"
+				+ " COUNT(*) AS offered, SUM(o.picked) AS picked, (SUM(o.picked) / COUNT(*)) AS rate"
+				+ " FROM neorogue_analytics_equipment_offers o"
+				+ " LEFT JOIN neorogue_analytics_runs r ON r.runId = o.runId WHERE o.balanceVersion = ?");
+		if (source != null) sql.append(" AND o.source = ?");
+		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, o.equipClass)");
+		filters.appendWhere(sql);
+		sql.append(" GROUP BY o.equipmentId, o.upgraded");
 		if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
 
 		String orderClause = (sortBy != null && sortBy.equalsIgnoreCase("class")) ? " ORDER BY equipmentId ASC" : " ORDER BY rate DESC";
@@ -439,6 +517,7 @@ public class AnalyticsReport {
 			ps.setInt(idx++, version);
 			if (source != null) ps.setString(idx++, source);
 			if (eqClass != null) ps.setString(idx++, eqClass);
+			filters.bind(ps, idx);
 			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 		}
 		filters.setHasNextPage(trimPage(rows));
@@ -457,6 +536,7 @@ public class AnalyticsReport {
 				ps.setInt(idx++, version);
 				if (source != null) ps.setString(idx++, source);
 				if (eqClass != null) ps.setString(idx++, eqClass);
+				filters.bind(ps, idx);
 				collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 			}
 			filters.setHasNextPage(filters.hasNextPage() | trimPage(rows));
@@ -602,24 +682,28 @@ public class AnalyticsReport {
 	private static void queryMobLeaderboard(Connection con, int version, String regionType, String playerClass,
 			Set<String> mobIdWhitelist, AnalyticsFilters filters, ArrayList<String> lines) throws SQLException {
 		HashMap<String, Long> averageWinTimes = queryAverageWinTimes(con, version, regionType, playerClass,
-				mobIdWhitelist);
-		StringBuilder sql = new StringBuilder("SELECT mobId, COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total,"
-				+ " AVG(damageDealt) AS avgDmg, AVG(outcome) AS winrate FROM neorogue_analytics_fight_mobs WHERE balanceVersion = ?");
-		if (regionType != null) sql.append(" AND regionType = ?");
-		if (playerClass != null) sql.append(" AND playerClass = ?");
+				mobIdWhitelist, filters);
+		StringBuilder sql = new StringBuilder("SELECT fm.mobId, COUNT(DISTINCT fm.fightId) AS fights,"
+				+ " SUM(fm.damageDealt) AS total, AVG(fm.damageDealt) AS avgDmg, AVG(fm.outcome) AS winrate"
+				+ " FROM neorogue_analytics_fight_mobs fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId WHERE fm.balanceVersion = ?");
+		if (regionType != null) sql.append(" AND fm.regionType = ?");
+		if (playerClass != null) sql.append(" AND fm.playerClass = ?");
 		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
-			sql.append(" AND mobId IN (");
+			sql.append(" AND fm.mobId IN (");
 			for (int i = 0; i < mobIdWhitelist.size(); i++) sql.append(i == 0 ? "?" : ",?");
 			sql.append(")");
 		}
-		sql.append(" GROUP BY mobId");
+		filters.appendWhere(sql);
+		sql.append(" GROUP BY fm.mobId");
 		if (filters.filterLowSamples()) {
-			sql.append(" HAVING COUNT(DISTINCT fightId) >= ").append(MIN_SAMPLES);
+			sql.append(" HAVING COUNT(DISTINCT fm.fightId) >= ").append(MIN_SAMPLES);
 		}
 
 		ArrayList<String> top = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg DESC" + pageClause(filters) + ";")) {
-			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			int idx = bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			filters.bind(ps, idx);
 			collectMobLeaderboardRows(ps, top, LEADERBOARD_LIMIT + 1, averageWinTimes);
 		}
 		filters.setHasNextPage(trimPage(top));
@@ -630,7 +714,8 @@ public class AnalyticsReport {
 
 		ArrayList<String> bottom = new ArrayList<String>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY avgDmg ASC" + pageClause(filters) + ";")) {
-			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			int idx = bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			filters.bind(ps, idx);
 			collectMobLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT + 1, averageWinTimes);
 		}
 		filters.setHasNextPage(filters.hasNextPage() | trimPage(bottom));
@@ -639,22 +724,26 @@ public class AnalyticsReport {
 	}
 
 	private static HashMap<String, Long> queryAverageWinTimes(Connection con, int version, String regionType,
-			String playerClass, Set<String> mobIdWhitelist) throws SQLException {
+			String playerClass, Set<String> mobIdWhitelist, AnalyticsFilters filters) throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT appearances.mobId, AVG(f.durationMs) AS avgWinMs FROM ("
-				+ "SELECT DISTINCT mobId, fightId FROM neorogue_analytics_fight_mobs WHERE balanceVersion = ?");
-		if (regionType != null) sql.append(" AND regionType = ?");
-		if (playerClass != null) sql.append(" AND playerClass = ?");
+				+ " SELECT DISTINCT fm.mobId, fm.fightId FROM neorogue_analytics_fight_mobs fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+				+ " WHERE fm.balanceVersion = ?");
+		if (regionType != null) sql.append(" AND fm.regionType = ?");
+		if (playerClass != null) sql.append(" AND fm.playerClass = ?");
 		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
-			sql.append(" AND mobId IN (");
+			sql.append(" AND fm.mobId IN (");
 			for (int i = 0; i < mobIdWhitelist.size(); i++) sql.append(i == 0 ? "?" : ",?");
 			sql.append(")");
 		}
+		filters.appendWhere(sql);
 		sql.append(") appearances JOIN neorogue_analytics_fights f ON f.fightId = appearances.fightId"
 				+ " WHERE f.outcome = 1 GROUP BY appearances.mobId;");
 
 		HashMap<String, Long> times = new HashMap<String, Long>();
 		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
-			bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			int idx = bindMobLeaderboardParams(ps, version, regionType, playerClass, mobIdWhitelist);
+			filters.bind(ps, idx);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) times.put(rs.getString("mobId"), Math.round(rs.getDouble("avgWinMs")));
 			}
@@ -662,7 +751,7 @@ public class AnalyticsReport {
 		return times;
 	}
 
-	private static void bindMobLeaderboardParams(PreparedStatement ps, int version, String regionType,
+	private static int bindMobLeaderboardParams(PreparedStatement ps, int version, String regionType,
 			String playerClass, Set<String> mobIdWhitelist) throws SQLException {
 		int idx = 1;
 		ps.setInt(idx++, version);
@@ -671,6 +760,7 @@ public class AnalyticsReport {
 		if (mobIdWhitelist != null && !mobIdWhitelist.isEmpty()) {
 			for (String id : mobIdWhitelist) ps.setString(idx++, id);
 		}
+		return idx;
 	}
 
 	private static void collectMobLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit,
@@ -704,8 +794,8 @@ public class AnalyticsReport {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
 					if (queryMobDetail(con, mobId, version, filters, lines)) {
-						queryMobByClass(con, mobId, version, lines);
-						queryMobDamageTypes(con, mobId, version, lines);
+						queryMobByClass(con, mobId, version, filters, lines);
+						queryMobDamageTypes(con, mobId, version, filters, lines);
 					}
 					addReportMeta(lines, filters);
 				}
@@ -735,12 +825,18 @@ public class AnalyticsReport {
 
 	private static boolean queryMobDetail(Connection con, String mobId, int version, AnalyticsFilters filters,
 			ArrayList<String> lines) throws SQLException {
-		String sql = "SELECT COUNT(DISTINCT fightId) AS fights, SUM(damageDealt) AS total, AVG(damageDealt) AS avgDmg"
-				+ " FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ?;";
+		StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT fm.fightId) AS fights,"
+				+ " SUM(fm.damageDealt) AS total, AVG(fm.damageDealt) AS avgDmg"
+				+ " FROM neorogue_analytics_fight_mobs fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+				+ " WHERE fm.mobId = ? AND fm.balanceVersion = ?");
+		filters.appendWhere(sql);
+		sql.append(";");
 		boolean hasData = false;
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
+			filters.bind(ps, 3);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next() && rs.getInt("fights") > 0) {
 					if (filters.filterLowSamples() && rs.getInt("fights") < MIN_SAMPLES) return false;
@@ -756,11 +852,16 @@ public class AnalyticsReport {
 		if (!hasData) return false;
 
 		// Party winrate over distinct fights (outcome is identical for every per-player row of a fight).
-		String wrSql = "SELECT AVG(outcome) AS winrate FROM (SELECT fightId, MAX(outcome) AS outcome"
-				+ " FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ? GROUP BY fightId) t;";
-		try (PreparedStatement ps = con.prepareStatement(wrSql)) {
+		StringBuilder wrSql = new StringBuilder("SELECT AVG(t.outcome) AS winrate FROM (SELECT fm.fightId,"
+				+ " MAX(fm.outcome) AS outcome FROM neorogue_analytics_fight_mobs fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+				+ " WHERE fm.mobId = ? AND fm.balanceVersion = ?");
+		filters.appendWhere(wrSql);
+		wrSql.append(" GROUP BY fm.fightId) t;");
+		try (PreparedStatement ps = con.prepareStatement(wrSql.toString())) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
+			filters.bind(ps, 3);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					lines.add("  <white>Party Winrate:</white> <yellow>" + df.format(100.0 * rs.getDouble("winrate")) + "%");
@@ -772,13 +873,19 @@ public class AnalyticsReport {
 
 	// Per-class breakdown: average damage this mob deals to a single player of each class, plus the
 	// winrate of fights that class was present for (weighted by class headcount).
-	private static void queryMobByClass(Connection con, String mobId, int version, ArrayList<String> lines) throws SQLException {
-		String sql = "SELECT playerClass, COUNT(*) AS players, AVG(damageDealt) AS avgDmg, SUM(damageDealt) AS total,"
-				+ " AVG(outcome) AS winrate FROM neorogue_analytics_fight_mobs WHERE mobId = ? AND balanceVersion = ?"
-				+ " GROUP BY playerClass ORDER BY avgDmg DESC;";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
+	private static void queryMobByClass(Connection con, String mobId, int version, AnalyticsFilters filters,
+			ArrayList<String> lines) throws SQLException {
+		StringBuilder sql = new StringBuilder("SELECT fm.playerClass, COUNT(*) AS players,"
+				+ " AVG(fm.damageDealt) AS avgDmg, SUM(fm.damageDealt) AS total, AVG(fm.outcome) AS winrate"
+				+ " FROM neorogue_analytics_fight_mobs fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+				+ " WHERE fm.mobId = ? AND fm.balanceVersion = ?");
+		filters.appendWhere(sql);
+		sql.append(" GROUP BY fm.playerClass ORDER BY avgDmg DESC;");
+		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
+			filters.bind(ps, 3);
 			try (ResultSet rs = ps.executeQuery()) {
 				boolean header = false;
 				while (rs.next()) {
@@ -794,13 +901,18 @@ public class AnalyticsReport {
 		}
 	}
 
-	private static void queryMobDamageTypes(Connection con, String mobId, int version, ArrayList<String> lines)
-			throws SQLException {
-		String sql = "SELECT damageType, SUM(amount) AS total, AVG(amount) AS avgAmt FROM neorogue_analytics_fight_mob_damage"
-				+ " WHERE mobId = ? AND balanceVersion = ? GROUP BY damageType ORDER BY total DESC;";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
+	private static void queryMobDamageTypes(Connection con, String mobId, int version, AnalyticsFilters filters,
+			ArrayList<String> lines) throws SQLException {
+		StringBuilder sql = new StringBuilder("SELECT fm.damageType, SUM(fm.amount) AS total, AVG(fm.amount) AS avgAmt"
+				+ " FROM neorogue_analytics_fight_mob_damage fm"
+				+ " JOIN neorogue_analytics_fights f ON f.fightId = fm.fightId"
+				+ " WHERE fm.mobId = ? AND fm.balanceVersion = ?");
+		filters.appendWhere(sql);
+		sql.append(" GROUP BY fm.damageType ORDER BY total DESC;");
+		try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
 			ps.setString(1, mobId);
 			ps.setInt(2, version);
+			filters.bind(ps, 3);
 			try (ResultSet rs = ps.executeQuery()) {
 				boolean header = false;
 				while (rs.next()) {
@@ -832,6 +944,7 @@ public class AnalyticsReport {
 				+ " WHERE c.balanceVersion = ?");
 		if (setId != null) sql.append(" AND c.setId = ?");
 		if (playerClass != null) sql.append(" AND c.playerClass = ?");
+		filters.appendWhere(sql);
 		sql.append(" GROUP BY c.setId, c.stageId, c.choiceIndex");
 		if (filters.filterLowSamples()) {
 			sql.append(" HAVING SUM(c.valid) >= ").append(MIN_SAMPLES)
@@ -844,6 +957,7 @@ public class AnalyticsReport {
 			ps.setInt(idx++, version);
 			if (setId != null) ps.setString(idx++, setId);
 			if (playerClass != null) ps.setString(idx++, playerClass);
+			filters.bind(ps, idx);
 			try (ResultSet rs = ps.executeQuery()) {
 				String currentSet = null;
 				int row = 0;
