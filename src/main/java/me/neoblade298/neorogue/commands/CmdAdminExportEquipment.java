@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.commands.EquipmentCategoryClassifier.Classification;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -50,7 +51,8 @@ public class CmdAdminExportEquipment extends Subcommand {
 		columns.add("equipment_classes");
 		columns.add("reforge_status");
 		columns.add("type");
-		columns.add("category");
+		columns.add("isOffense");
+		columns.add("isDefense");
 		for (GlossaryTag tag : GlossaryTag.values()) {
 			columns.add(tag.name().toLowerCase());
 		}
@@ -59,13 +61,15 @@ public class CmdAdminExportEquipment extends Subcommand {
 
 	private static void writeEquipment(BufferedWriter writer, Equipment equipment) throws IOException {
 		List<String> values = new ArrayList<>();
+		Classification classification = EquipmentCategoryClassifier.classify(equipment);
 		values.add(equipment.getId());
 		values.add(equipment.getRarity().name());
 		values.add(Boolean.toString(isDroppable(equipment)));
 		values.add(joinClasses(equipment.getEquipmentClasses()));
 		values.add(getReforgeStatus(equipment));
 		values.add(equipment.getType().name());
-		values.add(EquipmentCategoryClassifier.classify(equipment));
+		values.add(Boolean.toString(classification.isOffense()));
+		values.add(Boolean.toString(classification.isDefense()));
 		for (GlossaryTag tag : GlossaryTag.values()) {
 			values.add(equipment.getTags().contains(tag) ? "1" : "0");
 		}

@@ -42,8 +42,7 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 		}
 		
 		ItemStack[] contents = inv.getContents();
-		contents[BASIC] = eq.getUnupgraded().getChoiceItem(sd);
-		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getChoiceItem(sd) : null;
+		contents[PREVIEW] = eq.getPreviewItem();
 		contents[TAGS] = createTagsItem(eq);
 		if (!eq.getReforgeParents().isEmpty()) contents[PARENTS] = createParentsItem(eq);
 

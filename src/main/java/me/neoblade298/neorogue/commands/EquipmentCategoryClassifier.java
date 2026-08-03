@@ -18,16 +18,17 @@ final class EquipmentCategoryClassifier {
 	private static final String FIGHT_DATA = "me/neoblade298/neorogue/session/fight/FightData";
 	private static final String PLAYER_FIGHT_DATA = "me/neoblade298/neorogue/session/fight/PlayerFightData";
 	private static final String DAMAGE_META = "me/neoblade298/neorogue/session/fight/DamageMeta";
-	private static final String STATUS_TYPE = "me/neoblade298/neorogue/session/fight/status/StatusType";
+	private static final String STATUS_TYPE = "me/neoblade298/neorogue/session/fight/status/Status$StatusType";
 
 	private EquipmentCategoryClassifier() {}
 
-	public static String classify(Equipment equipment) throws IOException {
+	public static Classification classify(Equipment equipment) throws IOException {
 		Behavior behavior = inspectClassFamily(equipment.getClass());
-		if (equipment.getType() == EquipmentType.WEAPON || behavior.dealsDamage) return "OFFENSE";
-		if (behavior.grantsDefense()) return "DEFENSE";
-		return "OTHER";
+		return new Classification(equipment.getType() == EquipmentType.WEAPON || behavior.isOffensive(),
+				behavior.grantsDefense());
 	}
+
+	public record Classification(boolean isOffense, boolean isDefense) {}
 
 	private static Behavior inspectClassFamily(Class<?> equipmentClass) throws IOException {
 		String className = equipmentClass.getName().replace('.', '/');
@@ -134,14 +135,27 @@ final class EquipmentCategoryClassifier {
 
 	private static class Behavior {
 		private boolean dealsDamage;
+		private boolean tracksAlliedDamageBuff;
+		private boolean buffsAttackSpeed;
+		private boolean buffsStatus;
 		private boolean grantsShields;
 		private boolean addsDefenseBuff;
 		private boolean tracksAlliedDefense;
+		private boolean tracksEnemyDefenseDebuff;
 		private boolean appliesStatus;
 		private boolean referencesProtectOrShell;
+		private boolean referencesPoison;
+		private boolean referencesEvade;
 
 		private void recordMethod(String owner, String name) {
-			if (owner.equals(FIGHT_INSTANCE) && name.equals("dealDamage")) dealsDamage = true;
+			if (owner.equals(FIGHT_INSTANCE) && name.equals("dealDamage")
+					|| owner.equals(DAMAGE_META) && name.equals("addDamageSlice")
+					|| name.equals("weaponSwingAndDamage")) {
+				dealsDamage = true;
+			}
+			if (name.equals("damageBuffAlly")) tracksAlliedDamageBuff = true;
+			if (name.equals("getAttackSpeedBuffList")) buffsAttackSpeed = true;
+			if (name.equals("statusBuff")) buffsStatus = true;
 			if ((owner.equals(FIGHT_DATA) || owner.equals(PLAYER_FIGHT_DATA))
 					&& (name.equals("addShield") || name.equals("addSimpleShield")
 							|| name.equals("addPermanentShield"))) {
@@ -152,20 +166,28 @@ final class EquipmentCategoryClassifier {
 				addsDefenseBuff = true;
 			}
 			if (name.equals("defenseBuffAlly") || name.equals("damageBarriered")) tracksAlliedDefense = true;
-			if ((owner.equals(FIGHT_DATA) || owner.equals(PLAYER_FIGHT_DATA)) && name.equals("applyStatus")) {
+			if (name.equals("defenseDebuffEnemy")) tracksEnemyDefenseDebuff = true;
+			if ((owner.equals(FIGHT_INSTANCE) || owner.equals(FIGHT_DATA) || owner.equals(PLAYER_FIGHT_DATA))
+					&& name.equals("applyStatus")) {
 				appliesStatus = true;
 			}
 		}
 
 		private void recordField(String owner, String name) {
-			if (owner.equals(STATUS_TYPE) && (name.equals("PROTECT") || name.equals("SHELL"))) {
-				referencesProtectOrShell = true;
-			}
+			if (!owner.equals(STATUS_TYPE)) return;
+			if (name.equals("PROTECT") || name.equals("SHELL")) referencesProtectOrShell = true;
+			if (name.equals("POISON")) referencesPoison = true;
+			if (name.equals("EVADE")) referencesEvade = true;
+		}
+
+		private boolean isOffensive() {
+			return dealsDamage || tracksAlliedDamageBuff || buffsAttackSpeed || tracksEnemyDefenseDebuff
+					|| referencesPoison && (appliesStatus || buffsStatus);
 		}
 
 		private boolean grantsDefense() {
 			return grantsShields || addsDefenseBuff && tracksAlliedDefense
-					|| appliesStatus && referencesProtectOrShell;
+					|| appliesStatus && (referencesProtectOrShell || referencesEvade);
 		}
 	}
 }

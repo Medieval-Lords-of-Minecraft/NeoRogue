@@ -22,7 +22,7 @@ public class GlossaryInventory extends CoreInventory {
 	protected CoreInventory prev;
 	protected boolean openOther = true;
 	
-	protected static final int BASIC = 4, UPGRADED = 5, TAGS = 3, PARENTS = 8, CUSTOM = 0;
+	protected static final int PREVIEW = 4, TAGS = 2, PARENTS = 6, CUSTOM = 0;
 
 	public GlossaryInventory(Player viewer, int size, Component title, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, size, Component.text("Glossary: ").append(title)));
