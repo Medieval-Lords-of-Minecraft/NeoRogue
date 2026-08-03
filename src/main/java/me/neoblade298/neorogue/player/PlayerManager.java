@@ -77,7 +77,25 @@ public class PlayerManager implements IOComponent {
 
 	public static PlayerData getPlayerData(UUID uuid) {
 		return data.get(uuid);
-	}	
+	}
+
+	public static PlayerData getOrLoadPlayerData(OfflinePlayer player) {
+		PlayerData loaded = data.get(player.getUniqueId());
+		if (loaded != null) return loaded;
+		if (!player.isOnline() && !player.hasPlayedBefore()) return null;
+
+		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+				Statement stmt = con.createStatement()) {
+			loaded = new PlayerData(player, stmt);
+			data.put(player.getUniqueId(), loaded);
+			return loaded;
+		} catch (SQLException e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load player data for user " + player.getName());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public static boolean hasPlayerData(UUID uuid) {
 		return data.containsKey(uuid);
 	}
