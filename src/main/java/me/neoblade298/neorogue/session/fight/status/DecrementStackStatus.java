@@ -14,7 +14,7 @@ public class DecrementStackStatus extends Status {
 	}
 
 	@Override
-	public void apply(FightData fd, int stacks, int seconds) {
+	public void apply(FightData fd, int stacks, int ticks) {
 		this.stacks += stacks;
 		
 		if (this.stacks > 0) {

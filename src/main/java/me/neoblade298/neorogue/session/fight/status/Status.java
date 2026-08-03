@@ -61,7 +61,7 @@ public abstract class Status {
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
-	public abstract void apply(FightData applier, int stacks, int seconds);
+	public abstract void apply(FightData applier, int stacks, int ticks);
 	
 	public static Status createByType(StatusType id, FightData target) {
 		switch (id) {

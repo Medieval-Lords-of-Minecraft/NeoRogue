@@ -15,13 +15,13 @@ public class BasicStatus extends Status {
 	}
 
 	@Override
-	public void apply(FightData data, int stacks, int ticks) {
-		onApply(data, stacks);
+	public void apply(FightData applier, int stacks, int ticks) {
+		onApply(applier, stacks);
 		
 		if (ticks <= 0) return;
-		data.addTask(new BukkitRunnable() { 
+		holder.addTask(new BukkitRunnable() { 
 			public void run() {
-				onApply(data, -stacks);
+				onApply(applier, -stacks);
 			}
 		}.runTaskLater(NeoRogue.inst(), ticks));
 	}

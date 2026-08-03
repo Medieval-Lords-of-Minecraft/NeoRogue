@@ -15,8 +15,8 @@ public class ConcussedStatus extends DecrementStackStatus {
 	}
 	
 	@Override
-	public void apply(FightData applier, int stacks, int seconds) {
-		super.apply(applier, stacks, seconds);
+	public void apply(FightData applier, int stacks, int ticks) {
+		super.apply(applier, stacks, ticks);
 		if (this.stacks <= 0) return;
 		Buff b = new Buff(slices.first().getFightData(), 0, 
 				PHYSICAL_DAMAGE_DEBUFF, BuffStatTracker.of(StatusType.CONCUSSED));

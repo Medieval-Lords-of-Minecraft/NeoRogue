@@ -15,8 +15,8 @@ public class InjuryStatus extends DecrementStackStatus {
 	}
 	
 	@Override
-	public void apply(FightData applier, int stacks, int seconds) {
-		super.apply(applier, stacks, seconds);
+	public void apply(FightData applier, int stacks, int ticks) {
+		super.apply(applier, stacks, ticks);
 		if (this.stacks <= 0) return;
 		Buff b = new Buff(slices.first().getFightData(), 0, PHYSICAL_DEFENSE_DEBUFF, BuffStatTracker.of(StatusType.INJURY));
 		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), b);

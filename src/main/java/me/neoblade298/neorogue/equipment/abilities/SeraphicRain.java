@@ -168,6 +168,7 @@ public class SeraphicRain extends Equipment {
 		if (launch.lengthSquared() > 0.001) launch.normalize().multiply(0.25);
 		launch.setY(0.85);
 		p.setVelocity(launch);
+		p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, DURATION / 4, 0, false, false, true));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, DURATION, 0, false, false, true));
 		data.applyStatus(StatusType.INVINCIBLE, data, 1, DURATION, this);
 		Location launchLocation = p.getLocation();

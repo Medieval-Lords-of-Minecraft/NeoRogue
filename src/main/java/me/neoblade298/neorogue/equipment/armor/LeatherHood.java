@@ -30,7 +30,7 @@ public class LeatherHood extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.STEALTH, data, 1, dur, this);
+		data.applyStatus(StatusType.STEALTH, data, 1, dur * 20, this);
 		data.addSimpleShield(data.getPlayer().getUniqueId(), shields, 200, this);
 	}
 

@@ -1025,18 +1025,18 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
-		applyStatus(target, id, applier, stacks, seconds, null);
+	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int ticks) {
+		applyStatus(target, id, applier, stacks, ticks, null);
 	}
 
-	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds, Equipment source) {
+	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		try {
 			StatusType st = StatusType.valueOf(id);
-			data.applyStatus(st, fdApplier, stacks, seconds, source);
+			data.applyStatus(st, fdApplier, stacks, ticks, source);
 		} catch (IllegalArgumentException e) {
-			data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds, source);
+			data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, ticks, source);
 		}
 	}
 	

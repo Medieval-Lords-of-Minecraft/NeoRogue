@@ -58,7 +58,7 @@ public class Flashfire extends Equipment {
 				FightData fd = FightInstance.getFightData(ent);
 				if (fd.hasStatus(StatusType.BURN)) {
 					fd.applyStatus(StatusType.BURN, data,
-							fd.getStatus(StatusType.BURN).getStacks() * (hasBonus ? 2 : 1), slot, this);
+							fd.getStatus(StatusType.BURN).getStacks() * (hasBonus ? 2 : 1), -1, this);
 				}
 
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
