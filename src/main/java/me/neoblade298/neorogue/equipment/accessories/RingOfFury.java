@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfFury extends Equipment {
 	private static final String ID = "RingOfFury";
-	private static final int THRES = 400;
+	private static final int THRES = 1200;
 	private int berserk;
 
 	public RingOfFury(boolean isUpgraded) {
@@ -42,8 +42,8 @@ public class RingOfFury extends Equipment {
 			if (dmg > 0) {
 				am.addDouble(dmg);
 				if (am.getDouble() >= THRES) {
-					am.addDouble(-THRES);
 					data.applyStatus(StatusType.BERSERK, data, berserk, -1, this);
+					return TriggerResult.remove();
 				}
 			}
 			return TriggerResult.keep();
@@ -53,6 +53,6 @@ public class RingOfFury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT, "Upon dealing at least " + DescUtil.val(THRES)
-				+ " damage, gain " + GlossaryTag.BERSERK.tag(this, berserk) + ".");
+				+ " damage, gain " + GlossaryTag.BERSERK.tag(this, berserk) + " once per fight.");
 	}
 }

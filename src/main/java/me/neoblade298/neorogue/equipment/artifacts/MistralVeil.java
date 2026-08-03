@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class MistralVeil extends Artifact {
 	private static final String ID = "MistralVeil";
-	private static final int range = 7, reduc = 6, rangeSq = range * range;
+	private static final int range = 7, reduc = 2, rangeSq = range * range;
 
 	public MistralVeil() {
 		super(ID, "Mistral Veil", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

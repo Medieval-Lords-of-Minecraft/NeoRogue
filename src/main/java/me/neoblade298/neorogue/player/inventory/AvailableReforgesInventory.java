@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -29,18 +30,24 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class AvailableReforgesInventory extends CoreInventory {
 	private static final int PREVIOUS = 4, NEXT = 6;
 	private PlayerSessionData data;
+	private Player spectator;
 	private ArrayList<ReforgeResultEntry> entries;
 	private int page;
 
 	public AvailableReforgesInventory(PlayerSessionData data) {
-		this(data, data.computeAvailableReforges());
+		this(data, null, data.computeAvailableReforges());
 	}
 
-	private AvailableReforgesInventory(PlayerSessionData data, ArrayList<ReforgePairData> pairs) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(),
+	public AvailableReforgesInventory(PlayerSessionData data, Player spectator) {
+		this(data, spectator, data.computeAvailableReforges());
+	}
+
+	private AvailableReforgesInventory(PlayerSessionData data, Player spectator, ArrayList<ReforgePairData> pairs) {
+		super(spectator != null ? spectator : data.getPlayer(), Bukkit.createInventory(spectator != null ? spectator : data.getPlayer(),
 				calculateSize(countResults(pairs)), Component.text("Available Reforges", NamedTextColor.GOLD)));
-		new PlayerSessionInventory(data);
+		if (spectator == null) new PlayerSessionInventory(data);
 		this.data = data;
+		this.spectator = spectator;
 		this.entries = buildEntries(pairs);
 		setupInventory();
 	}
@@ -210,6 +217,7 @@ public class AvailableReforgesInventory extends CoreInventory {
 			}.runTask(NeoRogue.inst());
 			return;
 		}
+		if (spectator != null) return;
 
 		// Left-click: validate items still exist and open confirm inventory
 		EquipmentMetadata m1 = pair.getMeta1();

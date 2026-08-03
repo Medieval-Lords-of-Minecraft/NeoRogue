@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,7 +22,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerSessionSpectateInventory extends CoreInventory {
 	private static final int ARTIFACTS = convertSlot(PlayerSessionInventory.ARTIFACTS),
 		STORAGE = convertSlot(PlayerSessionInventory.STORAGE),
-		STATS = convertSlot(PlayerSessionInventory.STATS);
+		STATS = convertSlot(PlayerSessionInventory.STATS),
+		REFORGES = convertSlot(PlayerSessionInventory.REFORGES);
 
 	private PlayerSessionData data;
 	private Player spectator;
@@ -71,6 +73,14 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 			new BukkitRunnable() {
 				public void run() {
 					new StorageInventory(data, spectator);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == REFORGES && clicked != null && clicked.getType() == Material.ANVIL) {
+			new BukkitRunnable() {
+				public void run() {
+					new AvailableReforgesInventory(data, spectator);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
