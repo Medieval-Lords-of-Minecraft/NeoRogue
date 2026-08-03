@@ -80,8 +80,10 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
+import me.neoblade298.neorogue.player.inventory.MainSessionMenu;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.event.SessionJoinEvent;
 import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -645,8 +647,15 @@ public class SessionManager implements Listener {
 	public void onInteractEntity(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid))
+		if (!sessions.containsKey(uuid)) {
+			if (p.getWorld().getName().equals(Region.WORLD_NAME)
+					&& e.getHand() == EquipmentSlot.OFF_HAND && e.getRightClicked() instanceof Player) {
+				e.setCancelled(true);
+				PlayerData targetData = PlayerManager.getPlayerData(e.getRightClicked().getUniqueId());
+				if (targetData != null) new MainSessionMenu(p, targetData);
+			}
 			return;
+		}
 		if (e.getHand() != EquipmentSlot.OFF_HAND)
 			return;
 		Session s = sessions.get(uuid);

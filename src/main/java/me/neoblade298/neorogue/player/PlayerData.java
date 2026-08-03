@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -127,15 +128,23 @@ public class PlayerData {
 	
 	// Create new one if one doesn't exist
 	public PlayerData(Player p) {
+		this((OfflinePlayer) p);
+	}
+
+	private PlayerData(OfflinePlayer p) {
 		this.uuid = p.getUniqueId();
-		this.p = p;
-		this.display = p.getName();
+		this.p = p.getPlayer();
+		this.display = p.getName() != null ? p.getName() : uuid.toString();
 
 		initializeDefaultProgression();
 		initializeEquipmentDroptable();
 	}
 	
 	public PlayerData(Player p, Statement stmt) {
+		this((OfflinePlayer) p, stmt);
+	}
+
+	public PlayerData(OfflinePlayer p, Statement stmt) {
 		this(p);
 		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
 				PreparedStatement baseStmt = con.prepareStatement("SELECT * FROM neorogue_playerdata WHERE uuid = ?;");

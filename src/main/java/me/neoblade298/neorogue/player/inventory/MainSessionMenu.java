@@ -18,27 +18,32 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-// In-session hub for viewing a player's global achievements, unlocks, and statistics (read-only)
-// without leaving the run. Serves both the owner viewing their own menu (spectator == null; closing
-// returns to their inventory) and a spectator viewing another player's menu (spectator != null;
-// back returns to the spectate inventory).
+// Read-only hub for viewing a player's global achievements, unlocks, and statistics. It can be
+// opened from a session, by interacting with another player, or for an offline player via command.
 public class MainSessionMenu extends CoreInventory {
 	private static final int STATS = 11, ACHIEVEMENTS = 13, UNLOCKS = 15, BACK = 22;
-	private final PlayerSessionData data;
-	// Null when the player is viewing their own menu; otherwise the spectator viewing this player's hub.
-	private final Player spectator;
+	private final PlayerData targetData;
+	private final Runnable back;
 
 	// Owner viewing their own in-session hub.
 	public MainSessionMenu(PlayerSessionData data) {
-		this(data, null);
+		this(data.getPlayer(), PlayerManager.getPlayerData(data.getUniqueId()), null);
 	}
 
 	// Spectator (non-null) viewing the given player's hub, or the owner themselves when spectator is null.
 	public MainSessionMenu(PlayerSessionData data, Player spectator) {
-		super(spectator != null ? spectator : data.getPlayer(),
-				Bukkit.createInventory(spectator != null ? spectator : data.getPlayer(), 27, title(data)));
-		this.data = data;
-		this.spectator = spectator;
+		this(spectator != null ? spectator : data.getPlayer(), PlayerManager.getPlayerData(data.getUniqueId()),
+				spectator == null ? null : () -> new PlayerSessionSpectateInventory(data, spectator));
+	}
+
+	public MainSessionMenu(Player viewer, PlayerData targetData) {
+		this(viewer, targetData, null);
+	}
+
+	private MainSessionMenu(Player viewer, PlayerData targetData, Runnable back) {
+		super(viewer, Bukkit.createInventory(viewer, 27, title(targetData)));
+		this.targetData = targetData;
+		this.back = back;
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		inv.setItem(STATS, CoreInventory.createButton(Material.EXPERIENCE_BOTTLE,
 				Component.text("Stats", NamedTextColor.GREEN)));
@@ -50,10 +55,8 @@ public class MainSessionMenu extends CoreInventory {
 				Component.text("Back", NamedTextColor.RED)));
 	}
 
-	private static Component title(PlayerSessionData data) {
-		PlayerData pd = PlayerManager.getPlayerData(data.getUniqueId());
-		String name = pd != null ? pd.getDisplay() : "Player";
-		return Component.text(name + "'s Menu", NamedTextColor.DARK_RED);
+	private static Component title(PlayerData targetData) {
+		return Component.text(targetData.getDisplay() + "'s Menu", NamedTextColor.DARK_RED);
 	}
 
 	@Override
@@ -62,25 +65,22 @@ public class MainSessionMenu extends CoreInventory {
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 
-		PlayerData targetData = PlayerManager.getPlayerData(data.getUniqueId());
-		// The viewer (p) is the owner for a self view and the spectator otherwise; passing the target's
-		// own PlayerData keeps these sub-menus read-only. Back reopens this hub for the same viewer.
-		Runnable back = () -> new MainSessionMenu(data, spectator);
+		Runnable reopen = () -> new MainSessionMenu(p, targetData, back);
 		switch (e.getSlot()) {
 		case STATS:
-			if (targetData != null) new StatsMenuInventory(p, targetData, back);
+			new StatsMenuInventory(p, targetData, reopen);
 			break;
 		case ACHIEVEMENTS:
-			if (targetData != null) new AchievementsMenuInventory(p, targetData, back);
+			new AchievementsMenuInventory(p, targetData, reopen);
 			break;
 		case UNLOCKS:
-			if (targetData != null) new UnlocksMenuInventory(p, targetData, back);
+			new UnlocksMenuInventory(p, targetData, reopen);
 			break;
 		case BACK:
-			if (spectator != null) {
+			if (back != null) {
 				new BukkitRunnable() {
 					public void run() {
-						new PlayerSessionSpectateInventory(data, spectator);
+						back.run();
 					}
 				}.runTask(NeoRogue.inst());
 			} else {

@@ -92,6 +92,7 @@ import me.neoblade298.neorogue.commands.CmdLoad;
 import me.neoblade298.neorogue.commands.CmdLostCargo;
 import me.neoblade298.neorogue.commands.CmdMenu;
 import me.neoblade298.neorogue.commands.CmdNew;
+import me.neoblade298.neorogue.commands.CmdProfile;
 import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.commands.LyticsCommand;
@@ -253,6 +254,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdProfile("profile", "View a player's profile", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLostCargo("lostcargo", "Withdraw unsold cargo from past runs", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCaravan("caravan", "Purchase caravan upgrades", null, SubcommandRunner.PLAYER_ONLY));
