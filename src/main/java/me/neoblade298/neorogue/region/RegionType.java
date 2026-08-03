@@ -3,16 +3,16 @@ package me.neoblade298.neorogue.region;
 import java.util.HashMap;
 
 public enum RegionType {
-	LOW_DISTRICT("Low District", 16, 0, Layout.STANDARD),
-	HARVEST_FIELDS("Harvest Fields", 16, 1, Layout.STANDARD),
-	FROZEN_WASTES("Frozen Wastes", 16, 2, Layout.STANDARD),
-	MEADOWOOD("Meadowood", 8, 0, Layout.TUTORIAL),
-	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 0, 16, Layout.STANDARD),
-	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, 1, Layout.STANDARD),
-	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 8, 0, Layout.TUTORIAL),
-	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, 2, Layout.STANDARD),
-	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, Layout.STANDARD),
-	TESTER("Tester", 16, 0, Layout.STANDARD);
+	LOW_DISTRICT("Low District", 16, 0, 1.0, Layout.STANDARD),
+	HARVEST_FIELDS("Harvest Fields", 16, 1, 1.5, Layout.STANDARD),
+	FROZEN_WASTES("Frozen Wastes", 16, 2, 2.5, Layout.STANDARD),
+	MEADOWOOD("Meadowood", 8, 0, 1.0, Layout.TUTORIAL),
+	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 0, 16, 1.0, Layout.STANDARD),
+	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, 1, 1.5, Layout.STANDARD),
+	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 8, 0, 1.0, Layout.TUTORIAL),
+	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, 2, 1.0, Layout.STANDARD),
+	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, 2, 2.5, Layout.STANDARD),
+	TESTER("Tester", 16, 0, 1.0, Layout.STANDARD);
 	
 	// ARGENT_PLAZA("Argent Plaza"),
 	// CAILIRIC_ARCHIVES("Cailiric Archives"), 
@@ -42,12 +42,14 @@ public enum RegionType {
 	
 	private String display;
 	private int rowCount, difficulty;
+	private double xpMultiplier;
 	private Layout layout;
 
-	private RegionType(String display, int rowCount, int difficulty, Layout layout) {
+	private RegionType(String display, int rowCount, int difficulty, double xpMultiplier, Layout layout) {
 		this.display = display;
 		this.rowCount = rowCount;
 		this.difficulty = difficulty;
+		this.xpMultiplier = xpMultiplier;
 		this.layout = layout;
 	}
 	
@@ -61,6 +63,10 @@ public enum RegionType {
 
 	public int getDifficulty() {
 		return difficulty;
+	}
+
+	public double getXpMultiplier() {
+		return xpMultiplier;
 	}
 
 	public Layout getLayout() {

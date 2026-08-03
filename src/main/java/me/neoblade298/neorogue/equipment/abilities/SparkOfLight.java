@@ -44,7 +44,7 @@ public class SparkOfLight extends Equipment {
 			new ParticleContainer(Particle.FIREWORK).count(4).spread(0.06, 0.06).speed(0.005)
 					.offsetY(1.2).offsetForward(0.7);
 	private static final SoundContainer castSound =
-			new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.55F, 1.45F);
+			new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.55F, 1.45F);
 	private int attacks, damage;
 
 	public SparkOfLight(boolean isUpgraded) {
@@ -76,7 +76,7 @@ public class SparkOfLight extends Equipment {
 			progressIcon.setAmount(1);
 			inst.setIcon(progressIcon);
 
-			cone.play(coneEdge, player.getLocation(), LocalAxes.usingEyeLocation(player), coneFill);
+			cone.play(coneEdge, player.getLocation(), LocalAxes.xz(), coneFill);
 			castSpark.play(player, player);
 			castSound.play(player, player);
 			for (LivingEntity target : TargetHelper.getEntitiesInCone(player, tp)) {

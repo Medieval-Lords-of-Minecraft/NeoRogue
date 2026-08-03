@@ -1202,20 +1202,7 @@ public class Session {
 	}
 
 	public double getRegionXpMultiplier() {
-		if (region == null) return 1.0;
-		switch (region.getType()) {
-		case LOW_DISTRICT:
-		case LOW_DISTRICT_DEBUG:
-			return 1.0;
-		case HARVEST_FIELDS:
-		case HARVEST_FIELDS_DEBUG:
-			return 1.5;
-		case FROZEN_WASTES:
-		case FROZEN_WASTES_DEBUG:
-			return 2.5;
-		default:
-			return 1.0;
-		}
+		return region == null ? 1.0 : region.getType().getXpMultiplier();
 	}
 
 	public double getNotorietyXpMultiplier() {
@@ -1343,7 +1330,7 @@ public class Session {
 		}
 		this.curr = node;
 		nodesVisited++;
-		awardXp(20);
+		awardXp(30);
 	}
 	
 	public String getName() {

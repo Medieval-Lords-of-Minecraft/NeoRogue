@@ -228,6 +228,11 @@ public class UnlockNode {
 			}
 			lore.add(targetDisplay.decoration(TextDecoration.ITALIC, State.FALSE));
 		}
+		if (targetType == TargetType.EQUIPMENT) {
+			lore.add(Component.empty());
+			lore.add(Component.text("Right click to preview unlocks", NamedTextColor.GRAY)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
 
 		// Requirements
 		if (!requirements.isEmpty() || !achievementRequirements.isEmpty()) {

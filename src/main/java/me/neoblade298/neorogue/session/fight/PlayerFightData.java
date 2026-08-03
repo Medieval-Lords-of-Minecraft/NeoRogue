@@ -275,7 +275,6 @@ public class PlayerFightData extends FightData {
 	}
 
 	public TaskChain wandDelay(int ticks) {
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
 		return new TaskChain(this, ticks);
 	}
 

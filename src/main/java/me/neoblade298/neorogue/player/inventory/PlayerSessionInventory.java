@@ -93,6 +93,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public static void setupInventory(Inventory inv, PlayerSessionData data) {
 		setupInventory(inv, data, false);
 	}
+
+	private static ItemStack getDisplayItem(SessionEquipment equipment, PlayerSessionData data, boolean isSpectating) {
+		return isSpectating ? equipment.getPreviewItem() : equipment.getChoiceItem(data);
+	}
 	
 	// Use offset when setting up another player's inventory for spectating (0 index is at top of inv for spectate, not bottom)
 	public static void setupInventory(Inventory inv, PlayerSessionData data, boolean isSpectating) {
@@ -113,7 +117,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ARMOR)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(getDisplayItem(a, data, isSpectating), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
 		}
 
@@ -126,7 +130,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ACCESSORY)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(getDisplayItem(a, data, isSpectating), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
 		}
 
@@ -139,14 +143,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			contents[i] = eq != null
-					? addNbt(addBindLore(eq.getChoiceItem(data), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
+					? addNbt(addBindLore(getDisplayItem(eq, data, isSpectating), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
 							eq.getEquipment().isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
-		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getChoiceItem(data), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
@@ -155,7 +159,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
 				continue;
 			}
-			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getChoiceItem(data), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(getDisplayItem(eq, data, isSpectating), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
 
@@ -223,7 +227,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ARMOR)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(getDisplayItem(a, data, isSpectating), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
 		}
 
@@ -237,7 +241,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			SessionEquipment a = data.getSessionEquipment(EquipSlot.ACCESSORY)[iter];
-			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getChoiceItem(data), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(getDisplayItem(a, data, isSpectating), a.getEquipment().getId(), a.getEquipment().isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
 		}
 
@@ -255,7 +259,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				continue;
 			}
 			contents[i] = eq != null
-					? addNbt(addBindLore(eq.getChoiceItem(data), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
+					? addNbt(addBindLore(getDisplayItem(eq, data, isSpectating), bind.getInventorySlot(), bind.getDataSlot()), eq.getEquipment().getId(),
 							eq.getEquipment().isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}
@@ -264,7 +268,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		if (unlockAbilities) {
 			SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
-			contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getChoiceItem(data), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+			contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
 		}
 		else {
 			contents[(OFFHAND + offset) % inv.getSize()] = tutorialFiller();
@@ -278,7 +282,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
 				continue;
 			}
-			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getChoiceItem(data), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(getDisplayItem(eq, data, isSpectating), i, i), eq.getEquipment().getId(), eq.getEquipment().isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
 

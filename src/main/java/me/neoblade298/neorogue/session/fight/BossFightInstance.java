@@ -61,7 +61,7 @@ public class BossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			s.awardXp(250);
+			s.awardXp(350);
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
 
 			String bossId = map.getPieces().get(0).getPiece().getId();
