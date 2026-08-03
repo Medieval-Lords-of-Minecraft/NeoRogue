@@ -155,7 +155,10 @@ public class SessionManager implements Listener {
 	public static void addToSession(UUID uuid, Session s) {
 		sessions.put(uuid, s);
 		Player p = Bukkit.getPlayer(uuid);
-		if (p != null) p.getInventory().clear();
+		if (p != null) {
+			p.getInventory().clear();
+			s.hideSpectatorsFrom(p);
+		}
 		Bukkit.getPluginManager().callEvent(new SessionJoinEvent(uuid, s));
 	}
 
@@ -903,20 +906,10 @@ public class SessionManager implements Listener {
 				p.setHealthScaled(true);
 			}
 			s.getInstance().handlePlayerLogin(p);
+			s.hideSpectatorsFrom(p);
 		} else {
 			p.teleport(NeoRogue.spawn);
 			resetPlayer(p);
-		}
-		// The joining player has a fresh visibility list, so re-hide any currently
-		// active spectators from them (covers viewer relogs and new joins)
-		for (Session s : getSessions()) {
-			for (UUID specUuid : s.getSpectators().keySet()) {
-				if (specUuid.equals(p.getUniqueId()))
-					continue;
-				Player spec = Bukkit.getPlayer(specUuid);
-				if (spec != null)
-					p.hideEntity(NeoRogue.inst(), spec);
-			}
 		}
 	}
 
@@ -959,19 +952,6 @@ public class SessionManager implements Listener {
 				.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
 		showPlayerToAll(p);
 		giveMenuCompass(p);
-	}
-
-	// Fully hides a player (spectator) from every other online player. Unlike
-	// setInvisible, this removes the entity entirely on other clients (but keeps
-	// them in the tab list).
-	public static void hidePlayerFromAll(Player p) {
-		if (p == null)
-			return;
-		for (Player other : Bukkit.getOnlinePlayers()) {
-			if (other.equals(p))
-				continue;
-			other.hideEntity(NeoRogue.inst(), p);
-		}
 	}
 
 	// Reveals a previously hidden player to every other online player. Safe to

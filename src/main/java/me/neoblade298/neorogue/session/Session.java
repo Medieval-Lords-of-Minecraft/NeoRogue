@@ -548,7 +548,7 @@ public class Session {
 		p.setGameMode(GameMode.SURVIVAL);
 		p.teleport(inst.getSpawn());
 		inst.getSpectatorFlags().applyFlags(p);
-		SessionManager.hidePlayerFromAll(p);
+		hideSpectatorFromPlayers(p);
 		inst.handleSpectatorJoin(p);
 		setupSpectatorInventory(p);
 	}
@@ -559,10 +559,30 @@ public class Session {
 		spectators.remove(p.getUniqueId());
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
-		SessionManager.showPlayerToAll(p);
+		showSpectatorToPlayers(p);
 		SessionManager.removeFromSession(p.getUniqueId());
 		SessionManager.giveMenuCompass(p);
 		p.teleport(NeoRogue.spawn);
+	}
+
+	private void hideSpectatorFromPlayers(Player spectator) {
+		for (Player player : getOnlinePlayers()) {
+			if (!player.equals(spectator)) player.hideEntity(NeoRogue.inst(), spectator);
+		}
+	}
+
+	private void showSpectatorToPlayers(Player spectator) {
+		for (Player player : getOnlinePlayers()) {
+			if (!player.equals(spectator)) player.showEntity(NeoRogue.inst(), spectator);
+		}
+	}
+
+	public void hideSpectatorsFrom(Player player) {
+		if (player == null || isSpectator(player.getUniqueId())) return;
+		for (UUID spectatorId : spectators.keySet()) {
+			Player spectator = Bukkit.getPlayer(spectatorId);
+			if (spectator != null) player.hideEntity(NeoRogue.inst(), spectator);
+		}
 	}
 	
 	public HashMap<UUID, MapViewer> getSpectators() {
