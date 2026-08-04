@@ -183,21 +183,22 @@ public class Session {
 
 	private static void pasteSchematic(
 			Clipboard clipboard, EditSession editSession, Session session, int xOff, int yOff, int zOff
-	) {
+	) throws WorldEditException {
 		ClipboardHolder holder = new ClipboardHolder(clipboard);
 		Operation operation = holder.createPaste(editSession)
 				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
 				.ignoreAirBlocks(false).build();
-		try {
-			Operations.complete(operation);
-		} catch (WorldEditException e) {
-			e.printStackTrace();
-		}
-		holder.close();
+		Operations.complete(operation);
 	}
 
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) {
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) throws WorldEditException {
 		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
+	}
+
+	public static void closeClipboards() {
+		for (Clipboard clipboard : new Clipboard[] { newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose }) {
+			if (clipboard != null) clipboard.close();
+		}
 	}
 
 	public Session(Player p, Plot plot, int saveSlot, boolean isNew, SessionType sessionType) {
@@ -369,7 +370,6 @@ public class Session {
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
-			loc.getBlock().setType(versionCheck);
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().world(Region.world).build()) {
 				pasteSchematic(newLobby, editSession, this, Session.NEW_LOBBY_Z);
@@ -380,7 +380,12 @@ public class Session {
 				pasteSchematic(shop, editSession, this, Session.SHOP_Z);
 				pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
 				pasteSchematic(lose, editSession, this, 0, -1, Session.LOSE_Z);
+			} catch (WorldEditException e) {
+				Bukkit.getLogger().log(java.util.logging.Level.SEVERE,
+						"[NeoRogue] Failed to generate interstitials for host " + Bukkit.getPlayer(host).getName(), e);
+				return;
 			}
+			loc.getBlock().setType(versionCheck);
 		}
 		else {
 			Bukkit.getLogger().info("[NeoRogue] Interstitials for host " + Bukkit.getPlayer(host).getName() + " are up to date");
