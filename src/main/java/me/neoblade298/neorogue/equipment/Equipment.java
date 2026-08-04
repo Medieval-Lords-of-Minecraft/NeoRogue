@@ -277,7 +277,6 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -285,11 +284,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
-import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public abstract class Equipment implements Comparable<Equipment> {
-	private static final Key ITEM_SPRITE_ATLAS = Key.key("minecraft:items");
 	private static TreeMap<String, Equipment> equipment = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static TreeMap<String, Equipment> upgraded = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
@@ -1849,12 +1846,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	static Component createHoverable(Component display, ItemStack item, String glossaryId) {
-		Key materialKey = item.getType().getKey();
-		Key spriteKey = Key.key(materialKey.namespace(), "item/" + materialKey.value());
-		Component sprite = Component.object(ObjectContents.sprite(ITEM_SPRITE_ATLAS, spriteKey))
-				.color(NamedTextColor.WHITE);
 		return Component.text("[", NamedTextColor.DARK_GRAY)
-				.append(sprite)
+				.append(Util.materialToSprite(item.getType()).color(NamedTextColor.WHITE))
 				.append(Component.space())
 				.append(display)
 				.append(Component.text("]", NamedTextColor.DARK_GRAY))
