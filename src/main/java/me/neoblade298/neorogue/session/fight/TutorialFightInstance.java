@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import me.neoblade298.neorogue.session.instances.Instance;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import net.kyori.adventure.text.Component;
