@@ -21,7 +21,7 @@ public class CmdAdminBoost extends Subcommand {
 		ArrayList<String> typeTab = new ArrayList<String>();
 		typeTab.add("reset");
 		for (ExpBoostType type : ExpBoostType.values()) {
-			typeTab.add(type.name());
+			if (type.isGrantable()) typeTab.add(type.name());
 		}
 		args.add(new Arg("type").setTabOptions(typeTab), new Arg("duration", false), new Arg("player", false));
 		this.enableTabComplete();
@@ -50,6 +50,10 @@ public class CmdAdminBoost extends Subcommand {
 			type = ExpBoostType.valueOf(args[0].toUpperCase());
 		} catch (IllegalArgumentException ex) {
 			Util.msgRaw(s, "<red>Unknown boost type! Options: " + typeList());
+			return;
+		}
+		if (!type.isGrantable()) {
+			Util.msgRaw(s, "<red>That boost is granted by permission and has no duration.");
 			return;
 		}
 
@@ -88,6 +92,7 @@ public class CmdAdminBoost extends Subcommand {
 	private String typeList() {
 		StringBuilder sb = new StringBuilder();
 		for (ExpBoostType type : ExpBoostType.values()) {
+			if (!type.isGrantable()) continue;
 			if (sb.length() > 0) sb.append(", ");
 			sb.append(type.name());
 		}

@@ -9,6 +9,7 @@ public class ExpBoost {
 	private long remaining;
 
 	public ExpBoost(ExpBoostType type, long remaining) {
+		if (!type.isGrantable()) throw new IllegalArgumentException("Permission-only boosts cannot be persisted");
 		this.type = type;
 		this.remaining = remaining;
 	}
@@ -36,6 +37,7 @@ public class ExpBoost {
 
 	// Whether this boost is currently active (not expired / still has runs left).
 	public boolean isActive() {
+		if (!type.isRegistered() || !type.isGrantable()) return false;
 		if (type.getDurationType() == BoostDurationType.TIME) {
 			return remaining > System.currentTimeMillis();
 		}
@@ -55,7 +57,7 @@ public class ExpBoost {
 	// Decrements a RUNS boost by one run. No-op for TIME boosts. Returns true if the
 	// boost is now fully consumed and should be removed.
 	public boolean tickRun() {
-		if (type.getDurationType() == BoostDurationType.RUNS && remaining > 0) {
+		if (type.isRegistered() && type.getDurationType() == BoostDurationType.RUNS && remaining > 0) {
 			remaining--;
 		}
 		return isExpired();

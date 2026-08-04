@@ -103,6 +103,7 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.FlagRegistry;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
 import me.neoblade298.neorogue.player.caravan.SellablePackageRegistry;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
@@ -145,6 +146,7 @@ public class NeoRogue extends JavaPlugin {
 		inst = this;
 		saveResource("achievement-rewards.yml", false);
 		saveResource("caravan.yml", false);
+		saveResource("expboosts.yml", false);
 		saveResource("sellables.yml", false);
 		saveResource("tutorials.yml", false);
 		AnalyticsManager.init();
@@ -183,6 +185,7 @@ public class NeoRogue extends JavaPlugin {
 		mythicMobs = MythicBukkit.inst().getMobManager();
 		Region.initialize();
 		Equipment.load();
+		ExpBoostType.reload();
 		UnlockRegistry.reload();
 		SellablePackageRegistry.reload();
 		CaravanUpgradeRegistry.reload();

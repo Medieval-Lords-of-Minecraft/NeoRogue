@@ -1,0 +1,22 @@
+# Exp boost types. Each top-level key is the stable id stored in the database.
+#
+#   display-name:  name shown in commands and inventories
+#   multiplier:    additive exp bonus (0.30 = +30%)
+#   duration-type: optional; TIME for a real-time duration, or RUNS for a number of runs
+#   permission:    optional permission that grants this boost at run start
+# Entries without duration-type are permission-only and cannot be granted or persisted.
+
+STARTER:
+  display-name: "Starter Boost"
+  multiplier: 0.30
+  duration-type: RUNS
+
+WEEKEND:
+  display-name: "Weekend Boost"
+  multiplier: 0.30
+  duration-type: TIME
+
+PATRON:
+  display-name: "Patron Boost"
+  multiplier: 0.50
+  permission: "neorogue.expboost.patron"

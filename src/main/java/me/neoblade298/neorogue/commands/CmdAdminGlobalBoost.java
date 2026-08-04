@@ -40,7 +40,7 @@ public class CmdAdminGlobalBoost extends Subcommand {
 			return;
 		}
 		if (type.getDurationType() != BoostDurationType.TIME) {
-			Util.msgRaw(s, "<red>Global boosts must be time-based! " + type.name() + " is run-based.");
+			Util.msgRaw(s, "<red>Global boosts must use the TIME duration type.");
 			return;
 		}
 

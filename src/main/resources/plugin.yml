@@ -32,3 +32,6 @@ permissions:
    neorogue.slots.5:
     description: Grants 5 save slots
     default: false
+   neorogue.expboost.patron:
+      description: Grants a 50% exp boost for each run
+      default: false

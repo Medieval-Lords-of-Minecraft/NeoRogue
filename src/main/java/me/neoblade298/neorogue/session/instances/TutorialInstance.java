@@ -113,6 +113,11 @@ public class TutorialInstance extends EditInventoryInstance {
 				e.getPlayer().sendMessage(Component.text("Waiting for the rest of your party to finish.", NamedTextColor.YELLOW));
 				return;
 			}
+			if (s.getNode().getDestinations().isEmpty()) {
+				TutorialWinInstance win = new TutorialWinInstance(s);
+				if (s.canSetInstance(win)) s.setInstance(win);
+				return;
+			}
 			NodeSelectInstance next = NodeSelectInstance.create(s);
 			if (s.canSetInstance(next)) s.setInstance(next);
 		}

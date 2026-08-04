@@ -66,6 +66,7 @@ import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.region.Node;
@@ -1242,14 +1243,23 @@ public class Session {
 
 	// Captures and consumes each party member's exp boosts for this run. TIME boosts
 	// contribute while active; RUNS boosts are decremented by one and applied to this run.
-	// Server-wide global boosts are added additively on top of each member's personal boosts.
+	// Permission and server-wide global boosts are added on top of personal boosts.
 	public void applyExpBoosts() {
 		if (sessionType == SessionType.TUTORIAL) return;
 		double globalBonus = GlobalBoostManager.getGlobalBoostBonus();
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
 			if (pdata == null) continue;
-			entry.getValue().setRunExpBoostMultiplier(pdata.consumeRunExpBoosts() + globalBonus);
+			double permissionBonus = 0.0;
+			Player player = Bukkit.getPlayer(entry.getKey());
+			if (player != null) {
+				for (ExpBoostType type : ExpBoostType.values()) {
+					if (type.getPermission() != null && player.hasPermission(type.getPermission())) {
+						permissionBonus += type.getMultiplier();
+					}
+				}
+			}
+			entry.getValue().setRunExpBoostMultiplier(pdata.consumeRunExpBoosts() + globalBonus + permissionBonus);
 		}
 	}
 	

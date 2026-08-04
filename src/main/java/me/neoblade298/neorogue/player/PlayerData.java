@@ -462,6 +462,7 @@ public class PlayerData {
 	// Grants a new boost. RUNS types stack their run count if one of the same type
 	// already exists; TIME types keep whichever expiry is later.
 	public void addExpBoost(ExpBoostType type, long durationInput) {
+		if (!type.isGrantable()) throw new IllegalArgumentException("Permission-only boosts cannot be granted");
 		ExpBoost existing = null;
 		for (ExpBoost b : expBoosts) {
 			if (b.getType() == type) {

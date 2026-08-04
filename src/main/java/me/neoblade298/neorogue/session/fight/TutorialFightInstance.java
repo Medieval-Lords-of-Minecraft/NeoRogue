@@ -21,7 +21,6 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.instances.Instance;
-import me.neoblade298.neorogue.session.instances.TutorialWinInstance;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import net.kyori.adventure.text.Component;
@@ -131,16 +130,6 @@ public class TutorialFightInstance extends StandardFightInstance {
 			}
 		}
 
-	}
-
-	// The second tutorial fight (row 2) is the last node of the shortened tutorial, so winning it ends the
-	// run with the tutorial win screen instead of dropping into the reward screen / next node.
-	@Override
-	protected Instance getVictoryInstance(FightScore fightScore) {
-		if (tutorialKey == 2) {
-			return new TutorialWinInstance(s);
-		}
-		return super.getVictoryInstance(fightScore);
 	}
 
 	@Override

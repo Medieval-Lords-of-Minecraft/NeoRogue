@@ -316,6 +316,7 @@ public abstract class FightInstance extends Instance {
 					Player p = data.getPlayer();
 					if (p == null) continue;
 					p.spigot().respawn();
+					p.teleport(data.getInstance().getSpawn());
 				}
 				Session sess = fi.getSession();
 				new BukkitRunnable() {

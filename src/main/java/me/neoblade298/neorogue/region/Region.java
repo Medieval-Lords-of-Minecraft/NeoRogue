@@ -227,9 +227,12 @@ public class Region {
 			}
 		}
 
-		// Load the boss for the area
-		BossFightInstance bi = (BossFightInstance) nodes[getBossRow()][CENTER_LANE].getInstance(); // should be loaded in
-		boss = bi.getBossDisplay();
+		// Load the boss for the area when this layout has one.
+		Node bossNode = nodes[getBossRow()][CENTER_LANE];
+		if (bossNode != null) {
+			BossFightInstance bi = (BossFightInstance) bossNode.getInstance();
+			boss = bi.getBossDisplay();
+		}
 	}
 
 	private void generateNodes() {
@@ -247,8 +250,11 @@ public class Region {
 			break;
 		}
 
-		BossFightInstance bi = (BossFightInstance) nodes[getBossRow()][CENTER_LANE].generateInstance(s, type); // generate boss
-		boss = bi.getBossDisplay();
+		Node bossNode = nodes[getBossRow()][CENTER_LANE];
+		if (bossNode != null) {
+			BossFightInstance bi = (BossFightInstance) bossNode.generateInstance(s, type);
+			boss = bi.getBossDisplay();
+		}
 	}
 
 	private void generateTutorialNodes() {
@@ -256,12 +262,7 @@ public class Region {
 		Node start = createNode(0, CENTER_LANE, NodeType.START);
 		Node fight1 = createNode(1, CENTER_LANE, NodeType.FIGHT, start);
 		Node fight2 = createNode(2, 2, NodeType.FIGHT, fight1);
-		Node chance = createNode(3, 1, NodeType.CHANCE, fight2);
-		Node chance2 = createNode(3, 3, NodeType.CHANCE, fight2);
-		Node shrine1 = createNode(4, CENTER_LANE, NodeType.SHRINE, chance, chance2);
-		Node miniboss = createNode(5, CENTER_LANE, NodeType.MINIBOSS, shrine1);
-		Node shrine2 = createNode(6, CENTER_LANE, NodeType.SHRINE, miniboss);
-		createNode(getBossRow(), CENTER_LANE, NodeType.BOSS, shrine2);
+		createNode(3, CENTER_LANE, NodeType.TUTORIAL, fight2);
 	}
 
 	private void tryGenerateNodes() {
