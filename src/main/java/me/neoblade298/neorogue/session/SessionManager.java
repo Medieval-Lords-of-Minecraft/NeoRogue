@@ -955,6 +955,8 @@ public class SessionManager implements Listener {
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
+		p.getAttribute(Attribute.GRAVITY)
+				.removeModifier(NamespacedKey.fromString("gravity", NeoRogue.inst()));
 		showPlayerToAll(p);
 		giveMenuCompass(p);
 	}

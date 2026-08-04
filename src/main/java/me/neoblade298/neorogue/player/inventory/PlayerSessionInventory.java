@@ -174,10 +174,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				0);
 		contents[(SETTINGS + offset) % inv.getSize()] = createSettingsIcon(data);
 
-		contents[(ARTIFACTS + offset) % inv.getSize()] = addNbt(
-				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
-						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
-				0);
+		contents[(ARTIFACTS + offset) % inv.getSize()] = createArtifactsIcon(data);
 
 		contents[(CARGO + offset) % inv.getSize()] = createCargoIcon(data);
 
@@ -297,10 +294,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		contents[(TRASH + offset) % inv.getSize()] = addNbt(CoreInventory.createButton(Material.HOPPER,
 				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
 				0);
-		contents[(ARTIFACTS + offset) % inv.getSize()] = addNbt(
-				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
-						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
-				0);
+		contents[(ARTIFACTS + offset) % inv.getSize()] = createArtifactsIcon(data);
 
 		if (!isSpectating) {
 			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon(data.getSession());
@@ -310,6 +304,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack tutorialFiller() {
 		return CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+	}
+
+	private static ItemStack createArtifactsIcon(PlayerSessionData data) {
+		ItemStack item = CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
+				"Click here to view all your artifacts!", 250, NamedTextColor.GRAY);
+		ItemMeta meta = item.getItemMeta();
+		meta.setMaxStackSize(99);
+		item.setItemMeta(meta);
+		int artifactCount = data.getArtifacts().values().stream().mapToInt(artifact -> artifact.getAmount()).sum();
+		item.setAmount(Math.max(1, Math.min(artifactCount, 99)));
+		return addNbt(item, 0);
 	}
 
 	private static boolean contains(int[] arr, int val) {

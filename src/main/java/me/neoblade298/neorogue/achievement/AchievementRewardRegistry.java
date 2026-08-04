@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
  *
  * <ul>
  *   <li>{@code default-commands}: run when a gained achievement mastery tier has no matching reward.</li>
+ *   <li>{@code default-display-names}: MiniMessage descriptions shown on every achievement.</li>
  *   <li>{@code rewards}: each runs its commands when the just-gained achievement tier exactly
  *       matches one of its {@code requirements} (id + class + tier) and every requirement is met
  *       at or above its tier. The exact-tier match means a reward fires once, without persistence.</li>
@@ -32,6 +33,7 @@ import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
  */
 public class AchievementRewardRegistry {
 	private static final List<String> defaultCommands = new ArrayList<>();
+	private static final List<String> defaultDisplayNames = new ArrayList<>();
 	private static final Map<String, AchievementReward> rewards = new HashMap<>();
 	// achievement id -> rewards that require it (so we only re-check affected rewards)
 	private static final Map<String, List<AchievementReward>> rewardsByRequirement = new HashMap<>();
@@ -41,12 +43,15 @@ public class AchievementRewardRegistry {
 
 	public static void reload() {
 		defaultCommands.clear();
+		defaultDisplayNames.clear();
 		rewards.clear();
 		rewardsByRequirement.clear();
 
 		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "achievement-rewards.yml"), (yml, file) -> {
 			List<String> defaults = yml.getStringList("default-commands");
 			if (defaults != null) defaultCommands.addAll(defaults);
+			List<String> defaultDisplays = yml.getStringList("default-display-names");
+			if (defaultDisplays != null) defaultDisplayNames.addAll(defaultDisplays);
 
 			Section rewardsSec = yml.getSection("rewards");
 			if (rewardsSec == null) return;
@@ -86,9 +91,9 @@ public class AchievementRewardRegistry {
 
 	public static List<String> getDisplayNames(String achievementId, EquipmentClass classScope) {
 		List<AchievementReward> candidates = rewardsByRequirement.get(achievementId);
-		if (candidates == null || candidates.isEmpty()) return List.of();
+		List<String> displayNames = new ArrayList<>(defaultDisplayNames);
+		if (candidates == null || candidates.isEmpty()) return displayNames;
 
-		List<String> displayNames = new ArrayList<>();
 		for (AchievementReward reward : candidates) {
 			for (AchievementRequirement requirement : reward.getRequirements()) {
 				if (requirement.id().equals(achievementId) && requirement.classScope() == classScope) {

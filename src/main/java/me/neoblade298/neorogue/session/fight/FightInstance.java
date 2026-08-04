@@ -1363,6 +1363,8 @@ public abstract class FightInstance extends Instance {
 						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 					p.getAttribute(Attribute.JUMP_STRENGTH)
 						.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
+					p.getAttribute(Attribute.GRAVITY)
+						.removeModifier(NamespacedKey.fromString("seraphic-rain-gravity", NeoRogue.inst()));
 				}
 			}
 			FightData fdata = fightData.remove(uuid);

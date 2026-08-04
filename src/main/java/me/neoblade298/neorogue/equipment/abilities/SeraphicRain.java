@@ -7,7 +7,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,6 +40,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -52,6 +58,8 @@ public class SeraphicRain extends Equipment {
 	private static final String ID = "SeraphicRain";
 	private static final int PROJECTILES = 8;
 	private static final int DURATION = 60;
+	private static final double GRAVITY = 0.005;
+	private static final NamespacedKey GRAVITY_KEY = NamespacedKey.fromString("gravity", NeoRogue.inst());
 	private static final TargetProperties TARGETS = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private static final ParticleContainer GOLD = new ParticleContainer(Particle.DUST)
 			.dustOptions(new Particle.DustOptions(Color.fromRGB(255, 196, 64), 1.15F)).count(1).spread(0, 0).speed(0);
@@ -164,6 +172,9 @@ public class SeraphicRain extends Equipment {
 
 	private void beginBarrage(PlayerFightData data, int slot) {
 		Player p = data.getPlayer();
+		AttributeInstance gravity = p.getAttribute(Attribute.GRAVITY);
+		gravity.removeModifier(GRAVITY_KEY);
+		gravity.addModifier(new AttributeModifier(GRAVITY_KEY, GRAVITY - gravity.getValue(), Operation.ADD_NUMBER));
 		Vector launch = p.getEyeLocation().getDirection().setY(0);
 		if (launch.lengthSquared() > 0.001) launch.normalize().multiply(0.25);
 		launch.setY(0.85);
@@ -203,6 +214,7 @@ public class SeraphicRain extends Equipment {
 			public void run() {
 				Player current = data.getPlayer();
 				if (current.isGliding()) current.setGliding(false);
+				current.getAttribute(Attribute.GRAVITY).removeModifier(GRAVITY_KEY);
 			}
 		}.runTaskLater(NeoRogue.inst(), DURATION));
 	}
@@ -242,7 +254,7 @@ public class SeraphicRain extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			EquipmentProperties ammoProperties = ammo.getProperties();
-			proj.getMeta().addDamageSlice(new DamageSlice(data, ammoProperties.get(PropertyType.DAMAGE),
+			proj.getMeta().addDamageSlice(new DamageSlice(data, ammoProperties.get(PropertyType.DAMAGE) * 2,
 					ammoProperties.getType(), DamageStatTracker.of(id + slot, ammo.getAmmo())));
 			ammo.onStart(proj);
 			Player current = data.getPlayer();
@@ -281,6 +293,7 @@ public class SeraphicRain extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Can only be cast after dealing basic attack damage " + DescUtil.val(requiredHits) + " times. On cast, leap into the air and briefly glide while " +
-				DescUtil.white("invincible") + ", firing " + DescUtil.val(PROJECTILES) + " projectiles at random nearby enemies. Projectiles use your equipped ammunition, consume ammunition, and deal its damage.");
+				GlossaryTag.INVINCIBLE.tag(this) + " " + DescUtil.duration(DURATION / 20) + ", firing " + DescUtil.val(PROJECTILES) +
+				" projectiles at random nearby enemies. Projectiles use your equipped ammunition, consume ammunition, and deal " + DescUtil.white("2x") + " its damage.");
 	}
 }

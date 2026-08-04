@@ -75,6 +75,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Reduces the affected entity's damage dealt by 50%."),
 	WITHERED(Material.WITHER_ROSE, "<#4B5D3A>Withered</#4B5D3A>",
 			"Prevents the affected entity from sprinting and jumping."),
+	INVINCIBLE(Material.TOTEM_OF_UNDYING, "<#5599FF>Invincible</#5599FF>",
+			"Prevents all incoming damage."),
 	REFLECT(Material.GLASS_PANE, "<#8FE3FF>Reflect</#8FE3FF>",
 			"Upon the affected entity receiving magical damage, even if it is absorbed by shields, return 1 reflect damage as magical damage per stack."),
 	SHIELDS(Material.SHIELD, "<#FFFF55>Shields</#FFFF55>",

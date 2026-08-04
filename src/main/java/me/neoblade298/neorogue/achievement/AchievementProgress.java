@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -134,7 +135,8 @@ public class AchievementProgress {
 			lore.add(Component.empty());
 			lore.add(Component.text("Rewards:", NamedTextColor.GOLD));
 			for (String displayReward : displayRewards) {
-				lore.add(Component.text("- " + displayReward, NamedTextColor.GRAY));
+				lore.add(Component.text("- ", NamedTextColor.GRAY).append(
+						NeoCore.miniMessage().deserialize(displayReward).colorIfAbsent(NamedTextColor.GRAY)));
 			}
 		}
 		lore.replaceAll(line -> line.decoration(TextDecoration.ITALIC, false));

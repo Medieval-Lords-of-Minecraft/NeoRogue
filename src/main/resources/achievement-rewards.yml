@@ -16,13 +16,17 @@ default-commands: []
 #  - "broadcast %player% earned an achievement!"
 #  - "give %player% diamond 1"
 
+# Default display names are MiniMessage descriptions shown on every achievement.
+default-display-names: []
+#  - "<yellow>1 Crown</yellow>"
+
 # Each reward runs its commands when a player gains an achievement tier that EXACTLY matches
 # one of the reward's 'requirements' (achievement id + class + tier), AND every requirement is
 # met at or above its tier. Matching the exact tier means each reward fires once.
 #
 # Requirement keys mirror unlocks: "achievement_id: <tier>" for global (or auto-resolved class)
 # scope, or "achievement_id@CLASS: <tier>" to require a specific class's version.
-# Display names are user-facing descriptions of the command rewards. The list may be empty.
+# Display names are user-facing MiniMessage descriptions of the command rewards. The list may be empty.
 rewards: {}
 #  completionist:
 #    requirements:
