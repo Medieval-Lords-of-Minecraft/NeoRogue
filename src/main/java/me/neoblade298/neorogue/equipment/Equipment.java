@@ -1849,7 +1849,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	static Component createHoverable(Component display, ItemStack item, String glossaryId) {
-		Component sprite = Component.object(ObjectContents.sprite(ITEM_SPRITE_ATLAS, item.getType().getKey()));
+		Key materialKey = item.getType().getKey();
+		Key spriteKey = Key.key(materialKey.namespace(), "item/" + materialKey.value());
+		Component sprite = Component.object(ObjectContents.sprite(ITEM_SPRITE_ATLAS, spriteKey))
+				.color(NamedTextColor.WHITE);
 		return Component.text("[", NamedTextColor.DARK_GRAY)
 				.append(sprite)
 				.append(Component.space())
