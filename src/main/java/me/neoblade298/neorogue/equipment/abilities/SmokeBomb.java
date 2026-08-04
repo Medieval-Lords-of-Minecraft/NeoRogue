@@ -88,7 +88,7 @@ public class SmokeBomb extends Equipment {
 	// add effects
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.GUNPOWDER,
 				"On cast, drop a smoke bomb that detonates after " + DescUtil.val(delay + "s")
 				+ ". After detonation, for " + DescUtil.val("5s") + ","
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>] and "

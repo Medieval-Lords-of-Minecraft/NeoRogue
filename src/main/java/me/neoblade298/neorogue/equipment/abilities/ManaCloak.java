@@ -47,7 +47,7 @@ public class ManaCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.LAPIS_LAZULI,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + ", "
 						+ GlossaryTag.PROTECT.tag(this, 1) + ", and " + GlossaryTag.SHELL.tag(this, 1)
 						+ ".");

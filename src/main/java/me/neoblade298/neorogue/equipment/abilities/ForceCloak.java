@@ -39,7 +39,7 @@ public class ForceCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "On cast, apply " + GlossaryTag.PROTECT.tag(this, 1) + " and "
+		item = createItem(Material.PHANTOM_MEMBRANE, "On cast, apply " + GlossaryTag.PROTECT.tag(this, 1) + " and "
 				+ GlossaryTag.SHELL.tag(this, 1) + ".");
 	}
 }

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -74,7 +73,7 @@ public class Brightshell extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.NAUTILUS_SHELL,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>]. After " + DescUtil.val("3s") + ", deal " +
 				GlossaryTag.LIGHT.tag(this, damage) + " damage and apply " + GlossaryTag.SANCTIFIED.tag(this, sanct) + " to all nearby enemies.");
 	}

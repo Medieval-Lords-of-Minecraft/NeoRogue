@@ -79,7 +79,7 @@ public class Initiator extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.TARGET,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(250) + " damage. For the first " + DescUtil.val("2s") + " after hitting a unique enemy, increase " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(
 						damage + "%") + ".");
 	}
