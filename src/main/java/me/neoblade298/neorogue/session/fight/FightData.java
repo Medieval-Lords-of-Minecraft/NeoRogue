@@ -360,7 +360,7 @@ public class FightData {
 		if (hologram == null) {
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
-			hologram.setShadowed(true);
+			NeoRogue.configureHologram(hologram);
 			hologram.setViewRange(100);
 			hologram.setSeeThrough(false);
 

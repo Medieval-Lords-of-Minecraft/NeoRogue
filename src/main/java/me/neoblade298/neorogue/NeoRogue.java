@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.EntityType;
@@ -370,7 +371,7 @@ public class NeoRogue extends JavaPlugin {
 	public static TextDisplay createHologram(Location loc, Component text) {
 		TextDisplay td = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
 		td.text(withTextDisplayShadow(text));
-		td.setShadowed(true);
+		configureHologram(td);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(1);
 		td.setBillboard(Billboard.CENTER);
@@ -380,6 +381,12 @@ public class NeoRogue extends JavaPlugin {
 
 	public static Component withTextDisplayShadow(Component text) {
 		return text.shadowColor(TEXT_DISPLAY_SHADOW);
+	}
+
+	public static void configureHologram(TextDisplay display) {
+		display.setDefaultBackground(false);
+		display.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
+		display.setShadowed(true);
 	}
 	
 	@EventHandler
