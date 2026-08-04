@@ -83,7 +83,7 @@ public class SpeedBlitz extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DIAMOND_SWORD,
+		item = createItem(Material.LIGHTNING_ROD,
 				"On cast, with " + DescUtil.potion("Slowness", 0, 1) +
 				", deal " + GlossaryTag.PIERCING.tag(this, damage) +
 				" damage " + DescUtil.val(5) + " times over " + DescUtil.val("1s") + " to the nearest enemy.");

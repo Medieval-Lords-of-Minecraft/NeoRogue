@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class WhiteCape extends Equipment {
 	private static final String ID = "WhiteCape";
-	private static final int REFLECT = 40;
+	private static final int REFLECT = 10;
 	private int def;
 
 	public WhiteCape(boolean isUpgraded) {

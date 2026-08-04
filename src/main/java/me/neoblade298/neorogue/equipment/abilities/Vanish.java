@@ -59,7 +59,7 @@ public class Vanish extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
+		item = createItem(Material.INK_SAC,
 				GlossaryTag.POWER.tag(this) + ". Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.val(duration) + "." +
 				" Every " + DescUtil.val(threshold) + " times you receive " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1) +
 				" [" + DescUtil.val("5s") + "] and " + DescUtil.val(10) + " stamina.");

@@ -67,7 +67,7 @@ public class LordOfTheNight extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHERITE_SWORD, 
+		item = createItem(Material.NETHERITE_INGOT, 
 			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " damage while in " + GlossaryTag.STEALTH.tag(this) + ". Increases " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(damageIncrease + "%") + " for every stack of " + 
 			GlossaryTag.STEALTH.tag(this) + " you have.");
 	}

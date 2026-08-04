@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -33,11 +35,13 @@ public class BrightJavelin extends Equipment {
 	private static final String ID = "BrightJavelin";
 	private static final int DAMAGE = 150, SANCT_MULT = 10, RANGE = 10;
 	private static final ParticleContainer projectileCore =
-			new ParticleContainer(Particle.END_ROD).count(1).spread(0, 0).speed(0);
+			new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.fromRGB(255, 248, 205), 0.8F))
+					.count(1).spread(0, 0).speed(0);
 	private static final ParticleContainer projectileTrail =
 			new ParticleContainer(Particle.FIREWORK).count(2).spread(0.06, 0.06).speed(0.005);
 	private static final ParticleContainer hitParticles =
-			new ParticleContainer(Particle.END_ROD).count(10).spread(0.1, 0.1).speed(0.01);
+			new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.fromRGB(255, 220, 105), 1.1F))
+					.count(10).spread(0.1, 0.1).speed(0.01);
 	private static final SoundContainer launchSound =
 			new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.7F, 1.35F);
 	private static final SoundContainer hitSound =
@@ -57,15 +61,16 @@ public class BrightJavelin extends Equipment {
 		Equipment eq = this;
 		ProjectileGroup projs = new ProjectileGroup(new BrightJavelinProjectile(slot, eq));
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
-			projs.start(pdata);
+			pdata.chargeSecs(1).then(() -> projs.start(pdata));
 			return TriggerResult.keep();
 		}));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRIDENT,
-				"Throw a bright javelin that deals " + GlossaryTag.LIGHT.tag(this, DAMAGE) + " damage, increased by "
+		item = createItem(Material.END_ROD,
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before throwing a bright javelin that deals "
+				+ GlossaryTag.LIGHT.tag(this, DAMAGE) + " damage, increased by "
 				+ DescUtil.val(SANCT_MULT) + " for each " + GlossaryTag.SANCTIFIED.tag(this) + " stack on the enemy.");
 	}
 

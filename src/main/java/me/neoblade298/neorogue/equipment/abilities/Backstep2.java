@@ -49,7 +49,7 @@ public class Backstep2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_BOOTS,
+		item = createItem(Material.FIREWORK_STAR,
 				"This ability can be stored and cast once for every " + GlossaryTag.REND.tag(this, thres) + " stacks you apply. " +
 				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>], " +
 				"fire " + DescUtil.val(3) + " projectiles that deal " +
@@ -113,7 +113,7 @@ public class Backstep2 extends Equipment {
 			icon.setAmount(1);
 		}
 		else {
-			icon = icon.withType(Material.IRON_BOOTS);
+			icon = icon.withType(Material.FIREWORK_STAR);
 			icon.setAmount(count);
 		}
 		inst.setIcon(icon);

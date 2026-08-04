@@ -75,7 +75,7 @@ public class FeelNoPain extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_HELMET,
+		item = createItem(Material.TOTEM_OF_UNDYING,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving " + DescUtil.val(3) + " " + GlossaryTag.BERSERK.tag(this) + " stacks and taking damage. Gain " + DescUtil.val(reducString + "%") + " damage reduction for every " + DescUtil.val(THRES) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", up to " +
 				DescUtil.val(CUTOFF) + " stacks.");
 	}

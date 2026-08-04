@@ -71,7 +71,7 @@ public class SilentSteps2 extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
+		item = createItem(Material.ECHO_SHARD,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving " + GlossaryTag.STEALTH.tag(this) + " twice. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.val(duration)
 						+ " and its stacks by " + DescUtil.val(1) + "." +
 						" " + GlossaryTag.DIRECT.tag(this) + " damage dealt is increased by " + DescUtil.val(damage) + " if you have " + GlossaryTag.STEALTH.tag(this) +".");

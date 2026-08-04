@@ -23,6 +23,7 @@ You are a specialist FX designer for the NeoRogue Minecraft plugin. Your job is 
 - `speed(0)` = perfectly still particles, ideal for most cases (shapes, projectiles, indicators).
 - `speed(0.01)` = subtle drift, gives a slight organic feel without muddling the shape.
 - Values above `0.01` are **very rarely appropriate** — only for explosions, heavy impacts, or deliberate chaos effects.
+- Avoid `Particle.END_ROD` for short-lived or transient effects because its particles linger and draw attention after the effect ends. Reserve it for effects where that persistence is intentional.
 
 ### 4. 2D Shapes (Circles, Cones, Rectangles)
 - Use **no spread** (`spread(0, 0)`) and **no speed** (`speed(0)`) for edge particles to maintain crisp outlines.
@@ -64,9 +65,9 @@ circ.play(edge, location, LocalAxes.xz(), fill);
 - Match particle type/color to the equipment's damage type or thematic element.
 - Fire damage → `Particle.FLAME`, `Particle.LAVA`
 - Ice/water → `Particle.DUST` with blue `DustOptions`, `Particle.SNOWFLAKE`
-- Lightning → `Particle.END_ROD`, `Particle.FIREWORK`
+- Lightning → `Particle.FIREWORK`, `Particle.ELECTRIC_SPARK`
 - Nature/poison → `Particle.DUST` with green, `Particle.SPORE_BLOSSOM_AIR`
-- Holy/light → `Particle.END_ROD`, `Particle.FIREWORK`
+- Holy/light → `Particle.DUST` with pale-gold `DustOptions`, `Particle.FIREWORK`
 - Dark/shadow → `Particle.SOUL`, `Particle.DUST` with dark colors
 - Blunt/physical → `Particle.CLOUD`, `Particle.BLOCK`
 

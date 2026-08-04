@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,6 +22,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -30,16 +33,19 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GuidingLight extends Equipment {
 	private static final String ID = "GuidingLight";
 	private static final int ATTACKS = 7;
 	private static final TargetProperties tp = TargetProperties.cone(45, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer edge =
+	private static final ParticleContainer coneEdge =
 			new ParticleContainer(Particle.FIREWORK).count(1).spread(0, 0).speed(0);
-	private static final ParticleContainer fill =
-			new ParticleContainer(Particle.END_ROD).count(1).spread(0.05, 0).speed(0);
+	private static final ParticleContainer coneFill =
+			new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.fromRGB(255, 226, 128), 0.8F))
+					.count(1).spread(0.05, 0).speed(0);
 	private static final SoundContainer procSound =
 			new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.45F, 1.55F);
 	private int damage, sanctified;
@@ -65,13 +71,26 @@ public class GuidingLight extends Equipment {
 			return TriggerResult.keep();
 		}));
 
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			if (am.getCount() <= 0) return TriggerResult.keep();
+			PreBasicAttackEvent event = (PreBasicAttackEvent) in;
+			event.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHT,
+					DamageStatTracker.of(id + slot, this)));
+			return TriggerResult.keep();
+		});
+
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (am.getCount() <= 0) return TriggerResult.keep();
+			BasicAttackEvent event = (BasicAttackEvent) in;
 			Player player = data.getPlayer();
 			boolean firstAttack = am.getCount() == ATTACKS;
-			cone.play(edge, player.getLocation(), LocalAxes.usingEyeLocation(player), fill);
+			cone.play(coneEdge, player.getLocation(), LocalAxes.usingEyeLocation(player), coneFill);
 			procSound.play(player, player);
+			if (firstAttack) {
+				FightInstance.applyStatus(event.getTarget(), StatusType.SANCTIFIED, data, sanctified, -1, this);
+			}
 			for (LivingEntity target : TargetHelper.getEntitiesInCone(player, tp)) {
+				if (target.equals(event.getTarget())) continue;
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHT,
 						DamageStatTracker.of(id + slot, this)), target);
 				if (firstAttack) {

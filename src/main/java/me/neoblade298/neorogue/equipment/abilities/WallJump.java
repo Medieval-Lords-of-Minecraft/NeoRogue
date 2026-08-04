@@ -194,7 +194,7 @@ public class WallJump extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
+		item = createItem(Material.SLIME_BALL,
 				GlossaryTag.DASH.tag(this) + " forward. If you hit a wall, recast to " + GlossaryTag.DASH.tag(this) + " a long distance and deal "
 				+ GlossaryTag.SLASHING.tag(this, damage) + " damage to nearby enemies.");
 	}

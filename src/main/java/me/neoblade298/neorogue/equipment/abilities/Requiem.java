@@ -143,7 +143,7 @@ public class Requiem extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_CHESTPLATE,
+		item = createItem(Material.GOLDEN_APPLE,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. After activation, killing an enemy deals "
 				+ GlossaryTag.LIGHT.tag(this, damage) + " damage and applies "
 				+ GlossaryTag.SANCTIFIED.tag(this, sanctified) + " to enemies within "

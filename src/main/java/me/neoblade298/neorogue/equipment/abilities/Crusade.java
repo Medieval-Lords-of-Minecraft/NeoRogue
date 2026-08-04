@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -45,10 +46,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 public class Crusade extends Equipment implements Power {
 	private static final String ID = "Crusade";
 	private static final int ACTIVATION_THRES = 5, RANGE = 20;
-	private static final long FORMATION_TICKS = 200L;
+	private static final long FORMATION_TICKS = 10L;
 	private static final ParticleContainer blade = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 238, 150), 0.8F)).count(1).spread(0, 0).speed(0);
-	private static final ParticleContainer glow = new ParticleContainer(Particle.END_ROD).count(1).spread(0, 0).speed(0);
+	private static final ParticleContainer glow = new ParticleContainer(Particle.FIREWORK).count(1).spread(0, 0).speed(0);
 	private static final ParticleContainer launch = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.05, 0.05).speed(0.01);
 	private static final SoundContainer formSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.7F, 1.2F);
 	private int damage;
@@ -95,6 +96,9 @@ public class Crusade extends Equipment implements Power {
 	private void queueSwords(PlayerFightData data, ProjectileGroup projectiles, UUID targetId, int count) {
 		for (int index = 0; index < count; index++) {
 			int swordIndex = index;
+			ThreadLocalRandom random = ThreadLocalRandom.current();
+			Vector swordOffset = new Vector(random.nextDouble(-1.25, 1.25), random.nextDouble(0.75, 1.75),
+					random.nextDouble(-1.25, 1.25));
 			data.addTask(new BukkitRunnable() {
 				private int ticks;
 
@@ -107,13 +111,15 @@ public class Crusade extends Equipment implements Power {
 					}
 
 					Player player = data.getPlayer();
-					Location origin = getSwordOrigin(player, swordIndex, count);
+					Location origin = player.getEyeLocation().add(swordOffset);
 					Vector direction = target.getEyeLocation().toVector().subtract(origin.toVector()).normalize();
 					drawSword(player, origin, direction);
 					if (swordIndex == 0 && ticks == 0) formSound.play(player, player);
 
-					ticks += 2;
-					if (ticks < FORMATION_TICKS) return;
+					if (ticks < FORMATION_TICKS) {
+						ticks += 2;
+						return;
+					}
 
 					launch.play(player, origin);
 					if (swordIndex == 0) Sounds.shoot.play(player, player);
@@ -122,18 +128,6 @@ public class Crusade extends Equipment implements Power {
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0L, 2L));
 		}
-	}
-
-	private Location getSwordOrigin(Player player, int index, int count) {
-		Vector forward = player.getEyeLocation().getDirection().setY(0);
-		if (forward.lengthSquared() == 0) forward = new Vector(0, 0, 1);
-		forward.normalize();
-		Vector right = forward.clone().crossProduct(new Vector(0, 1, 0)).normalize();
-		int row = index / 7;
-		int rowSize = Math.min(7, count - row * 7);
-		double offset = (index % 7 - (rowSize - 1) / 2D) * 0.45;
-		return player.getEyeLocation().add(0, 0.9 + row * 0.4, 0)
-				.add(right.multiply(offset)).subtract(forward.multiply(row * 0.25));
 	}
 
 	private void drawSword(Player player, Location tip, Vector direction) {
@@ -153,10 +147,10 @@ public class Crusade extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD,
+		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. After activation, applying "
-				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword per stack that fires after " + DescUtil.white("10s")
+				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword per stack that fires after " + DescUtil.white("0.5s")
 				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " damage each.");
 	}
 

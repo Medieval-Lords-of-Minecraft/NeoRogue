@@ -29,7 +29,7 @@ public class Backstep extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
+		item = createItem(Material.WIND_CHARGE,
 				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", and gain " +
 				GlossaryTag.SHIELDS.tag(this, shields) + " [<white>5s</white>].");
 	}

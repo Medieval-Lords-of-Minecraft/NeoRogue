@@ -27,7 +27,7 @@ public class Charge extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_BOOTS,
+		item = createItem(Material.SUGAR,
 				GlossaryTag.POWER.tag(this) + ". On cast, sprinting costs " + DescUtil.val(1) + " additional stamina per second, and every " + DescUtil.val("3s") + " of sprinting grants you "
 				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>3s</white>].");
 	}

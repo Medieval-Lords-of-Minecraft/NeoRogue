@@ -94,9 +94,9 @@ public class Dawnbringer extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a " + DescUtil.val(WIDTH)
-				+ " block wide piercing projectile that deals " + GlossaryTag.LIGHT.tag(this, damage)
+		item = createItem(Material.SUNFLOWER,
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a "
+				+ " wide slow-moving wave of light that deals " + GlossaryTag.LIGHT.tag(this, damage)
 				+ " damage. For each enemy hit with at least " + DescUtil.white(SANCTIFIED_THRESHOLD) + " "
 				+ GlossaryTag.SANCTIFIED.tag(this) + ", permanently increase all "
 				+ GlossaryTag.LIGHT.tag(this) + " damage by " + DescUtil.yellow(lightBuff) + ".");
@@ -110,7 +110,7 @@ public class Dawnbringer extends Equipment {
 		public DawnbringerProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(properties.get(PropertyType.RANGE), 2);
 			this.size(WIDTH, 1).pierce(-1);
-			this.blocksPerTick(2);
+			this.blocksPerTick(0.7);
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
