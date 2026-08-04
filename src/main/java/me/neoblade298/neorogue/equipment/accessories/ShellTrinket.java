@@ -20,6 +20,7 @@ public class ShellTrinket extends Artifact {
 	
 	public ShellTrinket() {
 		super(ID, "Shell Trinket", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		canStack = true;
 	}
 	
 	public static Equipment get() {
@@ -33,7 +34,7 @@ public class ShellTrinket extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dec, BuffStatTracker.defenseBuffAlly(id, this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dec * ai.getAmount(), BuffStatTracker.defenseBuffAlly(id, this)));
 	}
 
 	@Override

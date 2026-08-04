@@ -88,10 +88,10 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		}
 		if (amount > 1) {
 			ItemMeta meta = item.getItemMeta();
-			meta.setMaxStackSize(amount);
+			meta.setMaxStackSize(99);
 			item.setItemMeta(meta);
 		}
-		item.setAmount(amount);
+		item.setAmount(Math.min(amount, 99));
 		return item;
 	}
 

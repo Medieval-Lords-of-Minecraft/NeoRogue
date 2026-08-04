@@ -21,6 +21,7 @@ public class ForceTrinket extends Artifact {
 	
 	public ForceTrinket() {
 		super(ID, "Force Trinket", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		canStack = true;
 	}
 	
 	public static Equipment get() {
@@ -34,7 +35,7 @@ public class ForceTrinket extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id, this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.multiplier(data, mult * ai.getAmount(), BuffStatTracker.damageBuffAlly(id, this)));
 	}
 
 	@Override

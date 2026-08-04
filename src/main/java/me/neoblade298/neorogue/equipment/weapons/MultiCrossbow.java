@@ -46,17 +46,17 @@ public class MultiCrossbow extends Bow {
 			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup();
-			int limit = data.getAmmoInstance().getRemaining();
-			int count = 0;
-			if (limit == -1 || ++count < limit) {
-				proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
-			}
+			int remaining = data.getAmmoInstance().getRemaining();
+			int limit = remaining == -1 ? 5 : Math.min(5, remaining);
+			int count = 1;
+			proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			for (double y : new double[] { -0.1, 0.1 }) {
 				for (double rotate : new double[] { 10, -10 }) {
-					if (limit != -1 && ++count >= limit) break;
+					if (count >= limit) break;
 					proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).initialY(y).rotation(rotate));
+					count++;
 				}
-				if (limit != -1 && count >= limit) break;
+				if (count >= limit) break;
 			}
 			proj.start(data);
 			return TriggerResult.keep();
