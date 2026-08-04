@@ -277,6 +277,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -284,9 +285,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.object.ObjectContents;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public abstract class Equipment implements Comparable<Equipment> {
+	private static final Key ITEM_SPRITE_ATLAS = Key.key("minecraft:items");
 	private static TreeMap<String, Equipment> equipment = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static TreeMap<String, Equipment> upgraded = new TreeMap<String, Equipment>(String.CASE_INSENSITIVE_ORDER);
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
@@ -1579,8 +1582,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 						DataComponentTypes.POTION_CONTENTS)
 				.build());
 
-		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
-				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
+		this.hoverable = createHoverable(this.display, item, this.id);
 
 		NBT.modify(item, nbt -> {
 			nbt.setString("equipId", id);
@@ -1844,6 +1846,17 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Component getHoverable() {
 		return hoverable;
+	}
+
+	static Component createHoverable(Component display, ItemStack item, String glossaryId) {
+		Component sprite = Component.object(ObjectContents.sprite(ITEM_SPRITE_ATLAS, item.getType().getKey()));
+		return Component.text("[", NamedTextColor.DARK_GRAY)
+				.append(sprite)
+				.append(Component.space())
+				.append(display)
+				.append(Component.text("]", NamedTextColor.DARK_GRAY))
+				.hoverEvent(item.asHoverEvent())
+				.clickEvent(ClickEvent.runCommand("/nr glossary " + glossaryId));
 	}
 
 	public int getCooldown() {

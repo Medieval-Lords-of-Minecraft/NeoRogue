@@ -125,8 +125,10 @@ import me.neoblade298.neorogue.tutorial.book.BookCommand;
 import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 
 public class NeoRogue extends JavaPlugin {
+	private static final ShadowColor TEXT_DISPLAY_SHADOW = ShadowColor.shadowColor(0xFF000000);
 	private static NeoRogue inst;
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
@@ -367,12 +369,17 @@ public class NeoRogue extends JavaPlugin {
 
 	public static TextDisplay createHologram(Location loc, Component text) {
 		TextDisplay td = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
-		td.text(text);
+		td.text(withTextDisplayShadow(text));
+		td.setShadowed(true);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(1);
 		td.setBillboard(Billboard.CENTER);
 		td.setTransformation(trans);
 		return td;
+	}
+
+	public static Component withTextDisplayShadow(Component text) {
+		return text.shadowColor(TEXT_DISPLAY_SHADOW);
 	}
 	
 	@EventHandler

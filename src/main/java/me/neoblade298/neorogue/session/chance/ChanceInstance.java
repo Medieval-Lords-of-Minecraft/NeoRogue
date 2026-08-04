@@ -323,7 +323,7 @@ public class ChanceInstance extends EditInventoryInstance {
 				for (UUID id : this.stage.keySet()) {
 					this.stage.put(id, next);
 				}
-				holo.text(buildHologramText(next));
+				holo.text(NeoRogue.withTextDisplayShadow(buildHologramText(next)));
 			} else {
 				this.stage.put(uuid, next);
 			}

@@ -11,8 +11,6 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.TextDecoration;
 
 // need instance to keep track of things like amount and such which are normally
 // handled by using itemstacks
@@ -102,9 +100,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	 */
 	public Component getHoverable() {
 		if (held == null) return artifact.getHoverable();
-		return artifact.getDisplay().decorate(TextDecoration.UNDERLINED)
-				.hoverEvent(getItem().asHoverEvent())
-				.clickEvent(ClickEvent.runCommand("/nr glossary " + held.getEquipment().getId()));
+		return Equipment.createHoverable(artifact.getDisplay(), getItem(), held.getEquipment().getId());
 	}
 
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
