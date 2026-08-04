@@ -384,7 +384,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
         if (e.getClickedBlock().getType() == Material.BEACON) {
             e.setCancelled(true);
-            leavePlayer(e.getPlayer());
+            s.removeSpectator(e.getPlayer());
             return;
         }
     }

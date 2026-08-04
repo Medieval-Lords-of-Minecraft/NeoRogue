@@ -230,7 +230,6 @@ public class NeoRogue extends JavaPlugin {
 						"Failed to clean up session at plot " + s.getPlot() + " during shutdown", ex);
 			}
 		}
-		Session.closeClipboards();
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();
 	}

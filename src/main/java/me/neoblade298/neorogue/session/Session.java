@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.session;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +39,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
@@ -146,18 +144,7 @@ public class Session {
 
 	private static final ArrayList<Color> fireworkColors = new ArrayList<Color>();
 	
-	private static Clipboard newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
-		// Worldedit schematics
-		newLobby = loadClipboard("NRNewLobby.schem");
-		loadLobby = loadClipboard("NRLoadLobby.schem");
-		nodeSelect = loadClipboard("NRNodeSelect.schem");
-		rewardsRoom = loadClipboard("NRRewards.schem");
-		shrine = loadClipboard("NRShrine.schem");
-		shop = loadClipboard("NRShop.schem");
-		chance = loadClipboard("NRChance.schem");
-		lose = loadClipboard("NRLose.schem");
-
 		// Firework colors
 		fireworkColors.add(Color.RED);
 		fireworkColors.add(Color.BLUE);
@@ -167,38 +154,27 @@ public class Session {
 		fireworkColors.add(Color.ORANGE);
 	}
 	
-	private static Clipboard loadClipboard(String schematic) {
+	private static void pasteSchematic(
+			String schematic, EditSession editSession, Session session, int xOff, int yOff, int zOff
+	) throws IOException, WorldEditException {
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
-		try (FileInputStream fis = new FileInputStream(file);
-			ClipboardReader reader = format.getReader(fis)) {
-			return reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (format == null) {
+			throw new IOException("Unsupported schematic format: " + file.getAbsolutePath());
 		}
-		return null;
-	}
-
-	private static void pasteSchematic(
-			Clipboard clipboard, EditSession editSession, Session session, int xOff, int yOff, int zOff
-	) throws WorldEditException {
-		ClipboardHolder holder = new ClipboardHolder(clipboard);
-		Operation operation = holder.createPaste(editSession)
-				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
-				.ignoreAirBlocks(false).build();
-		Operations.complete(operation);
-	}
-
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) throws WorldEditException {
-		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
-	}
-
-	public static void closeClipboards() {
-		for (Clipboard clipboard : new Clipboard[] { newLobby, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose }) {
-			if (clipboard != null) clipboard.close();
+		try (FileInputStream input = new FileInputStream(file);
+				ClipboardReader reader = format.getReader(input);
+				ClipboardHolder holder = new ClipboardHolder(reader.read())) {
+			Operation operation = holder.createPaste(editSession)
+					.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
+					.ignoreAirBlocks(false).build();
+			Operations.complete(operation);
 		}
+	}
+
+	private static void pasteSchematic(String schematic, EditSession editSession, Session session, int zOff)
+			throws IOException, WorldEditException {
+		pasteSchematic(schematic, editSession, session, 0, 0, zOff);
 	}
 
 	public Session(Player p, Plot plot, int saveSlot, boolean isNew, SessionType sessionType) {
@@ -372,15 +348,15 @@ public class Session {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().world(Region.world).build()) {
-				pasteSchematic(newLobby, editSession, this, Session.NEW_LOBBY_Z);
-				pasteSchematic(loadLobby, editSession, this, LOAD_LOBBY_X, 0, Session.LOAD_LOBBY_Z);
-				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
-				pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
-				pasteSchematic(shrine, editSession, this, Session.SHRINE_Z);
-				pasteSchematic(shop, editSession, this, Session.SHOP_Z);
-				pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
-				pasteSchematic(lose, editSession, this, 0, -1, Session.LOSE_Z);
-			} catch (WorldEditException e) {
+				pasteSchematic("NRNewLobby.schem", editSession, this, Session.NEW_LOBBY_Z);
+				pasteSchematic("NRLoadLobby.schem", editSession, this, LOAD_LOBBY_X, 0, Session.LOAD_LOBBY_Z);
+				pasteSchematic("NRNodeSelect.schem", editSession, this, Session.AREA_Z);
+				pasteSchematic("NRRewards.schem", editSession, this, Session.REWARDS_Z);
+				pasteSchematic("NRShrine.schem", editSession, this, Session.SHRINE_Z);
+				pasteSchematic("NRShop.schem", editSession, this, Session.SHOP_Z);
+				pasteSchematic("NRChance.schem", editSession, this, Session.CHANCE_Z);
+				pasteSchematic("NRLose.schem", editSession, this, 0, -1, Session.LOSE_Z);
+			} catch (IOException | WorldEditException e) {
 				Bukkit.getLogger().log(java.util.logging.Level.SEVERE,
 						"[NeoRogue] Failed to generate interstitials for host " + Bukkit.getPlayer(host).getName(), e);
 				return;
@@ -560,13 +536,18 @@ public class Session {
 	}
 	
 	public void removeSpectator(Player p) {
+		UUID uuid = p.getUniqueId();
+		if (SessionManager.getSession(uuid) != this) {
+			spectators.remove(uuid);
+			return;
+		}
 		broadcast("<yellow>" + p.getName() + "</yellow> stopped spectating!");
 		inst.handleSpectatorLeave(p);
-		spectators.remove(p.getUniqueId());
+		spectators.remove(uuid);
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		showSpectatorToPlayers(p);
-		SessionManager.removeFromSession(p.getUniqueId());
+		SessionManager.removeFromSession(uuid, this);
 		SessionManager.giveMenuCompass(p);
 		p.teleport(NeoRogue.spawn);
 	}
@@ -1427,12 +1408,16 @@ public class Session {
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			Player p = Bukkit.getPlayer(entry.getKey());
 			entry.getValue().cleanup();
-			SessionManager.resetPlayer(p);
+			if (SessionManager.getSession(entry.getKey()) == this) {
+				SessionManager.resetPlayer(p);
+			}
 		}
 		
 		for (UUID uuid : spectators.keySet()) {
-			Player p = Bukkit.getPlayer(uuid);
-			SessionManager.resetPlayer(p);
+			if (SessionManager.getSession(uuid) == this) {
+				Player p = Bukkit.getPlayer(uuid);
+				SessionManager.resetPlayer(p);
+			}
 		}
 	}
 	
