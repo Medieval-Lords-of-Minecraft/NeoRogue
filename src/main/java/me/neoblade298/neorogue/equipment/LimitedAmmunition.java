@@ -20,13 +20,14 @@ public abstract class LimitedAmmunition extends Ammunition {
 		ItemStack item = p.getInventory().getItem(slot);
 		item.setAmount(uses);
 		AmmunitionInstance inst = new AmmunitionInstance(data, this, slot);
+		data.registerAmmunitionInstance(inst);
 		if (data.getAmmoInstance() == null) {
 			equip(p, data, inst);
 		}
 
 		data.addTrigger(id, bind, (pdata, in) -> {
 			if (inst.getRemaining() == 0) return TriggerResult.remove();
-			equip(p, data, inst);
+			equip(data.getPlayer(), data, inst);
 			return TriggerResult.keep();
 		});
 	}

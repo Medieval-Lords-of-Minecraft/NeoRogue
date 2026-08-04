@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MechanicCastAbility implements INoTargetSkill {
+	private static final int ELECTRIFIED_DAMAGE = 5;
     @Override
     public ThreadSafetyLevel getThreadSafetyLevel() {
         return ThreadSafetyLevel.SYNC_ONLY;
@@ -32,7 +33,7 @@ public class MechanicCastAbility implements INoTargetSkill {
 				Status s = fd.getStatus(StatusType.ELECTRIFIED);
 				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as damage meta owner
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
-					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED, DamageStatTracker.electrified()));
+					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * ELECTRIFIED_DAMAGE, DamageType.ELECTRIFIED, DamageStatTracker.electrified()));
 				}
 				FightInstance.dealDamage(dm, fd.getEntity());
 			}

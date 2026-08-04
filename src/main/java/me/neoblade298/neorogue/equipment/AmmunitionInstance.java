@@ -36,14 +36,19 @@ public class AmmunitionInstance {
 		}
 		else {
 			if (--count == 0) {
-				owner.setAmmoInstance(null);
 				Util.msgRaw(owner.getPlayer(),
 						Component.text("You ran out of ", NamedTextColor.GRAY).append(ammo.getDisplay()));
+				owner.equipNextAmmunition(this);
 			}
 			ItemStack item = owner.getPlayer().getInventory().getItem(slot);
 			item.setAmount(count);
 		}
 	}
+
+	public void equip() {
+		ammo.equip(owner.getPlayer(), owner, this);
+	}
+
 	public void onStart(ProjectileInstance inst) {
 		ammo.onStart(inst);
 		use();

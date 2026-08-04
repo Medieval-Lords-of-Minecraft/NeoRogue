@@ -108,6 +108,7 @@ public class PlayerFightData extends FightData {
 	private double sprintCost = 4;
 	private boolean isDead, ignoreCooldowns, hasSprinted, droppedThisTick;
 	private AmmunitionInstance ammo = null;
+	private ArrayList<AmmunitionInstance> ammunitionInstances = new ArrayList<AmmunitionInstance>();
 
 	private FightStatistics stats = new FightStatistics(this);
 
@@ -770,6 +771,22 @@ public class PlayerFightData extends FightData {
 
 	public void setAmmoInstance(AmmunitionInstance ammo) {
 		this.ammo = ammo;
+	}
+
+	public void registerAmmunitionInstance(AmmunitionInstance ammo) {
+		ammunitionInstances.add(ammo);
+	}
+
+	public void equipNextAmmunition(AmmunitionInstance current) {
+		int currentIndex = ammunitionInstances.indexOf(current);
+		for (int offset = 1; offset < ammunitionInstances.size(); offset++) {
+			AmmunitionInstance next = ammunitionInstances.get((currentIndex + offset) % ammunitionInstances.size());
+			if (next.getRemaining() != 0) {
+				next.equip();
+				return;
+			}
+		}
+		ammo = null;
 	}
 
 	public AmmunitionInstance getAmmoInstance() {
