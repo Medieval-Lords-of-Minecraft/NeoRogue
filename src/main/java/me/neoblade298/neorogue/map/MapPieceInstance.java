@@ -599,7 +599,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				double ex = entCoords.getX() * 16;
 				double ez = entCoords.getZ() * 16;
 				Location loc = new Location(Bukkit.getWorld(Region.getActiveWorldName()), ex, 0, ez);
-				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET + (int) entCoords.getY() - 1, Z_FIGHT_OFFSET + zOff);
+				loc.add(xOff + X_FIGHT_OFFSET, Y_OFFSET + (int) entCoords.getY(), Z_FIGHT_OFFSET + zOff);
 				loc.setX(-loc.getX());
 
 				// Place sign at entrance origin showing coordinates and direction (invert to match config)

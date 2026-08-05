@@ -54,6 +54,8 @@ public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private static final int DISPLAY_TICKS = 60, POP_TICKS = 12, DISMISS_TICKS = 10;
+	private static final double CHOICE_SPACING = 1.9;
+	private static final float NAME_SCALE = 0.7F;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private final Map<UUID, BukkitTask> rewardDisplayTasks = new HashMap<UUID, BukkitTask>();
 	private final Map<UUID, List<RewardDisplay>> rewardDisplays = new HashMap<UUID, List<RewardDisplay>>();
@@ -189,7 +191,7 @@ public class RewardInstance extends EditInventoryInstance {
 		if (towardViewer.lengthSquared() == 0) towardViewer.setZ(-1);
 		towardViewer.normalize();
 		Vector right = new Vector(-towardViewer.getZ(), 0, towardViewer.getX());
-		double spacing = Math.min(0.85, 3.4 / Math.max(1, items.size() - 1));
+		double spacing = items.size() > 1 ? CHOICE_SPACING : 0;
 
 		for (int index = 0; index < items.size(); index++) {
 			double offset = (index - (items.size() - 1) / 2.0) * spacing;
@@ -219,8 +221,9 @@ public class RewardInstance extends EditInventoryInstance {
 				entity.setBrightness(new Display.Brightness(15, 15));
 				entity.setTeleportDuration(2);
 				entity.setVisibleByDefault(false);
+				entity.setLineWidth(100);
 				Transformation transformation = entity.getTransformation();
-				transformation.getScale().set(0.15F);
+				transformation.getScale().set(0.15F * NAME_SCALE);
 				entity.setTransformation(transformation);
 			});
 			displays.add(new RewardDisplay(itemDisplay, nameDisplay));
@@ -237,7 +240,9 @@ public class RewardInstance extends EditInventoryInstance {
 		if (displays == null || displays.size() != targets.size()) return;
 		int index = 0;
 		for (RewardDisplay display : displays) {
-			Location target = targets.get(index++);
+			Location target = targets.get(index);
+			double nameOffset = displays.size() > 1 && index % 2 == 1 ? 0.75 : -0.55;
+			index++;
 			float scale = 1F;
 			Location location;
 			if (tick < POP_TICKS) {
@@ -254,13 +259,13 @@ public class RewardInstance extends EditInventoryInstance {
 				}
 			}
 			display.item().teleport(location);
-			display.name().teleport(location.clone().add(0, -0.55, 0));
+			display.name().teleport(location.clone().add(0, nameOffset, 0));
 			Transformation transformation = display.item().getTransformation();
 			transformation.getScale().set(scale);
 			transformation.getLeftRotation().rotateY(0.12F);
 			display.item().setTransformation(transformation);
 			Transformation nameTransformation = display.name().getTransformation();
-			nameTransformation.getScale().set(scale);
+			nameTransformation.getScale().set(scale * NAME_SCALE);
 			display.name().setTransformation(nameTransformation);
 		}
 	}

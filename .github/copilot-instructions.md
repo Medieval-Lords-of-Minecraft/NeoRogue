@@ -31,6 +31,8 @@ Key equipment concepts:
 - Dependencies in `/dependencies/` folder
 - Compiled output in `/bin/` 
 - Built jar: `NeoRogue.jar`
+- After routine code edits, use normal incremental validation (`mvn compile`, the relevant task, or editor diagnostics). Do not delete generated `.class` files, run `mvn clean`, or otherwise force recompilation by default.
+- Only force a rebuild when incremental validation reports a concrete stale-output problem, when a normal compile result is genuinely insufficient for the risk of the change, or when the user explicitly requests it.
 
 ### Dependencies
 - **NeoCore**: Base framework (required)

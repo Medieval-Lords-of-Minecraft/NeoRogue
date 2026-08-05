@@ -48,7 +48,7 @@ public class LightningWand extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SparkStick.get(), ChainLightningWand.get(), BoltWand.get());
+		addSelfReforge(SparkStick.get(), ChainLightningWand.get());
 	}
 	
 	public static Equipment get() {

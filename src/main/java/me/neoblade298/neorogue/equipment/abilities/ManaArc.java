@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -41,7 +40,7 @@ public class ManaArc extends Equipment {
 				EquipmentProperties.ofUsable(12, 0, 9, 0));
 		mana = isUpgraded ? 5 : 6;
 		damage = isUpgraded ? 90 : 60;
-		elec = isUpgraded ? 12 : 8;
+		elec = isUpgraded ? 3 : 2;
 	}
 
 	@Override

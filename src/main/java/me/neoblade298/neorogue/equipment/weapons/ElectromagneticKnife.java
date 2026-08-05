@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -9,26 +8,28 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
-import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class ElectromagneticKnife extends Equipment {
 	private static final String ID = "ElectromagneticKnife";
-	private final int elec, inc;
+	private static final int ELECTRIFIED = 2, ELECTRIFIED_THRESHOLD = 5;
+	private final int bonusDamage;
 	
 	public ElectromagneticKnife(boolean isUpgraded) {
 		super(ID, "Electromagnetic Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(40, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		elec = 1;
-		inc = isUpgraded ? 2 : 1;
+		bonusDamage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -37,32 +38,31 @@ public class ElectromagneticKnife extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new ElectromagneticKnifeInstance(ID));
-	}
-	
-	private class ElectromagneticKnifeInstance extends PriorityAction {
-		private int stacks = elec;
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			weaponSwingAndDamage(pdata.getPlayer(), data, ev.getTarget());
+			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, ELECTRIFIED, -1, this);
+			return TriggerResult.keep();
+		});
 
-		public ElectromagneticKnifeInstance(String id) {
-			super(id);
-
-			action = (data, in) -> {
-				Player p = data.getPlayer();
-				LeftClickHitEvent ev = (LeftClickHitEvent) in;
-				weaponSwingAndDamage(p, data, ev.getTarget());
-				FightData fd = FightInstance.getFightData(ev.getTarget());
-				if (fd.hasStatus(StatusType.ELECTRIFIED)) stacks += inc;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, stacks, -1, ElectromagneticKnife.this);
-				return TriggerResult.keep();
-			};
-		}
-		
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, inputs) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) inputs;
+			if (!ev.getWeapon().equals(this)) return TriggerResult.keep();
+			FightData target = FightInstance.getFightData(ev.getTarget());
+			if (target != null && target.hasStatus(StatusType.ELECTRIFIED)
+					&& target.getStatus(StatusType.ELECTRIFIED).getStacks() >= ELECTRIFIED_THRESHOLD) {
+				ev.getMeta().addDamageSlice(new DamageSlice(pdata, bonusDamage, DamageType.SLASHING,
+						DamageStatTracker.of(id + slot, this)));
+			}
+			return TriggerResult.keep();
+		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec) + ", increased "
-				+ "by " + DescUtil.val(inc) + " for every time you basic attack an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) + " (checked before the weapon"
-						+ " applies it).");
+		item = createItem(Material.STONE_SWORD,
+				"Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED)
+						+ ". Deal " + DescUtil.yellow(bonusDamage) + " additional damage to enemies with at least "
+						+ GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED_THRESHOLD) + ".");
 	}
 }

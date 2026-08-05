@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -21,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -101,7 +100,7 @@ public class ElectricOrb extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			if (!hitEntities.contains(hit.getUniqueId())) return;
+			if (!hitEntities.add(hit.getUniqueId())) return;
 
 			hit.applyStatus(StatusType.ELECTRIFIED, data, elec, -1, ElectricOrb.this);
 			hit.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 2));

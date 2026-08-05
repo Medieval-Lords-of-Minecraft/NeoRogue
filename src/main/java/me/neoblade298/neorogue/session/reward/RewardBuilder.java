@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -113,6 +114,7 @@ public class RewardBuilder {
 	}
 
 	public ArrayList<Reward> build() {
+		rewards.sort(Comparator.comparingInt(reward -> reward instanceof CurrencyReward ? 1 : 0));
 		return rewards;
 	}
 

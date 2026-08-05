@@ -1346,7 +1346,7 @@ public abstract class FightInstance extends Instance {
 						mobRows.add(new FightSnapshot.MobRow(mobEnt.getKey(), uuid.toString(), playerClass, mobTotal,
 								new HashMap<DamageType, Double>(byType)));
 					}
-					gatherContributions(uuid.toString(), fs, equipRows, statusRows);
+					gatherContributions(uuid.toString(), pdata.getAnalyticsEquipmentKeys(), fs, equipRows, statusRows);
 				}
 				pdata.cleanup();
 				if (p != null) {
@@ -1432,10 +1432,13 @@ public abstract class FightInstance extends Instance {
 
 	// Resolves a player's per-equipment contributions into denormalized analytics rows. Variant keys
 	// that do not resolve to a registered Equipment (status-driven damage, misc sources) are dropped.
-	private void gatherContributions(String playerUuid, FightStatistics fs,
+	private void gatherContributions(String playerUuid, Set<String> equippedKeys, FightStatistics fs,
 			ArrayList<FightSnapshot.EquipRow> equipRows, ArrayList<FightSnapshot.StatusRow> statusRows) {
-		for (EquipmentContribution ec : fs.exportContributions().values()) {
-			if (!ec.hasContribution()) continue;
+		HashMap<String, EquipmentContribution> contributions = fs.exportContributions();
+		for (String key : equippedKeys) {
+			contributions.putIfAbsent(key, new EquipmentContribution(key));
+		}
+		for (EquipmentContribution ec : contributions.values()) {
 			boolean upgraded = ec.variantKey.endsWith("+");
 			String baseId = upgraded ? ec.variantKey.substring(0, ec.variantKey.length() - 1) : ec.variantKey;
 			Equipment eq = Equipment.get(baseId, upgraded);

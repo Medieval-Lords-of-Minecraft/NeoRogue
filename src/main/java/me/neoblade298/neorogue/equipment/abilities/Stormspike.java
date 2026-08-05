@@ -43,7 +43,7 @@ public class Stormspike extends Equipment {
 				EquipmentProperties.ofUsable(30, 15, 8, 8));
 		damage = isUpgraded ? 350 : 250;
 		basicLightning = isUpgraded ? 100 : 75;
-        electrified = isUpgraded ? 9 : 6;
+        electrified = isUpgraded ? 5 : 3;
 		shields = isUpgraded ? 25 : 20;
 	}
 	
@@ -117,7 +117,7 @@ public class Stormspike extends Equipment {
 					ev.getMeta().addDamageSlice(new DamageSlice(data, basicLightning, DamageType.LIGHTNING,
 						DamageStatTracker.of(triggerId, eq)));
 					Sounds.firework.play(pl, pl);
-					FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, electrified, -1, Stormspike.this);
+					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, electrified, -1, Stormspike.this);
 					return TriggerResult.keep();
 				});
 				

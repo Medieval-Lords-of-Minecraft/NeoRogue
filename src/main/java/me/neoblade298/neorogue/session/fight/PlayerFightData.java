@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -101,6 +102,7 @@ public class PlayerFightData extends FightData {
 	private Player p;
 	private long nextAttack, nextOffAttack;
 	private ArrayList<ProjectileGroup> extraShots = new ArrayList<ProjectileGroup>();
+	private final HashSet<String> analyticsEquipmentKeys = new HashSet<String>();
 
 	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
@@ -118,6 +120,7 @@ public class PlayerFightData extends FightData {
 
 		this.inst = inst;
 		this.sessdata = data;
+		snapshotAnalyticsEquipment(data);
 
 		// Register early so equipment initialize() can look up this FightData
 		FightInstance.putFightData(p.getUniqueId(), this);
@@ -249,6 +252,25 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 		updateMana();
 		updateBoardLines();
+	}
+
+	private void snapshotAnalyticsEquipment(PlayerSessionData data) {
+		EquipSlot[] slots = { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY,
+				EquipSlot.KEYBIND };
+		for (EquipSlot slot : slots) {
+			for (SessionEquipment equipment : data.getSessionEquipment(slot)) {
+				if (equipment != null) analyticsEquipmentKeys.add(equipment.getEquipment().serialize());
+			}
+		}
+		for (ArtifactInstance artifact : data.getArtifacts().values()) {
+			if (artifact == null) continue;
+			analyticsEquipmentKeys.add(artifact.getArtifact().serialize());
+			if (artifact.hasHeld()) analyticsEquipmentKeys.add(artifact.getHeld().getEquipment().serialize());
+		}
+	}
+
+	public Set<String> getAnalyticsEquipmentKeys() {
+		return Set.copyOf(analyticsEquipmentKeys);
 	}
 
 	public boolean isChanneling() {

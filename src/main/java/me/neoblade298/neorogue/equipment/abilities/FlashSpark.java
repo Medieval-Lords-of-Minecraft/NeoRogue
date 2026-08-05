@@ -72,7 +72,7 @@ public class FlashSpark extends Equipment {
 				EquipmentProperties.ofUsable(20, 0, 12, 0));
 		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 		damage = isUpgraded ? 190 : 125;
-		electrified = isUpgraded ? 7 : 5;
+		electrified = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

@@ -876,7 +876,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Bloodthirster(b);
 			new BluntedArrow(b);
 			new BurningSun(b);
-			new BoltWand(b);
 			new ButterflyKnife(b);
 			new ButterflyKnife2(b);
 			new ChainLightningWand(b);
