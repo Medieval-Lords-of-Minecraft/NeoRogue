@@ -3,19 +3,35 @@ package me.neoblade298.neorogue.session.reward;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.ItemDisplay.ItemDisplayTransform;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -37,9 +53,14 @@ import net.kyori.adventure.text.Component;
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
+	private static final int DISPLAY_TICKS = 60, POP_TICKS = 12, DISMISS_TICKS = 10;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+	private final Map<UUID, BukkitTask> rewardDisplayTasks = new HashMap<UUID, BukkitTask>();
+	private final Map<UUID, List<RewardDisplay>> rewardDisplays = new HashMap<UUID, List<RewardDisplay>>();
 	private TextDisplay holo;
 	private NodeType previous;
+
+	private record RewardDisplay(ItemDisplay item, TextDisplay name) {}
 	
 	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards, NodeType previous) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -93,6 +114,164 @@ public class RewardInstance extends EditInventoryInstance {
 		// Setup hologram
 		Component text = Component.text("Open the enderchest and").appendNewline().append(Component.text("collect your reward!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+		startRewardDisplays();
+	}
+
+	private void startRewardDisplays() {
+		Location chest = findRewardChest();
+		for (Entry<UUID, PlayerSessionData> entry : s.getParty().entrySet()) {
+			UUID uuid = entry.getKey();
+			PlayerSessionData data = entry.getValue();
+			Player player = data.getPlayer();
+			if (player == null || rewardsFor(uuid).isEmpty()) continue;
+
+			List<List<ItemStack>> displayRewards = rewardsFor(uuid).stream()
+					.map(reward -> reward.getDisplayItems(data).stream().map(ItemStack::clone).toList())
+					.toList();
+			BukkitTask task = new BukkitRunnable() {
+				private int rewardIndex;
+				private int displayTick;
+				private List<Location> targets = List.of();
+
+				@Override
+				public void run() {
+					Player viewer = Bukkit.getPlayer(uuid);
+					if (viewer == null || !viewer.isOnline() || rewardIndex >= displayRewards.size()) {
+						removeRewardDisplays(uuid);
+						rewardDisplayTasks.remove(uuid);
+						cancel();
+						return;
+					}
+
+					if (displayTick == 0) {
+						removeRewardDisplays(uuid);
+						targets = spawnRewardDisplays(viewer, chest, displayRewards.get(rewardIndex));
+					}
+					animateRewardDisplays(uuid, chest, targets, displayTick);
+
+					displayTick++;
+					if (displayTick >= DISPLAY_TICKS) {
+						removeRewardDisplays(uuid);
+						displayTick = 0;
+						rewardIndex++;
+					}
+				}
+			}.runTaskTimer(NeoRogue.inst(), 10L, 1L);
+			rewardDisplayTasks.put(uuid, task);
+		}
+	}
+
+	private Location findRewardChest() {
+		Location expected = spawn.clone().add(HOLO_X, 0, HOLO_Z);
+		Block closest = null;
+		double closestDistance = Double.MAX_VALUE;
+		for (int x = -4; x <= 4; x++) {
+			for (int y = -2; y <= 2; y++) {
+				for (int z = -4; z <= 4; z++) {
+					Block block = expected.clone().add(x, y, z).getBlock();
+					if (block.getType() != Material.ENDER_CHEST) continue;
+					double distance = block.getLocation().add(0.5, 0.5, 0.5).distanceSquared(expected);
+					if (distance < closestDistance) {
+						closest = block;
+						closestDistance = distance;
+					}
+				}
+			}
+		}
+		Location anchor = closest == null ? expected.getBlock().getLocation() : closest.getLocation();
+		return anchor.add(0.5, 0.8, 0.5);
+	}
+
+	private List<Location> spawnRewardDisplays(Player viewer, Location chest, List<ItemStack> items) {
+		ArrayList<Location> targets = new ArrayList<Location>();
+		List<RewardDisplay> displays = rewardDisplays.computeIfAbsent(viewer.getUniqueId(), key -> new ArrayList<RewardDisplay>());
+		Vector towardViewer = viewer.getLocation().toVector().subtract(chest.toVector()).setY(0);
+		if (towardViewer.lengthSquared() == 0) towardViewer.setZ(-1);
+		towardViewer.normalize();
+		Vector right = new Vector(-towardViewer.getZ(), 0, towardViewer.getX());
+		double spacing = Math.min(0.85, 3.4 / Math.max(1, items.size() - 1));
+
+		for (int index = 0; index < items.size(); index++) {
+			double offset = (index - (items.size() - 1) / 2.0) * spacing;
+			Location target = chest.clone().add(right.clone().multiply(offset)).add(0, 1.8, 0);
+			targets.add(target);
+			ItemStack item = items.get(index);
+			ItemDisplay itemDisplay = chest.getWorld().spawn(chest, ItemDisplay.class, entity -> {
+				entity.setItemStack(item);
+				entity.setItemDisplayTransform(ItemDisplayTransform.FIXED);
+				entity.setBillboard(Billboard.CENTER);
+				entity.setBrightness(new Display.Brightness(15, 15));
+				entity.setGlowColorOverride(Color.AQUA);
+				entity.setGlowing(true);
+				entity.setTeleportDuration(2);
+				entity.setVisibleByDefault(false);
+				Transformation transformation = entity.getTransformation();
+				transformation.getScale().set(0.15F);
+				entity.setTransformation(transformation);
+			});
+			ItemMeta meta = item.getItemMeta();
+			Component name = meta.hasDisplayName() ? meta.displayName()
+					: Component.translatable(item.getType().translationKey());
+			TextDisplay nameDisplay = chest.getWorld().spawn(chest, TextDisplay.class, entity -> {
+				entity.text(NeoRogue.withTextDisplayShadow(name));
+				NeoRogue.configureHologram(entity);
+				entity.setBillboard(Billboard.CENTER);
+				entity.setBrightness(new Display.Brightness(15, 15));
+				entity.setTeleportDuration(2);
+				entity.setVisibleByDefault(false);
+				Transformation transformation = entity.getTransformation();
+				transformation.getScale().set(0.15F);
+				entity.setTransformation(transformation);
+			});
+			displays.add(new RewardDisplay(itemDisplay, nameDisplay));
+			viewer.showEntity(NeoRogue.inst(), itemDisplay);
+			viewer.showEntity(NeoRogue.inst(), nameDisplay);
+		}
+		viewer.spawnParticle(Particle.END_ROD, chest.clone().add(0, 0.5, 0), 20, 0.35, 0.3, 0.35, 0.03);
+		viewer.playSound(chest, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.9F, 1.4F);
+		return targets;
+	}
+
+	private void animateRewardDisplays(UUID uuid, Location chest, List<Location> targets, int tick) {
+		List<RewardDisplay> displays = rewardDisplays.get(uuid);
+		if (displays == null || displays.size() != targets.size()) return;
+		int index = 0;
+		for (RewardDisplay display : displays) {
+			Location target = targets.get(index++);
+			float scale = 1F;
+			Location location;
+			if (tick < POP_TICKS) {
+				double progress = (tick + 1D) / POP_TICKS;
+				double eased = 1 - Math.pow(1 - progress, 3);
+				location = chest.clone().add(target.toVector().subtract(chest.toVector()).multiply(eased));
+				location.add(0, Math.sin(Math.PI * progress) * 0.45, 0);
+				scale = (float) (0.15 + 0.85 * eased);
+			}
+			else {
+				location = target.clone().add(0, Math.sin((tick - POP_TICKS) * 0.18) * 0.08, 0);
+				if (tick >= DISPLAY_TICKS - DISMISS_TICKS) {
+					scale = (DISPLAY_TICKS - tick) / (float) DISMISS_TICKS;
+				}
+			}
+			display.item().teleport(location);
+			display.name().teleport(location.clone().add(0, -0.55, 0));
+			Transformation transformation = display.item().getTransformation();
+			transformation.getScale().set(scale);
+			transformation.getLeftRotation().rotateY(0.12F);
+			display.item().setTransformation(transformation);
+			Transformation nameTransformation = display.name().getTransformation();
+			nameTransformation.getScale().set(scale);
+			display.name().setTransformation(nameTransformation);
+		}
+	}
+
+	private void removeRewardDisplays(UUID uuid) {
+		List<RewardDisplay> displays = rewardDisplays.remove(uuid);
+		if (displays == null) return;
+		for (RewardDisplay display : displays) {
+			if (display.item().isValid()) display.item().remove();
+			if (display.name().isValid()) display.name().remove();
+		}
 	}
 
 	@Override
@@ -135,8 +314,15 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup(boolean pluginDisable) {
+		for (BukkitTask task : rewardDisplayTasks.values()) {
+			task.cancel();
+		}
+		rewardDisplayTasks.clear();
+		for (UUID uuid : new HashSet<UUID>(rewardDisplays.keySet())) {
+			removeRewardDisplays(uuid);
+		}
 		super.cleanup(pluginDisable);
-		holo.remove();
+		if (holo != null) holo.remove();
 	}
 
 	@Override
@@ -238,6 +424,9 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
+		BukkitTask task = rewardDisplayTasks.remove(p.getUniqueId());
+		if (task != null) task.cancel();
+		removeRewardDisplays(p.getUniqueId());
 		rewards.remove(p.getUniqueId());
 		onRewardClaim();
 	}

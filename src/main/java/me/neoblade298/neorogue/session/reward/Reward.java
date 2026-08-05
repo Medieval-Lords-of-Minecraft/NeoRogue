@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -10,6 +11,9 @@ public interface Reward {
 	// True if the reward can be removed, false if not (usually when it involves opening a secondary choice inventory
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv);
 	public ItemStack getIcon(PlayerSessionData data);
+	public default List<ItemStack> getDisplayItems(PlayerSessionData data) {
+		return List.of(getIcon(data));
+	}
 	public String serialize();
 	
 	public static Reward deserialize(String str) {

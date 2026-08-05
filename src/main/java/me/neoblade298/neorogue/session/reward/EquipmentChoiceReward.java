@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.reward;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -55,6 +56,15 @@ public class EquipmentChoiceReward implements Reward {
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
+	}
+
+	@Override
+	public List<ItemStack> getDisplayItems(PlayerSessionData data) {
+		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+		for (SessionEquipment equip : equips) {
+			items.add(equip.getChoiceItem(data));
+		}
+		return items;
 	}
 
 	@Override
