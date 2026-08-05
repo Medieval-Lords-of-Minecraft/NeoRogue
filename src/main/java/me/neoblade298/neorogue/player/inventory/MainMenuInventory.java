@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -25,7 +26,6 @@ import me.neoblade298.neorogue.player.RunStats;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -181,7 +181,7 @@ public class MainMenuInventory extends CoreInventory {
 			break;
 		case TUTORIAL:
 			p.closeInventory();
-			TutorialBookRegistry.openTableOfContents(p, "neorogue_tutorial");
+			BookRegistry.openTableOfContents(p, "neorogue_guide");
 			break;
 		}
 	}

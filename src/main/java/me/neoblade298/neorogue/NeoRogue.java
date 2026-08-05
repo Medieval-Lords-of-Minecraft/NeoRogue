@@ -121,9 +121,6 @@ import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
-import me.neoblade298.neorogue.tutorial.book.BookClickListener;
-import me.neoblade298.neorogue.tutorial.book.BookCommand;
-import me.neoblade298.neorogue.tutorial.book.TutorialBookRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
@@ -151,7 +148,6 @@ public class NeoRogue extends JavaPlugin {
 		saveResource("caravan.yml", false);
 		saveResource("expboosts.yml", false);
 		saveResource("sellables.yml", false);
-		saveResource("tutorials.yml", false);
 		AnalyticsManager.init();
 		RunReward.setupEconomy();
 		// Must run before registering the IO component: registering the player IO
@@ -162,7 +158,6 @@ public class NeoRogue extends JavaPlugin {
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
-		Bukkit.getPluginManager().registerEvents(new BookClickListener(), this);
 		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 		registerBrigadierCommands();
 		new Placeholders().register();
@@ -200,7 +195,6 @@ public class NeoRogue extends JavaPlugin {
 		MobModifier.registerModifiers(); // Register miniboss/boss mob modifiers
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
-		TutorialBookRegistry.reload(); // Load configurable book-UI tutorials
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
@@ -235,12 +229,11 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	// Registers Paper Brigadier commands via the lifecycle manager (works for legacy JavaPlugins on
-	// modern Paper). Used for the book-UI tutorials: /nrbook <book> [chapter].
+	// modern Paper).
 	@SuppressWarnings("UnstableApiUsage")
 	private void registerBrigadierCommands() {
 		this.getLifecycleManager().registerEventHandler(
 				io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents.COMMANDS, event -> {
-					event.registrar().register(BookCommand.build(), "Open a NeoRogue book-UI tutorial");
 					event.registrar().register(LyticsCommand.build(), "NeoRogue analytics command", java.util.List.of("nrl"));
 				});
 	}
