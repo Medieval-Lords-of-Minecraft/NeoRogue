@@ -30,6 +30,7 @@ import de.tr7zw.nbtapi.NBT;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
+import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -62,7 +63,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 15, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17, CARGO = 14;
+	public static final int STATS = 9, TRASH = 15, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, MAP = 40, SETTINGS = 12, REFORGES = 11, LEAVE = 17, CARGO = 14, TUTORIAL = 16;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -197,6 +198,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		if (!isSpectating) {
+			contents[(TUTORIAL + offset) % inv.getSize()] = createTutorialIcon();
 			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon(data.getSession());
 		}
 		inv.setContents(contents);
@@ -297,6 +299,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		contents[(ARTIFACTS + offset) % inv.getSize()] = createArtifactsIcon(data);
 
 		if (!isSpectating) {
+			contents[(TUTORIAL + offset) % inv.getSize()] = createTutorialIcon();
 			contents[(LEAVE + offset) % inv.getSize()] = createLeaveIcon(data.getSession());
 		}
 		inv.setContents(contents);
@@ -327,6 +330,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static ItemStack createLeaveIcon(Session s) {
 		return CoreInventory.createButton(Material.COMPASS, Component.text(s.getRegion().getType() == RegionType.MEADOWOOD ? "Quit" : "Save & Quit", NamedTextColor.RED),
 				"Stop your run! Only the host can reload it.", 250, NamedTextColor.GRAY);
+	}
+
+	private static ItemStack createTutorialIcon() {
+		return CoreInventory.createButton(Material.WRITABLE_BOOK,
+				Component.text("Tutorial", NamedTextColor.GOLD));
 	}
 
 	// Refreshes just the cargo icon in the player's own (non-spectating) inventory. Call after run cargo
@@ -668,6 +676,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					SessionManager.leaveSession(p);
 				}
 			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == TUTORIAL && cursor.getType().isAir()) {
+			e.setCancelled(true);
+			p.closeInventory();
+			data.trigger(SessionTrigger.OPEN_TUTORIAL_BOOK, null);
+			BookRegistry.openTableOfContents(p, "neorogue_guide");
 			return;
 		}
 

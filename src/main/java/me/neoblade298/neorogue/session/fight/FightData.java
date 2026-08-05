@@ -360,6 +360,7 @@ public class FightData {
 		if (hologram == null) {
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
+			NeoRogue.configureHologram(hologram);
 			hologram.setViewRange(100);
 			hologram.setSeeThrough(false);
 
@@ -376,7 +377,7 @@ public class FightData {
 			// Some entities occasionally dismount the hologram; remount it
 			entity.addPassenger(hologram);
 		}
-		hologram.text(text);
+		hologram.text(NeoRogue.withTextDisplayShadow(text));
 	}
 
 	protected void removeHologram() {

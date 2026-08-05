@@ -12,7 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
@@ -149,9 +148,7 @@ public class SessionEquipment {
 	// Builds this SessionEquipment's own hoverable so it always reflects session-specific extra
 	// data (e.g. durability), rather than delegating to the base Equipment's cached hoverable.
 	public Component getHoverable() {
-		return getDisplay().decorate(TextDecoration.UNDERLINED)
-				.hoverEvent(getItem().asHoverEvent())
-				.clickEvent(ClickEvent.runCommand("/nr glossary " + equipment.getId()));
+		return Equipment.createHoverable(getDisplay(), getItem(), equipment.getId());
 	}
 
 	/**

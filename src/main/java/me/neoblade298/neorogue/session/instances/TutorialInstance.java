@@ -9,11 +9,14 @@ import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -38,13 +41,21 @@ public class TutorialInstance extends EditInventoryInstance {
 	private final List<TutorialStage> stages;
 	private final HashMap<UUID, Integer> playerStages = new HashMap<UUID, Integer>();
 	private TextDisplay holo;
+	private Block candleBlock;
+	private boolean returning;
 
 	public TutorialInstance(Session s) {
-		this(s, List.of(new TutorialStage(
-				Component.text("Equipment Details", NamedTextColor.GOLD),
-				Component.text("You can view details of any equipment with right click. Try it out!"),
-				SessionTrigger.OPEN_GLOSSARY,
-				input -> true)));
+		this(s, List.of(
+				new TutorialStage(
+						Component.text("Equipment Details", NamedTextColor.GOLD),
+						Component.text("You can view details of any equipment with right click. Try it out!"),
+						SessionTrigger.OPEN_GLOSSARY,
+						input -> true),
+				new TutorialStage(
+						Component.text("Tutorial Book", NamedTextColor.GOLD),
+						Component.text("The tutorial book is always available in your menu compass and in your inventory during runs. Open it now!"),
+						SessionTrigger.OPEN_TUTORIAL_BOOK,
+						input -> true)));
 	}
 
 	public TutorialInstance(Session s, List<TutorialStage> stages) {
@@ -70,6 +81,7 @@ public class TutorialInstance extends EditInventoryInstance {
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z),
 				Component.text("Tutorial", NamedTextColor.GOLD).appendNewline()
 						.append(Component.text("Right click the pillar below!", NamedTextColor.WHITE)));
+		candleBlock = spawn.clone().add(0, 1, 3).getBlock();
 	}
 
 	private void registerStageTrigger(PlayerSessionData data) {
@@ -88,8 +100,32 @@ public class TutorialInstance extends EditInventoryInstance {
 		int nextStage = playerStages.getOrDefault(uuid, 0) + 1;
 		playerStages.put(uuid, nextStage);
 		if (nextStage < stages.size()) registerStageTrigger(data);
+		s.launchFireworks();
 		updateBoardLines();
 		updateActionBar();
+		if (allPlayersComplete()) completeTutorial();
+	}
+
+	private void completeTutorial() {
+		if (returning) return;
+
+		Instance next = s.getNode().getDestinations().isEmpty()
+				? new TutorialWinInstance(s)
+				: NodeSelectInstance.create(s);
+		if (!s.canSetInstance(next)) return;
+
+		Candle candle = (Candle) candleBlock.getBlockData();
+		candle.setLit(true);
+		candleBlock.setBlockData(candle);
+		returning = true;
+		s.setBusy(true);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (s.getInstance() == TutorialInstance.this) s.setInstance(next);
+				s.setBusy(false);
+			}
+		}.runTaskLater(NeoRogue.inst(), 40L);
 	}
 
 	@Override
@@ -111,15 +147,7 @@ public class TutorialInstance extends EditInventoryInstance {
 		} else {
 			if (!allPlayersComplete()) {
 				e.getPlayer().sendMessage(Component.text("Waiting for the rest of your party to finish.", NamedTextColor.YELLOW));
-				return;
 			}
-			if (s.getNode().getDestinations().isEmpty()) {
-				TutorialWinInstance win = new TutorialWinInstance(s);
-				if (s.canSetInstance(win)) s.setInstance(win);
-				return;
-			}
-			NodeSelectInstance next = NodeSelectInstance.create(s);
-			if (s.canSetInstance(next)) s.setInstance(next);
 		}
 	}
 
@@ -180,6 +208,10 @@ public class TutorialInstance extends EditInventoryInstance {
 	public void cleanup(boolean pluginDisable) {
 		for (PlayerSessionData data : s.getParty().values()) data.removeTrigger(TRIGGER_ID);
 		super.cleanup(pluginDisable);
+		if (candleBlock != null && candleBlock.getBlockData() instanceof Candle candle) {
+			candle.setLit(false);
+			candleBlock.setBlockData(candle);
+		}
 		if (holo != null) holo.remove();
 	}
 

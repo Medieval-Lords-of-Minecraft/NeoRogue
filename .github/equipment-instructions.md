@@ -28,6 +28,11 @@ public class MyEquipment extends Equipment {
 }
 ```
 
+### Equipment Icon Restrictions
+- `Material.SHIELD` is restricted to equipment with `EquipmentType.OFFHAND`. This restriction concerns the icon material, not equipment that grants the Shields combat effect.
+- Helmet, chestplate, leggings, and boots materials are restricted to equipment with `EquipmentType.ARMOR`.
+- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON`.
+
 ### Equipment Registration
 1. Create equipment file in appropriate subfolder (`abilities/`, `accessories/`, etc.)
 2. Add import to `Equipment.java` 

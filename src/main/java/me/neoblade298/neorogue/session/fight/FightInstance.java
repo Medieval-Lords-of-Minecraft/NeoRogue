@@ -368,7 +368,8 @@ public abstract class FightInstance extends Instance {
 
 	public void createIndicator(Component txt, Location src, boolean bigHit, Vector direction) {
 		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
-		td.text(txt);
+		td.text(NeoRogue.withTextDisplayShadow(txt));
+		NeoRogue.configureHologram(td);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(bigHit ? 3 : 2);
 		td.setBillboard(Billboard.CENTER);

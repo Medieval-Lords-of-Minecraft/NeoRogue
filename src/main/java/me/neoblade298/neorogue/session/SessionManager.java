@@ -171,19 +171,25 @@ public class SessionManager implements Listener {
 			Bukkit.getPluginManager().callEvent(new SessionLeaveEvent(uuid, s));
 	}
 
+	public static void removeFromSession(UUID uuid, Session expectedSession) {
+		if (sessions.get(uuid) == expectedSession) {
+			removeFromSession(uuid);
+		}
+	}
+
 	public static void removeSession(Session s) {
 		if (s.getInstance() instanceof LobbyInstance) {
 			LobbyInstance lob = (LobbyInstance) s.getInstance();
 			for (UUID uuid : lob.getInLobby()) {
-				removeFromSession(uuid);
+				removeFromSession(uuid, s);
 			}
 		} else {
 			for (UUID uuid : s.getParty().keySet()) {
-				removeFromSession(uuid);
+				removeFromSession(uuid, s);
 			}
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
-			removeFromSession(uuid);
+			removeFromSession(uuid, s);
 		}
 		sessionPlots.remove(s.getPlot());
 	}

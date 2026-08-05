@@ -120,6 +120,11 @@ private Player p;  // ❌ Never store Player as field
 - Shields managed via `FightData` methods with `p.getUniqueId()` as applier
 - Particle/sound effects via `ParticleContainer`/`SoundContainer` (see [Particle Instructions](particle-instructions.md))
 
+### Equipment Icon Restrictions
+- `Material.SHIELD` is restricted to equipment with `EquipmentType.OFFHAND`. This restriction concerns the icon material, not equipment that grants the Shields combat effect.
+- Helmet, chestplate, leggings, and boots materials are restricted to equipment with `EquipmentType.ARMOR`.
+- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON`.
+
 ### Particle Tuning Guidelines
 - For most projectile visuals, keep particle randomness subtle: prefer `spread` values at or below `0.1`.
 - For most projectile visuals, keep motion subtle: prefer `speed` values at or below `0.01`.

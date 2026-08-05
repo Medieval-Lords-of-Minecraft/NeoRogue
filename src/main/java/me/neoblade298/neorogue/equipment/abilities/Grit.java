@@ -87,7 +87,7 @@ public class Grit extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.FLINT,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing close-range " + GlossaryTag.DIRECT.tag(this) + " damage " + DescUtil.val(5) + " times. " +
 				GlossaryTag.DIRECT.tag(this) + " damage dealt within "  + DescUtil.val(5) + " blocks of the target is increased by " +
 				DescUtil.val(inc) + ". Killing an enemy within " + DescUtil.val(5) + " blocks grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("8s") + "].");

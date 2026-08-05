@@ -57,11 +57,14 @@ public class ProjectileGroup {
 	}
 	
 	public LinkedList<ProjectileInstance> start(FightData owner, Location origin, Vector direction) {
+		if (group.isEmpty()) return new LinkedList<ProjectileInstance>();
+
 		PreLaunchProjectileGroupEvent event = null;
 		if (owner.getEntity() instanceof Player) {
 			Player p = (Player) owner.getEntity();
 			event = new PreLaunchProjectileGroupEvent(this);
 			if (FightInstance.trigger(p, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, event)) return null;
+			if (group.isEmpty()) return new LinkedList<ProjectileInstance>();
 		}
 
 		direction.normalize();

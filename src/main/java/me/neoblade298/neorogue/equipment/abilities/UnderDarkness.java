@@ -91,7 +91,7 @@ public class UnderDarkness extends Equipment {
 	// add effects
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.INK_SAC,
 				"On cast, drop a smoke bomb that detonates after " + DescUtil.val("1s") + ". After detonation, for " + DescUtil.val("5s") + ","
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>], buffs"
 						+ " your damage by " + DescUtil.val(damage) + " [<white>1s</white>], and grants "

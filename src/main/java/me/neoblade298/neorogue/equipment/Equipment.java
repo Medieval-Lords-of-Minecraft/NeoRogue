@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.accessories.BlightedEarrings;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
 import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;
 import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
+import me.neoblade298.neorogue.equipment.accessories.ChainNecklace;
 import me.neoblade298.neorogue.equipment.accessories.CobraCrest;
 import me.neoblade298.neorogue.equipment.accessories.DaedalusHammer;
 import me.neoblade298.neorogue.equipment.accessories.DiscountCard;
@@ -86,6 +87,7 @@ import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.ShellTrinket;
 import me.neoblade298.neorogue.equipment.accessories.SigilOfDestruction;
 import me.neoblade298.neorogue.equipment.accessories.SigilOfTheIronLegion;
+import me.neoblade298.neorogue.equipment.accessories.SilverRing;
 import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
 import me.neoblade298.neorogue.equipment.accessories.TarotCard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
@@ -258,6 +260,7 @@ import me.neoblade298.neorogue.equipment.offhands.RedFan;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.ShockwaveTome;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
+import me.neoblade298.neorogue.equipment.offhands.Southpaw;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfGravity;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfScorchedEarth;
@@ -690,6 +693,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TrappersEssence(b);
 			new Transmutation(b);
 			new TreeTrunk(b);
+			new MartialStaff(b);
 			new TrinityForce(b);
 			new TwinBolt(b);
 			new TwinShiv(b);
@@ -715,6 +719,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WindSlash(b);
 			new WindTrap(b);
 			new Wound(b);
+			new WoodenAxe(b);
+			new WoodenGreataxe(b);
 			new Zone(b);
 			new Zone2(b);
 
@@ -723,6 +729,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BlightedEarrings(b);
 			new BurningRing(b);
 			new CeruleanBracelet(b);
+			new ChainNecklace(b);
 			new CobraCrest(b);
 			new EagleFeather(b);
 			new EarthenBracer(b);
@@ -757,6 +764,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfSharpness(b);
 			new RingOfTheEagle(b);
 			new SaboteursRing(b);
+			new SilverRing(b);
 			new SigilOfDestruction(b);
 			new RingOfNight(b);
 			new SpiritShard(b);
@@ -843,6 +851,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RubyArmament(b);
 			new ShockwaveTome(b);
 			new SmallShield(b);
+			new Southpaw(b);
 			new SpikyShield(b);
 			new TomeOfGravity(b);
 			new TomeOfScorchedEarth(b);
@@ -1579,8 +1588,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 						DataComponentTypes.POTION_CONTENTS)
 				.build());
 
-		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
-				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
+		this.hoverable = createHoverable(this.display, item, this.id);
 
 		NBT.modify(item, nbt -> {
 			nbt.setString("equipId", id);
@@ -1844,6 +1852,19 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Component getHoverable() {
 		return hoverable;
+	}
+
+	static Component createHoverable(Component display, ItemStack item, String glossaryId) {
+		Component nonBreakingDisplay = display.replaceText(config -> config
+				.matchLiteral(" ")
+				.replacement("\u00A0"));
+		return Component.text("[", NamedTextColor.DARK_GRAY)
+				.append(Util.materialToSprite(item.getType()).color(NamedTextColor.WHITE))
+				.append(Component.text("\u00A0"))
+				.append(nonBreakingDisplay)
+				.append(Component.text("]", NamedTextColor.DARK_GRAY))
+				.hoverEvent(item.asHoverEvent())
+				.clickEvent(ClickEvent.runCommand("/nr glossary " + glossaryId));
 	}
 
 	public int getCooldown() {
