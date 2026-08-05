@@ -1855,10 +1855,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	static Component createHoverable(Component display, ItemStack item, String glossaryId) {
+		Component nonBreakingDisplay = display.replaceText(config -> config
+				.matchLiteral(" ")
+				.replacement("\u00A0"));
 		return Component.text("[", NamedTextColor.DARK_GRAY)
 				.append(Util.materialToSprite(item.getType()).color(NamedTextColor.WHITE))
-				.append(Component.space())
-				.append(display)
+				.append(Component.text("\u00A0"))
+				.append(nonBreakingDisplay)
 				.append(Component.text("]", NamedTextColor.DARK_GRAY))
 				.hoverEvent(item.asHoverEvent())
 				.clickEvent(ClickEvent.runCommand("/nr glossary " + glossaryId));

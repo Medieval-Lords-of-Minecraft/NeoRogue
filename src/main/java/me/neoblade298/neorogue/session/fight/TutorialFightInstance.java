@@ -121,8 +121,9 @@ public class TutorialFightInstance extends StandardFightInstance {
 				pfd.addTrigger("tutorial", Trigger.DEAL_DAMAGE, (pdata, in) -> {
 					DealDamageEvent ev = (DealDamageEvent) in;
 					if (ev.getDamage() <= 3) {
-						Util.msgRaw(pfd.getPlayer(),
-								"<red>Select your <white>FLINT</white>, then use your sword!");
+						Util.msgRaw(pfd.getPlayer(), Component.text("Select ", NamedTextColor.RED)
+								.append(EmpoweredEdge.get().getHoverable())
+								.append(Component.text(", then use your sword!", NamedTextColor.RED)));
 					}
 					return TriggerResult.keep();
 				});
