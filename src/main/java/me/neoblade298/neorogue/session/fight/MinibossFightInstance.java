@@ -72,7 +72,7 @@ public class MinibossFightInstance extends FightInstance {
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			RewardBuilder rb = new RewardBuilder(s, data, NodeType.MINIBOSS);
-			int value = s.getBaseDropValue() + 2;
+			int value = s.getBaseDropValue() + 1;
 
 			rb.coins(50);
 			rb.equipmentDrops(value, 3);

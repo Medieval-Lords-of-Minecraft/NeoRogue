@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -37,7 +36,7 @@ public class YellowRing extends Equipment {
 				return TriggerResult.keep();
 			}
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().containsType(DamageType.LIGHTNING)) {
+			if (!ev.getMeta().isBasicAttack() && ev.getMeta().containsType(DamageType.LIGHTNING)) {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				fd.applyStatus(StatusType.ELECTRIFIED, data, elec, -1, this);
 			}
@@ -47,7 +46,7 @@ public class YellowRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.YELLOW_DYE, "Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.val("50%") + " mana also applies " +
+		item = createItem(Material.YELLOW_DYE, "Dealing non-basic " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.val("50%") + " mana also applies " +
 		GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}
 }

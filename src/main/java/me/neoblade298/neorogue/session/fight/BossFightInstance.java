@@ -90,7 +90,7 @@ public class BossFightInstance extends FightInstance {
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			RewardBuilder rb = new RewardBuilder(s, data, NodeType.BOSS);
-			int value = s.getBaseDropValue() + 4;
+			int value = s.getBaseDropValue() + 3;
 
 			rb.coins(100);
 			rb.equipmentDrops(value, 3);
