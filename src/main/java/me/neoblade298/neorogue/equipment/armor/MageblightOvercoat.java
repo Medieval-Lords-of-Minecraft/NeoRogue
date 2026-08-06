@@ -1,0 +1,46 @@
+package me.neoblade298.neorogue.equipment.armor;
+
+import java.util.UUID;
+
+import org.bukkit.Material;
+
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+
+public class MageblightOvercoat extends Equipment {
+	private static final String ID = "MageblightOvercoat";
+	private static final double MANA_REGEN_REDUCTION = 0.5;
+	private int magicReduction;
+
+	public MageblightOvercoat(boolean isUpgraded) {
+		super(ID, "Mageblight Overcoat", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+				EquipmentType.ARMOR);
+		magicReduction = isUpgraded ? 4 : 3;
+	}
+
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		data.addManaRegen(-MANA_REGEN_REDUCTION);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, magicReduction,
+				StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce mana regen by " + DescUtil.white(MANA_REGEN_REDUCTION)
+				+ ". Reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(magicReduction) + ".");
+	}
+}
