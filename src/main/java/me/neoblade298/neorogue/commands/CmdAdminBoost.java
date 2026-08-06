@@ -84,9 +84,12 @@ public class CmdAdminBoost extends Subcommand {
 			return;
 		}
 
-		pdata.addExpBoost(type, duration);
+		boolean extended = pdata.addExpBoost(type, duration);
+		String message = type.formatGrantMessage(extended, p.getName(), duration);
+		if (message != null) Util.msgRaw(p, message);
 		String unit = type.getDurationType() == BoostDurationType.TIME ? duration + "s" : duration + " run(s)";
-		Util.msgRaw(s, "<green>Granted " + type.getDisplayName() + " (" + unit + ") to " + p.getName());
+		Util.msgRaw(s, "<green>" + (extended ? "Extended " : "Granted ") + type.getDisplayName()
+				+ " (" + unit + ") " + (extended ? "for " : "to ") + p.getName());
 	}
 
 	private String typeList() {

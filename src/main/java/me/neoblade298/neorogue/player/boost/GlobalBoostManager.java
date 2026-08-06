@@ -43,10 +43,13 @@ public class GlobalBoostManager {
 		}
 	}
 
-	// Grants or extends a global boost. Only TIME-based types are allowed; RUNS types
-	// are rejected and return false. Extends to the later expiry if one already exists.
+	// Grants or extends a global boost. Returns whether an active boost of the same type
+	// was extended. Only TIME-based types are allowed.
 	public static boolean addGlobalBoost(ExpBoostType type, long durationSeconds) {
-		if (type.getDurationType() != BoostDurationType.TIME) return false;
+		if (type.getDurationType() != BoostDurationType.TIME) {
+			throw new IllegalArgumentException("Global boosts must use the TIME duration type");
+		}
+		boosts.removeIf(ExpBoost::isExpired);
 		long expiry = System.currentTimeMillis() + durationSeconds * 1000L;
 		ExpBoost existing = null;
 		for (ExpBoost b : boosts) {
@@ -58,10 +61,10 @@ public class GlobalBoostManager {
 		if (existing == null) {
 			boosts.add(new ExpBoost(type, expiry));
 		} else {
-			existing.setRemaining(Math.max(existing.getRemaining(), expiry));
+			existing.setRemaining(existing.getRemaining() + durationSeconds * 1000L);
 		}
 		saveAsync();
-		return true;
+		return existing != null;
 	}
 
 	// Removes all active global boosts.

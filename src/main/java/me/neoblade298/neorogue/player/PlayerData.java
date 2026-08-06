@@ -459,10 +459,11 @@ public class PlayerData {
 		return expBoosts;
 	}
 
-	// Grants a new boost. RUNS types stack their run count if one of the same type
-	// already exists; TIME types keep whichever expiry is later.
-	public void addExpBoost(ExpBoostType type, long durationInput) {
+	// Grants a new boost or adds to its remaining duration. Returns whether an active
+	// boost of the same type was extended.
+	public boolean addExpBoost(ExpBoostType type, long durationInput) {
 		if (!type.isGrantable()) throw new IllegalArgumentException("Permission-only boosts cannot be granted");
+		pruneExpBoosts();
 		ExpBoost existing = null;
 		for (ExpBoost b : expBoosts) {
 			if (b.getType() == type) {
@@ -477,9 +478,10 @@ public class PlayerData {
 			existing.setRemaining(existing.getRemaining() + durationInput);
 		}
 		else {
-			existing.setRemaining(Math.max(existing.getRemaining(), System.currentTimeMillis() + durationInput * 1000L));
+			existing.setRemaining(existing.getRemaining() + durationInput * 1000L);
 		}
 		saveExpBoostsAsync();
+		return existing != null;
 	}
 
 	// Removes any boosts that are no longer active.

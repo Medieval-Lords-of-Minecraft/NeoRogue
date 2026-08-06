@@ -4,19 +4,41 @@
 #   multiplier:    additive exp bonus (0.30 = +30%)
 #   duration-type: optional; TIME for a real-time duration, or RUNS for a number of runs
 #   permission:    optional permission that grants this boost at run start
+#   receive-message: optional message sent when this boost is first granted
+#   extend-message:  optional message sent when an existing boost is extended
+# Messages support %boost%, %duration%, and %player% placeholders.
 # Entries without duration-type are permission-only and cannot be granted or persisted.
 
-STARTER:
-  display-name: "Starter Boost"
-  multiplier: 0.30
+VOTE:
+  display-name: "Vote Boost"
+  multiplier: 0.50
   duration-type: RUNS
+  receive-message: "<green>You received <yellow>%boost%</yellow> for <yellow>%duration%</yellow>."
+  extend-message: "<green>Your <yellow>%boost%</yellow> was extended by <yellow>%duration%</yellow>."
 
-WEEKEND:
-  display-name: "Weekend Boost"
+SHOP_GLOBAL:
+  display-name: "Global Donator Boost"
   multiplier: 0.30
   duration-type: TIME
+  receive-message: "<green>%player% activated <yellow>%boost%</yellow> for <yellow>%duration%</yellow>!"
+  extend-message: "<green>%player% extended <yellow>%boost%</yellow> by <yellow>%duration%</yellow>!"
 
-PATRON:
-  display-name: "Patron Boost"
+IRON:
+  display-name: "Iron Rank Boost"
+  multiplier: 0.10
+  permission: "neorogue.expboost.iron"
+
+GOLD:
+  display-name: "Gold Rank Boost"
+  multiplier: 0.25
+  permission: "neorogue.expboost.gold"
+
+DIAMOND:
+  display-name: "Diamond Rank Boost"
   multiplier: 0.50
-  permission: "neorogue.expboost.patron"
+  permission: "neorogue.expboost.diamond"
+
+NETHERITE:
+  display-name: "Netherite Rank Boost"
+  multiplier: 1.0
+  permission: "neorogue.expboost.netherite"

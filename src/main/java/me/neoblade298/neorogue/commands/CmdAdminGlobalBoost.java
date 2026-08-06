@@ -2,7 +2,9 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -20,7 +22,7 @@ public class CmdAdminGlobalBoost extends Subcommand {
 		for (ExpBoostType type : ExpBoostType.values()) {
 			if (type.getDurationType() == BoostDurationType.TIME) typeTab.add(type.name());
 		}
-		args.add(new Arg("type").setTabOptions(typeTab), new Arg("durationSeconds", false));
+		args.add(new Arg("type").setTabOptions(typeTab), new Arg("durationSeconds", false), new Arg("player", false));
 		this.enableTabComplete();
 	}
 
@@ -60,8 +62,16 @@ public class CmdAdminGlobalBoost extends Subcommand {
 			return;
 		}
 
-		GlobalBoostManager.addGlobalBoost(type, duration);
-		Util.msgRaw(s, "<green>Activated global boost " + type.getDisplayName() + " (" + duration + "s)");
+		boolean extended = GlobalBoostManager.addGlobalBoost(type, duration);
+		String playerName = args.length > 2 ? args[2] : s.getName();
+		String message = type.formatGrantMessage(extended, playerName, duration);
+		if (message != null) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				Util.msgRaw(player, message);
+			}
+		}
+		Util.msgRaw(s, "<green>" + (extended ? "Extended" : "Activated") + " global boost "
+				+ type.getDisplayName() + " (" + duration + "s)");
 	}
 
 	private String typeList() {

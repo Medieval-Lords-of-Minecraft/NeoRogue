@@ -22,7 +22,7 @@ public class ExpBoostType {
 	private String displayName;
 	private double multiplier;
 	private BoostDurationType durationType;
-	private String permission;
+	private String permission, receiveMessage, extendMessage;
 
 	private ExpBoostType(String id, Section sec) {
 		this.id = normalizeId(id);
@@ -35,6 +35,8 @@ public class ExpBoostType {
 		String configuredPermission = sec.getString("permission");
 		this.permission = configuredPermission == null || configuredPermission.isBlank()
 				? null : configuredPermission.trim();
+		this.receiveMessage = sec.getString("receive-message");
+		this.extendMessage = sec.getString("extend-message");
 		if (durationType == null && permission == null) {
 			throw new IllegalArgumentException("duration-type or permission is required");
 		}
@@ -74,6 +76,8 @@ public class ExpBoostType {
 		multiplier = configured.multiplier;
 		durationType = configured.durationType;
 		permission = configured.permission;
+		receiveMessage = configured.receiveMessage;
+		extendMessage = configured.extendMessage;
 	}
 
 	public static ExpBoostType get(String id) {
@@ -129,5 +133,40 @@ public class ExpBoostType {
 
 	public String getPermission() {
 		return permission;
+	}
+
+	public String getReceiveMessage() {
+		return receiveMessage;
+	}
+
+	public String getExtendMessage() {
+		return extendMessage;
+	}
+
+	public String formatGrantMessage(boolean extended, String playerName, long duration) {
+		String message = extended ? extendMessage : receiveMessage;
+		if (message == null || message.isBlank()) return null;
+		return message.replace("%boost%", displayName)
+				.replace("%duration%", formatDuration(duration))
+				.replace("%player%", playerName);
+	}
+
+	private String formatDuration(long duration) {
+		if (durationType == BoostDurationType.RUNS) {
+			return duration + (duration == 1 ? " run" : " runs");
+		}
+		if (duration % 86400 == 0) {
+			long days = duration / 86400;
+			return days + (days == 1 ? " day" : " days");
+		}
+		if (duration % 3600 == 0) {
+			long hours = duration / 3600;
+			return hours + (hours == 1 ? " hour" : " hours");
+		}
+		if (duration % 60 == 0) {
+			long minutes = duration / 60;
+			return minutes + (minutes == 1 ? " minute" : " minutes");
+		}
+		return duration + (duration == 1 ? " second" : " seconds");
 	}
 }
