@@ -72,6 +72,14 @@ public class Mob implements Comparable<Mob> {
 		return ids;
 	}
 
+	public static TreeSet<String> getStatIds(MobType type) {
+		TreeSet<String> ids = new TreeSet<String>();
+		for (Mob mob : mobs.values()) {
+			if (mob.type == type) ids.add(mob.statId);
+		}
+		return ids;
+	}
+
 	public static Mob get(String id) {
 		/**
 		 * Don't do this, many mobs aren't in the Mob glossary (like BanditKingCondemn) and thus this will spam

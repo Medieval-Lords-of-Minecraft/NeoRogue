@@ -24,6 +24,8 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
+import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -643,28 +645,29 @@ public class AnalyticsReport {
 
 	// Same leaderboard restricted to the boss target mobs declared by BOSS map pieces.
 	public static void bosses(CommandSender s, int version, String playerClass, AnalyticsFilters filters) {
-		Set<String> ids = collectTargetMobIds(Map.getBossPieces());
+		Set<String> ids = collectTargetMobIds(Map.getBossPieces(), MobType.BOSS);
 		mobLeaderboard(s, version, null, playerClass, ids, "Boss Damage Leaderboard",
 				"/nrlytics bosses", filters);
 	}
 
 	// Same leaderboard restricted to the miniboss target mobs declared by MINIBOSS map pieces.
 	public static void minibosses(CommandSender s, int version, String playerClass, AnalyticsFilters filters) {
-		Set<String> ids = collectTargetMobIds(Map.getMinibossPieces());
+		Set<String> ids = collectTargetMobIds(Map.getMinibossPieces(), MobType.MINIBOSS);
 		mobLeaderboard(s, version, null, playerClass, ids, "Miniboss Damage Leaderboard",
 				"/nrlytics minibosses", filters);
 	}
 
 	// Unions the target mob ids of every map piece across all regions. Used to scope the mob
 	// leaderboard to just the actual boss/miniboss entities (excluding adds spawned in those fights).
-	private static Set<String> collectTargetMobIds(java.util.HashMap<RegionType, ArrayList<MapPiece>> pieces) {
-		Set<String> ids = new HashSet<String>();
+	private static Set<String> collectTargetMobIds(java.util.HashMap<RegionType, ArrayList<MapPiece>> pieces,
+			MobType type) {
+		Set<String> ids = new HashSet<String>(Mob.getStatIds(type));
 		if (pieces == null) return ids;
 		for (ArrayList<MapPiece> list : pieces.values()) {
 			if (list == null) continue;
 			for (MapPiece piece : list) {
 				if (piece == null || piece.getTargets() == null) continue;
-				ids.addAll(piece.getTargets());
+				for (String target : piece.getTargets()) ids.add(Mob.getStatId(target));
 			}
 		}
 		return ids;

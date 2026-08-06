@@ -1325,6 +1325,13 @@ public abstract class FightInstance extends Instance {
 		LinkedHashSet<String> mobIds = new LinkedHashSet<String>();
 		ArrayList<FightSnapshot.MobRow> mobRows = new ArrayList<FightSnapshot.MobRow>();
 		double partyDamageDealt = 0, partyDamageTaken = 0;
+		if (map != null) {
+			for (Mob mob : map.getMobs()) mobIds.add(mob.getStatId());
+		}
+		for (UUID uuid : s.getParty().keySet()) {
+			PlayerFightData pdata = userData.get(uuid);
+			if (pdata != null) mobIds.addAll(pdata.getStats().getDamageTaken().keySet());
+		}
 
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
@@ -1336,14 +1343,13 @@ public abstract class FightInstance extends Instance {
 					FightStatistics fs = pdata.getStats();
 					partyDamageDealt += fs.getTotalDamageDealt();
 					partyDamageTaken += fs.getTotalDamageTaken();
-					mobIds.addAll(fs.getDamageTaken().keySet());
 					String playerClass = data.getPlayerClass() != null ? data.getPlayerClass().name() : "UNKNOWN";
-					for (Entry<String, HashMap<DamageType, Double>> mobEnt : fs.getDamageTaken().entrySet()) {
-						HashMap<DamageType, Double> byType = mobEnt.getValue();
+					for (String mobId : mobIds) {
+						HashMap<DamageType, Double> byType = fs.getDamageTaken().getOrDefault(mobId,
+								new HashMap<DamageType, Double>());
 						double mobTotal = 0;
 						for (double amt : byType.values()) mobTotal += amt;
-						if (mobTotal <= 0) continue;
-						mobRows.add(new FightSnapshot.MobRow(mobEnt.getKey(), uuid.toString(), playerClass, mobTotal,
+						mobRows.add(new FightSnapshot.MobRow(mobId, uuid.toString(), playerClass, mobTotal,
 								new HashMap<DamageType, Double>(byType)));
 					}
 					gatherContributions(uuid.toString(), pdata.getAnalyticsEquipmentKeys(), fs, equipRows, statusRows);
