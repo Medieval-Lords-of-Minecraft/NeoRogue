@@ -367,7 +367,8 @@ public class NeoRogue extends JavaPlugin {
 		configureHologram(td);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(1);
-		td.setBillboard(Billboard.CENTER);
+		td.setBillboard(Billboard.FIXED);
+		td.setRotation(180, 0);
 		td.setTransformation(trans);
 		return td;
 	}
