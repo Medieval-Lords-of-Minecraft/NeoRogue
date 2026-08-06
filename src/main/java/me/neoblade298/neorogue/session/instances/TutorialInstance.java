@@ -48,12 +48,14 @@ public class TutorialInstance extends EditInventoryInstance {
 		this(s, List.of(
 				new TutorialStage(
 						Component.text("Equipment Details", NamedTextColor.GOLD),
-						Component.text("You can view details of any equipment with right click. Try it out!"),
+						Component.text("You can view details of any equipment with right click. Try it out to move on!"),
+						Component.text("Success! You opened an equipment's details.", NamedTextColor.GREEN),
 						SessionTrigger.OPEN_GLOSSARY,
 						input -> true),
 				new TutorialStage(
 						Component.text("Tutorial Book", NamedTextColor.GOLD),
-						Component.text("The tutorial book is always available in your menu compass and in your inventory during runs. Open it now!"),
+						Component.text("The tutorial book is always available in in your inventory during runs (the book & quill). Open it to move on!"),
+						Component.text("Success! You opened the tutorial book.", NamedTextColor.GREEN),
 						SessionTrigger.OPEN_TUTORIAL_BOOK,
 						input -> true)));
 	}
@@ -97,7 +99,11 @@ public class TutorialInstance extends EditInventoryInstance {
 
 	private void advanceStage(PlayerSessionData data) {
 		UUID uuid = data.getUniqueId();
-		int nextStage = playerStages.getOrDefault(uuid, 0) + 1;
+		int currentStage = playerStages.getOrDefault(uuid, 0);
+		if (currentStage >= stages.size()) return;
+		Player player = data.getPlayer();
+		if (player != null) player.sendMessage(stages.get(currentStage).getSuccessMessage());
+		int nextStage = currentStage + 1;
 		playerStages.put(uuid, nextStage);
 		if (nextStage < stages.size()) registerStageTrigger(data);
 		s.launchFireworks();
@@ -165,7 +171,7 @@ public class TutorialInstance extends EditInventoryInstance {
 
 	private void showDialog(Player player, TutorialStage stage) {
 		UUID viewerId = player.getUniqueId();
-		ActionButton close = ActionButton.builder(Component.text("Close", NamedTextColor.WHITE))
+		ActionButton close = ActionButton.builder(Component.text("Okay", NamedTextColor.WHITE))
 				.width(200)
 				.action(DialogAction.customClick((response, audience) -> {
 					Player viewer = Bukkit.getPlayer(viewerId);
@@ -229,14 +235,21 @@ public class TutorialInstance extends EditInventoryInstance {
 
 	public static class TutorialStage {
 		private final Component title;
-		private final Component text;
+		private final Component text, successMessage;
 		private final SessionTrigger completionTrigger;
 		private final Predicate<Object> completionPredicate;
 
 		public TutorialStage(Component title, Component text, SessionTrigger completionTrigger,
 				Predicate<Object> completionPredicate) {
+			this(title, text, Component.text("Success! Stage complete.", NamedTextColor.GREEN), completionTrigger,
+					completionPredicate);
+		}
+
+		public TutorialStage(Component title, Component text, Component successMessage,
+				SessionTrigger completionTrigger, Predicate<Object> completionPredicate) {
 			this.title = title;
 			this.text = text;
+			this.successMessage = successMessage;
 			this.completionTrigger = completionTrigger;
 			this.completionPredicate = completionPredicate;
 		}
@@ -247,6 +260,10 @@ public class TutorialInstance extends EditInventoryInstance {
 
 		public Component getText() {
 			return text;
+		}
+
+		public Component getSuccessMessage() {
+			return successMessage;
 		}
 
 		public SessionTrigger getCompletionTrigger() {

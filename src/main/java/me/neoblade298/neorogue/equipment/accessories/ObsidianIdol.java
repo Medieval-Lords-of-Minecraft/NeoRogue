@@ -21,7 +21,7 @@ public class ObsidianIdol extends Equipment {
 	private int damagePerStack;
 
 	public ObsidianIdol(boolean isUpgraded) {
-		super(ID, "Obsidian Idol", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
+		super(ID, "Obsidian Idol", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ACCESSORY);
 		damagePerStack = isUpgraded ? 15 : 10;
 	}
 

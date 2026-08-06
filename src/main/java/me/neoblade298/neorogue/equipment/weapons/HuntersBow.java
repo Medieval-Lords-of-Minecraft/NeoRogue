@@ -48,9 +48,9 @@ public class HuntersBow extends Bow {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
 			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
-			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			if (ev.getEntity().getVelocity().length() < 2.9) return TriggerResult.keep();
+			useBow(data);
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			proj.start(data);
 			return TriggerResult.keep();

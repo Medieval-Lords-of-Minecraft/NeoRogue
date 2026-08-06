@@ -362,13 +362,17 @@ public class NeoRogue extends JavaPlugin {
 	}
 
 	public static TextDisplay createHologram(Location loc, Component text) {
+		return createHologram(loc, text, Billboard.FIXED);
+	}
+
+	public static TextDisplay createHologram(Location loc, Component text, Billboard billboard) {
 		TextDisplay td = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
 		td.text(withTextDisplayShadow(text));
 		configureHologram(td);
 		Transformation trans = td.getTransformation();
 		trans.getScale().set(1);
-		td.setBillboard(Billboard.FIXED);
-		td.setRotation(180, 0);
+		td.setBillboard(billboard);
+		if (billboard == Billboard.FIXED) td.setRotation(180, 0);
 		td.setTransformation(trans);
 		return td;
 	}

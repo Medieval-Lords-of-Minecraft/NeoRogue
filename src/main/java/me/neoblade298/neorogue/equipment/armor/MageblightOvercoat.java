@@ -22,7 +22,7 @@ public class MageblightOvercoat extends Equipment {
 	private int magicReduction;
 
 	public MageblightOvercoat(boolean isUpgraded) {
-		super(ID, "Mageblight Overcoat", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+		super(ID, "Mageblight Overcoat", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		magicReduction = isUpgraded ? 4 : 3;
 	}

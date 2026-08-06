@@ -18,7 +18,7 @@ public class BattlecasterCuirass extends Equipment {
 	private int shields;
 
 	public BattlecasterCuirass(boolean isUpgraded) {
-		super(ID, "Battlecaster Cuirass", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+		super(ID, "Battlecaster Cuirass", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		shields = isUpgraded ? 5 : 3;
 	}

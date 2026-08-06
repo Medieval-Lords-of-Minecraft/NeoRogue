@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
+import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
@@ -80,7 +81,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Component bossText = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD)
 					.append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
 			Location bossLoc = region.nodeToLocation(bossNode, 1).clone().add(0, 1, 0);
-			holograms.add(NeoRogue.createHologram(bossLoc, bossText));
+			holograms.add(createNodeSelectHologram(bossLoc, bossText));
 		}
 
 		if (s.getNode().getRow() == 0) {
@@ -113,15 +114,19 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
 		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().appendNewline()
 				.append(Component.text("Tip: ", NamedTextColor.YELLOW).append(tips.get(NeoRogue.gen.nextInt(tips.size())).color(NamedTextColor.WHITE)));
-		TextDisplay holo = NeoRogue.createHologram(loc, text);
+		TextDisplay holo = createNodeSelectHologram(loc, text);
 		holograms.add(holo);
+	}
+
+	protected TextDisplay createNodeSelectHologram(Location loc, Component text) {
+		return NeoRogue.createHologram(loc, text, Billboard.CENTER);
 	}
 
 	public void createHologram(Location loc, Node dest) {
 		// Boss node has a dedicated always-on hologram created in setup()
 		if (dest.getType() == NodeType.BOSS) return;
 		Component text = Component.text(dest.getType() + " Node", NamedTextColor.WHITE, TextDecoration.BOLD);
-		TextDisplay holo = NeoRogue.createHologram(loc, text);
+		TextDisplay holo = createNodeSelectHologram(loc, text);
 		holograms.add(holo);
 	}
 

@@ -21,6 +21,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.commands.AnalyticsFilters.FilterOption;
+import me.neoblade298.neorogue.commands.AnalyticsReport.EquipmentMetric;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.fight.Mob;
 
@@ -123,6 +124,7 @@ public class LyticsCommand {
 		Util.msgRaw(s, "<gray>Subcommands: <white>" + String.join(", ", SUBCOMMANDS));
 		Util.msgRaw(s, "<gray>Leaderboard options: <white>page=1 filterlow=true");
 		Util.msgRaw(s, "<gray>Equipment search: <white>/nrlytics equipment id=<equipmentId>");
+		Util.msgRaw(s, "<gray>Equipment metrics: <white>" + String.join(", ", AnalyticsReport.EQUIPMENT_METRIC_KEYS).toLowerCase());
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -144,8 +146,24 @@ public class LyticsCommand {
 	private static int runEquipment(CommandContext<CommandSourceStack> ctx, String filterStr) {
 		CommandSender s = ctx.getSource().getSender();
 		String[] tokens = filterStr.isBlank() ? new String[0] : filterStr.trim().split("\\s+");
-		AnalyticsFilters filters = AnalyticsFilters.parse(tokens, 0, AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
-		AnalyticsReport.equipmentDamage(s, version(), filters);
+		ArrayList<String> filterTokens = new ArrayList<String>();
+		EquipmentMetric metric = EquipmentMetric.DAMAGE;
+		for (String token : tokens) {
+			if (!token.toLowerCase().startsWith("metric=")) {
+				filterTokens.add(token);
+				continue;
+			}
+			EquipmentMetric parsedMetric = EquipmentMetric.fromKey(token.substring("metric=".length()));
+			if (parsedMetric == null) {
+				Util.msgRaw(s, "<red>Invalid equipment metric. Expected: <white>"
+						+ String.join(", ", AnalyticsReport.EQUIPMENT_METRIC_KEYS).toLowerCase());
+				return Command.SINGLE_SUCCESS;
+			}
+			metric = parsedMetric;
+		}
+		AnalyticsFilters filters = AnalyticsFilters.parse(filterTokens.toArray(String[]::new), 0,
+				AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+		AnalyticsReport.equipmentLeaderboard(s, version(), metric, filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -199,7 +217,9 @@ public class LyticsCommand {
 	// then suggest filter keys or a key's allowed values, mirroring the old getTabOptions behavior.
 	private static CompletableFuture<Suggestions> suggestEquipmentFilters(CommandContext<CommandSourceStack> ctx,
 			SuggestionsBuilder builder) {
-		return suggestFilters(builder, AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+		ArrayList<FilterOption> options = new ArrayList<FilterOption>(AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+		options.add(new FilterOption("metric", "", false, AnalyticsReport.EQUIPMENT_METRIC_KEYS));
+		return suggestFilters(builder, options);
 	}
 
 	private static CompletableFuture<Suggestions> suggestFilters(SuggestionsBuilder builder,

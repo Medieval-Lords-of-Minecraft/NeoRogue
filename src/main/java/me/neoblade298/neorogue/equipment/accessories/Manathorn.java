@@ -17,7 +17,7 @@ public class Manathorn extends Equipment {
 	private int thorns;
 
 	public Manathorn(boolean isUpgraded) {
-		super(ID, "Manathorn", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
+		super(ID, "Manathorn", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ACCESSORY);
 		thorns = isUpgraded ? 30 : 20;
 	}
 

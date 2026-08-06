@@ -36,6 +36,36 @@ public class AnalyticsReport {
 	private static final int MIN_SAMPLES = 10;
 	private static final int LEADERBOARD_LIMIT = 10;
 	private static final String LOW_SAMPLE_MARKER = " <red>!</red>";
+	public static final List<String> EQUIPMENT_METRIC_KEYS = List.of(
+			"DAMAGE", "BUFF", "MITIGATED", "SHIELDS", "HEALING", "STATUS", "WINRATE");
+
+	public enum EquipmentMetric {
+		DAMAGE("damage", "fe.damageDealt", "Damage", "Highest damage", "Lowest damage", ""),
+		BUFF("buff", "fe.damageBuffAdded", "Damage Buff", "Highest damage added", "Lowest damage added", ""),
+		MITIGATED("mitigated", "fe.damageMitigated", "Mitigation", "Highest mitigation", "Lowest mitigation", ""),
+		SHIELDS("shields", "fe.shieldsApplied", "Shields", "Highest shields applied", "Lowest shields applied", ""),
+		HEALING("healing", "fe.healingDone", "Healing", "Highest healing", "Lowest healing", ""),
+		STATUS("status", "fe.statusTotal", "Status", "Highest status stacks", "Lowest status stacks", ""),
+		WINRATE("winrate", "fe.outcome", "Winrate", "Highest winrate", "Lowest winrate", "%");
+
+		private final String key, column, display, highLabel, lowLabel, suffix;
+
+		private EquipmentMetric(String key, String column, String display, String highLabel, String lowLabel, String suffix) {
+			this.key = key;
+			this.column = column;
+			this.display = display;
+			this.highLabel = highLabel;
+			this.lowLabel = lowLabel;
+			this.suffix = suffix;
+		}
+
+		public static EquipmentMetric fromKey(String key) {
+			for (EquipmentMetric metric : values()) {
+				if (metric.key.equalsIgnoreCase(key)) return metric;
+			}
+			return null;
+		}
+	}
 
 	// Filterable columns exposed by the "equipment" view. Shared with the command layer so tab
 	// completion and query building stay in sync. Columns are qualified (fe = neorogue_analytics_fight_equipment,
@@ -366,15 +396,16 @@ public class AnalyticsReport {
 		}
 	}
 
-	// View: equipment ranked by average damage dealt, filtered by any of the equipment filter columns
-	// (class/rarity/type). Shows the most and least damaging entries, mirroring the mob leaderboard.
-	public static void equipmentDamage(CommandSender s, int version, AnalyticsFilters filters) {
+	// View: equipment ranked by the selected contribution metric, filtered by any of the equipment
+	// filter columns. Shows the highest and lowest entries, mirroring the mob leaderboard.
+	public static void equipmentLeaderboard(CommandSender s, int version, EquipmentMetric metric,
+			AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryEquipmentDamage(con, version, filters, lines);
+					queryEquipmentLeaderboard(con, version, metric, filters, lines);
 					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
@@ -386,7 +417,7 @@ public class AnalyticsReport {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msgRaw(s, "<gold>=== Equipment Damage (balance v" + version + ", " + filters.summary()
+						Util.msgRaw(s, "<gold>=== Equipment " + metric.display + " (balance v" + version + ", " + filters.summary()
 								+ ") ===");
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No equipment recorded.");
@@ -395,19 +426,19 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
-						sendPageControls(s, "/nrlytics equipment", filters);
+						sendPageControls(s, "/nrlytics equipment metric=" + metric.key, filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryEquipmentDamage(Connection con, int version, AnalyticsFilters filters,
-			ArrayList<String> lines) throws SQLException {
+	private static void queryEquipmentLeaderboard(Connection con, int version, EquipmentMetric metric,
+			AnalyticsFilters filters, ArrayList<String> lines) throws SQLException {
 		// Join the fight facts so views can filter on fight-level columns (fight type, regions completed).
 		// outcome/balanceVersion exist on both tables, so they're qualified to the equipment table.
 		StringBuilder sql = new StringBuilder("SELECT fe.equipmentId AS equipmentId, fe.upgraded AS upgraded,"
-				+ " COUNT(*) AS n, SUM(fe.outcome) AS wins, AVG(fe.damageDealt) AS dmg"
+				+ " COUNT(*) AS n, SUM(fe.outcome) AS wins, AVG(" + metric.column + ") AS metricValue"
 				+ " FROM neorogue_analytics_fight_equipment fe JOIN neorogue_analytics_fights f ON fe.fightId = f.fightId"
 				+ " WHERE fe.balanceVersion = ?");
 		filters.appendWhere(sql);
@@ -415,41 +446,43 @@ public class AnalyticsReport {
 		if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
 
 		ArrayList<String> top = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg DESC" + pageClause(filters) + ";")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY metricValue DESC" + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
 			filters.bind(ps, idx);
-			collectEquipmentDamageRows(ps, top, LEADERBOARD_LIMIT + 1);
+			collectEquipmentLeaderboardRows(ps, top, LEADERBOARD_LIMIT + 1, metric);
 		}
 		filters.setHasNextPage(trimPage(top));
 		if (top.isEmpty()) return;
 
-		lines.add("<red>Most damaging:");
+		lines.add("<red>" + metric.highLabel + ":");
 		lines.addAll(top);
 
 		ArrayList<String> bottom = new ArrayList<String>();
-		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY dmg ASC" + pageClause(filters) + ";")) {
+		try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY metricValue ASC" + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
 			filters.bind(ps, idx);
-			collectEquipmentDamageRows(ps, bottom, LEADERBOARD_LIMIT + 1);
+			collectEquipmentLeaderboardRows(ps, bottom, LEADERBOARD_LIMIT + 1, metric);
 		}
 		filters.setHasNextPage(filters.hasNextPage() | trimPage(bottom));
-		lines.add("<green>Least damaging:");
+		lines.add("<green>" + metric.lowLabel + ":");
 		lines.addAll(bottom);
 	}
 
-	private static void collectEquipmentDamageRows(PreparedStatement ps, ArrayList<String> rows, int limit)
-			throws SQLException {
+	private static void collectEquipmentLeaderboardRows(PreparedStatement ps, ArrayList<String> rows, int limit,
+			EquipmentMetric metric) throws SQLException {
 		try (ResultSet rs = ps.executeQuery()) {
 			while (rs.next() && rows.size() < limit) {
 				boolean upgraded = rs.getInt("upgraded") == 1;
 				int n = rs.getInt("n");
 				int wins = rs.getInt("wins");
-				double dmg = rs.getDouble("dmg");
+				double value = rs.getDouble("metricValue");
+				if (metric == EquipmentMetric.WINRATE) value *= 100;
 				double winrate = n > 0 ? (100.0 * wins / n) : 0;
-				rows.add("  <yellow>" + df.format(dmg) + "</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>| " + n + "F | " + df.format(winrate) + "% WR"
+				String winrateContext = metric == EquipmentMetric.WINRATE ? "" : " | " + df.format(winrate) + "% WR";
+				rows.add("  <yellow>" + df.format(value) + metric.suffix + "</yellow> <white>" + rs.getString("equipmentId")
+						+ (upgraded ? "+" : "") + "</white> <gray>| " + n + "F" + winrateContext
 						+ lowSampleMarker(n));
 			}
 		}

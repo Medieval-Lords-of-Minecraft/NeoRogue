@@ -88,6 +88,6 @@ public class Posturing2 extends Equipment implements Power {
 		item = createItem(Material.SCAFFOLDING,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after receiving " + DescUtil.val(2) + " " + GlossaryTag.FOCUS.tag(this) + " stacks. Every " + DescUtil.val(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1) + 
 				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc) + " damage per stack of " + GlossaryTag.FOCUS.tag(this) +
-				", up to " + DescUtil.val(4) + ". This bonus is doubled if the projectile is fired while crouching.");
+				", counting up to " + DescUtil.val(4) + " stacks for this damage bonus. This bonus is doubled if the projectile is fired while crouching.");
 	}
 }

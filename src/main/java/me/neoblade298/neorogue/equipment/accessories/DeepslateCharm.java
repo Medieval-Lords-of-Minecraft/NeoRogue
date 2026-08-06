@@ -20,7 +20,7 @@ public class DeepslateCharm extends Equipment {
 	private int shields;
 
 	public DeepslateCharm(boolean isUpgraded) {
-		super(ID, "Deepslate Charm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+		super(ID, "Deepslate Charm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		shields = isUpgraded ? 5 : 3;
 	}

@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.session.instances;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -44,7 +43,7 @@ public class TutorialNodeSelectInstance extends NodeSelectInstance {
 		int row = s.getNode().getRow();
 		String tip = row < ROW_TIPS.length ? ROW_TIPS[row] : "";
 		Component text = Component.text(tip, NamedTextColor.YELLOW);
-		TextDisplay holo = NeoRogue.createHologram(loc, text);
+		TextDisplay holo = createNodeSelectHologram(loc, text);
 		holograms.add(holo);
 	}
 }

@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Material;
@@ -98,13 +99,26 @@ public abstract class MobModifier {
 	// When forBoss is true, only modifiers allowed on bosses/minibosses are considered; otherwise
 	// only modifiers allowed on regular mobs are considered (used by standard fights).
 	public static MobModifier generate(boolean forBoss) {
+		return generate(forBoss, null);
+	}
+
+	public static MobModifier generate(boolean forBoss, Collection<String> disabledModifiers) {
 		ArrayList<MobModifier> mods = new ArrayList<MobModifier>();
 		for (MobModifier mod : registry.values()) {
 			if (forBoss ? !mod.scope.allowsBoss() : !mod.scope.allowsMob()) continue;
+			if (isDisabled(mod.id, disabledModifiers)) continue;
 			mods.add(mod);
 		}
 		if (mods.isEmpty()) return null;
 		return mods.get(NeoRogue.gen.nextInt(mods.size()));
+	}
+
+	private static boolean isDisabled(String modifierId, Collection<String> disabledModifiers) {
+		if (disabledModifiers == null) return false;
+		for (String disabledModifier : disabledModifiers) {
+			if (modifierId.equalsIgnoreCase(disabledModifier)) return true;
+		}
+		return false;
 	}
 
 	// Called when the modified mob's FightData is created. Attach triggers/effects to the mob here.

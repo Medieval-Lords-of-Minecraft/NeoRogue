@@ -34,7 +34,8 @@ public class SessionSnapshot {
 
 	private long lastSaved;
 	private long playtime;
-	private int nodesVisited;
+	private int nodesVisited, regionsCompleted;
+	private String runId;
 	private RegionType regionType;
 	private int notoriety;
 	private boolean endless;
@@ -47,6 +48,8 @@ public class SessionSnapshot {
 		this.lastSaved = System.currentTimeMillis();
 		this.playtime = s.getPlaytime();
 		this.nodesVisited = s.getNodesVisited();
+		this.regionsCompleted = s.getRegionsCompleted();
+		this.runId = s.getRunId();
 		this.regionType = s.getRegion().getType();
 		this.notoriety = s.getNotoriety();
 		this.endless = s.isEndless();
@@ -63,6 +66,8 @@ public class SessionSnapshot {
 		this.lastSaved = save.getLong("lastSaved");
 		this.playtime = getPlaytime(save);
 		this.nodesVisited = save.getInt("nodesVisited");
+		this.regionsCompleted = save.getInt("regionsCompleted");
+		this.runId = save.getString("runId");
 		this.regionType = RegionType.valueOf(save.getString("regionType"));
 		this.notoriety = save.getInt("notoriety");
 		this.endless = save.getInt("endless") == 1;
@@ -168,6 +173,18 @@ public class SessionSnapshot {
 
 	public int getNodesVisited() {
 		return nodesVisited;
+	}
+
+	public int getLevel() {
+		return nodesVisited - 1;
+	}
+
+	public int getRegionsCompleted() {
+		return regionsCompleted;
+	}
+
+	public String getRunId() {
+		return runId;
 	}
 
 	public HashMap<String, EquipmentClass> getParty() {

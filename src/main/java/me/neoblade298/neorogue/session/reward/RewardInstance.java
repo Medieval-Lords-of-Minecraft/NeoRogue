@@ -52,7 +52,7 @@ import net.kyori.adventure.text.Component;
 
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
-			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
+			HOLO_X = 0, HOLO_Y = -1, HOLO_Z = 5.2;
 	private static final int DISPLAY_TICKS = 60, POP_TICKS = 12, DISMISS_TICKS = 10;
 	private static final double CHOICE_SPACING = 1.9;
 	private static final float NAME_SCALE = 0.7F;
@@ -114,7 +114,7 @@ public class RewardInstance extends EditInventoryInstance {
 		super.setup();
 		
 		// Setup hologram
-		Component text = Component.text("Open the enderchest and").appendNewline().append(Component.text("collect your reward!"));
+		Component text = Component.text("Collect your reward!");
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 		startRewardDisplays();
 	}

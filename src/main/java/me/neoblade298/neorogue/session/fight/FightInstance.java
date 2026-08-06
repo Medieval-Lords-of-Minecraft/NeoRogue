@@ -1635,7 +1635,15 @@ public abstract class FightInstance extends Instance {
 	// Boss/miniboss fights pass forBoss=true; standard fights pass false to only roll mob-eligible modifiers.
 	public void generateModifier(boolean forBoss) {
 		if (!NotorietySetting.MOB_MODIFIERS.isActive(s)) return;
-		modifier = MobModifier.generate(forBoss);
+		HashSet<String> disabledModifiers = new HashSet<String>();
+		if (forBoss && map != null) {
+			for (Mob mob : map.getMobs()) {
+				if (mob.getType() != Mob.MobType.NORMAL) {
+					disabledModifiers.addAll(mob.getDisabledModifiers());
+				}
+			}
+		}
+		modifier = MobModifier.generate(forBoss, disabledModifiers);
 	}
 
 	public MobModifier getModifier() {

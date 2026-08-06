@@ -84,6 +84,8 @@ import me.neoblade298.neorogue.player.inventory.MainSessionMenu;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
+import me.neoblade298.neorogue.session.analytics.RunSnapshot;
 import me.neoblade298.neorogue.session.event.SessionJoinEvent;
 import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -289,7 +291,7 @@ public class SessionManager implements Listener {
 		PlayerData pd = PlayerManager.getPlayerData(host);
 		// Abandoning an in-progress run counts as a loss (breaking winstreaks) for the host who
 		// deletes it. Read the snapshot before removing it so we know the host's class and notoriety.
-		if (pd != null) recordDeletedRunAsLoss(host, pd.getSnapshot(saveSlot));
+		if (pd != null) recordDeletedRunAsLoss(host, saveSlot, pd.getSnapshot(saveSlot));
 		if (pd != null) pd.removeSnapshot(saveSlot);
 		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
 			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
@@ -321,7 +323,7 @@ public class SessionManager implements Listener {
 
 	// Records a deleted (abandoned) run as a loss for every party member who was in it. Tutorial and
 	// endless runs are excluded, consistent with EndRunInstance.
-	private static void recordDeletedRunAsLoss(UUID host, SessionSnapshot snap) {
+	private static void recordDeletedRunAsLoss(UUID host, int saveSlot, SessionSnapshot snap) {
 		if (snap == null) return;
 		if (snap.getSessionType() == SessionType.TUTORIAL || snap.isEndless()) return;
 		HashMap<UUID, EquipmentClass> partyClasses = snap.getPartyClasses();
@@ -330,6 +332,17 @@ public class SessionManager implements Listener {
 		for (Entry<UUID, EquipmentClass> ent : partyClasses.entrySet()) {
 			PlayerData.recordRunResult(ent.getKey(), ent.getValue(), snap.getNotoriety(), partySize, 0, snap.getPlaytime(), false, competitive);
 		}
+
+		String runId = snap.getRunId();
+		if (runId == null || runId.isEmpty()) runId = UUID.randomUUID().toString();
+		RunSnapshot run = new RunSnapshot(runId, System.currentTimeMillis(), AnalyticsManager.BALANCE_VERSION,
+				host.toString(), saveSlot, snap.getSessionType().name(), snap.getRegionType().name(),
+				snap.getRegionsCompleted(), snap.getLevel(), partySize, snap.getNotoriety(), false, competitive,
+				snap.getPlaytime(), false);
+		for (Entry<UUID, EquipmentClass> ent : partyClasses.entrySet()) {
+			run.addPlayer(ent.getKey().toString(), ent.getValue().name());
+		}
+		AnalyticsManager.recordRun(run);
 	}
 
 	@EventHandler

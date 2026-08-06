@@ -12,10 +12,12 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -32,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class EarthStaff extends Equipment {
 	private static final String ID = "EarthStaff";
 	
-	private static final double innerRadius = 1.5, outerRadius = 4;
+	private static final double innerRadius = 2.5, outerRadius = 5;
 	private static final Circle innerRing = new Circle(innerRadius), outerRing = new Circle(outerRadius);
 	private static final ParticleContainer aoe = new ParticleContainer(Particle.GLOW).count(1).spread(0.1, 0.1).speed(0);
 	
@@ -43,7 +45,8 @@ public class EarthStaff extends Equipment {
 	public EarthStaff(boolean isUpgraded) {
 		super(
 				ID, "Earth Staff", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0.5, isUpgraded ? 100 : 80, 0.5, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(3, 0.5, isUpgraded ? 130 : 100, 0.5, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
+					.add(PropertyType.AREA_OF_EFFECT, outerRadius)
 		);
 	}
 	
@@ -60,9 +63,9 @@ public class EarthStaff extends Equipment {
 				return TriggerResult.keep();
 			if (!p.isOnGround()) {
 				Util.displayError(p, "Can't use in the air!");
-				data.disableJump(17);
 				return TriggerResult.keep();
 			}
+			data.disableJump(17);
 			weaponSwing(p, data);
 			data.addTask(new BukkitRunnable() {
 				@Override
@@ -98,8 +101,8 @@ public class EarthStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"After a windup where you can't jump, smash the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
-						+ GlossaryTag.CONCUSSED.tag(this, conc) + ". Must be cast while on the ground."
+				"After a windup where you can't jump, smash the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you (" +
+				DescUtil.val(innerRadius) + " blocks) receive " + GlossaryTag.CONCUSSED.tag(this, conc) + ". Must be cast while on the ground."
 		);
 	}
 }

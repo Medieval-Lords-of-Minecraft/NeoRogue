@@ -21,7 +21,7 @@ public class QuartzShard extends Equipment {
 	private int lightDamage;
 
 	public QuartzShard(boolean isUpgraded) {
-		super(ID, "Quartz Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS,
+		super(ID, "Quartz Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		lightDamage = isUpgraded ? 30 : 20;
 	}

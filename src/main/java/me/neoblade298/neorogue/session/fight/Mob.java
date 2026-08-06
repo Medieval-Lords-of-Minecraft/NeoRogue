@@ -45,7 +45,7 @@ public class Mob implements Comparable<Mob> {
 	private HashMap<DamageCategory, Integer> resistances = new HashMap<DamageCategory, Integer>();
 	private HashMap<DamageType, Amount> damageTypes = new HashMap<DamageType, Amount>();
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
-	private List<String> summons;
+	private List<String> summons, disabledModifiers;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 	
 	public static void load() {
@@ -168,6 +168,7 @@ public class Mob implements Comparable<Mob> {
 		killValue = sec.getDouble("value", (double) 1 / (double) amount);
 		spawnValue = killValue;
 		summons = sec.getStringList("summons");
+		disabledModifiers = sec.getStringList("disabled-modifiers");
 		base64 = sec.getString("base64");
 	}
 
@@ -329,6 +330,10 @@ public class Mob implements Comparable<Mob> {
 	public List<String> getSummons() {
 		return summons;
 	}
+
+	public List<String> getDisabledModifiers() {
+		return disabledModifiers;
+	}
 	
 	public String getId() {
 		return id;
@@ -341,10 +346,10 @@ public class Mob implements Comparable<Mob> {
 	}
 	
 	public enum Amount {
-		NONE(NamedTextColor.GRAY, "None"),
-		LIGHT(NamedTextColor.YELLOW, "Light"),
-		MEDIUM(NamedTextColor.GOLD, "Medium"),
-		HEAVY(NamedTextColor.RED, "Heavy");
+		NONE(NamedTextColor.GRAY, "◇◇◇"),
+		LIGHT(NamedTextColor.YELLOW, "◆◇◇"),
+		MEDIUM(NamedTextColor.GOLD, "◆◆◇"),
+		HEAVY(NamedTextColor.RED, "◆◆◆");
 		
 		private NamedTextColor color;
 		private String display;
