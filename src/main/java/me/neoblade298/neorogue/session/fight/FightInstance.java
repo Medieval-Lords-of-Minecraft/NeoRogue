@@ -1644,7 +1644,7 @@ public abstract class FightInstance extends Instance {
 		HashSet<String> disabledModifiers = new HashSet<String>();
 		if (forBoss && map != null) {
 			for (Mob mob : map.getMobs()) {
-				if (mob.getType() != Mob.MobType.NORMAL) {
+				if (mob.getType() != Mob.MobType.NORMAL && mob.getDisabledModifiers() != null) {
 					disabledModifiers.addAll(mob.getDisabledModifiers());
 				}
 			}
