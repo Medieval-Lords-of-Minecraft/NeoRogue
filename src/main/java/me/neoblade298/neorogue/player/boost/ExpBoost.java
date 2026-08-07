@@ -35,6 +35,14 @@ public class ExpBoost {
 		this.remaining = remaining;
 	}
 
+	public long getRemainingDuration() {
+		if (type.getDurationType() == BoostDurationType.TIME) {
+			long remainingMillis = Math.max(0, remaining - System.currentTimeMillis());
+			return (remainingMillis + 999) / 1000;
+		}
+		return Math.max(0, remaining);
+	}
+
 	// Whether this boost is currently active (not expired / still has runs left).
 	public boolean isActive() {
 		if (!type.isRegistered() || !type.isGrantable()) return false;

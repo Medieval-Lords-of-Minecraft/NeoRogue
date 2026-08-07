@@ -143,11 +143,12 @@ public class ExpBoostType {
 		return extendMessage;
 	}
 
-	public String formatGrantMessage(boolean extended, String playerName, long duration) {
+	public String formatGrantMessage(boolean extended, String playerName, long duration, long remaining) {
 		String message = extended ? extendMessage : receiveMessage;
 		if (message == null || message.isBlank()) return null;
 		return message.replace("%boost%", displayName)
 				.replace("%duration%", formatDuration(duration))
+				.replace("%remaining%", formatDuration(remaining))
 				.replace("%player%", playerName);
 	}
 

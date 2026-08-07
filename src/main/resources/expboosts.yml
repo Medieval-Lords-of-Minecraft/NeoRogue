@@ -6,7 +6,8 @@
 #   permission:    optional permission that grants this boost at run start
 #   receive-message: optional message sent when this boost is first granted
 #   extend-message:  optional message sent when an existing boost is extended
-# Messages support %boost%, %duration%, and %player% placeholders.
+# Messages support %boost%, %duration%, %remaining%, and %player% placeholders.
+# %duration% is the amount granted; %remaining% is the resulting duration after the grant or extension.
 # Entries without duration-type are permission-only and cannot be granted or persisted.
 
 VOTE:
@@ -14,14 +15,14 @@ VOTE:
   multiplier: 0.50
   duration-type: RUNS
   receive-message: "<green>You received <yellow>%boost%</yellow> for <yellow>%duration%</yellow>."
-  extend-message: "<green>Your <yellow>%boost%</yellow> was extended by <yellow>%duration%</yellow>."
+  extend-message: "<green>Your <yellow>%boost%</yellow> was extended by <yellow>%duration%</yellow> (<yellow>%remaining%</yellow> remaining)."
 
 SHOP_GLOBAL:
   display-name: "Global Donator Boost"
   multiplier: 0.30
   duration-type: TIME
   receive-message: "<green>%player% activated <yellow>%boost%</yellow> for <yellow>%duration%</yellow>!"
-  extend-message: "<green>%player% extended <yellow>%boost%</yellow> by <yellow>%duration%</yellow>!"
+  extend-message: "<green>%player% extended <yellow>%boost%</yellow> by <yellow>%duration%</yellow> (<yellow>%remaining%</yellow> remaining)!"
 
 IRON:
   display-name: "Iron Rank Boost"

@@ -90,7 +90,8 @@ public class CmdAdminBoost extends Subcommand {
 		}
 
 		boolean extended = pdata.addExpBoost(type, duration);
-		String message = type.formatGrantMessage(extended, p.getName(), duration);
+		long remaining = pdata.getExpBoostRemaining(type);
+		String message = type.formatGrantMessage(extended, p.getName(), duration, remaining);
 		if (message != null) Util.msgRaw(p, message);
 		String unit = type.getDurationType() == BoostDurationType.TIME
 				? BoostTimeFormat.format(duration) : duration + " run(s)";

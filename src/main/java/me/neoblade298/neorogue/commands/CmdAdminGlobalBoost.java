@@ -66,7 +66,8 @@ public class CmdAdminGlobalBoost extends Subcommand {
 
 		boolean extended = GlobalBoostManager.addGlobalBoost(type, duration);
 		String playerName = args.length > 2 ? args[2] : s.getName();
-		String message = type.formatGrantMessage(extended, playerName, duration);
+		long remaining = GlobalBoostManager.getGlobalBoostRemaining(type);
+		String message = type.formatGrantMessage(extended, playerName, duration, remaining);
 		if (message != null) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				Util.msgRaw(player, message);

@@ -459,6 +459,14 @@ public class PlayerData {
 		return expBoosts;
 	}
 
+	public long getExpBoostRemaining(ExpBoostType type) {
+		pruneExpBoosts();
+		for (ExpBoost boost : expBoosts) {
+			if (boost.getType() == type) return boost.getRemainingDuration();
+		}
+		return 0;
+	}
+
 	// Grants a new boost or adds to its remaining duration. Returns whether an active
 	// boost of the same type was extended.
 	public boolean addExpBoost(ExpBoostType type, long durationInput) {

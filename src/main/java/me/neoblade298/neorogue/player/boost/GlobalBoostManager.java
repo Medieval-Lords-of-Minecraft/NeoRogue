@@ -89,6 +89,14 @@ public class GlobalBoostManager {
 		return boosts;
 	}
 
+	public static long getGlobalBoostRemaining(ExpBoostType type) {
+		boosts.removeIf(ExpBoost::isExpired);
+		for (ExpBoost boost : boosts) {
+			if (boost.getType() == type) return boost.getRemainingDuration();
+		}
+		return 0;
+	}
+
 	private static void saveAsync() {
 		final ArrayList<ExpBoost> snapshot = new ArrayList<>(boosts);
 		new BukkitRunnable() {
