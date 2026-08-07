@@ -344,9 +344,10 @@ data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 ### GlossaryTag
 ```java
 GlossaryTag.POISON.tag(this)                    // Tag name only
-GlossaryTag.SHIELDS.tag(this, amount, true)     // With value, yellow if upgradable
-GlossaryTag.FIRE.tag(this, damage, true) + " damage"
+GlossaryTag.SHIELDS.tag(this, amount)           // Value auto-colored by upgrade comparison
+GlossaryTag.FIRE.tag(this, damage) + " damage"
 ```
+Amount-bearing tags automatically render changed values yellow, unchanged values white, and `base » upgraded` in upgrade previews.
 
 ### DescUtil
 ```java
@@ -363,7 +364,7 @@ DescUtil.potion("Speed", amplifier, duration)
 
 ### Pattern
 ```java
-item = createItem(Material.ITEM, "Deals " + GlossaryTag.FIRE.tag(this, damage, true)
+item = createItem(Material.ITEM, "Deals " + GlossaryTag.FIRE.tag(this, damage)
     + " damage to enemies within " + DescUtil.yellow(radius) + " blocks every "
     + DescUtil.white("3s") + ".");
 ```

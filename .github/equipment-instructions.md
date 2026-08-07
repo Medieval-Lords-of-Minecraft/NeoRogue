@@ -1073,12 +1073,14 @@ When creating equipment descriptions in `setupItem()`, follow these patterns:
 ```java
 // Basic status/effect tags
 GlossaryTag.POISON.tag(this)  // Just the tag name
-GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if upgradable)
+GlossaryTag.SHIELDS.tag(this, amount)  // Tag with auto-colored, preview-aware value
 
 // Status application format
-"applies " + GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white("5s") + "]"
-"gain " + GlossaryTag.SHIELDS.tag(this, amount, true) + " [" + DescUtil.white("10s") + "]"
+"applies " + GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.white("5s") + "]"
+"gain " + GlossaryTag.SHIELDS.tag(this, amount) + " [" + DescUtil.white("10s") + "]"
 ```
+
+Amount-bearing glossary tags automatically compare base and upgraded equipment. Changed values render yellow and show `base » upgraded` in upgrade previews; unchanged values render white.
 
 **Color Formatting:**
 - **Use `DescUtil` helpers in `setupItem()` descriptions**: Prefer `DescUtil.yellow(...)` and `DescUtil.white(...)` instead of writing raw `<yellow>...</yellow>` / `<white>...</white>` tags.
@@ -1090,10 +1092,10 @@ GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if
 **Common Patterns:**
 ```java
 // Status with stacks and duration
-"applies " + GlossaryTag.POISON.tag(this, poisonStacks, true) + " [" + DescUtil.white("5s") + "]"
+"applies " + GlossaryTag.POISON.tag(this, poisonStacks) + " [" + DescUtil.white("5s") + "]"
 
 // Damage values
-GlossaryTag.FIRE.tag(this, damage, true) + " damage"
+GlossaryTag.FIRE.tag(this, damage) + " damage"
 GlossaryTag.GENERAL.tag(this) + " damage is increased by " + DescUtil.yellow(increase)
 
 // Exception: the phrase already identifies the damage concept
@@ -1101,7 +1103,7 @@ GlossaryTag.GENERAL.tag(this) + " damage is increased by " + DescUtil.yellow(inc
 
 // Defensive values  
 "reduces damage by " + DescUtil.yellow(reduction)
-"gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
+"gain " + GlossaryTag.SHIELDS.tag(this, shields)
 
 // Thresholds and conditions
 "while above " + DescUtil.white("50%") + " mana"

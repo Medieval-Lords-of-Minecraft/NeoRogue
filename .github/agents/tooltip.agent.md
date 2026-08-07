@@ -63,24 +63,25 @@ GlossaryTag.POISON.tag(this)     // just the colored tag name
 GlossaryTag.EVADE.tag(this)
 ```
 
-### With amount: `GlossaryTag.X.tag(this, amount, upgradable)`
+### With amount: `GlossaryTag.X.tag(this, amount)`
 For showing a numeric value paired with a status/damage type:
 ```java
-GlossaryTag.SLASHING.tag(this, damage, true)   // "120 Slashing" (yellow if upgradable)
-GlossaryTag.SHIELDS.tag(this, 5, false)         // "5 Shields" (white, fixed)
-GlossaryTag.INSANITY.tag(this, stacks, true)    // "6 Insanity" (yellow)
+GlossaryTag.SLASHING.tag(this, damage)   // Changed values are yellow and preview-aware
+GlossaryTag.SHIELDS.tag(this, 5)         // Fixed values are white when unchanged
+GlossaryTag.INSANITY.tag(this, stacks)   // Color is inferred from the upgraded counterpart
 ```
+Never pass an `upgradable` boolean. Amount-bearing tags compare base and upgraded equipment automatically and show `base » upgraded` in upgrade previews.
 
 ### Status application format:
 ```java
 // Standard: "applies X Status [duration]"
-"applies " + GlossaryTag.POISON.tag(this, stacks, true) + " " + DescUtil.duration(5, false)
+"applies " + GlossaryTag.POISON.tag(this, stacks) + " " + DescUtil.duration(5, false)
 
 // Gain format: "gain X Status [duration]"  
-"gain " + GlossaryTag.SHIELDS.tag(this, amount, true) + " " + DescUtil.duration(10, false)
+"gain " + GlossaryTag.SHIELDS.tag(this, amount) + " " + DescUtil.duration(10, false)
 
 // Permanent (no duration): just the tag
-"gain " + GlossaryTag.STRENGTH.tag(this, amount, true)
+"gain " + GlossaryTag.STRENGTH.tag(this, amount)
 ```
 
 ### Plural form: `GlossaryTag.X.tagPlural(this)`
@@ -100,7 +101,7 @@ Use the correct prefix for the equipment's activation pattern:
 
 ### Damage description:
 ```java
-"deal " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage"
+"deal " + GlossaryTag.SLASHING.tag(this, damage) + " damage"
 ```
 
 ### Cooldown mention (internal cooldown, not EquipmentProperties):
