@@ -99,7 +99,7 @@ public class ThunderclapAndFlash extends Equipment {
 		});
 		
 		// On cast: dash forward, deal lightning damage in a line, consume a stack
-		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			if (stacks.getCount() <= 0) return TriggerResult.keep();
 			
@@ -134,7 +134,8 @@ public class ThunderclapAndFlash extends Equipment {
 			}
 			
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, inst);
 	}
 
 	@Override
