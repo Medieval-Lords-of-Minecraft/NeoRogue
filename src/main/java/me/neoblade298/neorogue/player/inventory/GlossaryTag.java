@@ -175,18 +175,6 @@ public enum GlossaryTag implements GlossaryIcon {
 		return prefix + "s" + suffix;
 	}
 
-	public String tag(Equipment eq, int amt, boolean upgradable) {
-		eq.addTags(this);
-		String color = upgradable ? "yellow" : "white";
-		return "<" + color + ">" + amt + "</" + color + "> " + this.tag;
-	}
-
-	public String tag(Equipment eq, double amt, boolean upgradable) {
-		eq.addTags(this);
-		String color = upgradable ? "yellow" : "white";
-		return "<" + color + ">" + amt + "</" + color + "> " + this.tag;
-	}
-
 	// Auto-colored variants: the value's yellow/white color is decided automatically by diffing the base
 	// item against its upgraded counterpart (see DescUtil.val / Equipment.resolveUpgradeColors).
 	public String tag(Equipment eq, int amt) {

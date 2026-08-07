@@ -151,7 +151,7 @@ public class Crusade extends Equipment implements Power {
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. After activation, applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword per stack that fires after " + DescUtil.white("0.5s")
-				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " damage each.");
+				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage) + " damage each.");
 	}
 
 	private class CrusadeProjectile extends Projectile {

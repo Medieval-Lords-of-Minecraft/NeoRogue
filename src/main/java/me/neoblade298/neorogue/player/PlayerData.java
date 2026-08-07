@@ -98,6 +98,7 @@ public class PlayerData {
 	// Append-only finished-run history backing the winrate/winstreak stats (see RunStats).
 	private ArrayList<RunStats.RunRecord> runResults = new ArrayList<RunStats.RunRecord>();
 	public static final int NOTORIETY_HARD_CAP = 10;
+	public static final String CURRENCY = "Crowns";
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
 	public static final int DEFAULT_FLEET_CAPACITY = 3000, DEFAULT_FLEET_SLOTS = 5;
 	// All player flags follow the "namespace:key" convention (see FlagRegistry). The general namespace

@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -46,7 +47,7 @@ public class CrownsEarnedAchievement implements Achievement {
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];
-		return List.of(Component.text("Earn " + target + " crowns from runs.", NamedTextColor.GRAY));
+		return List.of(Component.text("Earn " + target + " " + PlayerData.CURRENCY + " from runs.", NamedTextColor.GRAY));
 	}
 
 	@Override

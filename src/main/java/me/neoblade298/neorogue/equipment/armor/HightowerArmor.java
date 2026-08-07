@@ -49,6 +49,6 @@ public class HightowerArmor extends Equipment {
 		item = createItem(Material.IRON_CHESTPLATE, "Increase sprinting stamina cost by " + DescUtil.white(SPRINT_COST)
 				+ ". Reduce " + GlossaryTag.DIRECT.tag(this) + " damage taken by " + DescUtil.white(DIRECT_REDUCTION)
 				+ ". Start fights with " + GlossaryTag.THORNS.tag(this, THORNS) + ", "
-				+ GlossaryTag.REFLECT.tag(this, REFLECT) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				+ GlossaryTag.REFLECT.tag(this, REFLECT) + ", and " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

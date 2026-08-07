@@ -44,6 +44,6 @@ public class ObsidianIdol extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN, "Applying " + GlossaryTag.CONCUSSED.tag(this) + " also deals "
-				+ GlossaryTag.EARTHEN.tag(this, damagePerStack, true) + " damage for each stack applied.");
+				+ GlossaryTag.EARTHEN.tag(this, damagePerStack) + " damage for each stack applied.");
 	}
 }

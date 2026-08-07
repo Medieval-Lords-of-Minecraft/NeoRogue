@@ -67,7 +67,9 @@ public class ShopInventory extends CoreInventory {
 
 	// Call when reopening this inv without a constructor
 	public void onOpenInventory() {
-		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+		if (spectator == null) {
+			InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+		}
 	}
 	
 	private void setupInventory(PlayerSessionData data) {
@@ -151,6 +153,12 @@ public class ShopInventory extends CoreInventory {
 
 		if (spectator != null) {
 			e.setCancelled(true);
+			if (iclicked.getType() == InventoryType.CHEST && e.isRightClick() && e.getCursor().getType().isAir()
+					&& slot >= 6 && e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.BARRIER
+					&& e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
+				int idx = NBT.get(e.getCurrentItem(), nbt -> { return nbt.getInteger("idx"); });
+				new EquipmentGlossaryInventory(p, shopItems.get(idx).getEquipment(), this);
+			}
 			return;
 		}
 		

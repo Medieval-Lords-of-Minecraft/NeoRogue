@@ -87,8 +87,8 @@ public class Radiance extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
-				+ GlossaryTag.SANCTIFIED.tag(this, activationThreshold, true) + ". After activation, every "
-				+ GlossaryTag.SANCTIFIED.tag(this, sanctifiedThreshold, true) + " you apply permanently adds "
+				+ GlossaryTag.SANCTIFIED.tag(this, activationThreshold) + ". After activation, every "
+				+ GlossaryTag.SANCTIFIED.tag(this, sanctifiedThreshold) + " you apply permanently adds "
 				+ GlossaryTag.LIGHT.tag(this, LIGHT_DAMAGE_PER_THRESHOLD) + " damage to your basic attacks.");
 	}
 }

@@ -38,6 +38,6 @@ public class Manathorn extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_WART, "Applying " + GlossaryTag.CONCUSSED.tag(this) + " also grants "
-				+ GlossaryTag.THORNS.tag(this, thorns, true) + ".");
+				+ GlossaryTag.THORNS.tag(this, thorns) + ".");
 	}
 }

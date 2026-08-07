@@ -54,7 +54,7 @@ public class BlackBriarPlate extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_CHESTPLATE, "Reduce " + GlossaryTag.PHYSICAL.tag(this)
 				+ " damage taken by " + DescUtil.white(PHYSICAL_REDUCTION) + ". Start fights with "
-				+ GlossaryTag.THORNS.tag(this, thorns, true) + ". Increase " + GlossaryTag.THORNS.tag(this)
+				+ GlossaryTag.THORNS.tag(this, thorns) + ". Increase " + GlossaryTag.THORNS.tag(this)
 				+ " damage by " + DescUtil.white(THORNS_INCREASE + "%") + ".");
 	}
 }

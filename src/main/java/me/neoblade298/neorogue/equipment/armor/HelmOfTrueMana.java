@@ -62,6 +62,6 @@ public class HelmOfTrueMana extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_HELMET, "Reduce ability cooldowns over "
 				+ DescUtil.white(COOLDOWN_THRESHOLD + "s") + " by " + DescUtil.white(COOLDOWN_REDUCTION + "%")
-				+ ". Casting an ability grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				+ ". Casting an ability grants " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

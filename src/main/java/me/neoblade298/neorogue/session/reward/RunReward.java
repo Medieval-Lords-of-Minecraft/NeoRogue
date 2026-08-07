@@ -356,7 +356,11 @@ public class RunReward {
 	}
 
 	public static int getPartyMoneyBonusPercent(Session s) {
-		return (int) Math.round(PARTY_SIZE_BONUS * Math.max(0, s.getParty().size() - 1) * 100);
+		return getPartyMoneyBonusPercent(s.getParty().size());
+	}
+
+	public static int getPartyMoneyBonusPercent(int partySize) {
+		return (int) Math.round(PARTY_SIZE_BONUS * Math.max(0, partySize - 1) * 100);
 	}
 
 	// Builds the run-finances breakdown as item lore for the session summary inventory. The breakdown

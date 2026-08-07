@@ -54,7 +54,7 @@ public class RadiantChassis extends Equipment {
 		item = createItem(Material.GOLDEN_CHESTPLATE, "Reduce " + GlossaryTag.MAGICAL.tag(this)
 				+ " damage taken by " + DescUtil.yellow(magicalReduction) + " and "
 				+ GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.white(PHYSICAL_REDUCTION)
-				+ ". Receiving damage deals " + GlossaryTag.LIGHT.tag(this, returnDamage, true)
+				+ ". Receiving damage deals " + GlossaryTag.LIGHT.tag(this, returnDamage)
 				+ " damage to the attacker.");
 	}
 }

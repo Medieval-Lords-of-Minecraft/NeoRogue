@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -69,10 +70,23 @@ public class HostGameInventory extends CoreInventory {
 				lore.add(Component.text("Region: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
 				lore.add(Component.text("Nodes visited: " + snap.getNodesVisited(), NamedTextColor.GRAY));
 				lore.add(Component.text("Playtime: " + SessionSnapshot.formatPlaytime(snap.getPlaytime()), NamedTextColor.GRAY));
-				lore.add(Component.text("EXP Bonus: ", NamedTextColor.GRAY)
-						.append(Component.text("+" + Session.getNotorietyXpBonusPercent(snap.getNotoriety()) + "%", NamedTextColor.GREEN)));
-				lore.add(Component.text("Gold Bonus: ", NamedTextColor.GRAY)
-						.append(Component.text("+" + Session.getNotorietyMoneyBonusPercent(snap.getNotoriety()) + "%", NamedTextColor.GREEN)));
+				int regionExp = (int) Math.round((snap.getRegionType().getXpMultiplier() - 1.0) * 100);
+				int notorietyExp = Session.getNotorietyXpBonusPercent(snap.getNotoriety());
+				int runExp = (int) Math.round((snap.getRunExpBoostMultiplier() - 1.0) * 100);
+				lore.add(bonusHeading("EXP Bonuses", regionExp + notorietyExp + runExp));
+				if (regionExp != 0) lore.add(bonusLine("Current region", regionExp, null));
+				if (notorietyExp != 0) lore.add(bonusLine("Notoriety", notorietyExp, null));
+				if (runExp != 0) lore.add(bonusLine("Run boosts", runExp, null));
+				if (regionExp == 0 && notorietyExp == 0 && runExp == 0) lore.add(noBonusesLine());
+
+				lore.add(bonusHeading(PlayerData.CURRENCY + " Bonuses", null));
+				int notorietyCrowns = Session.getNotorietyMoneyBonusPercent(snap.getNotoriety());
+				int partyCrowns = RunReward.getPartyMoneyBonusPercent(snap.getParty().size());
+				int caravanCrowns = pd.getSellMultiplierBonus();
+				if (notorietyCrowns != 0) lore.add(bonusLine("Notoriety", notorietyCrowns, "all payouts"));
+				if (partyCrowns != 0) lore.add(bonusLine("Party size", partyCrowns, "end reward"));
+				if (caravanCrowns != 0) lore.add(bonusLine("Caravan", caravanCrowns, "cargo sales"));
+				if (notorietyCrowns == 0 && partyCrowns == 0 && caravanCrowns == 0) lore.add(noBonusesLine());
 				lore.add(Component.text("Party:", NamedTextColor.GRAY));
 				for (Entry<String, EquipmentClass> ent : snap.getParty().entrySet()) {
 					lore.add(Component.text("  " + ent.getKey() + " [" + ent.getValue().getDisplay() + "]", NamedTextColor.GRAY));
@@ -96,6 +110,25 @@ public class HostGameInventory extends CoreInventory {
 
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER, Component.text("Back", NamedTextColor.RED));
 		inv.setContents(contents);
+	}
+
+	private static Component bonusHeading(String label, Integer totalPercent) {
+		Component heading = Component.text(label, NamedTextColor.GOLD);
+		if (totalPercent != null) {
+			heading = heading.append(Component.text(" (+" + totalPercent + "% total)", NamedTextColor.GREEN));
+		}
+		return heading;
+	}
+
+	private static Component bonusLine(String label, int percent, String scope) {
+		Component line = Component.text("  " + label + ": ", NamedTextColor.GRAY)
+				.append(Component.text("+" + percent + "%", NamedTextColor.GREEN));
+		if (scope != null) line = line.append(Component.text(" " + scope, NamedTextColor.DARK_GRAY));
+		return line;
+	}
+
+	private static Component noBonusesLine() {
+		return Component.text("  No bonuses applied", NamedTextColor.DARK_GRAY);
 	}
 
 	@Override

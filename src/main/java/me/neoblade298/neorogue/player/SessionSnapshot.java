@@ -38,6 +38,7 @@ public class SessionSnapshot {
 	private String runId;
 	private RegionType regionType;
 	private int notoriety;
+	private double runExpBoostMultiplier = 1.0;
 	private boolean endless;
 	private boolean competitive;
 	private SessionType sessionType = SessionType.STANDARD;
@@ -57,6 +58,7 @@ public class SessionSnapshot {
 		this.sessionType = s.getSessionType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
+			if (ent.getKey().equals(s.getHost())) runExpBoostMultiplier = ent.getValue().getRunExpBoostMultiplier();
 			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
 			party.put(ent.getValue().getData().getDisplay(), ent.getValue().getPlayerClass());
 		}
@@ -73,9 +75,11 @@ public class SessionSnapshot {
 		this.endless = save.getInt("endless") == 1;
 		this.competitive = getCompetitive(save);
 		this.sessionType = SessionType.fromStorage(save.getString("sessionType"));
+		UUID host = UUID.fromString(save.getString("host"));
 		
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
+			if (uuid.equals(host)) runExpBoostMultiplier = getRunExpBoostMultiplier(party);
 			String display = party.getString("display");
 			EquipmentClass pc = EquipmentClass.valueOf(party.getString("playerClass"));
 			partyIds.put(uuid, display);
@@ -159,6 +163,15 @@ public class SessionSnapshot {
 		}
 	}
 
+	private static double getRunExpBoostMultiplier(ResultSet party) {
+		try {
+			double multiplier = party.getDouble("runExpBoostMultiplier");
+			return party.wasNull() ? 1.0 : multiplier;
+		} catch (SQLException ex) {
+			return 1.0;
+		}
+	}
+
 	// Formats a playtime duration (in ms) as "Hh Mm" or "Mm" for display.
 	public static String formatPlaytime(long ms) {
 		long totalMinutes = ms / 60000L;
@@ -193,6 +206,10 @@ public class SessionSnapshot {
 
 	public int getNotoriety() {
 		return notoriety;
+	}
+
+	public double getRunExpBoostMultiplier() {
+		return runExpBoostMultiplier;
 	}
 
 	public boolean isEndless() {

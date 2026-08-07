@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
@@ -490,7 +491,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		lore.add(Component.empty());
-		lore.add(sectionLine("Gold Bonuses", null));
+		lore.add(sectionLine(PlayerData.CURRENCY + " Bonuses", null));
 		int notorietyGold = session.getNotorietyMoneyBonusPercent();
 		int partyGold = RunReward.getPartyMoneyBonusPercent(session);
 		int caravanGold = data.getData() == null ? 0 : data.getData().getSellMultiplierBonus();
@@ -553,7 +554,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		lore.add(Component.text("Exp Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
-		lore.add(Component.text("Money Bonus: ", NamedTextColor.GRAY)
+		lore.add(Component.text(PlayerData.CURRENCY + " Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyMoneyBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
 		if (notoriety > 0) {

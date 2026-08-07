@@ -67,7 +67,7 @@ public class DarkPact extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Increase your " + GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.val(strength) + " every 3 basic attacks. In exchange, take "
+				GlossaryTag.PASSIVE.tag(this) + ". Increase your " + GlossaryTag.STRENGTH.tag(this) + " by " + DescUtil.val(strength) + " every 3 basic attacks. In exchange, take "
 				+ DescUtil.val("50%") + " increased damage for the first " + DescUtil.val(seconds + "s") + " of a fight.");
 	}
 }

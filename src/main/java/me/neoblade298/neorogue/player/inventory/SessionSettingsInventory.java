@@ -23,6 +23,7 @@ import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
 import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
@@ -129,7 +130,7 @@ public class SessionSettingsInventory extends CoreInventory {
 		lore.add(Component.text("Exp Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyXpBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
-		lore.add(Component.text("Crowns Bonus: ", NamedTextColor.GRAY)
+		lore.add(Component.text(PlayerData.CURRENCY + " Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyMoneyBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
 		lore.add(Component.empty().decoration(TextDecoration.ITALIC, false));

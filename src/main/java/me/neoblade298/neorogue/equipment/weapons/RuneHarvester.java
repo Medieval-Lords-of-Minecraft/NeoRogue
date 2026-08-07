@@ -133,7 +133,7 @@ public class RuneHarvester extends Equipment {
 		item = createItem(Material.AMETHYST_SHARD,
 				"Can only be used while empowered. Casting an ability empowers this weapon. Firing it removes the empowerment. When fired, "
 						+ GlossaryTag.CHARGE.tag(this) + " " + DescUtil.val("1s") + " before launching a projectile that deals "
-						+ GlossaryTag.DARK.tag(this, (int) properties.get(PropertyType.DAMAGE), true) + " damage. If the projectile hits an enemy, reduce the cooldown of the ability that empowered it by "
+						+ GlossaryTag.DARK.tag(this, (int) properties.get(PropertyType.DAMAGE)) + " damage. If the projectile hits an enemy, reduce the cooldown of the ability that empowered it by "
 						+ DescUtil.val(cooldownReduction + "s") + ".");
 	}
 }
