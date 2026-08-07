@@ -1200,6 +1200,10 @@ public class Session {
 
 	// Notoriety 1-5 each grant +6% exp, notoriety 6-10 each grant +14% exp
 	public int getNotorietyXpBonusPercent() {
+		return getNotorietyXpBonusPercent(notoriety);
+	}
+
+	public static int getNotorietyXpBonusPercent(int notoriety) {
 		return 6 * Math.min(notoriety, 5) + 14 * Math.max(0, notoriety - 5);
 	}
 
@@ -1209,6 +1213,10 @@ public class Session {
 
 	// Notoriety 1-5 each grant +3% crowns, notoriety 6-10 each grant +5% crowns
 	public int getNotorietyMoneyBonusPercent() {
+		return getNotorietyMoneyBonusPercent(notoriety);
+	}
+
+	public static int getNotorietyMoneyBonusPercent(int notoriety) {
 		return 3 * Math.min(notoriety, 5) + 5 * Math.max(0, notoriety - 5);
 	}
 

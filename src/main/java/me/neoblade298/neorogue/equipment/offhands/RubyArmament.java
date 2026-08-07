@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -33,6 +34,7 @@ public class RubyArmament extends Equipment {
 	public RubyArmament(boolean isUpgraded) {
 		super(ID, "Ruby Armament", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
+		properties.add(PropertyType.COOLDOWN, 5);
 		stamina = isUpgraded ? 3 : 2;
 		stamCost = 4;
 		damage = isUpgraded ? 20 : 15;
@@ -52,7 +54,7 @@ public class RubyArmament extends Equipment {
 		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		inst.setIcon(patienceIcon);
 		
-		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
+		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
 			if (act.getCount() == 0) {
 				act.setCount(1);
@@ -70,6 +72,7 @@ public class RubyArmament extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+		data.addTrigger(ID, Trigger.RIGHT_CLICK, inst);
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

@@ -197,7 +197,7 @@ public class Mob implements Comparable<Mob> {
 			mhealth *= NotorietySetting.INCREASE_HEALTH_MULTIPLIER;
 		}
 
-		double result = Math.round(mhealth);
+		double result = Math.round(mhealth / 5.0) * 5.0;
 		if (NeoRogue.isDebugFlag("spawns")) Bukkit.getLogger().info("[NeoRogue Spawn] getMaxHealthScale: mob=" + id
 				+ " baseHealth=" + baseHealth + " lvl=" + lvl + " (sessionLevel=" + s.getLevel() + ")"
 				+ " regionsCompleted=" + s.getRegionsCompleted() + " partySize=" + s.getParty().size()

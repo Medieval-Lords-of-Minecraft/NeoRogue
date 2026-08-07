@@ -148,8 +148,30 @@ public class ExpBoostType {
 		if (message == null || message.isBlank()) return null;
 		return message.replace("%boost%", displayName)
 				.replace("%duration%", formatDuration(duration))
-				.replace("%remaining%", formatDuration(remaining))
+				.replace("%remaining%", formatRemaining(remaining))
 				.replace("%player%", playerName);
+	}
+
+	private String formatRemaining(long remaining) {
+		if (durationType == BoostDurationType.TIME) {
+			long totalMinutes = Math.max(1, (remaining + 59) / 60);
+			long days = totalMinutes / 1440;
+			long hours = totalMinutes % 1440 / 60;
+			long minutes = totalMinutes % 60;
+			StringBuilder formatted = new StringBuilder();
+			appendDurationPart(formatted, days, "day");
+			appendDurationPart(formatted, hours, "hour");
+			appendDurationPart(formatted, minutes, "minute");
+			return formatted.toString();
+		}
+		return formatDuration(remaining);
+	}
+
+	private void appendDurationPart(StringBuilder formatted, long amount, String unit) {
+		if (amount == 0) return;
+		if (formatted.length() > 0) formatted.append(' ');
+		formatted.append(amount).append(' ').append(unit);
+		if (amount != 1) formatted.append('s');
 	}
 
 	private String formatDuration(long duration) {

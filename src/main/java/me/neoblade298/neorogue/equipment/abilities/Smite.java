@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -37,10 +36,10 @@ public class Smite extends Equipment {
 	
 	public Smite(boolean isUpgraded) {
 		super(ID, "Smite", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 8, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 7, tp.range));
 		
-		sanctified = isUpgraded ? 8 : 5;
-		damage = isUpgraded ? 130 : 100;
+		sanctified = isUpgraded ? 10 : 7;
+		damage = isUpgraded ? 200 : 140;
 	}
 	
 	public static Equipment get() {

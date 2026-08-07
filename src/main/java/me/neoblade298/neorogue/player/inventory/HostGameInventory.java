@@ -22,6 +22,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -68,6 +69,10 @@ public class HostGameInventory extends CoreInventory {
 				lore.add(Component.text("Region: " + snap.getRegionType().getDisplay(), NamedTextColor.GRAY));
 				lore.add(Component.text("Nodes visited: " + snap.getNodesVisited(), NamedTextColor.GRAY));
 				lore.add(Component.text("Playtime: " + SessionSnapshot.formatPlaytime(snap.getPlaytime()), NamedTextColor.GRAY));
+				lore.add(Component.text("EXP Bonus: ", NamedTextColor.GRAY)
+						.append(Component.text("+" + Session.getNotorietyXpBonusPercent(snap.getNotoriety()) + "%", NamedTextColor.GREEN)));
+				lore.add(Component.text("Gold Bonus: ", NamedTextColor.GRAY)
+						.append(Component.text("+" + Session.getNotorietyMoneyBonusPercent(snap.getNotoriety()) + "%", NamedTextColor.GREEN)));
 				lore.add(Component.text("Party:", NamedTextColor.GRAY));
 				for (Entry<String, EquipmentClass> ent : snap.getParty().entrySet()) {
 					lore.add(Component.text("  " + ent.getKey() + " [" + ent.getValue().getDisplay() + "]", NamedTextColor.GRAY));

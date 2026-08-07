@@ -130,13 +130,11 @@ public class FaerieGroveChance extends ChanceSet {
 		}
 		Equipment chosenEq = Equipment.deserialize(chosen);
 		Equipment rewardEq = Equipment.deserialize(reward);
-		ArrayList<TextComponent> lore = new ArrayList<>();
-		lore.addAll(SharedUtil.addLineBreaks(Component.text("Give your ", NamedTextColor.GRAY)
+		return List.of((TextComponent) Component.text("Give your ", NamedTextColor.GRAY)
 				.append(chosenEq.getHoverable())
 				.append(Component.text(" to receive ", NamedTextColor.GRAY))
 				.append(rewardEq.getHoverable())
-				.append(Component.text(".", NamedTextColor.GRAY)), 250));
-		return lore;
+				.append(Component.text(".", NamedTextColor.GRAY)));
 	}
 	
 	private List<TextComponent> getSacrificeDescription(ChanceInstance inst, PlayerSessionData data) {
