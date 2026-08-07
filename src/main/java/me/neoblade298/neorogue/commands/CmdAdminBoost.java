@@ -13,6 +13,7 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.boost.BoostDurationType;
+import me.neoblade298.neorogue.player.boost.BoostTimeFormat;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 
 public class CmdAdminBoost extends Subcommand {
@@ -63,9 +64,13 @@ public class CmdAdminBoost extends Subcommand {
 		}
 		long duration;
 		try {
-			duration = Long.parseLong(args[1]);
-		} catch (NumberFormatException ex) {
-			Util.msgRaw(s, "<red>Duration must be a number!");
+			duration = type.getDurationType() == BoostDurationType.TIME
+					? BoostTimeFormat.parseSeconds(args[1]) : Long.parseLong(args[1]);
+		} catch (ArithmeticException | NumberFormatException ex) {
+			String format = type.getDurationType() == BoostDurationType.TIME
+					? "a number of seconds or formatted time (for example, 30m, 1d, or 1d12h)"
+					: "a number of runs";
+			Util.msgRaw(s, "<red>Duration must be " + format + "!");
 			return;
 		}
 		if (duration <= 0) {
@@ -87,7 +92,8 @@ public class CmdAdminBoost extends Subcommand {
 		boolean extended = pdata.addExpBoost(type, duration);
 		String message = type.formatGrantMessage(extended, p.getName(), duration);
 		if (message != null) Util.msgRaw(p, message);
-		String unit = type.getDurationType() == BoostDurationType.TIME ? duration + "s" : duration + " run(s)";
+		String unit = type.getDurationType() == BoostDurationType.TIME
+				? BoostTimeFormat.format(duration) : duration + " run(s)";
 		Util.msgRaw(s, "<green>" + (extended ? "Extended " : "Granted ") + type.getDisplayName()
 				+ " (" + unit + ") " + (extended ? "for " : "to ") + p.getName());
 	}

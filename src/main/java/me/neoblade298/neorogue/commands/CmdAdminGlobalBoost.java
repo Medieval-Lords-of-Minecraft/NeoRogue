@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.player.boost.BoostDurationType;
+import me.neoblade298.neorogue.player.boost.BoostTimeFormat;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
 
@@ -22,7 +23,7 @@ public class CmdAdminGlobalBoost extends Subcommand {
 		for (ExpBoostType type : ExpBoostType.values()) {
 			if (type.getDurationType() == BoostDurationType.TIME) typeTab.add(type.name());
 		}
-		args.add(new Arg("type").setTabOptions(typeTab), new Arg("durationSeconds", false), new Arg("player", false));
+		args.add(new Arg("type").setTabOptions(typeTab), new Arg("duration", false), new Arg("player", false));
 		this.enableTabComplete();
 	}
 
@@ -52,9 +53,10 @@ public class CmdAdminGlobalBoost extends Subcommand {
 		}
 		long duration;
 		try {
-			duration = Long.parseLong(args[1]);
-		} catch (NumberFormatException ex) {
-			Util.msgRaw(s, "<red>Duration must be a number!");
+			duration = BoostTimeFormat.parseSeconds(args[1]);
+		} catch (ArithmeticException | NumberFormatException ex) {
+			Util.msgRaw(s, "<red>Duration must be a number of seconds or formatted time "
+					+ "(for example, 30m, 1d, or 1d12h)!");
 			return;
 		}
 		if (duration <= 0) {
@@ -71,7 +73,7 @@ public class CmdAdminGlobalBoost extends Subcommand {
 			}
 		}
 		Util.msgRaw(s, "<green>" + (extended ? "Extended" : "Activated") + " global boost "
-				+ type.getDisplayName() + " (" + duration + "s)");
+				+ type.getDisplayName() + " (" + BoostTimeFormat.format(duration) + ")");
 	}
 
 	private String typeList() {
