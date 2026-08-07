@@ -49,6 +49,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
+import me.neoblade298.neorogue.session.reward.RunReward;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -463,36 +464,81 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private static ItemStack createStatsIcon(PlayerSessionData data, boolean isSpectating) {
-		TextComponent cls = Component.text("Class: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getPlayerClass().getDisplay(), NamedTextColor.WHITE));
-		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getHealth()) + " / " + df.format(data.getMaxHealth()), NamedTextColor.WHITE));
-		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getMaxMana()), NamedTextColor.WHITE));
-		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getMaxStamina()), NamedTextColor.WHITE));
-		TextComponent mr = Component.text("Mana Regen: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getManaRegen()), NamedTextColor.WHITE));
-		TextComponent sr = Component.text("Stamina Regen: ", NamedTextColor.GOLD)
-				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
-		TextComponent coins = Component.text(PlayerSessionData.CURRENCY + ": ", NamedTextColor.GOLD)
-				.append(Component.text(data.getCurrency(), NamedTextColor.WHITE));
-		ItemStack item = CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
+		Session session = data.getSession();
+		List<Component> lore = new ArrayList<Component>();
+		String classValue = data.getPlayerClass().getDisplay();
+		if (data.getData() != null) classValue += " | Level " + data.getData().getLevel(data.getPlayerClass());
+		lore.add(statsLine("Class", classValue));
+		lore.add(statsLine("Health", df.format(data.getHealth()) + " / " + df.format(data.getMaxHealth())));
+		lore.add(statsLine("Mana", df.format(data.getMaxMana()) + " max | +" + df.format(data.getManaRegen()) + "/s"));
+		lore.add(statsLine("Stamina", df.format(data.getMaxStamina()) + " max | +" + df.format(data.getStaminaRegen()) + "/s"));
+		lore.add(statsLine(PlayerSessionData.CURRENCY, String.valueOf(data.getCurrency())));
+
+		int regionExp = (int) Math.round((session.getRegionXpMultiplier() - 1.0) * 100);
+		int notorietyExp = session.getNotorietyXpBonusPercent();
+		int capturedExp = (int) Math.round((data.getRunExpBoostMultiplier() - 1.0) * 100);
+		lore.add(Component.empty());
+		lore.add(sectionLine("Experience Bonuses", regionExp + notorietyExp + capturedExp));
+		if (regionExp != 0) lore.add(bonusLine("Current region", regionExp, null));
+		if (notorietyExp != 0) lore.add(bonusLine("Notoriety", notorietyExp, null));
+		for (PlayerSessionData.RunExpBoost boost : data.getRunExpBoosts()) {
+			lore.add(bonusLine(boost.displayName(), (int) Math.round(boost.bonus() * 100), null));
+		}
+		if (regionExp == 0 && notorietyExp == 0 && data.getRunExpBoosts().isEmpty()) {
+			lore.add(Component.text("  No bonuses applied", NamedTextColor.DARK_GRAY)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+
+		lore.add(Component.empty());
+		lore.add(sectionLine("Gold Bonuses", null));
+		int notorietyGold = session.getNotorietyMoneyBonusPercent();
+		int partyGold = RunReward.getPartyMoneyBonusPercent(session);
+		int caravanGold = data.getData() == null ? 0 : data.getData().getSellMultiplierBonus();
+		if (notorietyGold != 0) lore.add(bonusLine("Notoriety", notorietyGold, "all payouts"));
+		if (partyGold != 0) lore.add(bonusLine("Party size", partyGold, "end reward"));
+		if (caravanGold != 0) lore.add(bonusLine("Caravan", caravanGold, "cargo sales"));
+		if (notorietyGold == 0 && partyGold == 0 && caravanGold == 0) {
+			lore.add(Component.text("  No bonuses applied", NamedTextColor.DARK_GRAY)
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
+
+		ItemStack item = CoreInventory.createButton(Material.ARMOR_STAND, statsText);
+		item.lore(lore);
 		if (isSpectating) {
-			List<Component> lore = item.lore();
 			lore.add(Component.empty());
 			lore.add(Component.text("Left click to view player global stats", NamedTextColor.YELLOW)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 			item.lore(lore);
 		}
 		else {
-			List<Component> lore = item.lore();
 			lore.add(Component.empty());
 			lore.add(Component.text("Click to view achievements, unlocks & stats", NamedTextColor.YELLOW)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 			item.lore(lore);
 		}
 		return item;
+	}
+
+	private static Component statsLine(String label, String value) {
+		return Component.text(label + ": ", NamedTextColor.GOLD)
+				.append(Component.text(value, NamedTextColor.WHITE))
+				.decoration(TextDecoration.ITALIC, State.FALSE);
+	}
+
+	private static Component sectionLine(String label, Integer totalPercent) {
+		Component line = Component.text(label, NamedTextColor.GOLD);
+		if (totalPercent != null) {
+			line = line.append(Component.text(" (" + (totalPercent >= 0 ? "+" : "") + totalPercent + "% total)",
+					NamedTextColor.GREEN));
+		}
+		return line.decoration(TextDecoration.ITALIC, State.FALSE);
+	}
+
+	private static Component bonusLine(String label, int percent, String scope) {
+		Component line = Component.text("  " + label + ": ", NamedTextColor.GRAY)
+				.append(Component.text((percent >= 0 ? "+" : "") + percent + "%", NamedTextColor.GREEN));
+		if (scope != null) line = line.append(Component.text(" " + scope, NamedTextColor.DARK_GRAY));
+		return line.decoration(TextDecoration.ITALIC, State.FALSE);
 	}
 
 	private static ItemStack createSettingsIcon(PlayerSessionData data) {
@@ -510,14 +556,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		lore.add(Component.text("Money Bonus: ", NamedTextColor.GRAY)
 				.append(Component.text("+" + s.getNotorietyMoneyBonusPercent() + "%", NamedTextColor.GREEN))
 				.decoration(TextDecoration.ITALIC, false));
-		// Exp boosts (personal + global) are locked in for the run at run start, so surface the captured
-		// bonus here alongside the notoriety bonuses. Only shown when a boost is actually active.
-		int expBoostPercent = (int) Math.round((data.getRunExpBoostMultiplier() - 1.0) * 100);
-		if (expBoostPercent > 0) {
-			lore.add(Component.text("Exp Boost: ", NamedTextColor.GRAY)
-					.append(Component.text("+" + expBoostPercent + "%", NamedTextColor.GREEN))
-					.decoration(TextDecoration.ITALIC, false));
-		}
 		if (notoriety > 0) {
 			lore.add(Component.empty());
 			lore.add(Component.text("Active Effects:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));

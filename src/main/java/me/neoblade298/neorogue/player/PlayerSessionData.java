@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -92,6 +93,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	// Combined exp boost multiplier captured for the current run (1.0 = no boost).
 	// Computed and consumed at run start, then persisted so it survives relogs/restarts.
 	private double runExpBoostMultiplier = 1.0;
+	private final ArrayList<RunExpBoost> runExpBoosts = new ArrayList<RunExpBoost>();
+
+	public static record RunExpBoost(String displayName, double bonus) {
+	}
 
 	// Run-scoped cargo carried into this run (moved from the player's persistent cargo on run start),
 	// plus a per-material log of what was auto-sold during the run for the end-of-run finance summary.
@@ -135,6 +140,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.runExpBoostMultiplier = rs.getDouble("runExpBoostMultiplier");
 		sessionStats.load(rs);
 		loadRunCargoFromSQL();
+		loadRunExpBoostsFromSQL();
 		initialize();
 	}
 
@@ -459,6 +465,15 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void setRunExpBoostMultiplier(double runExpBoostMultiplier) {
 		this.runExpBoostMultiplier = runExpBoostMultiplier;
+	}
+
+	public List<RunExpBoost> getRunExpBoosts() {
+		return Collections.unmodifiableList(runExpBoosts);
+	}
+
+	public void setRunExpBoosts(List<RunExpBoost> boosts) {
+		runExpBoosts.clear();
+		runExpBoosts.addAll(boosts);
 	}
 
 	public SessionStatistics getSessionStats() {
@@ -1380,10 +1395,33 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			ps.close();
 
 			saveRunCargo(con, host.toString(), saveSlot, uuid);
+			saveRunExpBoosts(con, host.toString(), saveSlot, uuid);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
 					+ host + " to slot " + saveSlot);
 			ex.printStackTrace();
+		}
+	}
+
+	private void saveRunExpBoosts(Connection con, String host, int saveSlot, String uuid) throws SQLException {
+		try (PreparedStatement clear = con.prepareStatement(
+				"DELETE FROM neorogue_sessionexpboosts WHERE host = ? AND slot = ? AND uuid = ?;")) {
+			clear.setString(1, host);
+			clear.setInt(2, saveSlot);
+			clear.setString(3, uuid);
+			clear.executeUpdate();
+		}
+		if (runExpBoosts.isEmpty()) return;
+
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessionexpboosts");
+		for (int i = 0; i < runExpBoosts.size(); i++) {
+			RunExpBoost boost = runExpBoosts.get(i);
+			sql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
+					.addValue("idx", i).addValue("displayName", boost.displayName())
+					.addValue("bonus", boost.bonus()).addRow();
+		}
+		try (PreparedStatement ps = sql.build(con)) {
+			ps.executeBatch();
 		}
 	}
 
@@ -1462,6 +1500,24 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			}
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to load run cargo for " + uuidStr);
+			ex.printStackTrace();
+		}
+	}
+
+	private void loadRunExpBoostsFromSQL() {
+		try (Connection con = SQLManager.getConnection("NeoRogue"); PreparedStatement ps = con.prepareStatement(
+				"SELECT displayName, bonus FROM neorogue_sessionexpboosts "
+						+ "WHERE host = ? AND slot = ? AND uuid = ? ORDER BY idx;")) {
+			ps.setString(1, s.getHost().toString());
+			ps.setInt(2, s.getSaveSlot());
+			ps.setString(3, uuid.toString());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					runExpBoosts.add(new RunExpBoost(rs.getString("displayName"), rs.getDouble("bonus")));
+				}
+			}
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load run exp boosts for " + uuid);
 			ex.printStackTrace();
 		}
 	}

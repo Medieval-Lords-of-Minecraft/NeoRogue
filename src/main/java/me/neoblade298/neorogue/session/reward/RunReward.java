@@ -348,11 +348,15 @@ public class RunReward {
 		double notorietyMultiplier = s.getNotorietyMoneyMultiplier();
 		// +PARTY_SIZE_BONUS per party member beyond the first (solo runs are unaffected).
 		int partySize = s.getParty().size();
-		double partyMultiplier = 1.0 + PARTY_SIZE_BONUS * Math.max(0, partySize - 1);
+		double partyMultiplier = 1.0 + getPartyMoneyBonusPercent(s) / 100.0;
 		double total = zeroedByDeath ? 0.0 : subtotal * notorietyMultiplier * partyMultiplier;
 
 		return new Breakdown(won, zeroedByDeath, nodes, regions, notoriety, base, nodeBonus, regionBonus,
 				subtotal, notorietyMultiplier, partySize, partyMultiplier, total);
+	}
+
+	public static int getPartyMoneyBonusPercent(Session s) {
+		return (int) Math.round(PARTY_SIZE_BONUS * Math.max(0, s.getParty().size() - 1) * 100);
 	}
 
 	// Builds the run-finances breakdown as item lore for the session summary inventory. The breakdown
@@ -396,12 +400,19 @@ public class RunReward {
 				lore.add(loreLine("<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
 						+ formatMoney(value)));
 			}
-			double cargoMultiplier = s.getNotorietyMoneyMultiplier();
+			PlayerData pd = psd.getData();
+			int caravanBonus = pd == null ? 0 : pd.getSellMultiplierBonus();
+			double cargoMultiplier = s.getNotorietyMoneyMultiplier() + caravanBonus / 100.0;
 			double cargoReward = cargoTotal * cargoMultiplier;
 			if (cargoReward > cargoTotal) {
 				lore.add(loreLine("<gray>Sale value: <yellow>" + formatMoney(cargoTotal)));
-				lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
-						+ "%<gray>): <green>\u00d7" + String.format("%.2f", cargoMultiplier)));
+				if (s.getNotorietyMoneyBonusPercent() > 0) {
+					lore.add(loreLine("<gray>Notoriety bonus: <green>+" + s.getNotorietyMoneyBonusPercent() + "%"));
+				}
+				if (caravanBonus > 0) {
+					lore.add(loreLine("<gray>Caravan bonus: <green>+" + caravanBonus + "%"));
+				}
+				lore.add(loreLine("<gray>Cargo multiplier: <green>\u00d7" + String.format("%.2f", cargoMultiplier)));
 			}
 			lore.add(loreLine("<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward)));
 		}
@@ -421,6 +432,14 @@ public class RunReward {
 		int earned = psd.getSessionStats().getExpEarned();
 		lore.add(loreLine("<gray>Class: <white>" + ec.getDisplay()));
 		lore.add(loreLine("<gray>Total exp earned: <green>+" + earned));
+		if (!psd.getRunExpBoosts().isEmpty()) {
+			lore.add(Component.empty());
+			lore.add(loreLine("<gold>Exp boosts applied:"));
+			for (PlayerSessionData.RunExpBoost boost : psd.getRunExpBoosts()) {
+				int percent = (int) Math.round(boost.bonus() * 100);
+				lore.add(loreLine("<dark_gray>- <gray>" + boost.displayName() + ": <green>+" + percent + "%"));
+			}
+		}
 
 		PlayerData pd = psd.getData();
 		if (pd != null) {

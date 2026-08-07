@@ -64,6 +64,8 @@ import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.PlayerSessionData.RunExpBoost;
+import me.neoblade298.neorogue.player.boost.ExpBoost;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
@@ -1232,20 +1234,30 @@ public class Session {
 	// Permission and server-wide global boosts are added on top of personal boosts.
 	public void applyExpBoosts() {
 		if (sessionType == SessionType.TUTORIAL) return;
-		double globalBonus = GlobalBoostManager.getGlobalBoostBonus();
+		List<ExpBoost> globalBoosts = new ArrayList<ExpBoost>(GlobalBoostManager.getGlobalBoosts());
+		double globalBonus = globalBoosts.stream().mapToDouble(ExpBoost::getMultiplier).sum();
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
 			if (pdata == null) continue;
+			ArrayList<RunExpBoost> appliedBoosts = new ArrayList<RunExpBoost>();
+			for (ExpBoost boost : pdata.getActiveExpBoosts()) {
+				appliedBoosts.add(new RunExpBoost(boost.getType().getDisplayName(), boost.getMultiplier()));
+			}
+			for (ExpBoost boost : globalBoosts) {
+				appliedBoosts.add(new RunExpBoost(boost.getType().getDisplayName(), boost.getMultiplier()));
+			}
 			double permissionBonus = 0.0;
 			Player player = Bukkit.getPlayer(entry.getKey());
 			if (player != null) {
 				for (ExpBoostType type : ExpBoostType.values()) {
 					if (type.getPermission() != null && player.hasPermission(type.getPermission())) {
 						permissionBonus += type.getMultiplier();
+						appliedBoosts.add(new RunExpBoost(type.getDisplayName(), type.getMultiplier()));
 					}
 				}
 			}
 			entry.getValue().setRunExpBoostMultiplier(pdata.consumeRunExpBoosts() + globalBonus + permissionBonus);
+			entry.getValue().setRunExpBoosts(appliedBoosts);
 		}
 	}
 	
@@ -1483,6 +1495,9 @@ public class Session {
 			);
 			stmt.executeUpdate(
 					"DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 			);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning(

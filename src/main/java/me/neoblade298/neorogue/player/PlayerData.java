@@ -459,6 +459,11 @@ public class PlayerData {
 		return expBoosts;
 	}
 
+	public List<ExpBoost> getActiveExpBoosts() {
+		pruneExpBoosts();
+		return List.copyOf(expBoosts);
+	}
+
 	public long getExpBoostRemaining(ExpBoostType type) {
 		pruneExpBoosts();
 		for (ExpBoost boost : expBoosts) {

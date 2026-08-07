@@ -298,6 +298,7 @@ public class SessionManager implements Listener {
 			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
 			ex.printStackTrace();
@@ -315,6 +316,7 @@ public class SessionManager implements Listener {
 			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "';");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "';");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "';");
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete all saves for " + host);
 			ex.printStackTrace();
