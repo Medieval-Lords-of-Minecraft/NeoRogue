@@ -64,7 +64,7 @@ public class DropOfInsanity extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Your next casted ability becomes free to cast for the rest of the fight. Consumed on first use.");
+				"Your next cast ability becomes free to cast for the rest of the fight. Consumed on first use.");
 	}
 
 	@Override

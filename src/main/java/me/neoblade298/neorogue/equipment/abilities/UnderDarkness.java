@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -46,7 +47,8 @@ public class UnderDarkness extends Equipment {
 	public UnderDarkness(boolean isUpgraded) {
 		super(ID, "Under Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0));
-		damage = isUpgraded ? 15 : 10;
+		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
+				damage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -40,7 +41,8 @@ public class SmokeBomb extends Equipment {
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 12, 0));
-		delay = isUpgraded ? 3 : 1;
+				properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
+				delay = isUpgraded ? 3 : 1;
 		shields = isUpgraded ? 5 : 3;
 	}
 

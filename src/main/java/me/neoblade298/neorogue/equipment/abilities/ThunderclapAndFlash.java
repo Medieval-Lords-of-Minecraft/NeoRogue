@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
 
 public class ThunderclapAndFlash extends Equipment {
 	private static final String ID = "ThunderclapAndFlash";
@@ -60,7 +60,7 @@ public class ThunderclapAndFlash extends Equipment {
 		// On evade: dash forward, deal lightning damage, gain stacks
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			Player p = data.getPlayer();
-			PreEvadeEvent ev = (PreEvadeEvent) in;
+			EvadeEvent ev = (EvadeEvent) in;
 			
 			// Get the damager entity from the DamageMeta
 			if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
