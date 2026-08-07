@@ -64,7 +64,7 @@ public class Dawnbringer extends Equipment {
 	private int damage, lightBuff;
 
 	public Dawnbringer(boolean isUpgraded) {
-		super(ID, "Dawnbringer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Dawnbringer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 5, RANGE));
 		damage = isUpgraded ? 300 : 200;
 		lightBuff = isUpgraded ? 30 : 20;
@@ -95,7 +95,7 @@ public class Dawnbringer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SUNFLOWER,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a "
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a"
 				+ " wide slow-moving wave of light that deals " + GlossaryTag.LIGHT.tag(this, damage)
 				+ " damage. For each enemy hit with at least " + DescUtil.white(SANCTIFIED_THRESHOLD) + " "
 				+ GlossaryTag.SANCTIFIED.tag(this) + ", permanently increase all "

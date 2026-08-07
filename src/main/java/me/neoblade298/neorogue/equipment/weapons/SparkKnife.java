@@ -64,7 +64,7 @@ public class SparkKnife extends Equipment {
 			FightData target = FightInstance.getFightData(ev.getTarget());
 			if (target != null && target.hasStatus(StatusType.ELECTRIFIED)) {
 				ev.getMeta().addDamageSlice(new DamageSlice(pdata, bonusDamage, DamageType.SLASHING,
-						DamageStatTracker.of(id + slot, this)));
+						DamageStatTracker.of(id, this)));
 			}
 			return TriggerResult.keep();
 		});

@@ -818,6 +818,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			// Wildcard reforge check (e.g. Transmutation): reforge any item into any of its results
 			Equipment[] wildcardPair = Equipment.resolveWildcardReforge(eq, eqed);
 			if (wildcardPair != null) {
+				if (!Equipment.canReforge(wildcardPair[0], wildcardPair[1], data.getSession())) {
+					String msg = NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(data.getSession())
+							? "Both items must be upgraded to reforge!"
+							: "At least one of the items must be upgraded to reforge!";
+					displayError(msg, false);
+					return;
+				}
 				handleWildcardReforge(e, wildcardPair[0], wildcardPair[1], slot, clickedDataSlot);
 				return;
 			}

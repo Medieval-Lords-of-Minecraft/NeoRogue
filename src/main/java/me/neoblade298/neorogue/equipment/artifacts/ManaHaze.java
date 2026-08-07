@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -58,15 +59,17 @@ public class ManaHaze extends Artifact {
 				ApplyStatusEvent ev = (ApplyStatusEvent) in;
 				if (ev.getStatusClass() != StatusClass.NEGATIVE) return TriggerResult.keep();
 				if (ev.isSecondary()) return TriggerResult.keep();
+				stacks++;
 				if (stacks >= thres && System.currentTimeMillis() >= am.getTime()) {
 					LivingEntity trg = TargetHelper.getNearest(ev.getTarget().getEntity(), tp);
 					if (trg != null) {
+						FightData targetData = FightInstance.getFightData(trg);
 						stacks -= thres;
 						am.setTime(System.currentTimeMillis() + 1000); // 1 second cooldown
-						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), ev.getStatus().getStacks() / 2, ev.getTicks(), pdata, ManaHaze.this);
+						targetData.applyStatus(ev.getStatus().clone(targetData), pdata, ev.getStacks() / 2,
+								ev.getTicks(), null, true, ManaHaze.this);
 					}
 				}
-				stacks++;
 				return TriggerResult.keep();
 			};
 		}

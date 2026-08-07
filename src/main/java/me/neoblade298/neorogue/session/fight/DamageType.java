@@ -29,13 +29,13 @@ public enum DamageType {
 	POISON("Poison", StatusType.POISON.tag,
 		EnumSet.of(DamageCategory.POISON, DamageCategory.STATUS, DamageCategory.ALL)),
 	REND("Rend", StatusType.REND.tag,
-		EnumSet.of(DamageCategory.PIERCING, DamageCategory.PHYSICAL, DamageCategory.DIRECT, DamageCategory.STATUS, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	ELECTRIFIED("Electrified", StatusType.ELECTRIFIED.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL, DamageCategory.DIRECT, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	THORNS("Thorns", StatusType.THORNS.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.PHYSICAL, DamageCategory.DIRECT, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	REFLECT("Reflect", StatusType.REFLECT.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.MAGICAL, DamageCategory.DIRECT, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	FALL("Fall", "<white>Fall</white>",
 		EnumSet.of(DamageCategory.ALL));
 	

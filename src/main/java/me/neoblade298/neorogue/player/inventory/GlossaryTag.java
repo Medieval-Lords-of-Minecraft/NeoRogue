@@ -58,7 +58,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	IMPEDED(Material.COBWEB, "<#B8B8B8>Impeded</#B8B8B8>",
 			"Reduces the affected entity's projectile velocity by 50%."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, "<#FFD700>Electrified</#FFD700>",
-			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every second."),
+			"Whenever the affected entity casts an ability or deals damage, deal 1 lightning damage per stack applied to the affected entity. 1 stack is removed every second."),
 	CONCUSSED(Material.DIRT, "<#C2A878>Concussed</#C2A878>",
 			"Reduces the affected entity's physical damage dealt by 25%. 1 stack is removed every second."),
 	INSANITY(Material.SOUL_SAND, "<#9B59B6>Insanity</#9B59B6>",

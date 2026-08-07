@@ -213,7 +213,7 @@ public class CmdList extends Subcommand {
 					
 					Predicate<Equipment> check = reforgeTypes[0].filter;
 					for (int i = 1; i < reforgeTypes.length; i++) {
-						check.and(reforgeTypes[i].filter);
+						check = check.or(reforgeTypes[i].filter);
 					}
 					stream = stream.filter(check);
 					break;
@@ -233,9 +233,9 @@ public class CmdList extends Subcommand {
 					
 					stream = stream.filter((eq) -> {
 						for (GlossaryTag gt : gts) {
-							if (!eq.getTags().contains(gt)) return false;
+							if (eq.getTags().contains(gt)) return true;
 						}
-						return true;
+						return false;
 					});
 					break;
 				case UNLOCKED:

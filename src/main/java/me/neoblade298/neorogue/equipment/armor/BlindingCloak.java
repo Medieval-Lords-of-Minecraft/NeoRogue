@@ -19,7 +19,7 @@ public class BlindingCloak extends Equipment {
 	public BlindingCloak(boolean isUpgraded) {
 		super(ID, "Blinding Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		shields = isUpgraded ? 10 : 6;
+		shields = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {
@@ -33,7 +33,7 @@ public class BlindingCloak extends Equipment {
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			
 			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 160, this);
+			data.addSimpleShield(p.getUniqueId(), shields, 120, this);
 			return TriggerResult.keep();
 		});
 	}
@@ -41,6 +41,6 @@ public class BlindingCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", "
-				+ "gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>8s</white>].");
+				+ "gain " + GlossaryTag.SHIELDS.tag(this, shields) + " [<white>6s</white>].");
 	}
 }
