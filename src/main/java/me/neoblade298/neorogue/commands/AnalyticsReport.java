@@ -96,6 +96,17 @@ public class AnalyticsReport {
 			new AnalyticsFilters.FilterOption("endless", "r.endless", false, List.of("0", "1")),
 			new AnalyticsFilters.FilterOption("competitive", "r.competitive", false, List.of("0", "1")));
 
+	public static final List<AnalyticsFilters.FilterOption> LOSS_FILTER_OPTIONS = List.of(
+			new AnalyticsFilters.FilterOption("source", "COALESCE(f.nodeType, 'ABANDONED_OTHER')", false,
+					List.of(NodeType.FIGHT.name(), NodeType.MINIBOSS.name(), NodeType.BOSS.name(), "ABANDONED_OTHER")),
+			new AnalyticsFilters.FilterOption("region", "r.regionType", false, regionTypes()),
+			new AnalyticsFilters.FilterOption("nodes", "r.level + 1", false, null),
+			new AnalyticsFilters.FilterOption("regions", "r.regionsCompleted", false, null),
+			new AnalyticsFilters.FilterOption("party", "r.partySize", false, null),
+			new AnalyticsFilters.FilterOption("notoriety", "r.notoriety", false, null),
+			new AnalyticsFilters.FilterOption("endless", "r.endless", false, List.of("0", "1")),
+			new AnalyticsFilters.FilterOption("competitive", "r.competitive", false, List.of("0", "1")));
+
 	public static final List<AnalyticsFilters.FilterOption> PICKRATE_FILTER_OPTIONS = List.of(
 			new AnalyticsFilters.FilterOption("source", "o.source", false, offerSources()),
 			new AnalyticsFilters.FilterOption("class", "o.equipClass", true, enumNames(EquipmentClass.values())),
@@ -276,6 +287,73 @@ public class AnalyticsReport {
 						}
 						for (String line : lines) Util.msgRaw(s, line);
 						sendPageControls(s, "/nrlytics classes", filters);
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// Finished runs grouped by progression and terminal loss source. Combat losses join to their
+	// losing fight; runs without one are abandoned or otherwise ended outside combat.
+	public static void losses(CommandSender s, int version, AnalyticsFilters filters) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ArrayList<String> lines = new ArrayList<String>();
+				try (Connection con = SQLManager.getConnection("NeoRogue")) {
+					StringBuilder sql = new StringBuilder("SELECT r.level + 1 AS nodesVisited,"
+							+ " r.regionsCompleted, r.regionType,"
+							+ " COALESCE(f.nodeType, 'ABANDONED_OTHER') AS lossSource,"
+							+ " COUNT(DISTINCT r.runId) AS losses"
+							+ " FROM neorogue_analytics_runs r"
+							+ " LEFT JOIN neorogue_analytics_fights f ON f.runId = r.runId"
+							+ " AND f.outcome = 0 AND f.balanceVersion = r.balanceVersion"
+							+ " WHERE r.balanceVersion = ? AND r.won = 0");
+					filters.appendWhere(sql);
+					sql.append(" GROUP BY r.level, r.regionsCompleted, r.regionType,"
+							+ " COALESCE(f.nodeType, 'ABANDONED_OTHER')");
+					if (filters.filterLowSamples()) {
+						sql.append(" HAVING COUNT(DISTINCT r.runId) >= ").append(MIN_SAMPLES);
+					}
+					sql.append(" ORDER BY losses DESC, nodesVisited DESC").append(pageClause(filters)).append(";");
+
+					try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+						ps.setInt(1, version);
+						filters.bind(ps, 2);
+						try (ResultSet rs = ps.executeQuery()) {
+							int row = 0;
+							while (rs.next()) {
+								if (++row > LEADERBOARD_LIMIT) {
+									filters.setHasNextPage(true);
+									break;
+								}
+								int losses = rs.getInt("losses");
+								int regionReached = rs.getInt("regionsCompleted") + 1;
+								lines.add("  <yellow>" + losses + "</yellow> losses <gray>| Node <white>"
+										+ rs.getInt("nodesVisited") + "</white> | Region <white>" + regionReached
+										+ " " + rs.getString("regionType") + "</white> | <aqua>"
+										+ rs.getString("lossSource") + "</aqua>" + lowSampleMarker(losses));
+							}
+						}
+					}
+					addReportMeta(lines, filters);
+				}
+				catch (SQLException ex) {
+					lines.clear();
+					lines.add("<red>Failed to query analytics (see console).");
+					ex.printStackTrace();
+				}
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Util.msgRaw(s, "<gold>=== Run Losses (balance v" + version + ", " + filters.summary() + ") ===");
+						if (lines.isEmpty()) {
+							Util.msgRaw(s, "<yellow>No run losses recorded.");
+							return;
+						}
+						for (String line : lines) Util.msgRaw(s, line);
+						sendPageControls(s, "/nrlytics losses", filters);
 					}
 				}.runTask(NeoRogue.inst());
 			}

@@ -54,6 +54,13 @@ public class Shield implements Comparable<Shield> {
 		
 		//}
 	}
+
+	public void makePermanent() {
+		this.decayAmount = 0;
+		this.decayDelayTicks = 0;
+		this.decayPeriodTicks = 0;
+		this.decayRepetitions = 0;
+	}
 	
 	public void initialize(FightData data) {
 		this.shieldHolder = data.getShields();

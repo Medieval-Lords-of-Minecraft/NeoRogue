@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.Mob;
 @SuppressWarnings("UnstableApiUsage")
 public class LyticsCommand {
 	// Ordered list of subcommands shown when /nrlytics is run with no arguments.
-	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "pickrate", "chance",
+	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "losses", "pickrate", "chance",
 			"mobs", "minibosses", "bosses", "mob");
 
 	private LyticsCommand() {
@@ -62,6 +62,14 @@ public class LyticsCommand {
 								.suggests((ctx, builder) -> suggestFilters(builder,
 										AnalyticsReport.CLASS_FILTER_OPTIONS))
 								.executes(ctx -> runClasses(ctx, getStr(ctx, "options")))))
+
+				// losses [key=value ...]
+				.then(Commands.literal("losses")
+						.executes(ctx -> runLosses(ctx, ""))
+						.then(Commands.argument("options", StringArgumentType.greedyString())
+								.suggests((ctx, builder) -> suggestFilters(builder,
+										AnalyticsReport.LOSS_FILTER_OPTIONS))
+								.executes(ctx -> runLosses(ctx, getStr(ctx, "options")))))
 
 				// pickrate [source] [class] [sortBy] [page=n] [filterlow=true|false]
 				.then(Commands.literal("pickrate")
@@ -170,6 +178,12 @@ public class LyticsCommand {
 	private static int runClasses(CommandContext<CommandSourceStack> ctx, String args) {
 		AnalyticsReport.classWinrates(ctx.getSource().getSender(), version(),
 				parseArgs(args, 0, AnalyticsReport.CLASS_FILTER_OPTIONS).filters);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runLosses(CommandContext<CommandSourceStack> ctx, String args) {
+		AnalyticsReport.losses(ctx.getSource().getSender(), version(),
+				parseArgs(args, 0, AnalyticsReport.LOSS_FILTER_OPTIONS).filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
