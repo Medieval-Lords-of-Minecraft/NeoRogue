@@ -37,7 +37,6 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Judgment extends Equipment {
 	private static final String ID = "Judgment";
@@ -45,14 +44,14 @@ public class Judgment extends Equipment {
 	private static final int WAVE_DISTANCE = 10;
 	private static final TargetProperties CENTRAL_TARGETS = TargetProperties.radius(CENTRAL_RADIUS, false, TargetType.ENEMY);
 	private static final TargetProperties WAVE_TARGETS = TargetProperties.radius(1.5, false, TargetType.ENEMY);
-	private static final ParticleContainer ASCENT = new ParticleContainer(Particle.FIREWORK).count(4).spread(0.1, 0.1)
-			.speed(0.01);
 	private static final ParticleContainer DIVINE = new ParticleContainer(Particle.DUST).count(1).spread(0, 0)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 232, 130), 1.2F));
+	private static final ParticleContainer ASCENT = new ParticleContainer(Particle.FIREWORK).count(4).spread(0.1, 0.1)
+			.speed(0.01).color(Color.fromRGB(255, 232, 130));
 	private static final ParticleContainer IMPACT = new ParticleContainer(Particle.FLASH).count(3);
 	private static final ParticleContainer IMPACT_EDGE = DIVINE.clone().count(1).spread(0, 0);
 	private static final ParticleContainer IMPACT_FILL = new ParticleContainer(Particle.FIREWORK).count(1).spread(0.1, 0)
-			.speed(0);
+			.speed(0).color(Color.fromRGB(255, 232, 130));
 	private static final ParticleContainer WAVE = new ParticleContainer(Particle.DUST_PLUME).count(2).spread(0.05, 0.05)
 			.speed(0);
 	private static final ParticleContainer WAVE_HIT = new ParticleContainer(Particle.BLOCK).count(8).spread(0.1, 0.1)
@@ -105,8 +104,9 @@ public class Judgment extends Equipment {
 				public void run() {
 					Player current = data.getPlayer();
 					if (current.isOnGround()) {
-						impact(data, slot);
 						cancel();
+						impact(data, slot);
+						return;
 					} else {
 						showHammer(current);
 					}
@@ -118,9 +118,8 @@ public class Judgment extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().isBasicAttack()) inst.addCooldown(-1);
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			inst.addCooldown(-1);
 			return TriggerResult.keep();
 		});
 	}
@@ -131,12 +130,12 @@ public class Judgment extends Equipment {
 		IMPACT_AREA.play(IMPACT_EDGE, origin, LocalAxes.xz(), IMPACT_FILL);
 		IMPACT.play(p, origin);
 		Sounds.explode.play(p, p);
+		for (Vector direction : DIRECTIONS) launchWave(data, origin, direction, slot);
 		for (LivingEntity target : TargetHelper.getEntitiesInRadius(p, origin, CENTRAL_TARGETS)) {
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHT,
 					DamageStatTracker.of(id + slot, this)), target);
 			FightInstance.applyStatus(target, StatusType.SANCTIFIED, data, status, -1, this);
 		}
-		for (Vector direction : DIRECTIONS) launchWave(data, origin, direction, slot);
 	}
 
 	private void showHammer(Player p) {
