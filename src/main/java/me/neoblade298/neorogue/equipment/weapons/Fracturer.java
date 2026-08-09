@@ -87,6 +87,7 @@ public class Fracturer extends Equipment {
 			super(id);
 			this.eq = eq;
 			action = (data, in) -> {
+				if (!data.canBasicAttack()) return TriggerResult.keep();
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
 				data.runAnimation(id, p, swing, p);

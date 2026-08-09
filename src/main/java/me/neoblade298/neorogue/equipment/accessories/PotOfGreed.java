@@ -33,7 +33,7 @@ public class PotOfGreed extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each non-currency reward you skip (by clearing), gain " + DescUtil.val(GOLD) + " gold.");
+		item = createItem(Material.CAULDRON, new String[] {"Draws two cards!"}, "For each non-currency reward you skip (by clearing), gain " + DescUtil.val(GOLD) + " " + PlayerSessionData.CURRENCY + ".");
 	}
 
 	@Override

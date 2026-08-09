@@ -32,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class ManaArc extends Equipment {
 	private static final String ID = "ManaArc";
+	private static final long PROJECTILE_COOLDOWN = 1000;
 	private int mana, damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 
@@ -86,6 +87,10 @@ public class ManaArc extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().isSecondary())
 				return TriggerResult.keep();
+			long now = System.currentTimeMillis();
+			if (now < am.getTime())
+				return TriggerResult.keep();
+			am.setTime(now + PROJECTILE_COOLDOWN);
 			Player pl = data.getPlayer();
 			LivingEntity trg = ev.getTarget();
 			Vector dir = trg.getLocation().toVector().subtract(pl.getLocation().toVector()).normalize();
@@ -129,7 +134,7 @@ public class ManaArc extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_BANNER,
 				"On cast, lose " + DescUtil.val(mana) + " mana per second. Until you run out of mana, "
-						+ "dealing damage fires a projectile at the target, dealing "
+						+ "dealing damage fires a projectile at the target (<white>1s cd</white>), dealing "
 						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying "
 						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
 	}

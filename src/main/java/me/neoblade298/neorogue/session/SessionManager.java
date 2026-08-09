@@ -21,8 +21,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -78,6 +80,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.MainSessionMenu;
@@ -104,6 +107,11 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class SessionManager implements Listener {
+	private static final HashMap<UUID, SessionDamageSnapshot> lastSessionDamage = new HashMap<UUID, SessionDamageSnapshot>();
+
+	private record SessionDamageSnapshot(double healthBefore, double damage, String cause, String source) {
+	}
+
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 	// Per-player cooldown (ms) between join attempts to prevent request spam
@@ -496,16 +504,80 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		if (!sessions.containsKey(e.getPlayer().getUniqueId()))
-			return;
 		Player p = e.getPlayer();
-		Session s = sessions.get(p.getUniqueId());
-		if (s.isSpectator(p.getUniqueId())) {
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid))
+			return;
+		Session s = sessions.get(uuid);
+		if (s.isSpectator(uuid)) {
 			p.spigot().respawn();
 			p.teleport(s.getInstance().getSpawn());
 			return;
 		}
-		FightInstance.handleDeath(e);
+		if (FightInstance.getUserData(uuid) != null) {
+			lastSessionDamage.remove(uuid);
+			FightInstance.handleDeath(e);
+			return;
+		}
+
+		SessionDamageSnapshot damage = lastSessionDamage.remove(uuid);
+		double healthBefore = damage != null ? damage.healthBefore() : Math.max(1, s.getParty().get(uuid).getHealth());
+		String cause = damage != null ? damage.cause() : "UNKNOWN";
+		String source = damage != null ? damage.source() : "unknown source";
+		e.setKeepInventory(true);
+		e.getDrops().clear();
+		e.setKeepLevel(true);
+		e.setDroppedExp(0);
+		NeoRogue.inst().getLogger().severe("Session player " + p.getName() + " died outside fight handling in "
+				+ s.getInstance().getClass().getSimpleName() + " at " + formatLocation(p.getLocation()) + " from "
+				+ cause + " (" + source + ") for " + (damage != null ? damage.damage() : "unknown")
+				+ " damage; health before hit: " + healthBefore);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.spigot().respawn();
+				p.teleport(s.getInstance().getSpawn());
+				double restoredHealth = Math.max(1, Math.min(healthBefore,
+						p.getAttribute(Attribute.MAX_HEALTH).getValue()));
+				p.setHealth(restoredHealth);
+				PlayerSessionData data = s.getParty().get(uuid);
+				if (data != null) {
+					data.updateHealth();
+					data.updateBoardLines();
+					s.getInstance().updateBoardLines();
+				}
+			}
+		}.runTask(NeoRogue.inst());
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void recordSessionDamage(EntityDamageEvent e) {
+		if (!(e.getEntity() instanceof Player p)) return;
+		UUID uuid = p.getUniqueId();
+		Session s = sessions.get(uuid);
+		if (s == null || s.isSpectator(uuid)) return;
+		lastSessionDamage.put(uuid, new SessionDamageSnapshot(p.getHealth(), e.getFinalDamage(),
+				e.getCause().name(), describeDamageSource(e)));
+	}
+
+	private static String describeDamageSource(EntityDamageEvent e) {
+		Entity source = e.getDamageSource().getCausingEntity();
+		Entity direct = e.getDamageSource().getDirectEntity();
+		if (source == null) return direct != null ? direct.getType() + " " + direct.getName() : "environment";
+		String description = source.getType() + " " + source.getName();
+		if (direct != null && direct != source) {
+			description += " via " + direct.getType() + " " + direct.getName();
+			if (direct instanceof Projectile projectile && projectile.getShooter() != null) {
+				description += " shot by " + projectile.getShooter();
+			}
+		}
+		return description;
+	}
+
+	private static String formatLocation(org.bukkit.Location location) {
+		return location.getWorld().getName() + " [" + location.getBlockX() + ", " + location.getBlockY() + ", "
+				+ location.getBlockZ() + "]";
 	}
 
 	@EventHandler
@@ -941,6 +1013,7 @@ public class SessionManager implements Listener {
 
 	private void handleLeave(Player p) {
 		UUID uuid = p.getUniqueId();
+		lastSessionDamage.remove(uuid);
 		p.clearActivePotionEffects();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);

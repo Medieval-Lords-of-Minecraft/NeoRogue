@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -50,7 +51,7 @@ public class Adrenaline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself " + DescUtil.val(stamina) + " stamina and take " + DescUtil.val(damageReduc) + " less damage " + DescUtil.duration(10) + ". Can be cast " + DescUtil.val(isUpgraded ? "twice" : "once") + " per fight.");
+				"On cast, give yourself " + DescUtil.val(stamina) + " stamina and reduce " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(damageReduc) + " " + DescUtil.duration(10) + ". Can be cast " + DescUtil.val(isUpgraded ? "twice" : "once") + " per fight.");
 	}
 
 	@Override

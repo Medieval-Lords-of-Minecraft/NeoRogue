@@ -240,7 +240,6 @@ public class ShopInventory extends CoreInventory {
 								Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)
 						)
 				);
-				data.getSession().getInstance().updateBoardLines();
 				ItemStack[] contents = inv.getContents();
 				updateAll(contents);
 				inv.setContents(contents);
@@ -344,6 +343,7 @@ public class ShopInventory extends CoreInventory {
 			return false;
 		}
 		data.addCurrency(eq.getType() == EquipmentType.CONSUMABLE ? CONSUMABLE_PRICE : SELL_PRICE);
+		data.getSession().getInstance().updateBoardLines();
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 		p.setItemOnCursor(null);
 		data.getSession().broadcast(
