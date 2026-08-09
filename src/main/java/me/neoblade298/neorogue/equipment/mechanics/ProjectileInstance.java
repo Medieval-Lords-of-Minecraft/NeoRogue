@@ -88,6 +88,7 @@ public class ProjectileInstance {
 		entityBounds.put(EntityType.DRAGON_FIREBALL, createBox(0.5, 0.5));
 		entityBounds.put(EntityType.POLAR_BEAR, createBox(1.3, 1.4));
 		entityBounds.put(EntityType.PLAYER, createBox(1, 2));
+		entityBounds.put(EntityType.ARMOR_STAND, createBox(1, 2));
 	}
 
 	private static BoundingBox createBox(double width, double height) {

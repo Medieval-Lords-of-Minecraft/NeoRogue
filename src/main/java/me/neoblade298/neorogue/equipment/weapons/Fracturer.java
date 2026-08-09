@@ -85,13 +85,14 @@ public class Fracturer extends Equipment {
 		private int count = 0;
 		public FracturerInstance(String id, Equipment eq, int slot) {
 			super(id);
+			this.eq = eq;
 			action = (data, in) -> {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
 				data.runAnimation(id, p, swing, p);
 				data.addTask(new BukkitRunnable() {
 					public void run() {
-						hitArea(p, data, slot);
+						hitArea(data.getPlayer(), data, slot);
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L));
 				return TriggerResult.keep();
