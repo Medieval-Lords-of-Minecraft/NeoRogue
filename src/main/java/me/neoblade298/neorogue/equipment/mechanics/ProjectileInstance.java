@@ -378,6 +378,21 @@ public class ProjectileInstance {
 		}
 	}
 
+	public static int cancelWithin(FightInstance inst, Location center, double radius) {
+		int cancelled = 0;
+		double radiusSquared = radius * radius;
+		Iterator<ProjectileInstance> iter = activeInstances.iterator();
+		while (iter.hasNext()) {
+			ProjectileInstance pi = iter.next();
+			if (pi.inst != inst || pi.loc.getWorld() != center.getWorld()
+					|| pi.loc.distanceSquared(center) > radiusSquared) continue;
+			iter.remove();
+			pi.task.cancel();
+			cancelled++;
+		}
+		return cancelled;
+	}
+
 	public Vector getVelocity() {
 		return v;
 	}

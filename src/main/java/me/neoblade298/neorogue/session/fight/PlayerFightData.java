@@ -101,6 +101,7 @@ public class PlayerFightData extends FightData {
 	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
+	private Equipment lastMainhandBasicAttack, lastOffhandBasicAttack;
 	private ArrayList<ProjectileGroup> extraShots = new ArrayList<ProjectileGroup>();
 	private final HashSet<String> analyticsEquipmentKeys = new HashSet<String>();
 
@@ -1146,13 +1147,20 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void setBasicAttackCooldown(EquipSlot slot, double attackSpeed) {
+		setBasicAttackCooldown(slot, attackSpeed, null);
+	}
+
+	public void setBasicAttackCooldown(EquipSlot slot, double attackSpeed, Equipment source) {
 		if (hasStatus(StatusType.FROSTBITE)) attackSpeed *= 0.5;
 		long attackCooldown = (long) (1000 / attackSpeed) - 50; // Subtract 50 for tick differentials
 
-		if (slot == EquipSlot.HOTBAR)
+		if (slot == EquipSlot.HOTBAR) {
 			this.nextAttack = System.currentTimeMillis() + attackCooldown;
-		else
+			this.lastMainhandBasicAttack = source;
+		} else {
 			this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
+			this.lastOffhandBasicAttack = source;
+		}
 	}
 
 	public void setBasicAttackCooldown(EquipSlot slot, long cooldown) {
@@ -1167,6 +1175,10 @@ public class PlayerFightData extends FightData {
 			this.nextAttack = 0;
 		else
 			this.nextOffAttack = 0;
+	}
+
+	public boolean wasLastBasicAttackSetBy(EquipSlot slot, Equipment source) {
+		return slot == EquipSlot.HOTBAR ? lastMainhandBasicAttack == source : lastOffhandBasicAttack == source;
 	}
 
 	public boolean canBasicAttack(EquipSlot slot) {

@@ -54,7 +54,10 @@ public final class ChanceDialog {
 			ChanceChoice choice = stage.choices.get(i);
 			ItemStack item = choice.getItem(inst.getSession(), inst, data);
 			ItemMeta meta = item.getItemMeta();
-			Component label = meta.displayName() != null ? meta.displayName() : Component.text(choice.getPlainTitle());
+			Component choiceName = meta.displayName() != null ? meta.displayName() : Component.text(choice.getPlainTitle());
+			Component label = Util.materialToSprite(item.getType()).color(NamedTextColor.WHITE)
+					.append(Component.space())
+					.append(choiceName);
 			ActionButton.Builder button = ActionButton.builder(label).width(200).tooltip(buildTooltip(meta));
 			if (!spectator) {
 				int choiceIndex = i;

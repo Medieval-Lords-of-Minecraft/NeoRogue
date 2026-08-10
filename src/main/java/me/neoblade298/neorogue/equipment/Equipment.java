@@ -68,6 +68,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.MirageTalisman;
 import me.neoblade298.neorogue.equipment.accessories.NaturesGift;
 import me.neoblade298.neorogue.equipment.accessories.OathOfTheColossus;
 import me.neoblade298.neorogue.equipment.accessories.ObsidianIdol;
@@ -88,6 +89,7 @@ import me.neoblade298.neorogue.equipment.accessories.RingOfManaflow;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
 import me.neoblade298.neorogue.equipment.accessories.RingOfNature;
 import me.neoblade298.neorogue.equipment.accessories.RingOfNight;
+import me.neoblade298.neorogue.equipment.accessories.RingOfParanoia;
 import me.neoblade298.neorogue.equipment.accessories.RingOfScalding;
 import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
 import me.neoblade298.neorogue.equipment.accessories.RingOfTheDevastator;
@@ -105,6 +107,7 @@ import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
 import me.neoblade298.neorogue.equipment.accessories.TarotCard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.accessories.VermillionBelt;
+import me.neoblade298.neorogue.equipment.accessories.VirulentCore;
 import me.neoblade298.neorogue.equipment.accessories.VoidBracelet;
 import me.neoblade298.neorogue.equipment.accessories.WarpedAnvil;
 import me.neoblade298.neorogue.equipment.accessories.YellowRing;
@@ -161,6 +164,7 @@ import me.neoblade298.neorogue.equipment.armor.StonyCloak;
 import me.neoblade298.neorogue.equipment.armor.ThroneOfIndifference;
 import me.neoblade298.neorogue.equipment.armor.WarmongersChainmail;
 import me.neoblade298.neorogue.equipment.armor.WhiteCape;
+import me.neoblade298.neorogue.equipment.armor.WraithMantle;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
@@ -297,6 +301,7 @@ import me.neoblade298.neorogue.equipment.offhands.TomeOfWeakness;
 import me.neoblade298.neorogue.equipment.offhands.VeiledHourglass;
 import me.neoblade298.neorogue.equipment.offhands.VengefulShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
+import me.neoblade298.neorogue.equipment.offhands.YorusGhostblade;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
@@ -780,6 +785,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ManaMagnifier(b);
 			new Manathorn(b);
 			new MajorStaminaRelic(b);
+			new MirageTalisman(b);
 			new MinorManaRelic(b);
 			new MinorPoisonRelic(b);
 			new MinorShieldingRelic(b);
@@ -801,6 +807,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfLight(b);
 			new RingOfManaflow(b);
 			new RingOfMentalism(b);
+			new RingOfParanoia(b);
 			new RingOfNature(b);
 			new RingOfScalding(b);
 			new RingOfSharpness(b);
@@ -817,6 +824,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpiritShard(b);
 			new TopazRing(b);
 			new VermillionBelt(b);
+			new VirulentCore(b);
 			new VoidBracelet(b);
 			new Wildfire(b);
 			new YellowRing(b);
@@ -873,6 +881,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ThroneOfIndifference(b);
 			new WarmongersChainmail(b);
 			new WhiteCape(b);
+			new WraithMantle(b);
 
 			// Offhands
 			new BatteringRam(b);
@@ -923,6 +932,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new VengefulShield(b);
 			new WardingRune(b);
 			new WristBlade(b);
+			new YorusGhostblade(b);
 
 			// Weapons
 			new AshenHeadhunter(b);
@@ -1001,6 +1011,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MonksStaff2(b);
 			new MultiCrossbow(b);
 			new Nightmare(b);
+			new Nocturne(b);
 			new NoxianFalx(b);
 			new OldStaff(b);
 			new PhantasmalKiller(b);
@@ -1026,6 +1037,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SparkdrainKnife(b);
 			new SparkKnife(b);
 			new SparkStick(b);
+			new Stormweaver(b);
 			new StickyBomb(b);
 			new StoneArrow(b);
 			new StoneAxe(b);
@@ -1043,6 +1055,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TheGreatDivide(b);
 			new ToxicRazor(b);
 			new UnderDarkness(b);
+			new Veilpiercer(b);
 			new VenomousShiv(b);
 			new RighteousHammer(b);
 			new WandOfIgnition(b);
@@ -1975,7 +1988,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		properties.getSwingSound().play(p, p);
 		WeaponSwingEvent ev = new WeaponSwingEvent(this, attackSpeed);
 		FightInstance.trigger(p, Trigger.WEAPON_SWING, ev);
-		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuffList().apply(attackSpeed));
+		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuffList().apply(attackSpeed), this);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}
