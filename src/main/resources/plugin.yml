@@ -20,6 +20,23 @@ permissions:
    neorogue.general:
       description: Allows use of /nr commands
       default: true
+      children:
+         neorogue.session.host: true
+         neorogue.session.join: true
+         neorogue.session.spectate: true
+         neorogue.profile.others: true
+   neorogue.session.host:
+      description: Allows hosting, loading, and deleting NeoRogue sessions
+      default: false
+   neorogue.session.join:
+      description: Allows requesting to join NeoRogue sessions
+      default: false
+   neorogue.session.spectate:
+      description: Allows spectating NeoRogue sessions
+      default: false
+   neorogue.profile.others:
+      description: Allows viewing other players' NeoRogue profiles
+      default: false
    neorogue.admin:
       description: Allows use of /nradmin commands
       default: op
@@ -32,6 +49,15 @@ permissions:
    neorogue.slots.5:
     description: Grants 5 save slots
     default: false
-   neorogue.expboost.patron:
+   neorogue.expboost.iron:
+      description: Grants a 10% exp boost for each run
+      default: false
+   neorogue.expboost.gold:
+      description: Grants a 25% exp boost for each run
+      default: false
+   neorogue.expboost.diamond:
       description: Grants a 50% exp boost for each run
+      default: false
+   neorogue.expboost.netherite:
+      description: Grants a 100% exp boost for each run
       default: false

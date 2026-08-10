@@ -67,15 +67,19 @@ public class UnderDarkness extends Equipment {
 			
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					Sounds.explode.play(p, loc);
+					Player detonationPlayer = data.getPlayer();
+					Sounds.explode.play(detonationPlayer, loc);
+					if (detonationPlayer.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
+						data.applyStatus(StatusType.STEALTH, data, 1, 20, UnderDarkness.this);
+					}
 					data.addTask(new BukkitRunnable() {
 						private static final int TICKS = 5;
 						private int tick = 0;
 						public void run() {
+							Player p = data.getPlayer();
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.STEALTH, data, 1, 20, UnderDarkness.this);
 								data.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0,
 									StatTracker.damageBuffAlly(buffId, eq)), 20);
 								data.addSimpleShield(p.getUniqueId(), 8, 40, UnderDarkness.this);
@@ -94,9 +98,9 @@ public class UnderDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.INK_SAC,
-				"On cast, drop a smoke bomb that detonates after " + DescUtil.val("1s") + ". After detonation, for " + DescUtil.val("5s") + ","
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>], buffs"
-						+ " your damage by " + DescUtil.val(damage) + " [<white>1s</white>], and grants "
-						+ GlossaryTag.SHIELDS.tag(this, 8) + " [<white>2s</white>].");
+				"On cast, drop a smoke bomb that detonates after " + DescUtil.val("1s") + ". Standing within the detonation grants "
+				+ GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>]. For " + DescUtil.val("5s")
+				+ " after detonation, standing within the radius buffs your damage by " + DescUtil.val(damage)
+				+ " [<white>1s</white>] and grants " + GlossaryTag.SHIELDS.tag(this, 8) + " [<white>2s</white>] per second.");
 	}
 }

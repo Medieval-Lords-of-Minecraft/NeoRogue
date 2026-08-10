@@ -19,8 +19,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -109,6 +111,23 @@ public class LostCargoInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		if (!SessionManager.requireGeneralPermission(p)) {
+			e.setCancelled(true);
+			p.closeInventory();
+			return;
+		}
+		if (SessionManager.getSession(p) != null) {
+			e.setCancelled(true);
+			p.closeInventory();
+			Util.displayError(p, "You can't manage cargo during a run!");
+			return;
+		}
+		if (!pd.hasFlag(PlayerData.FLAG_CARGO_INSURANCE)) {
+			e.setCancelled(true);
+			p.closeInventory();
+			Util.displayError(p, "You haven't unlocked caravan insurance yet!");
+			return;
+		}
 		Inventory clicked = e.getClickedInventory();
 		if (clicked == null) {
 			e.setCancelled(true);

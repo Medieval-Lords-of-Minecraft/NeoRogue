@@ -26,7 +26,7 @@ public class SaboteursRing extends Equipment {
 	public SaboteursRing(boolean isUpgraded) {
 		super(ID, "Saboteur's Ring", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);
-		inc = isUpgraded ? 2 : 3;
+		inc = isUpgraded ? 10 : 5;
 	}
 	
 	public static Equipment get() {
@@ -41,7 +41,7 @@ public class SaboteursRing extends Equipment {
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
-				new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
+				new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -49,6 +49,6 @@ public class SaboteursRing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COBWEB, "Damage dealt to enemies with " + GlossaryTag.INJURY.tag(this) + " is increased by "  + DescUtil.val(inc) +
-		" for every stack of " + GlossaryTag.INJURY.tag(this) + " they have.");
+		".");
 	}
 }

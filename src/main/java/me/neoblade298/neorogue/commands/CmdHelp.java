@@ -26,10 +26,15 @@ public class CmdHelp extends Subcommand {
 		sendLine(s, "/nr decline <player>", "Decline a join request to your lobby");
 		sendLine(s, "/nr leave", "Leave your session");
 		sendLine(s, "/nr kick <player>", "Kick a player from your party");
-		sendLine(s, "/nr spectate", "Spectate a player's session");
+		sendLine(s, "/nr spectate <player>", "Spectate a player's session");
 		sendLine(s, "/nr info", "View session info");
-		sendLine(s, "/nr list", "View a filtered list of equipment");
-		sendLine(s, "/nr glossary", "View glossary");
+		sendLine(s, "/nr list [filters]", "View a filtered list of equipment");
+		sendLine(s, "/nr glossary <entry>", "View a glossary entry");
+		sendLine(s, "/nr achievements [scope]", "View your achievements");
+		sendLine(s, "/nr profile <player>", "View a player's profile");
+		sendLine(s, "/nr cargo", "Manage your cargo");
+		sendLine(s, "/nr lostcargo", "Withdraw insured lost cargo");
+		sendLine(s, "/nr caravan", "Purchase caravan upgrades");
 	}
 
 	private void sendLine(CommandSender s, String cmd, String desc) {

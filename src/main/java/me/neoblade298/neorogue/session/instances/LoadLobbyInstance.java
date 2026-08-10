@@ -220,6 +220,10 @@ public class LoadLobbyInstance extends LobbyInstance {
         }
 
         Player p = Bukkit.getPlayer(name);
+        if (p == null) {
+            Util.msgRaw(s, playerNotInLobby);
+            return;
+        }
 
         if (p.getUniqueId().equals(host)) {
             Util.msgRaw(s, hostKickSelf);

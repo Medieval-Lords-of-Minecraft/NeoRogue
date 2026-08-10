@@ -242,14 +242,14 @@ public class NeoRogue extends JavaPlugin {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdMenu("", "Open the main menu", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdHelp("help", "View command list", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdNew("new", "Create a new game", SessionManager.HOST_PERMISSION, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdLoad("load", "Load an existing game", SessionManager.HOST_PERMISSION, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdJoin("join", "Request to join a player's lobby", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdJoin("join", "Request to join a player's lobby", SessionManager.JOIN_PERMISSION, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAccept("accept", "Accept a player's request to join your lobby", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdDecline("decline", "Decline a player's request to join your lobby", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", SessionManager.SPECTATE_PERMISSION, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));

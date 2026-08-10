@@ -66,16 +66,19 @@ public class SmokeBomb extends Equipment {
 			
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					Sounds.explode.play(p, loc);
+					Player detonationPlayer = data.getPlayer();
+					Sounds.explode.play(detonationPlayer, loc);
+					if (detonationPlayer.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
+						data.applyStatus(StatusType.STEALTH, data, 1, 20, SmokeBomb.this);
+					}
 					data.addTask(new BukkitRunnable() {
 						private static final int TICKS = 5;
 						private int tick = 0;
-						private Player p = data.getPlayer();
 						public void run() {
+							Player p = data.getPlayer();
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.STEALTH, data, 1, 20, SmokeBomb.this);
 								data.addSimpleShield(p.getUniqueId(), shields, 40, SmokeBomb.this);
 							}
 							if (++tick == TICKS) this.cancel();
@@ -92,8 +95,8 @@ public class SmokeBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GUNPOWDER,
 				"On cast, drop a smoke bomb that detonates after " + DescUtil.val(delay + "s")
-				+ ". After detonation, for " + DescUtil.val("5s") + ","
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>] and "
-				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>2s</white>].");
+				+ ". Standing within the detonation grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>]."
+				+ " For " + DescUtil.val("5s") + " after detonation, standing within the radius grants "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>2s</white>] per second.");
 	}
 }

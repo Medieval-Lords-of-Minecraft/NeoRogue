@@ -117,6 +117,29 @@ public class SessionManager implements Listener {
 	// Per-player cooldown (ms) between join attempts to prevent request spam
 	private static final long JOIN_COOLDOWN_MS = 10000;
 	private static final HashMap<UUID, Long> joinCooldowns = new HashMap<UUID, Long>();
+	public static final String GENERAL_PERMISSION = "neorogue.general";
+	public static final String HOST_PERMISSION = "neorogue.session.host";
+	public static final String JOIN_PERMISSION = "neorogue.session.join";
+	public static final String SPECTATE_PERMISSION = "neorogue.session.spectate";
+	public static final String PROFILE_OTHERS_PERMISSION = "neorogue.profile.others";
+
+	public static boolean requireGeneralPermission(Player p) {
+		if (p.hasPermission(GENERAL_PERMISSION)) return true;
+		Util.displayError(p, "You don't have permission to use NeoRogue!");
+		return false;
+	}
+
+	public static boolean requireSessionPermission(Player p, String permission, String action) {
+		if (!requireGeneralPermission(p)) return false;
+		if (p.hasPermission(permission)) return true;
+		Util.displayError(p, "You don't have permission to " + action + "!");
+		return false;
+	}
+
+	public static boolean requireProfilePermission(Player viewer, UUID target) {
+		if (viewer.getUniqueId().equals(target)) return requireGeneralPermission(viewer);
+		return requireSessionPermission(viewer, PROFILE_OTHERS_PERMISSION, "view other players' profiles");
+	}
 	
 	public static Session createSession(Player p, int saveSlot) {
 		return createSession(p, saveSlot, true, SessionType.STANDARD);
@@ -142,11 +165,17 @@ public class SessionManager implements Listener {
 		return s;
 	}
 
-	public static void createTutorialSession(Player p, int saveSlot) {
+	public static boolean createTutorialSession(Player p, int saveSlot) {
+		if (!requireSessionPermission(p, HOST_PERMISSION, "host sessions")) return false;
+		if (getSession(p) != null) {
+			Util.displayError(p, "You're already in a session!");
+			return false;
+		}
 		Session s = createSession(p, saveSlot, true, SessionType.TUTORIAL);
-		if (s == null) return;
+		if (s == null) return false;
 		NewLobbyInstance lobby = (NewLobbyInstance) s.getInstance();
 		lobby.startGame();
+		return true;
 	}
 
 	private static Plot findPlot() {
@@ -223,6 +252,7 @@ public class SessionManager implements Listener {
 	// Shared spectate validation so the command and the spectate menu enforce the same rules.
 	// Returns true and starts spectating on success; displays the reason and returns false otherwise.
 	public static boolean trySpectate(Player p, Session sess) {
+		if (!requireSessionPermission(p, SPECTATE_PERMISSION, "spectate sessions")) return false;
 		if (sess == null) {
 			Util.displayError(p, "That session no longer exists!");
 			return false;
@@ -241,6 +271,7 @@ public class SessionManager implements Listener {
 
 	// Shared new-game validation so the command and the host menu enforce the same rules.
 	public static Session tryNewGame(Player p, int saveSlot) {
+		if (!requireSessionPermission(p, HOST_PERMISSION, "host sessions")) return null;
 		if (getSession(p) != null) {
 			Util.displayError(p, "You're already in a session!");
 			return null;
@@ -250,6 +281,7 @@ public class SessionManager implements Listener {
 
 	// Shared load-game validation so the command and the host menu enforce the same rules.
 	public static Session tryLoadGame(Player p, int saveSlot) {
+		if (!requireSessionPermission(p, HOST_PERMISSION, "host sessions")) return null;
 		if (getSession(p) != null) {
 			Util.displayError(p, "You're already in a session!");
 			return null;
@@ -264,6 +296,7 @@ public class SessionManager implements Listener {
 
 	// Shared join validation so the command and the join menu enforce the same rules.
 	public static boolean tryJoin(Player p, Session sess) {
+		if (!requireSessionPermission(p, JOIN_PERMISSION, "join sessions")) return false;
 		if (sess == null) {
 			Util.displayError(p, "That session is no longer available!");
 			return false;
@@ -294,13 +327,22 @@ public class SessionManager implements Listener {
 	}
 
 	// Deletes a save slot from both the in-memory snapshot cache and the database.
-	public static void deleteSave(Player p, int saveSlot) {
+	public static boolean deleteSave(Player p, int saveSlot) {
+		if (!requireSessionPermission(p, HOST_PERMISSION, "manage hosted sessions")) return false;
+		if (getSession(p) != null) {
+			Util.displayError(p, "You can't delete a save while in a session!");
+			return false;
+		}
 		UUID host = p.getUniqueId();
 		PlayerData pd = PlayerManager.getPlayerData(host);
+		if (pd == null || pd.getSnapshot(saveSlot) == null) {
+			Util.displayError(p, "No save data in that slot!");
+			return false;
+		}
 		// Abandoning an in-progress run counts as a loss (breaking winstreaks) for the host who
 		// deletes it. Read the snapshot before removing it so we know the host's class and notoriety.
-		if (pd != null) recordDeletedRunAsLoss(host, saveSlot, pd.getSnapshot(saveSlot));
-		if (pd != null) pd.removeSnapshot(saveSlot);
+		recordDeletedRunAsLoss(host, saveSlot, pd.getSnapshot(saveSlot));
+		pd.removeSnapshot(saveSlot);
 		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
 			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
@@ -311,6 +353,7 @@ public class SessionManager implements Listener {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
 			ex.printStackTrace();
 		}
+		return true;
 	}
 
 	// Deletes every saved run for a host from both the in-memory snapshot cache and the database.
@@ -752,6 +795,7 @@ public class SessionManager implements Listener {
 			if (p.getWorld().getName().equals(Region.WORLD_NAME)
 					&& e.getHand() == EquipmentSlot.OFF_HAND && e.getRightClicked() instanceof Player) {
 				e.setCancelled(true);
+				if (!requireProfilePermission(p, e.getRightClicked().getUniqueId())) return;
 				PlayerData targetData = PlayerManager.getPlayerData(e.getRightClicked().getUniqueId());
 				if (targetData != null) new MainSessionMenu(p, targetData);
 			}
@@ -836,6 +880,7 @@ public class SessionManager implements Listener {
 		if (!sessions.containsKey(uuid)) {
 			if (e.getAction().isRightClick() && isMenuCompass(e.getItem())) {
 				e.setCancelled(true);
+				if (!requireGeneralPermission(p)) return;
 				new MainMenuInventory(p);
 			}
 			return;

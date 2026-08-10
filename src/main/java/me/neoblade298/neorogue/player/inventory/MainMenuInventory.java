@@ -145,18 +145,24 @@ public class MainMenuInventory extends CoreInventory {
 
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pd == null) return;
+		if (!SessionManager.requireGeneralPermission(p)) {
+			p.closeInventory();
+			return;
+		}
 
 		switch (e.getSlot()) {
 		case HOST_GAME:
+			if (!SessionManager.requireSessionPermission(p, SessionManager.HOST_PERMISSION, "host sessions")) return;
+			if (SessionManager.getSession(p) != null) {
+				Util.displayError(p, "You're already in a session!");
+				return;
+			}
 			if (!pd.hasFlag(PlayerData.FLAG_PLAYED_BEFORE)) {
-				pd.addFlag(PlayerData.FLAG_PLAYED_BEFORE);
 				p.closeInventory();
-				SessionManager.createTutorialSession(p, 1);
-			} else {
-				if (SessionManager.getSession(p) != null) {
-					Util.displayError(p, "You're already in a session!");
-					return;
+				if (SessionManager.createTutorialSession(p, 1)) {
+					pd.addFlag(PlayerData.FLAG_PLAYED_BEFORE);
 				}
+			} else {
 				new HostGameInventory(p, pd);
 			}
 			break;
@@ -167,9 +173,17 @@ public class MainMenuInventory extends CoreInventory {
 			new AchievementsMenuInventory(p);
 			break;
 		case UNLOCKS:
+			if (SessionManager.getSession(p) != null) {
+				Util.displayError(p, "You can't do this while in a session!");
+				return;
+			}
 			new UnlocksMenuInventory(p);
 			break;
 		case CARGO:
+			if (SessionManager.getSession(p) != null) {
+				Util.displayError(p, "You can't manage cargo during a run!");
+				return;
+			}
 			if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
 				Util.displayError(p, "You haven't unlocked cargo access yet! Buy it from the Caravan Upgrades menu.");
 				return;

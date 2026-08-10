@@ -136,6 +136,10 @@ public class HostGameInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
+		if (!SessionManager.requireSessionPermission(p, SessionManager.HOST_PERMISSION, "host sessions")) {
+			p.closeInventory();
+			return;
+		}
 
 		int clickedSlot = e.getSlot();
 		if (clickedSlot == BACK) {
@@ -169,8 +173,9 @@ public class HostGameInventory extends CoreInventory {
 				}
 				new ConfirmInventory(p, Component.text("Delete Save Slot " + fSlot + "?", NamedTextColor.RED), display,
 						() -> {
-							SessionManager.deleteSave(p, fSlot);
-							p.playSound(p, Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+							if (SessionManager.deleteSave(p, fSlot)) {
+								p.playSound(p, Sound.ENTITY_ITEM_BREAK, 1F, 1F);
+							}
 							new HostGameInventory(p, pd);
 						},
 						() -> new HostGameInventory(p, pd));

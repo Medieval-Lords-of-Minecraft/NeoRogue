@@ -76,7 +76,7 @@ public class SparkOfLight extends Equipment {
 			progressIcon.setAmount(1);
 			inst.setIcon(progressIcon);
 
-			cone.play(coneEdge, player.getLocation(), LocalAxes.xz(), coneFill);
+			cone.play(coneEdge, player.getLocation(), LocalAxes.usingEyeLocation(player), coneFill);
 			castSpark.play(player, player);
 			castSound.play(player, player);
 			for (LivingEntity target : TargetHelper.getEntitiesInCone(player, tp)) {

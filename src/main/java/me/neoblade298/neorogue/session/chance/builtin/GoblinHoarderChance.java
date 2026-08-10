@@ -44,7 +44,7 @@ public class GoblinHoarderChance extends ChanceSet {
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.BARRIER, "Refuse",
-				"The goblin steals up to <yellow>30 " + PlayerSessionData.CURRENCY + "</yellow> on the way out.",
+				"The goblin steals <yellow>30 " + PlayerSessionData.CURRENCY + "</yellow> on the way out, but no more than you have.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					int stolen = Math.min(30, data.getCurrency());

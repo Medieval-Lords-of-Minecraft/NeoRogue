@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.caravan.CaravanAction;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgrade;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -145,6 +146,15 @@ public class CaravanUpgradesInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		if (!SessionManager.requireGeneralPermission(p)) {
+			p.closeInventory();
+			return;
+		}
+		if (SessionManager.getSession(p) != null) {
+			p.closeInventory();
+			Util.displayError(p, "You can't manage your caravan during a run!");
+			return;
+		}
 		CaravanUpgrade up = slotToUpgrade.get(e.getSlot());
 		if (up == null) return;
 		if (pd.hasPurchasedUpgrade(up.getId())) {

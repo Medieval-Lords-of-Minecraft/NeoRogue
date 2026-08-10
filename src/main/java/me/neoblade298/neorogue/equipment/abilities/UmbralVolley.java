@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
+import java.util.HashSet;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -33,9 +35,8 @@ public class UmbralVolley extends Equipment {
 	private static final String ID = "UmbralVolley";
 	private static final int COOLDOWN = 60; // 3 seconds in ticks
 	private int damage;
-	private ProjectileGroup projs = new ProjectileGroup();
 	private static final ParticleContainer part = new ParticleContainer(Particle.SQUID_INK)
-			.count(3).spread(0.3, 0.3);
+			.count(1).spread(0.1, 0.1);
 	
 	public UmbralVolley(boolean isUpgraded) {
 		super(ID, "Umbral Volley", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
@@ -50,9 +51,7 @@ public class UmbralVolley extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		for (int i = 0; i < 5; i++) {
-			projs.add(new UmbralVolleyProjectile(i, slot, this));
-		}
+		DamageStatTracker tracker = DamageStatTracker.of(ID + slot, this);
 		
 		ActionMeta cooldown = new ActionMeta();
 		
@@ -65,6 +64,11 @@ public class UmbralVolley extends Equipment {
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Player p = data.getPlayer();
+					ProjectileGroup projs = new ProjectileGroup();
+					HashSet<UUID> enemiesHit = new HashSet<>();
+					for (int i = 0; i < 5; i++) {
+						projs.add(new UmbralVolleyProjectile(i, tracker, enemiesHit));
+					}
 					Sounds.attackSweep.play(p, p);
 					projs.start(data);
 				}
@@ -79,31 +83,31 @@ public class UmbralVolley extends Equipment {
 		item = createItem(Material.PHANTOM_MEMBRANE,
 				GlossaryTag.PASSIVE.tag(this) + ". On a " + DescUtil.val("3s") + " cooldown, on basic attack, fire " + DescUtil.val(5) + " dark needles in a cone in front of you "
 						+ DescUtil.val("0.5s") + " later that deal "
-						+ GlossaryTag.DARK.tag(this, damage) + " damage.");
+						+ GlossaryTag.DARK.tag(this, damage) + " damage. Needles can't hit the same enemy twice.");
 	}
 	
 	private class UmbralVolleyProjectile extends Projectile {
-		private int slot;
-		private Equipment eq;
-		public UmbralVolleyProjectile(int i, int slot, Equipment eq) {
+		private DamageStatTracker tracker;
+		private HashSet<UUID> enemiesHit;
+		public UmbralVolleyProjectile(int i, DamageStatTracker tracker, HashSet<UUID> enemiesHit) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			int iter = i - 2;
 			this.rotation(iter * 15);
 			this.size(1, 1);
-			this.slot = slot;
-			this.eq = eq;
+			this.tracker = tracker;
+			this.enemiesHit = enemiesHit;
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			if (!enemiesHit.add(hit.getUniqueId())) {
+				meta.getSlices().clear();
+			}
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Player p = (Player) proj.getOwner().getEntity();
-			Sounds.attackSweep.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.DARK, DamageStatTracker.of(ID + slot, eq)));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.DARK, tracker));
 		}
 
 		@Override

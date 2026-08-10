@@ -342,6 +342,10 @@ public class PlayerData {
 		}
 		return p;
 	}
+
+	public UUID getUniqueId() {
+		return uuid;
+	}
 	
 	public void updatePlayer() {
 		p = Bukkit.getPlayer(uuid);

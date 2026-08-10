@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBT;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -25,6 +26,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.unlock.UnlockNode;
 import me.neoblade298.neorogue.player.unlock.UnlockNode.TargetType;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -167,6 +169,14 @@ public class UnlockClassInventory extends CoreInventory {
 
 			if (spectator != null) {
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
+				return;
+			}
+			if (!SessionManager.requireGeneralPermission(p)) {
+				p.closeInventory();
+				return;
+			}
+			if (SessionManager.getSession(p) != null) {
+				Util.displayError(p, "You can't do this while in a session!");
 				return;
 			}
 

@@ -62,6 +62,7 @@ public class PointBlank extends Equipment implements Power {
 			DamageMeta dm = ev2.getMeta();
 			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			ProjectileInstance ip = dm.getProjectile();
+			if (ip == null) return TriggerResult.keep();
 			if (ip.getOrigin().distanceSquared(ev2.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();

@@ -12,6 +12,7 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.MainSessionMenu;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdProfile extends Subcommand {
 	public CmdProfile(String key, String desc, String perm, SubcommandRunner runner) {
@@ -23,6 +24,7 @@ public class CmdProfile extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player viewer = (Player) s;
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+		if (!SessionManager.requireProfilePermission(viewer, target.getUniqueId())) return;
 		PlayerData targetData = PlayerManager.getOrLoadPlayerData(target);
 		if (targetData == null) {
 			Util.displayError(viewer, "That player has never joined the server!");

@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -64,6 +65,10 @@ public class MainSessionMenu extends CoreInventory {
 		e.setCancelled(true);
 		if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
+		if (!SessionManager.requireProfilePermission(p, targetData.getUniqueId())) {
+			p.closeInventory();
+			return;
+		}
 
 		Runnable reopen = () -> new MainSessionMenu(p, targetData, back);
 		switch (e.getSlot()) {
