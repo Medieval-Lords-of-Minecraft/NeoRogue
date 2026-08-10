@@ -1,10 +1,14 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -26,6 +30,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 public class ManaResonator extends Equipment {
 	private static final String ID = "ManaResonator";
 	private static final int ELECTRIFIED = 4;
+	private static final ParticleContainer activeTrail = new ParticleContainer(Particle.FIREWORK)
+			.count(2).spread(0.1, 0.1).speed(0).offsetY(1);
+	private static final SoundContainer castSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 0.7F, 1.4F);
+	private static final SoundContainer damageSound = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 0.7F, 1.6F);
 	private int damage;
 
 	public ManaResonator(boolean isUpgraded) {
@@ -45,8 +53,15 @@ public class ManaResonator extends Equipment {
 			Player p = data.getPlayer();
 			charged.setBool(true);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 1));
+			castSound.play(p, p);
 			return TriggerResult.keep();
 		}));
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (!charged.getBool()) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			activeTrail.play(p, p.getLocation());
+			return TriggerResult.keep();
+		});
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (!charged.getBool()) return TriggerResult.keep();
 			charged.setBool(false);
@@ -56,6 +71,7 @@ public class ManaResonator extends Equipment {
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING,
 					DamageStatTracker.of(id + slot, this)));
 			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, ELECTRIFIED, -1, this);
+			damageSound.play(p, ev.getTarget());
 			return TriggerResult.keep();
 		});
 	}

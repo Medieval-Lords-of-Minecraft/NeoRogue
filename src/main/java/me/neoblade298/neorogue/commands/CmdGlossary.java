@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryBrowserInventory;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 
@@ -30,7 +31,7 @@ public class CmdGlossary extends Subcommand {
 		Player p = (Player) s;
 		
 		if (args.length == 0) {
-			Util.displayError(p, "This command doesn't do anything yet without arguments!");
+			new EquipmentGlossaryBrowserInventory(p);
 			return;
 		}
 		Equipment eq = Equipment.get(args[0], false);
