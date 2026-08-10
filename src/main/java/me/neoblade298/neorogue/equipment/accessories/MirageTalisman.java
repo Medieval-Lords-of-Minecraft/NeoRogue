@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
@@ -13,7 +12,6 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MirageTalisman extends Equipment {
 	private static final String ID = "MirageTalisman";
-	private static final int SHIELD_DURATION = 100;
 	private final int shields;
 
 	public MirageTalisman(boolean isUpgraded) {
@@ -28,22 +26,18 @@ public class MirageTalisman extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.DASH, (pdata, in) -> {
-			grantShields(data);
+			data.addPermanentShield(data.getPlayer().getUniqueId(), shields, this);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
-			grantShields(data);
+			data.addPermanentShield(data.getPlayer().getUniqueId(), shields, this);
 			return TriggerResult.keep();
 		});
-	}
-
-	private void grantShields(PlayerFightData data) {
-		data.addSimpleShield(data.getPlayer().getUniqueId(), shields, SHIELD_DURATION, this);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.DASH.tag(this) + "ing or evading grants "
-				+ GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(SHIELD_DURATION / 20) + ".");
+		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.DASH.tag(this) + " or " + GlossaryTag.EVADE.tag(this) + " grants "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }

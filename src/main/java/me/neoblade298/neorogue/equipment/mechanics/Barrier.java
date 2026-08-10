@@ -65,12 +65,24 @@ public class Barrier {
 		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part, boolean isUnbreakable) {
 		this(owner, length, forward, height, buffs, part, isUnbreakable);
 		this.center = center;
+		this.axes = axes;
 		this.mem = rect.calculate(center, axes);
+	}
+
+	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
+		HashMap<DamageBuffType, BuffList> buffs, boolean isUnbreakable) {
+		this(owner, length, forward, height, center, axes, buffs, DEFAULT_SHIELD_PARTICLE, isUnbreakable);
+		this.part = null;
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
 		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part, boolean isUnbreakable) {
 		return new Barrier(owner, length, forward, height, center, axes, buffs, part, isUnbreakable);
+	}
+
+	public static Barrier invisibleStationary(LivingEntity owner, double length, double forward, double height, Location center,
+		LocalAxes axes, HashMap<DamageBuffType, BuffList> buffs, boolean isUnbreakable) {
+		return new Barrier(owner, length, forward, height, center, axes, buffs, isUnbreakable);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
@@ -79,6 +91,7 @@ public class Barrier {
 	}
 	
 	public void tick() {
+		if (part == null) return;
 		// Static tick
 		if (mem != null) {
 			if (owner instanceof Player) {

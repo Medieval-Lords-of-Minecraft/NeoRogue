@@ -36,7 +36,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 
 public class GoliathGauntlet extends Equipment {
 	private static final String ID = "GoliathGauntlet";
-	private static final int BASE_DAMAGE = 200, DAMAGE_PER_CONCUSSED = 3, SHIELDS_PER_CONCUSSED = 2;
+	private static final int BASE_DAMAGE = 200, SHIELDS_PER_CONCUSSED = 2;
+	private int damagePerConcussed;
 	private static final int SHIELD_DURATION = 5;
 	private static final Circle SHIELD_RING = new Circle(1.3);
 	private static final ParticleContainer IMPACT_PARTICLE = new ParticleContainer(Particle.DUST_PLUME)
@@ -64,8 +65,9 @@ public class GoliathGauntlet extends Equipment {
 
 	public GoliathGauntlet(boolean isUpgraded) {
 		super(ID, "Goliath Gauntlet", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.OFFHAND, EquipmentProperties.custom(10, 0, 6, 0, BASE_DAMAGE, 0, 1,
+				EquipmentType.OFFHAND, EquipmentProperties.custom(15, 5, 6, 0, BASE_DAMAGE, 0, 1,
 						DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_STRONG)));
+						damagePerConcussed = isUpgraded ? 3 : 2;
 	}
 
 	public static Equipment get() {
@@ -80,7 +82,7 @@ public class GoliathGauntlet extends Equipment {
 			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			Player p = data.getPlayer();
 			int applied = data.getStats().getStatusesApplied().getOrDefault(StatusType.CONCUSSED, 0);
-			int totalDamage = BASE_DAMAGE + applied * DAMAGE_PER_CONCUSSED;
+			int totalDamage = BASE_DAMAGE + applied * damagePerConcussed;
 			p.swingOffHand();
 			Location impactLocation = ev.getTarget().getLocation().clone();
 			IMPACT_DEBRIS.play(p, impactLocation);
@@ -102,8 +104,8 @@ public class GoliathGauntlet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_HORSE_ARMOR, "Right click an enemy to knock them back and deal "
-				+ DescUtil.white(BASE_DAMAGE) + " + " + DescUtil.white(DAMAGE_PER_CONCUSSED) + " per "
+		item = createItem(Material.MACE, "Right click an enemy to knock them back and deal "
+				+ DescUtil.white(BASE_DAMAGE) + " + " + DescUtil.white(damagePerConcussed) + " per "
 				+ GlossaryTag.CONCUSSED.tag(this) + " applied this fight. Gain "
 				+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_CONCUSSED) + " " + DescUtil.duration(SHIELD_DURATION)
 				+ " per stack applied.");

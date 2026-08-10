@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class CrateringBlows extends Equipment {
 	private static final String ID = "CrateringBlows";
-	private static final double ROTATIONS_PER_SECOND = 1, RADIUS = 3, DURATION = 1;
+	private static final double ROTATIONS_PER_SECOND = 1, RADIUS = 3, DURATION = 3;
 	private static final ParticleContainer ORBITAL_PARTICLE = new ParticleContainer(Particle.BLOCK)
 			.blockData(Material.DEEPSLATE.createBlockData()).count(1).spread(0.05, 0.05).speed(0);
 	private static final ParticleContainer ORBITAL_DUST = new ParticleContainer(Particle.DUST_PLUME)
@@ -78,7 +78,7 @@ public class CrateringBlows extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.HEAVY_CORE, "Whenever you apply " + GlossaryTag.CONCUSSED.tag(this)
-				+ ", create a " + DescUtil.white("1s") + " orbital that deals "
+				+ ", create a " + DescUtil.white((int) DURATION + "s") + " orbital that deals "
 				+ GlossaryTag.EARTHEN.tag(this, damage) + " damage at radius " + DescUtil.white((int) RADIUS) + ".");
 	}
 }

@@ -1,21 +1,19 @@
 package me.neoblade298.neorogue.equipment.armor;
 
-import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -30,26 +28,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 public class WraithMantle extends Equipment {
 	private static final String ID = "WraithMantle";
 	private static final int INSANITY_THRESHOLD = 150, CLEAR_RADIUS = 4;
-	private static final ParticleContainer CLEAR_PARTICLE = new ParticleContainer(Particle.SOUL)
-			.count(1).spread(0, 0).speed(0);
-	private static final ParticleAnimation CLEAR_SPHERE;
+	private static final Vector[] CARDINAL_DIRECTIONS = {
+			new Vector(0, 0, -1), new Vector(1, 0, 0), new Vector(0, 0, 1), new Vector(-1, 0, 0)
+	};
 	private final int damageReduction;
-
-	static {
-		CLEAR_SPHERE = new ParticleAnimation(CLEAR_PARTICLE, (loc, tick) -> {
-			LinkedList<Location> locations = new LinkedList<Location>();
-			double latitude = -Math.PI / 2 + Math.PI * tick / 6;
-			double ringRadius = CLEAR_RADIUS * Math.cos(latitude);
-			double y = CLEAR_RADIUS * Math.sin(latitude);
-			int points = Math.max(1, (int) Math.round(20 * Math.cos(latitude)));
-			for (int point = 0; point < points; point++) {
-				double angle = Math.PI * 2 * point / points + tick * 0.25;
-				locations.add(loc.clone().add(Math.cos(angle) * ringRadius, y,
-						Math.sin(angle) * ringRadius));
-			}
-			return locations;
-		}, 7);
-	}
 
 	public WraithMantle(boolean isUpgraded) {
 		super(ID, "Wraith Mantle", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ARMOR);
@@ -70,16 +52,24 @@ public class WraithMantle extends Equipment {
 			if (!ev.isStatus(StatusType.INSANITY) || ev.getStacks() <= 0) return TriggerResult.keep();
 			if (insanityApplied.getCount() >= INSANITY_THRESHOLD) {
 				Player player = data.getPlayer();
-				ProjectileInstance.cancelWithin(data.getInstance(), player.getLocation(), CLEAR_RADIUS);
-				playProjectileClearFx(data, player);
+				createProjectileBarriers(data, player);
 			}
 			insanityApplied.addCount(ev.getStacks());
 			return TriggerResult.keep();
 		});
 	}
 
-	private void playProjectileClearFx(PlayerFightData data, Player player) {
-		data.runAnimation(id + "-clear", player, CLEAR_SPHERE, player.getLocation());
+	private void createProjectileBarriers(PlayerFightData data, Player player) {
+		Vector up = new Vector(0, 1, 0);
+		for (Vector forward : CARDINAL_DIRECTIONS) {
+			Vector left = up.clone().crossProduct(forward);
+			Location center = player.getLocation().add(forward.clone().multiply(CLEAR_RADIUS / 2D))
+					.add(0, CLEAR_RADIUS, 0);
+			Barrier barrier = Barrier.invisibleStationary(player, CLEAR_RADIUS * 2, CLEAR_RADIUS,
+					CLEAR_RADIUS * 2, center, new LocalAxes(left, up, forward), null, true);
+			UUID barrierId = data.addBarrier(barrier);
+			data.addGuaranteedTask(barrierId, () -> data.removeBarrier(barrierId), 2);
+		}
 	}
 
 	@Override
