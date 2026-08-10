@@ -50,6 +50,10 @@ public class ShopContents {
 		return shopItems.get(idx);
 	}
 
+	public void applyDiscount(double discount) {
+		for (ShopItem item : shopItems.values()) item.applyDiscount(discount);
+	}
+
 	// Adds every equipment-stock slot (0..NUM_ITEMS) to an offer snapshot for pickrate analytics,
 	// flagging purchased items as picked. Non-equipment shop slots (consumables/gems/artifacts) are
 	// intentionally excluded.

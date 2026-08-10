@@ -57,7 +57,7 @@ public final class ChanceDialog {
 			Component choiceName = meta.displayName() != null ? meta.displayName() : Component.text(choice.getPlainTitle());
 			Component label = Util.materialToSprite(item.getType()).color(NamedTextColor.WHITE)
 					.append(Component.space())
-					.append(choiceName);
+					.append(choiceName).append(Component.space()).append(Component.space()); // 2 spaces to center to match sprite
 			ActionButton.Builder button = ActionButton.builder(label).width(200).tooltip(buildTooltip(meta));
 			if (!spectator) {
 				int choiceIndex = i;

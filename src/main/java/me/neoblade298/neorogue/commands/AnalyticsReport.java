@@ -614,7 +614,10 @@ public class AnalyticsReport {
 			AnalyticsFilters filters, ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT o.equipmentId AS equipmentId, o.upgraded AS upgraded,"
-				+ " COUNT(*) AS offered, SUM(o.picked) AS picked, (SUM(o.picked) / COUNT(*)) AS rate"
+				+ " COUNT(*) AS offered, SUM(o.picked) AS picked, (SUM(o.picked) / COUNT(*)) AS rate,"
+				+ " AVG(o.price) AS avgOfferedPrice,"
+				+ " AVG(CASE WHEN o.picked = 1 THEN o.price END) AS avgPickedPrice,"
+				+ " MIN(o.source) AS minSource, MAX(o.source) AS maxSource"
 				+ " FROM neorogue_analytics_equipment_offers o"
 				+ " LEFT JOIN neorogue_analytics_runs r ON r.runId = o.runId WHERE o.balanceVersion = ?");
 		if (source != null) sql.append(" AND o.source = ?");
@@ -668,6 +671,13 @@ public class AnalyticsReport {
 				String line = "  <yellow>" + df.format(rate) + "%</yellow> <white>" + rs.getString("equipmentId")
 						+ (upgraded ? "+" : "") + "</white> <gray>| " + picked + "/" + offered
 						+ lowSampleMarker(offered);
+				boolean shopOnly = "SHOP".equals(rs.getString("minSource"))
+						&& "SHOP".equals(rs.getString("maxSource"));
+				if (shopOnly) {
+					line += " <gray>| avg price <white>" + df.format(rs.getDouble("avgOfferedPrice"));
+					if (picked > 0) line += "</white> offered, <yellow>" + df.format(rs.getDouble("avgPickedPrice")) + "</yellow> bought";
+					else line += "</white> offered, <dark_gray>none bought";
+				}
 				rows.add(new String[] { line });
 			}
 		}

@@ -20,6 +20,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.equipment.accessories.DiscountCard;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -218,6 +219,9 @@ public class ShopInventory extends CoreInventory {
 									+ " " + PlayerSessionData.CURRENCY + "</yellow> to purchase a(n) "
 					)
 			);
+			if (shopItem.getEquipment() instanceof DiscountCard) {
+				shopItems.applyDiscount(DiscountCard.getDiscount());
+			}
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			

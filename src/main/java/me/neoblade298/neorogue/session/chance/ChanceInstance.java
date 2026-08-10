@@ -271,12 +271,27 @@ public class ChanceInstance extends EditInventoryInstance {
 				}
 				return;
 			}
-			// new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
-			ChanceDialog.show(p, this, set, stage.get(p.getUniqueId()));
+			showChanceInterface(p, s.getParty().get(p.getUniqueId()), stage.get(p.getUniqueId()), false);
 		}
 		else {
 			super.handleInteractEvent(e);
 		}
+	}
+
+	private void showChanceInterface(Player viewer, PlayerSessionData data, ChanceStage currentStage,
+			boolean spectator) {
+		if (isCurrentClientProtocol(viewer)) {
+			ChanceDialog.show(viewer, data, this, set, currentStage, spectator);
+		} else if (spectator) {
+			new ChanceInventory(data, this, set, currentStage, viewer);
+		} else {
+			new ChanceInventory(viewer, this, set, currentStage);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private static boolean isCurrentClientProtocol(Player player) {
+		return player.getProtocolVersion() == Bukkit.getUnsafe().getProtocolVersion();
 	}
 
 	public Session getSession() {
@@ -284,8 +299,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 	
 	public void spectatePlayer(Player spectator, UUID uuid) {
-		// new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
-		ChanceDialog.show(spectator, s.getParty().get(uuid), this, set, stage.get(uuid), true);
+		showChanceInterface(spectator, s.getParty().get(uuid), stage.get(uuid), true);
 	}
 
 	public ChanceStage getStage(UUID uuid) {

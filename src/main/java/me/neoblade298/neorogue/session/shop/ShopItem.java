@@ -74,6 +74,10 @@ public class ShopItem {
 	public void setPurchased(boolean isPurchased) {
 		this.isPurchased = isPurchased;
 	}
+
+	public void applyDiscount(double discount) {
+		if (!isPurchased) price = Math.max(1, (int) (price * (1 - discount)));
+	}
 	
 	public void update(PlayerSessionData data, ItemStack item, boolean firstLoad) {
 		if (item == null)

@@ -26,6 +26,10 @@ public class DiscountCard extends Artifact {
 		return Equipment.get(ID, false);
 	}
 
+	public static double getDiscount() {
+		return DISCOUNT;
+	}
+
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.val(DISCOUNT_PERCENT + "%") + ".");

@@ -188,7 +188,7 @@ public class Mob implements Comparable<Mob> {
 		double mhealth = baseHealth;
 		double scale = 1.0;
 		if (type != MobType.NORMAL) {
-			scale += (s.getRegionsCompleted() * 0.5); // 50% health increase per region completed
+			scale += (s.getRegionsCompleted() * 1); // 100% health increase per region completed
 			mhealth *= (s.getParty().size() + 1) * 0.5; // 50% health scale per player
 		}
 		scale += lvl * 0.1; // Base 10%

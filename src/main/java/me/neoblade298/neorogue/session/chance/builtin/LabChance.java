@@ -23,7 +23,7 @@ public class LabChance extends ChanceSet {
 		super(RegionType.LOW_DISTRICT, Material.GOLD_INGOT, "Lab");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble upon a makeshift lab that has an array of potions brewing.");
 
-		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Drink the health potion",
+		ChanceChoice choice = new ChanceChoice(Material.POTION, "Drink the health potion",
 				"Everyone heals for <white>25</white>.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
@@ -34,7 +34,7 @@ public class LabChance extends ChanceSet {
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.GOLD_BLOCK, "Loot the place",
+		choice = new ChanceChoice(Material.CHEST, "Loot the place",
 				"Everyone receives a consumable and <white>50</white> " + PlayerSessionData.CURRENCY + ".",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
@@ -47,7 +47,7 @@ public class LabChance extends ChanceSet {
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.GOLD_BLOCK, "I'm something of a chemist myself",
+		choice = new ChanceChoice(Material.BREWING_STAND, "I'm something of a chemist myself",
 				"Mix a bunch of potions together. <white>50%</white> chance to receive a random artifact, <white>50%</white> chance everyone takes <white>20</white> damage.",
 				"Somebody lacks the health to do this!", (s, inst, unused) -> {
 					for (PlayerSessionData pd : s.getParty().values()) {

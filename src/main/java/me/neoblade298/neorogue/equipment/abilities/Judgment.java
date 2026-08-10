@@ -48,7 +48,8 @@ public class Judgment extends Equipment {
 			.dustOptions(new DustOptions(Color.fromRGB(255, 232, 130), 1.2F));
 	private static final ParticleContainer ASCENT = new ParticleContainer(Particle.DUST).count(4).spread(0.1, 0.1)
 			.speed(0.01).dustOptions(new DustOptions(Color.fromRGB(255, 232, 130), 1F));
-	private static final ParticleContainer IMPACT = new ParticleContainer(Particle.FLASH).count(3);
+	private static final ParticleContainer IMPACT = new ParticleContainer(Particle.FLASH).count(3)
+			.color(Color.fromRGB(255, 232, 130));
 	private static final ParticleContainer IMPACT_EDGE = DIVINE.clone().count(1).spread(0, 0);
 	private static final ParticleContainer IMPACT_FILL = new ParticleContainer(Particle.DUST).count(1).spread(0.1, 0)
 			.speed(0).dustOptions(new DustOptions(Color.fromRGB(255, 232, 130), 1F));

@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -74,7 +73,7 @@ public class Blind extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LIGHT,
+		item = createItem(Material.GLOW_INK_SAC,
 				"On cast, throw an orb of light that applies Slowness 1 [<white>3s</white>]. During this time, dealing damage to enemies hit " +
 				"applies " + GlossaryTag.INJURY.tag(this, injure) + ".");
 	}

@@ -834,9 +834,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					new BukkitRunnable() {
 						public void run() {
 							Sounds.breaks.play(p, p);
-							Util.msgRaw(p, Component.text("Your ", NamedTextColor.GRAY)
+							Util.msgRaw(p, Component.text("Your ", NamedTextColor.RED)
 									.append(se.getEquipment().getHoverable())
-									.append(Component.text(" broke!", NamedTextColor.GRAY)));
+									.append(Component.text(" broke!", NamedTextColor.RED)));
 						}
 					}.runTaskLater(NeoRogue.inst(), 20L);
 				} else {
