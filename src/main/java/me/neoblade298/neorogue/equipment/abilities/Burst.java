@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -40,7 +39,7 @@ public class Burst extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.FIREWORK_STAR,
 				"On cast, give yourself " + DescUtil.val(stamina) + " stamina and " + DescUtil.val(buff) +
 				" " + GlossaryTag.STRENGTH.tag(this) + " " + DescUtil.duration(seconds) + ".");
 	}

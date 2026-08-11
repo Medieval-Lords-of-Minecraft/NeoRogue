@@ -25,6 +25,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EquipmentChoiceInventory extends CoreInventory {
+	private static final int SKIP = 7;
 	private static final int BACK = 8;
 	private RewardInventory prev;
 	private ArrayList<SessionEquipment> equips;
@@ -52,6 +53,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		for (int i = 0; i < equips.size(); i++) {
 			contents[i] = equips.get(i).getChoiceItem(data);
 		}
+		contents[SKIP] = prev.createSkipButton("Skip reward");
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER, Component.text("Back", NamedTextColor.RED));
 		inv.setContents(contents);
 	}
@@ -66,6 +68,17 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		
 		if (slot == BACK) {
 			prev.openInventory();
+			return;
+		}
+		if (slot == SKIP) {
+			if (spectator != null) return;
+			if (prev.skipReward(prevSlot)) {
+				prev.openInventory();
+			}
+			else {
+				p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
+				p.closeInventory();
+			}
 			return;
 		}
 		if (e.isRightClick() && slot < equips.size()) {

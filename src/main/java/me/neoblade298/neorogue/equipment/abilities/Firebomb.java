@@ -1,11 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -78,13 +75,8 @@ public class Firebomb extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.FIRE_CHARGE,
 				"On cast, throw a bomb that deals " + GlossaryTag.FIRE.tag(this, damage) + " damage, coating the area in flames and applying " +
 				GlossaryTag.BURN.tag(this, burn) + " to enemies who walk through it over the next " + DescUtil.val("3s") + ".");
-	}
-
-	@Override
-	protected void modifyMeta(ItemMeta meta) {
-		((PotionMeta) meta).setColor(Color.RED);
 	}
 }

@@ -220,7 +220,7 @@ public class PlayerFightData extends FightData {
 						return;
 					}
 					ProjectileGroup pg = finalExtraShots.removeFirst();
-					List<ProjectileInstance> projs = pg.start(fd);
+					List<ProjectileInstance> projs = pg.startWithoutEvent(fd);
 					for (ProjectileInstance proj : projs) {
 						proj.getMeta().addTag(EXTRA_SHOT_TAG);
 					}

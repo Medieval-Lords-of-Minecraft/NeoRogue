@@ -44,7 +44,7 @@ public class Discipline extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.IRON_BARS,
 				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.val(INTERVAL + "s") + ", give yourself " + DescUtil.val(stamina) + " stamina, " + DescUtil.val(staminaGain) + " max stamina, and"
 						+ " take " + DescUtil.val(damageReduc) + " less damage " + DescUtil.duration(10) + ".");
 	}

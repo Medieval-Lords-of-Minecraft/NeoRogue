@@ -39,7 +39,7 @@ public class Ferocity extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.GOAT_HORN,
 				"On cast, give yourself " + DescUtil.val(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks. " +
 				"If you have " + DescUtil.val(cutoff) + " stacks after, gain " + DescUtil.val(staminaGain) + " stamina regen"
 						+ " and disable the ability.");

@@ -7,8 +7,6 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
@@ -91,13 +89,8 @@ public class AcidBomb extends Equipment {
 	// add effects
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.SLIME_BALL,
 				"On cast, drop an acid bomb that detonates after " + DescUtil.val(3) + " seconds. After detonation, every second for " + DescUtil.val(duration) + " seconds,"
 				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
-	}
-
-	@Override
-	protected void modifyMeta(ItemMeta meta) {
-		((PotionMeta) meta).setColor(Color.LIME);
 	}
 }

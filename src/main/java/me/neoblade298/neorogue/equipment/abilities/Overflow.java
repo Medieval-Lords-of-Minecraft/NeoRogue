@@ -4,8 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -42,12 +40,7 @@ public class Overflow extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "On cast, set your mana to " + DescUtil.val(mult + "x") + " your max mana. Can only be used once per fight.");
-	}
-
-	@Override
-	protected void modifyMeta(ItemMeta meta) {
-		((PotionMeta) meta).setColor(Color.BLUE);
+		item = createItem(Material.WATER_BUCKET, "On cast, set your mana to " + DescUtil.val(mult + "x") + " your max mana. Can only be used once per fight.");
 	}
 
 	@Override

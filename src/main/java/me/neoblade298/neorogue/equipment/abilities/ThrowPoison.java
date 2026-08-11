@@ -1,10 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
@@ -54,12 +51,7 @@ public class ThrowPoison extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.SPIDER_EYE,
 				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison) + " [" + DescUtil.val(poisonDuration / 20 + "s") + "].");
-	}
-
-	@Override
-	protected void modifyMeta(ItemMeta meta) {
-		((PotionMeta) meta).setColor(Color.LIME);
 	}
 }

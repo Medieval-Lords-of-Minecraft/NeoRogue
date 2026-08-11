@@ -275,6 +275,7 @@ public abstract class FightInstance extends Instance {
 		}
 		s.broadcast("<red>" + p.getName() + " died!");
 		data.setDeath(true);
+		fi.removePlayerThreat(p);
 		data.getStats().addDeath();
 
 		// If that's the last player alive, send them to lose instance
@@ -299,6 +300,16 @@ public abstract class FightInstance extends Instance {
 						}
 					}
 				}.runTask(NeoRogue.inst());
+			}
+		}
+	}
+
+	private void removePlayerThreat(Player p) {
+		for (FightData data : fightData.values()) {
+			if (data == null || data.getInstance() != this) continue;
+			ActiveMob mob = data.getActiveMob();
+			if (mob != null && mob.hasThreatTable()) {
+				mob.getThreatTable().observeDeath(BukkitAdapter.adapt(p));
 			}
 		}
 	}

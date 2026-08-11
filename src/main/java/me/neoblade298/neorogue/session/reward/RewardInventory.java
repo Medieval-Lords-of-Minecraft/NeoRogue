@@ -57,23 +57,21 @@ public class RewardInventory extends CoreInventory {
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
 
-		// Pot of greed specifics. The "clear remaining rewards" button is hidden in tutorial sessions.
-		if (data.getSession().getSessionType() == SessionType.TUTORIAL) {
-			// no clear button
-		}
-		else if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
+		contents[8] = createSkipButton("Clear remaining rewards");
+		inv.setContents(contents);
+	}
+
+	public ItemStack createSkipButton(String name) {
+		if (data.getSession().getSessionType() == SessionType.TUTORIAL) return null;
+		if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
 			ItemStack item = PotOfGreed.get().getItem();
-			contents[8] = CoreInventory.createButton(item.getType(),
-					Component.text("Clear remaining rewards", NamedTextColor.RED),
+			return CoreInventory.createButton(item.getType(),
+					Component.text(name, NamedTextColor.RED),
 					Component.text("Gain ", NamedTextColor.GRAY)
 							.append(Component.text(PotOfGreed.GOLD + " " + PlayerSessionData.CURRENCY + " ", NamedTextColor.YELLOW))
 							.append(Component.text("for each non-currency reward skipped")));
 		}
-		else {
-			contents[8] = CoreInventory.createButton(Material.RED_WOOL,
-					Component.text("Clear remaining rewards", NamedTextColor.RED));
-		}
-		inv.setContents(contents);
+		return CoreInventory.createButton(Material.RED_WOOL, Component.text(name, NamedTextColor.RED));
 	}
 
 	@Override
@@ -109,10 +107,7 @@ public class RewardInventory extends CoreInventory {
 		else if (slot == 8) {
 			if (spectator != null) return;
 			if (data.getSession().getSessionType() == SessionType.TUTORIAL) return;
-			ClearRewardsEvent ev = new ClearRewardsEvent(rewards);
-			data.trigger(SessionTrigger.CLEAR_REWARDS, ev);
-			rewards.clear();
-			((RewardInstance) data.getSession().getInstance()).onRewardClaim();
+			skipRewards(new ArrayList<Reward>(rewards));
 			p.closeInventory();
 		}
 	}
@@ -140,5 +135,19 @@ public class RewardInventory extends CoreInventory {
 		inv.setContents(contents);
 		((RewardInstance) data.getSession().getInstance()).onRewardClaim();
 		return !rewards.isEmpty();
+	}
+
+	public boolean skipReward(int slot) {
+		Reward reward = rewards.get(slot);
+		ArrayList<Reward> skipped = new ArrayList<Reward>();
+		skipped.add(reward);
+		data.trigger(SessionTrigger.CLEAR_REWARDS, new ClearRewardsEvent(skipped));
+		return claimReward(slot);
+	}
+
+	private void skipRewards(ArrayList<Reward> skipped) {
+		data.trigger(SessionTrigger.CLEAR_REWARDS, new ClearRewardsEvent(skipped));
+		rewards.removeAll(skipped);
+		((RewardInstance) data.getSession().getInstance()).onRewardClaim();
 	}
 }

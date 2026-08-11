@@ -49,7 +49,7 @@ public class TemporaryHealth extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SPLASH_POTION,
+		item = createItem(Material.GOLDEN_APPLE,
 				"After winning "
 						+ DescUtil.val(WINS) + " fights, heal " + DescUtil.val("30%") + " of your max health and lose this artifact.");
 	}

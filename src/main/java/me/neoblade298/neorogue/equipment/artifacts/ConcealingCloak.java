@@ -81,7 +81,7 @@ public class ConcealingCloak extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, 
+		item = createItem(Material.LEATHER, 
 				"Not taking or dealing damage for " + DescUtil.val("2s") + " increases your "
 				+ "mana and stamina regen by " + DescUtil.val("20%") + " of their base.");
 	}

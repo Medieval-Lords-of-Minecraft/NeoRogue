@@ -50,7 +50,7 @@ public class Adrenaline extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.SUGAR,
 				"On cast, give yourself " + DescUtil.val(stamina) + " stamina and reduce " + GlossaryTag.DIRECT.tag(this) + " damage by " + DescUtil.val(damageReduc) + " " + DescUtil.duration(10) + ". Can be cast " + DescUtil.val(isUpgraded ? "twice" : "once") + " per fight.");
 	}
 

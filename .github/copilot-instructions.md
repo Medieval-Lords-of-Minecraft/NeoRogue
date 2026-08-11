@@ -123,9 +123,11 @@ private Player p;  // ❌ Never store Player as field
 - Particle/sound effects via `ParticleContainer`/`SoundContainer` (see [Particle Instructions](particle-instructions.md))
 
 ### Equipment Icon Restrictions
+- Equipment with `EquipmentType.ARTIFACT` is exempt from all equipment icon material restrictions.
 - `Material.SHIELD` is restricted to equipment with `EquipmentType.OFFHAND`. This restriction concerns the icon material, not equipment that grants the Shields combat effect.
 - Helmet, chestplate, leggings, and boots materials are restricted to equipment with `EquipmentType.ARMOR`.
-- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON`.
+- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON` or `EquipmentType.OFFHAND`.
+- Potion and bottle icons, including `Material.POTION`, `Material.SPLASH_POTION`, `Material.LINGERING_POTION`, and `Material.GLASS_BOTTLE`, are restricted to equipment with `EquipmentType.CONSUMABLE`. The default water-bottle appearance of `Material.POTION` is included in this restriction.
 
 ### Particle Tuning Guidelines
 - For most projectile visuals, keep particle randomness subtle: prefer `spread` values at or below `0.1`.

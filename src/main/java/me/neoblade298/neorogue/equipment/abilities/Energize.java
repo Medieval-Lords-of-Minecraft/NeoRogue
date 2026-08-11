@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -47,7 +46,7 @@ public class Energize extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.LIGHTNING_ROD,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage) + " damage " +
 		"and marks the enemy. For the next " + DescUtil.val("5s") + ", the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec)
 		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy.");

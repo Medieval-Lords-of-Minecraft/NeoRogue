@@ -29,9 +29,11 @@ public class MyEquipment extends Equipment {
 ```
 
 ### Equipment Icon Restrictions
+- Equipment with `EquipmentType.ARTIFACT` is exempt from all equipment icon material restrictions.
 - `Material.SHIELD` is restricted to equipment with `EquipmentType.OFFHAND`. This restriction concerns the icon material, not equipment that grants the Shields combat effect.
 - Helmet, chestplate, leggings, and boots materials are restricted to equipment with `EquipmentType.ARMOR`.
-- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON`.
+- Weapon materials, including swords, tridents, and spears, are restricted to equipment with `EquipmentType.WEAPON` or `EquipmentType.OFFHAND`.
+- Potion and bottle icons, including `Material.POTION`, `Material.SPLASH_POTION`, `Material.LINGERING_POTION`, and `Material.GLASS_BOTTLE`, are restricted to equipment with `EquipmentType.CONSUMABLE`. The default water-bottle appearance of `Material.POTION` is included in this restriction.
 
 ### Equipment Registration
 1. Create equipment file in appropriate subfolder (`abilities/`, `accessories/`, etc.)

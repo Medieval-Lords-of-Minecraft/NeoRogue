@@ -1,8 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -12,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -35,6 +35,7 @@ public class FlashDraw extends Equipment implements Power {
 	}
 
 	private static final int ACTIVATION_THRES = 30;
+	private static final long CROUCH_DURATION_MILLIS = 1000L;
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
@@ -53,6 +54,14 @@ public class FlashDraw extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ActionMeta md = new ActionMeta();
+		ActionMeta crouch = new ActionMeta();
+		if (data.getPlayer().isSneaking()) crouch.setTime(System.currentTimeMillis());
+		data.addTrigger(id + "-crouch", Trigger.TOGGLE_CROUCH, (pdata, in) -> {
+			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
+			crouch.setTime(ev.isSneaking() ? System.currentTimeMillis() : 0);
+			return TriggerResult.keep();
+		});
+
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addTrigger(id + "-rend", Trigger.APPLY_STATUS, (pdata2, in2) -> {
@@ -67,16 +76,13 @@ public class FlashDraw extends Equipment implements Power {
 		data.addTrigger(id + "-draw", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata3, in3) -> {
 			LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in3;
 			Player p2 = data.getPlayer();
-			if (!p2.isSneaking()) return TriggerResult.keep();
 			if (!e.isBasicAttack()) return TriggerResult.keep();
+			if (!p2.isSneaking() || crouch.getTime() == 0 ||
+					System.currentTimeMillis() - crouch.getTime() < CROUCH_DURATION_MILLIS) return TriggerResult.keep();
 			data.addExtraShot(e.getGroup());
 			if (md.getCount() >= thres) {
 				md.addCount(-thres);
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						data.addExtraShot(e.getGroup());
-					}
-				}.runTaskLater(NeoRogue.inst(), 10L));
+				data.addExtraShot(e.getGroup());
 			}
 			return TriggerResult.keep();
 		});

@@ -127,7 +127,7 @@ public class Disappear extends Equipment implements Power {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GLASS_BOTTLE,
+		item = createItem(Material.ECHO_SHARD,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy with " + GlossaryTag.PIERCING.tag(this) + " damage. On kill, gain " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>5s</white>]."
 				+ " Afterwards, if you don't deal (ignoring poison) or take health damage for " + DescUtil.val("2s") + ","
 				+ " you gain " + GlossaryTag.PIERCING.tag(this, damage) + " on your next basic attack.");

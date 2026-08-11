@@ -56,25 +56,28 @@ public class ManaArc extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
+		inst.setAction((pdata, in) -> {
 			Player p = data.getPlayer();
-			activate(p, data, am, slot);
+			am.toggleBool();
+			if (am.getBool()) {
+				am.setTime(0);
+				Sounds.equip.play(p, p);
+			} else {
+				Sounds.flap.play(p, p);
+			}
 			return TriggerResult.keep();
-		}, (pl, pdata, in) -> {
-			return !am.getBool(); // Only allow casting if it's not already active
-		}));
-	}
+		});
+		data.addTrigger(id, bind, inst);
 
-	private void activate(Player p, PlayerFightData data, ActionMeta am, int slot) {
-		ManaArcProjectile proj = new ManaArcProjectile(data, slot, this);
-		Sounds.equip.play(p, p);
-		am.setBool(true);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (pdata.getMana() <= mana) {
+			if (!am.getBool())
+				return TriggerResult.keep();
+			if (pdata.getMana() < mana) {
+				am.setBool(false);
 				Player pl = data.getPlayer();
 				Sounds.flap.play(pl, pl);
-				am.setBool(false);
-				return TriggerResult.remove();
+				return TriggerResult.keep();
 			}
 			pdata.addMana(-mana);
 			return TriggerResult.keep();
@@ -94,6 +97,7 @@ public class ManaArc extends Equipment {
 			Player pl = data.getPlayer();
 			LivingEntity trg = ev.getTarget();
 			Vector dir = trg.getLocation().toVector().subtract(pl.getLocation().toVector()).normalize();
+			ManaArcProjectile proj = new ManaArcProjectile(data, slot, this);
 			proj.start(data, pl.getLocation().add(0, 1, 0), dir);
 			return TriggerResult.keep();
 		});
@@ -134,8 +138,8 @@ public class ManaArc extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_BANNER,
 				"On cast, lose " + DescUtil.val(mana) + " mana per second. Until you run out of mana, "
-						+ "dealing damage fires a projectile at the target (<white>1s cd</white>), dealing "
+						+ "dealing damage fires a projectile at the target (" + DescUtil.white("1s cd") + "), dealing "
 						+ GlossaryTag.LIGHTNING.tag(this, damage) + " damage and applying "
-						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ".");
+						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ". Recast to end the effect.");
 	}
 }
