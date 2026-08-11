@@ -1072,6 +1072,10 @@ public class SessionManager implements Listener {
 				LobbyInstance li = (LobbyInstance) s.getInstance();
 				li.leavePlayer(p);
 			} else {
+				if (s.getInstance() instanceof FightInstance) {
+					s.leavePlayer(p);
+					return;
+				}
 				// Must be <= 1 since the last player isn't offline until after event
 				if (s.getOnlinePlayers().size() <= 1) {
 					endSession(s);

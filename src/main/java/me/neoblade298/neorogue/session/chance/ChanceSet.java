@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.session.chance.builtin.SageOfTheMountainChance;
 import me.neoblade298.neorogue.session.chance.builtin.ShiningLightChance;
 import me.neoblade298.neorogue.session.chance.builtin.StockpileChance;
 import me.neoblade298.neorogue.session.chance.builtin.ThiefsCacheChance;
+import me.neoblade298.neorogue.session.chance.builtin.TravellingMerchantChance;
 import me.neoblade298.neorogue.session.chance.builtin.VultureChance;
 import me.neoblade298.neorogue.session.chance.builtin.WitchCaveChance;
 import net.kyori.adventure.text.TextComponent;
@@ -92,6 +93,7 @@ public class ChanceSet {
 		new SageOfTheMountainChance();
 		new ShiningLightChance();
 		new ThiefsCacheChance();
+		new TravellingMerchantChance();
 		new VultureChance();
 		new WitchCaveChance();
 		

@@ -332,16 +332,7 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
-		if (p instanceof Player pl) {
-			for (BossBar bar : bars) {
-				pl.hideBossBar(bar);
-			}
-		}
-		userData.remove(p.getUniqueId()).cleanup();
-		fightData.remove(p.getUniqueId());
-		if (isLose()) {
-			runLoseLogic(this);
-		}
+		SessionManager.endSession(s);
 	}
 
 	private boolean isLose() {

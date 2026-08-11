@@ -21,11 +21,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class HiddenRazor extends Equipment {
 	private static final String ID = "HiddenRazor";
 	private static int base = 60;
+	private int hitThreshold;
 	
 	public HiddenRazor(boolean isUpgraded) {
 		super(ID, "Hidden Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 3, 0, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		hitThreshold = isUpgraded ? 7 : 5;
 	}
 	
 	public static Equipment get() {
@@ -47,7 +49,7 @@ public class HiddenRazor extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 				weaponSwingAndDamage(p, data, ev.getTarget());
-				if (++count >= 5) {
+				if (++count >= hitThreshold) {
 					data.applyStatus(StatusType.STEALTH, data, -1, -1, HiddenRazor.this);
 					Sounds.extinguish.play(p, p);
 					count = 0;
@@ -61,6 +63,7 @@ public class HiddenRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_HOE, "Requires " + GlossaryTag.STEALTH.tag(this) + " to be used. Reduces your "
-				+ GlossaryTag.STEALTH.tag(this) + " by " + DescUtil.val(1) + " every " + DescUtil.val("5th") + " hit.");
+				+ GlossaryTag.STEALTH.tag(this) + " by " + DescUtil.val(1) + " every "
+				+ DescUtil.val(hitThreshold + "th") + " hit.");
 	}
 }

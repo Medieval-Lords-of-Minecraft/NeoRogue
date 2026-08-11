@@ -36,7 +36,7 @@ public class SmokeBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	private int delay, shields;
+	private int delay, shields, stealthDuration = 5;
 	
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
@@ -69,7 +69,7 @@ public class SmokeBomb extends Equipment {
 					Player detonationPlayer = data.getPlayer();
 					Sounds.explode.play(detonationPlayer, loc);
 					if (detonationPlayer.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-						data.applyStatus(StatusType.STEALTH, data, 1, 20, SmokeBomb.this);
+						data.applyStatus(StatusType.STEALTH, data, 1, stealthDuration * 20, SmokeBomb.this);
 					}
 					data.addTask(new BukkitRunnable() {
 						private static final int TICKS = 5;
@@ -95,7 +95,8 @@ public class SmokeBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GUNPOWDER,
 				"On cast, drop a smoke bomb that detonates after " + DescUtil.val(delay + "s")
-				+ ". Standing within the detonation grants " + GlossaryTag.STEALTH.tag(this, 1) + " [<white>1s</white>]."
+				+ ". Standing within the detonation grants " + GlossaryTag.STEALTH.tag(this, 1)
+				+ " [<white>" + stealthDuration + "s</white>]."
 				+ " For " + DescUtil.val("5s") + " after detonation, standing within the radius grants "
 				+ GlossaryTag.SHIELDS.tag(this, shields) + " [<white>2s</white>] per second.");
 	}
