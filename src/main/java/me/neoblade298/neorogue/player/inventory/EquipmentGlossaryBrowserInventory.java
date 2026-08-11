@@ -58,7 +58,11 @@ public class EquipmentGlossaryBrowserInventory extends GlossaryInventory {
 	private String search = "";
 
 	public EquipmentGlossaryBrowserInventory(Player viewer) {
-		super(viewer, 54, Component.text("Equipment", NamedTextColor.GOLD), null);
+		this(viewer, null);
+	}
+
+	public EquipmentGlossaryBrowserInventory(Player viewer, CoreInventory prev) {
+		super(viewer, 54, Component.text("Equipment", NamedTextColor.GOLD), prev);
 		refresh();
 	}
 
@@ -121,14 +125,15 @@ public class EquipmentGlossaryBrowserInventory extends GlossaryInventory {
 	}
 
 	private ItemStack createFilterButton(Material material, String name, String value, int matches) {
-		ItemStack item = CoreInventory.createButton(material, Component.text(name, NamedTextColor.YELLOW));
+		ItemStack item = CoreInventory.createButton(material,
+				Component.text(name + ": " + value, NamedTextColor.LIGHT_PURPLE));
 		ItemMeta meta = item.getItemMeta();
 		meta.lore(List.of(
-				line(Component.text("Selected: ", NamedTextColor.GRAY).append(Component.text(value, NamedTextColor.WHITE))),
+				line(Component.text("\u25B6 " + value, NamedTextColor.WHITE)),
 				line(Component.text(matches + " matches", NamedTextColor.DARK_GRAY)),
 				Component.empty(),
-				line(Component.text("Left click: next", NamedTextColor.GREEN)),
-				line(Component.text("Right click: previous", NamedTextColor.GREEN))));
+				line(Component.text("Left click: next", NamedTextColor.YELLOW)),
+				line(Component.text("Right click: previous", NamedTextColor.YELLOW))));
 		item.setItemMeta(meta);
 		return item;
 	}

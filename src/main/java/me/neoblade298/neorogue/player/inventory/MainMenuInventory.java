@@ -31,7 +31,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15, STATS = 4, TUTORIAL = 18;
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15,
+			STATS = 4, TUTORIAL = 18, EQUIPMENT_GLOSSARY = 26;
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 
 	public MainMenuInventory(Player p) {
@@ -57,6 +58,8 @@ public class MainMenuInventory extends CoreInventory {
 		contents[STATS] = createStatsButton(pd);
 		contents[TUTORIAL] = CoreInventory.createButton(Material.WRITABLE_BOOK,
 				Component.text("Tutorial", NamedTextColor.GOLD));
+		contents[EQUIPMENT_GLOSSARY] = CoreInventory.createButton(Material.KNOWLEDGE_BOOK,
+				Component.text("Equipment Glossary", NamedTextColor.AQUA));
 		inv.setContents(contents);
 	}
 
@@ -196,6 +199,9 @@ public class MainMenuInventory extends CoreInventory {
 		case TUTORIAL:
 			p.closeInventory();
 			BookRegistry.openTableOfContents(p, "neorogue_guide");
+			break;
+		case EQUIPMENT_GLOSSARY:
+			new EquipmentGlossaryBrowserInventory(p, this);
 			break;
 		}
 	}
