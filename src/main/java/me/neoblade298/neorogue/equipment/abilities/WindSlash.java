@@ -1,4 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
+	import java.util.HashSet;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -46,12 +49,14 @@ public class WindSlash extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
+		HashSet<UUID> enemiesHit = new HashSet<>();
 		for (int i = 0; i < amount; i++) {
-			projs.add(new WindSlashProjectile(i, amount / 2, slot, this));
+			projs.add(new WindSlashProjectile(i, amount / 2, slot, this, enemiesHit));
 		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			Sounds.attackSweep.play(p, p);
+			enemiesHit.clear();
 			projs.start(data);
 			return TriggerResult.keep();
 		}));
@@ -67,13 +72,15 @@ public class WindSlash extends Equipment {
 	private class WindSlashProjectile extends Projectile {
 		private int slot;
 		private Equipment eq;
-		public WindSlashProjectile(int i, int center, int slot, Equipment eq) {
+		private HashSet<UUID> enemiesHit;
+		public WindSlashProjectile(int i, int center, int slot, Equipment eq, HashSet<UUID> enemiesHit) {
 			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1);
 			int iter = i - center;
 			this.rotation(iter * 25);
 			this.slot = slot;
 			this.eq = eq;
+			this.enemiesHit = enemiesHit;
 		}
 
 		@Override
@@ -85,7 +92,7 @@ public class WindSlash extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			if (!enemiesHit.add(hit.getUniqueId())) meta.getSlices().clear();
 		}
 
 		@Override

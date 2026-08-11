@@ -77,6 +77,18 @@ public class BuffStatTracker extends StatTracker {
         return new BuffStatTracker(UUID.randomUUID().toString(), eq);
     }
 
+    public static BuffStatTracker statusDamageBuff(StatusType type, UUID applierId) {
+        return new BuffStatTracker(type.name() + applierId,
+            type.ctag.append(Component.text(" - Damage Buffed", NamedTextColor.GRAY)), true, false)
+            .category(StatCategory.DAMAGE_DEALT);
+    }
+
+    public static BuffStatTracker statusDamageMitigated(StatusType type, UUID applierId) {
+        return new BuffStatTracker(type.name() + applierId,
+            type.ctag.append(Component.text(" - Damage Mitigated", NamedTextColor.GRAY)), true, false)
+            .category(StatCategory.DAMAGE_TAKEN);
+    }
+
     public boolean shouldCombine() {
         return shouldCombine;
     }

@@ -48,9 +48,12 @@ public class DecrementStackStatus extends Status {
 			}
 			
 			slices.remove(toRemove);
+			onStacksDecremented(toRemove);
 			return TickResult.KEEP;
 		}
 	}
 	
 	public void onTickAction(int stacksRemoved) {}
+
+	protected void onStacksDecremented(int stacksRemoved) {}
 }

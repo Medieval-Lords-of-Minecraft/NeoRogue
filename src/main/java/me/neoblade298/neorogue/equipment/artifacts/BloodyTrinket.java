@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -29,13 +28,12 @@ public class BloodyTrinket extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		Player p = data.getPlayer();
-		if (p.getHealth() <= data.getMaxHealth() * 0.5) {
+		if (data.getPlayer().getHealth() <= data.getMaxHealth() * 0.5) {
 			data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 		}
 		else {
 			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
-				if (p.getHealth() <= data.getMaxHealth() * 0.5) {
+				if (data.getPlayer().getHealth() <= data.getMaxHealth() * 0.5) {
 					data.applyStatus(StatusType.STRENGTH, data, str, -1, this);
 					return TriggerResult.remove();
 				}

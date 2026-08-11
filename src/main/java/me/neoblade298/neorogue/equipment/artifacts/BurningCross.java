@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -38,18 +39,25 @@ public class BurningCross extends Artifact {
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
+		ActionMeta applied = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			String id = ev.getStatusId();
+			String statusId = ev.getStatusId();
 			int stacks = ev.getStacks();
-			if (id.equals(StatusType.SANCTIFIED.name())) {
+			if (statusId.equals(StatusType.SANCTIFIED.name())) {
+				int total = applied.getCount() + stacks;
+				int triggers = total / thres;
+				applied.setCount(total % thres);
+				if (triggers == 0) return TriggerResult.keep();
+				int totalDamage = triggers * damage;
 				FightData fd = ev.getTarget();
 				if (ev.getMeta() == null) {
-					FightInstance.dealDamage(new DamageMeta(data, stacks * damage, DamageType.FIRE,
-							DamageStatTracker.of(id, this)), fd.getEntity());
+					FightInstance.dealDamage(new DamageMeta(data, totalDamage, DamageType.FIRE,
+							DamageStatTracker.of(ID, this)), fd.getEntity());
 				}
 				else {
-					ev.getMeta().addDamageSlice(new DamageSlice(data, stacks * damage, DamageType.FIRE, DamageStatTracker.of(id, this)));
+					ev.getMeta().addDamageSlice(new DamageSlice(data, totalDamage, DamageType.FIRE,
+							DamageStatTracker.of(ID, this)));
 				}
 			}
 			return TriggerResult.keep();

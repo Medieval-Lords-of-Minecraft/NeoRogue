@@ -38,10 +38,7 @@ public class SessionStatistics {
 
 	public void aggregate(FightStatistics fs, FightInstance fight) {
 		// Sum this fight's damage dealt into the bucket for its fight type
-		double dealt = 0;
-		for (double amt : fs.getDamageDealt().values()) {
-			dealt += amt;
-		}
+		double dealt = fs.getTotalDamageDealt();
 		if (fight instanceof BossFightInstance) damageDealtBoss += dealt;
 		else if (fight instanceof MinibossFightInstance) damageDealtMiniboss += dealt;
 		else damageDealtStandard += dealt;

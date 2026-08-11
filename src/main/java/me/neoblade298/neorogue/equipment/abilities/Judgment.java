@@ -131,7 +131,8 @@ public class Judgment extends Equipment {
 		IMPACT_AREA.play(IMPACT_EDGE, origin, LocalAxes.xz(), IMPACT_FILL);
 		IMPACT.play(p, origin);
 		Sounds.explode.play(p, p);
-		for (Vector direction : DIRECTIONS) launchWave(data, origin, direction, slot);
+		Set<UUID> waveHits = new HashSet<>();
+		for (Vector direction : DIRECTIONS) launchWave(data, origin, direction, slot, waveHits);
 		for (LivingEntity target : TargetHelper.getEntitiesInRadius(p, origin, CENTRAL_TARGETS)) {
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHT,
 					DamageStatTracker.of(id + slot, this)), target);
@@ -149,8 +150,7 @@ public class Judgment extends Equipment {
 				head.clone().subtract(cross.clone().multiply(0.8)), 0.2);
 	}
 
-	private void launchWave(PlayerFightData data, Location origin, Vector direction, int slot) {
-		Set<UUID> hit = new HashSet<>();
+	private void launchWave(PlayerFightData data, Location origin, Vector direction, int slot, Set<UUID> waveHits) {
 		data.addTask(new BukkitRunnable() {
 			private int distance;
 			@Override
@@ -164,7 +164,7 @@ public class Judgment extends Equipment {
 				Vector cross = direction.clone().rotateAroundY(Math.toRadians(90)).multiply(0.8);
 				ParticleUtil.drawLine(p, WAVE, point.clone().add(cross), point.clone().subtract(cross), 0.2);
 				for (LivingEntity target : TargetHelper.getEntitiesInRadius(p, point, WAVE_TARGETS)) {
-					if (!hit.add(target.getUniqueId())) continue;
+					if (!waveHits.add(target.getUniqueId())) continue;
 					WAVE_HIT.play(p, target.getLocation().add(0, 0.2, 0));
 					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN,
 							DamageStatTracker.of(id + slot, Judgment.this)), target);

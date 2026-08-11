@@ -15,9 +15,6 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
-import me.neoblade298.neorogue.session.fight.DamageStatTracker;
-import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
@@ -78,12 +75,11 @@ public class Parry extends Equipment {
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, eq)));
-				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, eq));
 				hit.play(pdata.getPlayer(), ev.getTarget().getLocation());
 				Sounds.anvil.play(pdata.getPlayer(), pdata.getPlayer());
 				return TriggerResult.remove();
 			});
-			return TriggerResult.keep();
+			return TriggerResult.remove();
 		}
 	}
 

@@ -43,7 +43,7 @@ public class ForceBracer extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ForceBracerInstance(data.getPlayer(), this));
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ForceBracerInstance(data, this));
 	}
 
 	private class ForceBracerInstance implements TriggerAction {
@@ -52,10 +52,10 @@ public class ForceBracer extends Equipment {
 		private Equipment eq;
 		private String buffId = UUID.randomUUID().toString();
 
-		public ForceBracerInstance(Player p, Equipment eq) {
+		public ForceBracerInstance(PlayerFightData data, Equipment eq) {
 			icon = item.clone();
 			icon.setAmount(count);
-			p.getInventory().setItemInOffHand(icon);
+			data.getPlayer().getInventory().setItemInOffHand(icon);
 			this.eq = eq;
 		}
 

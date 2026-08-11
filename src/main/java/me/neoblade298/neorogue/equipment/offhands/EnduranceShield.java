@@ -27,13 +27,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class EnduranceShield extends Equipment {
 	private static final String ID = "EnduranceShield";
+	private static final long EMPOWER_COOLDOWN = 1000;
 	private int reduction, damage;
 
 	public EnduranceShield(boolean isUpgraded) {
 		super(ID, "Endurance Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 4 : 3;
-		damage = isUpgraded ? 250 : 150;
+		damage = isUpgraded ? 150 : 100;
 	}
 	
 	public static Equipment get() {
@@ -55,7 +56,11 @@ public class EnduranceShield extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.DIRECT), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
-			am.addCount(1);
+			long now = System.currentTimeMillis();
+			if (now - am.getTime() >= EMPOWER_COOLDOWN) {
+				am.setCount(1);
+				am.setTime(now);
+			}
 			return TriggerResult.keep();
 		});
 
@@ -63,7 +68,7 @@ public class EnduranceShield extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (am.getCount() <= 0) return TriggerResult.keep();
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.BLUNT, DamageStatTracker.of(id, this)));
-			am.addCount(-1);
+			am.setCount(0);
 			return TriggerResult.keep();
 		});
 	}
@@ -71,6 +76,7 @@ public class EnduranceShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.val(reduction) + ". Receiving damage while your shield is raised " +
-		"empowers your next basic attack to deal " + GlossaryTag.BLUNT.tag(this, damage) + ".");
+		"empowers your next basic attack to deal " + GlossaryTag.BLUNT.tag(this, damage)
+		+ ". This can occur once per second and does not stack.");
 	}
 }
