@@ -19,6 +19,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaCloak extends Equipment {
 	private static final String ID = "ManaCloak";
+	private static final int SHIELD_DURATION = 10;
+	private static final int STATUS_DURATION = 15;
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 
@@ -38,9 +40,9 @@ public class ManaCloak extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 200, this);
-			data.applyStatus(StatusType.PROTECT, data, 1, -1, this);
-			data.applyStatus(StatusType.SHELL, data, 1, -1, this);
+			data.addSimpleShield(p.getUniqueId(), shields, SHIELD_DURATION * 20, this);
+			data.applyStatus(StatusType.PROTECT, data, 1, STATUS_DURATION * 20, this);
+			data.applyStatus(StatusType.SHELL, data, 1, STATUS_DURATION * 20, this);
 			return TriggerResult.keep();
 		}));
 	}
@@ -48,8 +50,8 @@ public class ManaCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LAPIS_LAZULI,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(10) + ", "
-						+ GlossaryTag.PROTECT.tag(this, 1) + ", and " + GlossaryTag.SHELL.tag(this, 1)
-						+ ".");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(SHIELD_DURATION) + ". Also gain "
+						+ GlossaryTag.PROTECT.tag(this, 1) + " and " + GlossaryTag.SHELL.tag(this, 1)
+						+ " " + DescUtil.duration(STATUS_DURATION) + ".");
 	}
 }

@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 public class Nullify extends Equipment {
 	private static final String ID = "Nullify";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT);
+	private static final int STATUS_DURATION = 20;
 
 	private final int stacks;
 	private final int manaIncrease;
@@ -36,7 +37,7 @@ public class Nullify extends Equipment {
 	public Nullify(boolean isUpgraded) {
 		super(ID, "Nullify", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(16, 0, 0, 0));
-		stacks = isUpgraded ? 4 : 2;
+		stacks = isUpgraded ? 3 : 2;
 		manaIncrease = isUpgraded ? 20 : 30;
 		addTags(GlossaryTag.PROTECT, GlossaryTag.SHELL);
 	}
@@ -51,8 +52,8 @@ public class Nullify extends Equipment {
 		String procId = id + slot;
 		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			data.applyStatus(StatusType.PROTECT, data, stacks, -1, this);
-			data.applyStatus(StatusType.SHELL, data, stacks, -1, this);
+			data.applyStatus(StatusType.PROTECT, data, stacks, STATUS_DURATION * 20, this);
+			data.applyStatus(StatusType.SHELL, data, stacks, STATUS_DURATION * 20, this);
 			pc.play(p, p);
 			Sounds.enchant.play(p, p);
 			casts.addCount(1);
@@ -79,7 +80,7 @@ public class Nullify extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WHITE_DYE,
 				"On cast, apply " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
-						+ GlossaryTag.SHELL.tag(this, stacks) + " to yourself. Base mana cost is "
+						+ GlossaryTag.SHELL.tag(this, stacks) + " to yourself " + DescUtil.duration(STATUS_DURATION) + ". Base mana cost is "
 						+ DescUtil.val((int) properties.get(PropertyType.MANA_COST)) + ". This ability's mana cost increases by "
 						+ DescUtil.val(manaIncrease) + " each time you cast it.");
 	}

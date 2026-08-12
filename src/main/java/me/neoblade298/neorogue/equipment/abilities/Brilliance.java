@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -32,7 +31,7 @@ public class Brilliance extends Equipment implements Power {
 	private static final String ID = "Brilliance";
 	private static final ParticleContainer brillianceEffect = new ParticleContainer(Particle.END_ROD).count(15).spread(0.5, 0.5).speed(0.2);
 	private static final double RESISTANCE_AMOUNT = 0.5; // 50% resistance
-	private static final int RESISTANCE_DURATION = 100; // 5 seconds in ticks
+	private static final int EFFECT_DURATION = 10;
 	private static final int ACTIVATION_THRES = 3;
 	
 	private int protectShell;
@@ -103,14 +102,14 @@ public class Brilliance extends Equipment implements Power {
 
 			if (type != lastType[0]) {
 				Player p2 = data.getPlayer();
-				data.applyStatus(StatusType.PROTECT, data, protectShell, RESISTANCE_DURATION, this);
-				data.applyStatus(StatusType.SHELL, data, protectShell, RESISTANCE_DURATION, this);
+				data.applyStatus(StatusType.PROTECT, data, protectShell, EFFECT_DURATION * 20, this);
+				data.applyStatus(StatusType.SHELL, data, protectShell, EFFECT_DURATION * 20, this);
 
 				DamageCategory category = getDamageCategoryFromType(type);
 				if (category != null) {
 					data.addDefenseBuff(DamageBuffType.of(category), 
 						Buff.multiplier(data, RESISTANCE_AMOUNT, StatTracker.defenseBuffAlly(buffId, this)), 
-						RESISTANCE_DURATION);
+						EFFECT_DURATION * 20);
 				}
 
 				brillianceEffect.play(p2, p2);
@@ -129,7 +128,7 @@ public class Brilliance extends Equipment implements Power {
 			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(ACTIVATION_THRES) + 
 			" different types of damage. Whenever you deal a damage type that is different " +
 			"from your previous damage type, gain " + GlossaryTag.PROTECT.tag(this, protectShell) + 
-			" and " + GlossaryTag.SHELL.tag(this, protectShell) + " [" + DescUtil.val("5s") + "] and " +
-			DescUtil.val("50%") + " resistance to the damage type you used [" + DescUtil.val("5s") + "].");
+			" and " + GlossaryTag.SHELL.tag(this, protectShell) + " " + DescUtil.duration(EFFECT_DURATION) + " and " +
+			DescUtil.val("50%") + " resistance to the damage type you used " + DescUtil.duration(EFFECT_DURATION) + ".");
 	}
 }
