@@ -35,7 +35,7 @@ public class EarthenTackle extends Equipment {
 	private static final String ID = "EarthenTackle";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.BLOCK),
-			dirt = start.clone().spread(0.5, 0.5);
+			dirt = start.clone().blockData(Material.DIRT.createBlockData()).spread(0.5, 0.5);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
 			aoe = TargetProperties.radius(4, true, TargetType.ENEMY);
 	private int damage, concussed, cdr;
