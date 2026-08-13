@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -16,10 +17,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ForceCloak extends Equipment {
 	private static final String ID = "ForceCloak";
+	private static final int STATUS_DURATION = 15;
 
 	public ForceCloak(boolean isUpgraded) {
 		super(ID, "Force Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(isUpgraded ? 15 : 20, isUpgraded ? 1 : 5, isUpgraded ? 10 : 15, 0));
+				EquipmentProperties.ofUsable(isUpgraded ? 5 : 10, 5, 10, 0));
 	}
 
 	public static Equipment get() {
@@ -31,8 +33,8 @@ public class ForceCloak extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.applyStatus(StatusType.PROTECT, data, 1, -1, this);
-			data.applyStatus(StatusType.SHELL, data, 1, -1, this);
+			data.applyStatus(StatusType.PROTECT, data, 1, STATUS_DURATION * 20, this);
+			data.applyStatus(StatusType.SHELL, data, 1, STATUS_DURATION * 20, this);
 			return TriggerResult.keep();
 		}));
 	}
@@ -40,6 +42,6 @@ public class ForceCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE, "On cast, apply " + GlossaryTag.PROTECT.tag(this, 1) + " and "
-				+ GlossaryTag.SHELL.tag(this, 1) + ".");
+				+ GlossaryTag.SHELL.tag(this, 1) + " " + DescUtil.duration(STATUS_DURATION) + ".");
 	}
 }

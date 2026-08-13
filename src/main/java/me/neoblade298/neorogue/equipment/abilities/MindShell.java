@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -15,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -26,6 +25,7 @@ public class MindShell extends Equipment implements Power {
 	private double regen;
 	private int shell;
 	private static final int THRES = 3;
+	private static final int STATUS_DURATION = 20;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 
 	public MindShell(boolean isUpgraded) {
@@ -62,7 +62,7 @@ public class MindShell extends Equipment implements Power {
 					if (am.getCount() >= THRES) {
 						am.addCount(-THRES);
 						pdata2.addManaRegen(regen);
-						data.applyStatus(StatusType.SHELL, data, shell, -1, MindShell.this);
+						data.applyStatus(StatusType.SHELL, data, shell, STATUS_DURATION * 20, MindShell.this);
 						Player p2 = data.getPlayer();
 						pc.play(p2, p2);
 						Sounds.enchant.play(p2, p2);
@@ -78,6 +78,6 @@ public class MindShell extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after casting an ability. Every " + DescUtil.val(THRES) + " ability casts, increase your mana regen by "
-						+ DescUtil.val(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell) + ".");
+						+ DescUtil.val(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell) + " " + DescUtil.duration(STATUS_DURATION) + ".");
 	}
 }
