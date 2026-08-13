@@ -60,7 +60,6 @@ public class Parry extends Equipment {
 	private class ParryBlock implements TriggerAction {
 		private long createTime;
 		private Equipment eq;
-		private int slot;
 		private String buffId = UUID.randomUUID().toString();
 		public ParryBlock(Equipment eq, int slot) {
 			this.eq = eq;

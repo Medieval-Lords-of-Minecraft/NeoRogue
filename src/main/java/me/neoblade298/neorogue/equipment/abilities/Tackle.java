@@ -38,12 +38,13 @@ public class Tackle extends Equipment {
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
 			aoe = TargetProperties.radius(2.5, true, TargetType.ENEMY);
-	private int damage;
+	private int damage, cdr;
 	
 	public Tackle(boolean isUpgraded) {
 		super(ID, "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 20, 0).add(PropertyType.AREA_OF_EFFECT, 2));
 		damage = isUpgraded ? 130 : 100;
+		cdr = 5;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
@@ -97,7 +98,7 @@ public class Tackle extends Equipment {
 						p.setVelocity(v.multiply(0.5));
 						data.removeCleanupTask(id);
 						cancelTasks();
-						inst.reduceCooldown(data.getShields().getAmount() > 0 ? 15 : 10);
+						inst.reduceCooldown(cdr);
 						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							pc.play(p, p);
@@ -121,6 +122,6 @@ public class Tackle extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " forward, stopping at the first enemy hit to deal " + DescUtil.val(damage) + " " + GlossaryTag.BLUNT.tag(this) +
-				" damage in a small area. On hit, reduce this ability's cooldown by " + DescUtil.val(10) + ", or by " + DescUtil.val(15) + " if you have any " + GlossaryTag.SHIELDS.tag(this) + ".");
+				" damage in a small area. On hit, reduce this ability's cooldown by " + DescUtil.val(cdr) + ".");
 	}
 }

@@ -38,13 +38,14 @@ public class EarthenTackle extends Equipment {
 			dirt = start.clone().spread(0.5, 0.5);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
 			aoe = TargetProperties.radius(4, true, TargetType.ENEMY);
-	private int damage, concussed;
+	private int damage, concussed, cdr;
 	
 	public EarthenTackle(boolean isUpgraded) {
 		super(ID, "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(8, 15, 12, 0, hc.range));
 		damage = isUpgraded ? 240 : 160;
 		concussed = isUpgraded? 15 : 10;
+		cdr = 5;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0).offsetY(1).blockData(Material.DIRT.createBlockData());
@@ -91,7 +92,7 @@ public class EarthenTackle extends Equipment {
 						v = v.setY(Math.min(0.3, v.getY())).normalize(); // Limit how high a tackle can take you
 						p.setVelocity(v.multiply(0.5));
 						cancelTasks();
-						inst.reduceCooldown(10);
+						inst.reduceCooldown(cdr);
 						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							pc.play(p, ent);
@@ -118,6 +119,6 @@ public class EarthenTackle extends Equipment {
 		item = createItem(Material.REDSTONE,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " forward, stopping at the first enemy hit to deal " + DescUtil.val(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
 				" damage and apply " + GlossaryTag.CONCUSSED.tag(this, concussed) + " in an area. "
-						+ "On hit, reduce this ability's cooldown by " + DescUtil.val(10) + ".");
+						+ "On hit, reduce this ability's cooldown by " + DescUtil.val(cdr) + ".");
 	}
 }

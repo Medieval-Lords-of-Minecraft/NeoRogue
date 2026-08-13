@@ -56,7 +56,7 @@ public class GreedChance extends ChanceSet {
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.BARRIER, "Be Risk-averse",
+		choice = new ChanceChoice(Material.REDSTONE, "Be Risk-averse",
 				"Leave the dangerous sludge alone.", (s, inst, data) -> {
 					s.broadcast("Good health is more valuable than riches.");
 					return null;

@@ -65,6 +65,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 
 		holo = NeoRogue.createHologram(spawn.clone().add(0, 2, 4), getStatsHologramText());
 		leaveHolo = NeoRogue.createHologram(spawn.clone().add(0, 2, -4), getLeaveHologramText());
+		leaveHolo.setRotation(0, 0);
 
 		s.broadcast(getResultMessage());
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
