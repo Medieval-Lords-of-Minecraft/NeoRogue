@@ -86,7 +86,7 @@ public class Crusade extends Equipment implements Power {
 				data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata, in) -> {
 					ApplyStatusEvent ev = (ApplyStatusEvent) in;
 					if (!ev.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
-					queueSwords(data, projectiles, ev.getTarget().getUniqueId(), ev.getStacks());
+					queueSwords(data, projectiles, ev.getTarget().getUniqueId(), 1);
 					return TriggerResult.keep();
 				});
 			}
@@ -150,7 +150,7 @@ public class Crusade extends Equipment implements Power {
 		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. After activation, applying "
-				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword per stack that fires after " + DescUtil.white("0.5s")
+				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword that fires after " + DescUtil.white("0.5s")
 				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage) + " damage each.");
 	}
 

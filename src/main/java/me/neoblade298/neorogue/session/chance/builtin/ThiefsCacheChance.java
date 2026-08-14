@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.session.chance.builtin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
@@ -13,7 +12,6 @@ import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
-import net.kyori.adventure.text.Component;
 
 public class ThiefsCacheChance extends ChanceSet {
 	public ThiefsCacheChance() {
@@ -24,7 +22,6 @@ public class ThiefsCacheChance extends ChanceSet {
 		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up two potions",
 				"Can't go wrong with potions!", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You pick up the potions and leave with haste.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the potions!", p);
 					data.giveEquipment(SessionEquipment.fromEquipment(Equipment.getConsumable(data.getData().getConsumableDroptable(), s.getBaseDropValue() * 2, 2, data.getPlayerClass(), EquipmentClass.CLASSLESS)));
 					return null;
@@ -38,8 +35,6 @@ public class ThiefsCacheChance extends ChanceSet {
 					Equipment eq = Equipment.getDrop(data.getData().getEquipmentDroptable(), s.getBaseDropValue() + 1, data.getPlayerClass());
 					SessionEquipment se = s.rollUpgrade(new SessionEquipment(eq), 0);
 					NotorietySetting.rollBreakable(s, se);
-					Util.msgRaw(p, Component.text("You pick up a(n) ").append(se.getDisplay())
-							.append(Component.text(" and go on your way.")));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to receive a random piece of equipment!", p);
 					data.giveEquipment(se);
 					return null;
@@ -49,7 +44,6 @@ public class ThiefsCacheChance extends ChanceSet {
 		choice = new ChanceChoice(Material.NETHERITE_SCRAP, "Pick up the hexmetal",
 				"Receive <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You pick up <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow> and go on your way.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 " + PlayerSessionData.CURRENCY + "</yellow>!", p);
 					data.addCurrency(100);
 					return null;

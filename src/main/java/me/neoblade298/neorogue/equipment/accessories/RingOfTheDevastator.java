@@ -23,7 +23,7 @@ public class RingOfTheDevastator extends Equipment {
 	public RingOfTheDevastator(boolean isUpgraded) {
 		super(ID, "Ring of the Devastator", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		statusThreshold = isUpgraded ? 30 : 20;
+		statusThreshold = isUpgraded ? 20 : 30;
 	}
 
 	public static Equipment get() {
@@ -63,9 +63,9 @@ public class RingOfTheDevastator extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHERITE_SCRAP, "Every " + DescUtil.yellow(statusThreshold) + " combined "
+		item = createItem(Material.NETHERITE_SCRAP, "Every " + DescUtil.val(statusThreshold) + " combined "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " or " + GlossaryTag.CONCUSSED.tag(this) + " applied grants "
-				+ GlossaryTag.BERSERK.tag(this, 1) + ". For every " + DescUtil.white(BERSERK_THRESHOLD)
-				+ " Berserk you have, gain " + DescUtil.white(MANA_REGEN) + " mana regen.");
+				+ GlossaryTag.BERSERK.tag(this, 1) + ". For every " + GlossaryTag.BERSERK.tag(this, 1)
+				+ " you have, gain " + DescUtil.white(MANA_REGEN) + " mana regen.");
 	}
 }

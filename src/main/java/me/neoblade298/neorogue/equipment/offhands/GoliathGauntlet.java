@@ -65,7 +65,7 @@ public class GoliathGauntlet extends Equipment {
 
 	public GoliathGauntlet(boolean isUpgraded) {
 		super(ID, "Goliath Gauntlet", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.OFFHAND, EquipmentProperties.custom(15, 5, 6, 0, BASE_DAMAGE, 0, 1,
+				EquipmentType.OFFHAND, EquipmentProperties.custom(15, 5, 6, 0, 0, 0, 1,
 						DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_STRONG)));
 						damagePerConcussed = isUpgraded ? 3 : 2;
 	}

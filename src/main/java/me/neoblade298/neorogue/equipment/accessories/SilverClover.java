@@ -41,6 +41,6 @@ public class SilverClover extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, "Applying " + GlossaryTag.SANCTIFIED.tag(this) + " grants "
-				+ GlossaryTag.SHELL.tag(this, SHELL) + " [" + DescUtil.duration(duration, true) + "].");
+				+ GlossaryTag.SHELL.tag(this, SHELL) + " " + DescUtil.duration(duration, true) + ".");
 	}
 }

@@ -31,7 +31,7 @@ public class ProvingGroundsChance extends ChanceSet {
 				+ " and after sharing stories of the road, they offer to spar so you can test and refine your skills.");
 
 		// Choice 1: Hone your basics - upgrade one chosen piece of gear
-		ChanceChoice hone = new ChanceChoice(Material.ANVIL, "Hone Your Basics",
+		ChanceChoice hone = new ChanceChoice(Material.REDSTONE_TORCH, "Hone Your Basics",
 				"Practice with the mercenaries to <yellow>upgrade</yellow> one equipment.",
 				"You have no gear that can be upgraded!",
 				(s, inst, data) -> data.aggregateEquipment(ProvingGroundsChance::isUpgradable).size() > 0,

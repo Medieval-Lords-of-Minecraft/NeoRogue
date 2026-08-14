@@ -23,11 +23,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class WardingRune extends Equipment {
 	private static final String ID = "WardingRune";
-	private int reduc = 10, mana = 5;
+	private int reduc = 5, mana = 5;
 	
 	public WardingRune(boolean isUpgraded) {
 		super(ID, "Warding Rune", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 15 : 11, 0));
+				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 5 : 9, 0));
 	}
 	
 	public static Equipment get() {

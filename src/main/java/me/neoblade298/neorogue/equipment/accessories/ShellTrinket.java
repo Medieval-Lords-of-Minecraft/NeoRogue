@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -29,7 +30,7 @@ public class ShellTrinket extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, "Decreases damage taken by " + DescUtil.val(dec) + ".");
+		item = createItem(Material.REDSTONE_TORCH, "Reduces " + GlossaryTag.DIRECT.tag(this) + " damage taken by " + DescUtil.val(dec) + ".");
 	}
 
 	@Override
