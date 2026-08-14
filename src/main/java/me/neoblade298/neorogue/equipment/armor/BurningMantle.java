@@ -23,10 +23,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class BurningMantle extends Equipment {
 	private static final String ID = "BurningMantle";
-	private int reduc, damage = 30, thres = 500, inc;
+	private int reduc, damage = 30, thres = 700, inc;
 	
 	public BurningMantle(boolean isUpgraded) {
-		super(ID, "Burning Mantle", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
+		super(ID, "Burning Mantle", isUpgraded, Rarity.UNCOMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
 				EquipmentType.ARMOR);
 				reduc = isUpgraded ? 2 : 1;
 			inc = isUpgraded ? 15 : 10;
