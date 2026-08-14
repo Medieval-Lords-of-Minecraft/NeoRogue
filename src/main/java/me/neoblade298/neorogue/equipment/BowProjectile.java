@@ -58,6 +58,14 @@ public class BowProjectile extends Projectile {
 		return isBasicAttack;
 	}
 
+	public Bow getBow() {
+		return bow;
+	}
+
+	public AmmunitionInstance getAmmunition() {
+		return ammo;
+	}
+
 	@Override
 	public void onTick(ProjectileInstance proj, int interpolation) {
 		Player p = data.getPlayer();

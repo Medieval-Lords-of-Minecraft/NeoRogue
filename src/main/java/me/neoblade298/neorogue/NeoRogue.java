@@ -21,6 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Nullable;
 
+import com.sk89q.worldedit.WorldEdit;
+
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -133,7 +135,7 @@ public class NeoRogue extends JavaPlugin {
 	public static MobManager mythicMobs;
 	private static HashSet<String> debugFlags = new HashSet<>();
 	
-	public static File SCHEMATIC_FOLDER = new File("/home/mlmc/dev/plugins/FastAsyncWorldEdit/schematics");
+	public static File SCHEMATIC_FOLDER;
 	
 	public static Location spawn;
 
@@ -144,6 +146,7 @@ public class NeoRogue extends JavaPlugin {
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
+		SCHEMATIC_FOLDER = WorldEdit.getInstance().getSchematicsFolderPath().toFile();
 		saveResource("achievement-rewards.yml", false);
 		saveResource("caravan.yml", false);
 		saveResource("expboosts.yml", false);
