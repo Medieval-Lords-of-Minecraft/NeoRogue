@@ -121,7 +121,7 @@ public class Tackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, " + GlossaryTag.DASH.tag(this) + " forward, stopping at the first enemy hit to deal " + DescUtil.val(damage) + " " + GlossaryTag.BLUNT.tag(this) +
-				" damage in a small area. On hit, reduce this ability's cooldown by " + DescUtil.val(cdr) + ".");
+				"On cast, " + GlossaryTag.DASH.tag(this) + " forward, collide with enemies to deal " + DescUtil.val(damage) + " " + GlossaryTag.BLUNT.tag(this) +
+				" damage in a small area. On hit, reduce this cooldown by " + DescUtil.val(cdr) + ".");
 	}
 }
