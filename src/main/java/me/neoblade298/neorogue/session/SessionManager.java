@@ -738,7 +738,7 @@ public class SessionManager implements Listener {
 		if (!sessions.containsKey(uuid))
 			return;
 		if (e.getCause() == DamageCause.FIRE || e.getCause() == DamageCause.FIRE_TICK
-				|| e.getCause() == DamageCause.LAVA || e.getCause() == DamageCause.HOT_FLOOR) {
+				|| e.getCause() == DamageCause.LAVA || e.getCause() == DamageCause.CONTACT) {
 			e.setCancelled(true);
 			return;
 		}
