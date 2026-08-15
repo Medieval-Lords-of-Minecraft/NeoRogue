@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -64,7 +65,7 @@ public class MagicQuiver extends Equipment {
 			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot, trg));
 			if (action.getCount() >= thres && data.hasAmmoInstance() && trg != null) {
 				action.addCount(-thres);
-				data.addExtraShot(group);
+				data.addAftershot(group);
 			}
 			return TriggerResult.keep();
 		});
@@ -73,8 +74,8 @@ public class MagicQuiver extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT, "Every " + DescUtil.val(thres == 3 ? "3rd" : "2nd") + " time you launch a basic attack, also fire a " +
-				"homing projectile towards the nearest enemy using your current ammunition that deals " + DescUtil.val(damage) + " damage.");
+		item = createItem(Material.FLINT, "Every " + DescUtil.val(thres == 3 ? "3rd" : "2nd") + " time you launch a basic attack, fire a homing " +
+				GlossaryTag.AFTERSHOT.tag(this) + " toward the nearest enemy. It uses your current ammunition and deals " + DescUtil.val(damage) + " damage.");
 	}
 
 	private class MagicQuiverProjectile extends Projectile {

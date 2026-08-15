@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -95,7 +94,7 @@ public class Hellfire extends Equipment implements Power {
 			if (target == null) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(target);
 			if (fd.hasStatus(StatusType.BURN)) {
-				data.addExtraShot(group);
+				data.addAftershot(group);
 			}
 			return TriggerResult.keep();
 		});
@@ -106,7 +105,7 @@ public class Hellfire extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after firing " + DescUtil.val(5) + " projectiles and applying " + GlossaryTag.BURN.tag(this) + " " + DescUtil.val(3) + " times. Dealing basic attack damage to an enemy with " + GlossaryTag.BURN.tag(this) + 
-				" causes your next basic attack to fire an additional projectile that deals " + 
+				" causes your next basic attack to fire an " + GlossaryTag.AFTERSHOT.tag(this) + " that deals " + 
 				GlossaryTag.FIRE.tag(this, damage) + " damage.");
 	}
 

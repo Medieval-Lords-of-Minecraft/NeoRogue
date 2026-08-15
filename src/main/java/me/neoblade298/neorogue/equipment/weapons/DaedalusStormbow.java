@@ -39,7 +39,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class DaedalusStormbow extends Bow {
 	private static final String ID = "DaedalusStormbow";
-	private static final int EXTRA_SHOT_DAMAGE_INCREMENT = 5;
+	private static final int AFTERSHOT_DAMAGE_INCREMENT = 5;
 	private int threshold, damage;
 	
 	public DaedalusStormbow(boolean isUpgraded) {
@@ -65,10 +65,10 @@ public class DaedalusStormbow extends Bow {
 		ItemStack chargedIcon = icon.clone();
 		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
 		
-		// Track projectile damage hits and extra shot damage
+		// Track projectile damage hits and Aftershot damage
 		ActionMeta am = new ActionMeta();
 		
-		// Standard bow shooting with extra shot
+		// Standard bow shooting with an Aftershot
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
 			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
@@ -79,27 +79,27 @@ public class DaedalusStormbow extends Bow {
 			
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, velocity, this, id + slot));
 			
-			// Add extra shot with rotation
-			DaedalusStormbowProjectile extraShot = new DaedalusStormbowProjectile(data, this, slot);
-			extraShot.rotation(15);
-			ProjectileGroup extraShotGroup = new ProjectileGroup(extraShot);
-			data.addExtraShot(extraShotGroup);
+			// Add an Aftershot with rotation
+			DaedalusStormbowProjectile aftershot = new DaedalusStormbowProjectile(data, this, slot);
+			aftershot.rotation(15);
+			ProjectileGroup aftershotGroup = new ProjectileGroup(aftershot);
+			data.addAftershot(aftershotGroup);
 			
 			proj.start(data);
 			return TriggerResult.keep();
 		});
 		
-		// Buff all extra shot damage
+		// Buff all Aftershot damage
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			if (!ev.getMeta().hasTag(PlayerFightData.EXTRA_SHOT_TAG)) return TriggerResult.keep();
-			double extraShotDamage = 40 + am.getInt();
+			if (!ev.getMeta().hasTag(PlayerFightData.AFTERSHOT_TAG)) return TriggerResult.keep();
+			double aftershotDamage = 40 + am.getInt();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT),
-					Buff.increase(data, extraShotDamage, BuffStatTracker.damageBuffAlly(am.getId(), this)));
+					Buff.increase(data, aftershotDamage, BuffStatTracker.damageBuffAlly(am.getId(), this)));
 			return TriggerResult.keep();
 		});
 		
-		// Track projectile damage to increase extra shot damage
+		// Track projectile damage to increase Aftershot damage
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
@@ -108,11 +108,11 @@ public class DaedalusStormbow extends Bow {
 			
 			if (am.getCount() >= threshold) {
 				am.addCount(-threshold);
-				am.addInt(EXTRA_SHOT_DAMAGE_INCREMENT);
+				am.addInt(AFTERSHOT_DAMAGE_INCREMENT);
 				
-				// Update icon to show extra shot damage
+				// Update icon to show Aftershot damage
 				ItemStack currentIcon = chargedIcon.clone();
-				currentIcon.setAmount(Math.min(64, am.getInt() / EXTRA_SHOT_DAMAGE_INCREMENT));
+				currentIcon.setAmount(Math.min(64, am.getInt() / AFTERSHOT_DAMAGE_INCREMENT));
 				inst.setIcon(currentIcon);
 				
 				Player p = data.getPlayer();
@@ -164,8 +164,8 @@ public class DaedalusStormbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				GlossaryTag.PASSIVE.tag(this) + ". Increase basic attack range by " + DescUtil.val(4) + " and fire a homing extra shot on basic attack launch. " +
-				"Every " + DescUtil.val(threshold) + " times you deal projectile damage, increases the damage your extra shots " +
-				"deal by " + DescUtil.val(EXTRA_SHOT_DAMAGE_INCREMENT) + ".");
+				GlossaryTag.PASSIVE.tag(this) + ". Increase basic attack range by " + DescUtil.val(4) + " and fire a homing " + GlossaryTag.AFTERSHOT.tag(this) + " when launching a basic attack. " +
+				"After every " + DescUtil.val(threshold) + " instances of projectile damage, your " + GlossaryTag.AFTERSHOT.tagPlural(this) +
+				" deal " + DescUtil.val(AFTERSHOT_DAMAGE_INCREMENT) + " more damage.");
 	}
 }

@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -51,7 +52,7 @@ public class DoubleTap extends Bow {
 			if (am.getCount() >= THRESHOLD) {
 				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(-properties.get(PropertyType.DAMAGE)));
 				am.addCount(-THRESHOLD);
-				data.addExtraShot(second);
+				data.addAftershot(second);
 			}
 			proj.start(data);
 
@@ -61,6 +62,6 @@ public class DoubleTap extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Every third shot fires a second projectile after a short delay that deals only ammunition damage.");
+		item = createItem(Material.BOW, "Every third basic attack fires an " + GlossaryTag.AFTERSHOT.tag(this) + " that deals only ammunition damage.");
 	}
 }

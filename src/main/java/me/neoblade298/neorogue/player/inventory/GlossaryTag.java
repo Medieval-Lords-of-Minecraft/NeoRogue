@@ -83,6 +83,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Absorbs damage before reaching your health post-mitigation. Some abilities ignore shields."),
 	BARRIER(Material.SHIELD, "<#D9A441>Barrier</#D9A441>",
 			"Intercepts projectiles, dealing the damage to you directly, usually with mitigation."),
+	AFTERSHOT(Material.ARROW, "<#A7C7E7>Aftershot</#A7C7E7>",
+			"An additional projectile fired shortly after a basic attack. Aftershots do not trigger projectile launch effects."),
 	BERSERK(Material.BLAZE_POWDER, "<#DC143C>Berserk</#DC143C>",
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
 	TRAP(Material.OAK_TRAPDOOR, "<#4F86F7>Trap</#4F86F7>",

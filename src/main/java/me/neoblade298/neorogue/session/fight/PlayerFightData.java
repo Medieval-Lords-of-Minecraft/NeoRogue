@@ -75,7 +75,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerFightData extends FightData {
 
 	private static final DecimalFormat df = new DecimalFormat("##.#");
-	public static String EXTRA_SHOT_TAG = "EXTRA_SHOT";
+	public static final String AFTERSHOT_TAG = "AFTERSHOT";
 	private static final Comparator<Status> stackComparator = new Comparator<Status>() {
 		@Override
 		public int compare(Status s1, Status s2) {
@@ -103,7 +103,7 @@ public class PlayerFightData extends FightData {
 	private Player p;
 	private long nextAttack, nextOffAttack;
 	private Equipment lastMainhandBasicAttack, lastOffhandBasicAttack;
-	private ArrayList<ProjectileGroup> extraShots = new ArrayList<ProjectileGroup>();
+	private ArrayList<ProjectileGroup> aftershots = new ArrayList<ProjectileGroup>();
 	private final HashSet<String> analyticsEquipmentKeys = new HashSet<String>();
 
 	private double stamina, mana;
@@ -206,25 +206,25 @@ public class PlayerFightData extends FightData {
 			return TriggerResult.keep();
 		});
 
-		addTrigger("EXTRA_ARROWS", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+		addTrigger("AFTERSHOTS", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
-			if (extraShots.isEmpty()) return TriggerResult.keep();
-			int period = Math.min(1, 10 / extraShots.size());
+			if (aftershots.isEmpty()) return TriggerResult.keep();
+			int period = Math.min(1, 10 / aftershots.size());
 			PlayerFightData fd = this;
 
-			ArrayList<ProjectileGroup> finalExtraShots = extraShots;
-			extraShots = new ArrayList<ProjectileGroup>();
+			ArrayList<ProjectileGroup> finalAftershots = aftershots;
+			aftershots = new ArrayList<ProjectileGroup>();
 			addTask(new BukkitRunnable() {
 				public void run() {
-					if (finalExtraShots.isEmpty()) {
+					if (finalAftershots.isEmpty()) {
 						this.cancel();
 						return;
 					}
-					ProjectileGroup pg = finalExtraShots.removeFirst();
+					ProjectileGroup pg = finalAftershots.removeFirst();
 					List<ProjectileInstance> projs = pg.startWithoutEvent(fd);
 					for (ProjectileInstance proj : projs) {
-						proj.getMeta().addTag(EXTRA_SHOT_TAG);
+						proj.getMeta().addTag(AFTERSHOT_TAG);
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, period));
@@ -494,8 +494,8 @@ public class PlayerFightData extends FightData {
 	}
 
 	// Used for archer, like Magic Quiver
-	public void addExtraShot(ProjectileGroup pg) {
-		extraShots.add(pg);
+	public void addAftershot(ProjectileGroup pg) {
+		aftershots.add(pg);
 	}
 
 	private static String createHealthBar(Player p) {

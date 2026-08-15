@@ -79,10 +79,10 @@ public class FlashDraw extends Equipment implements Power {
 			if (!e.isBasicAttack()) return TriggerResult.keep();
 			if (!p2.isSneaking() || crouch.getTime() == 0 ||
 					System.currentTimeMillis() - crouch.getTime() < CROUCH_DURATION_MILLIS) return TriggerResult.keep();
-			data.addExtraShot(e.getGroup());
+			data.addAftershot(e.getGroup());
 			if (md.getCount() >= thres) {
 				md.addCount(-thres);
-				data.addExtraShot(e.getGroup());
+				data.addAftershot(e.getGroup());
 			}
 			return TriggerResult.keep();
 		});
@@ -92,7 +92,7 @@ public class FlashDraw extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BEETROOT_SEEDS,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.val(30) + " " + GlossaryTag.REND.tag(this) + " stacks. Your basic attacks fire twice when you fire them while crouched for over a second. Every time you've applied over " +
-				GlossaryTag.REND.tag(this, thres) + " to enemies, instead fire thrice.");
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + DescUtil.val(30) + " " + GlossaryTag.REND.tag(this) + " stacks. While crouched for over " + DescUtil.white("1s") + ", your basic attacks fire an " + GlossaryTag.AFTERSHOT.tag(this) + ". For every " +
+				GlossaryTag.REND.tag(this, thres) + " you apply to enemies, your next crouched basic attack fires " + DescUtil.white(2) + " " + GlossaryTag.AFTERSHOT.tagPlural(this) + " instead.");
 	}
 }

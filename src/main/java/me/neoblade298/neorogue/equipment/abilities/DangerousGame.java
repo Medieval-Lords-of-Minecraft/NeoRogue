@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
@@ -14,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -75,7 +74,7 @@ public class DangerousGame extends Equipment implements Power {
 
 			// Check if target is within 5 blocks
 			if (ev2.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
-				data.addExtraShot(group);
+				data.addAftershot(group);
 			}
 			return TriggerResult.keep();
 		});
@@ -86,7 +85,7 @@ public class DangerousGame extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.TARGET,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after dealing " + DescUtil.val(500) + " basic attack damage. When you land a basic attack on an enemy within " + DescUtil.val(range) + " blocks, " +
-				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.val(damage) + " damage.");
+				"your next basic attack fires a homing " + GlossaryTag.AFTERSHOT.tag(this) + " at them. It uses your current ammunition and deals " + DescUtil.val(damage) + " additional damage.");
 	}
 
 	private class DangerousGameProjectile extends Projectile {
