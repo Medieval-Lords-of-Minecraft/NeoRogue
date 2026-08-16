@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SessionStatsInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.analytics.RunSnapshot;
@@ -80,6 +81,24 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 	/** Text for the leave hologram shown at the run-end spawn. */
 	protected Component getLeaveHologramText() {
 		return Component.text("Right click to leave!", NamedTextColor.WHITE);
+	}
+
+	public void leavePlayer(Player p) {
+		s.broadcast("<yellow>" + p.getName() + " <gray>left the lobby!");
+		SessionManager.removeFromSession(p.getUniqueId(), s);
+		SessionManager.resetPlayer(p);
+		p.teleport(NeoRogue.spawn);
+		endIfEmpty();
+	}
+
+	private void endIfEmpty() {
+		for (UUID uuid : s.getParty().keySet()) {
+			if (SessionManager.getSession(uuid) == s) return;
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			if (SessionManager.getSession(uuid) == s) return;
+		}
+		SessionManager.endSession(s);
 	}
 
 	// Records a finished-run result for each party member for winrate/winstreak stats. Tutorial and
@@ -157,7 +176,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		if (e.getHand() == EquipmentSlot.HAND && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null) {
 			Player p = e.getPlayer();
 			if (e.getClickedBlock().getType() == Material.BEACON) {
-				s.leavePlayer(p);
+				leavePlayer(p);
 				return;
 			}
 			if (e.getClickedBlock().getType() == Material.LECTERN) {
@@ -176,6 +195,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 			if (type == Material.BEACON) {
 				e.setCancelled(true);
 				s.removeSpectator(p);
+				endIfEmpty();
 				return;
 			}
 			if (type == Material.LECTERN) {

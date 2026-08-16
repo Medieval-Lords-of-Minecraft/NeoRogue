@@ -1462,6 +1462,9 @@ public class Session {
 		if (inst instanceof LobbyInstance) {
 			((LobbyInstance) inst).leavePlayer(p);
 		}
+		else if (inst instanceof EndRunInstance) {
+			((EndRunInstance) inst).leavePlayer(p);
+		}
 		else {
 			leavePlayer(p);
 		}

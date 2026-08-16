@@ -375,12 +375,12 @@ public class RunReward {
 			return lore;
 		}
 
-		lore.add(loreLine("<gray>Base (" + (won ? "victory" : "completion") + "): <green>+" + formatMoney(b.base)));
-		lore.add(loreLine("<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 " + formatMoney(NODE_BONUS)
-				+ "): <green>+" + formatMoney(b.nodeBonus)));
-		lore.add(loreLine("<gray>Regions completed (<white>" + b.regionsCompleted + "<gray> \u00d7 " + formatMoney(REGION_BONUS)
-				+ "): <green>+" + formatMoney(b.regionBonus)));
-		lore.add(loreLine("<gray>Subtotal: <yellow>" + formatMoney(b.subtotal)));
+		lore.add(loreLine("<gray>Base (" + (won ? "victory" : "completion") + "): <green>+" + formatWholeMoney(b.base)));
+		lore.add(loreLine("<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 " + formatWholeMoney(NODE_BONUS)
+				+ "): <green>+" + formatWholeMoney(b.nodeBonus)));
+		lore.add(loreLine("<gray>Regions completed (<white>" + b.regionsCompleted + "<gray> \u00d7 " + formatWholeMoney(REGION_BONUS)
+				+ "): <green>+" + formatWholeMoney(b.regionBonus)));
+		lore.add(loreLine("<gray>Subtotal: <yellow>" + formatWholeMoney(b.subtotal)));
 		lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
 				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier)));
 		if (b.partySize > 1) {
@@ -388,7 +388,7 @@ public class RunReward {
 					+ Math.round(PARTY_SIZE_BONUS * 100) + "%<gray> each beyond the first): <green>\u00d7"
 					+ String.format("%.2f", b.partyMultiplier)));
 		}
-		lore.add(loreLine("<gold>Total earned: <yellow>" + formatMoney(b.total)));
+		lore.add(loreLine("<gold>Total earned: <yellow>" + formatWholeMoney(b.total)));
 
 		// Cargo is sold and paid out per region during the run; summarize what the viewer sold here.
 		// Cargo income counts as run-reward base, so the notoriety multiplier applies to it too.
@@ -402,14 +402,14 @@ public class RunReward {
 				double value = psd.getSoldCargoValue().getOrDefault(mat, 0.0);
 				cargoTotal += value;
 				lore.add(loreLine("<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
-						+ formatMoney(value)));
+						+ formatWholeMoney(value)));
 			}
 			PlayerData pd = psd.getData();
 			int caravanBonus = pd == null ? 0 : pd.getSellMultiplierBonus();
 			double cargoMultiplier = s.getNotorietyMoneyMultiplier() + caravanBonus / 100.0;
 			double cargoReward = cargoTotal * cargoMultiplier;
 			if (cargoReward > cargoTotal) {
-				lore.add(loreLine("<gray>Sale value: <yellow>" + formatMoney(cargoTotal)));
+				lore.add(loreLine("<gray>Sale value: <yellow>" + formatWholeMoney(cargoTotal)));
 				if (s.getNotorietyMoneyBonusPercent() > 0) {
 					lore.add(loreLine("<gray>Notoriety bonus: <green>+" + s.getNotorietyMoneyBonusPercent() + "%"));
 				}
@@ -418,7 +418,7 @@ public class RunReward {
 				}
 				lore.add(loreLine("<gray>Cargo multiplier: <green>\u00d7" + String.format("%.2f", cargoMultiplier)));
 			}
-			lore.add(loreLine("<gold>Total cargo earned: <yellow>" + formatMoney(cargoReward)));
+			lore.add(loreLine("<gold>Total cargo earned: <yellow>" + formatWholeMoney(cargoReward)));
 		}
 		return lore;
 	}
@@ -471,6 +471,10 @@ public class RunReward {
 			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
 		}
 		return sb.toString();
+	}
+
+	private static String formatWholeMoney(double amount) {
+		return String.valueOf(Math.round(amount));
 	}
 
 	public static String formatMoney(double amount) {
