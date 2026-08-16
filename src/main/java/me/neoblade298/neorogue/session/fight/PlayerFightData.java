@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -222,10 +222,7 @@ public class PlayerFightData extends FightData {
 						return;
 					}
 					ProjectileGroup pg = finalAftershots.removeFirst();
-					List<ProjectileInstance> projs = pg.startWithoutEvent(fd);
-					for (ProjectileInstance proj : projs) {
-						proj.getMeta().addTag(AFTERSHOT_TAG);
-					}
+					fd.launchAftershot(pg);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, period));
 			return TriggerResult.keep();
@@ -496,6 +493,23 @@ public class PlayerFightData extends FightData {
 	// Used for archer, like Magic Quiver
 	public void addAftershot(ProjectileGroup pg) {
 		aftershots.add(pg);
+	}
+
+	public LinkedList<ProjectileInstance> launchAftershot(ProjectileGroup group) {
+		LinkedList<ProjectileInstance> instances = group.startWithoutEvent(this);
+		return finishAftershot(group, instances);
+	}
+
+	public LinkedList<ProjectileInstance> launchAftershot(ProjectileGroup group, Location origin, Vector direction) {
+		LinkedList<ProjectileInstance> instances = group.startWithoutEvent(this, origin, direction);
+		return finishAftershot(group, instances);
+	}
+
+	private LinkedList<ProjectileInstance> finishAftershot(ProjectileGroup group, LinkedList<ProjectileInstance> instances) {
+		for (ProjectileInstance projectile : instances) projectile.getMeta().addTag(AFTERSHOT_TAG);
+		FightInstance.trigger(getPlayer(), Trigger.LAUNCH_PROJECTILE_GROUP,
+				new LaunchProjectileGroupEvent(group, instances, true));
+		return instances;
 	}
 
 	private static String createHealthBar(Player p) {
@@ -1116,6 +1130,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void removeTrap(Trap trap) {
+		if (trap.getActiveDuplicate() != null) trap = trap.getActiveDuplicate();
 		if (traps.remove(trap.getUniqueId()) != null) {
 			trap.deactivate();
 		}
