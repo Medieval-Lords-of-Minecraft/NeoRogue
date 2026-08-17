@@ -66,7 +66,7 @@ public class Ghostwire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRIPWIRE, "Every " + DescUtil.val(threshold == 2 ? "2nd" : "3rd") + " "
+		item = createItem(Material.STRING, "Every " + DescUtil.val(threshold == 2 ? "2nd" : "3rd") + " "
 				+ GlossaryTag.TRAP.tag(this) + " you lay is duplicated at your feet " + DescUtil.white(delay + "s")
 				+ " later. Duplicated traps do not count toward this effect; activation resets the count to "
 				+ DescUtil.white(-1) + ".");
