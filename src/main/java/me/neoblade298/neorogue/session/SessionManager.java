@@ -94,6 +94,7 @@ import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.PlayerAttributeController;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EndRunInstance;
@@ -1091,15 +1092,9 @@ public class SessionManager implements Listener {
 			return;
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
-		p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
+		PlayerAttributeController.reset(p);
 		p.setHealthScaled(false);
 		p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
-		p.getAttribute(Attribute.JUMP_STRENGTH)
-				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
-		p.getAttribute(Attribute.JUMP_STRENGTH)
-				.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
-		p.getAttribute(Attribute.GRAVITY)
-				.removeModifier(NamespacedKey.fromString("gravity", NeoRogue.inst()));
 		showPlayerToAll(p);
 		giveMenuCompass(p);
 	}

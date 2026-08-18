@@ -15,9 +15,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -109,7 +107,7 @@ public class PlayerFightData extends FightData {
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
-	private boolean isDead, ignoreCooldowns, hasSprinted, droppedThisTick;
+	private boolean isDead, ignoreCooldowns, hasSprinted, droppedThisTick, isCleaned;
 	private AmmunitionInstance ammo = null;
 	private ArrayList<AmmunitionInstance> ammunitionInstances = new ArrayList<AmmunitionInstance>();
 
@@ -304,30 +302,19 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void disableJump(int ticks) {
-		NamespacedKey key = NamespacedKey.fromString("jump", NeoRogue.inst());
-		if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) return;
-		AttributeModifier mod = new AttributeModifier(key, -0.42,
-				Operation.ADD_NUMBER);
-		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
-		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
-			public void run() {
-				entity.getAttribute(Attribute.JUMP_STRENGTH)
-						.removeModifier(key);
-			}
-		}, ticks);
+		if (getAttributes().hasModifier(PlayerAttributeController.JUMP)) return;
+		getAttributes().applyTimedModifier(this, PlayerAttributeController.JUMP, Attribute.JUMP_STRENGTH, -0.42,
+				Operation.ADD_NUMBER, ticks);
 	}
 
 	public void disableJump() {
-		NamespacedKey key = NamespacedKey.fromString("jump", NeoRogue.inst());
-		if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) return;
-		AttributeModifier mod = new AttributeModifier(key, -0.42,
+		if (getAttributes().hasModifier(PlayerAttributeController.JUMP)) return;
+		getAttributes().applyModifier(PlayerAttributeController.JUMP, Attribute.JUMP_STRENGTH, -0.42,
 				Operation.ADD_NUMBER);
-		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 	}
 
 	public void enableJump() {
-		entity.getAttribute(Attribute.JUMP_STRENGTH)
-				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+		getAttributes().removeModifier(PlayerAttributeController.JUMP);
 	}
 
 	public TaskChain charge(int ticks, int slow) {
@@ -605,7 +592,10 @@ public class PlayerFightData extends FightData {
 		this.droppedThisTick = droppedThisTick;
 	}
 
-	public void cleanup(PlayerSessionData data) {
+	@Override
+	public void cleanup() {
+		if (isCleaned) return;
+		isCleaned = true;
 		super.cleanup();
 
 		if (isDead) {
@@ -614,35 +604,36 @@ public class PlayerFightData extends FightData {
 		}
 
 		// Perform end of fight actions (currently only used for resetting damage ticks)
-		for (SessionEquipment acc : data.getSessionEquipment(EquipSlot.ACCESSORY)) {
+		for (SessionEquipment acc : sessdata.getSessionEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null)
 				continue;
 			acc.getEquipment().cleanup(this);
 		}
-		for (SessionEquipment armor : data.getSessionEquipment(EquipSlot.ARMOR)) {
+		for (SessionEquipment armor : sessdata.getSessionEquipment(EquipSlot.ARMOR)) {
 			if (armor == null)
 				continue;
 			armor.getEquipment().cleanup(this);
 		}
-		for (SessionEquipment hotbar : data.getSessionEquipment(EquipSlot.HOTBAR)) {
+		for (SessionEquipment hotbar : sessdata.getSessionEquipment(EquipSlot.HOTBAR)) {
 			if (hotbar == null)
 				continue;
 			hotbar.getEquipment().cleanup(this);
 		}
-		for (SessionEquipment other : data.getSessionEquipment(EquipSlot.KEYBIND)) {
+		for (SessionEquipment other : sessdata.getSessionEquipment(EquipSlot.KEYBIND)) {
 			if (other == null)
 				continue;
 			other.getEquipment().cleanup(this);
 		}
-		for (ArtifactInstance art : data.getArtifacts().values()) {
+		for (ArtifactInstance art : sessdata.getArtifacts().values()) {
 			if (art == null)
 				continue;
 			art.cleanup(this);
 		}
 
-		if (data.getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
-			data.getSessionEquipment(EquipSlot.OFFHAND)[0].getEquipment().cleanup(this);
+		if (sessdata.getSessionEquipment(EquipSlot.OFFHAND)[0] != null) {
+			sessdata.getSessionEquipment(EquipSlot.OFFHAND)[0].getEquipment().cleanup(this);
 		}
+		getAttributes().clearFightModifiers();
 
 		for (Listener l : listeners) {
 			HandlerList.unregisterAll(l);
@@ -960,19 +951,13 @@ public class PlayerFightData extends FightData {
 		this.stamina = Math.max(0, Math.min(this.stamina, this.maxStamina));
 		if (hasStatus(StatusType.WITHERED)) {
 			p.setFoodLevel(0);
-			// Disable jump with a separate key so it doesn't conflict with charge
-			NamespacedKey key = NamespacedKey.fromString("withered", NeoRogue.inst());
-			if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) == null) {
-				AttributeModifier mod = new AttributeModifier(key, -0.42, Operation.ADD_NUMBER);
-				entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
+			if (!getAttributes().hasModifier(PlayerAttributeController.WITHERED)) {
+				getAttributes().applyModifier(PlayerAttributeController.WITHERED, Attribute.JUMP_STRENGTH, -0.42,
+						Operation.ADD_NUMBER);
 			}
 		} else {
 			p.setFoodLevel((int) Math.ceil(this.stamina * 14 / (int) sessdata.getMaxStamina()) + 6);
-			// Remove withered jump modifier if present
-			NamespacedKey key = NamespacedKey.fromString("withered", NeoRogue.inst());
-			if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) {
-				entity.getAttribute(Attribute.JUMP_STRENGTH).removeModifier(key);
-			}
+			getAttributes().removeModifier(PlayerAttributeController.WITHERED);
 		}
 		refresh();
 	}
@@ -1205,7 +1190,11 @@ public class PlayerFightData extends FightData {
 
 	public void addMaxHealth(double amount) {
 		this.maxHealth += amount;
-		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.maxHealth);
+		getAttributes().setBaseValue(Attribute.MAX_HEALTH, this.maxHealth);
+	}
+
+	public PlayerAttributeController getAttributes() {
+		return sessdata.getAttributes();
 	}
 
 }

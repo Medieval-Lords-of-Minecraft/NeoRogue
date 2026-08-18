@@ -61,6 +61,7 @@ import me.neoblade298.neorogue.session.SessionStatistics;
 import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
+import me.neoblade298.neorogue.session.fight.PlayerAttributeController;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
@@ -85,6 +86,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private SessionStatistics sessionStats = new SessionStatistics();
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
+	private final PlayerAttributeController attributes;
 
 	// When true, equipment slots in the session inventory (and spectator views) render an upgrade
 	// preview ("base » upgraded") instead of the normal item. Toggled while at a shrine upgrade UI.
@@ -113,6 +115,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		super(s, uuid);
+		attributes = new PlayerAttributeController(uuid);
 		data = PlayerManager.getPlayerData(uuid);
 
 		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
@@ -146,6 +149,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
 		super(s, uuid);
+		attributes = new PlayerAttributeController(uuid);
 		data = PlayerManager.getPlayerData(uuid);
 		health = 100;
 		maxHealth = 100;
@@ -220,7 +224,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	private void initialize() {
 		data.getPlayer().setHealthScaled(true);
-		data.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
+		attributes.setBaseValue(Attribute.MAX_HEALTH, maxHealth);
 		data.getPlayer().setHealth(maxHealth);
 		setupArtifacts();
 		updateEquipmentLimits();
@@ -242,7 +246,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void cleanup() {
 		data.getPlayer().setHealthScaled(false);
-		data.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
+		attributes.restore();
 	}
 
 	public UUID getUniqueId() {
@@ -1120,7 +1124,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void addMaxHealth(int amount) {
 		this.maxHealth += amount;
-		this.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
+		attributes.setBaseValue(Attribute.MAX_HEALTH, maxHealth);
 	}
 
 	public void addMaxStamina(int amount) {
@@ -1185,7 +1189,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// Used to revert temporary max health changes in fights
 	public void revertMaxHealth() {
-		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.maxHealth);
+		attributes.setBaseValue(Attribute.MAX_HEALTH, this.maxHealth);
+	}
+
+	public PlayerAttributeController getAttributes() {
+		return attributes;
 	}
 
 	public void syncHealth() {
@@ -1554,7 +1562,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		accessorySlots = Integer.parseInt(arr[i++]);
 		currency = Integer.parseInt(arr[i++]);
 
-		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
+		attributes.setBaseValue(Attribute.MAX_HEALTH, maxHealth);
 		getPlayer().setHealth(health);
 
 		// Need to initialize artifacts after deserialization

@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -1369,12 +1368,6 @@ public abstract class FightInstance extends Instance {
 					p.setExp(0);
 					data.revertMaxHealth();
 					p.clearActivePotionEffects();
-					p.getAttribute(Attribute.JUMP_STRENGTH)
-						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
-					p.getAttribute(Attribute.JUMP_STRENGTH)
-						.removeModifier(NamespacedKey.fromString("withered", NeoRogue.inst()));
-					p.getAttribute(Attribute.GRAVITY)
-						.removeModifier(NamespacedKey.fromString("seraphic-rain-gravity", NeoRogue.inst()));
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
