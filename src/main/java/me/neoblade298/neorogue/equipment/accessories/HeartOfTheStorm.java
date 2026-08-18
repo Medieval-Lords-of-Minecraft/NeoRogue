@@ -22,12 +22,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 public class HeartOfTheStorm extends Equipment {
 	private static final String ID = "HeartOfTheStorm";
 	private static final double MANA_REDUCTION = 0.5;
-	private int threshold;
+	private int threshold, shields;
 
 	public HeartOfTheStorm(boolean isUpgraded) {
 		super(ID, "Heart of the Storm", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY, EquipmentProperties.none());
 		threshold = isUpgraded ? 80 : 100;
+		shields = isUpgraded ? 80 : 60;
 	}
 
 	public static Equipment get() { return Equipment.get(ID, false); }
@@ -42,6 +43,7 @@ public class HeartOfTheStorm extends Equipment {
 			progress.addCount(Math.max(0, event.getStacks()));
 			if (progress.getCount() >= threshold) {
 				progress.setBool(true);
+				data.addPermanentShield(data.getPlayer().getUniqueId(), shields, this);
 				Sounds.thunder.play(data.getPlayer(), data.getPlayer());
 			}
 			return TriggerResult.keep();
@@ -61,6 +63,7 @@ public class HeartOfTheStorm extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.HEART_OF_THE_SEA, GlossaryTag.PASSIVE.tag(this) + ". After applying "
-				+ GlossaryTag.ELECTRIFIED.tag(this, threshold) + " cumulatively, halve ability mana costs for the rest of the fight.");
+				+ GlossaryTag.ELECTRIFIED.tag(this, threshold) + " cumulatively, gain "
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " and halve ability mana costs for the rest of the fight.");
 	}
 }

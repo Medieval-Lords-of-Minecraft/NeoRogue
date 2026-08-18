@@ -70,7 +70,6 @@ import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PlayerOpenSignEvent;
-import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -95,7 +94,6 @@ import me.neoblade298.neorogue.session.event.SessionLeaveEvent;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EndRunInstance;
@@ -759,8 +757,6 @@ public class SessionManager implements Listener {
 			return;
 
 		if (s.getInstance() instanceof FightInstance) {
-			PlayerFightData data = FightInstance.getUserData(uuid);
-			if (data != null) data.removeBowDrawSpeed();
 			FightInstance.handleHotbarSwap(e);
 		} else if (s.getInstance() instanceof EditInventoryInstance) {
 			EditInventoryInstance.handleHotbarSwap(e);
@@ -933,20 +929,6 @@ public class SessionManager implements Listener {
 			return;
 		}
 		s.getInstance().handleInteractEvent(e);
-		if (s.getInstance() instanceof FightInstance && e.getAction().isRightClick()
-				&& e.getHand() == EquipmentSlot.HAND && hand != null
-				&& (hand.getType() == Material.BOW || hand.getType() == Material.CROSSBOW)) {
-			Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
-				PlayerFightData data = FightInstance.getUserData(uuid);
-				if (data != null) data.applyBowDrawSpeed();
-			});
-		}
-	}
-
-	@EventHandler
-	public void onStopUsingItem(PlayerStopUsingItemEvent e) {
-		PlayerFightData data = FightInstance.getUserData(e.getPlayer().getUniqueId());
-		if (data != null) data.removeBowDrawSpeed();
 	}
 
 	@EventHandler(ignoreCancelled = false)

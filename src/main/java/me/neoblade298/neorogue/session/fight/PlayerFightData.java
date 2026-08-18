@@ -17,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.Player;
@@ -115,7 +114,6 @@ public class PlayerFightData extends FightData {
 	private ArrayList<AmmunitionInstance> ammunitionInstances = new ArrayList<AmmunitionInstance>();
 
 	private FightStatistics stats = new FightStatistics(this);
-	private final NamespacedKey bowDrawSpeedKey = new NamespacedKey(NeoRogue.inst(), "bow-draw-speed");
 
 	public PlayerFightData(FightInstance inst, PlayerSessionData data) {
 		super(data.getPlayer(), inst);
@@ -243,7 +241,6 @@ public class PlayerFightData extends FightData {
 			}
 		}
 		addTickAction(new PlayerUpdateTickAction());
-		addCleanupTask("bow-draw-speed", this::removeBowDrawSpeed);
 
 		addTrigger("durability", Trigger.WIN_FIGHT, (pdata, in) -> {
 			sessdata.tickDurability(getPlayer());
@@ -253,27 +250,6 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 		updateMana();
 		updateBoardLines();
-	}
-
-	public void applyBowDrawSpeed() {
-		Player player = getPlayer();
-		if (player == null || !player.isOnline()) return;
-		Material heldType = player.getInventory().getItemInMainHand().getType();
-		boolean drawingBow = player.isHandRaised() && player.getHandRaised() == EquipmentSlot.HAND
-				&& (heldType == Material.BOW || heldType == Material.CROSSBOW);
-		AttributeInstance movementSpeed = player.getAttribute(Attribute.MOVEMENT_SPEED);
-		if (movementSpeed == null) return;
-		if (drawingBow && movementSpeed.getModifier(bowDrawSpeedKey) == null) {
-			movementSpeed.addTransientModifier(new AttributeModifier(bowDrawSpeedKey, 2,
-					Operation.MULTIPLY_SCALAR_1));
-		}
-	}
-
-	public void removeBowDrawSpeed() {
-		Player player = getPlayer();
-		if (player == null) return;
-		AttributeInstance movementSpeed = player.getAttribute(Attribute.MOVEMENT_SPEED);
-		if (movementSpeed != null) movementSpeed.removeModifier(bowDrawSpeedKey);
 	}
 
 	private void snapshotAnalyticsEquipment(PlayerSessionData data) {
