@@ -130,6 +130,7 @@ import net.kyori.adventure.text.format.ShadowColor;
 public class NeoRogue extends JavaPlugin {
 	private static final ShadowColor TEXT_DISPLAY_SHADOW = ShadowColor.shadowColor(0xFF000000);
 	private static NeoRogue inst;
+	private static boolean lightweightMode;
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
@@ -146,13 +147,25 @@ public class NeoRogue extends JavaPlugin {
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
+		saveDefaultConfig();
+		lightweightMode = getConfig().getBoolean("lightweight", false);
+		saveResource("caravan.yml", false);
+		saveResource("sellables.yml", false);
+		RunReward.setupEconomy();
+
+		if (lightweightMode) {
+			reloadCaravanInfrastructure();
+			NeoCore.registerIOComponent(this, new PlayerManager(true), "NeoRogue-PlayerManager");
+			initLightweightCommands();
+			getLogger().info("Lightweight mode enabled; only caravan and cargo infrastructure was loaded.");
+			return;
+		}
+		if (!hasFullModeDependencies()) return;
+
 		SCHEMATIC_FOLDER = WorldEdit.getInstance().getSchematicsFolderPath().toFile();
 		saveResource("achievement-rewards.yml", false);
-		saveResource("caravan.yml", false);
 		saveResource("expboosts.yml", false);
-		saveResource("sellables.yml", false);
 		AnalyticsManager.init();
-		RunReward.setupEconomy();
 		// Must run before registering the IO component: registering the player IO
 		// component immediately loads any online player's data (relevant on hot-reload),
 		// which resolves unlock nodes and equipment. If equipment isn't loaded yet, every
@@ -180,8 +193,22 @@ public class NeoRogue extends JavaPlugin {
 		if (alt != null) others.add(alt);
 		if (p != null) debugInitialize(p, others, EquipmentClass.MAGE, RegionType.LOW_DISTRICT);
 	}
+
+	private boolean hasFullModeDependencies() {
+		for (String dependency : new String[] { "WorldEdit", "PlaceholderAPI", "MythicMobs" }) {
+			if (Bukkit.getPluginManager().isPluginEnabled(dependency)) continue;
+			getLogger().severe(dependency + " is required when lightweight mode is disabled.");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return false;
+		}
+		return true;
+	}
 	
 	public static void reload() {
+		if (lightweightMode) {
+			reloadCaravanInfrastructure();
+			return;
+		}
 		mythicApi = MythicBukkit.inst().getAPIHelper();
 		mythicMobs = MythicBukkit.inst().getMobManager();
 		Region.initialize();
@@ -203,10 +230,20 @@ public class NeoRogue extends JavaPlugin {
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
 	}
 
+	private static void reloadCaravanInfrastructure() {
+		SellablePackageRegistry.reload();
+		CaravanUpgradeRegistry.reload();
+		registerCaravanFlagNamespace();
+	}
+
 	// Registers each system's flags under its namespace for the /nrflag command. Suppliers are queried
 	// lazily so config-driven flags (tutorials, caravan packages/upgrades) stay current across reloads.
 	private static void registerFlagNamespaces() {
 		FlagRegistry.register(FlagRegistry.GENERAL, () -> java.util.List.of(PlayerData.FLAG_PLAYED_BEFORE));
+		registerCaravanFlagNamespace();
+	}
+
+	private static void registerCaravanFlagNamespace() {
 		FlagRegistry.register(FlagRegistry.CARAVAN, () -> {
 			java.util.ArrayList<String> flags = new java.util.ArrayList<String>();
 			flags.add(PlayerData.FLAG_CARGO_ACCESS);
@@ -218,13 +255,15 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		Collection<Session> sessions = new ArrayList<Session>(SessionManager.getSessions());
-		for (Session s : sessions) {
-			try {
-				s.cleanup(true);
-			} catch (Throwable ex) {
-				getLogger().log(java.util.logging.Level.SEVERE,
-						"Failed to clean up session at plot " + s.getPlot() + " during shutdown", ex);
+		if (!lightweightMode) {
+			Collection<Session> sessions = new ArrayList<Session>(SessionManager.getSessions());
+			for (Session s : sessions) {
+				try {
+					s.cleanup(true);
+				} catch (Throwable ex) {
+					getLogger().log(java.util.logging.Level.SEVERE,
+							"Failed to clean up session at plot " + s.getPlot() + " during shutdown", ex);
+				}
 			}
 		}
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
@@ -318,9 +357,22 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdFlagClear("clear", "Clear a player's flags, optionally by namespace", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
+
+	private void initLightweightCommands() {
+		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
+		mngr.register(new CmdMenu("", "Open the caravan menu", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdCaravan("caravan", "Purchase caravan upgrades", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdLostCargo("lostcargo", "Withdraw insured cargo", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.registerCommandList("");
+	}
 	
 	public static NeoRogue inst() {
 		return inst;
+	}
+
+	public static boolean isLightweightMode() {
+		return lightweightMode;
 	}
 	
 	public static boolean toggleDebugFlag(String flag) {

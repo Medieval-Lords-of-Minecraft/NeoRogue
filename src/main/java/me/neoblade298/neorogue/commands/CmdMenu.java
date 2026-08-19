@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.api.NeoRogueAPI;
 import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 
 public class CmdMenu extends Subcommand {
@@ -15,6 +17,8 @@ public class CmdMenu extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		new MainMenuInventory((Player) s);
+		Player p = (Player) s;
+		if (NeoRogue.isLightweightMode()) NeoRogueAPI.openCaravanMenu(p);
+		else new MainMenuInventory(p);
 	}
 }

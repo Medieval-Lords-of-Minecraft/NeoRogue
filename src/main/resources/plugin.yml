@@ -1,8 +1,8 @@
 name: NeoRogue
 main: me.neoblade298.neorogue.NeoRogue
 authors: [Ascheladd, FoPzl]
-depend: [NeoCore, WorldEdit, PlaceholderAPI, Vault, AshEconomy]
-softdepend: [MythicMobs]
+depend: [NeoCore, Vault, AshEconomy]
+softdepend: [WorldEdit, PlaceholderAPI, MythicMobs]
 version: 1.0
 api-version: 1.20
 commands:

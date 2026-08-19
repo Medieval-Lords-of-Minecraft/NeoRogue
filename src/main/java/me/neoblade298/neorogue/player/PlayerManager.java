@@ -20,6 +20,15 @@ public class PlayerManager implements IOComponent {
 	private static HashMap<UUID, PlayerData> data = new HashMap<UUID, PlayerData>();
 	
 	public PlayerManager() {
+		this(false);
+	}
+
+	public PlayerManager(boolean lightweight) {
+		if (lightweight) {
+			initializeLightweightTables();
+			loadOnlinePlayers();
+			return;
+		}
 		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
 				Statement stmt = con.createStatement()) {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_unlocknodes (uuid VARCHAR(36) NOT NULL, node VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, node));");
@@ -64,8 +73,21 @@ public class PlayerManager implements IOComponent {
 		}
 
 		GlobalBoostManager.load();
+		loadOnlinePlayers();
+	}
 
-		// Strictly for debug
+	private void initializeLightweightTables() {
+		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
+				Statement stmt = con.createStatement()) {
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, material));");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadOnlinePlayers() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
 					Statement stmt = con.createStatement()){

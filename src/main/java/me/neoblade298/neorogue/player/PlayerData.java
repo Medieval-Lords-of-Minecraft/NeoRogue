@@ -138,7 +138,7 @@ public class PlayerData {
 		this.display = p.getName() != null ? p.getName() : uuid.toString();
 
 		initializeDefaultProgression();
-		initializeEquipmentDroptable();
+		if (!NeoRogue.isLightweightMode()) initializeEquipmentDroptable();
 	}
 	
 	public PlayerData(Player p, Statement stmt) {
@@ -147,6 +147,10 @@ public class PlayerData {
 
 	public PlayerData(OfflinePlayer p, Statement stmt) {
 		this(p);
+		if (NeoRogue.isLightweightMode()) {
+			loadLightweight();
+			return;
+		}
 		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager");
 				PreparedStatement baseStmt = con.prepareStatement("SELECT * FROM neorogue_playerdata WHERE uuid = ?;");
 				PreparedStatement unlockStmt = con.prepareStatement("SELECT * FROM neorogue_unlocknodes WHERE uuid = ?;");
@@ -280,51 +284,15 @@ public class PlayerData {
 				}
 			}
 
-			// Load cargo contents from the unified neorogue_playercargo table (MAIN/LOST/FLEET/PENDING).
-			// Limits live on the playerdata row (read above); fleet holds carry a per-material price
-			// snapshot and a fill timestamp used for the midnight auto-sale.
-			try (PreparedStatement cargoStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo WHERE uuid = ?;")) {
-				cargoStmt.setString(1, uuidStr);
-				try (ResultSet cargoRs = cargoStmt.executeQuery()) {
-					while (cargoRs.next()) {
-						Material mat = Material.getMaterial(cargoRs.getString("material"));
-						if (mat == null) continue;
-						int amount = cargoRs.getInt("amount");
-						String type = cargoRs.getString("type");
-						if (type == null) type = "MAIN";
-						switch (type) {
-						case "LOST":
-							lostCargo.load(mat, amount);
-							break;
-						case "FLEET": {
-							FleetHold hold = getFleetHold(cargoRs.getInt("idx"));
-							if (hold != null) hold.load(mat, amount, cargoRs.getDouble("price"), cargoRs.getLong("filled_at"));
-							else addPendingSale(mat, amount, cargoRs.getDouble("price") * amount); // hold no longer exists (fleet size reduced); bank the value
-							break;
-						}
-						case "PENDING": {
-							double value = cargoRs.getDouble("price") * amount;
-							PendingFleetSale ps = pendingFleetSales.get(mat);
-							if (ps == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
-							else { ps.amount += amount; ps.value += value; }
-							break;
-						}
-						default:
-							cargo.load(mat, amount);
-							break;
-						}
-					}
-				}
-			}
-			// Resolve any fleet holds that should have auto-sold while the player was offline.
-			resolveFleetSales();
+			loadCargo(con, uuidStr);
 			// Owned sellable packages and purchased caravan upgrades are loaded as flags above.
-		for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
-			unlockNodes.add(defaultNode);
-		}
-
-			markEquipmentDroptableDirty();
-			initializeEquipmentDroptable();
+			if (!NeoRogue.isLightweightMode()) {
+				for (String defaultNode : UnlockRegistry.getDefaultNodes()) {
+					unlockNodes.add(defaultNode);
+				}
+				markEquipmentDroptableDirty();
+				initializeEquipmentDroptable();
+			}
 			// Reached only if the entire load above completed without throwing.
 			loadedSuccessfully = true;
 		} catch (SQLException e) {
@@ -334,6 +302,65 @@ public class PlayerData {
 			e.printStackTrace();
 		}
 		savePlayerDataAsync();
+	}
+
+	private void loadLightweight() {
+		String uuidStr = uuid.toString();
+		try (Connection con = NeoCore.getConnection("NeoRogue-PlayerManager")) {
+			try (PreparedStatement flagsStmt = con.prepareStatement("SELECT flag FROM neorogue_playerflags WHERE uuid = ?;")) {
+				flagsStmt.setString(1, uuidStr);
+				try (ResultSet flagsRs = flagsStmt.executeQuery()) {
+					while (flagsRs.next()) flags.add(flagsRs.getString("flag"));
+				}
+			}
+			recomputeCaravanState();
+			loadCargo(con, uuidStr);
+			loadedSuccessfully = true;
+		} catch (SQLException e) {
+			Bukkit.getLogger().warning("[NeoRogue] Lightweight player data load failed for " + uuid + ".");
+			e.printStackTrace();
+		}
+		savePlayerDataAsync();
+	}
+
+	private void loadCargo(Connection con, String uuidStr) throws SQLException {
+		try (PreparedStatement cargoStmt = con.prepareStatement("SELECT * FROM neorogue_playercargo WHERE uuid = ?;")) {
+			cargoStmt.setString(1, uuidStr);
+			try (ResultSet cargoRs = cargoStmt.executeQuery()) {
+				while (cargoRs.next()) {
+					Material mat = Material.getMaterial(cargoRs.getString("material"));
+					if (mat == null) continue;
+					int amount = cargoRs.getInt("amount");
+					String type = cargoRs.getString("type");
+					if (type == null) type = "MAIN";
+					switch (type) {
+					case "LOST":
+						lostCargo.load(mat, amount);
+						break;
+					case "FLEET": {
+						FleetHold hold = getFleetHold(cargoRs.getInt("idx"));
+						if (hold != null) hold.load(mat, amount, cargoRs.getDouble("price"), cargoRs.getLong("filled_at"));
+						else addPendingSale(mat, amount, cargoRs.getDouble("price") * amount);
+						break;
+					}
+					case "PENDING": {
+						double value = cargoRs.getDouble("price") * amount;
+						PendingFleetSale sale = pendingFleetSales.get(mat);
+						if (sale == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
+						else {
+							sale.amount += amount;
+							sale.value += value;
+						}
+						break;
+					}
+					default:
+						cargo.load(mat, amount);
+						break;
+					}
+				}
+			}
+		}
+		resolveFleetSales();
 	}
 	
 	public Player getPlayer() {
@@ -1239,6 +1266,7 @@ public class PlayerData {
 			Bukkit.getLogger().warning("[NeoRogue] Skipping save for " + uuid + " (load did not complete).");
 			return;
 		}
+		if (NeoRogue.isLightweightMode()) return;
 
 		// Save class progression
 		PreparedStatement clearClass = con.prepareStatement("DELETE FROM neorogue_playerclass WHERE uuid = ?;");

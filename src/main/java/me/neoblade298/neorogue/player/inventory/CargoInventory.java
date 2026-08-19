@@ -23,6 +23,7 @@ import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.api.NeoRogueAPI;
 import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.FleetHold;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -49,13 +50,19 @@ public class CargoInventory extends CoreInventory {
 	private int currentHold = 0;
 
 	private final boolean multiHold;
+	private final boolean returnToCaravanMenu;
 	private final int controlBase;
 	private final int backSlot, prevSlot, holdInfoSlot, nextSlot, collectSlot, lostCargoSlot, infoSlot;
 	private final HashMap<Integer, Material> slotToMaterial = new HashMap<Integer, Material>();
 
 	public CargoInventory(Player p, PlayerData pd) {
+		this(p, pd, false);
+	}
+
+	public CargoInventory(Player p, PlayerData pd, boolean returnToCaravanMenu) {
 		super(p, Bukkit.createInventory(p, computeSize(pd), Component.text("Cargo", NamedTextColor.GOLD)));
 		this.pd = pd;
+		this.returnToCaravanMenu = returnToCaravanMenu;
 		// Resolve any fleet holds that auto-sold since the player was last here.
 		pd.resolveFleetSales();
 
@@ -340,7 +347,8 @@ public class CargoInventory extends CoreInventory {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						new MainMenuInventory(p);
+						if (returnToCaravanMenu || NeoRogue.isLightweightMode()) NeoRogueAPI.openCaravanMenu(p);
+						else new MainMenuInventory(p);
 					}
 				}.runTask(NeoRogue.inst());
 				return;
