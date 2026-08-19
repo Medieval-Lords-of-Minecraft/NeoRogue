@@ -169,6 +169,7 @@ import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TempestSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
+import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
@@ -1163,6 +1164,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TarotCard();
 		new TempestSigil();
 		new TemporaryHealth();
+		new TomeOfWisdom();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
 		new WarpedAnvil();

@@ -23,8 +23,8 @@ public class CmdAdminReload extends Subcommand {
 			Util.msgRaw(s, "Reloaded configurations (fast, no git pull).");
 		} else {
 			org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
-				gitPull(s, "/home/mlmc/dev/plugins/NeoRogue/mappieces");
-				gitPull(s, "/home/mlmc/dev/plugins/MythicMobs");
+				gitPull(s, "/home/ascheladd/mlmc/server/NeoRogue/mappieces");
+				gitPull(s, "/home/ascheladd/mlmc/server/plugins/MythicMobs");
 				org.bukkit.Bukkit.getScheduler().runTask(me.neoblade298.neorogue.NeoRogue.inst(), () -> {
 					NeoRogue.reload();
 					Util.msgRaw(s, "Reloaded configurations.");
