@@ -48,7 +48,7 @@ public class TutorialInstance extends EditInventoryInstance {
 		this(s, List.of(
 				new TutorialStage(
 						Component.text("Equipment Details", NamedTextColor.GOLD),
-						Component.text("You can view details of any equipment with right click. Try it out to move on!"),
+						Component.text("You can view details of any equipment with right click. Open your inventory and right click an equipment!"),
 						Component.text("Success! You opened an equipment's details.", NamedTextColor.GREEN),
 						SessionTrigger.OPEN_GLOSSARY,
 						input -> true),
