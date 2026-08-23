@@ -42,8 +42,7 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 		}
 		
 		ItemStack[] contents = inv.getContents();
-		contents[PREVIEW] = eq.getPreviewItem();
-		contents[TAGS] = createTagsItem(eq);
+		contents[PREVIEW] = createGlossaryItem(eq);
 		if (!eq.getReforgeParents().isEmpty()) contents[PARENTS] = createParentsItem(eq);
 
 		// Custom glossary tags, basically just shoehorned in for now, nowhere to put them, only 1 slot for them
@@ -104,24 +103,23 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 		}
 	}
 
-	private ItemStack createTagsItem(Equipment eq) {
-		ItemStack item = CoreInventory.createButton(new ItemStack(Material.PAPER), Component.text("Tags", NamedTextColor.WHITE));
-		ArrayList<Component> lore = new ArrayList<Component>();
+	private ItemStack createGlossaryItem(Equipment eq) {
+		ItemStack item = eq.getPreviewItem();
+		ArrayList<Component> lore = new ArrayList<Component>(item.lore());
 		Iterator<GlossaryIcon> iter = eq.getTags().iterator();
+		boolean hasGlossaryTags = false;
 		while (iter.hasNext()) {
 			GlossaryIcon icon = iter.next();
 			if (icon instanceof GlossaryTag) {
+				if (!hasGlossaryTags) {
+					lore.add(Component.empty());
+					lore.add(Component.text("Tags", NamedTextColor.WHITE));
+					hasGlossaryTags = true;
+				}
 				GlossaryTag tag = (GlossaryTag) icon;
 				lore.add(tag.getTag());
 				lore.addAll(tag.getLore());
-				lore.add(Component.text("-----", NamedTextColor.DARK_GRAY));
 			}
-		}
-		if (!lore.isEmpty()) {
-			lore.removeLast();
-		}
-		else {
-			lore.add(Component.text("None", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
 		item.lore(lore);
 		return item;

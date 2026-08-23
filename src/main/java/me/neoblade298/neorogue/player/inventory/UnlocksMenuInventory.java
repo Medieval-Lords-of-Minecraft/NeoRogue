@@ -97,7 +97,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 		lore.add(Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
 		lore.add(Component.text("Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 		if (available > 0) {
-			item.setAmount(Math.min(available, 64));
+			item.setAmount(Math.min(Math.max(available, 2), 64));
 			lore.add(Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",
 					NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
