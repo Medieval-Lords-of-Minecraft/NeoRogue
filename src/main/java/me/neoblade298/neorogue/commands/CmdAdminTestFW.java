@@ -21,9 +21,9 @@ public class CmdAdminTestFW extends Subcommand {
 
 	public CmdAdminTestFW(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.setMax(-1);
 		args.add(new Arg("Host"), new Arg("notoriety (0-10)", false).setTabOptions(notorietyTab),
 				new Arg("Players", false));
+		args.setMax(-1);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class CmdAdminTestFW extends Subcommand {
 			}
 		}
 		else {
-			others = new ArrayList<Player>(Bukkit.getOnlinePlayers());
+			others = new ArrayList<Player>();
 		}
 
 		NeoRogue.debugInitialize(host, others, EquipmentClass.WARRIOR, RegionType.FROZEN_WASTES, notoriety);

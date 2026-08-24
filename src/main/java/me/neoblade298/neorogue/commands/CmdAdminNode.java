@@ -90,9 +90,12 @@ public class CmdAdminNode extends Subcommand {
 		Util.msgRaw(s, "Setting node...");
 		sess.getInstance().cleanup(false);
 		String name = p.getName();
+		Node currentNode = sess.getNode();
+		int rowDelta = row - (currentNode == null ? 0 : currentNode.getRow());
 
 		new BukkitRunnable() {
 			public void run() {
+				sess.setNodesVisited(sess.getNodesVisited() + rowDelta);
 				sess.setNode(node);
 				sess.getInstance().setup();
 				sess.getRegion().update(node, (NodeSelectInstance) sess.getInstance());
