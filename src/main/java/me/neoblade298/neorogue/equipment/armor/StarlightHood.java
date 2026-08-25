@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class StarlightHood extends Equipment {
 	private static final String ID = "StarlightHood";
+	private static final int STATUS_DURATION = 20;
 	private int stacks;
 
 	public StarlightHood(boolean isUpgraded) {
@@ -29,15 +30,15 @@ public class StarlightHood extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.applyStatus(StatusType.PROTECT, data, stacks, 400, this);
-		data.applyStatus(StatusType.SHELL, data, stacks, 400, this);
+		data.applyStatus(StatusType.PROTECT, data, stacks, STATUS_DURATION * 20, this);
+		data.applyStatus(StatusType.SHELL, data, stacks, STATUS_DURATION * 20, this);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET,
-				"Start fights with " + GlossaryTag.PROTECT.tag(this, stacks) + " and "
-						+ GlossaryTag.SHELL.tag(this, stacks) + " [" + DescUtil.val("20s") + "].");
+				"Start fights with " + GlossaryTag.PROTECT.tag(this, stacks) + " " + DescUtil.duration(STATUS_DURATION)
+						+ " and " + GlossaryTag.SHELL.tag(this, stacks) + " " + DescUtil.duration(STATUS_DURATION) + ".");
 	}
 
 	@Override

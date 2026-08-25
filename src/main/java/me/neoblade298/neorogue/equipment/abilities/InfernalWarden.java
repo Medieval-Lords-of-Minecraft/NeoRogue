@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -20,6 +18,7 @@ import me.neoblade298.neorogue.equipment.AmmoEquipmentInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -88,7 +87,7 @@ public class InfernalWarden extends Equipment {
 
 	public InfernalWarden(boolean isUpgraded) {
 		super(ID, "Infernal Warden", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 10, 0));
 		damage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 10 : 6;
 	}
