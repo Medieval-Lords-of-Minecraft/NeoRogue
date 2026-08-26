@@ -89,20 +89,23 @@ public class AchievementRewardRegistry {
 		});
 	}
 
-	public static List<String> getDisplayNames(String achievementId, EquipmentClass classScope) {
+	public static List<String> getDisplayNames(String achievementId, EquipmentClass classScope, int mastery) {
 		List<AchievementReward> candidates = rewardsByRequirement.get(achievementId);
-		List<String> displayNames = new ArrayList<>(defaultDisplayNames);
-		if (candidates == null || candidates.isEmpty()) return displayNames;
+		if (candidates == null || candidates.isEmpty()) return new ArrayList<>(defaultDisplayNames);
 
+		List<String> displayNames = new ArrayList<>();
+		boolean hasSpecificReward = false;
 		for (AchievementReward reward : candidates) {
 			for (AchievementRequirement requirement : reward.getRequirements()) {
-				if (requirement.id().equals(achievementId) && requirement.classScope() == classScope) {
+				if (requirement.id().equals(achievementId) && requirement.classScope() == classScope
+						&& requirement.mastery() == mastery) {
+					hasSpecificReward = true;
 					displayNames.addAll(reward.getDisplayNames());
 					break;
 				}
 			}
 		}
-		return displayNames;
+		return hasSpecificReward ? displayNames : new ArrayList<>(defaultDisplayNames);
 	}
 
 	/**

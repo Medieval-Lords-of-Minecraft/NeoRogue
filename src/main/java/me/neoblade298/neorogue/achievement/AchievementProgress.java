@@ -130,7 +130,9 @@ public class AchievementProgress {
 		meta.displayName(achievement.getDisplayName().decoration(TextDecoration.ITALIC, false));
 
 		List<Component> lore = buildLoreLines();
-		List<String> displayRewards = AchievementRewardRegistry.getDisplayNames(achievement.getId(), scope);
+		int displayedMastery = Math.min(getMastery() + 1, getMaxMastery());
+		List<String> displayRewards = AchievementRewardRegistry.getDisplayNames(
+				achievement.getId(), scope, displayedMastery);
 		if (!displayRewards.isEmpty()) {
 			lore.add(Component.empty());
 			lore.add(Component.text("Rewards:", NamedTextColor.GOLD));
