@@ -78,7 +78,7 @@ public class Region {
 	private int rowCount;
 
 	public static World world;
-	public static final String WORLD_NAME = "Dev";
+	public static final String WORLD_NAME = "Caravans";
 	public static final String TEST_WORLD_NAME = "TestMap";
 	public static World testWorld;
 	private static String activeWorldName = WORLD_NAME;
