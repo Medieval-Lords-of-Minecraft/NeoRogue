@@ -22,9 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Nullable;
 
-import com.sk89q.worldedit.WorldEdit;
-
 import com.earth2me.essentials.spawn.IEssentialsSpawn;
+import com.sk89q.worldedit.WorldEdit;
 
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
