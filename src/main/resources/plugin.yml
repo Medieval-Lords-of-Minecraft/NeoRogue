@@ -40,6 +40,11 @@ permissions:
    neorogue.admin:
       description: Allows use of /nradmin commands
       default: op
+      children:
+         neorogue.leaderboards.manage: true
+   neorogue.leaderboards.manage:
+      description: Allows managing leaderboard display locations
+      default: op
    neorogue.slots.2:
     description: Grants 2 save slots
     default: false

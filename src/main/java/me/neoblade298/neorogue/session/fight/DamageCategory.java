@@ -25,6 +25,7 @@ public enum DamageCategory {
 	private GlossaryTag tag;
 	private DamageCategory(String display, GlossaryTag tag) {
 		this.display = display;
+		this.tag = tag;
 	}
 
 	public String getDisplay() {

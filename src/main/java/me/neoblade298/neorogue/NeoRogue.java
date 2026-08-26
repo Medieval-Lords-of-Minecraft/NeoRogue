@@ -49,6 +49,7 @@ import me.neoblade298.neorogue.commands.CmdAdminExp;
 import me.neoblade298.neorogue.commands.CmdAdminExportEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGlobalBoost;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
+import me.neoblade298.neorogue.commands.CmdAdminLeaderboard;
 import me.neoblade298.neorogue.commands.CmdAdminLevel;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
 import me.neoblade298.neorogue.commands.CmdAdminMeta;
@@ -102,6 +103,7 @@ import me.neoblade298.neorogue.commands.EquipmentPresets;
 import me.neoblade298.neorogue.commands.LyticsCommand;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.leaderboard.LeaderboardManager;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.FlagRegistry;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -165,7 +167,9 @@ public class NeoRogue extends JavaPlugin {
 		SCHEMATIC_FOLDER = WorldEdit.getInstance().getSchematicsFolderPath().toFile();
 		saveResource("achievement-rewards.yml", false);
 		saveResource("expboosts.yml", false);
+		saveResource("leaderboards.yml", false);
 		AnalyticsManager.init();
+		LeaderboardManager.init();
 		// Must run before registering the IO component: registering the player IO
 		// component immediately loads any online player's data (relevant on hot-reload),
 		// which resolves unlock nodes and equipment. If equipment isn't loaded yet, every
@@ -225,6 +229,7 @@ public class NeoRogue extends JavaPlugin {
 		MobModifier.registerModifiers(); // Register miniboss/boss mob modifiers
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
+		LeaderboardManager.reload();
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
@@ -256,6 +261,7 @@ public class NeoRogue extends JavaPlugin {
 	
 	public void onDisable() {
 		if (!lightweightMode) {
+			LeaderboardManager.cleanup();
 			Collection<Session> sessions = new ArrayList<Session>(SessionManager.getSessions());
 			for (Session s : sessions) {
 				try {
@@ -343,6 +349,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminPoints("points", "Add unlock points to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetPoints("setpoints", "Set a player's unlock points", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetNotoriety("setnotoriety", "Set a player's max notoriety level per class", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminLeaderboard("leaderboard", "Manage leaderboard displays", CmdAdminLeaderboard.PERMISSION, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReset("reset", "Reset all progress for a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminResetInterstitials("resetinterstitials", "Resets interstitial version-check blocks for initial plots", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminMeta("meta", "Set metadata on held equipment", null, SubcommandRunner.PLAYER_ONLY));

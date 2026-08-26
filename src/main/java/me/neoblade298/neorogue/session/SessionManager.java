@@ -1052,7 +1052,6 @@ public class SessionManager implements Listener {
 			s.getInstance().handlePlayerLogin(p);
 			s.hideSpectatorsFrom(p);
 		} else {
-			p.teleport(NeoRogue.spawn);
 			resetPlayer(p);
 		}
 	}

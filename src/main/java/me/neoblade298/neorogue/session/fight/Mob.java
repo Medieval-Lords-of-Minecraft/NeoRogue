@@ -44,6 +44,7 @@ public class Mob implements Comparable<Mob> {
 	private Material mat;
 	private HashMap<DamageCategory, Integer> resistances = new HashMap<DamageCategory, Integer>();
 	private HashMap<DamageType, Amount> damageTypes = new HashMap<DamageType, Amount>();
+	private HashMap<DamageCategory, Amount> damageCategories = new HashMap<DamageCategory, Amount>();
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private List<String> summons, disabledModifiers;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
@@ -139,9 +140,17 @@ public class Mob implements Comparable<Mob> {
 		Section dmgSec = sec.getSection("damagetypes");
 		if (dmgSec != null) {
 			for (String key : dmgSec.getKeys()) {
-				DamageType dt = DamageType.valueOf(key);
-				damageTypes.put(dt, Amount.valueOf(dmgSec.getString(key)));
-				GlossaryTag tag = dt.toGlossary();
+				Amount amount = Amount.valueOf(dmgSec.getString(key));
+				GlossaryTag tag;
+				try {
+					DamageType dt = DamageType.valueOf(key);
+					damageTypes.put(dt, amount);
+					tag = dt.toGlossary();
+				} catch (IllegalArgumentException ex) {
+					DamageCategory category = DamageCategory.valueOf(key);
+					damageCategories.put(category, amount);
+					tag = category.toGlossary();
+				}
 				if (tag != null) tags.add(tag);
 			}
 		}
@@ -242,7 +251,7 @@ public class Mob implements Comparable<Mob> {
 		}
 		lore.add(stats.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 
-		if (!damageTypes.isEmpty()) {
+		if (!damageTypes.isEmpty() || !damageCategories.isEmpty()) {
 			Component damage = Component.text("Damage: ", NamedTextColor.GOLD);
 			boolean first = true;
 			for (DamageType dt : DamageType.values()) {
@@ -250,6 +259,13 @@ public class Mob implements Comparable<Mob> {
 				if (!first) damage = damage.append(Component.text(", ", NamedTextColor.GRAY));
 				damage = damage.append(Component.text(dt.getDisplay() + " ", NamedTextColor.YELLOW))
 						.append(damageTypes.get(dt).getDisplay(true));
+				first = false;
+			}
+			for (DamageCategory category : DamageCategory.values()) {
+				if (!damageCategories.containsKey(category)) continue;
+				if (!first) damage = damage.append(Component.text(", ", NamedTextColor.GRAY));
+				damage = damage.append(Component.text(category.getDisplay() + " ", NamedTextColor.YELLOW))
+						.append(damageCategories.get(category).getDisplay(true));
 				first = false;
 			}
 			lore.add(damage.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
