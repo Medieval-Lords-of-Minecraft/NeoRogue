@@ -1,2 +1,10 @@
 # Requires a restart. Loads only persistent caravan upgrades and cargo management.
 lightweight: false
+
+# Requires a restart. Sessions and their map pieces are created in this loaded world.
+session-world: Caravans
+
+# Requires a restart. Right-clicking another player opens their profile in these worlds.
+inspection-worlds:
+- Caravans
+- Hub

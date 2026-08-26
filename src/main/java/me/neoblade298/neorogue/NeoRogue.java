@@ -56,6 +56,7 @@ import me.neoblade298.neorogue.commands.CmdAdminMeta;
 import me.neoblade298.neorogue.commands.CmdAdminMiniboss;
 import me.neoblade298.neorogue.commands.CmdAdminNew;
 import me.neoblade298.neorogue.commands.CmdAdminNode;
+import me.neoblade298.neorogue.commands.CmdAdminOpenMenu;
 import me.neoblade298.neorogue.commands.CmdAdminPiece;
 import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminPoints;
@@ -232,7 +233,7 @@ public class NeoRogue extends JavaPlugin {
 		LeaderboardManager.reload();
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
-		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
+		spawn = new Location(Bukkit.getWorld(Region.getMainWorldName()), -250, 65, -250);
 	}
 
 	private static void reloadCaravanInfrastructure() {
@@ -334,6 +335,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminNew("new", "Starts a new session with all online players with custom start parameters", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetInstance("setinstance", "Sets the current instance", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminNode("node", "Teleport to a specific node", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminOpenMenu("openmenu", "Open a NeoRogue menu for a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminTest("test", "Used for testing various things", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDrop("drop", "Roll equipment from the droptable", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDropArtifact("dropartifact", "Roll artifacts from the droptable", null, SubcommandRunner.BOTH));

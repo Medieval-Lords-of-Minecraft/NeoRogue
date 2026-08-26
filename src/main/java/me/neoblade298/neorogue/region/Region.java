@@ -78,10 +78,11 @@ public class Region {
 	private int rowCount;
 
 	public static World world;
-	public static final String WORLD_NAME = "Caravans";
+	public static final String DEFAULT_WORLD_NAME = "Caravans";
 	public static final String TEST_WORLD_NAME = "TestMap";
 	public static World testWorld;
-	private static String activeWorldName = WORLD_NAME;
+	private static String mainWorldName = DEFAULT_WORLD_NAME;
+	private static String activeWorldName = DEFAULT_WORLD_NAME;
 	private static final int NODE_Y = 64;
 
 	// Offsets
@@ -90,14 +91,19 @@ public class Region {
 	private static boolean initialized = false;
 
 	public static void initialize() {
-		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+		mainWorldName = NeoRogue.inst().getConfig().getString("session-world", DEFAULT_WORLD_NAME);
+		org.bukkit.World mainWorld = Bukkit.getWorld(mainWorldName);
+		if (mainWorld == null) {
+			throw new IllegalStateException("Configured session world '" + mainWorldName + "' is not loaded");
+		}
+		world = BukkitAdapter.adapt(mainWorld);
+		activeWorldName = mainWorldName;
 		if (Bukkit.getWorld(TEST_WORLD_NAME) != null) {
 			testWorld = BukkitAdapter.adapt(Bukkit.getWorld(TEST_WORLD_NAME));
 		}
 		
 		// Remove all text_display entities from the world
-		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		for (org.bukkit.entity.Entity e : w.getEntitiesByClass(org.bukkit.entity.TextDisplay.class)) {
+		for (org.bukkit.entity.Entity e : mainWorld.getEntitiesByClass(org.bukkit.entity.TextDisplay.class)) {
 			e.remove();
 		}
 		
@@ -119,8 +125,12 @@ public class Region {
 	}
 
 	public static void useMainWorld() {
-		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
-		activeWorldName = WORLD_NAME;
+		world = BukkitAdapter.adapt(Bukkit.getWorld(mainWorldName));
+		activeWorldName = mainWorldName;
+	}
+
+	public static String getMainWorldName() {
+		return mainWorldName;
 	}
 
 	public static String getActiveWorldName() {
@@ -891,7 +901,7 @@ public class Region {
 
 	public void instantiate() {
 		// Create nodes
-		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+		org.bukkit.World w = Bukkit.getWorld(getActiveWorldName());
 		for (int lane = 0; lane < LANE_COUNT; lane++) { // x
 			for (int row = 0; row < rowCount; row++) { // z
 				Node node = nodes[row][lane];
@@ -935,7 +945,7 @@ public class Region {
 
 	// Remove all blocks from node select when a session ends, leaving it ready for a new session
 	public void cleanupAll() {
-		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+		org.bukkit.World w = Bukkit.getWorld(getActiveWorldName());
 		for (int lane = 0; lane < LANE_COUNT; lane++) {
 			for (int row = 0; row < rowCount; row++) {
 
@@ -1111,7 +1121,7 @@ public class Region {
 	}
 	
 	public Location nodeToLocation(Node node, double yOff) {
-		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+		org.bukkit.World w = Bukkit.getWorld(getActiveWorldName());
 		return new Location(
 				w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff,
 				zOff + Z_EDGE_PADDING + 0.5 + (node.getRow() * 4)

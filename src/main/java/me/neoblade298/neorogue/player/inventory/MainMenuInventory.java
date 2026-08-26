@@ -19,7 +19,6 @@ import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
-import me.neoblade298.neorogue.player.Cargo;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.RunStats;
@@ -31,7 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 13, UNLOCKS = 14, CARGO = 15,
+	private static final int HOST_GAME = 10, JOIN_GAME = 12, ACHIEVEMENTS = 14, UNLOCKS = 16,
 			STATS = 4, TUTORIAL = 18, EQUIPMENT_GLOSSARY = 26;
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 
@@ -54,40 +53,12 @@ public class MainMenuInventory extends CoreInventory {
 				Component.text("Unlocks", NamedTextColor.LIGHT_PURPLE));
 		int totalAvailable = countAvailableUnlocks(pd);
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
-		contents[CARGO] = createCargoButton(pd);
 		contents[STATS] = createStatsButton(pd);
 		contents[TUTORIAL] = CoreInventory.createButton(Material.WRITABLE_BOOK,
 				Component.text("Tutorial", NamedTextColor.GOLD));
 		contents[EQUIPMENT_GLOSSARY] = CoreInventory.createButton(Material.KNOWLEDGE_BOOK,
 				Component.text("Equipment Glossary", NamedTextColor.AQUA));
 		inv.setContents(contents);
-	}
-
-	private ItemStack createCargoButton(PlayerData pd) {
-		// Cargo stays locked until the caravan "cargo_access" upgrade is purchased.
-		if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
-			ItemStack locked = CoreInventory.createButton(Material.BARRIER,
-					Component.text("Cargo (Locked)", NamedTextColor.DARK_GRAY));
-			ItemMeta meta = locked.getItemMeta();
-			List<Component> lore = new ArrayList<>();
-			lore.add(Component.text("Unlock cargo access from", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, false));
-			lore.add(Component.text("the Caravan Upgrades menu.", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, false));
-			meta.lore(lore);
-			locked.setItemMeta(meta);
-			return locked;
-		}
-		Cargo cargo = pd.getCargo();
-		ItemStack item = CoreInventory.createButton(Material.CHEST_MINECART,
-				Component.text("Cargo", NamedTextColor.GOLD));
-		ItemMeta meta = item.getItemMeta();
-		List<Component> lore = new ArrayList<>();
-		lore.add(Component.text("Items: " + cargo.getTotalItems() + " / " + cargo.getCapacity(), NamedTextColor.GRAY)
-				.decoration(TextDecoration.ITALIC, false));
-		meta.lore(lore);
-		item.setItemMeta(meta);
-		return item;
 	}
 
 	private ItemStack createStatsButton(PlayerData pd) {
@@ -181,17 +152,6 @@ public class MainMenuInventory extends CoreInventory {
 				return;
 			}
 			new UnlocksMenuInventory(p);
-			break;
-		case CARGO:
-			if (SessionManager.getSession(p) != null) {
-				Util.displayError(p, "You can't manage cargo during a run!");
-				return;
-			}
-			if (!pd.hasFlag(PlayerData.FLAG_CARGO_ACCESS)) {
-				Util.displayError(p, "You haven't unlocked cargo access yet! Buy it from the Caravan Upgrades menu.");
-				return;
-			}
-			new CargoInventory(p, pd);
 			break;
 		case STATS:
 			new StatsMenuInventory(p);

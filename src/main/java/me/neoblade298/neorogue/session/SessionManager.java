@@ -141,6 +141,12 @@ public class SessionManager implements Listener {
 		if (viewer.getUniqueId().equals(target)) return requireGeneralPermission(viewer);
 		return requireSessionPermission(viewer, PROFILE_OTHERS_PERMISSION, "view other players' profiles");
 	}
+
+	private static boolean allowsProfileInspection(Player player) {
+		java.util.List<String> worlds = NeoRogue.inst().getConfig().getStringList("inspection-worlds");
+		if (worlds.isEmpty()) return player.getWorld().getName().equals(Region.getMainWorldName());
+		return worlds.contains(player.getWorld().getName());
+	}
 	
 	public static Session createSession(Player p, int saveSlot) {
 		return createSession(p, saveSlot, true, SessionType.STANDARD);
@@ -793,7 +799,7 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) {
-			if (p.getWorld().getName().equals(Region.WORLD_NAME)
+			if (allowsProfileInspection(p)
 					&& e.getHand() == EquipmentSlot.OFF_HAND && e.getRightClicked() instanceof Player) {
 				e.setCancelled(true);
 				if (!requireProfilePermission(p, e.getRightClicked().getUniqueId())) return;

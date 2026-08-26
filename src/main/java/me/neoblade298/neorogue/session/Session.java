@@ -343,7 +343,7 @@ public class Session {
 	}
 	
 	private void generateInterstitials() {
-	Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
+	Location loc = new Location(Bukkit.getWorld(Region.getMainWorldName()), -(xOff + 1), 62, zOff);
 		Material versionCheck = Material.LIME_WOOL; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {

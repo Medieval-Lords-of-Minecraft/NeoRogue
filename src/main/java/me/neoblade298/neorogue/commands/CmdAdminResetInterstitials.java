@@ -19,9 +19,9 @@ public class CmdAdminResetInterstitials extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		World world = Bukkit.getWorld(Region.WORLD_NAME);
+		World world = Bukkit.getWorld(Region.getMainWorldName());
 		if (world == null) {
-			Util.msgRaw(s, "<red>Could not find world " + Region.WORLD_NAME + ".");
+			Util.msgRaw(s, "<red>Could not find world " + Region.getMainWorldName() + ".");
 			return;
 		}
 
