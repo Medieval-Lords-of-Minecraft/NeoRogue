@@ -30,7 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
-	private static final int HOST_GAME = 10, JOIN_GAME = 12, ACHIEVEMENTS = 14, UNLOCKS = 16,
+	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 14, UNLOCKS = 15,
 			STATS = 4, TUTORIAL = 18, EQUIPMENT_GLOSSARY = 26;
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 

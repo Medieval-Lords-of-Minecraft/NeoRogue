@@ -16,12 +16,15 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Nullable;
 
 import com.sk89q.worldedit.WorldEdit;
+
+import com.earth2me.essentials.spawn.IEssentialsSpawn;
 
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
@@ -231,9 +234,12 @@ public class NeoRogue extends JavaPlugin {
 		Map.load(); // Load in map pieces
 		AchievementRewardRegistry.reload(); // Load achievement command rewards
 		LeaderboardManager.reload();
-		
-		// Will need to add multiverse dependency if the world isn't first loaded
-		spawn = new Location(Bukkit.getWorld(Region.getMainWorldName()), -250, 65, -250);
+
+		Plugin essentialsSpawnPlugin = Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
+		if (!(essentialsSpawnPlugin instanceof IEssentialsSpawn essentialsSpawn)) {
+			throw new IllegalStateException("EssentialsSpawn is required but its API is unavailable");
+		}
+		spawn = essentialsSpawn.getSpawn("default").clone();
 	}
 
 	private static void reloadCaravanInfrastructure() {
