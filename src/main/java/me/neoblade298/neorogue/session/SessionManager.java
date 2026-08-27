@@ -38,7 +38,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -58,7 +57,6 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -82,7 +80,6 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
-import me.neoblade298.neorogue.player.inventory.MainMenuInventory;
 import me.neoblade298.neorogue.player.inventory.MainSessionMenu;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
@@ -104,8 +101,6 @@ import me.neoblade298.neorogue.session.instances.NewLobbyInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class SessionManager implements Listener {
 	private static final HashMap<UUID, SessionDamageSnapshot> lastSessionDamage = new HashMap<UUID, SessionDamageSnapshot>();
@@ -431,16 +426,8 @@ public class SessionManager implements Listener {
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) {
-			if (isMenuCompass(e.getCurrentItem()) || isMenuCompass(e.getCursor())) {
-				e.setCancelled(true);
-			}
-			if (e.getAction() == InventoryAction.HOTBAR_SWAP && e.getHotbarButton() >= 0
-					&& isMenuCompass(p.getInventory().getItem(e.getHotbarButton()))) {
-				e.setCancelled(true);
-			}
+		if (!sessions.containsKey(uuid))
 			return;
-		}
 		Session s = sessions.get(uuid);
 		if (e.getClickedInventory() == null)
 			return;
@@ -492,10 +479,6 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 
-		if (isMenuCompass(e.getMainHandItem()) || isMenuCompass(e.getOffHandItem())) {
-			e.setCancelled(true);
-			return;
-		}
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);
@@ -540,12 +523,8 @@ public class SessionManager implements Listener {
 	public void onDrop(PlayerDropItemEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) {
-			if (isMenuCompass(e.getItemDrop().getItemStack())) {
-				e.setCancelled(true);
-			}
+		if (!sessions.containsKey(uuid))
 			return;
-		}
 		e.setCancelled(true);
 		if (sessions.get(p.getUniqueId()).isSpectator(uuid))
 			return;
@@ -884,14 +863,8 @@ public class SessionManager implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) {
-			if (e.getAction().isRightClick() && isMenuCompass(e.getItem())) {
-				e.setCancelled(true);
-				if (!requireGeneralPermission(p)) return;
-				new MainMenuInventory(p);
-			}
+		if (!sessions.containsKey(uuid))
 			return;
-		}
 		Session s = sessions.get(uuid);
 
 		PlayerInventory inv = p.getInventory();
@@ -1101,7 +1074,6 @@ public class SessionManager implements Listener {
 		p.setHealthScaled(false);
 		p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
 		showPlayerToAll(p);
-		giveMenuCompass(p);
 	}
 
 	// Reveals a previously hidden player to every other online player. Safe to
@@ -1114,23 +1086,6 @@ public class SessionManager implements Listener {
 				continue;
 			other.showEntity(NeoRogue.inst(), p);
 		}
-	}
-
-	private static final NamespacedKey MENU_KEY = new NamespacedKey(NeoRogue.inst(), "menu_compass");
-
-	private static boolean isMenuCompass(ItemStack item) {
-		return item != null && item.getType() == Material.COMPASS
-				&& item.hasItemMeta()
-				&& item.getItemMeta().getPersistentDataContainer().has(MENU_KEY, PersistentDataType.BYTE);
-	}
-
-	public static void giveMenuCompass(Player p) {
-		ItemStack compass = new ItemStack(Material.COMPASS);
-		ItemMeta meta = compass.getItemMeta();
-		meta.displayName(Component.text("Menu", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
-		meta.getPersistentDataContainer().set(MENU_KEY, PersistentDataType.BYTE, (byte) 1);
-		compass.setItemMeta(meta);
-		p.getInventory().setItem(4, compass);
 	}
 
 	// Standardized entry point for a player leaving via /nr leave or the leave button in the

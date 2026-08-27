@@ -550,7 +550,6 @@ public class Session {
 		PlayerFlags.applyDefaults(p);
 		showSpectatorToPlayers(p);
 		SessionManager.removeFromSession(uuid, this);
-		SessionManager.giveMenuCompass(p);
 		p.teleport(NeoRogue.spawn);
 	}
 
