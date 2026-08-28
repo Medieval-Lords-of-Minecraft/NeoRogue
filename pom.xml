@@ -161,6 +161,15 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- AshStore (install locally via mvn install on AshStore project).
+             Provides AshCoins balances used by unlock costs. -->
+        <dependency>
+            <groupId>me.neoblade298</groupId>
+            <artifactId>ashstore</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

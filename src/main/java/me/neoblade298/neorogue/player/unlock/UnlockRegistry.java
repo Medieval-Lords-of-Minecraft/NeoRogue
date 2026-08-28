@@ -230,11 +230,14 @@ public class UnlockRegistry {
 
 	public static boolean canAfford(PlayerData data, UnlockNode node) {
 		if (data == null || node == null) return false;
-		return data.getPoints(node.getNodeClass()) >= node.getCost();
+		if (data.getPoints(node.getNodeClass()) < node.getCost()) return false;
+		if (node.getAshcoinsCost() <= 0) return true;
+		me.neoblade298.ashstore.player.PlayerData ashData = me.neoblade298.ashstore.player.PlayerManager.get(data.getUniqueId());
+		return ashData != null && ashData.canAfford(node.getAshcoinsCost());
 	}
 
 	/**
-	 * Attempts to grant a node to a player, deducting points.
+	 * Attempts to grant a node to a player, deducting points and AshCoins.
 	 * Returns true if successful, false if cannot afford or already unlocked.
 	 */
 	public static boolean grantWithCost(PlayerData data, String nodeId) {
@@ -244,7 +247,16 @@ public class UnlockRegistry {
 		if (data.hasUnlockNode(normalized)) return false;
 		if (!canAfford(data, node)) return false;
 		if (!node.checkRequirementsMet(data)) return false;
+		me.neoblade298.ashstore.player.PlayerData ashData = null;
+		if (node.getAshcoinsCost() > 0) {
+			ashData = me.neoblade298.ashstore.player.PlayerManager.get(data.getUniqueId());
+			if (ashData == null || !ashData.deduct(node.getAshcoinsCost())) return false;
+		}
 		data.addPoints(node.getNodeClass(), -node.getCost());
-		return data.grant(normalized);
+		if (data.grant(normalized)) return true;
+
+		data.addPoints(node.getNodeClass(), node.getCost());
+		if (ashData != null) ashData.addCoins(node.getAshcoinsCost());
+		return false;
 	}
 }

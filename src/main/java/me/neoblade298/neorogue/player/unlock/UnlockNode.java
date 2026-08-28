@@ -40,6 +40,7 @@ public class UnlockNode {
 	private final TargetType targetType;
 	private final EquipmentClass nodeClass; // null = GLOBAL
 	private final int cost;
+	private final long ashcoinsCost;
 	private final boolean isDefault;
 	private final int slot;
 	private final Set<String> targetIds;
@@ -53,6 +54,7 @@ public class UnlockNode {
 		String classStr = sec.getString("class", "GLOBAL").toUpperCase();
 		this.nodeClass = classStr.equals("GLOBAL") ? null : EquipmentClass.valueOf(classStr);
 		this.cost = sec.getInt("cost", 1);
+		this.ashcoinsCost = Math.max(0, sec.getInt("ashcoins-cost", 0));
 		this.isDefault = sec.getBoolean("default", false);
 		this.slot = sec.getInt("slot", -1);
 		List<String> targets = sec.getStringList("targets");
@@ -127,6 +129,10 @@ public class UnlockNode {
 		return cost;
 	}
 
+	public long getAshcoinsCost() {
+		return ashcoinsCost;
+	}
+
 	public boolean isDefault() {
 		return isDefault;
 	}
@@ -150,7 +156,7 @@ public class UnlockNode {
 	public ItemStack toItemStack(PlayerData data) {
 		boolean unlocked = data.hasUnlockNode(id);
 		boolean prereqsMet = checkRequirementsMet(data);
-		boolean canAfford = data.getPoints(nodeClass) >= cost;
+		boolean canAfford = UnlockRegistry.canAfford(data, this);
 		boolean available = !unlocked && prereqsMet && canAfford;
 
 		// Material and color by state
@@ -186,6 +192,11 @@ public class UnlockNode {
 				.append(Component.text(cost, NamedTextColor.YELLOW))
 				.append(Component.text(" point" + (cost != 1 ? "s" : ""), NamedTextColor.GRAY))
 				.decoration(TextDecoration.ITALIC, State.FALSE));
+		if (ashcoinsCost > 0) {
+			lore.add(Component.text("AshCoins Cost: ", NamedTextColor.GRAY)
+					.append(Component.text(ashcoinsCost, NamedTextColor.GOLD))
+					.decoration(TextDecoration.ITALIC, State.FALSE));
+		}
 
 		// Status line
 		if (unlocked) {
