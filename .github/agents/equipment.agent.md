@@ -41,6 +41,9 @@ ParticleContainers, shapes, TargetProperties, and animations must be `static fin
 - Trigger lambdas: `(pdata, in) ->`
 - Buff IDs: `id + slot` for slot-specific, `UUID.randomUUID().toString()` for permanent unique, `am.getId()` from ActionMeta
 
+### Naming Collisions
+Before creating equipment, search existing equipment IDs, class names, and display names for the requested name. If that name is already in use, do not reuse it: choose a distinct, thematically appropriate replacement name, use that name consistently for the new equipment, and explicitly tell the user about the collision and the replacement chosen.
+
 ## Equipment Registration
 1. Create class in appropriate subfolder (`abilities/`, `accessories/`, `weapons/`, `armor/`, `artifacts/`, `consumables/`)
 2. Add import and `new MyEquipment(b);` in `Equipment.java` constructor
