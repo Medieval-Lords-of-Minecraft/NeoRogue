@@ -86,7 +86,7 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 	public void leavePlayer(Player p) {
 		s.broadcast("<yellow>" + p.getName() + " <gray>left the lobby!");
 		SessionManager.removeFromSession(p.getUniqueId(), s);
-		SessionManager.resetPlayer(p);
+		SessionManager.resetPlayer(p, true);
 		p.teleport(NeoRogue.spawn);
 		endIfEmpty();
 	}

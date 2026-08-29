@@ -1031,7 +1031,7 @@ public class SessionManager implements Listener {
 			s.getInstance().handlePlayerLogin(p);
 			s.hideSpectatorsFrom(p);
 		} else {
-			resetPlayer(p);
+			resetPlayer(p, false);
 		}
 	}
 
@@ -1065,10 +1065,10 @@ public class SessionManager implements Listener {
 		}
 	}
 
-	public static void resetPlayer(Player p) {
+	public static void resetPlayer(Player p, boolean clearInventory) {
 		if (p == null)
 			return;
-		p.getInventory().clear();
+		if (clearInventory) p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		PlayerAttributeController.reset(p);
 		p.setHealthScaled(false);

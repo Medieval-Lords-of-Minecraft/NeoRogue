@@ -121,11 +121,11 @@ public abstract class LobbyInstance extends Instance {
 				Player other = Bukkit.getPlayer(uuid);
 				if (other == null) continue;
 				SessionManager.removeFromSession(uuid);
-				SessionManager.resetPlayer(other);
+				SessionManager.resetPlayer(other, true);
 				other.teleport(NeoRogue.spawn);
 			}
 			SessionManager.endSession(s);
-			SessionManager.resetPlayer(p);
+			SessionManager.resetPlayer(p, true);
 			p.teleport(NeoRogue.spawn);
 			return;
 		} else {
@@ -135,7 +135,7 @@ public abstract class LobbyInstance extends Instance {
 			broadcast(tc);
 			inLobby.remove(p.getUniqueId());
 		}
-		SessionManager.resetPlayer(p);
+		SessionManager.resetPlayer(p, true);
 		p.teleport(NeoRogue.spawn);
 		updateBoardLines();
 	}

@@ -1428,14 +1428,14 @@ public class Session {
 			Player p = Bukkit.getPlayer(entry.getKey());
 			entry.getValue().cleanup();
 			if (SessionManager.getSession(entry.getKey()) == this) {
-				SessionManager.resetPlayer(p);
+				SessionManager.resetPlayer(p, true);
 			}
 		}
 		
 		for (UUID uuid : spectators.keySet()) {
 			if (SessionManager.getSession(uuid) == this) {
 				Player p = Bukkit.getPlayer(uuid);
-				SessionManager.resetPlayer(p);
+				SessionManager.resetPlayer(p, true);
 			}
 		}
 	}
@@ -1485,7 +1485,7 @@ public class Session {
 
 			if (target instanceof Player) {
 				Player targetPlayer = (Player) target;
-				SessionManager.resetPlayer(targetPlayer);
+				SessionManager.resetPlayer(targetPlayer, true);
 				inst.handlePlayerLeaveParty(targetPlayer);
 			}
 			SessionManager.removeFromSession(target.getUniqueId());

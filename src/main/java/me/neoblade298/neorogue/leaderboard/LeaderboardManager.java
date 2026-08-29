@@ -16,11 +16,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -61,16 +63,37 @@ public class LeaderboardManager implements Listener {
 		reload();
 	}
 
+	@EventHandler
+	public void onServerLoad(ServerLoadEvent event) {
+		// Plugin enable order is not a reliable indication that every configured world has
+		// finished loading. Rebuild once startup is complete, including worlds whose load
+		// event happened before this listener was registered.
+		Bukkit.getScheduler().runTask(NeoRogue.inst(), LeaderboardManager::reload);
+	}
+
 	public static void reload() {
 		if (config == null) return;
 		generation++;
+		List<LeaderboardLocation> locations = config.load();
+		Map<String, Location> bukkitLocations = new LinkedHashMap<>();
+		for (LeaderboardLocation location : locations) {
+			Location bukkitLocation = location.toLocation();
+			if (bukkitLocation == null) continue;
+			// getEntities() ensures previously persisted displays in this otherwise-unloaded
+			// chunk are available to the tagged-entity cleanup below.
+			bukkitLocation.getChunk().getEntities();
+			bukkitLocations.put(location.id(), bukkitLocation);
+		}
 		removeDisplays();
 		removeTaggedDisplays();
-		for (LeaderboardLocation location : config.load()) {
-			if (location.toLocation() == null) continue;
-			TextDisplay display = NeoRogue.createHologram(location.toLocation(), loadingText(location), Billboard.FIXED);
+		for (LeaderboardLocation location : locations) {
+			Location bukkitLocation = bukkitLocations.get(location.id());
+			if (bukkitLocation == null) continue;
+			TextDisplay display = NeoRogue.createHologram(bukkitLocation, loadingText(location), Billboard.FIXED);
 			display.setRotation(location.yaw(), location.pitch());
-			display.setPersistent(false);
+			// Leaderboard chunks are not held open. The display must be saved so it returns
+			// when a player later loads the chunk.
+			display.setPersistent(true);
 			display.addScoreboardTag(ENTITY_TAG);
 			displays.put(location.id(), new ActiveDisplay(location, display));
 		}
