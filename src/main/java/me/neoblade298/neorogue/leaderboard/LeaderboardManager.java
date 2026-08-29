@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -134,7 +135,6 @@ public class LeaderboardManager implements Listener {
 			locationsByBoard.computeIfAbsent(BoardKey.from(active.location()), ignored -> new ArrayList<>())
 					.add(active.location().id());
 		}
-
 		Bukkit.getScheduler().runTaskAsynchronously(NeoRogue.inst(), () -> {
 			Map<BoardKey, List<LeaderboardRow>> results = new HashMap<>();
 			for (BoardKey key : locationsByBoard.keySet()) {
@@ -208,11 +208,22 @@ public class LeaderboardManager implements Listener {
 			Component text = rows == null ? unavailableText(entry.getKey()) : render(entry.getKey(), rows);
 			for (String locationId : entry.getValue()) {
 				ActiveDisplay active = displays.get(locationId);
-				if (active != null && active.display().isValid()) {
-					active.display().text(NeoRogue.withTextDisplayShadow(text));
-				}
+				TextDisplay display = resolveDisplay(active);
+				if (display != null) display.text(NeoRogue.withTextDisplayShadow(text));
 			}
 		}
+	}
+
+	private static TextDisplay resolveDisplay(ActiveDisplay active) {
+		if (active == null) return null;
+		if (active.display().isValid()) return active.display();
+		Location location = active.location().toLocation();
+		if (location == null) return null;
+		location.getChunk().getEntities();
+		Entity entity = Bukkit.getEntity(active.display().getUniqueId());
+		if (!(entity instanceof TextDisplay display) || !display.isValid()) return null;
+		displays.put(active.location().id(), new ActiveDisplay(active.location(), display));
+		return display;
 	}
 
 	private static Component render(BoardKey key, List<LeaderboardRow> rows) {
@@ -256,15 +267,20 @@ public class LeaderboardManager implements Listener {
 
 	private static void removeDisplays() {
 		for (ActiveDisplay active : displays.values()) {
-			if (active.display().isValid()) active.display().remove();
+			if (active.display().isValid()) {
+				active.display().remove();
+			}
 		}
 		displays.clear();
 	}
 
 	private static void removeTaggedDisplays() {
-		Bukkit.getWorlds().forEach(world -> world.getEntitiesByClass(TextDisplay.class).stream()
-				.filter(display -> display.getScoreboardTags().contains(ENTITY_TAG))
-				.forEach(TextDisplay::remove));
+		for (org.bukkit.World world : Bukkit.getWorlds()) {
+			for (TextDisplay display : world.getEntitiesByClass(TextDisplay.class)) {
+				if (!display.getScoreboardTags().contains(ENTITY_TAG)) continue;
+				display.remove();
+			}
+		}
 	}
 
 	private record BoardKey(LeaderboardType type, LeaderboardPeriod period, Integer notoriety,
