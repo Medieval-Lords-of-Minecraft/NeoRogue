@@ -1,7 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import org.bukkit.Location;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
