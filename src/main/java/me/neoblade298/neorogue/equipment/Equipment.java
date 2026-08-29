@@ -438,6 +438,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthenDomain(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
+			new EchoingStrike(b);
 			new Egoism(b);
 			new ElectricOrb(b);
 			new Electrode(b);
@@ -445,6 +446,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Embolden(b);
 			new Emberhail(b);
 			new EmpoweredEdge(b);
+			new EnGarde(b);
 			new Endurance(b);
 			new Engulf(b);
 			new Enlighten(b);
@@ -632,6 +634,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShardBlast(b);
 			new ShardCloak(b);
 			new ShatteringShot(b);
+			new Shockwave(b);
 			new ShoulderBash(b);
 			new Sear(b);
 			new SadisticNature(b);
@@ -742,6 +745,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Infinity(b);
 			new HuntingCharm(b);
 			new IcicleEarrings(b);
+			new IndomitableBracelet(b);
 			new JewelOfErosion(b);
 			new LifeThief(b);
 			new MagicQuiver(b);
