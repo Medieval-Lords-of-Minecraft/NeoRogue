@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 public class AnalyticsManager {
 	// Bump this whenever equipment/balance changes meaningfully so analytics can be sliced per
 	// balance pass. Older rows keep their original stamp. New rows are always written at this version.
-	public static final int BALANCE_VERSION = 2;
+	public static final int BALANCE_VERSION = 3;
 
 	// The balance version that /nrlytics report queries read from. Defaults to the latest version but
 	// can be changed at runtime (via /nrlytics balanceversion) to inspect older balance passes.
