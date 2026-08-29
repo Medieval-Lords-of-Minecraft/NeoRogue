@@ -113,6 +113,7 @@ import me.neoblade298.neorogue.equipment.artifacts.Bramblevine;
 import me.neoblade298.neorogue.equipment.artifacts.Brightfeather;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
 import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
+import me.neoblade298.neorogue.equipment.artifacts.ClearGoblet;
 import me.neoblade298.neorogue.equipment.artifacts.ConcealingCloak;
 import me.neoblade298.neorogue.equipment.artifacts.CrackedCrystal;
 import me.neoblade298.neorogue.equipment.artifacts.CrossOfAntiquan;
@@ -172,6 +173,7 @@ import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
+import me.neoblade298.neorogue.equipment.artifacts.VerricsNotebook;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
 import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
 import me.neoblade298.neorogue.equipment.consumables.CatalystPotion;
@@ -1106,6 +1108,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new Brightfeather();
 		new CailiricCrystal();
 		new CharmOfGallus();
+		new ClearGoblet();
 		new ConcealingCloak();
 		new CrackedCrystal();
 		new CrossOfAntiquan();
@@ -1167,6 +1170,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TomeOfWisdom();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
+		new VerricsNotebook();
 		new WarpedAnvil();
 
 		// Levelup artifacts
