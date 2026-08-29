@@ -81,7 +81,7 @@ public class IndomitableBracelet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CHAIN,
+		item = createItem(Material.IRON_NUGGET,
 				"Decrease " + GlossaryTag.DIRECT.tag(this) + " damage taken by "
 						+ DescUtil.white(DIRECT_DAMAGE_REDUCTION) + ". For every "
 						+ GlossaryTag.SHIELDS.tag(this, shieldThreshold) + " you apply, gain "
