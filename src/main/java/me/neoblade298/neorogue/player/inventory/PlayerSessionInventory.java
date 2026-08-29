@@ -48,7 +48,6 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
-import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
@@ -194,7 +193,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (!(data.getSession().getInstance() instanceof NodeSelectInstance) && !isSpectating) {
 			contents[(MAP + offset) % inv.getSize()] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 			MapMeta meta = (MapMeta) contents[(MAP + offset) % inv.getSize()].getItemMeta();
-			MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
+			MapView map = NeoRogue.getNodeMap();
 			meta.setMapView(map);
 			contents[(MAP + offset) % inv.getSize()].setItemMeta(meta);
 		}

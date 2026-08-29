@@ -42,7 +42,7 @@ public class LeaderboardConfig {
 				if (notoriety != null && (notoriety < 0 || notoriety > 10)) throw new IllegalArgumentException();
 				String worldName = locationSection.getString("world");
 				if (worldName == null || Bukkit.getWorld(worldName) == null) {
-					NeoRogue.inst().getLogger().warning("Leaderboard location '" + id + "' references unloaded world '" + worldName + "', skipping");
+					NeoRogue.inst().getLogger().warning("Leaderboard location '" + id + "' references unloaded world '" + worldName + "'; it will be retried when the world loads");
 					continue;
 				}
 				locations.add(new LeaderboardLocation(id, type, period, notoriety, runMode, worldName,

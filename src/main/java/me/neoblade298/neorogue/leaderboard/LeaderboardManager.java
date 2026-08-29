@@ -19,6 +19,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.shared.io.SQLManager;
@@ -31,7 +34,7 @@ import me.neoblade298.neorogue.player.SessionSnapshot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class LeaderboardManager {
+public class LeaderboardManager implements Listener {
 	private static final long REFRESH_TICKS = 60L * 60L * 20L;
 	private static final String ENTITY_TAG = "neorogue_leaderboard";
 	private static final int LIMIT = 10;
@@ -47,9 +50,15 @@ public class LeaderboardManager {
 
 	public static void init() {
 		config = new LeaderboardConfig();
+		Bukkit.getPluginManager().registerEvents(new LeaderboardManager(), NeoRogue.inst());
 		refreshTask = Bukkit.getScheduler().runTaskTimer(NeoRogue.inst(), LeaderboardManager::refresh,
 				REFRESH_TICKS, REFRESH_TICKS);
 		Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), LeaderboardManager::refresh, 200L);
+	}
+
+	@EventHandler
+	public void onWorldLoad(WorldLoadEvent event) {
+		reload();
 	}
 
 	public static void reload() {

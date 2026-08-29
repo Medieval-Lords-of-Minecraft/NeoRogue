@@ -775,7 +775,7 @@ public class Session {
 			ItemStack item = CoreInventory
 					.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 			MapMeta meta = (MapMeta) item.getItemMeta();
-			meta.setMapView(Bukkit.getMap(EditInventoryInstance.MAP_ID));
+			meta.setMapView(NeoRogue.getNodeMap());
 			item.setItemMeta(meta);
 			pinv.setItem(0, item);
 		}

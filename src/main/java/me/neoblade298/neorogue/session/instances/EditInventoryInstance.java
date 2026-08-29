@@ -35,7 +35,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public abstract class EditInventoryInstance extends Instance {
-	public static final int MAP_ID = 256;
 	// How often (in ticks) the action bar is refreshed. Action bars fade after ~2–3s, so a 1s cadence
 	// both keeps dynamic values (e.g. money) current and prevents the bar from disappearing.
 	private static final long ACTION_BAR_INTERVAL = 20L;

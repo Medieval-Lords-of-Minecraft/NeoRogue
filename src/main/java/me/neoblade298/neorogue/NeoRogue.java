@@ -124,7 +124,6 @@ import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
-import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.instances.NodeSelectInstance;
 import me.neoblade298.neorogue.session.reward.RunReward;
@@ -144,6 +143,9 @@ public class NeoRogue extends JavaPlugin {
 	public static File SCHEMATIC_FOLDER;
 	
 	public static Location spawn;
+	private static final int LEGACY_NODE_MAP_ID = 256;
+	private static final String NODE_MAP_ID_CONFIG = "node-map-id";
+	private static MapView nodeMap;
 
 	public static void main(String args[]) {
 		// Use for debug
@@ -186,12 +188,7 @@ public class NeoRogue extends JavaPlugin {
 		new Placeholders().register();
 
 		// Load map renderer for node map
-		MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
-		while (!map.getRenderers().isEmpty()) {
-			MapRenderer rend = map.getRenderers().get(0);
-			map.removeRenderer(rend);
-		}
-		map.addRenderer(new NodeMapRenderer());
+		if (!initializeNodeMap()) return;
 
 		// Strictly for debug usage
 		Player p = Bukkit.getPlayer("Ascheladd");
@@ -199,6 +196,33 @@ public class NeoRogue extends JavaPlugin {
 		Collection<Player> others = new ArrayList<Player>();
 		if (alt != null) others.add(alt);
 		if (p != null) debugInitialize(p, others, EquipmentClass.MAGE, RegionType.LOW_DISTRICT);
+	}
+
+	private boolean initializeNodeMap() {
+		int configuredId = getConfig().getInt(NODE_MAP_ID_CONFIG, LEGACY_NODE_MAP_ID);
+		nodeMap = Bukkit.getMap(configuredId);
+		if (nodeMap == null) {
+			if (Bukkit.getWorlds().isEmpty()) {
+				getLogger().severe("Unable to create the node map because no worlds are loaded.");
+				Bukkit.getPluginManager().disablePlugin(this);
+				return false;
+			}
+			nodeMap = Bukkit.createMap(Bukkit.getWorlds().get(0));
+			getConfig().set(NODE_MAP_ID_CONFIG, nodeMap.getId());
+			saveConfig();
+			getLogger().warning("Node map " + configuredId + " was not found; created map " + nodeMap.getId() + ".");
+		}
+
+		while (!nodeMap.getRenderers().isEmpty()) {
+			MapRenderer renderer = nodeMap.getRenderers().get(0);
+			nodeMap.removeRenderer(renderer);
+		}
+		nodeMap.addRenderer(new NodeMapRenderer());
+		return true;
+	}
+
+	public static MapView getNodeMap() {
+		return nodeMap;
 	}
 
 	private boolean hasFullModeDependencies() {
