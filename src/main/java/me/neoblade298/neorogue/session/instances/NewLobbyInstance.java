@@ -24,6 +24,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
+import me.neoblade298.neorogue.player.CargoItem;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
@@ -444,32 +445,20 @@ public class NewLobbyInstance extends LobbyInstance {
         }
     }
 
-    // Hover text listing the player's cargo (amount + material name, most plentiful first) shown when
+    // Hover text listing the player's cargo (amount + variant label, most plentiful first) shown when
     // they toggle committing cargo into a run.
     private static Component buildCargoHover(Cargo cargo) {
-        List<Map.Entry<Material, Integer>> entries = new ArrayList<Map.Entry<Material, Integer>>(cargo.getItems().entrySet());
-        entries.sort(Comparator.comparingInt((Map.Entry<Material, Integer> e) -> e.getValue()).reversed());
+        List<Map.Entry<CargoItem, Integer>> entries = new ArrayList<Map.Entry<CargoItem, Integer>>(cargo.getItems().entrySet());
+        entries.sort(Comparator.comparingInt((Map.Entry<CargoItem, Integer> e) -> e.getValue()).reversed());
         Component hover = Component.empty();
         boolean first = true;
-        for (Map.Entry<Material, Integer> ent : entries) {
+        for (Map.Entry<CargoItem, Integer> ent : entries) {
             if (!first) hover = hover.append(Component.newline());
             first = false;
             hover = hover.append(Component.text(ent.getValue() + "x ", NamedTextColor.WHITE))
-                    .append(Component.text(prettyName(ent.getKey()), NamedTextColor.YELLOW));
+                    .append(Component.text(ent.getKey().getLabel(), NamedTextColor.YELLOW));
         }
         return hover;
-    }
-
-    // Turns a material enum name into a human-readable label, e.g. IRON_ORE -> "Iron Ore".
-    private static String prettyName(Material mat) {
-        String[] words = mat.name().toLowerCase().split("_");
-        StringBuilder sb = new StringBuilder();
-        for (String w : words) {
-            if (w.isEmpty()) continue;
-            if (sb.length() > 0) sb.append(' ');
-            sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
-        }
-        return sb.toString();
     }
 
     private static NamedTextColor getClassColor(EquipmentClass pc) {

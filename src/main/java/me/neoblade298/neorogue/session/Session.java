@@ -499,7 +499,7 @@ public class Session {
 		if (pd == null) return;
 		me.neoblade298.neorogue.player.Cargo cargo = pd.getCargo();
 		if (cargo.getItems().isEmpty()) return;
-		for (Entry<Material, Integer> ent : new HashMap<Material, Integer>(cargo.getItems()).entrySet()) {
+		for (Entry<me.neoblade298.neorogue.player.CargoItem, Integer> ent : new HashMap<>(cargo.getItems()).entrySet()) {
 			psd.loadRunCargo(ent.getKey(), ent.getValue());
 		}
 		cargo.clear();

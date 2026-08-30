@@ -5,45 +5,32 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import de.tr7zw.nbtapi.NBT;
-import me.ascheladd.asheconomy.pricing.MaterialPrices;
 
 // A player's persistent stash of sellable vanilla items plus its two limits. Owned by PlayerData
 // and persisted to SQL (items in neorogue_playercargo). The limits are derived from the player's
 // purchased caravan upgrades on login (see PlayerData.recomputeCaravanState), not persisted directly.
 public class Cargo {
 	// LinkedHashMap keeps a stable slot ordering in the GUI as items are added.
-	private final LinkedHashMap<Material, Integer> items = new LinkedHashMap<Material, Integer>();
-	private int capacity; // Max total item count across all materials
-	private int slots;     // Max number of unique materials
+	private final LinkedHashMap<CargoItem, Integer> items = new LinkedHashMap<CargoItem, Integer>();
+	private int capacity; // Max total item count across all variants
+	private int slots;     // Max number of unique item variants
 
 	public Cargo(int capacity, int slots) {
 		this.capacity = capacity;
 		this.slots = slots;
 	}
 
-	// An item may be deposited only if its material has a mapped price and it carries no special
-	// metadata: no display name, lore, enchantments, damage, or plugin NBT (equipId).
+	// Eligibility is defined by CargoItem's strict metadata whitelist and AshEconomy's exact quote.
 	public static boolean isEligible(ItemStack item) {
-		if (item == null || item.getType().isAir()) return false;
-		if (!MaterialPrices.hasPrice(item.getType())) return false;
-		if (NBT.get(item, nbt -> { return nbt.hasTag("equipId"); })) return false;
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return true;
-		if (meta.hasDisplayName() || meta.hasLore() || meta.hasEnchants()) return false;
-		if (meta instanceof Damageable && ((Damageable) meta).hasDamage()) return false;
-		return true;
+		return CargoItem.fromItem(item).isPresent();
 	}
 
-	public Map<Material, Integer> getItems() {
+	public Map<CargoItem, Integer> getItems() {
 		return items;
 	}
 
-	public int getCount(Material mat) {
-		return items.getOrDefault(mat, 0);
+	public int getCount(CargoItem item) {
+		return items.getOrDefault(item, 0);
 	}
 
 	public int getTotalItems() {
@@ -58,31 +45,44 @@ public class Cargo {
 
 	// Adds up to the requested amount, respecting the slot and capacity limits.
 	// Returns the amount actually added.
-	public int addItem(Material mat, int amount) {
-		if (mat == null || amount <= 0) return 0;
-		boolean isNew = !items.containsKey(mat);
+	public int addItem(CargoItem item, int amount) {
+		if (item == null || amount <= 0) return 0;
+		boolean isNew = !items.containsKey(item);
 		if (isNew && getUsedSlots() >= slots) return 0;
 		int space = capacity - getTotalItems();
 		if (space <= 0) return 0;
 		int toAdd = Math.min(amount, space);
-		items.merge(mat, toAdd, Integer::sum);
+		items.merge(item, toAdd, Integer::sum);
 		return toAdd;
 	}
 
+	public int addItem(ItemStack stack, int amount) {
+		return CargoItem.fromItem(stack).map(item -> addItem(item, amount)).orElse(0);
+	}
+
+	// Convenience for ordinary-material callers.
+	public int addItem(Material material, int amount) {
+		return addItem(new ItemStack(material), amount);
+	}
+
 	// Removes up to the requested amount. Returns the amount actually removed.
-	public int removeItem(Material mat, int amount) {
-		Integer current = items.get(mat);
+	public int removeItem(CargoItem item, int amount) {
+		Integer current = items.get(item);
 		if (current == null || amount <= 0) return 0;
 		int toRemove = Math.min(amount, current);
-		if (toRemove >= current) items.remove(mat);
-		else items.put(mat, current - toRemove);
+		if (toRemove >= current) items.remove(item);
+		else items.put(item, current - toRemove);
 		return toRemove;
 	}
 
 	// Loads an item directly from storage, bypassing limit checks.
-	public void load(Material mat, int amount) {
-		if (mat == null || amount <= 0) return;
-		items.merge(mat, amount, Integer::sum);
+	public void load(CargoItem item, int amount) {
+		if (item == null || amount <= 0) return;
+		items.merge(item, amount, Integer::sum);
+	}
+
+	public void load(Material material, int amount) {
+		CargoItem.fromItem(new ItemStack(material)).ifPresent(item -> load(item, amount));
 	}
 
 	// Removes all items (limits are untouched).
@@ -90,14 +90,14 @@ public class Cargo {
 		items.clear();
 	}
 
-	public double getSellValue(Material mat) {
-		return MaterialPrices.getPrice(mat) * getCount(mat);
+	public double getSellValue(CargoItem item) {
+		return item.getEffectivePrice() * getCount(item);
 	}
 
 	public double getTotalSellValue() {
 		double total = 0;
-		for (Map.Entry<Material, Integer> ent : items.entrySet()) {
-			total += MaterialPrices.getPrice(ent.getKey()) * ent.getValue();
+		for (Map.Entry<CargoItem, Integer> ent : items.entrySet()) {
+			total += ent.getKey().getEffectivePrice() * ent.getValue();
 		}
 		return total;
 	}

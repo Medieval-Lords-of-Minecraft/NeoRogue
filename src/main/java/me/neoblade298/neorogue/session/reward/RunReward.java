@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -17,6 +16,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
+import me.neoblade298.neorogue.player.CargoItem;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -113,22 +113,22 @@ public class RunReward {
 		return reward;
 	}
 
-	// Builds the MiniMessage hover text (per-material breakdown, most valuable first, plus any
+	// Builds the MiniMessage hover text (per-variant breakdown, most valuable first, plus any
 	// notoriety-bonus note) shown when a player hovers a cargo sale summary line.
 	private static String buildCargoHover(Session s, PlayerSessionData.CargoSaleResult result, double reward) {
-		List<Map.Entry<Material, Integer>> lines = new ArrayList<Map.Entry<Material, Integer>>(
-				result.qtyByMaterial.entrySet());
+		List<Map.Entry<CargoItem, Integer>> lines = new ArrayList<Map.Entry<CargoItem, Integer>>(
+				result.qtyByItem.entrySet());
 		lines.sort(Comparator.comparingDouble(
-				(Map.Entry<Material, Integer> e) -> result.valueByMaterial.getOrDefault(e.getKey(), 0.0))
+				(Map.Entry<CargoItem, Integer> e) -> result.valueByItem.getOrDefault(e.getKey(), 0.0))
 				.reversed());
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
-		for (Map.Entry<Material, Integer> line : lines) {
-			Material mat = line.getKey();
+		for (Map.Entry<CargoItem, Integer> line : lines) {
+			CargoItem item = line.getKey();
 			if (!first) sb.append("<newline>");
 			first = false;
-			sb.append("<white>").append(line.getValue()).append("x <yellow>").append(prettyName(mat))
-					.append(" <gray>for <yellow>").append(formatMoney(result.valueByMaterial.getOrDefault(mat, 0.0)));
+			sb.append("<white>").append(line.getValue()).append("x <yellow>").append(item.getLabel())
+					.append(" <gray>for <yellow>").append(formatMoney(result.valueByItem.getOrDefault(item, 0.0)));
 		}
 		if (reward > result.value) {
 			sb.append("<newline><white>(includes <green>+").append(s.getNotorietyMoneyBonusPercent())
@@ -300,7 +300,7 @@ public class RunReward {
 	// run cargo is only kept if the player has caravan insurance; otherwise it is discarded entirely.
 	public static void returnUnsoldCargo(Session s, boolean won) {
 		for (PlayerSessionData psd : s.getParty().values()) {
-			Map<Material, Integer> remaining = psd.getRunCargo();
+			Map<CargoItem, Integer> remaining = psd.getRunCargo();
 			if (remaining.isEmpty()) continue;
 			PlayerData pd = psd.getData();
 			if (pd == null) continue;
@@ -315,11 +315,11 @@ public class RunReward {
 			Cargo cargo = pd.getCargo();
 			Cargo lost = pd.getLostCargo();
 			boolean anyDiscarded = false;
-			for (Map.Entry<Material, Integer> ent : new HashMap<Material, Integer>(remaining).entrySet()) {
-				Material mat = ent.getKey();
-				int leftover = ent.getValue() - cargo.addItem(mat, ent.getValue());
+			for (Map.Entry<CargoItem, Integer> ent : new HashMap<CargoItem, Integer>(remaining).entrySet()) {
+				CargoItem item = ent.getKey();
+				int leftover = ent.getValue() - cargo.addItem(item, ent.getValue());
 				if (leftover > 0) {
-					leftover -= lost.addItem(mat, leftover);
+					leftover -= lost.addItem(item, leftover);
 					if (leftover > 0) anyDiscarded = true;
 				}
 			}
@@ -398,12 +398,12 @@ public class RunReward {
 			lore.add(Component.empty());
 			lore.add(loreLine("<gold>Cargo Sold"));
 			double cargoTotal = 0;
-			for (Map.Entry<Material, Integer> ent : psd.getSoldCargoQty().entrySet()) {
-				Material mat = ent.getKey();
+			for (Map.Entry<CargoItem, Integer> ent : psd.getSoldCargoQty().entrySet()) {
+				CargoItem item = ent.getKey();
 				int qty = ent.getValue();
-				double value = psd.getSoldCargoValue().getOrDefault(mat, 0.0);
+				double value = psd.getSoldCargoValue().getOrDefault(item, 0.0);
 				cargoTotal += value;
-				lore.add(loreLine("<gray>  " + prettyName(mat) + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
+				lore.add(loreLine("<gray>  " + item.getLabel() + " <white>\u00d7" + qty + " <gray>\u2192 <yellow>"
 						+ formatWholeMoney(value)));
 			}
 			PlayerData pd = psd.getData();
@@ -461,18 +461,6 @@ public class RunReward {
 	// Deserializes a MiniMessage line into a non-italic lore Component.
 	private static Component loreLine(String miniMessage) {
 		return NeoCore.miniMessage().deserialize(miniMessage).decoration(TextDecoration.ITALIC, false);
-	}
-
-	// Converts an enum material name (e.g. IRON_INGOT) to a readable label (e.g. Iron Ingot).
-	private static String prettyName(Material mat) {
-		String[] parts = mat.name().toLowerCase().split("_");
-		StringBuilder sb = new StringBuilder();
-		for (String part : parts) {
-			if (part.isEmpty()) continue;
-			if (sb.length() > 0) sb.append(' ');
-			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
-		}
-		return sb.toString();
 	}
 
 	private static String formatWholeMoney(double amount) {

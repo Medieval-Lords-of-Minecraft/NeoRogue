@@ -25,6 +25,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.ascheladd.asheconomy.pricing.DynamicPricingManager;
+import me.ascheladd.asheconomy.pricing.ItemPriceQuote;
+import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -122,8 +125,8 @@ public class PlayerData {
 	private int fleetCapacity = DEFAULT_FLEET_CAPACITY;
 	private int fleetSlots = DEFAULT_FLEET_SLOTS;
 	private final ArrayList<FleetHold> fleetHolds = new ArrayList<FleetHold>();
-	// Proceeds from auto-sold fleet holds awaiting collection, keyed by material (amount + total value).
-	private final LinkedHashMap<Material, PendingFleetSale> pendingFleetSales = new LinkedHashMap<Material, PendingFleetSale>();
+	// Proceeds from auto-sold fleet holds awaiting collection, keyed by exact variant.
+	private final LinkedHashMap<CargoItem, PendingFleetSale> pendingFleetSales = new LinkedHashMap<CargoItem, PendingFleetSale>();
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
 	
@@ -328,25 +331,26 @@ public class PlayerData {
 			cargoStmt.setString(1, uuidStr);
 			try (ResultSet cargoRs = cargoStmt.executeQuery()) {
 				while (cargoRs.next()) {
-					Material mat = Material.getMaterial(cargoRs.getString("material"));
-					if (mat == null) continue;
+					CargoItem item = CargoItem.fromStorage(cargoRs.getString("material"),
+							cargoRs.getString("item_key"), cargoRs.getString("item_data")).orElse(null);
+					if (item == null) continue;
 					int amount = cargoRs.getInt("amount");
 					String type = cargoRs.getString("type");
 					if (type == null) type = "MAIN";
 					switch (type) {
 					case "LOST":
-						lostCargo.load(mat, amount);
+						lostCargo.load(item, amount);
 						break;
 					case "FLEET": {
 						FleetHold hold = getFleetHold(cargoRs.getInt("idx"));
-						if (hold != null) hold.load(mat, amount, cargoRs.getDouble("price"), cargoRs.getLong("filled_at"));
-						else addPendingSale(mat, amount, cargoRs.getDouble("price") * amount);
+						if (hold != null) hold.load(item, amount, cargoRs.getDouble("price"), cargoRs.getLong("filled_at"));
+						else addPendingSale(item, amount, cargoRs.getDouble("price") * amount);
 						break;
 					}
 					case "PENDING": {
 						double value = cargoRs.getDouble("price") * amount;
-						PendingFleetSale sale = pendingFleetSales.get(mat);
-						if (sale == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
+						PendingFleetSale sale = pendingFleetSales.get(item);
+						if (sale == null) pendingFleetSales.put(item, new PendingFleetSale(item, amount, value));
 						else {
 							sale.amount += amount;
 							sale.value += value;
@@ -354,7 +358,7 @@ public class PlayerData {
 						break;
 					}
 					default:
-						cargo.load(mat, amount);
+						cargo.load(item, amount);
 						break;
 					}
 				}
@@ -713,14 +717,14 @@ public class PlayerData {
 	}
 
 	// ----- Fleet holds -----
-	// A pending sale of one material from an auto-sold fleet hold, awaiting collection by the player.
+	// A pending sale of one exact variant from an auto-sold fleet hold, awaiting collection.
 	public static class PendingFleetSale {
-		public final Material material;
+		public final CargoItem item;
 		public int amount;
 		public double value;
 
-		public PendingFleetSale(Material material, int amount, double value) {
-			this.material = material;
+		public PendingFleetSale(CargoItem item, int amount, double value) {
+			this.item = item;
 			this.amount = amount;
 			this.value = value;
 		}
@@ -754,7 +758,7 @@ public class PlayerData {
 		while (fleetHolds.size() < fleetSize) fleetHolds.add(new FleetHold(fleetCapacity, fleetSlots));
 		while (fleetHolds.size() > fleetSize) {
 			FleetHold removed = fleetHolds.remove(fleetHolds.size() - 1);
-			for (Map.Entry<Material, Integer> ent : removed.getCargo().getItems().entrySet()) {
+			for (Map.Entry<CargoItem, Integer> ent : removed.getCargo().getItems().entrySet()) {
 				addPendingSale(ent.getKey(), ent.getValue(), removed.getUnitPrice(ent.getKey()) * ent.getValue());
 			}
 		}
@@ -776,9 +780,9 @@ public class PlayerData {
 		for (FleetHold hold : fleetHolds) hold.setSlots(fleetSlots);
 	}
 
-	private void addPendingSale(Material mat, int amount, double value) {
-		PendingFleetSale ps = pendingFleetSales.get(mat);
-		if (ps == null) pendingFleetSales.put(mat, new PendingFleetSale(mat, amount, value));
+	private void addPendingSale(CargoItem item, int amount, double value) {
+		PendingFleetSale ps = pendingFleetSales.get(item);
+		if (ps == null) pendingFleetSales.put(item, new PendingFleetSale(item, amount, value));
 		else { ps.amount += amount; ps.value += value; }
 	}
 
@@ -797,10 +801,13 @@ public class PlayerData {
 			if (hold.isEmpty()) continue;
 			long filledAt = hold.getFilledAt();
 			if (filledAt <= 0 || filledAt >= cutoff) continue;
-			for (Map.Entry<Material, Integer> ent : new java.util.ArrayList<Map.Entry<Material, Integer>>(hold.getCargo().getItems().entrySet())) {
-				Material mat = ent.getKey();
+			for (Map.Entry<CargoItem, Integer> ent : new java.util.ArrayList<Map.Entry<CargoItem, Integer>>(hold.getCargo().getItems().entrySet())) {
+				CargoItem item = ent.getKey();
 				int amt = ent.getValue();
-				addPendingSale(mat, amt, hold.getUnitPrice(mat) * amt);
+				double saleValue = hold.getUnitPrice(item) * amt;
+				addPendingSale(item, amt, saleValue);
+				ItemPriceQuote quote = MaterialPrices.quote(item.createStack()).orElse(null);
+				if (quote != null) DynamicPricingManager.recordSale(quote, amt, saleValue);
 			}
 			hold.clear();
 			changed = true;
@@ -837,21 +844,22 @@ public class PlayerData {
 	// Persists all cargo (main, lost, fleet holds, and pending fleet sales) into the unified table.
 	public void saveCargoAsync() {
 		final String uuidStr = uuid.toString();
-		final HashMap<Material, Integer> mainSnap = new HashMap<>(cargo.getItems());
-		final HashMap<Material, Integer> lostSnap = new HashMap<>(lostCargo.getItems());
+		final HashMap<CargoItem, Integer> mainSnap = new HashMap<>(cargo.getItems());
+		final HashMap<CargoItem, Integer> lostSnap = new HashMap<>(lostCargo.getItems());
 		final ArrayList<Object[]> fleetRows = new ArrayList<Object[]>();
 		for (int i = 0; i < fleetHolds.size(); i++) {
 			FleetHold hold = fleetHolds.get(i);
 			int idx = i + 1;
 			long filledAt = hold.getFilledAt();
-			for (Map.Entry<Material, Integer> ent : hold.getCargo().getItems().entrySet()) {
-				fleetRows.add(new Object[] { idx, ent.getKey().name(), ent.getValue(), hold.getUnitPrice(ent.getKey()), filledAt });
+			for (Map.Entry<CargoItem, Integer> ent : hold.getCargo().getItems().entrySet()) {
+				CargoItem item = ent.getKey();
+				fleetRows.add(new Object[] { idx, item, ent.getValue(), hold.getUnitPrice(item), filledAt });
 			}
 		}
 		final ArrayList<Object[]> pendingRows = new ArrayList<Object[]>();
 		for (PendingFleetSale ps : pendingFleetSales.values()) {
 			double unit = ps.amount > 0 ? ps.value / ps.amount : 0;
-			pendingRows.add(new Object[] { ps.material.name(), ps.amount, unit });
+			pendingRows.add(new Object[] { ps.item, ps.amount, unit });
 		}
 		new BukkitRunnable() {
 			@Override
@@ -865,26 +873,34 @@ public class PlayerData {
 					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
 					boolean any = false;
 					for (var entry : mainSnap.entrySet()) {
+						CargoItem item = entry.getKey();
 						sql.addValue("uuid", uuidStr).addValue("type", "MAIN").addValue("idx", 0)
-								.addValue("material", entry.getKey().name()).addValue("amount", entry.getValue())
+								.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+								.addValue("item_data", item.serializePrototype()).addValue("amount", entry.getValue())
 								.addValue("price", 0).addValue("filled_at", 0).addRow();
 						any = true;
 					}
 					for (var entry : lostSnap.entrySet()) {
+						CargoItem item = entry.getKey();
 						sql.addValue("uuid", uuidStr).addValue("type", "LOST").addValue("idx", 0)
-								.addValue("material", entry.getKey().name()).addValue("amount", entry.getValue())
+								.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+								.addValue("item_data", item.serializePrototype()).addValue("amount", entry.getValue())
 								.addValue("price", 0).addValue("filled_at", 0).addRow();
 						any = true;
 					}
 					for (Object[] row : fleetRows) {
+						CargoItem item = (CargoItem) row[1];
 						sql.addValue("uuid", uuidStr).addValue("type", "FLEET").addValue("idx", (int) row[0])
-								.addValue("material", (String) row[1]).addValue("amount", (int) row[2])
+								.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+								.addValue("item_data", item.serializePrototype()).addValue("amount", (int) row[2])
 								.addValue("price", (double) row[3]).addValue("filled_at", (long) row[4]).addRow();
 						any = true;
 					}
 					for (Object[] row : pendingRows) {
+						CargoItem item = (CargoItem) row[0];
 						sql.addValue("uuid", uuidStr).addValue("type", "PENDING").addValue("idx", 0)
-								.addValue("material", (String) row[0]).addValue("amount", (int) row[1])
+								.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+								.addValue("item_data", item.serializePrototype()).addValue("amount", (int) row[1])
 								.addValue("price", (double) row[2]).addValue("filled_at", 0).addRow();
 						any = true;
 					}
@@ -1335,21 +1351,7 @@ public class PlayerData {
 			stmts.add(achSql.build(con));
 		}
 
-		// Save cargo contents
-		PreparedStatement clearCargo = con.prepareStatement("DELETE FROM neorogue_playercargo WHERE uuid = ?;");
-		clearCargo.setString(1, uuid.toString());
-		stmts.add(clearCargo);
-
-		if (!cargo.getItems().isEmpty()) {
-			SQLInsertBuilder cargoSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playercargo");
-			for (var entry : cargo.getItems().entrySet()) {
-				cargoSql.addValue("uuid", uuid.toString())
-						.addValue("material", entry.getKey().name())
-						.addValue("amount", entry.getValue())
-						.addRow();
-			}
-			stmts.add(cargoSql.build(con));
-		}
+		// Cargo (including fleet/lost/pending variants) is persisted by saveCargoAsync().
 	}
 	
 	// Should only ever be displayed to the owner

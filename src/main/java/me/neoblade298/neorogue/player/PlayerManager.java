@@ -40,9 +40,9 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_achievements (uuid VARCHAR(36) NOT NULL, achievement VARCHAR(100) NOT NULL, progress INT NOT NULL DEFAULT 0, scope VARCHAR(40) NOT NULL DEFAULT 'GLOBAL', data TEXT, PRIMARY KEY (uuid, achievement, scope));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_expboosts (uuid VARCHAR(36) NOT NULL, type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (uuid, type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_expboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, material));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargo (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargosold (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, amount INT NOT NULL, value DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, material));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, item_key));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargo (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, PRIMARY KEY (host, slot, uuid, item_key));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargosold (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, value DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, item_key));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessionexpboosts (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, idx INT NOT NULL, displayName VARCHAR(255) NOT NULL, bonus DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, idx));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
@@ -84,7 +84,7 @@ public class PlayerManager implements IOComponent {
 				Statement stmt = con.createStatement()) {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
-			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, material));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, item_key));");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -17,13 +17,13 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.ascheladd.asheconomy.pricing.DynamicPricingManager;
+import me.ascheladd.asheconomy.pricing.ItemPriceQuote;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -104,10 +104,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	// Run-scoped cargo carried into this run (moved from the player's persistent cargo on run start),
-	// plus a per-material log of what was auto-sold during the run for the end-of-run finance summary.
-	private final LinkedHashMap<Material, Integer> runCargo = new LinkedHashMap<Material, Integer>();
-	private final LinkedHashMap<Material, Integer> soldCargoQty = new LinkedHashMap<Material, Integer>();
-	private final LinkedHashMap<Material, Double> soldCargoValue = new LinkedHashMap<Material, Double>();
+	// plus a per-variant log of what was auto-sold during the run for the end-of-run finance summary.
+	private final LinkedHashMap<CargoItem, Integer> runCargo = new LinkedHashMap<CargoItem, Integer>();
+	private final LinkedHashMap<CargoItem, Integer> soldCargoQty = new LinkedHashMap<CargoItem, Integer>();
+	private final LinkedHashMap<CargoItem, Double> soldCargoValue = new LinkedHashMap<CargoItem, Double>();
 
 	public static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
@@ -1299,22 +1299,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// --- Run cargo & selling ---
 
-	public LinkedHashMap<Material, Integer> getRunCargo() {
+	public LinkedHashMap<CargoItem, Integer> getRunCargo() {
 		return runCargo;
 	}
 
-	public LinkedHashMap<Material, Integer> getSoldCargoQty() {
+	public LinkedHashMap<CargoItem, Integer> getSoldCargoQty() {
 		return soldCargoQty;
 	}
 
-	public LinkedHashMap<Material, Double> getSoldCargoValue() {
+	public LinkedHashMap<CargoItem, Double> getSoldCargoValue() {
 		return soldCargoValue;
 	}
 
 	// Loads a run cargo entry directly (from SQL or when moving cargo into the run), no limit checks.
-	public void loadRunCargo(Material mat, int amount) {
-		if (mat == null || amount <= 0) return;
-		runCargo.merge(mat, amount, Integer::sum);
+	public void loadRunCargo(CargoItem item, int amount) {
+		if (item == null || amount <= 0) return;
+		runCargo.merge(item, amount, Integer::sum);
 	}
 
 	public int getRunCargoTotal() {
@@ -1328,7 +1328,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	// Sells the given fraction of the current run cargo, choosing the specific units as a
-	// count-weighted random draw across all materials. Reduces runCargo, records the sold
+	// count-weighted random draw across all variants. Reduces runCargo, records the sold
 	// quantities/values for the finance summary, and returns how much sold and its value.
 	public CargoSaleResult sellRunCargo(double fraction) {
 		int total = getRunCargoTotal();
@@ -1340,14 +1340,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		int remaining = total;
 		double value = 0;
 		int itemsSold = 0;
-		// Accumulate this sale per-material so it can be logged to the dynamic pricing sales table.
-		LinkedHashMap<Material, Integer> saleQty = new LinkedHashMap<Material, Integer>();
-		LinkedHashMap<Material, Double> saleValue = new LinkedHashMap<Material, Double>();
+		// Accumulate this sale per variant so AshEconomy receives its selected quote identity.
+		LinkedHashMap<CargoItem, Integer> saleQty = new LinkedHashMap<CargoItem, Integer>();
+		LinkedHashMap<CargoItem, Double> saleValue = new LinkedHashMap<CargoItem, Double>();
 		for (int i = 0; i < toSell && remaining > 0; i++) {
 			int roll = NeoRogue.gen.nextInt(remaining);
-			Material chosen = null;
+			CargoItem chosen = null;
 			int cumulative = 0;
-			for (Map.Entry<Material, Integer> ent : runCargo.entrySet()) {
+			for (Map.Entry<CargoItem, Integer> ent : runCargo.entrySet()) {
 				cumulative += ent.getValue();
 				if (roll < cumulative) {
 					chosen = ent.getKey();
@@ -1361,8 +1361,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			else runCargo.put(chosen, newCount);
 			remaining--;
 
-			double price = MaterialPrices.getPrice(chosen);
-			if (price < 0) price = 0;
+			ItemPriceQuote quote = MaterialPrices.quote(chosen.createStack()).orElse(null);
+			double price = quote == null ? 0 : quote.effectivePrice();
 			value += price;
 			itemsSold++;
 			soldCargoQty.merge(chosen, 1, Integer::sum);
@@ -1370,31 +1370,34 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			saleQty.merge(chosen, 1, Integer::sum);
 			saleValue.merge(chosen, price, Double::sum);
 		}
-		// Log each material's contribution to this sale for dynamic price adjustment.
-		for (Map.Entry<Material, Integer> ent : saleQty.entrySet()) {
-			DynamicPricingManager.recordSale(ent.getKey(), ent.getValue(), saleValue.getOrDefault(ent.getKey(), 0.0));
+		// Log each variant's selected AshEconomy identity for dynamic price adjustment.
+		for (Map.Entry<CargoItem, Integer> ent : saleQty.entrySet()) {
+			ItemPriceQuote quote = MaterialPrices.quote(ent.getKey().createStack()).orElse(null);
+			if (quote != null) {
+				DynamicPricingManager.recordSale(quote, ent.getValue(), saleValue.getOrDefault(ent.getKey(), 0.0));
+			}
 		}
 		return new CargoSaleResult(itemsSold, value, saleQty, saleValue);
 	}
 
 	// Result of a single cargo auto-sale: number of units sold, their total sell value, and a
-	// per-material breakdown of quantities/values sold in this sale.
+	// per-variant breakdown of quantities/values sold in this sale.
 	public static class CargoSaleResult {
 		public final int itemsSold;
 		public final double value;
-		public final LinkedHashMap<Material, Integer> qtyByMaterial;
-		public final LinkedHashMap<Material, Double> valueByMaterial;
+		public final LinkedHashMap<CargoItem, Integer> qtyByItem;
+		public final LinkedHashMap<CargoItem, Double> valueByItem;
 
 		public CargoSaleResult(int itemsSold, double value) {
-			this(itemsSold, value, new LinkedHashMap<Material, Integer>(), new LinkedHashMap<Material, Double>());
+			this(itemsSold, value, new LinkedHashMap<CargoItem, Integer>(), new LinkedHashMap<CargoItem, Double>());
 		}
 
-		public CargoSaleResult(int itemsSold, double value, LinkedHashMap<Material, Integer> qtyByMaterial,
-				LinkedHashMap<Material, Double> valueByMaterial) {
+		public CargoSaleResult(int itemsSold, double value, LinkedHashMap<CargoItem, Integer> qtyByItem,
+				LinkedHashMap<CargoItem, Double> valueByItem) {
 			this.itemsSold = itemsSold;
 			this.value = value;
-			this.qtyByMaterial = qtyByMaterial;
-			this.valueByMaterial = valueByMaterial;
+			this.qtyByItem = qtyByItem;
+			this.valueByItem = valueByItem;
 		}
 	}
 
@@ -1495,9 +1498,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 		if (!runCargo.isEmpty()) {
 			SQLInsertBuilder cargoSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessioncargo");
-			for (Map.Entry<Material, Integer> ent : runCargo.entrySet()) {
+			for (Map.Entry<CargoItem, Integer> ent : runCargo.entrySet()) {
+				CargoItem item = ent.getKey();
 				cargoSql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
-						.addValue("material", ent.getKey().name()).addValue("amount", ent.getValue()).addRow();
+						.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+						.addValue("item_data", item.serializePrototype()).addValue("amount", ent.getValue()).addRow();
 			}
 			try (PreparedStatement ps = cargoSql.build(con)) {
 				ps.executeBatch();
@@ -1513,10 +1518,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 		if (!soldCargoQty.isEmpty()) {
 			SQLInsertBuilder soldSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessioncargosold");
-			for (Map.Entry<Material, Integer> ent : soldCargoQty.entrySet()) {
+			for (Map.Entry<CargoItem, Integer> ent : soldCargoQty.entrySet()) {
+				CargoItem item = ent.getKey();
 				soldSql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
-						.addValue("material", ent.getKey().name()).addValue("amount", ent.getValue())
-						.addValue("value", soldCargoValue.getOrDefault(ent.getKey(), 0.0)).addRow();
+						.addValue("material", item.getMaterial().name()).addValue("item_key", item.getKey())
+						.addValue("item_data", item.serializePrototype()).addValue("amount", ent.getValue())
+						.addValue("value", soldCargoValue.getOrDefault(item, 0.0)).addRow();
 			}
 			try (PreparedStatement ps = soldSql.build(con)) {
 				ps.executeBatch();
@@ -1531,28 +1538,30 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		String uuidStr = uuid.toString();
 		try (Connection con = SQLManager.getConnection("NeoRogue")) {
 			try (PreparedStatement ps = con.prepareStatement(
-					"SELECT material, amount FROM neorogue_sessioncargo WHERE host = ? AND slot = ? AND uuid = ?;")) {
+					"SELECT material, item_key, item_data, amount FROM neorogue_sessioncargo WHERE host = ? AND slot = ? AND uuid = ?;")) {
 				ps.setString(1, host);
 				ps.setInt(2, saveSlot);
 				ps.setString(3, uuidStr);
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						Material mat = Material.getMaterial(rs.getString("material"));
-						if (mat != null) runCargo.merge(mat, rs.getInt("amount"), Integer::sum);
+						CargoItem item = CargoItem.fromStorage(rs.getString("material"), rs.getString("item_key"),
+								rs.getString("item_data")).orElse(null);
+						if (item != null) runCargo.merge(item, rs.getInt("amount"), Integer::sum);
 					}
 				}
 			}
 			try (PreparedStatement ps = con.prepareStatement(
-					"SELECT material, amount, value FROM neorogue_sessioncargosold WHERE host = ? AND slot = ? AND uuid = ?;")) {
+					"SELECT material, item_key, item_data, amount, value FROM neorogue_sessioncargosold WHERE host = ? AND slot = ? AND uuid = ?;")) {
 				ps.setString(1, host);
 				ps.setInt(2, saveSlot);
 				ps.setString(3, uuidStr);
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						Material mat = Material.getMaterial(rs.getString("material"));
-						if (mat != null) {
-							soldCargoQty.merge(mat, rs.getInt("amount"), Integer::sum);
-							soldCargoValue.merge(mat, rs.getDouble("value"), Double::sum);
+						CargoItem item = CargoItem.fromStorage(rs.getString("material"), rs.getString("item_key"),
+								rs.getString("item_data")).orElse(null);
+						if (item != null) {
+							soldCargoQty.merge(item, rs.getInt("amount"), Integer::sum);
+							soldCargoValue.merge(item, rs.getDouble("value"), Double::sum);
 						}
 					}
 				}

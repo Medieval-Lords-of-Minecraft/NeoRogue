@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="468" height="60" viewBox="0 0 468 60" role="img" aria-label="Medieval Lords Minecraft server banner">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#240b0e"/>
+      <stop offset="0.5" stop-color="#70222a"/>
+      <stop offset="1" stop-color="#240b0e"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff0a0"/>
+      <stop offset="1" stop-color="#d49a32"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="72%">
+      <stop offset="0.45" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.58"/>
+    </radialGradient>
+    <clipPath id="crestClip">
+      <circle cx="30" cy="30" r="26"/>
+    </clipPath>
+  </defs>
+
+  <rect width="468" height="60" fill="url(#background)"/>
+  <rect width="468" height="60" fill="url(#vignette)"/>
+
+  <image href="discord-logo.png" x="4" y="4" width="52" height="52" preserveAspectRatio="xMidYMid slice" clip-path="url(#crestClip)"/>
+
+  <text x="66" y="27" font-family="'Perpetua Titling MT', Perpetua, Georgia, serif" font-size="21" font-weight="700" letter-spacing="0.2" fill="url(#gold)" stroke="#6b4817" stroke-width="0.45">Medieval Lords</text>
+  <text x="67" y="44" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#ecf4ee">Roguelike Towny. The First Ever.</text>
+
+  <rect x="341" y="12" width="116" height="36" rx="3" fill="#16080a" stroke="#d95b64"/>
+  <text x="399" y="26" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#a8b7ad">JOIN NOW</text>
+  <text x="399" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#ffb3b8">start.ml-mc.com</text>
+
+  <rect x="0.5" y="0.5" width="467" height="59" fill="none" stroke="#c6a451"/>
+</svg>

@@ -19,12 +19,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.api.NeoRogueAPI;
 import me.neoblade298.neorogue.player.Cargo;
+import me.neoblade298.neorogue.player.CargoItem;
 import me.neoblade298.neorogue.player.FleetHold;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerData.PendingFleetSale;
@@ -53,7 +53,7 @@ public class CargoInventory extends CoreInventory {
 	private final boolean returnToCaravanMenu;
 	private final int controlBase;
 	private final int backSlot, prevSlot, holdInfoSlot, nextSlot, collectSlot, lostCargoSlot, infoSlot;
-	private final HashMap<Integer, Material> slotToMaterial = new HashMap<Integer, Material>();
+	private final HashMap<Integer, CargoItem> slotToItem = new HashMap<Integer, CargoItem>();
 
 	public CargoInventory(Player p, PlayerData pd) {
 		this(p, pd, false);
@@ -108,20 +108,20 @@ public class CargoInventory extends CoreInventory {
 		return pd.getCargo();
 	}
 
-	private int depositActive(Material mat, int amount) {
+	private int depositActive(CargoItem item, int amount) {
 		if (isFleetView()) {
 			FleetHold hold = activeFleetHold();
-			return hold != null ? hold.addItem(mat, amount) : 0;
+			return hold != null ? hold.addItem(item, amount) : 0;
 		}
-		return pd.getCargo().addItem(mat, amount);
+		return pd.getCargo().addItem(item, amount);
 	}
 
-	private int withdrawActive(Material mat, int amount) {
+	private int withdrawActive(CargoItem item, int amount) {
 		if (isFleetView()) {
 			FleetHold hold = activeFleetHold();
-			return hold != null ? hold.removeItem(mat, amount) : 0;
+			return hold != null ? hold.removeItem(item, amount) : 0;
 		}
-		return pd.getCargo().removeItem(mat, amount);
+		return pd.getCargo().removeItem(item, amount);
 	}
 
 	private boolean hasLostCargo() {
@@ -130,29 +130,29 @@ public class CargoInventory extends CoreInventory {
 
 	private void render() {
 		inv.clear();
-		slotToMaterial.clear();
+		slotToItem.clear();
 		Cargo view = activeCargo();
 		boolean fleet = isFleetView();
 		FleetHold hold = fleet ? activeFleetHold() : null;
 
 		int slot = 0;
-		for (Map.Entry<Material, Integer> ent : view.getItems().entrySet()) {
+		for (Map.Entry<CargoItem, Integer> ent : view.getItems().entrySet()) {
 			if (slot >= controlBase) break;
-			Material mat = ent.getKey();
+			CargoItem item = ent.getKey();
 			int count = ent.getValue();
 
-			// Display the actual stack size, capped at 64, so the amount is visible at a glance.
-			ItemStack disp = new ItemStack(mat, Math.min(count, 64));
+			// Add GUI lore only to a defensive clone; the withdrawable prototype remains untouched.
+			ItemStack disp = item.createStack(Math.min(count, item.createStack().getMaxStackSize()));
 			ItemMeta meta = disp.getItemMeta();
 			List<Component> lore = new ArrayList<Component>();
 			lore.add(line(Component.text("Amount: ", NamedTextColor.GRAY)
 					.append(Component.text(count, NamedTextColor.WHITE))));
 			if (fleet && hold != null) {
 				lore.add(line(Component.text("Locked-in value: ", NamedTextColor.GRAY)
-						.append(Component.text(df.format(hold.getUnitPrice(mat) * count), NamedTextColor.GOLD))));
+						.append(Component.text(df.format(hold.getUnitPrice(item) * count), NamedTextColor.GOLD))));
 			} else {
 				lore.add(line(Component.text("Sell value: ", NamedTextColor.GRAY)
-						.append(Component.text(df.format(MaterialPrices.getPrice(mat) * count), NamedTextColor.GOLD))));
+						.append(Component.text(df.format(item.getEffectivePrice() * count), NamedTextColor.GOLD))));
 			}
 			lore.add(Component.empty());
 			lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
@@ -163,7 +163,7 @@ public class CargoInventory extends CoreInventory {
 			disp.setItemMeta(meta);
 
 			inv.setItem(slot, disp);
-			slotToMaterial.put(slot, mat);
+			slotToItem.put(slot, item);
 			slot++;
 		}
 		// Leave slots open (empty) up to the cargo's slot limit so the player has room to deposit;
@@ -247,7 +247,7 @@ public class CargoInventory extends CoreInventory {
 		List<Component> lore = new ArrayList<Component>();
 		lore.add(line(Component.text("Your fleet sold these goods:", NamedTextColor.GRAY)));
 		for (PendingFleetSale sale : pd.getPendingFleetSales()) {
-			lore.add(line(Component.text("  " + prettyName(sale.material) + " x" + sale.amount, NamedTextColor.WHITE)
+			lore.add(line(Component.text("  " + sale.item.getLabel() + " x" + sale.amount, NamedTextColor.WHITE)
 					.append(Component.text(" for ", NamedTextColor.GRAY))
 					.append(Component.text(df.format(sale.value), NamedTextColor.GOLD))));
 		}
@@ -301,17 +301,6 @@ public class CargoInventory extends CoreInventory {
 		meta.lore(lore);
 		info.setItemMeta(meta);
 		return info;
-	}
-
-	private static String prettyName(Material mat) {
-		String[] words = mat.name().toLowerCase().split("_");
-		StringBuilder sb = new StringBuilder();
-		for (String w : words) {
-			if (w.isEmpty()) continue;
-			if (sb.length() > 0) sb.append(' ');
-			sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
-		}
-		return sb.toString();
 	}
 
 	private static Component line(Component c) {
@@ -384,14 +373,14 @@ public class CargoInventory extends CoreInventory {
 				return;
 			}
 
-			Material mat = slotToMaterial.get(slot);
-			if (mat != null) {
+			CargoItem item = slotToItem.get(slot);
+			if (item != null) {
 				// Withdraw: left = 1, shift-left = a stack. Ignore right clicks.
 				if (e.getClick() == ClickType.RIGHT || e.getClick() == ClickType.SHIFT_RIGHT) return;
-				int amount = e.isShiftClick() ? mat.getMaxStackSize() : 1;
-				int removed = withdrawActive(mat, amount);
+				int amount = e.isShiftClick() ? item.createStack().getMaxStackSize() : 1;
+				int removed = withdrawActive(item, amount);
 				if (removed <= 0) return;
-				giveOrDrop(mat, removed);
+				giveOrDrop(item, removed);
 				render();
 				click();
 				return;
@@ -424,7 +413,8 @@ public class CargoInventory extends CoreInventory {
 					Util.displayError(p, "You don't have a permit to store that material!");
 					return;
 				}
-				int added = depositActive(item.getType(), item.getAmount());
+				CargoItem cargoItem = CargoItem.fromItem(item).orElse(null);
+				int added = cargoItem == null ? 0 : depositActive(cargoItem, item.getAmount());
 				if (added <= 0) {
 					Util.displayError(p, "That hold has no room for that!");
 					return;
@@ -449,7 +439,8 @@ public class CargoInventory extends CoreInventory {
 			Util.displayError(p, "You don't have a permit to store that material!");
 			return;
 		}
-		int added = depositActive(cursor.getType(), cursor.getAmount());
+		CargoItem item = CargoItem.fromItem(cursor).orElse(null);
+		int added = item == null ? 0 : depositActive(item, cursor.getAmount());
 		if (added <= 0) {
 			Util.displayError(p, "That hold has no room for that!");
 			return;
@@ -484,7 +475,8 @@ public class CargoInventory extends CoreInventory {
 			Util.displayError(p, "You don't have a permit to store that material!");
 			return;
 		}
-		int added = depositActive(dragged.getType(), dragged.getAmount());
+		CargoItem item = CargoItem.fromItem(dragged).orElse(null);
+		int added = item == null ? 0 : depositActive(item, dragged.getAmount());
 		int remaining = dragged.getAmount() - added;
 		// Cancelling a drag restores the full cursor next tick, so override it afterwards.
 		final ItemStack newCursor = remaining > 0 ? withAmount(dragged, remaining) : null;
@@ -509,8 +501,8 @@ public class CargoInventory extends CoreInventory {
 		pd.saveCargoAsync();
 	}
 
-	private void giveOrDrop(Material mat, int amount) {
-		ItemStack stack = new ItemStack(mat, amount);
+	private void giveOrDrop(CargoItem item, int amount) {
+		ItemStack stack = item.createStack(amount);
 		Map<Integer, ItemStack> leftover = p.getInventory().addItem(stack);
 		for (ItemStack left : leftover.values()) {
 			p.getWorld().dropItemNaturally(p.getLocation(), left);

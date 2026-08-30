@@ -17,10 +17,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.Cargo;
+import me.neoblade298.neorogue.player.CargoItem;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
@@ -36,7 +36,7 @@ public class LostCargoInventory extends CoreInventory {
 	private final PlayerData pd;
 	private final Cargo cargo;
 	private final int infoSlot;
-	private final java.util.HashMap<Integer, Material> slotToMaterial = new java.util.HashMap<Integer, Material>();
+	private final java.util.HashMap<Integer, CargoItem> slotToItem = new java.util.HashMap<Integer, CargoItem>();
 
 	public LostCargoInventory(Player p, PlayerData pd) {
 		super(p, Bukkit.createInventory(p, computeSize(pd.getLostCargo()), Component.text("Lost Cargo", NamedTextColor.GOLD)));
@@ -57,20 +57,20 @@ public class LostCargoInventory extends CoreInventory {
 
 	private void render() {
 		inv.clear();
-		slotToMaterial.clear();
+		slotToItem.clear();
 		int slot = 0;
-		for (Map.Entry<Material, Integer> ent : cargo.getItems().entrySet()) {
+		for (Map.Entry<CargoItem, Integer> ent : cargo.getItems().entrySet()) {
 			if (slot >= infoSlot) break;
-			Material mat = ent.getKey();
+			CargoItem item = ent.getKey();
 			int count = ent.getValue();
 
-			ItemStack disp = new ItemStack(mat, Math.max(1, Math.min(count, mat.getMaxStackSize())));
+			ItemStack disp = item.createStack(Math.max(1, Math.min(count, item.createStack().getMaxStackSize())));
 			ItemMeta meta = disp.getItemMeta();
 			List<Component> lore = new ArrayList<Component>();
 			lore.add(line(Component.text("Amount: ", NamedTextColor.GRAY)
 					.append(Component.text(count, NamedTextColor.WHITE))));
 			lore.add(line(Component.text("Sell value: ", NamedTextColor.GRAY)
-					.append(Component.text(df.format(MaterialPrices.getPrice(mat) * count), NamedTextColor.GOLD))));
+						.append(Component.text(df.format(item.getEffectivePrice() * count), NamedTextColor.GOLD))));
 			lore.add(Component.empty());
 			lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
 					.append(Component.text("withdraw 1", NamedTextColor.WHITE))));
@@ -80,7 +80,7 @@ public class LostCargoInventory extends CoreInventory {
 			disp.setItemMeta(meta);
 
 			inv.setItem(slot, disp);
-			slotToMaterial.put(slot, mat);
+			slotToItem.put(slot, item);
 			slot++;
 		}
 		inv.setItem(infoSlot, buildInfoButton());
@@ -140,14 +140,14 @@ public class LostCargoInventory extends CoreInventory {
 			int slot = e.getSlot();
 			if (slot == infoSlot) return;
 
-			Material mat = slotToMaterial.get(slot);
-			if (mat == null) return;
+			CargoItem item = slotToItem.get(slot);
+			if (item == null) return;
 			// Withdraw: left = 1, shift-left = a stack. Ignore right clicks.
 			if (e.getClick() == ClickType.RIGHT || e.getClick() == ClickType.SHIFT_RIGHT) return;
-			int amount = e.isShiftClick() ? mat.getMaxStackSize() : 1;
-			int removed = cargo.removeItem(mat, amount);
+			int amount = e.isShiftClick() ? item.createStack().getMaxStackSize() : 1;
+			int removed = cargo.removeItem(item, amount);
 			if (removed <= 0) return;
-			giveOrDrop(mat, removed);
+			giveOrDrop(item, removed);
 			render();
 			click();
 			return;
@@ -177,8 +177,8 @@ public class LostCargoInventory extends CoreInventory {
 		pd.saveLostCargoAsync();
 	}
 
-	private void giveOrDrop(Material mat, int amount) {
-		ItemStack stack = new ItemStack(mat, amount);
+	private void giveOrDrop(CargoItem item, int amount) {
+		ItemStack stack = item.createStack(amount);
 		Map<Integer, ItemStack> leftover = p.getInventory().addItem(stack);
 		for (ItemStack left : leftover.values()) {
 			p.getWorld().dropItemNaturally(p.getLocation(), left);

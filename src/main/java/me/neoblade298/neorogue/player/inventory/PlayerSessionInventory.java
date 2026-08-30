@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import de.tr7zw.nbtapi.NBT;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
-import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
@@ -40,6 +39,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.player.CargoItem;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.RegionType;
@@ -353,16 +353,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		ItemStack item = CoreInventory.createButton(Material.CHEST_MINECART, Component.text("Cargo", NamedTextColor.GOLD));
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = new ArrayList<Component>();
-		LinkedHashMap<Material, Integer> cargo = data.getRunCargo();
+		LinkedHashMap<CargoItem, Integer> cargo = data.getRunCargo();
 		if (cargo.isEmpty()) {
 			lore.add(Component.text("No cargo committed.", NamedTextColor.RED)
 					.decoration(TextDecoration.ITALIC, State.FALSE));
 		} else {
 			double total = 0;
-			for (Map.Entry<Material, Integer> ent : cargo.entrySet()) {
-				total += MaterialPrices.getPrice(ent.getKey()) * ent.getValue();
+			for (Map.Entry<CargoItem, Integer> ent : cargo.entrySet()) {
+				total += ent.getKey().getEffectivePrice() * ent.getValue();
 				lore.add(Component.text("- ", NamedTextColor.DARK_GRAY)
-						.append(Component.text(prettyName(ent.getKey()), NamedTextColor.WHITE))
+						.append(Component.text(ent.getKey().getLabel(), NamedTextColor.WHITE))
 						.append(Component.text(" x" + ent.getValue(), NamedTextColor.GRAY))
 						.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
@@ -379,18 +379,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
-	}
-
-	// Converts an enum material name (e.g. IRON_INGOT) to a readable label (e.g. Iron Ingot).
-	private static String prettyName(Material mat) {
-		String[] parts = mat.name().toLowerCase().split("_");
-		StringBuilder sb = new StringBuilder();
-		for (String part : parts) {
-			if (part.isEmpty()) continue;
-			if (sb.length() > 0) sb.append(' ');
-			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
-		}
-		return sb.toString();
 	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {
