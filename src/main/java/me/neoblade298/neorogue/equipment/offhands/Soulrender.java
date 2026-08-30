@@ -25,17 +25,14 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.TargetHelper;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Soulrender extends Equipment {
 	private static final String ID = "Soulrender";
 	private static final int COOLDOWN = 8;
-	private static final TargetProperties TARGETS = TargetProperties.cone(30, 6, false, TargetType.ENEMY);
 	private static final ParticleContainer HIT = new ParticleContainer(Particle.SOUL_FIRE_FLAME)
 			.count(12).spread(0.1, 0.1).speed(0.01);
 	private static final ParticleContainer BLADE = new ParticleContainer(Particle.DUST)
@@ -70,7 +67,7 @@ public class Soulrender extends Equipment {
 
 	public Soulrender(boolean isUpgraded) {
 		super(ID, "Soulrender", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER, EquipmentType.OFFHAND,
-				EquipmentProperties.ofUsable(0, 10, COOLDOWN, TARGETS.range));
+				EquipmentProperties.ofUsable(0, 10, COOLDOWN, 0));
 		rend = isUpgraded ? 18 : 12;
 	}
 
@@ -78,10 +75,10 @@ public class Soulrender extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+			LeftClickHitEvent event = (LeftClickHitEvent) in;
 			Player player = data.getPlayer();
-			LivingEntity target = TargetHelper.getEntitiesInCone(player, TARGETS).peekFirst();
-			if (target == null) return TriggerResult.keep();
+			LivingEntity target = event.getTarget();
 			FightData targetData = FightInstance.getFightData(target);
 			int currentRend = targetData.getStatus(StatusType.REND).getStacks();
 			player.swingOffHand();
@@ -92,7 +89,7 @@ public class Soulrender extends Equipment {
 			Sounds.attackSweep.play(player, target);
 			Sounds.wither.play(player, target);
 			HIT.play(player, target);
-			if (currentRend > 0) FightInstance.dealDamage(new DamageMeta(data, currentRend, DamageType.REND,
+			if (currentRend > 0) FightInstance.dealDamage(new DamageMeta(data, currentRend, DamageType.PIERCING,
 					DamageStatTracker.of(id + slot, this)), target);
 			FightInstance.applyStatus(target, StatusType.REND, data, rend, -1, this);
 			return TriggerResult.keep();
@@ -101,7 +98,7 @@ public class Soulrender extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHERITE_HOE, "Right click to deal damage equal to the aimed enemy's current "
-				+ GlossaryTag.REND.tag(this) + " and apply " + GlossaryTag.REND.tag(this, rend) + ".");
+		item = createItem(Material.NETHERITE_HOE, "Left click an enemy to deal damage equal to their current "
+				+ GlossaryTag.REND.tag(this) + " as " + GlossaryTag.PIERCING.tag(this) + " damage and apply " + GlossaryTag.REND.tag(this, rend) + ".");
 	}
 }

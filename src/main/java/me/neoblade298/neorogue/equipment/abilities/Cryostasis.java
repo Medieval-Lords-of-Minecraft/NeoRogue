@@ -71,7 +71,7 @@ public class Cryostasis extends Equipment implements Power {
 				Player current = data.getPlayer();
 				ICE_SHELL.play(SHELL_EDGE, current.getLocation().add(0, 0.15, 0), LocalAxes.xz(), null);
 				ICE_SPARK.play(current, current);
-				Sounds.block.play(current, current);
+				Sounds.glass.play(current, current);
 			}
 			return TriggerResult.keep();
 		});

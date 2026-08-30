@@ -63,7 +63,7 @@ public class BristleCoat extends Equipment {
 				data.applyStatus(StatusType.PROTECT, data, STATUS_STACKS * activations, STATUS_DURATION * 20, this);
 				Player player = data.getPlayer();
 				PROTECT_PROC.play(player, player);
-				Sounds.block.play(player, player);
+				Sounds.enchant.play(player, player);
 			}
 			return TriggerResult.keep();
 		});

@@ -56,12 +56,12 @@ public class SkycallerGlove extends Equipment {
 			LaunchProjectileGroupEvent event = (LaunchProjectileGroupEvent) in;
 			if (replaying.getBool() || (!event.isBasicAttack() && !event.isAftershot())) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
-			history.addLast(new RecentShot(event.getGroup(), now));
+			history.addLast(new RecentShot(event.getGroup(), now, event.isAftershot()));
 			trimHistory(history, now);
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Player player = data.getPlayer();
 			LivingEntity target = TargetHelper.getEntitiesInCone(player, TARGETS).peekFirst();
 			if (target == null) return TriggerResult.keep();
@@ -86,6 +86,9 @@ public class SkycallerGlove extends Equipment {
 				replaying.setBool(false);
 			}
 			return TriggerResult.keep();
+		}, (player, pdata, in) -> {
+			trimHistory(history, System.currentTimeMillis());
+			return history.stream().anyMatch(RecentShot::aftershot);
 		}));
 	}
 
@@ -95,11 +98,12 @@ public class SkycallerGlove extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_HORSE_ARMOR, "Rain all basic attack projectiles and "
+		item = createItem(Material.GOLDEN_HORSE_ARMOR, "Left click towards an enemy to rain all basic attack projectiles and "
 				+ GlossaryTag.AFTERSHOT.tagPlural(this) + " launched in the last "
 				+ DescUtil.white("3s") + " from the sky onto the aimed enemy within "
-				+ DescUtil.white((int) TARGETS.range) + " blocks.");
+				+ DescUtil.white((int) TARGETS.range) + " blocks. Requires at least one "
+				+ GlossaryTag.AFTERSHOT.tag(this) + " to have been launched.");
 	}
 
-	private record RecentShot(ProjectileGroup group, long launchedAt) {}
+	private record RecentShot(ProjectileGroup group, long launchedAt, boolean aftershot) {}
 }

@@ -48,7 +48,7 @@ public class Ghostwire extends Equipment {
 			LayTrapEvent event = (LayTrapEvent) in;
 			Trap trap = (Trap) event.getTrap();
 			if (trap.getSourceEquipment() == this || traps.addCount(1) < threshold) return TriggerResult.keep();
-			traps.setCount(-1);
+			traps.setCount(0);
 			data.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -68,7 +68,6 @@ public class Ghostwire extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.STRING, "Every " + DescUtil.val(threshold == 2 ? "2nd" : "3rd") + " "
 				+ GlossaryTag.TRAP.tag(this) + " you lay is duplicated at your feet " + DescUtil.white(delay + "s")
-				+ " later. Duplicated traps do not count toward this effect; activation resets the count to "
-				+ DescUtil.white(-1) + ".");
+				+ " later. Duplicated traps do not count toward this.");
 	}
 }

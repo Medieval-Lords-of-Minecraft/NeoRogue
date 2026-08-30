@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class CrossbowCareKit extends Equipment {
 	private static final String ID = "CrossbowCareKit";
-	private static final int QUICK_DRAW = 1;
+	private static final int QUICK_DRAW = 2;
 	private double damageIncrease;
 	private int damagePercent;
 
