@@ -20,7 +20,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class NotorietyTenWinsAchievement implements Achievement {
 	private static final String ID = "infamous_guardian";
 	private static final int MAX_NOTORIETY = 10;
-	private static final int[] THRESHOLDS = { 3, 5, 10 };
+	private static final int[] THRESHOLDS = { 5, 10, 25 };
 
 	@Override
 	public String getId() {

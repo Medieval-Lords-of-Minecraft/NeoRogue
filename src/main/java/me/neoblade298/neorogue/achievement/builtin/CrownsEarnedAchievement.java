@@ -14,7 +14,6 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.reward.RunReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -22,7 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 // 1,000 / 10,000 / 50,000 / 100,000 crowns.
 public class CrownsEarnedAchievement implements Achievement {
 	private static final String ID = "crown_collector";
-	private static final int[] THRESHOLDS = { 1000, 10000, 50000, 100000 };
+	private static final int[] THRESHOLDS = { 100, 10000, 50000, 100000, 500000 };
 
 	@Override
 	public String getId() {
@@ -57,9 +56,15 @@ public class CrownsEarnedAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger(ID, SessionTrigger.FINISH_RUN, (pdata, in) -> {
-			boolean won = in instanceof Boolean b && b;
-			int earned = (int) Math.round(RunReward.calculateBreakdown(session, won).total);
+		data.addTrigger(ID, SessionTrigger.CROWN_EARNED, (pdata, in) -> {
+			double carry = 0;
+			try {
+				if (progress.getData() != null) carry = Double.parseDouble(progress.getData());
+			} catch (NumberFormatException ignored) {
+			}
+			double total = carry + (double) in;
+			int earned = (int) Math.floor(total);
+			progress.setData(Double.toString(total - earned));
 			if (earned <= 0) return TriggerResult.keep();
 			if (progress.addProgress(earned)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);

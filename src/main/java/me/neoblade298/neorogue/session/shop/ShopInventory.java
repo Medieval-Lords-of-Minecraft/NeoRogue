@@ -209,7 +209,7 @@ public class ShopInventory extends CoreInventory {
 				return;
 			}
 			shopItem.setPurchased(true);
-			data.addCurrency(-price);
+			data.spendCurrencyAtShop(price);
 			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
 					shopItem.getSessionEquipment(),
@@ -263,12 +263,12 @@ public class ShopInventory extends CoreInventory {
 					return;
 				}
 	
-				data.addCurrency(-REMOVE_CURSE_PRICE);
 				Equipment eq = Equipment.get(NBT.get(e.getCursor(), nbt -> { return nbt.getString("equipId"); }), false);
 				if (!eq.isCursed()) {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
+				data.spendCurrencyAtShop(REMOVE_CURSE_PRICE);
 				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_INGOT,
 						Component.text("You have " + data.getCurrency() + " " + PlayerSessionData.CURRENCY, NamedTextColor.YELLOW)));
 				data.getSession().broadcast(

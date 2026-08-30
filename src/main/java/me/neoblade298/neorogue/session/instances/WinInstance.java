@@ -39,6 +39,9 @@ public class WinInstance extends EndRunInstance {
 		// payout handles the final region's caravan reward (no next region grants it) and sells all
 		// remaining cargo once at full value before awarding the run-completion reward.
 		RunReward.payout(s, true);
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (data.getData() != null) data.getData().saveAchievementsAsync();
+		}
 	}
 
 	@Override

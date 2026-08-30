@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AcquireRarityAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 1, 10, 50 };
+	private static final int[] THRESHOLDS = { 1, 20, 200 };
 
 	private final String id;
 	private final Component displayName;

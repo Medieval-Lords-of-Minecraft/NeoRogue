@@ -83,6 +83,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<RegisteredSessionAction>>();
 	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, currency = 100, armorSlots = 2, accessorySlots = 2;
 	private String instanceData;
+	private boolean restedAtShrine, upgradedAtShrine;
+	private String achievementMinibossRegion;
+	private int achievementMinibossCount;
 	private SessionStatistics sessionStats = new SessionStatistics();
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
@@ -141,6 +144,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
 		this.runExpBoostMultiplier = rs.getDouble("runExpBoostMultiplier");
+		this.restedAtShrine = rs.getBoolean("achievementShrineRested");
+		this.upgradedAtShrine = rs.getBoolean("achievementShrineUpgraded");
+		this.achievementMinibossRegion = rs.getString("achievementMinibossRegion");
+		this.achievementMinibossCount = rs.getInt("achievementMinibossCount");
 		sessionStats.load(rs);
 		loadRunCargoFromSQL();
 		loadRunExpBoostsFromSQL();
@@ -291,6 +298,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		SessionEquipment[] slots = getArrayFromEquipSlot(es);
 		slots[slot] = slots[slot].upgrade();
+		trigger(SessionTrigger.EQUIPMENT_LAYOUT_CHANGED, null);
 		PlayerSessionInventory.setupInventory(data.getPlayer().getInventory(), this);
 	}
 
@@ -314,6 +322,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		default:
 		}
+		trigger(SessionTrigger.EQUIPMENT_LAYOUT_CHANGED, null);
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
@@ -341,6 +350,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		default:
 		}
+		trigger(SessionTrigger.EQUIPMENT_LAYOUT_CHANGED, null);
 		return se;
 	}
 
@@ -1100,10 +1110,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void addCurrency(int amount) {
 		currency += amount;
-		if (amount < 0) {
-			trigger(SessionTrigger.SPEND_CURRENCY, -amount);
-		}
 		currency = Math.max(0, currency);
+		trigger(SessionTrigger.CURRENCY_CHANGED, currency);
 		String symbol = amount > 0 ? "+" : "";
 		Util.msgRaw(getPlayer(), "<yellow>" + symbol + amount + " " + CURRENCY + " </yellow>(<gold>" + currency + "</gold>)");
 		s.getInstance().updateActionBar();
@@ -1112,6 +1120,42 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public int getCurrency() {
 		return currency;
+	}
+
+	public void spendCurrencyAtShop(int amount) {
+		if (amount <= 0) return;
+		addCurrency(-amount);
+		trigger(SessionTrigger.SPEND_CURRENCY, amount);
+	}
+
+	public boolean hasRestedAtShrine() {
+		return restedAtShrine;
+	}
+
+	public void markRestedAtShrine() {
+		restedAtShrine = true;
+	}
+
+	public boolean hasUpgradedAtShrine() {
+		return upgradedAtShrine;
+	}
+
+	public void markUpgradedAtShrine() {
+		upgradedAtShrine = true;
+	}
+
+	public int recordMinibossForCurrentRegion() {
+		String region = s.getRegion().getType().name();
+		if (!region.equals(achievementMinibossRegion)) {
+			achievementMinibossRegion = region;
+			achievementMinibossCount = 0;
+		}
+		return ++achievementMinibossCount;
+	}
+
+	public int getCurrentRegionMinibossCount() {
+		String region = s.getRegion().getType().name();
+		return region.equals(achievementMinibossRegion) ? achievementMinibossCount : 0;
 	}
 
 	public EquipmentClass getPlayerClass() {
@@ -1125,15 +1169,18 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void addMaxHealth(int amount) {
 		this.maxHealth += amount;
 		attributes.setBaseValue(Attribute.MAX_HEALTH, maxHealth);
+		trigger(SessionTrigger.MAX_STAT_CHANGED, null);
 	}
 
 	public void addMaxStamina(int amount) {
 		this.maxStamina += amount;
+		trigger(SessionTrigger.MAX_STAT_CHANGED, null);
 		updateBoardLines();
 	}
 
 	public void addMaxMana(int amount) {
 		this.maxMana += amount;
+		trigger(SessionTrigger.MAX_STAT_CHANGED, null);
 		updateBoardLines();
 	}
 
@@ -1398,6 +1445,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("statDmgHealthRegionStart", sessionStats.getDamageTakenHealthAtRegionStart())
 					.addValue("statExpEarned", sessionStats.getExpEarned())
 					.addValue("runExpBoostMultiplier", runExpBoostMultiplier);
+			sql.addValue("achievementShrineRested", restedAtShrine)
+					.addValue("achievementShrineUpgraded", upgradedAtShrine)
+					.addValue("achievementMinibossRegion", achievementMinibossRegion)
+					.addValue("achievementMinibossCount", achievementMinibossCount);
 			PreparedStatement ps = sql.build(con);
 			ps.executeBatch();
 			ps.close();

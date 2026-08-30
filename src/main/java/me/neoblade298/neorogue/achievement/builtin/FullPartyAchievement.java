@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.bukkit.Material;
 
-import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
 import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
+import me.neoblade298.neorogue.achievement.ObjectiveAchievement;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
@@ -19,9 +19,9 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class FullPartyAchievement implements Achievement {
+public class FullPartyAchievement extends ObjectiveAchievement {
 	private static final String ID = "strength_in_numbers";
-	private static final int[] THRESHOLDS = { 1, 1, 1 };
+	private static final List<String> OBJECTIVES = List.of("fight", "miniboss", "boss");
 
 	@Override
 	public String getId() {
@@ -39,19 +39,18 @@ public class FullPartyAchievement implements Achievement {
 	}
 
 	@Override
-	public int[] getMasteryThresholds() {
-		return THRESHOLDS;
+	public List<Component> getDescription(int progress, int mastery) {
+		return List.of(Component.text("Beat each fight type as a party of 4.", NamedTextColor.GRAY));
 	}
 
-	@Override
-	public List<Component> getDescription(int progress, int mastery) {
-		return List.of(
-				Component.text("Beat a fight, miniboss, and boss as a party of 4.", NamedTextColor.GRAY),
-				Component.empty(),
-				Component.text((progress >= 1 ? "\u2714" : "\u2718") + " Beat a fight as a party of 4", progress >= 1 ? NamedTextColor.GREEN : NamedTextColor.GRAY),
-				Component.text((progress >= 2 ? "\u2714" : "\u2718") + " Beat a miniboss as a party of 4", progress >= 2 ? NamedTextColor.GREEN : NamedTextColor.GRAY),
-				Component.text((progress >= 3 ? "\u2714" : "\u2718") + " Beat a boss as a party of 4", progress >= 3 ? NamedTextColor.GREEN : NamedTextColor.GRAY)
-		);
+	@Override public List<String> getObjectiveIds() { return OBJECTIVES; }
+	@Override public String getObjectiveDisplay(String id) {
+		return switch (id) {
+			case "fight" -> "Beat a fight as a party of 4";
+			case "miniboss" -> "Beat a miniboss as a party of 4";
+			case "boss" -> "Beat a boss as a party of 4";
+			default -> id;
+		};
 	}
 
 	@Override
@@ -69,23 +68,10 @@ public class FullPartyAchievement implements Achievement {
 		data.addTrigger(ID, Trigger.WIN_FIGHT, (pdata, in) -> {
 			if (pdata.getInstance().getSession().getParty().size() < 4) return TriggerResult.keep();
 
-			int current = progress.getProgress();
 			FightInstance inst = pdata.getInstance();
-
-			if (current == 0) {
-				// Any fight counts for tier 1
-				if (progress.addProgress(1)) {
-					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
-				}
-			} else if (current == 1 && inst instanceof MinibossFightInstance) {
-				if (progress.addProgress(1)) {
-					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
-				}
-			} else if (current == 2 && inst instanceof BossFightInstance) {
-				if (progress.addProgress(1)) {
-					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
-				}
-			}
+			String objective = inst instanceof BossFightInstance ? "boss"
+					: inst instanceof MinibossFightInstance ? "miniboss" : "fight";
+			if (completeObjective(progress, objective)) AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			return TriggerResult.keep();
 		});
 	}

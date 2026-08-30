@@ -23,7 +23,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 // 100 / 250 / 500 / 1000 shields.
 public class ShieldsInFightAchievement implements Achievement {
 	private static final String ID = "shieldsmith";
-	private static final int[] THRESHOLDS = { 100, 250, 500, 1000 };
+	private static final int[] THRESHOLDS = { 100, 250, 1000 };
 
 	@Override
 	public String getId() {

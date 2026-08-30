@@ -21,7 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MitigateDamageAchievement implements Achievement {
 	private static final String ID = "bulwark";
-	private static final int[] THRESHOLDS = { 1000, 10000, 100000, 1000000 };
+	private static final int[] THRESHOLDS = { 1000, 5000, 25000, 100000, 1000000 };
 
 	@Override
 	public String getId() {

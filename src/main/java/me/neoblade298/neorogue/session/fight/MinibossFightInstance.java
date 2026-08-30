@@ -60,6 +60,7 @@ public class MinibossFightInstance extends FightInstance {
 			Title title = Title.title(Component.text("Victory"), Component.text(" "));
 			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 			for (PlayerSessionData psd : s.getParty().values()) {
+				psd.recordMinibossForCurrentRegion();
 				psd.trigger(SessionTrigger.WIN_MINIBOSS, minibossId);
 			}
 			return;

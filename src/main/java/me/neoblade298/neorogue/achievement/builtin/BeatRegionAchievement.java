@@ -18,7 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BeatRegionAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 1, 5, 20, 100 };
+	private static final int[] THRESHOLDS = { 1, 5, 25, 100, 500 };
 
 	private final String id;
 	private final Component displayName;

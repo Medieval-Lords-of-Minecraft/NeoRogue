@@ -17,7 +17,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SpendCurrencyAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 100, 1000, 10000, 100000 };
+	private static final int[] THRESHOLDS = { 400, 2000, 20000, 100000, 1000000 };
 
 	@Override
 	public String getId() {

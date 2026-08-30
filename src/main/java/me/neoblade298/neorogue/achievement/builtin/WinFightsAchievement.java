@@ -19,7 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class WinFightsAchievement implements Achievement {
 	private static final String ID = "victorious";
-	private static final int[] THRESHOLDS = { 10, 50, 200, 500 };
+	private static final int[] THRESHOLDS = { 10, 50, 200, 500, 2000 };
 
 	@Override
 	public String getId() {

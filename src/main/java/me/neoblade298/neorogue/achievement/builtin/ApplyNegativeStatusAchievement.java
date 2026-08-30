@@ -21,7 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ApplyNegativeStatusAchievement implements Achievement {
 	private static final String ID = "afflictor";
-	private static final int[] THRESHOLDS = { 100, 1000, 10000, 100000 };
+	private static final int[] THRESHOLDS = { 100, 1000, 10000, 100000, 1000000 };
 
 	@Override
 	public String getId() {

@@ -19,7 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class UseConsumablesAchievement implements Achievement {
 	private static final String ID = "resourceful";
-	private static final int[] THRESHOLDS = { 5, 20, 100, 250 };
+	private static final int[] THRESHOLDS = { 3, 10, 50, 200, 1000 };
 
 	@Override
 	public String getId() {

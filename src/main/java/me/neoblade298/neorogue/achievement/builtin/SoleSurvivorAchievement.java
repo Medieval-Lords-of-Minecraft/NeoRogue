@@ -62,7 +62,7 @@ public class SoleSurvivorAchievement implements Achievement {
 			if (fight.getPlayers().size() < 2) return TriggerResult.keep();
 
 			long livingPlayers = fight.getPlayers().stream().filter(playerData -> !playerData.isDead()).count();
-			if (livingPlayers == 1 && progress.addProgress(1)) {
+			if (livingPlayers == 1 && !pdata.isDead() && progress.addProgress(1)) {
 				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
 			return TriggerResult.keep();

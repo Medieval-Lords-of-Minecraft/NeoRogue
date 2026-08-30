@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.milkbowl.vault2.economy.Economy;
@@ -73,7 +74,9 @@ public class RunReward {
 	// Deposits arbitrary VaultUnlocked currency to a party member (used for cargo sale proceeds).
 	public static void depositCargo(PlayerSessionData psd, double amount) {
 		if (economy == null || amount <= 0) return;
-		economy.deposit(NeoRogue.inst().getName(), psd.getUniqueId(), BigDecimal.valueOf(amount));
+		if (economy.deposit(NeoRogue.inst().getName(), psd.getUniqueId(), BigDecimal.valueOf(amount)).transactionSuccess()) {
+			psd.trigger(SessionTrigger.CROWN_EARNED, amount);
+		}
 	}
 
 	// Whether the player can afford the given amount of VaultUnlocked currency.
@@ -259,10 +262,9 @@ public class RunReward {
 		if (economy == null) return;
 
 		Breakdown b = calculateBreakdown(s, won);
-		String pluginName = NeoRogue.inst().getName();
 		for (PlayerSessionData psd : s.getParty().values()) {
 			if (b.total > 0) {
-				economy.deposit(pluginName, psd.getUniqueId(), BigDecimal.valueOf(b.total));
+				depositCargo(psd, b.total);
 			}
 
 			Player p = psd.getPlayer();

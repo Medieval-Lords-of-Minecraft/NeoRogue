@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SRankRegionAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 1, 5, 20, 100 };
+	private static final int[] THRESHOLDS = { 1, 10, 50, 250, 1000 };
 
 	private final String id;
 	private final Component displayName;

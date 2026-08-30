@@ -23,6 +23,9 @@ public class LoseInstance extends EndRunInstance {
 			data.trigger(SessionTrigger.FINISH_RUN, false);
 		}
 		RunReward.payout(s, false);
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (data.getData() != null) data.getData().saveAchievementsAsync();
+		}
 	}
 
 	@Override

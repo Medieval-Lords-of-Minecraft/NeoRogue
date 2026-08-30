@@ -17,8 +17,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MaxStatAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 1 };
-
 	public enum StatType {
 		HEALTH, MANA, STAMINA
 	}
@@ -27,14 +25,14 @@ public class MaxStatAchievement implements Achievement {
 	private final Component displayName;
 	private final Material material;
 	private final StatType statType;
-	private final double threshold;
+	private final int[] thresholds;
 
-	public MaxStatAchievement(String id, Component displayName, Material material, StatType statType, double threshold) {
+	public MaxStatAchievement(String id, Component displayName, Material material, StatType statType, int... thresholds) {
 		this.id = id;
 		this.displayName = displayName;
 		this.material = material;
 		this.statType = statType;
-		this.threshold = threshold;
+		this.thresholds = thresholds;
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class MaxStatAchievement implements Achievement {
 
 	@Override
 	public int[] getMasteryThresholds() {
-		return THRESHOLDS;
+		return thresholds;
 	}
 
 	@Override
@@ -64,7 +62,8 @@ public class MaxStatAchievement implements Achievement {
 			case MANA -> "Mana";
 			case STAMINA -> "Stamina";
 		};
-		return List.of(Component.text("Reach " + (int) threshold + " max " + statName + " in a run.", NamedTextColor.GRAY));
+		int target = mastery < thresholds.length ? thresholds[mastery] : thresholds[thresholds.length - 1];
+		return List.of(Component.text("Reach " + target + " max " + statName + " in a run.", NamedTextColor.GRAY));
 	}
 
 	@Override
@@ -74,18 +73,22 @@ public class MaxStatAchievement implements Achievement {
 
 	@Override
 	public void registerSession(Session session, PlayerSessionData data, AchievementProgress progress) {
-		data.addTrigger(id, SessionTrigger.ACQUIRE_EQUIPMENT, (pdata, in) -> {
+		check(data, progress);
+		data.addTrigger(id, SessionTrigger.MAX_STAT_CHANGED, (pdata, in) -> {
+			check(pdata, progress);
+			return TriggerResult.keep();
+		});
+	}
+
+	private void check(PlayerSessionData pdata, AchievementProgress progress) {
 			double current = switch (statType) {
 				case HEALTH -> pdata.getMaxHealth();
 				case MANA -> pdata.getMaxMana();
 				case STAMINA -> pdata.getMaxStamina();
 			};
-			if (current >= threshold) {
-				if (progress.addProgress(1)) {
-					AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
-				}
+			int best = (int) Math.floor(current);
+			if (best > progress.getProgress() && progress.addProgress(best - progress.getProgress())) {
+				AchievementManager.notifyMastery(pdata.getPlayer(), this, progress);
 			}
-			return TriggerResult.keep();
-		});
 	}
 }

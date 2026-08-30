@@ -220,6 +220,9 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	private void handleNextInstance(NodeSelectInstance next) {
+		for (PlayerSessionData data : s.getParty().values()) {
+			data.trigger(SessionTrigger.LEAVE_SHOP, null);
+		}
 		s.broadcast("Returning to node select...");
 		s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 		s.setBusy(true);
@@ -245,6 +248,9 @@ public class ShopInstance extends EditInventoryInstance {
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		ready.remove(p.getUniqueId());
 		if (ready.size() == s.getParty().size()) {
+			for (PlayerSessionData data : s.getParty().values()) {
+				data.trigger(SessionTrigger.LEAVE_SHOP, null);
+			}
 			s.broadcast("Returning to node select...");
 			s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 			s.setBusy(true);

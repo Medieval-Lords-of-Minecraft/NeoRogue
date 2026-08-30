@@ -17,7 +17,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class VisitNodesAchievement implements Achievement {
-	private static final int[] THRESHOLDS = { 9, 90, 900, 9000 };
+	private static final int[] THRESHOLDS = { 15, 90, 900, 3000, 9000 };
 
 	@Override
 	public String getId() {

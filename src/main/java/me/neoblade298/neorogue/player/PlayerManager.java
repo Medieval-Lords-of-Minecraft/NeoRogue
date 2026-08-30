@@ -66,7 +66,10 @@ public class PlayerManager implements IOComponent {
 					+ " statDamageTakenHealth DOUBLE, statDamageTakenShields DOUBLE,"
 					+ " statShieldsApplied DOUBLE, statHealingDone DOUBLE, statDamageBarriered DOUBLE,"
 					+ " statFightsCompleted INT, statDeaths INT, statStatusesApplied INT, statDmgHealthRegionStart DOUBLE,"
-					+ " runExpBoostMultiplier DOUBLE, statExpEarned INT NOT NULL DEFAULT 0, PRIMARY KEY (host, slot, uuid));");
+					+ " runExpBoostMultiplier DOUBLE, statExpEarned INT NOT NULL DEFAULT 0,"
+					+ " achievementShrineRested TINYINT NOT NULL DEFAULT 0, achievementShrineUpgraded TINYINT NOT NULL DEFAULT 0,"
+					+ " achievementMinibossRegion VARCHAR(50), achievementMinibossCount INT NOT NULL DEFAULT 0,"
+					+ " PRIMARY KEY (host, slot, uuid));");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

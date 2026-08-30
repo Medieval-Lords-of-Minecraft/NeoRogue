@@ -27,26 +27,34 @@ import me.neoblade298.neorogue.achievement.builtin.AllMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ApplyNegativeStatusAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatMinibossesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.BeatRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ByAThreadAchievement;
 import me.neoblade298.neorogue.achievement.builtin.CrownsEarnedAchievement;
 import me.neoblade298.neorogue.achievement.builtin.DashesInFightAchievement;
+import me.neoblade298.neorogue.achievement.builtin.DeepPocketsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ExactChangeAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FullPartyAchievement;
+import me.neoblade298.neorogue.achievement.builtin.FullyLoadedAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement.StatType;
+import me.neoblade298.neorogue.achievement.builtin.MinibossMarathonAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MitigateDamageAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyTenWinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyWinAchievement;
 import me.neoblade298.neorogue.achievement.builtin.PrismaticAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SeeingTripleAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ShieldsInFightAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ShrineDisciplineAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SoleSurvivorAchievement;
+import me.neoblade298.neorogue.achievement.builtin.SpeedRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCurrencyAchievement;
 import me.neoblade298.neorogue.achievement.builtin.UseConsumablesAchievement;
+import me.neoblade298.neorogue.achievement.builtin.VersatileAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.WinFightsAchievement;
-import me.neoblade298.neorogue.achievement.builtin.WinRunsAchievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -65,9 +73,9 @@ public class AchievementManager {
 	private static final List<Achievement> achievements = List.of(
 			new FinishRunAchievement(),
 			new VisitNodesAchievement(),
-			new WinRunsAchievement(),
 			new WinFightsAchievement(),
 			new SoleSurvivorAchievement(),
+			new ByAThreadAchievement(),
 			new UseConsumablesAchievement(),
 			new PrismaticAchievement(),
 			new ApplyNegativeStatusAchievement(),
@@ -81,21 +89,31 @@ public class AchievementManager {
 					Material.PACKED_ICE, RegionType.FROZEN_WASTES),
 			new FullPartyAchievement(),
 			new SpendCurrencyAchievement(),
+			new DeepPocketsAchievement(),
+			new ExactChangeAchievement(),
 			new NotorietyWinAchievement(),
 			new NotorietyTenWinsAchievement(),
 			new CrownsEarnedAchievement(),
+			new SpeedRunAchievement(false),
+			new SpeedRunAchievement(true),
+			new ShrineDisciplineAchievement(true),
+			new ShrineDisciplineAchievement(false),
 			new AcquireRarityAchievement("rare_find", Component.text("Rare Find", NamedTextColor.GOLD),
 					Material.GOLD_INGOT, Rarity.RARE),
 			new AcquireRarityAchievement("epic_discovery", Component.text("Epic Discovery", NamedTextColor.GOLD),
 					Material.DIAMOND, Rarity.EPIC),
 			new MaxStatAchievement("beefy", Component.text("Beefy", NamedTextColor.GOLD),
-					Material.GOLDEN_APPLE, StatType.HEALTH, 200),
+					Material.GOLDEN_APPLE, StatType.HEALTH, 150, 250, 400),
 			new MaxStatAchievement("arcane_reservoir", Component.text("Arcane Reservoir", NamedTextColor.GOLD),
-					Material.LAPIS_LAZULI, StatType.MANA, 100),
+					Material.LAPIS_LAZULI, StatType.MANA, 75, 125, 200),
 			new MaxStatAchievement("tireless", Component.text("Tireless", NamedTextColor.GOLD),
-					Material.FEATHER, StatType.STAMINA, 100),
+					Material.FEATHER, StatType.STAMINA, 75, 125, 200),
+			new FullyLoadedAchievement(),
+			new VersatileAchievement(),
+			new SeeingTripleAchievement(),
 			new ShieldsInFightAchievement(),
 			new DashesInFightAchievement(),
+			new MinibossMarathonAchievement(),
 			new AllMinibossesAchievement("low_district_miniboss_slayer", Component.text("Low District Miniboss Slayer", NamedTextColor.GOLD),
 					Material.STONE_SWORD, RegionType.LOW_DISTRICT),
 			new AllMinibossesAchievement("harvest_fields_miniboss_slayer", Component.text("Harvest Fields Miniboss Slayer", NamedTextColor.GOLD),

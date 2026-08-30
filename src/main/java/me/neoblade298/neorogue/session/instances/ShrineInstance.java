@@ -191,6 +191,10 @@ public class ShrineInstance extends EditInventoryInstance {
 
 	public void chooseState(boolean rest) {
 		state = rest ? REST_STATE : UPGRADE_STATE;
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (rest) data.markRestedAtShrine();
+			else data.markUpgradedAtShrine();
+		}
 		s.broadcast("The host has chosen to <yellow>" + (rest ? "rest" : "upgrade"));
 		part.play(blockMiddle.getLocation());
 		s.broadcastSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
