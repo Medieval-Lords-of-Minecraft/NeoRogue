@@ -20,10 +20,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class CrimsonCloak extends Equipment {
 	private static final String ID = "CrimsonCloak";
-	private int reduction = 2, statusStacks = 1;
+	private int reduction, statusStacks = 1;
 
 	public CrimsonCloak(boolean isUpgraded) {
 		super(ID, "Crimson Cloak", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ARMOR);
+		reduction = isUpgraded ? 3 : 2;
 	}
 
 	public static Equipment get() {
@@ -37,9 +38,9 @@ public class CrimsonCloak extends Equipment {
 				Buff.increase(data, reduction, StatTracker.defenseBuffAlly(id + slot, this)));
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent event = (ApplyStatusEvent) in;
-			if (!event.isStatus(StatusType.CORRUPTION)) return TriggerResult.keep();
+			if (!event.isStatus(StatusType.CORRUPTION) || event.getStacks() <= 0) return TriggerResult.keep();
 			StatusType status = alternating.getBool() ? StatusType.SHELL : StatusType.PROTECT;
-			data.applyStatus(status, data, statusStacks, -1, this);
+			data.applyStatus(status, data, statusStacks * event.getStacks(), -1, this);
 			alternating.setBool(!alternating.getBool());
 			return TriggerResult.keep();
 		});
@@ -49,7 +50,7 @@ public class CrimsonCloak extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this)
 				+ " damage taken by " + DescUtil.val(reduction) + ". Each time you apply "
-				+ GlossaryTag.CORRUPTION.tag(this) + ", apply " + GlossaryTag.PROTECT.tag(this, statusStacks)
-				+ " or " + GlossaryTag.SHELL.tag(this, statusStacks) + " to yourself, alternating in order.");
+				+ GlossaryTag.CORRUPTION.tag(this) + ", apply an equal amount of " + GlossaryTag.PROTECT.tag(this)
+				+ " or " + GlossaryTag.SHELL.tag(this) + " to yourself, alternating in order.");
 	}
 }

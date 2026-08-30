@@ -147,7 +147,7 @@ public class ShopContents {
 	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
 		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get() }) {
-			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
+			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
 			shopItems.put(idx++, new ShopItem(new SessionEquipment(art), price, false));
 		}
 	}
