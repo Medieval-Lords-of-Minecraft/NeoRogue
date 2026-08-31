@@ -64,10 +64,14 @@ import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.PlayerSessionData.RunCurrencyBoost;
 import me.neoblade298.neorogue.player.PlayerSessionData.RunExpBoost;
+import me.neoblade298.neorogue.player.boost.CurrencyBoost;
+import me.neoblade298.neorogue.player.boost.CurrencyBoostType;
 import me.neoblade298.neorogue.player.boost.ExpBoost;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
+import me.neoblade298.neorogue.player.boost.GlobalCurrencyBoostManager;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
@@ -550,7 +554,7 @@ public class Session {
 		PlayerFlags.applyDefaults(p);
 		showSpectatorToPlayers(p);
 		SessionManager.removeFromSession(uuid, this);
-		p.teleport(NeoRogue.spawn);
+		NeoRogue.teleportToEssentialsSpawn(p);
 	}
 
 	private void hideSpectatorFromPlayers(Player spectator) {
@@ -1267,6 +1271,43 @@ public class Session {
 			entry.getValue().setRunExpBoosts(appliedBoosts);
 		}
 	}
+
+	// Captures currency boosts independently from exp boosts. Personal and global boosts
+	// stack additively, while only the strongest matching permission boost is included.
+	public void applyCurrencyBoosts() {
+		if (sessionType == SessionType.TUTORIAL) return;
+		List<CurrencyBoost> globalBoosts = GlobalCurrencyBoostManager.getGlobalBoosts();
+		double globalBonus = globalBoosts.stream().mapToDouble(CurrencyBoost::getMultiplier).sum();
+		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
+			PlayerData pdata = PlayerManager.getPlayerData(entry.getKey());
+			if (pdata == null) continue;
+			ArrayList<RunCurrencyBoost> appliedBoosts = new ArrayList<RunCurrencyBoost>();
+			for (CurrencyBoost boost : pdata.getActiveCurrencyBoosts()) {
+				appliedBoosts.add(new RunCurrencyBoost(boost.getType().getDisplayName(), boost.getMultiplier()));
+			}
+			for (CurrencyBoost boost : globalBoosts) {
+				appliedBoosts.add(new RunCurrencyBoost(boost.getType().getDisplayName(), boost.getMultiplier()));
+			}
+
+			CurrencyBoostType permissionType = null;
+			Player player = Bukkit.getPlayer(entry.getKey());
+			if (player != null) {
+				for (CurrencyBoostType type : CurrencyBoostType.values()) {
+					if (type.getPermission() != null && player.hasPermission(type.getPermission())
+							&& (permissionType == null || type.getMultiplier() > permissionType.getMultiplier())) {
+						permissionType = type;
+					}
+				}
+			}
+			double permissionBonus = permissionType == null ? 0.0 : permissionType.getMultiplier();
+			if (permissionType != null) {
+				appliedBoosts.add(new RunCurrencyBoost(permissionType.getDisplayName(), permissionBonus));
+			}
+			entry.getValue().setRunCurrencyBoostMultiplier(
+					pdata.consumeRunCurrencyBoosts() + globalBonus + permissionBonus);
+			entry.getValue().setRunCurrencyBoosts(appliedBoosts);
+		}
+	}
 	
 	public void generateRegion(RegionType type) {
 		this.region = new Region(type, xOff, zOff, this);
@@ -1508,6 +1549,9 @@ public class Session {
 			);
 			stmt.executeUpdate(
 					"DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_sessioncurrencyboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 			);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning(

@@ -207,7 +207,7 @@ public class SessionManager implements Listener {
 		Session s = sessions.remove(uuid);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null)
-			p.teleport(NeoRogue.spawn);
+			NeoRogue.teleportToEssentialsSpawn(p);
 		if (s != null)
 			Bukkit.getPluginManager().callEvent(new SessionLeaveEvent(uuid, s));
 	}
@@ -351,6 +351,7 @@ public class SessionManager implements Listener {
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 			stmt.executeUpdate("DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncurrencyboosts WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete save slot " + saveSlot + " for " + host);
 			ex.printStackTrace();
@@ -370,6 +371,7 @@ public class SessionManager implements Listener {
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargo WHERE host = '" + host + "';");
 			stmt.executeUpdate("DELETE FROM neorogue_sessioncargosold WHERE host = '" + host + "';");
 			stmt.executeUpdate("DELETE FROM neorogue_sessionexpboosts WHERE host = '" + host + "';");
+			stmt.executeUpdate("DELETE FROM neorogue_sessioncurrencyboosts WHERE host = '" + host + "';");
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to delete all saves for " + host);
 			ex.printStackTrace();

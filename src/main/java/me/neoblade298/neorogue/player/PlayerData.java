@@ -42,6 +42,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.boost.BoostDurationType;
+import me.neoblade298.neorogue.player.boost.CurrencyBoost;
+import me.neoblade298.neorogue.player.boost.CurrencyBoostType;
 import me.neoblade298.neorogue.player.boost.ExpBoost;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgrade;
@@ -88,6 +90,7 @@ public class PlayerData {
 	private HashSet<String> unlockNodes = new HashSet<String>();
 	private HashSet<String> flags = new HashSet<String>();
 	private ArrayList<ExpBoost> expBoosts = new ArrayList<ExpBoost>();
+	private ArrayList<CurrencyBoost> currencyBoosts = new ArrayList<CurrencyBoost>();
 	private DropTableSet<Equipment> equipmentDroptable;
 	private DropTableSet<Artifact> artifactDroptable;
 	private DropTableSet<Consumable> consumableDroptable;
@@ -240,6 +243,22 @@ public class PlayerData {
 							ExpBoostType type = ExpBoostType.valueOf(boostRs.getString("type"));
 							ExpBoost boost = new ExpBoost(type, boostRs.getLong("remaining"));
 							if (!boost.isExpired()) expBoosts.add(boost);
+						} catch (IllegalArgumentException ex) {
+							// Unknown boost type, skip
+						}
+					}
+				}
+			}
+
+			// Currency boost types and storage are intentionally separate from exp boosts.
+			try (PreparedStatement boostStmt = con.prepareStatement("SELECT * FROM neorogue_currencyboosts WHERE uuid = ?;")) {
+				boostStmt.setString(1, uuidStr);
+				try (ResultSet boostRs = boostStmt.executeQuery()) {
+					while (boostRs.next()) {
+						try {
+							CurrencyBoostType type = CurrencyBoostType.valueOf(boostRs.getString("type"));
+							CurrencyBoost boost = new CurrencyBoost(type, boostRs.getLong("remaining"));
+							if (!boost.isExpired()) currencyBoosts.add(boost);
 						} catch (IllegalArgumentException ex) {
 							// Unknown boost type, skip
 						}
@@ -570,6 +589,66 @@ public class PlayerData {
 		pruneExpBoosts();
 		if (changed) saveExpBoostsAsync();
 		return multiplier;
+	}
+
+	// ---- Currency boosts ----
+
+	public List<CurrencyBoost> getActiveCurrencyBoosts() {
+		pruneCurrencyBoosts();
+		return List.copyOf(currencyBoosts);
+	}
+
+	public long getCurrencyBoostRemaining(CurrencyBoostType type) {
+		pruneCurrencyBoosts();
+		for (CurrencyBoost boost : currencyBoosts) {
+			if (boost.getType() == type) return boost.getRemainingDuration();
+		}
+		return 0;
+	}
+
+	public boolean addCurrencyBoost(CurrencyBoostType type, long durationInput) {
+		if (!type.isGrantable()) throw new IllegalArgumentException("Permission-only boosts cannot be granted");
+		pruneCurrencyBoosts();
+		CurrencyBoost existing = null;
+		for (CurrencyBoost boost : currencyBoosts) {
+			if (boost.getType() == type) {
+				existing = boost;
+				break;
+			}
+		}
+		if (existing == null) currencyBoosts.add(CurrencyBoost.create(type, durationInput));
+		else if (type.getDurationType() == BoostDurationType.RUNS) {
+			existing.setRemaining(existing.getRemaining() + durationInput);
+		} else {
+			existing.setRemaining(existing.getRemaining() + durationInput * 1000L);
+		}
+		saveCurrencyBoostsAsync();
+		return existing != null;
+	}
+
+	private void pruneCurrencyBoosts() {
+		currencyBoosts.removeIf(CurrencyBoost::isExpired);
+	}
+
+	public void clearCurrencyBoosts() {
+		currencyBoosts.clear();
+		saveCurrencyBoostsAsync();
+	}
+
+	// Captures the personal additive multiplier and consumes each RUNS boost exactly once.
+	public double consumeRunCurrencyBoosts() {
+		pruneCurrencyBoosts();
+		double bonus = currencyBoosts.stream().mapToDouble(CurrencyBoost::getMultiplier).sum();
+		boolean changed = false;
+		for (CurrencyBoost boost : currencyBoosts) {
+			if (boost.getType().getDurationType() == BoostDurationType.RUNS) {
+				boost.tickRun();
+				changed = true;
+			}
+		}
+		pruneCurrencyBoosts();
+		if (changed) saveCurrencyBoostsAsync();
+		return 1.0 + bonus;
 	}
 
 	private void addExpInternal(EquipmentClass ec, int amount) {
@@ -1155,6 +1234,37 @@ public class PlayerData {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
+	private void saveCurrencyBoostsAsync() {
+		final String uuidStr = uuid.toString();
+		final ArrayList<CurrencyBoost> snapshot = new ArrayList<CurrencyBoost>(currencyBoosts);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-PlayerData")) {
+					try (PreparedStatement clear = con.prepareStatement(
+							"DELETE FROM neorogue_currencyboosts WHERE uuid = ?;")) {
+						clear.setString(1, uuidStr);
+						clear.executeUpdate();
+					}
+					if (snapshot.isEmpty()) return;
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_currencyboosts");
+					for (CurrencyBoost boost : snapshot) {
+						sql.addValue("uuid", uuidStr)
+								.addValue("type", boost.getType().name())
+								.addValue("remaining", boost.getRemaining())
+								.addRow();
+					}
+					try (PreparedStatement ps = sql.build(con)) {
+						ps.executeBatch();
+					}
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save currency boosts for " + uuidStr);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
 	public void saveAchievementsAsync() {
 		// Never overwrite real achievement rows from a partial/failed load.
 		if (!loadedSuccessfully) {
@@ -1320,6 +1430,22 @@ public class PlayerData {
 			stmts.add(boostSql.build(con));
 		}
 
+		// Save currency boosts separately from exp boosts.
+		PreparedStatement clearCurrencyBoosts = con.prepareStatement("DELETE FROM neorogue_currencyboosts WHERE uuid = ?;");
+		clearCurrencyBoosts.setString(1, uuid.toString());
+		stmts.add(clearCurrencyBoosts);
+
+		if (!currencyBoosts.isEmpty()) {
+			SQLInsertBuilder boostSql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_currencyboosts");
+			for (CurrencyBoost boost : currencyBoosts) {
+				boostSql.addValue("uuid", uuid.toString())
+						.addValue("type", boost.getType().name())
+						.addValue("remaining", boost.getRemaining())
+						.addRow();
+			}
+			stmts.add(boostSql.build(con));
+		}
+
 		PreparedStatement clearAch = con.prepareStatement("DELETE FROM neorogue_achievements WHERE uuid = ?;");
 		clearAch.setString(1, uuid.toString());
 		stmts.add(clearAch);
@@ -1475,7 +1601,7 @@ public class PlayerData {
 		resetProgress();
 		resetRunHistory();
 		resetSavedRuns();
-		resetExpBoosts();
+		resetBoosts();
 		resetCaravan();
 	}
 
@@ -1571,6 +1697,17 @@ public class PlayerData {
 	public void resetExpBoosts() {
 		expBoosts.clear();
 		saveExpBoostsAsync();
+	}
+
+	public void resetBoosts() {
+		resetExpBoosts();
+		resetCurrencyBoosts();
+	}
+
+	// Removes all active currency boosts in memory and in the DB.
+	public void resetCurrencyBoosts() {
+		currencyBoosts.clear();
+		saveCurrencyBoostsAsync();
 	}
 
 	// Empties the main and lost cargo stashes. Fleet holds are left untouched (see resetFleet).

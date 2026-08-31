@@ -32,7 +32,7 @@ public class CmdAdminReset extends Subcommand {
 		PROGRESS("progress", PlayerData::resetProgress, PlayerData::resetClassProgress),
 		HISTORY("history", PlayerData::resetRunHistory, PlayerData::resetClassRunHistory),
 		SAVES("saves", PlayerData::resetSavedRuns, null),
-		BOOSTS("boosts", PlayerData::resetExpBoosts, null),
+		BOOSTS("boosts", PlayerData::resetBoosts, null),
 		CARGO("cargo", PlayerData::resetCargo, null),
 		FLEET("fleet", PlayerData::resetFleet, null),
 		CARAVAN("caravan", PlayerData::resetCaravan, null);

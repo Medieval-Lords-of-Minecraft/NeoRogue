@@ -83,10 +83,12 @@ public class HostGameInventory extends CoreInventory {
 				int notorietyCrowns = Session.getNotorietyMoneyBonusPercent(snap.getNotoriety());
 				int partyCrowns = RunReward.getPartyMoneyBonusPercent(snap.getParty().size());
 				int caravanCrowns = pd.getSellMultiplierBonus();
+				int boostCrowns = (int) Math.round((snap.getRunCurrencyBoostMultiplier() - 1.0) * 100);
 				if (notorietyCrowns != 0) lore.add(bonusLine("Notoriety", notorietyCrowns, "all payouts"));
 				if (partyCrowns != 0) lore.add(bonusLine("Party size", partyCrowns, "end reward"));
 				if (caravanCrowns != 0) lore.add(bonusLine("Caravan", caravanCrowns, "cargo sales"));
-				if (notorietyCrowns == 0 && partyCrowns == 0 && caravanCrowns == 0) lore.add(noBonusesLine());
+				if (boostCrowns != 0) lore.add(bonusLine("Run boosts", boostCrowns, "all run income"));
+				if (notorietyCrowns == 0 && partyCrowns == 0 && caravanCrowns == 0 && boostCrowns == 0) lore.add(noBonusesLine());
 				lore.add(Component.text("Party:", NamedTextColor.GRAY));
 				for (Entry<String, EquipmentClass> ent : snap.getParty().entrySet()) {
 					lore.add(Component.text("  " + ent.getKey() + " [" + ent.getValue().getDisplay() + "]", NamedTextColor.GRAY));

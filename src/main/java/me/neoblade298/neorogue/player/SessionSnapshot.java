@@ -39,6 +39,7 @@ public class SessionSnapshot {
 	private RegionType regionType;
 	private int notoriety;
 	private double runExpBoostMultiplier = 1.0;
+	private double runCurrencyBoostMultiplier = 1.0;
 	private boolean endless;
 	private boolean competitive;
 	private SessionType sessionType = SessionType.STANDARD;
@@ -58,7 +59,10 @@ public class SessionSnapshot {
 		this.sessionType = s.getSessionType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
-			if (ent.getKey().equals(s.getHost())) runExpBoostMultiplier = ent.getValue().getRunExpBoostMultiplier();
+			if (ent.getKey().equals(s.getHost())) {
+				runExpBoostMultiplier = ent.getValue().getRunExpBoostMultiplier();
+				runCurrencyBoostMultiplier = ent.getValue().getRunCurrencyBoostMultiplier();
+			}
 			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
 			party.put(ent.getValue().getData().getDisplay(), ent.getValue().getPlayerClass());
 		}
@@ -79,7 +83,10 @@ public class SessionSnapshot {
 		
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
-			if (uuid.equals(host)) runExpBoostMultiplier = getRunExpBoostMultiplier(party);
+			if (uuid.equals(host)) {
+				runExpBoostMultiplier = getRunExpBoostMultiplier(party);
+				runCurrencyBoostMultiplier = getRunCurrencyBoostMultiplier(party);
+			}
 			String display = party.getString("display");
 			EquipmentClass pc = EquipmentClass.valueOf(party.getString("playerClass"));
 			partyIds.put(uuid, display);
@@ -145,6 +152,10 @@ public class SessionSnapshot {
 		return playtime;
 	}
 
+	public double getRunCurrencyBoostMultiplier() {
+		return runCurrencyBoostMultiplier;
+	}
+
 	// Reads the playtime column, defaulting to 0 for saves created before the column existed.
 	private static long getPlaytime(ResultSet save) {
 		try {
@@ -166,6 +177,15 @@ public class SessionSnapshot {
 	private static double getRunExpBoostMultiplier(ResultSet party) {
 		try {
 			double multiplier = party.getDouble("runExpBoostMultiplier");
+			return party.wasNull() ? 1.0 : multiplier;
+		} catch (SQLException ex) {
+			return 1.0;
+		}
+	}
+
+	private static double getRunCurrencyBoostMultiplier(ResultSet party) {
+		try {
+			double multiplier = party.getDouble("runCurrencyBoostMultiplier");
 			return party.wasNull() ? 1.0 : multiplier;
 		} catch (SQLException ex) {
 			return 1.0;

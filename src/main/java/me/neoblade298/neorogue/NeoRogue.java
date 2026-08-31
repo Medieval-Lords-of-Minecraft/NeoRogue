@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.commands.CmdAdminBoost;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCurrency;
+import me.neoblade298.neorogue.commands.CmdAdminCurrencyBoost;
 import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.commands.CmdAdminDebugMode;
@@ -50,6 +51,7 @@ import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminExp;
 import me.neoblade298.neorogue.commands.CmdAdminExportEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGlobalBoost;
+import me.neoblade298.neorogue.commands.CmdAdminGlobalCurrencyBoost;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminLeaderboard;
 import me.neoblade298.neorogue.commands.CmdAdminLevel;
@@ -111,6 +113,7 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.FlagRegistry;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.boost.CurrencyBoostType;
 import me.neoblade298.neorogue.player.boost.ExpBoostType;
 import me.neoblade298.neorogue.player.caravan.CaravanUpgradeRegistry;
 import me.neoblade298.neorogue.player.caravan.SellablePackageRegistry;
@@ -141,8 +144,7 @@ public class NeoRogue extends JavaPlugin {
 	private static HashSet<String> debugFlags = new HashSet<>();
 	
 	public static File SCHEMATIC_FOLDER;
-	
-	public static Location spawn;
+	private static IEssentialsSpawn essentialsSpawn;
 	private static final int LEGACY_NODE_MAP_ID = 256;
 	private static final String NODE_MAP_ID_CONFIG = "node-map-id";
 	private static MapView nodeMap;
@@ -172,6 +174,7 @@ public class NeoRogue extends JavaPlugin {
 		SCHEMATIC_FOLDER = WorldEdit.getInstance().getSchematicsFolderPath().toFile();
 		saveResource("achievement-rewards.yml", false);
 		saveResource("expboosts.yml", false);
+		saveResource("currencyboosts.yml", false);
 		saveResource("leaderboards.yml", false);
 		AnalyticsManager.init();
 		LeaderboardManager.init();
@@ -245,6 +248,7 @@ public class NeoRogue extends JavaPlugin {
 		Region.initialize();
 		Equipment.load();
 		ExpBoostType.reload();
+		CurrencyBoostType.reload();
 		UnlockRegistry.reload();
 		SellablePackageRegistry.reload();
 		CaravanUpgradeRegistry.reload();
@@ -259,10 +263,14 @@ public class NeoRogue extends JavaPlugin {
 		LeaderboardManager.reload();
 
 		Plugin essentialsSpawnPlugin = Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
-		if (!(essentialsSpawnPlugin instanceof IEssentialsSpawn essentialsSpawn)) {
+		if (!(essentialsSpawnPlugin instanceof IEssentialsSpawn spawnApi)) {
 			throw new IllegalStateException("EssentialsSpawn is required but its API is unavailable");
 		}
-		spawn = essentialsSpawn.getSpawn("default").clone();
+		essentialsSpawn = spawnApi;
+	}
+
+	public static void teleportToEssentialsSpawn(Player player) {
+		player.teleport(essentialsSpawn.getSpawn("default"));
 	}
 
 	private static void reloadCaravanInfrastructure() {
@@ -374,6 +382,8 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminExp("exp", "Add exp to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminBoost("boost", "Grant an exp boost to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminGlobalBoost("globalboost", "Activate a server-wide exp boost", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminCurrencyBoost("currencyboost", "Grant a currency boost to a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminGlobalCurrencyBoost("globalcurrencyboost", "Activate a server-wide currency boost", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetExp("setexp", "Set a player's exp", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminLevel("level", "Add levels to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetLevel("setlevel", "Set a player's level", null, SubcommandRunner.BOTH));

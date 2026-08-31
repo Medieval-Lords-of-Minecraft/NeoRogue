@@ -237,7 +237,7 @@ public class LoadLobbyInstance extends LobbyInstance {
 
         SessionManager.removeFromSession(p.getUniqueId());
         inLobby.remove(p.getUniqueId());
-        p.teleport(NeoRogue.spawn);
+        NeoRogue.teleportToEssentialsSpawn(p);
         TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
                 .append(Component.text(" was kicked from the lobby!", NamedTextColor.GRAY)).build();
         broadcast(tc);

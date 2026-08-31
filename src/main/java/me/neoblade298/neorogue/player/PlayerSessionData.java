@@ -99,8 +99,13 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	// Computed and consumed at run start, then persisted so it survives relogs/restarts.
 	private double runExpBoostMultiplier = 1.0;
 	private final ArrayList<RunExpBoost> runExpBoosts = new ArrayList<RunExpBoost>();
+	private double runCurrencyBoostMultiplier = 1.0;
+	private final ArrayList<RunCurrencyBoost> runCurrencyBoosts = new ArrayList<RunCurrencyBoost>();
 
 	public static record RunExpBoost(String displayName, double bonus) {
+	}
+
+	public static record RunCurrencyBoost(String displayName, double bonus) {
 	}
 
 	// Run-scoped cargo carried into this run (moved from the player's persistent cargo on run start),
@@ -144,6 +149,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
 		this.runExpBoostMultiplier = rs.getDouble("runExpBoostMultiplier");
+		this.runCurrencyBoostMultiplier = rs.getDouble("runCurrencyBoostMultiplier");
 		this.restedAtShrine = rs.getBoolean("achievementShrineRested");
 		this.upgradedAtShrine = rs.getBoolean("achievementShrineUpgraded");
 		this.achievementMinibossRegion = rs.getString("achievementMinibossRegion");
@@ -151,6 +157,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		sessionStats.load(rs);
 		loadRunCargoFromSQL();
 		loadRunExpBoostsFromSQL();
+		loadRunCurrencyBoostsFromSQL();
 		initialize();
 	}
 
@@ -488,6 +495,23 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void setRunExpBoosts(List<RunExpBoost> boosts) {
 		runExpBoosts.clear();
 		runExpBoosts.addAll(boosts);
+	}
+
+	public double getRunCurrencyBoostMultiplier() {
+		return runCurrencyBoostMultiplier;
+	}
+
+	public void setRunCurrencyBoostMultiplier(double runCurrencyBoostMultiplier) {
+		this.runCurrencyBoostMultiplier = runCurrencyBoostMultiplier;
+	}
+
+	public List<RunCurrencyBoost> getRunCurrencyBoosts() {
+		return Collections.unmodifiableList(runCurrencyBoosts);
+	}
+
+	public void setRunCurrencyBoosts(List<RunCurrencyBoost> boosts) {
+		runCurrencyBoosts.clear();
+		runCurrencyBoosts.addAll(boosts);
 	}
 
 	public SessionStatistics getSessionStats() {
@@ -1447,7 +1471,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addValue("statStatusesApplied", sessionStats.getStatusesApplied())
 					.addValue("statDmgHealthRegionStart", sessionStats.getDamageTakenHealthAtRegionStart())
 					.addValue("statExpEarned", sessionStats.getExpEarned())
-					.addValue("runExpBoostMultiplier", runExpBoostMultiplier);
+					.addValue("runExpBoostMultiplier", runExpBoostMultiplier)
+					.addValue("runCurrencyBoostMultiplier", runCurrencyBoostMultiplier);
 			sql.addValue("achievementShrineRested", restedAtShrine)
 					.addValue("achievementShrineUpgraded", upgradedAtShrine)
 					.addValue("achievementMinibossRegion", achievementMinibossRegion)
@@ -1458,6 +1483,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 			saveRunCargo(con, host.toString(), saveSlot, uuid);
 			saveRunExpBoosts(con, host.toString(), saveSlot, uuid);
+			saveRunCurrencyBoosts(con, host.toString(), saveSlot, uuid);
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
 					+ host + " to slot " + saveSlot);
@@ -1478,6 +1504,28 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessionexpboosts");
 		for (int i = 0; i < runExpBoosts.size(); i++) {
 			RunExpBoost boost = runExpBoosts.get(i);
+			sql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
+					.addValue("idx", i).addValue("displayName", boost.displayName())
+					.addValue("bonus", boost.bonus()).addRow();
+		}
+		try (PreparedStatement ps = sql.build(con)) {
+			ps.executeBatch();
+		}
+	}
+
+	private void saveRunCurrencyBoosts(Connection con, String host, int saveSlot, String uuid) throws SQLException {
+		try (PreparedStatement clear = con.prepareStatement(
+				"DELETE FROM neorogue_sessioncurrencyboosts WHERE host = ? AND slot = ? AND uuid = ?;")) {
+			clear.setString(1, host);
+			clear.setInt(2, saveSlot);
+			clear.setString(3, uuid);
+			clear.executeUpdate();
+		}
+		if (runCurrencyBoosts.isEmpty()) return;
+
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessioncurrencyboosts");
+		for (int i = 0; i < runCurrencyBoosts.size(); i++) {
+			RunCurrencyBoost boost = runCurrencyBoosts.get(i);
 			sql.addValue("host", host).addValue("slot", saveSlot).addValue("uuid", uuid)
 					.addValue("idx", i).addValue("displayName", boost.displayName())
 					.addValue("bonus", boost.bonus()).addRow();
@@ -1586,6 +1634,24 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			}
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to load run exp boosts for " + uuid);
+			ex.printStackTrace();
+		}
+	}
+
+	private void loadRunCurrencyBoostsFromSQL() {
+		try (Connection con = SQLManager.getConnection("NeoRogue"); PreparedStatement ps = con.prepareStatement(
+				"SELECT displayName, bonus FROM neorogue_sessioncurrencyboosts "
+						+ "WHERE host = ? AND slot = ? AND uuid = ? ORDER BY idx;")) {
+			ps.setString(1, s.getHost().toString());
+			ps.setInt(2, s.getSaveSlot());
+			ps.setString(3, uuid.toString());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					runCurrencyBoosts.add(new RunCurrencyBoost(rs.getString("displayName"), rs.getDouble("bonus")));
+				}
+			}
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load run currency boosts for " + uuid);
 			ex.printStackTrace();
 		}
 	}

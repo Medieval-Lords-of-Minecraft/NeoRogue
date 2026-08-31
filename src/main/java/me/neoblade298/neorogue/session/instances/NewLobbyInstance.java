@@ -170,7 +170,7 @@ public class NewLobbyInstance extends LobbyInstance {
         players.remove(p.getUniqueId());
         ready.remove(p.getUniqueId());
         commitCargo.remove(p.getUniqueId());
-        p.teleport(NeoRogue.spawn);
+        NeoRogue.teleportToEssentialsSpawn(p);
         TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
                 .append(Component.text(" was kicked from the lobby!", NamedTextColor.GRAY)).build();
         broadcast(tc);
@@ -240,6 +240,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		s.setBusy(true);
 		s.addPlayers(players, commitCargo);
 		s.applyExpBoosts();
+        s.applyCurrencyBoosts();
 		s.broadcast("Generating your game...");
         s.generateRegion();
 		s.setNode(s.getRegion().getNodes()[0][2]);

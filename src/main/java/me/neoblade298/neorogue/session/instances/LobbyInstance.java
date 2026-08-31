@@ -122,11 +122,11 @@ public abstract class LobbyInstance extends Instance {
 				if (other == null) continue;
 				SessionManager.removeFromSession(uuid);
 				SessionManager.resetPlayer(other, true);
-				other.teleport(NeoRogue.spawn);
+				NeoRogue.teleportToEssentialsSpawn(other);
 			}
 			SessionManager.endSession(s);
 			SessionManager.resetPlayer(p, true);
-			p.teleport(NeoRogue.spawn);
+			NeoRogue.teleportToEssentialsSpawn(p);
 			return;
 		} else {
 			SessionManager.removeFromSession(p.getUniqueId());
@@ -136,7 +136,7 @@ public abstract class LobbyInstance extends Instance {
 			inLobby.remove(p.getUniqueId());
 		}
 		SessionManager.resetPlayer(p, true);
-		p.teleport(NeoRogue.spawn);
+		NeoRogue.teleportToEssentialsSpawn(p);
 		updateBoardLines();
 	}
 

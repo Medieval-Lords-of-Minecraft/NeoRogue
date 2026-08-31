@@ -1,0 +1,34 @@
+# Currency boost types. No currency boosts are enabled by default.
+# Each top-level key is a stable id stored in the currency-specific database tables.
+#
+#   display-name:  name shown in commands, receipts, and run summaries
+#   multiplier:    additive run-currency bonus (0.30 = +30%)
+#   duration-type: optional; TIME for a real-time duration, or RUNS for a number of runs
+#   permission:    optional permission checked when the run starts
+#   receive-message: optional message sent when this boost is first granted
+#   extend-message:  optional message sent when an existing boost is extended
+#
+# Messages support %boost%, %duration%, %remaining%, and %player% placeholders.
+# Entries without duration-type are permission-only and cannot be granted or persisted.
+# If a player matches multiple permission entries, only the entry with the highest multiplier applies.
+# Personal TIME/RUNS boosts and all active global TIME boosts stack additively with that permission boost.
+#
+# Example personal run-count boost:
+# VOTE:
+#   display-name: "Vote Currency Boost"
+#   multiplier: 0.25
+#   duration-type: RUNS
+#   receive-message: "<green>You received <yellow>%boost%</yellow> for <yellow>%duration%</yellow>."
+#   extend-message: "<green>Your <yellow>%boost%</yellow> was extended by <yellow>%duration%</yellow>."
+#
+# Example global timed boost:
+# EVENT_GLOBAL:
+#   display-name: "Global Currency Event"
+#   multiplier: 0.30
+#   duration-type: TIME
+#
+# Example permission-only boost (permission registration is managed by the server):
+# RANK:
+#   display-name: "Rank Currency Boost"
+#   multiplier: 0.10
+#   permission: "neorogue.currencyboost.rank"

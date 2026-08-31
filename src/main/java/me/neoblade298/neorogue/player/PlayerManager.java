@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.player;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.io.IOComponent;
 import me.neoblade298.neorogue.player.boost.GlobalBoostManager;
+import me.neoblade298.neorogue.player.boost.GlobalCurrencyBoostManager;
 
 public class PlayerManager implements IOComponent {
 	private static HashMap<UUID, PlayerData> data = new HashMap<UUID, PlayerData>();
@@ -40,10 +43,13 @@ public class PlayerManager implements IOComponent {
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_achievements (uuid VARCHAR(36) NOT NULL, achievement VARCHAR(100) NOT NULL, progress INT NOT NULL DEFAULT 0, scope VARCHAR(40) NOT NULL DEFAULT 'GLOBAL', data TEXT, PRIMARY KEY (uuid, achievement, scope));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_expboosts (uuid VARCHAR(36) NOT NULL, type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (uuid, type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_expboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_currencyboosts (uuid VARCHAR(36) NOT NULL, type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (uuid, type));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_global_currencyboosts (type VARCHAR(64) NOT NULL, remaining BIGINT NOT NULL, PRIMARY KEY (type));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playercargo (uuid VARCHAR(36) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT 'MAIN', idx INT NOT NULL DEFAULT 0, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, price DOUBLE NOT NULL DEFAULT 0, filled_at BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, type, idx, item_key));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargo (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, PRIMARY KEY (host, slot, uuid, item_key));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncargosold (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, material VARCHAR(64) NOT NULL, item_key VARCHAR(512) NOT NULL, item_data MEDIUMTEXT, amount INT NOT NULL, value DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, item_key));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessionexpboosts (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, idx INT NOT NULL, displayName VARCHAR(255) NOT NULL, bonus DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, idx));");
+			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_sessioncurrencyboosts (host VARCHAR(36) NOT NULL, slot INT NOT NULL, uuid VARCHAR(36) NOT NULL, idx INT NOT NULL, displayName VARCHAR(255) NOT NULL, bonus DOUBLE NOT NULL, PRIMARY KEY (host, slot, uuid, idx));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerdata (uuid VARCHAR(36) NOT NULL, display VARCHAR(255), PRIMARY KEY (uuid));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerflags (uuid VARCHAR(36) NOT NULL, flag VARCHAR(100) NOT NULL, PRIMARY KEY (uuid, flag));");
 			stmt.execute("CREATE TABLE IF NOT EXISTS neorogue_playerclass (uuid VARCHAR(36) NOT NULL, class VARCHAR(40) NOT NULL, level INT NOT NULL DEFAULT 1, exp INT NOT NULL DEFAULT 0, points INT NOT NULL DEFAULT 0, notoriety_max INT NOT NULL DEFAULT 0, playtime BIGINT NOT NULL DEFAULT 0, PRIMARY KEY (uuid, class));");
@@ -66,17 +72,32 @@ public class PlayerManager implements IOComponent {
 					+ " statDamageTakenHealth DOUBLE, statDamageTakenShields DOUBLE,"
 					+ " statShieldsApplied DOUBLE, statHealingDone DOUBLE, statDamageBarriered DOUBLE,"
 					+ " statFightsCompleted INT, statDeaths INT, statStatusesApplied INT, statDmgHealthRegionStart DOUBLE,"
-					+ " runExpBoostMultiplier DOUBLE, statExpEarned INT NOT NULL DEFAULT 0,"
+					+ " runExpBoostMultiplier DOUBLE, runCurrencyBoostMultiplier DOUBLE NOT NULL DEFAULT 1, statExpEarned INT NOT NULL DEFAULT 0,"
 					+ " achievementShrineRested TINYINT NOT NULL DEFAULT 0, achievementShrineUpgraded TINYINT NOT NULL DEFAULT 0,"
 					+ " achievementMinibossRegion VARCHAR(50), achievementMinibossCount INT NOT NULL DEFAULT 0,"
 					+ " PRIMARY KEY (host, slot, uuid));");
+			ensureColumn(con, "neorogue_playersessiondata", "runCurrencyBoostMultiplier",
+					"DOUBLE NOT NULL DEFAULT 1");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		GlobalBoostManager.load();
+		GlobalCurrencyBoostManager.load();
 		loadOnlinePlayers();
+	}
+
+	// CREATE TABLE IF NOT EXISTS does not add newly introduced columns to existing tables.
+	// Check metadata first so upgrades are idempotent and don't rely on duplicate-column errors.
+	private static void ensureColumn(Connection con, String table, String column, String definition) throws SQLException {
+		DatabaseMetaData meta = con.getMetaData();
+		try (ResultSet columns = meta.getColumns(con.getCatalog(), null, table, column)) {
+			if (columns.next()) return;
+		}
+		try (Statement stmt = con.createStatement()) {
+			stmt.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition + ";");
+		}
 	}
 
 	private void initializeLightweightTables() {
