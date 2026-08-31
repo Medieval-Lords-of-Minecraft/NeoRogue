@@ -38,9 +38,8 @@ public class RunReward {
 	private static final double WIN_BASE = 1000.0;
 	private static final double LOSE_BASE = 25.0;
 
-	// Per-unit bonus values.
-	private static final double NODE_BONUS = 10.0; // per node visited
-	private static final double REGION_BONUS = 100.0; // per region completed
+	// Per-node bonus value. Base region rewards are configured on RegionType.
+	private static final double NODE_BONUS = 50.0; // per node visited
 
 	// Additional payout multiplier granted per party member beyond the first (e.g. 0.10 = +10% each).
 	private static final double PARTY_SIZE_BONUS = 0.10;
@@ -186,7 +185,7 @@ public class RunReward {
 		int nodesCompleted = Math.min(completed.getRowCount(), s.getNodesVisited());
 		double partyMultiplier = 1.0 + getPartyMoneyBonusPercent(s) / 100.0;
 		double standardMultiplier = s.getNotorietyMoneyMultiplier() * partyMultiplier;
-		double baseReward = REGION_BONUS * standardMultiplier;
+		double baseReward = completed.getRegionReward() * standardMultiplier;
 		double nodeReward = nodesCompleted * NODE_BONUS * standardMultiplier;
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = psd.getData();
@@ -355,6 +354,17 @@ public class RunReward {
 		return (int) Math.round(PARTY_SIZE_BONUS * Math.max(0, partySize - 1) * 100);
 	}
 
+	private static double getCompletedRegionRewardBase(Session s, boolean won) {
+		RegionType region = won ? s.getRegion().getType()
+				: RegionType.getPreviousRegion(s.getRegion().getType());
+		double total = 0;
+		for (int remaining = s.getRegionsCompleted(); remaining > 0 && region != null; remaining--) {
+			total += region.getRegionReward();
+			region = RegionType.getPreviousRegion(region);
+		}
+		return total;
+	}
+
 	// Builds the complete run-finances summary. Prior region rewards are reconstructed from the
 	// session counters, while personal caravan and cargo totals use the viewer's aggregate data.
 	public static List<Component> buildFinancesLore(Session s, PlayerSessionData psd, boolean won) {
@@ -387,12 +397,12 @@ public class RunReward {
 		lore.add(Component.empty());
 		lore.add(loreLine("<gold>Rewards Paid Throughout Run"));
 		double standardMultiplier = b.notorietyMultiplier * b.partyMultiplier;
-		double regionBaseReward = b.regionsCompleted * REGION_BONUS * standardMultiplier;
+		double regionBaseReward = getCompletedRegionRewardBase(s, won) * standardMultiplier;
 		int rewardedRegionNodes = won ? b.nodesVisited
 				: Math.min(b.nodesVisited, b.regionsCompleted * s.getRegion().getType().getRowCount());
 		double regionNodeReward = rewardedRegionNodes * NODE_BONUS * standardMultiplier;
-		lore.add(loreLine("<gray>Completed regions (<white>" + b.regionsCompleted + "<gray> \u00d7 "
-				+ formatWholeMoney(REGION_BONUS) + "): <green>+" + formatWholeMoney(regionBaseReward)));
+		lore.add(loreLine("<gray>Completed regions (<white>" + b.regionsCompleted + "<gray>): <green>+"
+				+ formatWholeMoney(regionBaseReward)));
 		lore.add(loreLine("<gray>Region nodes (<white>" + rewardedRegionNodes + "<gray> \u00d7 "
 				+ formatWholeMoney(NODE_BONUS) + "): <green>+" + formatWholeMoney(regionNodeReward)));
 
