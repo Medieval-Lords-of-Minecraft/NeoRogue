@@ -34,11 +34,7 @@ public class RunReward {
 	private static Economy economy;
 
 	// ----- Payout tuning constants (adjust these to tune payouts) -----
-	// Flat base amount awarded regardless of performance.
-	private static final double WIN_BASE = 1000.0;
-	private static final double LOSE_BASE = 25.0;
-
-	// Per-node bonus value. Base region rewards are configured on RegionType.
+	// Per-node loss reward. Base win rewards are configured on RegionType.
 	private static final double NODE_BONUS = 50.0; // per node visited
 
 	// Additional payout multiplier granted per party member beyond the first (e.g. 0.10 = +10% each).
@@ -148,6 +144,10 @@ public class RunReward {
 		return new java.text.DecimalFormat("0.##").format(mult);
 	}
 
+	private static boolean isRelevantMultiplier(double mult) {
+		return Math.abs(mult - 1.0) > 0.000001;
+	}
+
 	// Builds the hover text breaking the effective cargo sale multiplier into its component sources
 	// (notoriety money bonus and the player's caravan sell multiplier).
 	private static String buildMultHover(Session s, PlayerSessionData psd) {
@@ -185,6 +185,7 @@ public class RunReward {
 	}
 
 	private static String currencyBoostReceiptLine(PlayerSessionData psd) {
+		if (!isRelevantMultiplier(psd.getRunCurrencyBoostMultiplier())) return "";
 		StringBuilder names = new StringBuilder();
 		for (PlayerSessionData.RunCurrencyBoost boost : psd.getRunCurrencyBoosts()) {
 			if (names.length() > 0) names.append(", ");
@@ -203,15 +204,12 @@ public class RunReward {
 	}
 
 	private static void awardRegionCompletion(Session s, RegionType completed, double sellPercent, boolean announce) {
-		int nodesCompleted = Math.min(completed.getRowCount(), s.getNodesVisited());
 		double partyMultiplier = 1.0 + getPartyMoneyBonusPercent(s) / 100.0;
 		double standardMultiplier = s.getNotorietyMoneyMultiplier() * partyMultiplier;
 		double normalBaseReward = completed.getRegionReward() * standardMultiplier;
-		double normalNodeReward = nodesCompleted * NODE_BONUS * standardMultiplier;
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = psd.getData();
 			double baseReward = applyCurrencyBoost(psd, normalBaseReward);
-			double nodeReward = applyCurrencyBoost(psd, normalNodeReward);
 
 			// Persistent caravan completion reward, independent of the standard region reward.
 			double caravanReward = 0;
@@ -233,8 +231,8 @@ public class RunReward {
 					cargoReward = payoutCargoReward(s, psd, sale.value);
 				}
 			}
-			double total = baseReward + nodeReward + caravanReward + cargoReward;
-			depositCargo(psd, baseReward + nodeReward + caravanReward);
+			double total = baseReward + caravanReward + cargoReward;
+			depositCargo(psd, baseReward + caravanReward);
 
 			Player p = psd.getPlayer();
 			if (p == null) continue;
@@ -242,32 +240,39 @@ public class RunReward {
 			if (result != null) PlayerSessionInventory.updateCargoIcon(psd);
 			if (!announce) continue;
 
-			String cargoLine = "<gray>Cargo sales: <yellow>" + formatMoney(0);
+			String cargoLine = "";
 			if (result != null) {
 				double mult = result.value > 0 ? cargoReward / result.value : 1.0;
 				cargoLine = "<gray>Cargo sales ("
-						+ hoverableCargoItems(buildCargoHover(result), result.itemsSold)
-						+ ", " + hoverableMult(s, psd, mult) + "<gray>): <yellow>" + formatMoney(cargoReward);
+						+ hoverableCargoItems(buildCargoHover(result), result.itemsSold);
+				if (isRelevantMultiplier(mult)) cargoLine += ", " + hoverableMult(s, psd, mult) + "<gray>";
+				cargoLine += "): <yellow>" + formatMoney(cargoReward) + "<newline>";
 			}
+			String regionMultiplierLine = isRelevantMultiplier(standardMultiplier)
+					? "<gray>Region reward multiplier: <green>\u00d7" + String.format("%.2f", standardMultiplier)
+							+ "<newline>"
+					: "";
+			String currencyLine = currencyBoostReceiptLine(psd);
+			if (!currencyLine.isEmpty()) currencyLine += "<newline>";
+			String caravanLine = caravanReward > 0
+					? "<gray>Caravan completion reward: <yellow>" + formatMoney(caravanReward) + "<newline>"
+					: "";
 			Util.msgRaw(p, "<gold><bold>" + completed.getDisplay() + " Rewards</bold><newline>"
 					+ "<gray>Base region reward: <yellow>" + formatMoney(baseReward) + "<newline>"
-					+ "<gray>Nodes completed (<white>" + nodesCompleted + "<gray> \u00d7 "
-					+ formatWholeMoney(NODE_BONUS) + "): <yellow>" + formatMoney(nodeReward) + "<newline>"
-					+ "<gray>Region reward multiplier: <green>\u00d7" + String.format("%.2f", standardMultiplier)
-					+ "<newline>"
-					+ currencyBoostReceiptLine(psd) + "<newline>"
-					+ "<gray>Caravan completion reward: <yellow>" + formatMoney(caravanReward) + "<newline>"
-					+ cargoLine + "<newline><gold>Total: <yellow>" + formatMoney(total));
+					+ regionMultiplierLine
+					+ currencyLine
+					+ caravanLine
+					+ cargoLine + "<gold>Total: <yellow>" + formatMoney(total));
 		}
 	}
 
 	// Pays out each party member the calculated amount for finishing a run.
 	// won = true for a run victory, false for a run loss.
 	public static void payout(Session s, boolean won) {
-		// The final region has no RewardInstance, so pay its complete region reward here and sell all
-		// remaining cargo. It is included in the win-screen summary rather than announced separately.
+		// The final region has no RewardInstance, so pay and announce its complete region reward here.
+		// A 100% sell rate ensures the receipt itemizes every cargo item left at victory.
 		if (won) {
-			awardRegionCompletion(s, s.getRegion().getType(), 1.0, false);
+			awardRegionCompletion(s, s.getRegion().getType(), 1.0, true);
 		}
 		returnUnsoldCargo(s, won);
 		if (economy == null) return;
@@ -281,9 +286,16 @@ public class RunReward {
 
 			Player p = psd.getPlayer();
 			if (p != null) {
-				String expSummary = "</yellow> and <green>" + psd.getSessionStats().getExpEarned() + " exp</green>";
-				Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(total) + expSummary + " for "
-						+ (won ? "winning" : "completing") + " your run!");
+				if (won) {
+					Util.msgRaw(p, "<gray>Total experience earned: <green>"
+							+ psd.getSessionStats().getExpEarned() + " exp");
+				}
+				else {
+					String expSummary = "</yellow> and <green>" + psd.getSessionStats().getExpEarned()
+							+ " exp</green>";
+					Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(total) + expSummary
+							+ " for completing your run!");
+				}
 			}
 		}
 	}
@@ -300,9 +312,12 @@ public class RunReward {
 			Player p = psd.getPlayer();
 			if (p != null) {
 				double mult = result.value > 0 ? reward / result.value : 1.0;
+				String multText = isRelevantMultiplier(mult)
+						? " <gray>(" + hoverableMult(s, psd, mult) + "<gray>)"
+						: "";
 				Util.msgRaw(p, "<gray>Your caravan reached safety and sold its remaining "
 						+ hoverableCargoItems(buildCargoHover(result), result.itemsSold) + " for <yellow>"
-						+ formatMoney(reward) + "</yellow> <gray>(" + hoverableMult(s, psd, mult) + "<gray>).");
+						+ formatMoney(reward) + "</yellow>" + multText + "<gray>.");
 			}
 		}
 	}
@@ -346,8 +361,8 @@ public class RunReward {
 		}
 	}
 
-	// Calculates only the reward paid on the end screen. Completed-region rewards are paid at each
-	// region boundary; on defeat, nodes reached in the unfinished region are paid here as well.
+	// Calculates only the reward paid on the end screen. Wins have no separate final payout because
+	// their base rewards come from completed regions; losses earn NODE_BONUS for every node visited.
 	public static Breakdown calculateBreakdown(Session s, boolean won) {
 		int nodes = s.getNodesVisited();
 		int regions = s.getRegionsCompleted();
@@ -356,10 +371,8 @@ public class RunReward {
 		// A loss before reaching the node threshold earns nothing, no matter the progress.
 		boolean zeroedByDeath = !won && nodes < DEATH_NODE_THRESHOLD;
 
-		double base = won ? WIN_BASE : LOSE_BASE;
-		int completedRegionNodes = Math.min(nodes, regions * s.getRegion().getType().getRowCount());
-		int unpaidNodes = won ? 0 : Math.max(0, nodes - completedRegionNodes);
-		double nodeBonus = unpaidNodes * NODE_BONUS;
+		double base = 0;
+		double nodeBonus = won ? 0 : nodes * NODE_BONUS;
 		double regionBonus = 0;
 		double subtotal = base + nodeBonus + regionBonus;
 		double notorietyMultiplier = s.getNotorietyMoneyMultiplier();
@@ -397,58 +410,61 @@ public class RunReward {
 		List<Component> lore = new ArrayList<Component>();
 		Breakdown b = calculateBreakdown(s, won);
 		double currencyMultiplier = psd == null ? 1.0 : psd.getRunCurrencyBoostMultiplier();
-		lore.add(loreLine("<gold>Final Reward"));
-		if (b.zeroedByDeath) {
-			lore.add(loreLine("<red>Fewer than <yellow>" + DEATH_NODE_THRESHOLD
-					+ "<red> nodes visited; no final reward."));
-		}
-		else {
-			lore.add(loreLine("<gray>Base (" + (won ? "victory" : "completion") + "): <green>+"
-					+ formatWholeMoney(b.base)));
-			if (b.nodeBonus > 0) {
-				int unpaidNodes = (int) Math.round(b.nodeBonus / NODE_BONUS);
-				lore.add(loreLine("<gray>Unfinished-region nodes (<white>" + unpaidNodes + "<gray> \u00d7 "
-						+ formatWholeMoney(NODE_BONUS) + "): <green>+" + formatWholeMoney(b.nodeBonus)));
-			}
-			lore.add(loreLine("<gray>Subtotal: <yellow>" + formatWholeMoney(b.subtotal)));
-		}
-		lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
-				+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier)));
-		if (b.partySize > 1) {
-			lore.add(loreLine("<gray>Party bonus (<white>" + b.partySize + "<gray> players, <white>+"
-					+ Math.round(PARTY_SIZE_BONUS * 100) + "%<gray> each beyond the first): <green>\u00d7"
-					+ String.format("%.2f", b.partyMultiplier)));
-		}
-		if (psd != null) addCurrencyBoostLore(lore, psd);
 		double finalReward = b.total * currencyMultiplier;
-		lore.add(loreLine("<gold>Final reward earned: <yellow>" + formatWholeMoney(finalReward)));
+		if (!won) {
+			lore.add(loreLine("<gold>Loss Reward"));
+			if (b.zeroedByDeath) {
+				lore.add(loreLine("<red>Fewer than <yellow>" + DEATH_NODE_THRESHOLD
+						+ "<red> nodes visited; no loss reward."));
+			}
+			else {
+				lore.add(loreLine("<gray>Nodes visited (<white>" + b.nodesVisited + "<gray> \u00d7 "
+						+ formatWholeMoney(NODE_BONUS) + "): <green>+" + formatWholeMoney(b.nodeBonus)));
+				lore.add(loreLine("<gray>Subtotal: <yellow>" + formatWholeMoney(b.subtotal)));
+			}
+			if (isRelevantMultiplier(b.notorietyMultiplier)) {
+				lore.add(loreLine("<gray>Notoriety bonus (<white>+" + s.getNotorietyMoneyBonusPercent()
+						+ "%<gray>): <green>\u00d7" + String.format("%.2f", b.notorietyMultiplier)));
+			}
+			if (b.partySize > 1) {
+				lore.add(loreLine("<gray>Party bonus (<white>" + b.partySize + "<gray> players, <white>+"
+						+ Math.round(PARTY_SIZE_BONUS * 100) + "%<gray> each beyond the first): <green>\u00d7"
+						+ String.format("%.2f", b.partyMultiplier)));
+			}
+			if (psd != null) addCurrencyBoostLore(lore, psd);
+			lore.add(loreLine("<gold>Loss reward earned: <yellow>" + formatWholeMoney(finalReward)));
+			lore.add(Component.empty());
+		}
 
-		lore.add(Component.empty());
 		lore.add(loreLine("<gold>Rewards Paid Throughout Run"));
 		double standardMultiplier = b.notorietyMultiplier * b.partyMultiplier;
 		double regionBaseReward = getCompletedRegionRewardBase(s, won) * standardMultiplier * currencyMultiplier;
-		int rewardedRegionNodes = won ? b.nodesVisited
-				: Math.min(b.nodesVisited, b.regionsCompleted * s.getRegion().getType().getRowCount());
-		double regionNodeReward = rewardedRegionNodes * NODE_BONUS * standardMultiplier * currencyMultiplier;
 		lore.add(loreLine("<gray>Completed regions (<white>" + b.regionsCompleted + "<gray>): <green>+"
 				+ formatWholeMoney(regionBaseReward)));
-		lore.add(loreLine("<gray>Region nodes (<white>" + rewardedRegionNodes + "<gray> \u00d7 "
-				+ formatWholeMoney(NODE_BONUS) + "): <green>+" + formatWholeMoney(regionNodeReward)));
 
 		if (psd != null) {
 			PlayerData pd = psd.getData();
 			double caravanReward = pd == null ? 0 : b.regionsCompleted * pd.getCargoBaseReward()
 					* b.notorietyMultiplier * currencyMultiplier;
-			lore.add(loreLine("<gray>Caravan completion rewards: <green>+" + formatWholeMoney(caravanReward)));
+			if (caravanReward > 0) {
+				lore.add(loreLine("<gray>Caravan reward bonus: <green>+"
+						+ formatWholeMoney(caravanReward)));
+			}
 
 			double cargoTotal = 0;
 			for (double value : psd.getSoldCargoValue().values()) cargoTotal += value;
 			int caravanBonus = pd == null ? 0 : pd.getSellMultiplierBonus();
 			double cargoMultiplier = b.notorietyMultiplier + caravanBonus / 100.0;
 			double cargoReward = cargoTotal * cargoMultiplier * currencyMultiplier;
-			lore.add(loreLine("<gray>Cargo sales (<white>\u00d7" + String.format("%.2f", cargoMultiplier * currencyMultiplier)
-					+ "<gray>): <green>+" + formatWholeMoney(cargoReward)));
-			double runTotal = finalReward + regionBaseReward + regionNodeReward + caravanReward + cargoReward;
+			if (cargoTotal > 0) {
+				double effectiveCargoMultiplier = cargoMultiplier * currencyMultiplier;
+				String multiplierText = isRelevantMultiplier(effectiveCargoMultiplier)
+						? " (<white>\u00d7" + String.format("%.2f", effectiveCargoMultiplier) + "<gray>)"
+						: "";
+				lore.add(loreLine("<gray>Cargo sales" + multiplierText + ": <green>+"
+						+ formatWholeMoney(cargoReward)));
+			}
+			double runTotal = finalReward + regionBaseReward + caravanReward + cargoReward;
 			lore.add(Component.empty());
 			lore.add(loreLine("<gold>Total run earnings: <yellow>" + formatWholeMoney(runTotal)));
 		}
@@ -456,6 +472,7 @@ public class RunReward {
 	}
 
 	private static void addCurrencyBoostLore(List<Component> lore, PlayerSessionData psd) {
+		if (!isRelevantMultiplier(psd.getRunCurrencyBoostMultiplier())) return;
 		lore.add(loreLine("<gray>Currency boost: <green>\u00d7" + formatMult(psd.getRunCurrencyBoostMultiplier())));
 		if (psd.getRunCurrencyBoosts().isEmpty()) return;
 		for (PlayerSessionData.RunCurrencyBoost boost : psd.getRunCurrencyBoosts()) {
