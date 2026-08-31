@@ -31,6 +31,8 @@ import me.neoblade298.neorogue.achievement.builtin.ByAThreadAchievement;
 import me.neoblade298.neorogue.achievement.builtin.CrownsEarnedAchievement;
 import me.neoblade298.neorogue.achievement.builtin.DashesInFightAchievement;
 import me.neoblade298.neorogue.achievement.builtin.DeepPocketsAchievement;
+import me.neoblade298.neorogue.achievement.builtin.EquipRaritySetAchievement;
+import me.neoblade298.neorogue.achievement.builtin.EvadeHitAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ExactChangeAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FinishRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.FlawlessRegionAchievement;
@@ -40,10 +42,15 @@ import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MaxStatAchievement.StatType;
 import me.neoblade298.neorogue.achievement.builtin.MinibossMarathonAchievement;
 import me.neoblade298.neorogue.achievement.builtin.MitigateDamageAchievement;
+import me.neoblade298.neorogue.achievement.builtin.MultiKillAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NoHealthLossAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyTenWinsAchievement;
 import me.neoblade298.neorogue.achievement.builtin.NotorietyWinAchievement;
+import me.neoblade298.neorogue.achievement.builtin.PoisonInFightAchievement;
 import me.neoblade298.neorogue.achievement.builtin.PrismaticAchievement;
+import me.neoblade298.neorogue.achievement.builtin.RapidCombatAchievement;
+import me.neoblade298.neorogue.achievement.builtin.ReachStatusAchievement;
+import me.neoblade298.neorogue.achievement.builtin.RiftCountAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SRankRegionAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SeeingTripleAchievement;
 import me.neoblade298.neorogue.achievement.builtin.ShieldsInFightAchievement;
@@ -51,6 +58,7 @@ import me.neoblade298.neorogue.achievement.builtin.ShrineDisciplineAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SoleSurvivorAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpeedRunAchievement;
 import me.neoblade298.neorogue.achievement.builtin.SpendCurrencyAchievement;
+import me.neoblade298.neorogue.achievement.builtin.StealthFightAchievement;
 import me.neoblade298.neorogue.achievement.builtin.UseConsumablesAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VersatileAchievement;
 import me.neoblade298.neorogue.achievement.builtin.VisitNodesAchievement;
@@ -63,6 +71,8 @@ import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -102,6 +112,8 @@ public class AchievementManager {
 					Material.GOLD_INGOT, Rarity.RARE),
 			new AcquireRarityAchievement("epic_discovery", Component.text("Epic Discovery", NamedTextColor.GOLD),
 					Material.DIAMOND, Rarity.EPIC),
+			new EquipRaritySetAchievement("rare_ensemble", "Rare Ensemble", Material.BLUE_DYE, Rarity.RARE),
+			new EquipRaritySetAchievement("epic_ensemble", "Epic Ensemble", Material.ORANGE_DYE, Rarity.EPIC),
 			new MaxStatAchievement("beefy", Component.text("Beefy", NamedTextColor.GOLD),
 					Material.GOLDEN_APPLE, StatType.HEALTH, 150, 250, 400),
 			new MaxStatAchievement("arcane_reservoir", Component.text("Arcane Reservoir", NamedTextColor.GOLD),
@@ -112,7 +124,24 @@ public class AchievementManager {
 			new VersatileAchievement(),
 			new SeeingTripleAchievement(),
 			new ShieldsInFightAchievement(),
+			new ReachStatusAchievement("mighty", "Mighty", Material.RED_DYE, EquipmentClass.WARRIOR,
+					StatusType.STRENGTH, "Strength", 10, 25, 100),
+			new RapidCombatAchievement("relentless_assault", "Relentless Assault", Material.IRON_SWORD,
+					EquipmentClass.WARRIOR, Trigger.BASIC_ATTACK, false, "Land basic attacks", 13, 17, 21),
+			new ReachStatusAchievement("blood_rage", "Blood Rage", Material.NETHER_WART, EquipmentClass.WARRIOR,
+					StatusType.BERSERK, "Berserk", 10, 25, 50),
 			new DashesInFightAchievement(),
+			new StealthFightAchievement(),
+			new PoisonInFightAchievement(),
+			new EvadeHitAchievement(),
+			new MultiKillAchievement(),
+			new RapidCombatAchievement("arrowstorm", "Arrowstorm", Material.ARROW, EquipmentClass.ARCHER,
+					Trigger.LAUNCH_PROJECTILE_GROUP, true, "Fire projectiles", 17, 27, 37),
+			new ReachStatusAchievement("perfect_focus", "Perfect Focus", Material.TARGET, EquipmentClass.ARCHER,
+					StatusType.FOCUS, "Focus", 5, 10, 20),
+			new RiftCountAchievement(),
+			new ReachStatusAchievement("savant", "Savant", Material.ENCHANTED_BOOK, EquipmentClass.MAGE,
+					StatusType.INTELLECT, "Intellect", 10, 20, 40),
 			new MinibossMarathonAchievement(),
 			new AllMinibossesAchievement("low_district_miniboss_slayer", Component.text("Low District Miniboss Slayer", NamedTextColor.GOLD),
 					Material.STONE_SWORD, RegionType.LOW_DISTRICT),

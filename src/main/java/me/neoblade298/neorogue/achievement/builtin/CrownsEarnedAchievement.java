@@ -17,11 +17,10 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-// Accumulates the crowns earned from finishing runs (win or loss). Mastery tiers at
-// 1,000 / 10,000 / 50,000 / 100,000 crowns.
+// Accumulates the crowns earned from finishing runs (win or loss).
 public class CrownsEarnedAchievement implements Achievement {
 	private static final String ID = "crown_collector";
-	private static final int[] THRESHOLDS = { 100, 10000, 50000, 100000, 500000 };
+	private static final int[] THRESHOLDS = { 10000, 100000, 500000, 1000000, 10000000 };
 
 	@Override
 	public String getId() {

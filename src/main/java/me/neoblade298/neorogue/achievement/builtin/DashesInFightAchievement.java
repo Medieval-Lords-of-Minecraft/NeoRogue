@@ -18,11 +18,10 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-// Thief-only. Tracks the most dashes performed within a single fight. Mastery tiers at
-// 50 / 100 / 200 dashes.
+// Thief-only. Tracks the most dashes performed within a single fight.
 public class DashesInFightAchievement implements Achievement {
 	private static final String ID = "shadow_dancer";
-	private static final int[] THRESHOLDS = { 50, 100, 200 };
+	private static final int[] THRESHOLDS = { 10, 25, 100 };
 
 	@Override
 	public String getId() {
