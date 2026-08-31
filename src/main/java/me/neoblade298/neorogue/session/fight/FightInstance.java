@@ -320,9 +320,11 @@ public abstract class FightInstance extends Instance {
 		if (!fi.isActive) return;
 		fi.isActive = false;
 		fi.fightWon = false;
+		fi.removePlayerHolograms();
 		new BukkitRunnable() {
 			public void run() {
 				for (PlayerFightData data : userData.values()) {
+					if (data.getInstance() != fi) continue;
 					Player p = data.getPlayer();
 					if (p == null) continue;
 					p.spigot().respawn();
@@ -338,6 +340,12 @@ public abstract class FightInstance extends Instance {
 				}.runTask(NeoRogue.inst());
 			}
 		}.runTask(NeoRogue.inst());
+	}
+
+	private void removePlayerHolograms() {
+		for (PlayerFightData data : userData.values()) {
+			if (data.getInstance() == this) data.removeHologram();
+		}
 	}
 
 	@Override

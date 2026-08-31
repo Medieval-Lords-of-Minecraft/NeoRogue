@@ -87,8 +87,10 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		s.broadcast("<yellow>" + p.getName() + " <gray>left the lobby!");
 		SessionManager.removeFromSession(p.getUniqueId(), s);
 		SessionManager.resetPlayer(p, true);
-		NeoRogue.teleportToEssentialsSpawn(p);
 		endIfEmpty();
+		// If this was the final player, endIfEmpty tears down the region and unloads its chunks.
+		// Teleport after that cleanup so it cannot interfere with the final destination.
+		NeoRogue.teleportToEssentialsSpawn(p);
 	}
 
 	private void endIfEmpty() {
@@ -196,6 +198,9 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 				e.setCancelled(true);
 				s.removeSpectator(p);
 				endIfEmpty();
+				// removeSpectator teleports before endIfEmpty; repeat afterward in case ending the
+				// now-empty session cleaned up the region around the player.
+				NeoRogue.teleportToEssentialsSpawn(p);
 				return;
 			}
 			if (type == Material.LECTERN) {

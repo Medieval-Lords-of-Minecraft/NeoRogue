@@ -86,9 +86,7 @@ public class FightData {
 			tickAction.setCancelled(true);
 		}
 
-		if (hologram != null) {
-			hologram.remove();
-		}
+		removeHologram();
 	}
 	
 	public FightData() {
@@ -357,6 +355,9 @@ public class FightData {
 	// Creates (if needed), mounts, and updates the hologram text mounted above this entity.
 	protected void renderHologram(Component text) {
 		if (entity == null || !entity.isValid()) return;
+		// Delayed damage/status updates can run between fight resolution and full instance cleanup.
+		// Do not let one recreate a passenger after the fight has ended.
+		if (entity instanceof Player && inst != null && !inst.isActive()) return;
 		if (hologram == null) {
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
@@ -382,6 +383,7 @@ public class FightData {
 
 	protected void removeHologram() {
 		if (hologram != null) {
+			if (entity != null) entity.removePassenger(hologram);
 			hologram.remove();
 			hologram = null;
 		}
