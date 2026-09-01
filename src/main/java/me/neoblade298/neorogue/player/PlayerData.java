@@ -1041,9 +1041,9 @@ public class PlayerData {
 	}
 
 	// Whether this player is permitted to deposit the given material into cargo (default package plus
-	// any owned sellable packages).
+	// any package granted by a player flag or permission).
 	public boolean canDepositMaterial(Material mat) {
-		return SellablePackageRegistry.canDeposit(getSellablePackages(), mat);
+		return SellablePackageRegistry.canDeposit(getSellablePackages(), Bukkit.getPlayer(uuid), mat);
 	}
 
 	public java.util.Set<String> getPurchasedUpgrades() {
