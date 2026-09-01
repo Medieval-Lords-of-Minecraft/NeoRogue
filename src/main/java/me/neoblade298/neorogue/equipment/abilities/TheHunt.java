@@ -67,7 +67,7 @@ public class TheHunt extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET, GlossaryTag.PASSIVE.tag(this) + ". While above "
-				+ DescUtil.white(focusThreshold) + " " + GlossaryTag.FOCUS.tag(this)
+				+ DescUtil.val(focusThreshold) + " " + GlossaryTag.FOCUS.tag(this)
 				+ ", launching a basic attack also fires a piercing " + GlossaryTag.AFTERSHOT.tag(this) + " that deals "
 				+ GlossaryTag.PIERCING.tag(this, damagePerFocus) + " damage per current Focus.");
 	}

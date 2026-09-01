@@ -67,8 +67,8 @@ public class MirrorPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, isUpgraded
-				? "Your next [" + DescUtil.yellow(uses) + "] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
-				: "Your next ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
+				? "Your next [" + DescUtil.val(uses) + "] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
+				: "Your next " + DescUtil.val("") + "ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
 	}
 
 	@Override

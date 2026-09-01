@@ -47,7 +47,7 @@ public class ArchsageRaiment extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce " + GlossaryTag.MAGICAL.tag(this)
-				+ " damage taken by " + DescUtil.white(MAGICAL_REDUCTION) + ". Whenever you deal non-basic attack damage, gain "
+				+ " damage taken by " + DescUtil.val(MAGICAL_REDUCTION) + ". Whenever you deal non-basic attack damage, gain "
 				+ GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(SHIELD_DURATION) + ".");
 	}
 }

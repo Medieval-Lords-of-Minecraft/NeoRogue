@@ -79,8 +79,8 @@ public class AegisOfTheDawnbringer extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_CHESTPLATE,
 				GlossaryTag.PASSIVE.tag(this) + ". Reduce " + GlossaryTag.MAGICAL.tag(this)
-						+ " damage taken by " + DescUtil.white(MAGICAL_REDUCTION) + ". Once you have applied "
+						+ " damage taken by " + DescUtil.val(MAGICAL_REDUCTION) + ". Once you have applied "
 						+ GlossaryTag.SANCTIFIED.tag(this, SANCTIFIED_THRESHOLD) + " this fight, gain "
-						+ GlossaryTag.SHIELDS.tag(this, shields) + " permanently and heal " + DescUtil.white(HEAL) + ".");
+						+ GlossaryTag.SHIELDS.tag(this, shields) + " permanently and heal " + DescUtil.val(HEAL) + ".");
 	}
 }

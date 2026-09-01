@@ -86,7 +86,7 @@ public class CelestialGlove extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD, "Casting an ability grants a stack. At "
-				+ DescUtil.white(STACKS_REQUIRED) + " stacks, use this to consume them, deal "
+				+ DescUtil.val(STACKS_REQUIRED) + " stacks, use this to consume them, deal "
 				+ GlossaryTag.DARK.tag(this, damage) + " damage in a cone, and create a "
 				+ GlossaryTag.RIFT.tag(this) + " at your feet " + DescUtil.duration(RIFT_DURATION / 20) + ".");
 	}

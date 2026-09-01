@@ -102,8 +102,8 @@ public class IcewindTome extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On cast, knock enemies back and apply " + GlossaryTag.FROST.tag(this, frost)
-				+ " in a cone. Affected enemies are marked [" + DescUtil.white("5s") + "]. The next time you deal "
+				+ " in a cone. Affected enemies are marked [" + DescUtil.val("5s") + "]. The next time you deal "
 				+ GlossaryTag.ICE.tag(this) + " damage to each marked enemy, increase that ice damage by "
-				+ DescUtil.yellow((int) (iceIncrease * 100) + "%") + " and consume their mark.");
+				+ DescUtil.val((int) (iceIncrease * 100) + "%") + " and consume their mark.");
 	}
 }

@@ -73,9 +73,9 @@ public class SparkKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD,
-				"Every " + DescUtil.white(HITS_PER_ELECTRIFIED) + " basic attacks apply "
+				"Every " + DescUtil.val(HITS_PER_ELECTRIFIED) + " basic attacks apply "
 						+ GlossaryTag.ELECTRIFIED.tag(this, elec) + ". Deal "
-						+ DescUtil.yellow(bonusDamage) + " additional damage to "
+						+ DescUtil.val(bonusDamage) + " additional damage to "
 						+ GlossaryTag.ELECTRIFIED.tag(this) + " enemies.");
 	}
 }

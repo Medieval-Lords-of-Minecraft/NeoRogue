@@ -63,7 +63,7 @@ public class Winterstone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE, GlossaryTag.PASSIVE.tag(this) + ". For every "
-				+ GlossaryTag.FROST.tag(this, FROST_THRESHOLD) + " you apply, gain " + DescUtil.yellow(mana)
-				+ " mana and reduce all ability cooldowns by " + DescUtil.white(COOLDOWN_REDUCTION + "s") + ".");
+				+ GlossaryTag.FROST.tag(this, FROST_THRESHOLD) + " you apply, gain " + DescUtil.val(mana)
+				+ " mana and reduce all ability cooldowns by " + DescUtil.val(COOLDOWN_REDUCTION + "s") + ".");
 	}
 }

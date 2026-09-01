@@ -78,8 +78,8 @@ public class Berserk extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
 				GlossaryTag.PASSIVE.tag(this) + ". Upon reaching " + GlossaryTag.BERSERK.tag(this, threshold)
-						+ ", permanently reduce all damage taken by " + DescUtil.white("50%") + ", increase "
-						+ GlossaryTag.PHYSICAL.tag(this) + " damage dealt by " + DescUtil.white("100%")
+						+ ", permanently reduce all damage taken by " + DescUtil.val("50%") + ", increase "
+						+ GlossaryTag.PHYSICAL.tag(this) + " damage dealt by " + DescUtil.val("100%")
 						+ ", and gain Blindness for the remainder of the fight. Activates once per fight.");
 	}
 }

@@ -95,7 +95,7 @@ public class Stormweaver extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD, "Left-clicking the air fires a projectile up to "
-				+ DescUtil.white(RANGE) + " blocks that applies " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED)
+				+ DescUtil.val(RANGE) + " blocks that applies " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED)
 				+ ". Basic attacks against an enemy deal additional " + GlossaryTag.PIERCING.tag(this)
 				+ " damage equal to its Electrified stacks.");
 	}

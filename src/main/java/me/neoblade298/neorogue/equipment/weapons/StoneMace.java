@@ -57,7 +57,7 @@ public class StoneMace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SHOVEL, "Increases damage dealt by number of " + GlossaryTag.CONCUSSED.tag(this) + " "
-				+ "stacks the enemy has multiplied by " + DescUtil.val(concMult) + ". Every " + DescUtil.white(HITS_PER_PROC)
+				+ "stacks the enemy has multiplied by " + DescUtil.val(concMult) + ". Every " + DescUtil.val(HITS_PER_PROC)
 				+ " basic attacks applies " + GlossaryTag.CONCUSSED.tag(this, conc) + ".");
 	}
 }

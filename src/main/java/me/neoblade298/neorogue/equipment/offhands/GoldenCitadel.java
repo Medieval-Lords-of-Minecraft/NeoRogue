@@ -79,9 +79,9 @@ public class GoldenCitadel extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"While raised, drain " + DescUtil.white("4 stamina/s") + " and reduce damage taken by "
-						+ DescUtil.yellow(raisedPercent + "%") + "; while lowered, reduce it by "
-						+ DescUtil.white("10%") + ". Whenever you lose health to damage, gain permanent "
+				"While raised, drain " + DescUtil.val("4 stamina/s") + " and reduce damage taken by "
+						+ DescUtil.val(raisedPercent + "%") + "; while lowered, reduce it by "
+						+ DescUtil.val("10%") + ". Whenever you lose health to damage, gain permanent "
 						+ GlossaryTag.SHIELDS.tag(this) + ", " + GlossaryTag.THORNS.tag(this) + ", and "
 						+ GlossaryTag.REFLECT.tag(this) + " equal to the health lost.");
 	}

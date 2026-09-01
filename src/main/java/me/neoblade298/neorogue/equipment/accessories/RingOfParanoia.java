@@ -48,7 +48,7 @@ public class RingOfParanoia extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE, "Increase " + GlossaryTag.INSANITY.tag(this) + " stacks applied by "
-				+ DescUtil.white(INSANITY_PERCENT + "%") + " and " + GlossaryTag.DARK.tag(this) + " damage dealt by "
-				+ DescUtil.yellow(darkPercent + "%") + ".");
+				+ DescUtil.val(INSANITY_PERCENT + "%") + " and " + GlossaryTag.DARK.tag(this) + " damage dealt by "
+				+ DescUtil.val(darkPercent + "%") + ".");
 	}
 }

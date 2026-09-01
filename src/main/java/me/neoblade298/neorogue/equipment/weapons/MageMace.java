@@ -102,8 +102,8 @@ public class MageMace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MACE, "Sweep a line from left to right through " + DescUtil.white("90 degrees")
+		item = createItem(Material.MACE, "Sweep a line from left to right through " + DescUtil.val("90 degrees")
 				+ ", dealing " + GlossaryTag.BLUNT.tag(this, damage) + " damage plus "
-				+ DescUtil.white(1) + " per current " + GlossaryTag.CONCUSSED.tag(this) + " stack.");
+				+ DescUtil.val(1) + " per current " + GlossaryTag.CONCUSSED.tag(this) + " stack.");
 	}
 }

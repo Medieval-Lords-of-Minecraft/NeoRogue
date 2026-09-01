@@ -51,7 +51,7 @@ public class ForceOfNature extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this)
-				+ " damage taken by " + DescUtil.white(DIRECT_REDUCTION) + ". For every "
-				+ DescUtil.white(MANA_THRESHOLD) + " base mana spent casting abilities, heal " + DescUtil.val(healing) + " health.");
+				+ " damage taken by " + DescUtil.val(DIRECT_REDUCTION) + ". For every "
+				+ DescUtil.val(MANA_THRESHOLD) + " base mana spent casting abilities, heal " + DescUtil.val(healing) + " health.");
 	}
 }

@@ -57,6 +57,6 @@ public class FuryInfuser extends Equipment {
 		item = createItem(Material.FIRE_CHARGE, "While you have at least "
 				+ GlossaryTag.BERSERK.tag(this, threshold) + ", increase " + GlossaryTag.EARTHEN.tag(this)
 				+ ", " + GlossaryTag.BLUNT.tag(this) + ", and " + GlossaryTag.LIGHT.tag(this)
-				+ " damage by " + DescUtil.white(DAMAGE_INCREASE + "%") + ".");
+				+ " damage by " + DescUtil.val(DAMAGE_INCREASE + "%") + ".");
 	}
 }

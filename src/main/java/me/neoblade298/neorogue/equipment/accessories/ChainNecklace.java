@@ -51,6 +51,6 @@ public class ChainNecklace extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEAD, "After applying " + GlossaryTag.CONCUSSED.tag(this) + " "
 				+ DescUtil.val(applications) + " times in a fight, increase your " + GlossaryTag.PHYSICAL.tag(this)
-				+ " damage by " + DescUtil.white(damagePercent + "%") + " for the rest of the fight.");
+				+ " damage by " + DescUtil.val(damagePercent + "%") + " for the rest of the fight.");
 	}
 }

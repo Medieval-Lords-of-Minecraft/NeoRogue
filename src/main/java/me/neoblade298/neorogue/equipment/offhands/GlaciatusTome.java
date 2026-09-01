@@ -75,7 +75,7 @@ public class GlaciatusTome extends Equipment {
 				+ GlossaryTag.FROST.tag(this, frost) + " and "
 				+ DescUtil.potion("Slowness", SLOWNESS_LEVEL, SLOWNESS_DURATION) + ". For every "
 				+ GlossaryTag.FROST.tag(this, FROST_PER_SHIELD) + " on each enemy after the hit, gain "
-				+ GlossaryTag.SHIELDS.tag(this, 1) + " [" + DescUtil.white(SHIELD_DURATION + "s") + "].");
+				+ GlossaryTag.SHIELDS.tag(this, 1) + " [" + DescUtil.val(SHIELD_DURATION + "s") + "].");
 	}
 
 	private class GlaciatusProjectile extends Projectile {

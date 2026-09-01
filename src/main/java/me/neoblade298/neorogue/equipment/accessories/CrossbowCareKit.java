@@ -59,6 +59,6 @@ public class CrossbowCareKit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHEARS, GlossaryTag.PASSIVE.tag(this) + ". All equipped crossbows gain Quick Draw +"
-				+ DescUtil.white(QUICK_DRAW) + " and deal " + DescUtil.yellow(damagePercent + "%") + " more damage.");
+				+ DescUtil.val(QUICK_DRAW) + " and deal " + DescUtil.val(damagePercent + "%") + " more damage.");
 	}
 }

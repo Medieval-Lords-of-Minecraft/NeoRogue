@@ -100,8 +100,8 @@ public class SkycallerGlove extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_HORSE_ARMOR, "Left click towards an enemy to rain all basic attack projectiles and "
 				+ GlossaryTag.AFTERSHOT.tagPlural(this) + " launched in the last "
-				+ DescUtil.white("3s") + " from the sky onto the aimed enemy within "
-				+ DescUtil.white((int) TARGETS.range) + " blocks. Requires at least one "
+				+ DescUtil.val("3s") + " from the sky onto the aimed enemy within "
+				+ DescUtil.val((int) TARGETS.range) + " blocks. Requires at least one "
 				+ GlossaryTag.AFTERSHOT.tag(this) + " to have been launched.");
 	}
 

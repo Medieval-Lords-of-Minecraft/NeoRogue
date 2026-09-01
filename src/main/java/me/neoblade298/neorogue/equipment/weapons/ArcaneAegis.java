@@ -103,7 +103,7 @@ public class ArcaneAegis extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BREEZE_ROD, "Fire a projectile that deals "
 				+ GlossaryTag.DARK.tag(this, DAMAGE) + " damage. Hitting an enemy grants "
-				+ GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.white("[5s]")
-				+ " and " + DescUtil.yellow(mana) + " mana.");
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.val("[5s]")
+				+ " and " + DescUtil.val(mana) + " mana.");
 	}
 }

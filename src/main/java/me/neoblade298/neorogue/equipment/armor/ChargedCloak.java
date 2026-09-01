@@ -83,7 +83,7 @@ public class ChargedCloak extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE,
 				"Reduce incoming " + GlossaryTag.DIRECT.tag(this) + " damage by "
-				+ DescUtil.white(DIRECT_REDUCTION) + ". For every "
+				+ DescUtil.val(DIRECT_REDUCTION) + ". For every "
 				+ GlossaryTag.ELECTRIFIED.tag(this, threshold) + " you apply, gain "
 				+ DescUtil.potion("Speed", SPEED_AMPLIFIER, SPEED_DURATION / 20) + ".");
 	}

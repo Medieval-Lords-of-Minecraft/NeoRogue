@@ -47,7 +47,7 @@ public class SpectreCowl extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, GlossaryTag.PASSIVE.tag(this) + ". While above "
-				+ DescUtil.white(MANA_THRESHOLD + "%") + " mana, gain " + GlossaryTag.SHIELDS.tag(this, shields)
-				+ " " + DescUtil.duration(SHIELD_DURATION) + " every " + DescUtil.white(SHIELD_DURATION + "s") + ".");
+				+ DescUtil.val(MANA_THRESHOLD + "%") + " mana, gain " + GlossaryTag.SHIELDS.tag(this, shields)
+				+ " " + DescUtil.duration(SHIELD_DURATION) + " every " + DescUtil.val(SHIELD_DURATION + "s") + ".");
 	}
 }

@@ -47,8 +47,8 @@ public class SwallowTail extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FEATHER, "Every " + DescUtil.white(DAMAGE_INSTANCES)
+		item = createItem(Material.FEATHER, "Every " + DescUtil.val(DAMAGE_INSTANCES)
 				+ " instances of dealing projectile damage, gain " + GlossaryTag.SHIELDS.tag(this, shields)
-				+ " [" + DescUtil.white("4s") + "].");
+				+ " [" + DescUtil.val("4s") + "].");
 	}
 }

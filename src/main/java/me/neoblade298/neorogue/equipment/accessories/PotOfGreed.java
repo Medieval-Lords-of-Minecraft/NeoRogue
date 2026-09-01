@@ -60,7 +60,7 @@ public class PotOfGreed extends Artifact {
 			Sounds.success.play(p, p, Audience.ORIGIN);
 			int coins = GOLD * skippedNonCoinRewards;
 			data.addCurrency(coins);
-			Util.msgRaw(p, display.append(SharedUtil.color("<gray> gives you " + DescUtil.yellow(coins) + " " + PlayerSessionData.CURRENCY)));
+			Util.msgRaw(p, display.append(SharedUtil.color(DescUtil.resolveValues("<gray> gives you " + DescUtil.val(coins) + " " + PlayerSessionData.CURRENCY))));
 			return TriggerResult.keep();
 		});
 	}

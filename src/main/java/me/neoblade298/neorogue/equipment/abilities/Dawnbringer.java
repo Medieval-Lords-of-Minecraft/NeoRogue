@@ -97,9 +97,9 @@ public class Dawnbringer extends Equipment {
 		item = createItem(Material.SUNFLOWER,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before firing a"
 				+ " wide slow-moving wave of light that deals " + GlossaryTag.LIGHT.tag(this, damage)
-				+ " damage. For each enemy hit with at least " + DescUtil.white(SANCTIFIED_THRESHOLD) + " "
+				+ " damage. For each enemy hit with at least " + DescUtil.val(SANCTIFIED_THRESHOLD) + " "
 				+ GlossaryTag.SANCTIFIED.tag(this) + ", permanently increase all "
-				+ GlossaryTag.LIGHT.tag(this) + " damage by " + DescUtil.yellow(lightBuff) + ".");
+				+ GlossaryTag.LIGHT.tag(this) + " damage by " + DescUtil.val(lightBuff) + ".");
 	}
 
 	private class DawnbringerProjectile extends Projectile {

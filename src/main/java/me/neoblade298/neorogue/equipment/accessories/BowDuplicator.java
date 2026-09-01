@@ -117,10 +117,10 @@ public class BowDuplicator extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CRAFTER, "Every " + DescUtil.yellow(placementInterval + "s") + ", drop a "
-				+ GlossaryTag.TRAP.tag(this) + " [" + DescUtil.white("6s")
+		item = createItem(Material.CRAFTER, "Every " + DescUtil.val(placementInterval + "s") + ", drop a "
+				+ GlossaryTag.TRAP.tag(this) + " [" + DescUtil.val("6s")
 				+ "] that copies your last used weapon and ammunition and fires it every "
-				+ DescUtil.white("3s") + ". These shots are not basic attacks.");
+				+ DescUtil.val("3s") + ". These shots are not basic attacks.");
 	}
 
 	private class DuplicatedBowProjectile extends Projectile {

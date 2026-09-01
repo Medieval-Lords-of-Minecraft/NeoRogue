@@ -78,7 +78,7 @@ public class ManaResonator extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LIGHTNING_ROD, "Right click to gain " + DescUtil.white("Speed 2")
+		item = createItem(Material.LIGHTNING_ROD, "Right click to gain " + DescUtil.val("Speed 2")
 				+ " until your next basic attack, which gains " + GlossaryTag.LIGHTNING.tag(this, damage)
 				+ " damage and applies " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED) + ".");
 	}

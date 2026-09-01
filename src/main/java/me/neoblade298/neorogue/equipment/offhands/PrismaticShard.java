@@ -121,7 +121,7 @@ public class PrismaticShard extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS, "Arms after dealing " + DescUtil.val(typesRequired)
 				+ " different damage types and must rearm after every use. On use, " + GlossaryTag.CHANNEL.tag(this)
-				+ " for " + DescUtil.white("1s") + ", then fire a beam for " + GlossaryTag.LIGHT.tag(this, damage)
+				+ " for " + DescUtil.val("1s") + ", then fire a beam for " + GlossaryTag.LIGHT.tag(this, damage)
 				+ " damage, apply " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED) + " and "
 				+ GlossaryTag.CONCUSSED.tag(this, CONCUSSED) + ", and create a " + GlossaryTag.RIFT.tag(this) + ".");
 	}

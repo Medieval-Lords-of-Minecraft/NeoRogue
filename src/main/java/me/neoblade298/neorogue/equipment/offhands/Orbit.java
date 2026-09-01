@@ -111,8 +111,8 @@ public class Orbit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE, GlossaryTag.PASSIVE.tag(this) + ". Applying "
-				+ GlossaryTag.CONCUSSED.tag(this) + " creates an orbital for " + DescUtil.white("5s")
-				+ ", up to " + DescUtil.white(3) + " at radii " + DescUtil.white("3, 5, and 7")
+				+ GlossaryTag.CONCUSSED.tag(this) + " creates an orbital for " + DescUtil.val("5s")
+				+ ", up to " + DescUtil.val(3) + " at radii " + DescUtil.val("3, 5, and 7")
 				+ ". Each deals " + GlossaryTag.EARTHEN.tag(this, damage) + " damage once per enemy and applies "
 				+ DescUtil.potion("Slowness", 1, 2) + ".");
 	}

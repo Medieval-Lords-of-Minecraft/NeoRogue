@@ -63,8 +63,8 @@ public class YellowCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce incoming " + GlossaryTag.DIRECT.tag(this)
-				+ " damage by " + DescUtil.white(BASE_REDUCTION) + ". Applying "
+				+ " damage by " + DescUtil.val(BASE_REDUCTION) + ". Applying "
 				+ GlossaryTag.ELECTRIFIED.tag(this) + " further reduces it by "
-				+ DescUtil.yellow(electrifiedReduction) + " " + DescUtil.white("[5s]") + ".");
+				+ DescUtil.val(electrifiedReduction) + " " + DescUtil.val("[5s]") + ".");
 	}
 }

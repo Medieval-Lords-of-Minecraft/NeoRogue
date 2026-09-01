@@ -76,7 +76,7 @@ public class Nocturne extends Equipment {
 		item = createItem(Material.NETHERITE_SWORD, "After applying "
 				+ GlossaryTag.INSANITY.tag(this, INSANITY_THRESHOLD) + ", every subsequent "
 				+ GlossaryTag.INSANITY.tag(this, insanityInterval) + " reduces all cooldowns by "
-				+ DescUtil.white(COOLDOWN_REDUCTION + "s") + ". Dealing " + GlossaryTag.DARK.tag(this)
-				+ " damage grants " + DescUtil.yellow(mana) + " mana.");
+				+ DescUtil.val(COOLDOWN_REDUCTION + "s") + ". Dealing " + GlossaryTag.DARK.tag(this)
+				+ " damage grants " + DescUtil.val(mana) + " mana.");
 	}
 }

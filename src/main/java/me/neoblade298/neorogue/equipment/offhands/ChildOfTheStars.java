@@ -126,7 +126,7 @@ public class ChildOfTheStars extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR, GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this)
-				+ ". Activates after you create " + DescUtil.white(RIFTS_TO_ACTIVATE) + " "
+				+ ". Activates after you create " + DescUtil.val(RIFTS_TO_ACTIVATE) + " "
 				+ GlossaryTag.RIFT.tagPlural(this) + ". Every " + DescUtil.val(interval + "s") + ", create a "
 				+ GlossaryTag.RIFT.tag(this) + " and fire a projectile from each Rift at its nearest enemy for "
 				+ GlossaryTag.DARK.tag(this, damage) + " damage.");

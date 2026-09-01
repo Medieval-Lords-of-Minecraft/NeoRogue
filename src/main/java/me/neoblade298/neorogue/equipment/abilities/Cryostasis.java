@@ -82,6 +82,6 @@ public class Cryostasis extends Equipment implements Power {
 		item = createItem(Material.BLUE_ICE, GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this)
 				+ ". Activates after applying " + GlossaryTag.FROST.tag(this, activationThreshold)
 				+ ". Once active, every " + GlossaryTag.FROST.tag(this, frostThreshold) + " applied grants "
-				+ GlossaryTag.INVINCIBLE.tag(this) + " [" + DescUtil.white(invincibilityDuration + "s") + "].");
+				+ GlossaryTag.INVINCIBLE.tag(this) + " [" + DescUtil.val(invincibilityDuration + "s") + "].");
 	}
 }

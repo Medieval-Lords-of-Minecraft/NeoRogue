@@ -43,6 +43,6 @@ public class DeepslateCharm extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEEPSLATE, "Applying " + GlossaryTag.CONCUSSED.tag(this) + " grants "
-				+ GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.white(DURATION + "s") + "].");
+				+ GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val(DURATION + "s") + "].");
 	}
 }

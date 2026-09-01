@@ -75,7 +75,7 @@ public class WraithMantle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_CHESTPLATE, "Reduce " + GlossaryTag.MAGICAL.tag(this) + " damage by "
-				+ DescUtil.yellow(damageReduction) + ". After applying " + GlossaryTag.INSANITY.tag(this, INSANITY_THRESHOLD)
-				+ ", each subsequent application clears nearby projectiles within " + DescUtil.white(CLEAR_RADIUS) + " blocks.");
+				+ DescUtil.val(damageReduction) + ". After applying " + GlossaryTag.INSANITY.tag(this, INSANITY_THRESHOLD)
+				+ ", each subsequent application clears nearby projectiles within " + DescUtil.val(CLEAR_RADIUS) + " blocks.");
 	}
 }

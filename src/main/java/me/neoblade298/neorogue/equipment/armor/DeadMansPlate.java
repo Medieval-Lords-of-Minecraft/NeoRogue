@@ -48,6 +48,6 @@ public class DeadMansPlate extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this)
 				+ " damage taken by " + DescUtil.val(reduction) + ", plus another " + DescUtil.val(closeReduction)
-				+ " when within " + DescUtil.white(range) + " blocks of the damage source.");
+				+ " when within " + DescUtil.val(range) + " blocks of the damage source.");
 	}
 }

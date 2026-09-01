@@ -76,7 +76,7 @@ public class JewelOfErosion extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Once per second, enemies within " + DescUtil.white(RANGE)
+		item = createItem(Material.EMERALD, "Once per second, enemies within " + DescUtil.val(RANGE)
 				+ " blocks with at least " + GlossaryTag.CONCUSSED.tag(this, CONCUSSED_THRESHOLD)
 				+ " take " + GlossaryTag.EARTHEN.tag(this, damage) + " damage.");
 	}

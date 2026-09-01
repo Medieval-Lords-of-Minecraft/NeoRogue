@@ -39,7 +39,7 @@ public class AdamantiteCarapace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this)
-				+ " damage taken by " + DescUtil.yellow(directReduction)
-				+ ". Increase sprinting stamina cost by " + DescUtil.white(SPRINT_COST_INCREASE) + ".");
+				+ " damage taken by " + DescUtil.value(directReduction)
+				+ ". Increase sprinting stamina cost by " + DescUtil.val(SPRINT_COST_INCREASE) + ".");
 	}
 }

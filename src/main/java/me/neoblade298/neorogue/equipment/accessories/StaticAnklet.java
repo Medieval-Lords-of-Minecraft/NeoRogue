@@ -59,7 +59,7 @@ public class StaticAnklet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TRIPWIRE_HOOK, "Increase " + GlossaryTag.LIGHTNING.tag(this) + " damage by "
-				+ DescUtil.white("10%") + ". Applying " + GlossaryTag.ELECTRIFIED.tag(this)
-				+ " grants " + DescUtil.yellow(mana) + " mana.");
+				+ DescUtil.val("10%") + ". Applying " + GlossaryTag.ELECTRIFIED.tag(this)
+				+ " grants " + DescUtil.val(mana) + " mana.");
 	}
 }

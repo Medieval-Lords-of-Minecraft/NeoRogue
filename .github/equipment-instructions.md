@@ -314,7 +314,7 @@ Powers use `EquipmentProperties.ofUsable(mana, stam, 0, 0)` — CD and range are
 Use `GlossaryTag.POWER.tag(this)` instead of `"Passive."`:
 ```java
 item = createItem(Material.ICE,
-        GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(thres) + " hits, ...");
+    GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.val(thres) + " hits, ...");
 ```
 
 #### Initialize Pattern
@@ -1078,38 +1078,37 @@ GlossaryTag.POISON.tag(this)  // Just the tag name
 GlossaryTag.SHIELDS.tag(this, amount)  // Tag with auto-colored, preview-aware value
 
 // Status application format
-"applies " + GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.white("5s") + "]"
-"gain " + GlossaryTag.SHIELDS.tag(this, amount) + " [" + DescUtil.white("10s") + "]"
+"applies " + GlossaryTag.POISON.tag(this, stacks) + " [" + DescUtil.val("5s") + "]"
+"gain " + GlossaryTag.SHIELDS.tag(this, amount) + " [" + DescUtil.val("10s") + "]"
 ```
 
 Amount-bearing glossary tags automatically compare base and upgraded equipment. Changed values render yellow and show `base » upgraded` in upgrade previews; unchanged values render white.
 
 **Color Formatting:**
-- **Use `DescUtil` helpers in `setupItem()` descriptions**: Prefer `DescUtil.yellow(...)` and `DescUtil.white(...)` instead of writing raw `<yellow>...</yellow>` / `<white>...</white>` tags.
-- **Yellow values** (`DescUtil.yellow(...)`): Used for values that change with upgrades
-- **White values** (`DescUtil.white(...)`): Used for fixed values, durations, thresholds
+- **Use `DescUtil.val(...)` for every displayed value in `setupItem()` descriptions** instead of writing raw color tags.
+- `DescUtil.val(...)` automatically renders a value yellow when it changes in the upgraded description and white when unchanged.
 - **Duration format**: Use `DescUtil.duration(seconds, isUpgradable)` for time values in descriptions
 - **Potion effects**: Use `DescUtil.potion("Speed", 0, 5)` for "Speed 1 [5s]" formatting (name, amplifier, duration)
 
 **Common Patterns:**
 ```java
 // Status with stacks and duration
-"applies " + GlossaryTag.POISON.tag(this, poisonStacks) + " [" + DescUtil.white("5s") + "]"
+"applies " + GlossaryTag.POISON.tag(this, poisonStacks) + " [" + DescUtil.val("5s") + "]"
 
 // Damage values
 GlossaryTag.FIRE.tag(this, damage) + " damage"
-GlossaryTag.GENERAL.tag(this) + " damage is increased by " + DescUtil.yellow(increase)
+GlossaryTag.GENERAL.tag(this) + " damage is increased by " + DescUtil.val(increase)
 
 // Exception: the phrase already identifies the damage concept
-"increase basic attack damage by " + DescUtil.yellow(increase)
+"increase basic attack damage by " + DescUtil.val(increase)
 
 // Defensive values  
-"reduces damage by " + DescUtil.yellow(reduction)
+"reduces damage by " + DescUtil.val(reduction)
 "gain " + GlossaryTag.SHIELDS.tag(this, shields)
 
 // Thresholds and conditions
-"while above " + DescUtil.white("50%") + " mana"
-"every " + DescUtil.white("3rd") + " hit"
+"while above " + DescUtil.val("50%") + " mana"
+"every " + DescUtil.val("3rd") + " hit"
 ```
 
 **Note**: Always call `GlossaryTag.tag(this)` to register the tag with the equipment for glossary tracking.

@@ -91,6 +91,6 @@ public class FrozenDomain extends Bow {
 	public void setupItem() {
 		item = createItem(Material.CROSSBOW, "Basic attacks also deal " + GlossaryTag.ICE.tag(this, iceDamage)
 				+ " damage and apply " + GlossaryTag.FROST.tag(this, frost) + " to enemies within "
-				+ me.neoblade298.neorogue.DescUtil.white(RADIUS) + " blocks of the enemy hit.");
+				+ me.neoblade298.neorogue.DescUtil.val(RADIUS) + " blocks of the enemy hit.");
 	}
 }

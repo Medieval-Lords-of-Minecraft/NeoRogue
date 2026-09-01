@@ -62,8 +62,8 @@ public class HuntingSpyglass extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS, "Non-basic-attack damage is increased by "
-				+ DescUtil.yellow(damagePercent + "%") + " per " + GlossaryTag.FOCUS.tag(this) + ", capped at "
-				+ DescUtil.white(MAX_FOCUS) + " Focus. While above " + DescUtil.white(COOLDOWN_FOCUS_THRESHOLD)
-				+ " Focus, reduce all ability cooldowns by " + DescUtil.white(COOLDOWN_REDUCTION + "s") + ".");
+				+ DescUtil.val(damagePercent + "%") + " per " + GlossaryTag.FOCUS.tag(this) + ", capped at "
+				+ DescUtil.val(MAX_FOCUS) + " Focus. While above " + DescUtil.val(COOLDOWN_FOCUS_THRESHOLD)
+				+ " Focus, reduce all ability cooldowns by " + DescUtil.val(COOLDOWN_REDUCTION + "s") + ".");
 	}
 }

@@ -62,8 +62,8 @@ public class MonarchOfShadows extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this) + " damage by "
-				+ DescUtil.white(BASE_REDUCTION) + ". At " + GlossaryTag.STEALTH.tag(this, STEALTH_THRESHOLD)
+				+ DescUtil.val(BASE_REDUCTION) + ". At " + GlossaryTag.STEALTH.tag(this, STEALTH_THRESHOLD)
 				+ ", double this reduction and increase all negative status applications by "
-				+ DescUtil.yellow(statusPercent + "%") + ".");
+				+ DescUtil.val(statusPercent + "%") + ".");
 	}
 }

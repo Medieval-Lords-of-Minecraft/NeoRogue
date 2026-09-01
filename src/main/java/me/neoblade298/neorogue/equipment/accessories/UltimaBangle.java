@@ -136,8 +136,8 @@ public class UltimaBangle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CLOCK, GlossaryTag.PASSIVE.tag(this) + ". Casting an ability drops a meteor on a random enemy within "
-				+ DescUtil.white(8) + " blocks. After " + DescUtil.white("2s") + ", it deals "
-				+ DescUtil.val(damage) + " damage of a random magical type in a " + DescUtil.white(5)
-				+ " block radius. Internal cooldown: " + DescUtil.white(INTERNAL_COOLDOWN + "s") + ".");
+				+ DescUtil.val(8) + " blocks. After " + DescUtil.val("2s") + ", it deals "
+				+ DescUtil.val(damage) + " damage of a random magical type in a " + DescUtil.val(5)
+				+ " block radius. Internal cooldown: " + DescUtil.val(INTERNAL_COOLDOWN + "s") + ".");
 	}
 }

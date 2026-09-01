@@ -23,8 +23,8 @@ public class WitchCaveChance extends ChanceSet {
 				+ "She turns to greet you with a knowing smile. \"A potion for the road, dearie? Or would you rather pay your way out?\"");
 
 		ChanceChoice everlastingHealth = new ChanceChoice(Material.HONEY_BOTTLE, "Everlasting Health",
-				"Heal " + DescUtil.white("20%") + " of your max health after every fight, but you can no longer gain " + DescUtil.white("shields")
-						+ " after " + DescUtil.white("10s") + " of a fight.",
+				"Heal " + DescUtil.val("20%") + " of your max health after every fight, but you can no longer gain " + DescUtil.val("shields")
+						+ " after " + DescUtil.val("10s") + " of a fight.",
 				(s, inst, data) -> {
 					data.healPercent(0.2);
 					data.giveArtifact((Artifact) EverlastingHealth.get(), 1);
@@ -35,8 +35,8 @@ public class WitchCaveChance extends ChanceSet {
 		stage.addChoice(everlastingHealth);
 
 		ChanceChoice temporaryHealth = new ChanceChoice(Material.SPLASH_POTION, "Temporary Health",
-				"Take " + DescUtil.white("10%") + " of your max health as damage, but heal " + DescUtil.white("30%")
-						+ " after winning " + DescUtil.white("2") + " fights.",
+				"Take " + DescUtil.val("10%") + " of your max health as damage, but heal " + DescUtil.val("30%")
+						+ " after winning " + DescUtil.val("2") + " fights.",
 				"You need at least 10% health to drink the brew!",
 				(s, inst, data) -> data.getHealth() / data.getMaxHealth() >= 0.10,
 				(s, inst, data) -> {
@@ -49,7 +49,7 @@ public class WitchCaveChance extends ChanceSet {
 		stage.addChoice(temporaryHealth);
 
 		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Leave",
-				"Pay " + DescUtil.white(LEAVE_COST + " " + PlayerSessionData.CURRENCY) + " to convince the witch to let you live.",
+				"Pay " + DescUtil.val(LEAVE_COST + " " + PlayerSessionData.CURRENCY) + " to convince the witch to let you live.",
 				"You don't have " + LEAVE_COST + " " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCurrency(LEAVE_COST),
 				(s, inst, data) -> {

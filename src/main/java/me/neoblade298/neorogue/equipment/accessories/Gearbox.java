@@ -49,8 +49,8 @@ public class Gearbox extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COMPARATOR, "Gain " + DescUtil.yellow(regenPerTrap)
+		item = createItem(Material.COMPARATOR, "Gain " + DescUtil.val(regenPerTrap)
 				+ " stamina regeneration for each active " + GlossaryTag.TRAP.tag(this) + " you own, up to "
-				+ DescUtil.white(MAX_TRAPS) + " active traps.");
+				+ DescUtil.val(MAX_TRAPS) + " active traps.");
 	}
 }

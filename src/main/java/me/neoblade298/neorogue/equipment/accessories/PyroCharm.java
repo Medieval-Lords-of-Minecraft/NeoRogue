@@ -68,7 +68,7 @@ public class PyroCharm extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE, "After cumulatively dealing "
 				+ GlossaryTag.FIRE.tag(this, DAMAGE_THRESHOLD) + " damage in a fight, increase "
-				+ GlossaryTag.FIRE.tag(this) + " damage by " + DescUtil.yellow((int) (damageIncrease * 100) + "%")
+				+ GlossaryTag.FIRE.tag(this) + " damage by " + DescUtil.val((int) (damageIncrease * 100) + "%")
 				+ " for the rest of the fight.");
 	}
 }

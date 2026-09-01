@@ -40,8 +40,8 @@ public class BattlecasterCuirass extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_CHESTPLATE, "Increase mana and stamina regen by " + DescUtil.white(REGEN)
+		item = createItem(Material.GOLDEN_CHESTPLATE, "Increase mana and stamina regen by " + DescUtil.val(REGEN)
 				+ ". Casting an ability grants " + GlossaryTag.SHIELDS.tag(this, shields) + " ["
-				+ DescUtil.white("5s") + "].");
+				+ DescUtil.val("5s") + "].");
 	}
 }

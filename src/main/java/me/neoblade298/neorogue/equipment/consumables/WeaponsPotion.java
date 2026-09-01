@@ -55,7 +55,7 @@ public class WeaponsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Replaces this consumable with a random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "weapon for the duration of the fight. Consumed on first use.");
+				"Replaces this consumable with a random " + DescUtil.val(isUpgraded ? "upgraded " : "") + "weapon for the duration of the fight. Consumed on first use.");
 	}
 
 	@Override

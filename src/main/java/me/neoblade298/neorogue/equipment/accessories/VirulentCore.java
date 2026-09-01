@@ -50,7 +50,7 @@ public class VirulentCore extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SLIME_BALL, "Enemies above " + GlossaryTag.POISON.tag(this, POISON_THRESHOLD)
-				+ " take " + DescUtil.yellow(damagePercent + "%") + " additional " + GlossaryTag.DIRECT.tag(this)
+				+ " take " + DescUtil.val(damagePercent + "%") + " additional " + GlossaryTag.DIRECT.tag(this)
 				+ " damage from you.");
 	}
 }

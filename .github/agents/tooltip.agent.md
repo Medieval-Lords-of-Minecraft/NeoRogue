@@ -5,22 +5,14 @@ tools: [read, edit, search]
 
 You are a specialist for standardizing NeoRogue equipment item tooltips. Your job is to audit and fix `setupItem()` descriptions to use consistent formatting, correct GlossaryTag/DescUtil usage, and proper color conventions.
 
-## Color Rules
+## Value Color Rules
 
-### Yellow (`DescUtil.yellow(...)`) — Upgradable values ONLY
-Values that change between base and upgraded versions of equipment. Use ONLY when `isUpgraded` affects the value.
+Use `DescUtil.val(...)` for every displayed value. It compares the base and upgraded descriptions automatically: changed values render yellow and unchanged values render white. Do not choose a color based on whether a local variable appears upgradable.
 ```java
-DescUtil.yellow(damage)         // int/double that changes with upgrade
-DescUtil.yellow("30%")          // string percentage that changes
-```
-
-### White (`DescUtil.white(...)`) — Fixed values (including fixed damage)
-Values that never change regardless of upgrade state: thresholds, fixed durations, fixed counts, AND fixed damage values.
-```java
-DescUtil.white("5s")            // fixed duration
-DescUtil.white(3)               // fixed threshold/count
-DescUtil.white("50%")           // fixed percentage
-DescUtil.white(100)             // fixed damage that doesn't change with upgrade
+DescUtil.val(damage)
+DescUtil.val("30%")
+DescUtil.val(3)
+DescUtil.val("5s")
 ```
 
 ### NEVER use raw tags in setupItem()
@@ -29,18 +21,18 @@ DescUtil.white(100)             // fixed damage that doesn't change with upgrade
 "deal <yellow>" + damage + "</yellow> damage"
 "for <white>5s</white>"
 
-// ✓ CORRECT - use DescUtil helpers
-"deal " + DescUtil.yellow(damage) + " damage"
-"for " + DescUtil.white("5s")
+// ✓ CORRECT - use the auto-coloring value helper
+"deal " + DescUtil.val(damage) + " damage"
+"for " + DescUtil.val("5s")
 ```
 
 ## Duration Formatting
 
 ### ALWAYS use brackets: `DescUtil.duration(seconds, isUpgradable)`
-All durations must use the bracket format, regardless of context:
+All durations must use the bracket format, regardless of context. The retained boolean parameter does not choose the color; base/upgraded comparison does:
 ```java
-DescUtil.duration(5, false)   // → "[<white>5s</white>]"
-DescUtil.duration(dur, true)  // → "[<yellow>3s</yellow>]"
+DescUtil.duration(5, false)
+DescUtil.duration(dur, true)
 ```
 
 ### NEVER use these formats:
@@ -50,7 +42,7 @@ DescUtil.duration(dur, true)  // → "[<yellow>3s</yellow>]"
 "5s"                           // no color, no brackets
 "<white>5s</white>"            // raw tag instead of DescUtil
 "[5s]"                         // brackets but no color
-"for " + DescUtil.white("5s")  // no brackets
+"for " + DescUtil.val("5s")    // no brackets
 "for <white>5s</white>"        // raw tag, no brackets
 ```
 
@@ -106,35 +98,35 @@ Use the correct prefix for the equipment's activation pattern:
 
 ### Cooldown mention (internal cooldown, not EquipmentProperties):
 ```java
-DescUtil.white("1s") + " cooldown"
+DescUtil.val("1s") + " cooldown"
 // or in parentheses:
-"(" + DescUtil.white("1s") + " cooldown)"
+"(" + DescUtil.val("1s") + " cooldown)"
 ```
 
 ### Percentage values:
 ```java
-DescUtil.yellow((int)(mult * 100) + "%")   // upgradable percentage
-DescUtil.white("50%")                       // fixed percentage
+DescUtil.val((int)(mult * 100) + "%")
+DescUtil.val("50%")
 ```
 
 ### Range/distance:
 ```java
-DescUtil.white(5) + " blocks"              // fixed range (not in properties)
+DescUtil.val(5) + " blocks"
 ```
 
 ## Audit Checklist
 
 When reviewing a tooltip, check:
-1. All numeric values use `DescUtil.yellow()` or `DescUtil.white()` (never raw tags or uncolored numbers)
-2. All durations use `DescUtil.duration()` or `DescUtil.white/yellow("Xs")` format
+1. All displayed values use `DescUtil.val()` (never raw tags or uncolored numbers); upgrade comparison determines yellow versus white automatically
+2. All durations use `DescUtil.duration()` or bracketed `DescUtil.val("Xs")` format
 3. All status/damage references use `GlossaryTag.X.tag(this, ...)` (never raw status names)
-4. Yellow = upgradable, White = fixed (verify against constructor logic)
+4. Value colors are left to automatic base/upgraded description comparison
 5. Description prefix matches activation pattern
 6. Consistent punctuation and sentence structure
 
 ## Approach
 
-1. Read the target file's `setupItem()` method and constructor (to identify upgradable values)
+1. Read the target file's `setupItem()` method and constructor to understand the displayed values
 2. Identify all formatting violations
 3. Apply fixes using the rules above
 4. Verify no compile errors after changes

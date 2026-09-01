@@ -34,9 +34,9 @@ public class SageOfTheMountainChance extends ChanceSet {
 
 		// Choice 1: Gaze into the Beyond - store a passive ability in a slot-free Echo Stone
 		ChanceChoice gaze = new ChanceChoice(Material.ENDER_EYE, "Gaze into the Beyond",
-				"Pay " + DescUtil.white("30%") + " of your max health to store a passive ability in an "
+				"Pay " + DescUtil.val("30%") + " of your max health to store a passive ability in an "
 						+ "Echo Stone, converting it into an artifact.",
-				"You need a passive ability to store and at least " + DescUtil.white("30%") + " health!",
+				"You need a passive ability to store and at least " + DescUtil.val("30%") + " health!",
 				(s, inst, data) -> data.aggregateEquipment(SageOfTheMountainChance::isStorablePassive).size() > 0
 						&& data.getHealth() >= 0.3 * data.getMaxHealth(),
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution
@@ -46,7 +46,7 @@ public class SageOfTheMountainChance extends ChanceSet {
 
 		// Choice 2: Meditate Together - heal 20% of max health
 		stage.addChoice(new ChanceChoice(Material.AMETHYST_SHARD, "Meditate Together",
-				"Heal " + DescUtil.white("20%") + " of your max health.",
+				"Heal " + DescUtil.val("20%") + " of your max health.",
 				(s, inst, data) -> {
 					data.healPercent(0.2);
 					Util.msgRaw(data.getPlayer(), "You sit in silence with the sage. A gentle warmth spreads through your weary body.");

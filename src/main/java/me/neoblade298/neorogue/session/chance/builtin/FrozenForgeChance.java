@@ -33,7 +33,7 @@ public class FrozenForgeChance extends ChanceSet {
 
 		// Choice 1: Use the forge - reforge a chosen item into a random reforge result
 		ChanceChoice forge = new ChanceChoice(Material.ANVIL, "Use the Forge",
-				"Lose one chosen equipment and gain one of its " + DescUtil.white("reforge") + " results at random.",
+				"Lose one chosen equipment and gain one of its " + DescUtil.val("reforge") + " results at random.",
 				"You have no equipment that can be reforged!",
 				(s, inst, data) -> data.aggregateEquipment(FrozenForgeChance::isReforgeable).size() > 0,
 				(s, inst, data) -> null); // Never runs; interactive action handles resolution

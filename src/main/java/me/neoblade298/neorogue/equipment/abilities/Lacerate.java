@@ -99,7 +99,7 @@ public class Lacerate extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHEARS,
 				"On cast, save your location and " + GlossaryTag.DASH.tag(this) + " forward. After "
-				+ DescUtil.white("1s") + ", deal " + GlossaryTag.PIERCING.tag(this, damage)
+				+ DescUtil.val("1s") + ", deal " + GlossaryTag.PIERCING.tag(this, damage)
 				+ " damage to enemies in a line from the saved location to your current location.");
 	}
 }

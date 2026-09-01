@@ -60,7 +60,7 @@ public class TrueIceFragment extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLUE_ICE, "Basic attacks deal an additional "
-				+ GlossaryTag.ICE.tag(this, ICE_DAMAGE) + " damage. Every " + DescUtil.yellow(attackThreshold)
+				+ GlossaryTag.ICE.tag(this, ICE_DAMAGE) + " damage. Every " + DescUtil.val(attackThreshold)
 				+ " basic attacks additionally applies " + GlossaryTag.FROST.tag(this, FROST) + ".");
 	}
 }

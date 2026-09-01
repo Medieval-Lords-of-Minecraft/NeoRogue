@@ -150,7 +150,7 @@ public class Crusade extends Equipment implements Power {
 		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. After activation, applying "
-				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword that fires after " + DescUtil.white("0.5s")
+				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword that fires after " + DescUtil.val("0.5s")
 				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage) + " damage each.");
 	}
 

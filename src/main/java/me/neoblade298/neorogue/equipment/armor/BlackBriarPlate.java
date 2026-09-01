@@ -53,8 +53,8 @@ public class BlackBriarPlate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_CHESTPLATE, "Reduce " + GlossaryTag.PHYSICAL.tag(this)
-				+ " damage taken by " + DescUtil.white(PHYSICAL_REDUCTION) + ". Start fights with "
+				+ " damage taken by " + DescUtil.val(PHYSICAL_REDUCTION) + ". Start fights with "
 				+ GlossaryTag.THORNS.tag(this, thorns) + ". Increase " + GlossaryTag.THORNS.tag(this)
-				+ " damage by " + DescUtil.white(THORNS_INCREASE + "%") + ".");
+				+ " damage by " + DescUtil.val(THORNS_INCREASE + "%") + ".");
 	}
 }

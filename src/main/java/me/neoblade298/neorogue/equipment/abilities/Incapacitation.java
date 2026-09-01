@@ -139,7 +139,7 @@ public class Incapacitation extends Equipment {
 		item = createItem(Material.SPECTRAL_ARROW,
 				"On cast, fire an arrow that deals " + GlossaryTag.PIERCING.tag(this, BASE_DAMAGE)
 				+ " damage. If you applied at least " + GlossaryTag.REND.tag(this, REND_THRESHOLD)
-				+ " since the previous cast, gain " + DescUtil.white(STAMINA_GAIN) + " stamina, deal an additional "
+				+ " since the previous cast, gain " + DescUtil.val(STAMINA_GAIN) + " stamina, deal an additional "
 				+ GlossaryTag.PIERCING.tag(this, bonusDamage) + " damage, and gain "
 				+ GlossaryTag.STRENGTH.tag(this, strength) + ". Rend progress resets on every cast.");
 	}

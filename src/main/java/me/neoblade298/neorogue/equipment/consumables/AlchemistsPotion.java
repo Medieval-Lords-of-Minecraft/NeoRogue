@@ -80,7 +80,7 @@ public class AlchemistsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Creates " + DescUtil.val(2) + " random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
+				"Creates " + DescUtil.val(2) + " random " + DescUtil.val(isUpgraded ? "upgraded " : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
 	}
 
 	@Override

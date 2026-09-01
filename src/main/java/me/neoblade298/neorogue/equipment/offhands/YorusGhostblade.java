@@ -86,7 +86,7 @@ public class YorusGhostblade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD, "Right click to attack. Increase this weapon's damage by "
-				+ DescUtil.yellow(damagePerStealth) + " for each stack of " + GlossaryTag.STEALTH.tag(this)
+				+ DescUtil.val(damagePerStealth) + " for each stack of " + GlossaryTag.STEALTH.tag(this)
 				+ " you apply to yourself.");
 	}
 }

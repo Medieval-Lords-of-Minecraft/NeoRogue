@@ -89,10 +89,10 @@ public class MiniMechanism extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRIPWIRE_HOOK, "Every " + DescUtil.white(INTERVAL_SECONDS + "s")
+		item = createItem(Material.TRIPWIRE_HOOK, "Every " + DescUtil.val(INTERVAL_SECONDS + "s")
 				+ ", drop a " + GlossaryTag.TRAP.tag(this) + " at your location ["
-				+ DescUtil.white("20s") + "]. When an enemy steps on it, deal "
+				+ DescUtil.val("20s") + "]. When an enemy steps on it, deal "
 				+ GlossaryTag.BLUNT.tag(this, damage) + " damage to enemies within "
-				+ DescUtil.white((int) BLAST_TARGET.range) + " blocks.");
+				+ DescUtil.val((int) BLAST_TARGET.range) + " blocks.");
 	}
 }

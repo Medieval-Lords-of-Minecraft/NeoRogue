@@ -61,7 +61,7 @@ public class Gungnir extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TRIDENT, "Converts its damage from " + GlossaryTag.PIERCING.tag(this) + " to "
-				+ GlossaryTag.EARTHEN.tag(this) + " after buffs are applied. Every " + DescUtil.white("3rd")
+				+ GlossaryTag.EARTHEN.tag(this) + " after buffs are applied. Every " + DescUtil.val("3rd")
 				+ " hit applies " + GlossaryTag.CONCUSSED.tag(this, concussed) + ".");
 	}
 }

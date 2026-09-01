@@ -52,8 +52,8 @@ public class ProximityMail extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this) + " damage taken by "
-				+ DescUtil.val(reduction) + ". Damaging an enemy within " + DescUtil.white(range) + " blocks grants "
+				+ DescUtil.val(reduction) + ". Damaging an enemy within " + DescUtil.val(range) + " blocks grants "
 				+ GlossaryTag.PROTECT.tag(this, statusStacks) + " and " + GlossaryTag.SHELL.tag(this, statusStacks)
-				+ " [" + DescUtil.val(duration + "s") + "]. " + DescUtil.white(cooldown + "s") + " cooldown.");
+				+ " [" + DescUtil.val(duration + "s") + "]. " + DescUtil.val(cooldown + "s") + " cooldown.");
 	}
 }

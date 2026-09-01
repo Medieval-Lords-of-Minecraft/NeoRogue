@@ -52,7 +52,7 @@ public class MartialStaff extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Every " + DescUtil.white("5th") + " hit applies "
+		item = createItem(Material.STICK, "Every " + DescUtil.val("5th") + " hit applies "
 				+ GlossaryTag.CONCUSSED.tag(this, concussed) + ".");
 	}
 }

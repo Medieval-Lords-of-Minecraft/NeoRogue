@@ -87,10 +87,10 @@ public class BristleCoat extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this) + " damage taken by "
-				+ DescUtil.white(DIRECT_REDUCTION) + ". Every " + DescUtil.yellow(projectileThreshold)
+				+ DescUtil.val(DIRECT_REDUCTION) + ". Every " + DescUtil.val(projectileThreshold)
 				+ " times you deal projectile damage, gain " + GlossaryTag.PROTECT.tag(this, STATUS_STACKS) + " ["
-				+ DescUtil.white(STATUS_DURATION + "s") + "]. For every " + DescUtil.yellow(negativeStatusThreshold)
+				+ DescUtil.val(STATUS_DURATION + "s") + "]. For every " + DescUtil.val(negativeStatusThreshold)
 				+ " negative status stacks you apply, gain " + GlossaryTag.SHELL.tag(this, STATUS_STACKS) + " ["
-				+ DescUtil.white(STATUS_DURATION + "s") + "].");
+				+ DescUtil.val(STATUS_DURATION + "s") + "].");
 	}
 }

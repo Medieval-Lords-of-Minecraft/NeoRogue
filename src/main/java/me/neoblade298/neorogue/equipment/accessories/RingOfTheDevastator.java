@@ -66,6 +66,6 @@ public class RingOfTheDevastator extends Equipment {
 		item = createItem(Material.NETHERITE_SCRAP, "Every " + DescUtil.val(statusThreshold) + " combined "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " or " + GlossaryTag.CONCUSSED.tag(this) + " applied grants "
 				+ GlossaryTag.BERSERK.tag(this, 1) + ". For every " + GlossaryTag.BERSERK.tag(this, 1)
-				+ " you have, gain " + DescUtil.white(MANA_REGEN) + " mana regen.");
+				+ " you have, gain " + DescUtil.val(MANA_REGEN) + " mana regen.");
 	}
 }

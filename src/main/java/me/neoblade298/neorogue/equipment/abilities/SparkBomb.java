@@ -163,7 +163,7 @@ public class SparkBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_STAR,
-				"On cast, drop a bomb at your feet that explodes after " + DescUtil.white("1s")
+				"On cast, drop a bomb at your feet that explodes after " + DescUtil.val("1s")
 				+ ". If you are within its radius, gain " + GlossaryTag.SHIELDS.tag(this, shields) + " "
 				+ DescUtil.duration(5) + " and apply " + GlossaryTag.ELECTRIFIED.tag(this, electrified)
 				+ " to enemies. Otherwise, deal " + GlossaryTag.LIGHTNING.tag(this, damage)

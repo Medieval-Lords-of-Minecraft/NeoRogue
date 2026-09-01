@@ -50,6 +50,6 @@ public class ThroneOfIndifference extends Equipment {
 		item = createItem(Material.NETHERITE_CHESTPLATE,
 				GlossaryTag.PASSIVE.tag(this) + ". All " + GlossaryTag.SHIELDS.tag(this)
 						+ " you gain are permanent and their amounts are increased by "
-						+ DescUtil.yellow(shieldPercent + "%") + ".");
+						+ DescUtil.val(shieldPercent + "%") + ".");
 	}
 }

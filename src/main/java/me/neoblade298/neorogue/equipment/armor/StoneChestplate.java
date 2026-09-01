@@ -53,8 +53,8 @@ public class StoneChestplate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHAINMAIL_CHESTPLATE,
-				"Reduce " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.white(PHYSICAL_REDUCTION)
+				"Reduce " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.val(PHYSICAL_REDUCTION)
 						+ ". " + GlossaryTag.DIRECT.tag(this) + " damage dealt by " + GlossaryTag.CONCUSSED.tag(this)
-						+ " enemies is reduced by " + DescUtil.yellow(concussedReduction + "%") + ".");
+						+ " enemies is reduced by " + DescUtil.val(concussedReduction + "%") + ".");
 	}
 }

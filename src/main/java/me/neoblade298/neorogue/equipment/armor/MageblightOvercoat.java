@@ -40,7 +40,7 @@ public class MageblightOvercoat extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce mana regen by " + DescUtil.white(MANA_REGEN_REDUCTION)
-				+ ". Reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(magicReduction) + ".");
+		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce mana regen by " + DescUtil.val(MANA_REGEN_REDUCTION)
+				+ ". Reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.val(magicReduction) + ".");
 	}
 }

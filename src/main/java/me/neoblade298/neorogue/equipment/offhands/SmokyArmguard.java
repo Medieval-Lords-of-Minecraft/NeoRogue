@@ -45,7 +45,7 @@ public class SmokyArmguard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRAY_DYE, "Applying " + GlossaryTag.INSANITY.tag(this) + " grants "
-				+ DescUtil.yellow(reduction) + " " + GlossaryTag.DIRECT.tag(this) + " damage reduction "
+				+ DescUtil.val(reduction) + " " + GlossaryTag.DIRECT.tag(this) + " damage reduction "
 				+ DescUtil.duration(DURATION) + ". Refreshes; does not stack.");
 	}
 }

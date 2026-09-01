@@ -121,7 +121,7 @@ public class Shockwave extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MUD_BRICKS,
-				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.white(ATTACKS_REQUIRED)
+				GlossaryTag.PASSIVE.tag(this) + ". Every " + DescUtil.val(ATTACKS_REQUIRED)
 						+ " basic attacks, launch a ground shockwave that deals "
 						+ GlossaryTag.EARTHEN.tag(this, damage) + " damage to all enemies it hits.");
 	}

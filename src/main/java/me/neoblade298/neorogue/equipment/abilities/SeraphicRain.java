@@ -288,6 +288,6 @@ public class SeraphicRain extends Equipment {
 		item = createItem(Material.FEATHER,
 				"Can only be cast after dealing basic attack damage " + DescUtil.val(requiredHits) + " times. On cast, leap into the air and briefly glide while " +
 				GlossaryTag.INVINCIBLE.tag(this) + " " + DescUtil.duration(DURATION / 20) + ", firing " + DescUtil.val(PROJECTILES) +
-				" projectiles at random nearby enemies. Projectiles use your equipped ammunition, consume ammunition, and deal " + DescUtil.white("2x") + " its damage.");
+				" projectiles at random nearby enemies. Projectiles use your equipped ammunition, consume ammunition, and deal " + DescUtil.val("2x") + " its damage.");
 	}
 }

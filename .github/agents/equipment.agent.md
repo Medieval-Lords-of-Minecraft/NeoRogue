@@ -354,22 +354,21 @@ Amount-bearing tags automatically render changed values yellow, unchanged values
 
 ### DescUtil
 ```java
-DescUtil.yellow(value)          // Upgradable values
-DescUtil.white(value)           // Fixed values
-DescUtil.duration(seconds, isUpgradable) // Time formatting
+DescUtil.val(value)             // All displayed values; changed values become yellow, unchanged values white
+DescUtil.duration(seconds, isUpgradable) // Time formatting; retained boolean does not control color
 DescUtil.potion("Speed", amplifier, duration)
 ```
 
 ### Tooltip Number Formatting
 - Always use **integers** in tooltips unless the decimal adds meaningful information (e.g. `0.5s` or `1.5x`).
-- Cast to `(int)` when displaying double property values: `DescUtil.yellow((int) properties.get(PropertyType.DAMAGE))`
+- Cast to `(int)` when displaying double property values: `DescUtil.val((int) properties.get(PropertyType.DAMAGE))`
 - Store balance values as `int` fields when they will always be whole numbers.
 
 ### Pattern
 ```java
 item = createItem(Material.ITEM, "Deals " + GlossaryTag.FIRE.tag(this, damage)
-    + " damage to enemies within " + DescUtil.yellow(radius) + " blocks every "
-    + DescUtil.white("3s") + ".");
+    + " damage to enemies within " + DescUtil.val(radius) + " blocks every "
+    + DescUtil.val("3s") + ".");
 ```
 
 ## Powers (One-Time Activation Passives)

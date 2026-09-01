@@ -77,7 +77,7 @@ public class IcyBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Every " + DescUtil.white(ATTACK_THRESHOLD)
+		item = createItem(Material.BOW, "Every " + DescUtil.val(ATTACK_THRESHOLD)
 				+ " basic attacks made with this weapon applies " + GlossaryTag.FROST.tag(this, FROST) + ".");
 	}
 }

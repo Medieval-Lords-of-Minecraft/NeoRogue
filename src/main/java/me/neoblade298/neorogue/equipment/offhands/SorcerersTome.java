@@ -79,7 +79,7 @@ public class SorcerersTome extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On use, " + GlossaryTag.CHANNEL.tag(this) + " for "
-				+ DescUtil.white("1s") + " to gain " + GlossaryTag.INTELLECT.tag(this, intellect) + " and "
+				+ DescUtil.val("1s") + " to gain " + GlossaryTag.INTELLECT.tag(this, intellect) + " and "
 				+ GlossaryTag.SHIELDS.tag(this, shields) + " " + DescUtil.duration(STATUS_DURATION)
 				+ ". Skip the channel at or above " + GlossaryTag.INTELLECT.tag(this, CHANNEL_BYPASS) + ".");
 	}

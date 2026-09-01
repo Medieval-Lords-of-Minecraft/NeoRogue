@@ -74,8 +74,8 @@ public class WinterCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Reduce " + GlossaryTag.DIRECT.tag(this)
-				+ " damage received by " + DescUtil.white(DAMAGE_REDUCTION) + ". Whenever you apply "
+				+ " damage received by " + DescUtil.val(DAMAGE_REDUCTION) + ". Whenever you apply "
 				+ GlossaryTag.FROST.tag(this) + ", gain " + GlossaryTag.SHIELDS.tag(this, shields) + " ["
-				+ DescUtil.white("5s") + "], with a " + DescUtil.white("4s") + " cooldown.");
+				+ DescUtil.val("5s") + "], with a " + DescUtil.val("4s") + " cooldown.");
 	}
 }

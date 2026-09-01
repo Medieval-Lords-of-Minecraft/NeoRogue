@@ -109,7 +109,7 @@ public class StrangelySmoothStone extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SMOOTH_STONE, "Every " + DescUtil.yellow(casts) + " casts, fire a projectile at the nearest enemy that deals "
+		item = createItem(Material.SMOOTH_STONE, "Every " + DescUtil.val(casts) + " casts, fire a projectile at the nearest enemy that deals "
 				+ GlossaryTag.EARTHEN.tag(this, damage) + " damage and applies "
 				+ GlossaryTag.CONCUSSED.tag(this, CONCUSSED) + ".");
 	}

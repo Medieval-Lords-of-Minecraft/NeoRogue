@@ -137,7 +137,7 @@ public class Slipstream extends Equipment implements Power {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after "
-				+ DescUtil.white(DASHES_TO_ACTIVATE) + " dashes or " + DescUtil.white(1) + " evade. Once activated, dashes and evades increase your "
+				+ DescUtil.val(DASHES_TO_ACTIVATE) + " dashes or " + DescUtil.val(1) + " evade. Once activated, dashes and evades increase your "
 				+ GlossaryTag.PHYSICAL.tag(this) + " damage by "
 				+ DescUtil.val((int) (damageIncrease * 100) + "%") + " " + DescUtil.duration(6)
 				+ ", stackable.");

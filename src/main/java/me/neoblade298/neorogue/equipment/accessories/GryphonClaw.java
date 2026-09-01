@@ -55,7 +55,7 @@ public class GryphonClaw extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT, "Gain " + GlossaryTag.SHIELDS.tag(this, shieldsPerFocus)
-				+ " per " + GlossaryTag.FOCUS.tag(this) + " gained. While above " + DescUtil.white(focusThreshold)
+				+ " per " + GlossaryTag.FOCUS.tag(this) + " gained. While above " + DescUtil.val(focusThreshold)
 				+ " Focus, reduce ability cooldowns by " + DescUtil.val(cooldownReduction + "%") + ".");
 	}
 }

@@ -62,7 +62,7 @@ public class ElectromagneticKnife extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD,
 				"Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED)
-						+ ". Deal " + DescUtil.yellow(bonusDamage) + " additional damage to enemies with at least "
+						+ ". Deal " + DescUtil.val(bonusDamage) + " additional damage to enemies with at least "
 						+ GlossaryTag.ELECTRIFIED.tag(this, ELECTRIFIED_THRESHOLD) + ".");
 	}
 }

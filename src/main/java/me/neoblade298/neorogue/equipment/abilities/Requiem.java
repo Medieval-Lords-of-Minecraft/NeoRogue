@@ -147,7 +147,7 @@ public class Requiem extends Equipment implements Power {
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after killing an enemy. After activation, killing an enemy deals "
 				+ GlossaryTag.LIGHT.tag(this, damage) + " damage and applies "
 				+ GlossaryTag.SANCTIFIED.tag(this, sanctified) + " to enemies within "
-				+ tp.range + " blocks of it after " + DescUtil.white("0.5s") + ". "
-				+ DescUtil.white("3s") + " cooldown.");
+				+ tp.range + " blocks of it after " + DescUtil.val("0.5s") + ". "
+				+ DescUtil.val("3s") + " cooldown.");
 	}
 }

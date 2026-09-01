@@ -49,7 +49,7 @@ public class SnakebiteRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FERMENTED_SPIDER_EYE, "Deal " + DescUtil.yellow(multiplierPercent + "%")
+		item = createItem(Material.FERMENTED_SPIDER_EYE, "Deal " + DescUtil.val(multiplierPercent + "%")
 				+ " increased " + GlossaryTag.DIRECT.tag(this) + " damage to enemies with " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }

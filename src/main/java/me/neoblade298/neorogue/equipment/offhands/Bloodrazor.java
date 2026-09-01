@@ -92,8 +92,8 @@ public class Bloodrazor extends Equipment {
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates permanently upon exceeding "
 						+ GlossaryTag.BERSERK.tag(this, BERSERK_THRESHOLD) + " or "
 						+ GlossaryTag.STRENGTH.tag(this, STRENGTH_THRESHOLD) + ", or after applying "
-						+ DescUtil.white(STATUS_THRESHOLD) + " " + GlossaryTag.CONCUSSED.tag(this) + " or "
-						+ GlossaryTag.SANCTIFIED.tag(this) + ". While above " + DescUtil.white("60% stamina")
+						+ DescUtil.val(STATUS_THRESHOLD) + " " + GlossaryTag.CONCUSSED.tag(this) + " or "
+						+ GlossaryTag.SANCTIFIED.tag(this) + ". While above " + DescUtil.val("60% stamina")
 						+ ", automatically basic attack the nearest enemy.");
 	}
 }

@@ -29,8 +29,8 @@ public class GamblingDenChance extends ChanceSet {
 
 		// Choice 1: Bet 50 coins
 		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "Bet 50 " + PlayerSessionData.CURRENCY,
-				DescUtil.white("50%") + " chance to win " + DescUtil.white("100 " + PlayerSessionData.CURRENCY) + ", "
-						+ DescUtil.white("50%") + " chance to win nothing.",
+				DescUtil.val("50%") + " chance to win " + DescUtil.val("100 " + PlayerSessionData.CURRENCY) + ", "
+						+ DescUtil.val("50%") + " chance to win nothing.",
 				"You don't have 50 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCurrency(50),
 				(s, inst, data) -> {
@@ -49,9 +49,9 @@ public class GamblingDenChance extends ChanceSet {
 
 		// Choice 2: Bet 100 coins
 		stage.addChoice(new ChanceChoice(Material.GOLD_INGOT, "Bet 100 " + PlayerSessionData.CURRENCY,
-				DescUtil.white("25%") + " chance for a random artifact, " + DescUtil.white("25%") + " chance to win "
-						+ DescUtil.white("200 " + PlayerSessionData.CURRENCY) + ", " + DescUtil.white("25%") + " chance to lose "
-						+ DescUtil.white("10%") + " health, " + DescUtil.white("25%") + " chance to win nothing.",
+				DescUtil.val("25%") + " chance for a random artifact, " + DescUtil.val("25%") + " chance to win "
+						+ DescUtil.val("200 " + PlayerSessionData.CURRENCY) + ", " + DescUtil.val("25%") + " chance to lose "
+						+ DescUtil.val("10%") + " health, " + DescUtil.val("25%") + " chance to win nothing.",
 				"You don't have 100 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCurrency(100),
 				(s, inst, data) -> {
@@ -80,9 +80,9 @@ public class GamblingDenChance extends ChanceSet {
 
 		// Choice 3: Bet 200 coins
 		stage.addChoice(new ChanceChoice(Material.GOLD_BLOCK, "Bet 200 " + PlayerSessionData.CURRENCY,
-				DescUtil.white("25%") + " chance for " + DescUtil.white("3") + " random artifacts, "
-						+ DescUtil.white("25%") + " chance to win " + DescUtil.white("400 " + PlayerSessionData.CURRENCY) + " and fully heal, "
-						+ DescUtil.white("25%") + " chance to lose a random equipment, " + DescUtil.white("25%")
+				DescUtil.val("25%") + " chance for " + DescUtil.val("3") + " random artifacts, "
+						+ DescUtil.val("25%") + " chance to win " + DescUtil.val("400 " + PlayerSessionData.CURRENCY) + " and fully heal, "
+						+ DescUtil.val("25%") + " chance to lose a random equipment, " + DescUtil.val("25%")
 						+ " chance to win nothing.",
 				"You don't have 200 " + PlayerSessionData.CURRENCY + "!",
 				(s, inst, data) -> data.hasCurrency(200),
@@ -112,7 +112,7 @@ public class GamblingDenChance extends ChanceSet {
 
 		// Choice 4: Leave
 		stage.addChoice(new ChanceChoice(Material.BARRIER, "Leave",
-				DescUtil.white("50%") + " chance someone slices you as you leave, losing up to " + DescUtil.white("10%")
+				DescUtil.val("50%") + " chance someone slices you as you leave, losing up to " + DescUtil.val("10%")
 						+ " health (cannot die from this).",
 				(s, inst, data) -> {
 					String name = data.getData().getDisplay();

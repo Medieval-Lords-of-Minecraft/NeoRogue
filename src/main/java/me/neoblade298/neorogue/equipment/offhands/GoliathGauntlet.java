@@ -105,7 +105,7 @@ public class GoliathGauntlet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE, "Right click an enemy to knock them back and deal "
-				+ DescUtil.white(BASE_DAMAGE) + " + " + DescUtil.white(damagePerConcussed) + " per "
+				+ DescUtil.val(BASE_DAMAGE) + " + " + DescUtil.val(damagePerConcussed) + " per "
 				+ GlossaryTag.CONCUSSED.tag(this) + " applied this fight. Gain "
 				+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_CONCUSSED) + " " + DescUtil.duration(SHIELD_DURATION)
 				+ " per stack applied.");

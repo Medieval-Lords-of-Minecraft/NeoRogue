@@ -62,8 +62,8 @@ public class PotentialPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, isUpgraded
-				? "Your next [" + DescUtil.yellow(uses) + "] " + GlossaryTag.POWER.tag(this) + " activations are each triggered twice. Consumed on first use."
-				: "Your next " + GlossaryTag.POWER.tag(this) + " activation is triggered twice. Consumed on first use.");
+				? "Your next [" + DescUtil.val(uses) + "] " + GlossaryTag.POWER.tag(this) + " activations are each triggered twice. Consumed on first use."
+				: "Your next " + DescUtil.val("") + GlossaryTag.POWER.tag(this) + " activation is triggered twice. Consumed on first use.");
 	}
 
 	@Override

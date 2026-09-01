@@ -55,6 +55,6 @@ public class ShiningStar extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR, "Basic attacks against enemies with at least "
 				+ GlossaryTag.SANCTIFIED.tag(this, SANCTIFIED_THRESHOLD) + " permanently increase your "
-				+ GlossaryTag.LIGHT.tag(this) + " damage by " + DescUtil.yellow(lightIncrease + "%") + " for the fight.");
+				+ GlossaryTag.LIGHT.tag(this) + " damage by " + DescUtil.val(lightIncrease + "%") + " for the fight.");
 	}
 }

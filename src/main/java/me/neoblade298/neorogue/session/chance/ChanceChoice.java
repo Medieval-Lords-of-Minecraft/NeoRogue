@@ -18,6 +18,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -48,14 +49,14 @@ public class ChanceChoice {
 		this(mat, title, description, action);
 		this.req = req;
 		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().
-				deserialize(prereqFail).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
+				deserialize(DescUtil.resolveValues(prereqFail)).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, ChanceDescriptionSupplier dynamicDesc, String prereqFail, ChanceRequirement req, ChanceAction action) {
 		this(mat, title, dynamicDesc, action);
 		this.req = req;
 		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().
-				deserialize(prereqFail).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
+				deserialize(DescUtil.resolveValues(prereqFail)).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
@@ -71,7 +72,7 @@ public class ChanceChoice {
 	
 	public ChanceChoice(Material mat, String title, String description) {
 		this(mat, title);
-		this.desc = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(description), 250);
+		this.desc = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(DescUtil.resolveValues(description)), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title) {

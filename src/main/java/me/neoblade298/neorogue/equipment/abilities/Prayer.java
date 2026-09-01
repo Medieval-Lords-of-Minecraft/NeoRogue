@@ -61,7 +61,7 @@ public class Prayer extends Equipment implements Power {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this) + " grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.white("3s") + "]. Activates after applying " + GlossaryTag.SANCTIFIED.tag(this, thres) + " stacks, healing you for "
+				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Applying " + GlossaryTag.SANCTIFIED.tag(this) + " grants " + GlossaryTag.SHIELDS.tag(this, shields) + " [" + DescUtil.val("3s") + "]. Activates after applying " + GlossaryTag.SANCTIFIED.tag(this, thres) + " stacks, healing you for "
 				+ DescUtil.val(heal) + " once per fight.");
 	}
 }

@@ -39,6 +39,6 @@ public class QuartzShard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.QUARTZ, "Increase " + GlossaryTag.LIGHT.tag(this) + " damage by "
-				+ DescUtil.yellow(lightDamage + "%") + ".");
+				+ DescUtil.val(lightDamage + "%") + ".");
 	}
 }

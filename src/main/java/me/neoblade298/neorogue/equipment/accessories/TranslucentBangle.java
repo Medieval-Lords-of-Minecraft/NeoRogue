@@ -51,7 +51,7 @@ public class TranslucentBangle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CLOCK, GlossaryTag.PASSIVE.tag(this) + ". For every "
-				+ DescUtil.white(MANA_THRESHOLD) + " base mana spent casting abilities, gain "
+				+ DescUtil.val(MANA_THRESHOLD) + " base mana spent casting abilities, gain "
 				+ GlossaryTag.PROTECT.tag(this, protect) + " " + DescUtil.duration(DURATION) + ".");
 	}
 }
