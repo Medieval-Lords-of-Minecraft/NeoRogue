@@ -69,8 +69,8 @@ public class EnGarde extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_BARS,
 				GlossaryTag.PASSIVE.tag(this) + ". While crouching, every second gain "
-						+ DescUtil.duration(DURATION_SECONDS) + " " + GlossaryTag.STRENGTH.tag(this, strength)
-						+ " and " + DescUtil.duration(DURATION_SECONDS) + " "
-						+ GlossaryTag.SHIELDS.tag(this, shields) + ".");
+						+ GlossaryTag.STRENGTH.tag(this, strength) + " " + DescUtil.duration(DURATION_SECONDS)
+						+ " and " + GlossaryTag.SHIELDS.tag(this, shields) + " "
+						+ DescUtil.duration(DURATION_SECONDS) + ".");
 	}
 }
