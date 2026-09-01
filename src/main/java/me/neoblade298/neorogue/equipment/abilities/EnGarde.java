@@ -37,7 +37,7 @@ public class EnGarde extends Equipment {
 	public EnGarde(boolean isUpgraded) {
 		super(ID, "En Garde", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		strength = isUpgraded ? 6 : 4;
+		strength = isUpgraded ? 3 : 2;
 		shields = isUpgraded ? 3 : 2;
 	}
 
@@ -69,8 +69,8 @@ public class EnGarde extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_BARS,
 				GlossaryTag.PASSIVE.tag(this) + ". While crouching, every second gain "
-						+ GlossaryTag.STRENGTH.tag(this, strength) + " and "
-						+ GlossaryTag.SHIELDS.tag(this, shields) + " "
-						+ DescUtil.duration(DURATION_SECONDS) + ".");
+						+ DescUtil.duration(DURATION_SECONDS) + " " + GlossaryTag.STRENGTH.tag(this, strength)
+						+ " and " + DescUtil.duration(DURATION_SECONDS) + " "
+						+ GlossaryTag.SHIELDS.tag(this, shields) + ".");
 	}
 }
