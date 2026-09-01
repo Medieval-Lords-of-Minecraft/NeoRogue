@@ -78,15 +78,16 @@ public class SellablePackageRegistry {
 		return packages.values();
 	}
 
+	public static boolean canAccess(Set<String> ownedPackageIds, Player player, SellablePackage pkg) {
+		return DEFAULT_ID.equals(pkg.getId()) || ownedPackageIds.contains(pkg.getId())
+				|| (player != null && player.hasPermission(pkg.getPermission()));
+	}
+
 	// Whether a material may be deposited. The default package is available to everyone; each other
 	// package accepts either its owned-package flag or its automatic permission.
 	public static boolean canDeposit(Set<String> ownedPackageIds, Player player, Material mat) {
-		SellablePackage def = packages.get(DEFAULT_ID);
-		if (def != null && def.contains(mat)) return true;
 		for (SellablePackage pkg : packages.values()) {
-			if (DEFAULT_ID.equals(pkg.getId()) || !pkg.contains(mat)) continue;
-			if (ownedPackageIds.contains(pkg.getId())
-					|| (player != null && player.hasPermission(pkg.getPermission()))) return true;
+			if (pkg.contains(mat) && canAccess(ownedPackageIds, player, pkg)) return true;
 		}
 		return false;
 	}

@@ -52,23 +52,29 @@ public class CargoInventory extends CoreInventory {
 	private final boolean multiHold;
 	private final boolean returnToCaravanMenu;
 	private final int controlBase;
-	private final int backSlot, prevSlot, holdInfoSlot, nextSlot, collectSlot, lostCargoSlot, infoSlot;
+	private final int backSlot, sellablesSlot, prevSlot, holdInfoSlot, nextSlot, collectSlot, lostCargoSlot, infoSlot;
 	private final HashMap<Integer, CargoItem> slotToItem = new HashMap<Integer, CargoItem>();
 
 	public CargoInventory(Player p, PlayerData pd) {
-		this(p, pd, false);
+		this(p, pd, false, 0);
 	}
 
 	public CargoInventory(Player p, PlayerData pd, boolean returnToCaravanMenu) {
+		this(p, pd, returnToCaravanMenu, 0);
+	}
+
+	CargoInventory(Player p, PlayerData pd, boolean returnToCaravanMenu, int currentHold) {
 		super(p, Bukkit.createInventory(p, computeSize(pd), Component.text("Cargo", NamedTextColor.GOLD)));
 		this.pd = pd;
 		this.returnToCaravanMenu = returnToCaravanMenu;
 		// Resolve any fleet holds that auto-sold since the player was last here.
 		pd.resolveFleetSales();
+		this.currentHold = Math.max(0, Math.min(currentHold, pd.getFleetSize()));
 
 		this.multiHold = pd.getFleetSize() >= 1;
 		this.controlBase = inv.getSize() - 9;
 		this.backSlot = controlBase;
+		this.sellablesSlot = controlBase + 1;
 		this.prevSlot = controlBase + 3;
 		this.holdInfoSlot = controlBase + 4;
 		this.nextSlot = controlBase + 5;
@@ -180,6 +186,7 @@ public class CargoInventory extends CoreInventory {
 			inv.setItem(i, buildFillerPane());
 		}
 		inv.setItem(backSlot, buildBackButton());
+		inv.setItem(sellablesSlot, buildSellablesButton());
 		inv.setItem(infoSlot, buildInfoButton());
 		if (multiHold) {
 			inv.setItem(prevSlot, buildNavButton(false));
@@ -203,6 +210,21 @@ public class CargoInventory extends CoreInventory {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(line(Component.text("Back", NamedTextColor.YELLOW)));
 		meta.lore(new ArrayList<Component>());
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	private ItemStack buildSellablesButton() {
+		ItemStack item = new ItemStack(Material.BOOK);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(line(Component.text("Sellable Items", NamedTextColor.GREEN)));
+		List<Component> lore = new ArrayList<Component>();
+		lore.add(line(Component.text("View every material your cargo", NamedTextColor.GRAY)));
+		lore.add(line(Component.text("permits you to store and sell.", NamedTextColor.GRAY)));
+		lore.add(Component.empty());
+		lore.add(line(Component.text("Left click: ", NamedTextColor.YELLOW)
+				.append(Component.text("browse sellables", NamedTextColor.WHITE))));
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -331,6 +353,16 @@ public class CargoInventory extends CoreInventory {
 			e.setCancelled(true);
 			int slot = e.getSlot();
 			if (slot == infoSlot) return;
+			if (slot == sellablesSlot) {
+				click();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						new CargoSellablesInventory(p, pd, returnToCaravanMenu, currentHold);
+					}
+				}.runTask(NeoRogue.inst());
+				return;
+			}
 			if (slot == backSlot) {
 				click();
 				new BukkitRunnable() {

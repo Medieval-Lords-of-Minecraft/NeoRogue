@@ -80,18 +80,6 @@ cargo_base_reward_1:
   actions:
     - "cargo_base_reward 100"
 
-cargo_sellables_ores:
-  title: "Ore Trade Permit"
-  description:
-    - "Allows precious ores to be"
-    - "stored in your cargo."
-  cost: 2000
-  slot: 15
-  requires:
-    - "cargo_access"
-  actions:
-    - "cargo_sellables ores"
-
 cargo_sell_multiplier_1:
   title: "Shrewd Negotiator I"
   description:
