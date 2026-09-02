@@ -381,8 +381,8 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminUnlock("unlock", "Manage player unlock nodes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminUnlocks("unlocks", "List a player's unlock nodes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminExp("exp", "Add exp to a player", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminBoost("boost", "Grant an exp boost to a player", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminGlobalBoost("globalboost", "Activate a server-wide exp boost", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminBoost("expboost", "Grant an exp boost to a player", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminGlobalBoost("globalexpboost", "Activate a server-wide exp boost", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminCurrencyBoost("currencyboost", "Grant a currency boost to a player", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminGlobalCurrencyBoost("globalcurrencyboost", "Activate a server-wide currency boost", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetExp("setexp", "Set a player's exp", null, SubcommandRunner.BOTH));
