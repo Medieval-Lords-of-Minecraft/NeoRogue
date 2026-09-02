@@ -29,7 +29,7 @@ public class SeeingTripleAchievement implements Achievement {
 	@Override public int[] getMasteryThresholds() { return THRESHOLDS; }
 	@Override public EnumSet<AchievementTriggerType> getTriggerTypes() { return EnumSet.of(AchievementTriggerType.SESSION); }
 	@Override public List<Component> getDescription(int progress, int mastery) {
-		return List.of(Component.text("Beat a boss with 3 equipped items sharing the same equipment ID.", NamedTextColor.GRAY));
+		return List.of(Component.text("Beat a boss with 3 of the same equipment.", NamedTextColor.GRAY));
 	}
 
 	@Override
