@@ -8,3 +8,12 @@ session-world: Caravans
 inspection-worlds:
 - Caravans
 - Hub
+
+# Requires a restart. Upgrade bonuses from caravan.yml are added to these base limits.
+caravan:
+  cargo:
+    capacity: 3000
+    unique-items: 5
+  fleet-hold:
+    capacity: 3000
+    unique-items: 5

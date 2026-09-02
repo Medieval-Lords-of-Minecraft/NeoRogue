@@ -158,6 +158,7 @@ public class NeoRogue extends JavaPlugin {
 		inst = this;
 		saveDefaultConfig();
 		lightweightMode = getConfig().getBoolean("lightweight", false);
+		PlayerData.loadCaravanDefaults();
 		saveResource("caravan.yml", false);
 		saveResource("sellables.yml", false);
 		RunReward.setupEconomy();

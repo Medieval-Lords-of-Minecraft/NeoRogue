@@ -107,6 +107,8 @@ public class PlayerData {
 	public static final String CURRENCY = "Crowns";
 	public static final int DEFAULT_CARGO_CAPACITY = 3000, DEFAULT_CARGO_SLOTS = 5;
 	public static final int DEFAULT_FLEET_CAPACITY = 3000, DEFAULT_FLEET_SLOTS = 5;
+	private static int baseCargoCapacity = DEFAULT_CARGO_CAPACITY, baseCargoSlots = DEFAULT_CARGO_SLOTS;
+	private static int baseFleetCapacity = DEFAULT_FLEET_CAPACITY, baseFleetSlots = DEFAULT_FLEET_SLOTS;
 	// All player flags follow the "namespace:key" convention (see FlagRegistry). The general namespace
 	// holds miscellaneous per-account flags such as whether the player has opened the menu before.
 	public static final String FLAG_PLAYED_BEFORE = "general:played_before";
@@ -115,23 +117,30 @@ public class PlayerData {
 	// Namespaced flag prefixes: owned sellable packages and purchased caravan upgrades are stored as
 	// player flags (e.g. "caravan:pkg:ores", "caravan:upgrade:cargo_access").
 	public static final String FLAG_PREFIX_PACKAGE = "caravan:pkg:", FLAG_PREFIX_UPGRADE = "caravan:upgrade:";
-	private Cargo cargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
+	private Cargo cargo = new Cargo(baseCargoCapacity, baseCargoSlots);
 	// Overflow stash for unsold cargo returned at run end that didn't fit in the main cargo.
 	// Shares its capacity/slot limits with the main cargo; withdraw-only in the GUI.
-	private Cargo lostCargo = new Cargo(DEFAULT_CARGO_CAPACITY, DEFAULT_CARGO_SLOTS);
+	private Cargo lostCargo = new Cargo(baseCargoCapacity, baseCargoSlots);
 	// Persistent caravan scalars, stored on the neorogue_playerdata row.
 	private int cargoBaseReward = 0;          // currency awarded per completed region
 	private int sellMultiplierBonus = 0;      // % bonus to cargo sell value (effective mult = 1 + bonus/100)
 	// Fleet: extra cargo holds beyond the main cargo. fleetSize is the number of extra holds (0 = none);
 	// each fleet hold is bounded by fleetCapacity/fleetSlots and auto-sells at midnight America/Los_Angeles.
 	private int fleetSize = 0;
-	private int fleetCapacity = DEFAULT_FLEET_CAPACITY;
-	private int fleetSlots = DEFAULT_FLEET_SLOTS;
+	private int fleetCapacity = baseFleetCapacity;
+	private int fleetSlots = baseFleetSlots;
 	private final ArrayList<FleetHold> fleetHolds = new ArrayList<FleetHold>();
 	// Proceeds from auto-sold fleet holds awaiting collection, keyed by exact variant.
 	private final LinkedHashMap<CargoItem, PendingFleetSale> pendingFleetSales = new LinkedHashMap<CargoItem, PendingFleetSale>();
 	private BukkitTask unlockNodesSaveTask;
 	private BukkitTask flagsSaveTask;
+
+	public static void loadCaravanDefaults() {
+		baseCargoCapacity = Math.max(0, NeoRogue.inst().getConfig().getInt("caravan.cargo.capacity", DEFAULT_CARGO_CAPACITY));
+		baseCargoSlots = Math.max(0, NeoRogue.inst().getConfig().getInt("caravan.cargo.unique-items", DEFAULT_CARGO_SLOTS));
+		baseFleetCapacity = Math.max(0, NeoRogue.inst().getConfig().getInt("caravan.fleet-hold.capacity", DEFAULT_FLEET_CAPACITY));
+		baseFleetSlots = Math.max(0, NeoRogue.inst().getConfig().getInt("caravan.fleet-hold.unique-items", DEFAULT_FLEET_SLOTS));
+	}
 	
 	// Create new one if one doesn't exist
 	public PlayerData(Player p) {
@@ -775,15 +784,15 @@ public class PlayerData {
 	// login before the fleet cargo is loaded. Cargo limits, base reward, sell multiplier, fleet
 	// configuration, and the access/insurance/package grant flags are all derived here.
 	public void recomputeCaravanState() {
-		cargo.setCapacity(DEFAULT_CARGO_CAPACITY);
-		cargo.setSlots(DEFAULT_CARGO_SLOTS);
-		lostCargo.setCapacity(DEFAULT_CARGO_CAPACITY);
-		lostCargo.setSlots(DEFAULT_CARGO_SLOTS);
+		cargo.setCapacity(baseCargoCapacity);
+		cargo.setSlots(baseCargoSlots);
+		lostCargo.setCapacity(baseCargoCapacity);
+		lostCargo.setSlots(baseCargoSlots);
 		cargoBaseReward = 0;
 		sellMultiplierBonus = 0;
 		fleetSize = 0;
-		fleetCapacity = DEFAULT_FLEET_CAPACITY;
-		fleetSlots = DEFAULT_FLEET_SLOTS;
+		fleetCapacity = baseFleetCapacity;
+		fleetSlots = baseFleetSlots;
 		// Boolean/package grants are re-derived from the purchased upgrades below.
 		flags.remove(FLAG_CARGO_ACCESS);
 		flags.remove(FLAG_CARGO_INSURANCE);
