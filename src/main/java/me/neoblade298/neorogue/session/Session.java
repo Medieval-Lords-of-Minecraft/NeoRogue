@@ -928,16 +928,14 @@ public class Session {
 		}
 		this.inst = next;
 		next.start();
-		Bukkit.getLogger()
-				.info("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited + ", regions completed " + regionsCompleted);
+		Bukkit.getLogger().info("Started " + next.getClass().getSimpleName() + " [nodes=" + nodesVisited
+				+ ", regions=" + regionsCompleted + "]");
 		for (PlayerSessionData psd : party.values()) {
 			Player p = psd.getPlayer();
 			if (p == null) continue;
-			Bukkit.getLogger().info("Serialization for " + p.getName());
-			Bukkit.getLogger().info(psd.serialize());
-			Bukkit.getLogger().info("Abilities: " + psd.getAbilitiesEquipped() + " / " + psd.getMaxAbilities());
-			Bukkit.getLogger().info("Accessories: " + psd.getAccessoriesEquipped() + " / " + psd.getAccessorySlots());
-			Bukkit.getLogger().info("Armor: " + psd.getArmorEquipped() + " / " + psd.getArmorSlots());
+			Bukkit.getLogger().info(p.getName() + " equipment [abilities=" + psd.getAbilitiesEquipped() + "/"
+					+ psd.getMaxAbilities() + ", accessories=" + psd.getAccessoriesEquipped() + "/"
+					+ psd.getAccessorySlots() + ", armor=" + psd.getArmorEquipped() + "/" + psd.getArmorSlots() + "]");
 		}
 		
 		// Don't save because autosave happened
