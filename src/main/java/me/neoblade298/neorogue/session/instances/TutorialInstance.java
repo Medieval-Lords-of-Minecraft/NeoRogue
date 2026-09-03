@@ -107,11 +107,11 @@ public class TutorialInstance extends EditInventoryInstance {
 		playerStages.put(uuid, nextStage);
 		if (nextStage < stages.size()) {
 			registerStageTrigger(data);
-			Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+			Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
 				if (s.getInstance() != this || playerStages.getOrDefault(uuid, stages.size()) != nextStage) return;
 				Player currentPlayer = Bukkit.getPlayer(uuid);
 				if (currentPlayer != null) showDialog(currentPlayer, stages.get(nextStage));
-			});
+			}, 60L);
 		}
 		s.launchFireworks();
 		updateBoardLines();
