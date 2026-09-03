@@ -308,6 +308,8 @@ public class NeoRogue extends JavaPlugin {
 				} catch (Throwable ex) {
 					getLogger().log(java.util.logging.Level.SEVERE,
 							"Failed to clean up session at plot " + s.getPlot() + " during shutdown", ex);
+				} finally {
+					SessionManager.removeSession(s);
 				}
 			}
 		}

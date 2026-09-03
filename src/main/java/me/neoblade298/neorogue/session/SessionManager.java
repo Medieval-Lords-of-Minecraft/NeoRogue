@@ -1039,6 +1039,9 @@ public class SessionManager implements Listener {
 		} else {
 			TownyFlightIntegration.disable(p);
 			resetPlayer(p, false);
+			if (p.getWorld().getName().equals(Region.getMainWorldName())) {
+				NeoRogue.teleportToEssentialsSpawn(p);
+			}
 		}
 	}
 
