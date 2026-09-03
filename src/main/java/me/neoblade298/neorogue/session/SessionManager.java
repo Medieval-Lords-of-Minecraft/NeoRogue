@@ -76,6 +76,7 @@ import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
+import me.neoblade298.neorogue.integrations.TownyFlightIntegration;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -197,6 +198,7 @@ public class SessionManager implements Listener {
 		sessions.put(uuid, s);
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null) {
+			TownyFlightIntegration.enable(p);
 			p.getInventory().clear();
 			s.hideSpectatorsFrom(p);
 		}
@@ -208,6 +210,7 @@ public class SessionManager implements Listener {
 		Player p = Bukkit.getPlayer(uuid);
 		if (p != null)
 			NeoRogue.teleportToEssentialsSpawn(p);
+		TownyFlightIntegration.disable(p);
 		if (s != null)
 			Bukkit.getPluginManager().callEvent(new SessionLeaveEvent(uuid, s));
 	}
@@ -1026,6 +1029,7 @@ public class SessionManager implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		if (sessions.containsKey(p.getUniqueId())) {
+			TownyFlightIntegration.enable(p);
 			Session s = sessions.get(p.getUniqueId());
 			if (!s.isSpectator(p.getUniqueId())) {
 				p.setHealthScaled(true);
@@ -1033,6 +1037,7 @@ public class SessionManager implements Listener {
 			s.getInstance().handlePlayerLogin(p);
 			s.hideSpectatorsFrom(p);
 		} else {
+			TownyFlightIntegration.disable(p);
 			resetPlayer(p, false);
 		}
 	}
@@ -1065,6 +1070,7 @@ public class SessionManager implements Listener {
 				s.getInstance().handlePlayerLogout(p);
 			}
 		}
+		TownyFlightIntegration.disable(p);
 	}
 
 	public static void resetPlayer(Player p, boolean clearInventory) {

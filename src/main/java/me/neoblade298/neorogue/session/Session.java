@@ -1122,6 +1122,7 @@ public class Session {
 	// Announces this lobby to the server with a clickable button. open = true means it auto-accepts
 	// (Click to Join); open = false is a freshly created lobby that requires requests (Click to Request to Join).
 	public void broadcastLobbyInvite(boolean open) {
+		if (!open && sessionType == SessionType.TUTORIAL) return;
 		Player hostPlayer = Bukkit.getPlayer(host);
 		if (hostPlayer == null) return;
 		String hostName = hostPlayer.getName();

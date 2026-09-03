@@ -2,7 +2,7 @@ name: NeoRogue
 main: me.neoblade298.neorogue.NeoRogue
 authors: [Ascheladd, FoPzl]
 depend: [NeoCore, Vault, AshEconomy, AshStore, Essentials, EssentialsSpawn]
-softdepend: [WorldEdit, PlaceholderAPI, MythicMobs]
+softdepend: [WorldEdit, PlaceholderAPI, MythicMobs, TownyFlight]
 version: 1.0
 api-version: 1.20
 commands:
