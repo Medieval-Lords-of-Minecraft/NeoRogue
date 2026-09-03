@@ -392,9 +392,21 @@ public class AchievementManager {
 			hoverText = hoverText.append(Component.newline())
 					.append(Component.text("Class: " + ec.getDisplay(), NamedTextColor.YELLOW));
 		}
-		List<Component> loreLines = progress != null
-				? progress.buildLoreLines()
-				: achievement.getDescription(0, mastery - 1);
+		List<Component> loreLines = new ArrayList<>();
+		loreLines.add(Component.text(
+				"Mastery: " + mastery + "/" + achievement.getMasteryThresholds().length,
+				NamedTextColor.GOLD));
+		int achievedProgress = progress != null
+				? progress.getProgress()
+				: achievement.getMasteryThresholds()[mastery - 1];
+		loreLines.addAll(achievement.getDescription(achievedProgress, mastery - 1));
+		if (progress != null) {
+			List<Component> objectiveLines = achievement.getObjectiveLines(progress);
+			if (!objectiveLines.isEmpty()) {
+				loreLines.add(Component.empty());
+				loreLines.addAll(objectiveLines);
+			}
+		}
 		for (Component line : loreLines) {
 			hoverText = hoverText.append(Component.newline()).append(line);
 		}

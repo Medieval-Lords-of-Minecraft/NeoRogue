@@ -13,6 +13,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.Cargo;
@@ -288,10 +289,10 @@ public class RunReward {
 			if (p != null) {
 				if (won) {
 					Util.msgRaw(p, "<gray>Total experience earned: <green>"
-							+ psd.getSessionStats().getExpEarned() + " exp");
+							+ FormatUtil.whole(psd.getSessionStats().getExpEarned()) + " exp");
 				}
 				else {
-					String expSummary = "</yellow> and <green>" + psd.getSessionStats().getExpEarned()
+					String expSummary = "</yellow> and <green>" + FormatUtil.whole(psd.getSessionStats().getExpEarned())
 							+ " exp</green>";
 					Util.msgRaw(p, "<gray>You earned <yellow>" + formatMoney(total) + expSummary
 							+ " for completing your run!");
@@ -493,7 +494,7 @@ public class RunReward {
 		EquipmentClass ec = psd.getPlayerClass();
 		int earned = psd.getSessionStats().getExpEarned();
 		lore.add(loreLine("<gray>Class: <white>" + ec.getDisplay()));
-		lore.add(loreLine("<gray>Total exp earned: <green>+" + earned));
+		lore.add(loreLine("<gray>Total exp earned: <green>+" + FormatUtil.whole(earned)));
 		if (!psd.getRunExpBoosts().isEmpty()) {
 			lore.add(Component.empty());
 			lore.add(loreLine("<gold>Exp boosts applied:"));
@@ -508,8 +509,8 @@ public class RunReward {
 			int level = pd.getLevel(ec);
 			int exp = pd.getExp(ec);
 			int req = PlayerData.getXpRequired(level);
-			lore.add(loreLine("<gold>" + ec.getDisplay() + " level <yellow>" + level + " <gray>(<white>" + exp
-					+ "<gray>/<white>" + req + "<gray>)"));
+			lore.add(loreLine("<gold>" + ec.getDisplay() + " level <yellow>" + level + " <gray>(<white>"
+					+ FormatUtil.whole(exp) + "<gray>/<white>" + FormatUtil.whole(req) + "<gray>)"));
 		}
 		return lore;
 	}
@@ -520,14 +521,11 @@ public class RunReward {
 	}
 
 	private static String formatWholeMoney(double amount) {
-		return String.valueOf(Math.round(amount));
+		return FormatUtil.whole(amount);
 	}
 
 	public static String formatMoney(double amount) {
-		if (economy != null) {
-			return economy.format(NeoRogue.inst().getName(), BigDecimal.valueOf(amount));
-		}
-		return String.valueOf(Math.round(amount));
+		return FormatUtil.whole(amount);
 	}
 
 	// Immutable breakdown of a single run's payout, used for both paying out and displaying finances.

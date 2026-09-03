@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -68,7 +69,8 @@ public class MainMenuInventory extends CoreInventory {
 		meta.displayName(Component.text("Stats", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Global Level: " + pd.getLevel(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
-		lore.add(Component.text("  Exp: " + pd.getExp() + "/" + PlayerData.getXpRequired(pd.getLevel()), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.text("  Exp: " + FormatUtil.whole(pd.getExp()) + "/"
+				+ FormatUtil.whole(PlayerData.getXpRequired(pd.getLevel())), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		RunStats.Winrate wr = pd.getRunStats().winrate(null, null, false, RunStats.PartyMode.COMBINED, RunStats.RunMode.COMBINED);
 		if (wr.hasRuns()) {
 			lore.add(Component.text("Winrate: " + pct.format(wr.rate() * 100) + "% (" + wr.wins + "/" + wr.total + ")", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
@@ -80,7 +82,7 @@ public class MainMenuInventory extends CoreInventory {
 			int required = PlayerData.getXpRequired(level);
 			int notoriety = pd.getMaxNotoriety(ec);
 			lore.add(Component.text(ec.getDisplay() + " Level: " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-			lore.add(Component.text("  Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+			lore.add(Component.text("  Exp: " + FormatUtil.whole(exp) + "/" + FormatUtil.whole(required), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			lore.add(Component.text("  Max Notoriety: " + notoriety, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 		}
 		lore.add(Component.empty());

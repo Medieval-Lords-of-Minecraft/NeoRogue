@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -95,7 +96,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 		int required = PlayerData.getXpRequired(level);
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
-		lore.add(Component.text("Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+		lore.add(Component.text("Exp: " + FormatUtil.whole(exp) + "/" + FormatUtil.whole(required), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 		if (available > 0) {
 			item.setAmount(Math.min(Math.max(available, 2), 64));
 			lore.add(Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",

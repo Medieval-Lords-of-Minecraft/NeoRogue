@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -53,7 +54,7 @@ public class CmdAdminSetExp extends Subcommand {
 		int amount = Integer.parseInt(args[0]);
 		pdata.setExp(ec, amount);
 		String category = ec == null ? "Global" : ec.getDisplay();
-		Util.msgRaw(s, "<green>Set " + category + " exp to " + amount + " for " + p.getName());
+		Util.msgRaw(s, "<green>Set " + category + " exp to " + FormatUtil.whole(amount) + " for " + p.getName());
 	}
 
 	private boolean isClassArg(String arg) {

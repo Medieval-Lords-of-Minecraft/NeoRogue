@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -125,7 +126,7 @@ public class SessionStatistics {
 		p.sendMessage(statLine("Healing Done", df.format(healingDone)));
 		p.sendMessage(statLine("Damage Barriered", df.format(damageBarriered)));
 		p.sendMessage(statLine("Statuses Applied", String.valueOf(statusesApplied)));
-		p.sendMessage(statLine("Exp Earned", String.valueOf(expEarned)));
+		p.sendMessage(statLine("Exp Earned", FormatUtil.whole(expEarned)));
 	}
 
 	// Builds the full list of stat lines used as item lore in the session stats inventory UI.
@@ -148,7 +149,7 @@ public class SessionStatistics {
 		lore.add(loreLine("Healing Done", df.format(healingDone), max != null && healingDone > 0 && healingDone >= max.healingDone));
 		lore.add(loreLine("Damage Barriered", df.format(damageBarriered), max != null && damageBarriered > 0 && damageBarriered >= max.damageBarriered));
 		lore.add(loreLine("Statuses Applied", String.valueOf(statusesApplied), max != null && statusesApplied > 0 && statusesApplied >= max.statusesApplied));
-		lore.add(loreLine("Exp Earned", String.valueOf(expEarned), max != null && expEarned > 0 && expEarned >= max.expEarned));
+		lore.add(loreLine("Exp Earned", FormatUtil.whole(expEarned), max != null && expEarned > 0 && expEarned >= max.expEarned));
 		return lore;
 	}
 

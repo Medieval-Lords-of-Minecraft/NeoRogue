@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.FormatUtil;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -80,7 +81,7 @@ public class AchievementsMenuInventory extends CoreInventory {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.lore(List.of(
 				Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE),
-				Component.text("Exp: " + exp + "/" + required, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)
+				Component.text("Exp: " + FormatUtil.whole(exp) + "/" + FormatUtil.whole(required), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)
 		));
 		item.setItemMeta(meta);
 		return item;

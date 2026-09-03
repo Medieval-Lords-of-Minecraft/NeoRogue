@@ -103,13 +103,32 @@ public class AchievementProgress {
 		lines.add(Component.text("Mastery: " + mastery + "/" + maxMastery, NamedTextColor.GOLD));
 		lines.addAll(achievement.getProgressSummaryLines(this));
 		lines.add(Component.empty());
-		lines.addAll(achievement.getDescription(progress, mastery));
+		for (int completedMastery = 0; completedMastery < mastery; completedMastery++) {
+			addMasteryDescription(lines, completedMastery, true);
+		}
+		if (!isComplete()) {
+			if (mastery > 0) lines.add(Component.empty());
+			addMasteryDescription(lines, mastery, false);
+		}
 		List<Component> objectiveLines = achievement.getObjectiveLines(this);
 		if (!objectiveLines.isEmpty()) {
 			lines.add(Component.empty());
 			lines.addAll(objectiveLines);
 		}
 		return lines;
+	}
+
+	private void addMasteryDescription(List<Component> lines, int mastery, boolean completed) {
+		List<Component> description = achievement.getDescription(progress, mastery);
+		Component label = Component.text("Mastery " + (mastery + 1) + ": ",
+				completed ? NamedTextColor.DARK_GRAY : NamedTextColor.YELLOW);
+		for (int i = 0; i < description.size(); i++) {
+			Component line = i == 0 ? label.append(description.get(i)) : description.get(i);
+			if (completed) {
+				line = line.color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.STRIKETHROUGH);
+			}
+			lines.add(line);
+		}
 	}
 
 	private static final Material[] MASTERY_MATS = {
