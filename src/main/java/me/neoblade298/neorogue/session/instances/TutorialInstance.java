@@ -48,14 +48,14 @@ public class TutorialInstance extends EditInventoryInstance {
 		this(s, List.of(
 				new TutorialStage(
 						Component.text("Equipment Details", NamedTextColor.GOLD),
-						Component.text("You can view details of any equipment with right click. Open your inventory and right click an equipment!"),
-						Component.text("Success! You opened an equipment's details.", NamedTextColor.GREEN),
+						Component.text("Open your inventory and right click an equipment to proceed!"),
+						Component.text("Success!", NamedTextColor.GREEN),
 						SessionTrigger.OPEN_GLOSSARY,
 						input -> true),
 				new TutorialStage(
 						Component.text("Tutorial Book", NamedTextColor.GOLD),
-						Component.text("The tutorial book is always available in in your inventory during runs (the book & quill). Open it to move on!"),
-						Component.text("Success! You opened the tutorial book.", NamedTextColor.GREEN),
+						Component.text("Find and open the tutorial (book & quill) in your inventory to proceed!"),
+						Component.text("Success!", NamedTextColor.GREEN),
 						SessionTrigger.OPEN_TUTORIAL_BOOK,
 						input -> true)));
 	}
@@ -105,7 +105,14 @@ public class TutorialInstance extends EditInventoryInstance {
 		if (player != null) player.sendMessage(stages.get(currentStage).getSuccessMessage());
 		int nextStage = currentStage + 1;
 		playerStages.put(uuid, nextStage);
-		if (nextStage < stages.size()) registerStageTrigger(data);
+		if (nextStage < stages.size()) {
+			registerStageTrigger(data);
+			Bukkit.getScheduler().runTask(NeoRogue.inst(), () -> {
+				if (s.getInstance() != this || playerStages.getOrDefault(uuid, stages.size()) != nextStage) return;
+				Player currentPlayer = Bukkit.getPlayer(uuid);
+				if (currentPlayer != null) showDialog(currentPlayer, stages.get(nextStage));
+			});
+		}
 		s.launchFireworks();
 		updateBoardLines();
 		updateActionBar();
