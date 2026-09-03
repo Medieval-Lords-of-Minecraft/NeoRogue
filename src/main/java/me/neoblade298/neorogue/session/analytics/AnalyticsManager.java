@@ -244,12 +244,10 @@ public class AnalyticsManager {
 		}
 	}
 
-	private static void executeAnalyticsBatch(PreparedStatement ps, String table, int rows) throws SQLException {
+	private static void executeAnalyticsBatch(PreparedStatement ps) throws SQLException {
 		try (ps) {
 			ps.executeBatch();
 		}
-		Bukkit.getLogger().info("[NeoRogue Analytics] " + table + ": +" + rows
-				+ (rows == 1 ? " row" : " rows"));
 	}
 
 	public static void recordFight(FightSnapshot snap) {
@@ -292,7 +290,7 @@ public class AnalyticsManager {
 				.addValue("partyDamageDealt", snap.partyDamageDealt)
 				.addValue("partyDamageTaken", snap.partyDamageTaken)
 				.addValue("mobs", snap.mobs);
-		executeAnalyticsBatch(sql.build(con), "neorogue_analytics_fights", 1);
+		executeAnalyticsBatch(sql.build(con));
 	}
 
 	private static void writeEquipment(Connection con, FightSnapshot snap) throws SQLException {
@@ -317,7 +315,7 @@ public class AnalyticsManager {
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_fight_equipment", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 
@@ -355,7 +353,7 @@ public class AnalyticsManager {
 				.addValue("playtime", snap.playtime)
 				.addValue("competitive", snap.competitive ? 1 : 0)
 				.addValue("won", snap.won ? 1 : 0);
-		executeAnalyticsBatch(sql.build(con), "neorogue_analytics_runs", 1);
+		executeAnalyticsBatch(sql.build(con));
 	}
 
 	private static void writeRunPlayers(Connection con, RunSnapshot snap) throws SQLException {
@@ -368,7 +366,7 @@ public class AnalyticsManager {
 					.addValue("balanceVersion", snap.balanceVersion)
 					.addRow();
 		}
-		executeAnalyticsBatch(sql.build(con), "neorogue_analytics_run_players", sql.getRowCount());
+		executeAnalyticsBatch(sql.build(con));
 	}
 
 	public static void recordOffer(OfferSnapshot snap) {
@@ -428,7 +426,7 @@ public class AnalyticsManager {
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_chance_choices", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 
@@ -458,7 +456,7 @@ public class AnalyticsManager {
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_equipment_offers", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 
@@ -482,7 +480,7 @@ public class AnalyticsManager {
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_fight_mobs", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 
@@ -504,7 +502,7 @@ public class AnalyticsManager {
 			}
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_fight_mob_damage", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 
@@ -523,7 +521,7 @@ public class AnalyticsManager {
 					.addRow();
 		}
 		if (sql.getRowCount() > 0) {
-			executeAnalyticsBatch(sql.build(con), "neorogue_analytics_fight_equipment_status", sql.getRowCount());
+			executeAnalyticsBatch(sql.build(con));
 		}
 	}
 }
