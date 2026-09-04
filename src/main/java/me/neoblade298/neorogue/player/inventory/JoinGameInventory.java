@@ -27,9 +27,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class JoinGameInventory extends CoreInventory {
 	private static final int BACK = 0;
+	private static final int LOBBY_PREVIOUS = 2, LOBBY_NEXT = 3;
+	private static final int SESSION_PREVIOUS = 5, SESSION_NEXT = 6;
+	private static final int PAGE_SIZE = 9;
 	// Lobbies occupy the middle row (9-17); started sessions occupy the bottom row (18-26).
 	private final HashMap<Integer, Session> lobbySlots = new HashMap<>();
 	private final HashMap<Integer, Session> sessionSlots = new HashMap<>();
+	private int lobbyPage;
+	private int sessionPage;
 
 	public JoinGameInventory(Player p) {
 		super(p, Bukkit.createInventory(p, 27, Component.text("Join Game", NamedTextColor.DARK_RED)));
@@ -38,30 +43,66 @@ public class JoinGameInventory extends CoreInventory {
 
 	private void setupInventory() {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		ItemStack[] contents = inv.getContents();
+		inv.clear();
+		lobbySlots.clear();
+		sessionSlots.clear();
+		ItemStack[] contents = new ItemStack[inv.getSize()];
 		contents[BACK] = CoreInventory.createButton(Material.BARRIER, Component.text("Back", NamedTextColor.RED));
 
-		int lobbySlot = 9, sessionSlot = 18;
+		List<Session> lobbies = new ArrayList<>();
+		List<Session> sessions = new ArrayList<>();
 		for (Session session : SessionManager.getSessions()) {
-			boolean isLobby = session.getInstance() instanceof LobbyInstance;
-			if (isLobby) {
-				if (lobbySlot > 17) continue;
-				contents[lobbySlot] = buildSessionHead(session, true);
-				lobbySlots.put(lobbySlot, session);
-				lobbySlot++;
-			}
-			else {
-				if (sessionSlot > 26) continue;
-				contents[sessionSlot] = buildSessionHead(session, false);
-				sessionSlots.put(sessionSlot, session);
-				sessionSlot++;
-			}
+			if (session.getInstance() instanceof LobbyInstance) lobbies.add(session);
+			else sessions.add(session);
 		}
 
-		if (lobbySlots.isEmpty()) contents[13] = placeholder("No open lobbies");
-		if (sessionSlots.isEmpty()) contents[22] = placeholder("No active games");
+		lobbyPage = clampPage(lobbyPage, lobbies.size());
+		sessionPage = clampPage(sessionPage, sessions.size());
+		fillPage(contents, lobbies, lobbyPage, 9, true, lobbySlots);
+		fillPage(contents, sessions, sessionPage, 18, false, sessionSlots);
+
+		int lobbyPages = totalPages(lobbies.size());
+		if (lobbyPage > 0) contents[LOBBY_PREVIOUS] = pageButton(false, "Lobby", lobbyPage, lobbyPages);
+		if (lobbyPage < lobbyPages - 1) contents[LOBBY_NEXT] = pageButton(true, "Lobby", lobbyPage, lobbyPages);
+
+		int sessionPages = totalPages(sessions.size());
+		if (sessionPage > 0) contents[SESSION_PREVIOUS] = pageButton(false, "Active Games", sessionPage, sessionPages);
+		if (sessionPage < sessionPages - 1) contents[SESSION_NEXT] = pageButton(true, "Active Games", sessionPage, sessionPages);
+
+		if (lobbies.isEmpty()) contents[13] = placeholder("No open lobbies");
+		if (sessions.isEmpty()) contents[22] = placeholder("No active games");
 
 		inv.setContents(contents);
+	}
+
+	private void fillPage(ItemStack[] contents, List<Session> sessions, int page, int firstSlot,
+			boolean isLobby, HashMap<Integer, Session> slots) {
+		int start = page * PAGE_SIZE;
+		for (int i = 0; i < PAGE_SIZE && start + i < sessions.size(); i++) {
+			int slot = firstSlot + i;
+			Session session = sessions.get(start + i);
+			contents[slot] = buildSessionHead(session, isLobby);
+			slots.put(slot, session);
+		}
+	}
+
+	private int clampPage(int page, int entryCount) {
+		return Math.min(page, totalPages(entryCount) - 1);
+	}
+
+	private int totalPages(int entryCount) {
+		return Math.max(1, (entryCount + PAGE_SIZE - 1) / PAGE_SIZE);
+	}
+
+	private ItemStack pageButton(boolean next, String category, int page, int totalPages) {
+		String direction = next ? "Next" : "Previous";
+		String head = next ? ArtifactsInventory.NEXT_HEAD : ArtifactsInventory.PREV_HEAD;
+		ItemStack item = CoreInventory.createButton(head,
+				Component.text(direction + " " + category + " Page", NamedTextColor.YELLOW));
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(List.of(Component.text("Page " + (page + 1) + " / " + totalPages, NamedTextColor.GRAY)));
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private ItemStack buildSessionHead(Session session, boolean isLobby) {
@@ -119,6 +160,26 @@ public class JoinGameInventory extends CoreInventory {
 		int slot = e.getSlot();
 		if (slot == BACK) {
 			new MainMenuInventory(p);
+			return;
+		}
+		if (slot == LOBBY_PREVIOUS && lobbyPage > 0) {
+			lobbyPage--;
+			setupInventory();
+			return;
+		}
+		if (slot == LOBBY_NEXT) {
+			lobbyPage++;
+			setupInventory();
+			return;
+		}
+		if (slot == SESSION_PREVIOUS && sessionPage > 0) {
+			sessionPage--;
+			setupInventory();
+			return;
+		}
+		if (slot == SESSION_NEXT) {
+			sessionPage++;
+			setupInventory();
 			return;
 		}
 

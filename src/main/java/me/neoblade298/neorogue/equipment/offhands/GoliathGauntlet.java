@@ -76,7 +76,7 @@ public class GoliathGauntlet extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK_HIT,
+		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT,
 				new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			RightClickHitEvent ev = (RightClickHitEvent) in;
 			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
