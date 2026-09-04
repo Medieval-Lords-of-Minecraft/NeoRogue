@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.instances.LobbyInstance;
@@ -72,8 +73,8 @@ public class JoinGameInventory extends CoreInventory {
 		meta.displayName(Component.text(session.getName(), NamedTextColor.GOLD));
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Host: " + (hostName != null ? hostName : "Unknown"), NamedTextColor.GRAY));
-		lore.add(Component.text("Players: " + session.getParty().size(), NamedTextColor.GRAY));
-		lore.add(Component.text("Regions Completed: " + session.getRegionsCompleted(), NamedTextColor.GRAY));
+		lore.add(Component.text("Region: " + session.getRegion().getType().getDisplay(), NamedTextColor.GRAY));
+		lore.add(Component.text("Nodes visited: " + session.getNodesVisited(), NamedTextColor.GRAY));
 		lore.add(Component.empty());
 		if (isLobby) {
 			lore.add(Component.text("Open Lobby", NamedTextColor.GREEN));
@@ -83,6 +84,18 @@ public class JoinGameInventory extends CoreInventory {
 		else {
 			lore.add(Component.text("In Progress", NamedTextColor.RED));
 			lore.add(Component.text("Click to spectate", NamedTextColor.YELLOW));
+		}
+		lore.add(Component.empty());
+		lore.add(Component.text("Players (" + session.getParty().size() + ")", NamedTextColor.GRAY));
+		List<PlayerSessionData> players = new ArrayList<>(session.getParty().values());
+		players.sort((first, second) -> {
+			boolean firstIsHost = first.getUniqueId().equals(hostUuid);
+			boolean secondIsHost = second.getUniqueId().equals(hostUuid);
+			if (firstIsHost != secondIsHost) return firstIsHost ? -1 : 1;
+			return first.getData().getDisplay().compareToIgnoreCase(second.getData().getDisplay());
+		});
+		for (PlayerSessionData player : players) {
+			lore.add(Component.text("- " + player.getData().getDisplay(), NamedTextColor.WHITE));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);

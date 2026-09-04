@@ -42,9 +42,6 @@ public class FrozenWastesMap extends Map {
 		placeFirst(firstPiece, true);
 		// Record height for first piece's chunks (Y=0)
 		recordChunkHeights(getPieces().get(0), 0);
-		MapPieceInstance firstInst = getPieces().get(0);
-		Bukkit.getLogger().info("[FrozenWastes] Piece 0: " + firstPiece.getId()
-				+ " at (" + firstInst.getX() + "," + firstInst.getZ() + ") Y=0 [direct/first]");
 
 		// Place subsequent pieces
 		int totalAttempts = avail.size() + used.size();
@@ -77,10 +74,6 @@ public class FrozenWastesMap extends Map {
 
 		// Scan unused entrances for additional path connections
 		scanUnusedEntrancesForPaths();
-
-		Bukkit.getLogger().info("[FrozenWastes] Placed " + getPieces().size() + " pieces, "
-				+ pathConnectedEntrances.size() + " path connections, "
-				+ entrances.size() + " unused entrances");
 	}
 
 	/**
@@ -118,8 +111,6 @@ public class FrozenWastesMap extends Map {
 
 		placePiece(chosen, false);
 		recordChunkHeights(chosen, finalY);
-		Bukkit.getLogger().info("[FrozenWastes] Piece: " + piece.getId()
-				+ " at (" + chosen.getX() + "," + chosen.getZ() + ") Y=" + finalY + " [direct]");
 		return true;
 	}
 
@@ -191,12 +182,6 @@ public class FrozenWastesMap extends Map {
 				// Record the path connection between the available entrance and the piece's entrance
 				MapEntrance placedEntrance = potential.clone().applySettings(chosen);
 				pathConnectedEntrances.add(new MapEntrance[] { available, placedEntrance });
-				Bukkit.getLogger().info("[FrozenWastes] Piece: " + piece.getId()
-						+ " at (" + pieceX + "," + pieceZ + ") Y=" + yOffset + " [path]");
-				Bukkit.getLogger().info("[FrozenWastes]   Path: ("
-						+ (int) available.getX() + "," + (int) available.getZ() + " " + available.getDirection()
-						+ ") -> (" + (int) placedEntrance.getX() + "," + (int) placedEntrance.getZ()
-						+ " " + placedEntrance.getDirection() + ")");
 
 				// Remove the original available entrance since it's now path-connected
 				entrances.remove(available);
@@ -241,9 +226,6 @@ public class FrozenWastesMap extends Map {
 
 				if (oppositeDirs && ((dx <= 1 && dz == 0) || (dx == 0 && dz <= 1))) {
 					pathConnectedEntrances.add(new MapEntrance[] { a, b });
-					Bukkit.getLogger().info("[FrozenWastes]   Scan path: ("
-							+ (int) a.getX() + "," + (int) a.getZ() + " " + a.getDirection()
-							+ ") -> (" + (int) b.getX() + "," + (int) b.getZ() + " " + b.getDirection() + ")");
 					used.add(a);
 					used.add(b);
 					break;

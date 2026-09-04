@@ -31,7 +31,7 @@ public class TemporaryHealth extends Artifact {
 			PlayerSessionData sdata = data.getSessionData();
 			sdata.removeArtifact(this);
 			if (ai.getAmount() <= 0) {
-				sdata.healPercent(0.30);
+				data.addHealth(data.getMaxHealth() * 0.30, this);
 			}
 			return TriggerResult.remove();
 		});
