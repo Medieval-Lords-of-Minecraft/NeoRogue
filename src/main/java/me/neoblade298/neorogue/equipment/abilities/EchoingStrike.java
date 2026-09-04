@@ -113,6 +113,6 @@ public class EchoingStrike extends Equipment {
 				"On cast, your next basic attack deals an additional "
 						+ GlossaryTag.PIERCING.tag(this, IMMEDIATE_DAMAGE) + " damage, then deals "
 						+ GlossaryTag.PIERCING.tag(this, delayedDamage) + " damage to the same enemy "
-						+ DescUtil.duration(DELAY_SECONDS) + " later.");
+						+ DescUtil.val(DELAY_SECONDS + "s") + " later.");
 	}
 }

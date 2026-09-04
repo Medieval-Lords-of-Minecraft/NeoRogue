@@ -1,9 +1,14 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -23,6 +28,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class SmokyDagger extends Equipment {
 	private static final String ID = "SmokyDagger";
 	private static final TargetProperties TARGETS = TargetProperties.radius(20, false, TargetType.ENEMY);
+	private static final ParticleContainer STRIKE = new ParticleContainer(Particle.DUST)
+			.dustOptions(new Particle.DustOptions(Color.fromRGB(58, 52, 68), 0.8F))
+			.count(1).spread(0, 0).speed(0);
+	private static final ParticleContainer IMPACT = new ParticleContainer(Particle.SMOKE)
+			.count(8).spread(0.1, 0.1).speed(0.01);
 	private int damage;
 
 	public SmokyDagger(boolean isUpgraded) {
@@ -52,6 +62,10 @@ public class SmokyDagger extends Equipment {
 		Player player = data.getPlayer();
 		LivingEntity target = TargetHelper.getNearest(player, TARGETS);
 		if (target == null) return;
+		ParticleUtil.drawLine(player, STRIKE, player.getLocation().add(0, 1, 0),
+				target.getLocation().add(0, target.getHeight() * 0.5, 0), 0.35);
+		IMPACT.play(player, target.getLocation().add(0, target.getHeight() * 0.5, 0));
+		Sounds.attackSweep.play(player, target);
 		FightInstance.dealDamage(data, DamageType.DARK, damage, target, DamageStatTracker.of(id + slot, this));
 	}
 

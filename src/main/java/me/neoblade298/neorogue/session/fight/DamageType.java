@@ -33,7 +33,7 @@ public enum DamageType {
 	ELECTRIFIED("Electrified", StatusType.ELECTRIFIED.tag,
 		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	THORNS("Thorns", StatusType.THORNS.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.STATUS, DamageCategory.THORNS, DamageCategory.ALL)),
 	REFLECT("Reflect", StatusType.REFLECT.tag,
 		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
 	FALL("Fall", "<white>Fall</white>",

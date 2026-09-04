@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -74,6 +75,7 @@ public class Shockwave extends Equipment {
 			Player player = data.getPlayer();
 			Vector direction = player.getLocation().getDirection().setY(0);
 			if (direction.lengthSquared() == 0) return TriggerResult.keep();
+			Sounds.explode.play(player, player);
 			LAUNCH_BURST.play(player, player.getLocation().add(0, 0.15, 0));
 			LAUNCH_SOUND.play(player, player);
 			projectiles.start(data, player.getLocation().add(0, PROJECTILE_Y, 0), direction.normalize());

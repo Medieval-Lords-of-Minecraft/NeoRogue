@@ -18,6 +18,7 @@ public enum DamageCategory {
 	POISON("Poison", GlossaryTag.POISON),
 	BURN("Burn", GlossaryTag.BURN),
 	STATUS("Status", null),
+	THORNS("Thorns", GlossaryTag.THORNS),
 	OTHER("Other", null),
 	ALL("All", null);
 
