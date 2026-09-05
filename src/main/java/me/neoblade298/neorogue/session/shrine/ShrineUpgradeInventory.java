@@ -90,6 +90,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		else {
 			e.setCancelled(true);
 			ItemStack item = e.getCurrentItem();
+			if (item == null || item.getType().isAir() || item.getAmount() <= 0) return;
 			String id = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
 			if (id.isBlank()) {
 				Util.displayError(p, "Invalid upgrade!");

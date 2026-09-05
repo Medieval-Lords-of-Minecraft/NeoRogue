@@ -201,7 +201,8 @@ public abstract class FightInstance extends Instance {
 	public void updateSpectatorLines() {
 		spectatorLines = new ArrayList<String>(9);
 		for (Player p : s.getOnlinePlayers()) {
-			spectatorLines.add(createHealthBar(userData.get(p.getUniqueId())));
+			PlayerFightData pdata = userData.get(p.getUniqueId());
+			if (pdata != null) spectatorLines.add(createHealthBar(pdata));
 		}
 	}
 
@@ -224,7 +225,7 @@ public abstract class FightInstance extends Instance {
 	}
 
 	private static String createHealthBar(PlayerFightData pfd) {
-		if (pfd != null && pfd.isDead()) {
+		if (pfd.isDead()) {
 			return "&c&m" + pfd.getSessionData().getData().getDisplay();
 		}
 		if (pfd.getPlayer() == null) {
@@ -1042,6 +1043,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
+		if (data == null) return;
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		try {
 			StatusType st = StatusType.valueOf(id);
@@ -1057,6 +1059,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
+		if (data == null) return;
 		data.applyStatus(s, applier, stacks, ticks, source);
 	}
 	
@@ -1066,6 +1069,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
+		if (data == null) return;
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		data.applyStatus(type, fdApplier, stacks, ticks, source);
 	}
@@ -1076,6 +1080,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void applyStatus(Entity target, StatusType type, FightData applier, int stacks, int ticks, Equipment source) {
 		FightData data = getFightData(target.getUniqueId());
+		if (data == null) return;
 		data.applyStatus(type, applier, stacks, ticks, source);
 	}
 	
@@ -1089,6 +1094,7 @@ public abstract class FightInstance extends Instance {
 			Entity target, GenericStatusType type, String id, Entity applier, int stacks, int ticks, Equipment source
 	) {
 		FightData data = getFightData(target.getUniqueId());
+		if (data == null) return;
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		data.applyStatus(Status.createByGenericType(type, id, data), fdApplier, stacks, ticks, source);
 	}
