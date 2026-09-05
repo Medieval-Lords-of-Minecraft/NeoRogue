@@ -6,13 +6,15 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.equipment.ActionMeta;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -47,20 +49,24 @@ public class EnGarde extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		ActionMeta stance = new ActionMeta();
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			Player player = data.getPlayer();
-			if (!player.isSneaking()) {
-				stance.setBool(false);
+		String taskId = id + slot;
+		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
+			PlayerToggleSneakEvent event = (PlayerToggleSneakEvent) in;
+			if (!event.isSneaking()) {
+				data.removeAndCancelTask(taskId);
 				return TriggerResult.keep();
 			}
-			if (!stance.getBool()) {
-				STANCE_RING.play(STANCE_PARTICLE, player.getLocation().add(0, 0.1, 0), LocalAxes.xz(), null);
-				STANCE_SOUND.play(player, player);
-				stance.setBool(true);
-			}
-			data.applyStatus(StatusType.STRENGTH, data, strength, DURATION_TICKS, this);
-			data.addSimpleShield(player.getUniqueId(), shields, DURATION_TICKS, this);
+
+			data.addTask(taskId, new BukkitRunnable() {
+				@Override
+				public void run() {
+					Player player = data.getPlayer();
+					STANCE_RING.play(STANCE_PARTICLE, player.getLocation().add(0, 0.1, 0), LocalAxes.xz(), null);
+					STANCE_SOUND.play(player, player);
+					data.applyStatus(StatusType.STRENGTH, data, strength, DURATION_TICKS, EnGarde.this);
+					data.addSimpleShield(player.getUniqueId(), shields, DURATION_TICKS, EnGarde.this);
+				}
+			}.runTaskTimer(NeoRogue.inst(), 40L, 40L));
 			return TriggerResult.keep();
 		});
 	}
@@ -68,7 +74,7 @@ public class EnGarde extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BARS,
-				GlossaryTag.PASSIVE.tag(this) + ". While crouching, every second gain "
+				GlossaryTag.PASSIVE.tag(this) + ". While crouching, every 2 seconds gain "
 						+ GlossaryTag.STRENGTH.tag(this, strength) + " " + DescUtil.duration(DURATION_SECONDS)
 						+ " and " + GlossaryTag.SHIELDS.tag(this, shields) + " "
 						+ DescUtil.duration(DURATION_SECONDS) + ".");

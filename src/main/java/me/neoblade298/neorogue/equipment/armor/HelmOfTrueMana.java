@@ -19,13 +19,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 
 public class HelmOfTrueMana extends Equipment {
 	private static final String ID = "HelmOfTrueMana";
-	private static final int COOLDOWN_THRESHOLD = 7, COOLDOWN_REDUCTION = 30;
+	private static final int COOLDOWN_THRESHOLD = 7, COOLDOWN_REDUCTION = 30, SHIELD_DURATION = 6;
 	private int shields;
 
 	public HelmOfTrueMana(boolean isUpgraded) {
 		super(ID, "Helm of True Mana", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		shields = isUpgraded ? 9 : 6;
+		shields = isUpgraded ? 6 : 4;
 	}
 
 	public static Equipment get() {
@@ -53,7 +53,7 @@ public class HelmOfTrueMana extends Equipment {
 			if (ev.getInstance().getEquipment().getType() != EquipmentType.ABILITY) return TriggerResult.keep();
 
 			Player player = data.getPlayer();
-			data.addPermanentShield(player.getUniqueId(), shields, this);
+			data.addSimpleShield(player.getUniqueId(), shields, SHIELD_DURATION * 20, this);
 			return TriggerResult.keep();
 		});
 	}
@@ -62,6 +62,7 @@ public class HelmOfTrueMana extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_HELMET, "Reduce ability cooldowns over "
 				+ DescUtil.val(COOLDOWN_THRESHOLD + "s") + " by " + DescUtil.val(COOLDOWN_REDUCTION + "%")
-				+ ". Casting an ability grants " + GlossaryTag.SHIELDS.tag(this, shields) + ".");
+				+ ". Casting an ability grants " + GlossaryTag.SHIELDS.tag(this, shields) + " "
+				+ DescUtil.duration(SHIELD_DURATION) + ".");
 	}
 }

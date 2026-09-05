@@ -42,7 +42,7 @@ public class SmokeBomb extends Equipment {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 12, 0));
 				properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
-				delay = isUpgraded ? 3 : 1;
+				delay = isUpgraded ? 1 : 3;
 		shields = isUpgraded ? 5 : 3;
 	}
 
