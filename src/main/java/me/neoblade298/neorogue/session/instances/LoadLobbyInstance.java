@@ -58,6 +58,8 @@ public class LoadLobbyInstance extends LobbyInstance {
             SessionManager.endSession(s);
             return;
         }
+		PlayerSessionData hostData = s.getParty().get(host);
+		if (hostData != null) hostData.syncHealth();
         updateBoardLines();
         notifyPartyToJoin();
     }
@@ -198,6 +200,8 @@ public class LoadLobbyInstance extends LobbyInstance {
         inLobby.add(p.getUniqueId());
 		p.setGameMode(GameMode.SURVIVAL);
 		SessionManager.addToSession(p.getUniqueId(), this.s);
+        PlayerSessionData data = s.getData(p.getUniqueId());
+        if (data != null) data.syncHealth();
 		p.teleport(spawn);
 		displayInfo(p);
 		TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)

@@ -124,7 +124,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		super(s, uuid);
 		attributes = new PlayerAttributeController(uuid);
-		data = PlayerManager.getPlayerData(uuid);
+		data = PlayerManager.getOrLoadPlayerData(Bukkit.getOfflinePlayer(uuid));
+		if (data == null) throw new SQLException("Failed to load player data for session member " + uuid);
 
 		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
@@ -158,7 +159,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		loadRunCargoFromSQL();
 		loadRunExpBoostsFromSQL();
 		loadRunCurrencyBoostsFromSQL();
-		initialize();
+		initialize(false);
 	}
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
@@ -232,14 +233,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			accessorySlots = Math.max(0, accessorySlots - 1);
 			armorSlots = Math.max(0, armorSlots - 1);
 		}
-		initialize();
-		data.getPlayer().setHealth(maxHealth);
+		initialize(true);
 	}
 
-	private void initialize() {
-		data.getPlayer().setHealthScaled(true);
-		attributes.setBaseValue(Attribute.MAX_HEALTH, maxHealth);
-		data.getPlayer().setHealth(maxHealth);
+	private void initialize(boolean syncPlayer) {
+		if (syncPlayer) syncHealth();
 		setupArtifacts();
 		updateEquipmentLimits();
 		updateBoardLines();
@@ -259,7 +257,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void cleanup() {
-		data.getPlayer().setHealthScaled(false);
+		Player player = getPlayer();
+		if (player != null) player.setHealthScaled(false);
 		attributes.restore();
 	}
 
@@ -1268,7 +1267,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void syncHealth() {
-		getPlayer().setHealth(this.health);
+		Player player = getPlayer();
+		if (player == null) return;
+		player.setHealthScaled(true);
+		attributes.setBaseValue(Attribute.MAX_HEALTH, this.maxHealth);
+		player.setHealth(Math.min(this.health, this.maxHealth));
 	}
 
 	public void setHealth(double health) {
