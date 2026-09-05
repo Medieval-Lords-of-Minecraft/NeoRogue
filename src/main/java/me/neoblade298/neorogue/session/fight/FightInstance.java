@@ -531,7 +531,7 @@ public abstract class FightInstance extends Instance {
 		// Prevent double-resolution: if the fight was already resolved (e.g. the last
 		// player died on the same tick the final mob was killed), don't fire a win.
 		if (!isActive) return;
-		for (PlayerFightData data : userData.values()) {
+		for (PlayerFightData data : players) {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
 		isActive = false;
