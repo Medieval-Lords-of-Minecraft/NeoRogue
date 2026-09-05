@@ -1140,6 +1140,8 @@ public class Session {
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			// Skip players already in a session; they can't join anyway
 			if (SessionManager.getSession(online) != null) continue;
+			PlayerData data = PlayerManager.getPlayerData(online.getUniqueId());
+			if (data == null || !data.hasFlag(PlayerData.FLAG_PLAYED_BEFORE)) continue;
 			online.sendMessage(msg);
 		}
 	}

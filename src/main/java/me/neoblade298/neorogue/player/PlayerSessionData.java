@@ -237,10 +237,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	private void initialize(boolean syncPlayer) {
-		if (syncPlayer) syncHealth();
 		setupArtifacts();
 		updateEquipmentLimits();
 		updateBoardLines();
+		if (syncPlayer) activatePlayer();
+	}
+
+	public void activatePlayer() {
+		syncHealth();
 		AchievementManager.registerSessionAchievements(s, this);
 	}
 
@@ -1430,14 +1434,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void save(Connection con) {
 		UUID host = s.getHost();
-		String uuid = data.getPlayer().getUniqueId().toString();
+		String uuid = this.uuid.toString();
 		int saveSlot = s.getSaveSlot();
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
 					.addValue("host", host.toString())
 					.addValue("slot", saveSlot)
 					.addValue("uuid", uuid)
-					.addValue("display", ((TextComponent) data.getPlayer().displayName()).content())
+					.addValue("display", data.getDisplay())
 					.addValue("playerClass", ec.name())
 					.addValue("maxHealth", maxHealth)
 					.addValue("maxMana", maxMana)
