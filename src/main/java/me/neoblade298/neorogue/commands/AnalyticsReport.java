@@ -39,7 +39,7 @@ public class AnalyticsReport {
 	private static final int LEADERBOARD_LIMIT = 10;
 	private static final String LOW_SAMPLE_MARKER = " <red>!</red>";
 	public static final List<String> EQUIPMENT_METRIC_KEYS = List.of(
-			"DAMAGE", "BUFF", "MITIGATED", "SHIELDS", "HEALING", "STATUS", "WINRATE");
+			"DAMAGE", "BUFF", "MITIGATED", "SHIELDS", "HEALING", "STATUS", "WINRATE", "PICKRATE");
 
 	public enum EquipmentMetric {
 		DAMAGE("damage", "fe.damageDealt", "Damage", "Highest damage", "Lowest damage", ""),
@@ -48,7 +48,8 @@ public class AnalyticsReport {
 		SHIELDS("shields", "fe.shieldsApplied", "Shields", "Highest shields applied", "Lowest shields applied", ""),
 		HEALING("healing", "fe.healingDone", "Healing", "Highest healing", "Lowest healing", ""),
 		STATUS("status", "fe.statusTotal", "Status", "Highest status stacks", "Lowest status stacks", ""),
-		WINRATE("winrate", "fe.outcome", "Winrate", "Highest winrate", "Lowest winrate", "%");
+		WINRATE("winrate", "fe.outcome", "Winrate", "Highest winrate", "Lowest winrate", "%"),
+		PICKRATE("pickrate", null, "Pickrate", "Most picked", "Least picked", "%");
 
 		private final String key, column, display, highLabel, lowLabel, suffix;
 
@@ -568,15 +569,14 @@ public class AnalyticsReport {
 		}
 	}
 
-	// Equipment pickrate leaderboard (optionally filtered to a single offer source: SHOP or REWARD).
-	public static void pickrate(CommandSender s, int version, String source, String eqClass, String sortBy,
-			AnalyticsFilters filters) {
+	// Equipment pickrate leaderboard using offer-level filters.
+	public static void equipmentPickrate(CommandSender s, int version, String sortBy, AnalyticsFilters filters) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				ArrayList<String> lines = new ArrayList<String>();
 				try (Connection con = SQLManager.getConnection("NeoRogue")) {
-					queryLeaderboard(con, version, source, eqClass, sortBy, filters, lines);
+					queryLeaderboard(con, version, sortBy, filters, lines);
 					addReportMeta(lines, filters);
 				}
 				catch (SQLException ex) {
@@ -588,10 +588,8 @@ public class AnalyticsReport {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msgRaw(s, "<gold>=== Pickrate Leaderboard (balance v" + version
-								+ (source != null ? ", " + source : "")
-								+ (eqClass != null ? ", " + eqClass : "")
-								+ (sortBy != null ? ", sorted by " + sortBy : "") + ") ===");
+						Util.msgRaw(s, "<gold>=== Equipment Pickrate (balance v" + version + ", "
+								+ filters.summary() + (sortBy.equals("class") ? ", sorted by class" : "") + ") ===");
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No offers recorded.");
 							return;
@@ -599,10 +597,8 @@ public class AnalyticsReport {
 						for (String line : lines) {
 							Util.msgRaw(s, line);
 						}
-						String baseCommand = "/nrlytics pickrate";
-						if (source != null) baseCommand += " " + source;
-						if (eqClass != null) baseCommand += " " + eqClass;
-						if (eqClass != null && sortBy != null) baseCommand += " " + sortBy;
+						String baseCommand = "/nrlytics equipment metric=pickrate";
+						if (sortBy.equals("class")) baseCommand += " sort=class";
 						sendPageControls(s, baseCommand, filters);
 					}
 				}.runTask(NeoRogue.inst());
@@ -610,8 +606,8 @@ public class AnalyticsReport {
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
-	private static void queryLeaderboard(Connection con, int version, String source, String eqClass, String sortBy,
-			AnalyticsFilters filters, ArrayList<String> lines)
+	private static void queryLeaderboard(Connection con, int version, String sortBy, AnalyticsFilters filters,
+			ArrayList<String> lines)
 			throws SQLException {
 		StringBuilder sql = new StringBuilder("SELECT o.equipmentId AS equipmentId, o.upgraded AS upgraded,"
 				+ " COUNT(*) AS offered, SUM(o.picked) AS picked, (SUM(o.picked) / COUNT(*)) AS rate,"
@@ -620,8 +616,6 @@ public class AnalyticsReport {
 				+ " MIN(o.source) AS minSource, MAX(o.source) AS maxSource"
 				+ " FROM neorogue_analytics_equipment_offers o"
 				+ " LEFT JOIN neorogue_analytics_runs r ON r.runId = o.runId WHERE o.balanceVersion = ?");
-		if (source != null) sql.append(" AND o.source = ?");
-		if (eqClass != null) sql.append(" AND FIND_IN_SET(?, o.equipClass)");
 		filters.appendWhere(sql);
 		sql.append(" GROUP BY o.equipmentId, o.upgraded");
 		if (filters.filterLowSamples()) sql.append(" HAVING COUNT(*) >= ").append(MIN_SAMPLES);
@@ -631,8 +625,6 @@ public class AnalyticsReport {
 		try (PreparedStatement ps = con.prepareStatement(sql.toString() + orderClause + pageClause(filters) + ";")) {
 			int idx = 1;
 			ps.setInt(idx++, version);
-			if (source != null) ps.setString(idx++, source);
-			if (eqClass != null) ps.setString(idx++, eqClass);
 			filters.bind(ps, idx);
 			collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 		}
@@ -650,8 +642,6 @@ public class AnalyticsReport {
 			try (PreparedStatement ps = con.prepareStatement(sql.toString() + " ORDER BY rate ASC" + pageClause(filters) + ";")) {
 				int idx = 1;
 				ps.setInt(idx++, version);
-				if (source != null) ps.setString(idx++, source);
-				if (eqClass != null) ps.setString(idx++, eqClass);
 				filters.bind(ps, idx);
 				collectLeaderboardRows(ps, rows, LEADERBOARD_LIMIT + 1);
 			}

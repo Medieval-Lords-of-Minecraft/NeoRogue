@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.Mob;
 @SuppressWarnings("UnstableApiUsage")
 public class LyticsCommand {
 	// Ordered list of subcommands shown when /nrlytics is run with no arguments.
-	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "losses", "pickrate", "chance",
+	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "losses", "chance",
 			"mobs", "minibosses", "bosses", "mob");
 
 	private LyticsCommand() {
@@ -70,14 +70,6 @@ public class LyticsCommand {
 								.suggests((ctx, builder) -> suggestFilters(builder,
 										AnalyticsReport.LOSS_FILTER_OPTIONS))
 								.executes(ctx -> runLosses(ctx, getStr(ctx, "options")))))
-
-				// pickrate [source] [class] [sortBy] [page=n] [filterlow=true|false]
-				.then(Commands.literal("pickrate")
-						.executes(ctx -> runPickrate(ctx, ""))
-						.then(Commands.argument("args", StringArgumentType.greedyString())
-								.suggests((ctx, builder) -> suggestFilters(builder,
-										AnalyticsReport.PICKRATE_FILTER_OPTIONS))
-								.executes(ctx -> runPickrate(ctx, getStr(ctx, "args")))))
 
 				// chance [setId] [class] [page=n] [filterlow=true|false]
 				.then(Commands.literal("chance")
@@ -156,22 +148,34 @@ public class LyticsCommand {
 		String[] tokens = filterStr.isBlank() ? new String[0] : filterStr.trim().split("\\s+");
 		ArrayList<String> filterTokens = new ArrayList<String>();
 		EquipmentMetric metric = EquipmentMetric.DAMAGE;
+		String sortBy = "rate";
 		for (String token : tokens) {
-			if (!token.toLowerCase().startsWith("metric=")) {
+			if (token.toLowerCase().startsWith("sort=")) {
+				sortBy = token.substring("sort=".length()).toLowerCase();
+				if (!sortBy.equals("rate") && !sortBy.equals("class")) {
+					Util.msgRaw(s, "<red>Invalid pickrate sort. Expected: <white>rate, class");
+					return Command.SINGLE_SUCCESS;
+				}
+			}
+			else if (!token.toLowerCase().startsWith("metric=")) {
 				filterTokens.add(token);
-				continue;
 			}
-			EquipmentMetric parsedMetric = EquipmentMetric.fromKey(token.substring("metric=".length()));
-			if (parsedMetric == null) {
-				Util.msgRaw(s, "<red>Invalid equipment metric. Expected: <white>"
-						+ String.join(", ", AnalyticsReport.EQUIPMENT_METRIC_KEYS).toLowerCase());
-				return Command.SINGLE_SUCCESS;
+			else {
+				EquipmentMetric parsedMetric = EquipmentMetric.fromKey(token.substring("metric=".length()));
+				if (parsedMetric == null) {
+					Util.msgRaw(s, "<red>Invalid equipment metric. Expected: <white>"
+							+ String.join(", ", AnalyticsReport.EQUIPMENT_METRIC_KEYS).toLowerCase());
+					return Command.SINGLE_SUCCESS;
+				}
+				metric = parsedMetric;
 			}
-			metric = parsedMetric;
 		}
+		List<FilterOption> filterOptions = metric == EquipmentMetric.PICKRATE
+				? AnalyticsReport.PICKRATE_FILTER_OPTIONS : AnalyticsReport.EQUIPMENT_FILTER_OPTIONS;
 		AnalyticsFilters filters = AnalyticsFilters.parse(filterTokens.toArray(String[]::new), 0,
-				AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
-		AnalyticsReport.equipmentLeaderboard(s, version(), metric, filters);
+				filterOptions);
+		if (metric == EquipmentMetric.PICKRATE) AnalyticsReport.equipmentPickrate(s, version(), sortBy, filters);
+		else AnalyticsReport.equipmentLeaderboard(s, version(), metric, filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -184,13 +188,6 @@ public class LyticsCommand {
 	private static int runLosses(CommandContext<CommandSourceStack> ctx, String args) {
 		AnalyticsReport.losses(ctx.getSource().getSender(), version(),
 				parseArgs(args, 0, AnalyticsReport.LOSS_FILTER_OPTIONS).filters);
-		return Command.SINGLE_SUCCESS;
-	}
-
-	private static int runPickrate(CommandContext<CommandSourceStack> ctx, String args) {
-		ParsedArgs parsed = parseArgs(args, 3, AnalyticsReport.PICKRATE_FILTER_OPTIONS);
-		AnalyticsReport.pickrate(ctx.getSource().getSender(), version(), upper(parsed.get(0)), upper(parsed.get(1)),
-				parsed.get(2) == null ? "rate" : parsed.get(2).toLowerCase(), parsed.filters);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -232,7 +229,11 @@ public class LyticsCommand {
 	private static CompletableFuture<Suggestions> suggestEquipmentFilters(CommandContext<CommandSourceStack> ctx,
 			SuggestionsBuilder builder) {
 		ArrayList<FilterOption> options = new ArrayList<FilterOption>(AnalyticsReport.EQUIPMENT_FILTER_OPTIONS);
+		for (FilterOption option : AnalyticsReport.PICKRATE_FILTER_OPTIONS) {
+			if (options.stream().noneMatch(existing -> existing.key.equalsIgnoreCase(option.key))) options.add(option);
+		}
 		options.add(new FilterOption("metric", "", false, AnalyticsReport.EQUIPMENT_METRIC_KEYS));
+		options.add(new FilterOption("sort", "", false, List.of("rate", "class")));
 		return suggestFilters(builder, options);
 	}
 
