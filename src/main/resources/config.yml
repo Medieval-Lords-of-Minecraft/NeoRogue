@@ -9,6 +9,10 @@ inspection-worlds:
 - Caravans
 - Hub
 
+# Sent to each player when a tutorial ends, whether they win or lose. Supports MiniMessage formatting.
+# {player} is replaced with the player's name.
+tutorial-end-message: '<dark_gray>[<dark_red><bold>MLMC</bold></dark_red>] <gray>Welcome to the server <yellow>{player}</yellow>!'
+
 # Requires a restart. Upgrade bonuses from caravan.yml are added to these base limits.
 caravan:
   cargo:

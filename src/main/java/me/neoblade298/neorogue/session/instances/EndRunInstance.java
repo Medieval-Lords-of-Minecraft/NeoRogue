@@ -14,6 +14,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -34,6 +36,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
  */
 public abstract class EndRunInstance extends EditInventoryInstance {
 	protected static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
+	private static final String DEFAULT_TUTORIAL_END_MESSAGE = "<dark_gray>[<dark_red><bold>MLMC</bold></dark_red>] "
+			+ "<gray>Welcome to the server <yellow>{player}</yellow>!";
 	protected TextDisplay holo, leaveHolo;
 
 	public EndRunInstance(Session s) {
@@ -69,8 +73,20 @@ public abstract class EndRunInstance extends EditInventoryInstance {
 		leaveHolo.setRotation(0, 0);
 
 		s.broadcast(getResultMessage());
+		sendTutorialEndMessage();
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
+	}
+
+	private void sendTutorialEndMessage() {
+		if (s.getSessionType() != SessionType.TUTORIAL) return;
+		String configured = NeoRogue.inst().getConfig().getString("tutorial-end-message", DEFAULT_TUTORIAL_END_MESSAGE);
+		if (configured == null || configured.isBlank()) return;
+		for (PlayerSessionData data : s.getParty().values()) {
+			Player player = data.getPlayer();
+			if (player == null) continue;
+			Util.msgRaw(player, NeoCore.miniMessage().deserialize(configured.replace("{player}", player.getName())));
+		}
 	}
 
 	/** Text for the stats/finance hologram shown at the run-end spawn. */

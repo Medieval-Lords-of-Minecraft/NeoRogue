@@ -236,10 +236,23 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	private void initialize(boolean syncPlayer) {
+		reconcileOffhandCompatibility();
 		setupArtifacts();
 		updateEquipmentLimits();
 		updateBoardLines();
 		if (syncPlayer) activatePlayer();
+	}
+
+	private void reconcileOffhandCompatibility() {
+		if (offhand[0] == null || getOffhandRestrictor() == null) return;
+		for (int i = 0; i < storage.length; i++) {
+			if (storage[i] != null) continue;
+			storage[i] = offhand[0];
+			offhand[0] = null;
+			return;
+		}
+		Bukkit.getLogger().warning("[NeoRogue] Could not resolve incompatible offhand for " + uuid
+				+ " because storage is completely full");
 	}
 
 	public void activatePlayer() {
@@ -304,6 +317,30 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return getArrayFromEquipSlot(es);
 	}
 
+	public Equipment getOffhandRestrictor() {
+		for (SessionEquipment[] slots : new SessionEquipment[][] { hotbar, armors, accessories, otherBinds }) {
+			for (SessionEquipment se : slots) {
+				if (se != null && se.getEquipment().restrictsOffhand()) return se.getEquipment();
+			}
+		}
+		return null;
+	}
+
+	public String getEquipmentPlacementRestriction(EquipSlot es, Equipment eq) {
+		if (es == EquipSlot.STORAGE) return null;
+		if (es == EquipSlot.OFFHAND && getOffhandRestrictor() != null) {
+			return "You can't equip an offhand while using equipment that requires an empty offhand!";
+		}
+		if (!eq.restrictsOffhand() || offhand[0] == null) return null;
+		if (offhand[0].getEquipment().isCursed()) {
+			return "You can't equip this while your cursed offhand is equipped!";
+		}
+		for (int i = 0; i < Math.min(maxStorage, storage.length); i++) {
+			if (storage[i] == null) return null;
+		}
+		return "You need an open storage slot before equipping this with an offhand!";
+	}
+
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		SessionEquipment[] slots = getArrayFromEquipSlot(es);
 		slots[slot] = slots[slot].upgrade();
@@ -311,13 +348,31 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		PlayerSessionInventory.setupInventory(data.getPlayer().getInventory(), this);
 	}
 
-	public void setEquipment(EquipSlot es, int slot, SessionEquipment se) {
+	public boolean setEquipment(EquipSlot es, int slot, SessionEquipment se) {
+		String restriction = getEquipmentPlacementRestriction(es, se.getEquipment());
+		if (restriction != null) {
+			Util.displayError(getPlayer(), restriction);
+			return false;
+		}
+		if (es != EquipSlot.STORAGE && se.getEquipment().restrictsOffhand() && offhand[0] != null) {
+			SessionEquipment moved = removeEquipment(EquipSlot.OFFHAND, 0);
+			for (int i = 0; i < Math.min(maxStorage, storage.length); i++) {
+				if (storage[i] != null) continue;
+				storage[i] = moved;
+				Util.msgRaw(getPlayer(), Component.text("Your ", NamedTextColor.GRAY)
+						.append(moved.getHoverable())
+						.append(Component.text(" was moved to storage because ", NamedTextColor.GRAY))
+						.append(se.getHoverable())
+						.append(Component.text(" requires an empty offhand.", NamedTextColor.GRAY)));
+				break;
+			}
+		}
 		SessionEquipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null) removeEquipment(es, slot);
 		slots[slot] = se;
 
 		// Storage items are never counted toward equipped totals
-		if (es == EquipSlot.STORAGE) return;
+		if (es == EquipSlot.STORAGE) return true;
 
 		switch (se.getEquipment().getType()) {
 		case ARMOR:
@@ -332,10 +387,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		default:
 		}
 		trigger(SessionTrigger.EQUIPMENT_LAYOUT_CHANGED, null);
+		return true;
 	}
 
-	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
-		setEquipment(es, slot, new SessionEquipment(eq));
+	public boolean setEquipment(EquipSlot es, int slot, Equipment eq) {
+		return setEquipment(es, slot, new SessionEquipment(eq));
 	}
 
 	public SessionEquipment removeEquipment(EquipSlot es, int slot) {
@@ -842,8 +898,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		SessionEquipment[] arr = getArrayFromEquipSlot(es);
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i] == null) {
-				setEquipment(es, i, se);
-				return true;
+				return setEquipment(es, i, se);
 			}
 		}
 		return false;

@@ -152,7 +152,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
-		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+		Equipment offhandRestrictor = data.getOffhandRestrictor();
+		contents[(OFFHAND + offset) % inv.getSize()] = o != null
+				? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0)
+				: offhandRestrictor != null ? createLockedOffhandIcon(offhandRestrictor) : createOffhandIcon();
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
@@ -268,7 +271,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		if (unlockAbilities) {
 			SessionEquipment o = data.getSessionEquipment(EquipSlot.OFFHAND)[0];
-			contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0) : createOffhandIcon();
+			Equipment offhandRestrictor = data.getOffhandRestrictor();
+			contents[(OFFHAND + offset) % inv.getSize()] = o != null
+					? addNbt(getDisplayItem(o, data, isSpectating), o.getEquipment().getId(), o.getEquipment().isUpgraded(), 0)
+					: offhandRestrictor != null ? createLockedOffhandIcon(offhandRestrictor) : createOffhandIcon();
 		}
 		else {
 			contents[(OFFHAND + offset) % inv.getSize()] = tutorialFiller();
@@ -431,6 +437,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE,
 				Component.text("Offhand Slot", NamedTextColor.WHITE), "Drag an offhand here to equip it!", 250,
 				NamedTextColor.GRAY), 0);
+	}
+
+	private static ItemStack createLockedOffhandIcon(Equipment restrictor) {
+		ItemStack item = addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE,
+				Component.text("Offhand Locked", NamedTextColor.RED)), 0);
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(List.of(Component.text("Requires an empty offhand while ", NamedTextColor.GRAY)
+				.append(restrictor.getDisplay())
+				.append(Component.text(" is equipped.", NamedTextColor.GRAY))));
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	private static ItemStack createReforgesIcon(int count) {
@@ -828,6 +845,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				displayError("You can't equip this item in this slot!", false);
 				return;
 			}
+			String placementRestriction = data.getEquipmentPlacementRestriction(type, eq);
+			if (placementRestriction != null) {
+				displayError(placementRestriction, false);
+				return;
+			}
 
 			// Not swapping equipment, remove the cursor item
 			boolean isSwapping = clickedEquipId != null;
@@ -850,7 +872,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			if (isBindable(type))
 				cursor = addBindLore(cursor, slot, clickedDataSlot);
 			inv.setItem(slot, addNbt(cursor, clickedDataSlot));
-			if (!isSwapping) clearHighlights();
+			if (eq.restrictsOffhand() || (eqed != null && eqed.restrictsOffhand())) setupInventory(inv, data);
+			else if (!isSwapping) clearHighlights();
 		}
 		else {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
@@ -972,6 +995,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
 		Equipment eq = Equipment.get(equipId, isUpgraded);
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
+		String placementRestriction = data.getEquipmentPlacementRestriction(result.es, eq);
+		if (placementRestriction != null) {
+			displayError(placementRestriction, false);
+			return;
+		}
 		ItemStack autoItem = inv.getItem(result.slot);
 		int autoDataSlot = NBT.get(autoItem, nbt -> { return nbt.getInteger("dataSlot"); });
 		SessionEquipment placed = SessionEquipment.fromItem(item);
@@ -979,6 +1007,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		if (isBindable(result.es)) item = addBindLore(item, result.slot, autoDataSlot);
 		inv.setItem(result.slot, addNbt(item, autoDataSlot));
+		if (eq.restrictsOffhand()) setupInventory(inv, data);
 
 		if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
 			// Lazy, just re-setup entire inventory
@@ -1013,7 +1042,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			default:
 		}
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
-		return result != null;
+		if (result == null) return false;
+		String placementRestriction = data.getEquipmentPlacementRestriction(result.es, eq);
+		if (placementRestriction != null) {
+			displayError(placementRestriction, false);
+			return false;
+		}
+		return true;
 	}
 
 	private void handleInventoryDrop(InventoryClickEvent e) {
@@ -1061,8 +1096,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private void removeEquipment(EquipSlot type, int dataSlot, int invSlot, Inventory inv) {
 		ItemStack icon = createIcon(type, dataSlot);
-		data.removeEquipment(type, dataSlot);
-		inv.setItem(invSlot, icon);
+		SessionEquipment removed = data.removeEquipment(type, dataSlot);
+		if (removed != null && removed.getEquipment().restrictsOffhand()) setupInventory(inv, data);
+		else inv.setItem(invSlot, icon);
 	}
 
 	private static ItemStack addBindLore(ItemStack item, int invSlot, int dataSlot) {
