@@ -721,7 +721,7 @@ public class DamageMeta {
 				Location loc = target.getLocation().add(0, 1, 0);
 				Vector btwn = owner.getEntity().getLocation().subtract(loc).toVector();
 				btwn.setY(0);
-				btwn.normalize();
+				if (btwn.lengthSquared() > 0) btwn.normalize();
 				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
 				loc = loc.add(btwn).add(x, y, z);
 				if (damageCancelled) {
