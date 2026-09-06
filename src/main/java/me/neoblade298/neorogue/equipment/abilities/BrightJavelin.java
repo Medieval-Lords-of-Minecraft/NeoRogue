@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -33,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BrightJavelin extends Equipment {
 	private static final String ID = "BrightJavelin";
-	private static final int DAMAGE = 150, SANCT_MULT = 10, RANGE = 10;
+	private static final int SANCT_MULT = 10, RANGE = 10;
 	private static final ParticleContainer projectileCore =
 			new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.fromRGB(255, 248, 205), 0.8F))
 					.count(1).spread(0, 0).speed(0);
@@ -49,7 +50,8 @@ public class BrightJavelin extends Equipment {
 
 	public BrightJavelin(boolean isUpgraded) {
 		super(ID, "Bright Javelin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 8, RANGE));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 8, RANGE)
+						.add(PropertyType.DAMAGE, isUpgraded ? 200 : 150));
 	}
 
 	public static Equipment get() {
@@ -70,7 +72,7 @@ public class BrightJavelin extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before throwing a bright javelin that deals "
-				+ GlossaryTag.LIGHT.tag(this, DAMAGE) + " damage, increased by "
+				+ GlossaryTag.LIGHT.tag(this, properties.get(PropertyType.DAMAGE)) + " damage, increased by "
 				+ DescUtil.val(SANCT_MULT) + " for each " + GlossaryTag.SANCTIFIED.tag(this) + " stack on the enemy.");
 	}
 
@@ -95,7 +97,7 @@ public class BrightJavelin extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			int bonusDamage = hit.getStatus(StatusType.SANCTIFIED).getStacks() * SANCT_MULT;
-			meta.addDamageSlice(new DamageSlice(proj.getOwner(), DAMAGE + bonusDamage, DamageType.LIGHT,
+			meta.addDamageSlice(new DamageSlice(proj.getOwner(), eq.getProperties().get(PropertyType.DAMAGE) + bonusDamage, DamageType.LIGHT,
 					DamageStatTracker.of(id + slot, eq)));
 
 			Player player = (Player) proj.getOwner().getEntity();
