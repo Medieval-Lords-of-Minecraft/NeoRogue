@@ -539,6 +539,9 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		Player p = e.getPlayer();
+		if (p.getWorld().getName().equals(Region.getMainWorldName())) {
+			e.deathMessage(createSessionDeathMessage(p));
+		}
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid))
 			return;
@@ -583,6 +586,30 @@ public class SessionManager implements Listener {
 				}
 			}
 		}.runTask(NeoRogue.inst());
+	}
+
+	private static Component createSessionDeathMessage(Player player) {
+		EntityDamageEvent damage = player.getLastDamageCause();
+		Entity killer = damage != null ? damage.getDamageSource().getCausingEntity() : null;
+		Component prefix = Component.text("[", NamedTextColor.DARK_GRAY)
+				.append(Component.text("Caravans", NamedTextColor.RED))
+				.append(Component.text("] ", NamedTextColor.DARK_GRAY));
+		Component victimName = player.displayName().colorIfAbsent(NamedTextColor.RED);
+		if (killer != null) {
+			Component killerName;
+			if (killer instanceof Player killerPlayer) {
+				killerName = killerPlayer.displayName().colorIfAbsent(NamedTextColor.YELLOW);
+			}
+			else {
+				FightData killerData = FightInstance.getFightData(killer.getUniqueId());
+				killerName = killerData != null && killerData.getMob() != null
+						? killerData.getMob().getDisplay()
+						: killer.name().colorIfAbsent(NamedTextColor.YELLOW);
+			}
+			return prefix.append(victimName).append(Component.text(" was killed by ", NamedTextColor.GRAY)).append(killerName);
+		}
+		String cause = damage != null ? damage.getCause().name().toLowerCase().replace('_', ' ') : "unknown causes";
+		return prefix.append(victimName).append(Component.text(" died from " + cause, NamedTextColor.GRAY));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

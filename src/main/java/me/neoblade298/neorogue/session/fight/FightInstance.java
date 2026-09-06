@@ -273,7 +273,6 @@ public abstract class FightInstance extends Instance {
 			if (inv[i] == null) continue;
 			cooldowns[i] = p.getCooldown(inv[i].getType());
 		}
-		s.broadcast("<red>" + p.getName() + " died!");
 		data.setDeath(true);
 		fi.removePlayerThreat(p);
 		data.getStats().addDeath();
