@@ -81,6 +81,9 @@ public class UnlockClassInventory extends CoreInventory {
 				Component.text("Available Points: ", NamedTextColor.GRAY)
 						.append(Component.text(points, NamedTextColor.YELLOW))
 						.decoration(TextDecoration.ITALIC, State.FALSE),
+				Component.text("AshCoins: ", NamedTextColor.GRAY)
+						.append(Component.text(UnlockRegistry.getAshcoins(data), NamedTextColor.GOLD))
+						.decoration(TextDecoration.ITALIC, State.FALSE),
 				Component.text("Total Nodes: ", NamedTextColor.GRAY)
 						.append(Component.text(nodes.size(), NamedTextColor.WHITE))
 						.decoration(TextDecoration.ITALIC, State.FALSE)

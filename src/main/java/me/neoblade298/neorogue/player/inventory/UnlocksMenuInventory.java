@@ -87,7 +87,7 @@ public class UnlocksMenuInventory extends CoreInventory {
 		int points = data.getPoints(ec);
 		for (UnlockNode node : nodes) {
 			if (data.hasUnlockNode(node.getId())) continue;
-			if (node.getCost() <= points && node.checkRequirementsMet(data)) {
+			if (UnlockRegistry.canAfford(data, node) && node.checkRequirementsMet(data)) {
 				available++;
 			}
 		}
@@ -97,6 +97,12 @@ public class UnlocksMenuInventory extends CoreInventory {
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Level " + level, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
 		lore.add(Component.text("Exp: " + FormatUtil.whole(exp) + "/" + FormatUtil.whole(required), NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+		lore.add(Component.text("Available Points: ", NamedTextColor.GRAY)
+				.append(Component.text(points, NamedTextColor.YELLOW))
+				.decoration(TextDecoration.ITALIC, State.FALSE));
+		lore.add(Component.text("AshCoins: ", NamedTextColor.GRAY)
+				.append(Component.text(UnlockRegistry.getAshcoins(data), NamedTextColor.GOLD))
+				.decoration(TextDecoration.ITALIC, State.FALSE));
 		if (available > 0) {
 			item.setAmount(Math.min(Math.max(available, 2), 64));
 			lore.add(Component.text(available + " unlock" + (available > 1 ? "s" : "") + " available!",

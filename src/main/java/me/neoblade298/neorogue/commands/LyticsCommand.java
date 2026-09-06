@@ -20,8 +20,11 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.achievement.Achievement;
+import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.commands.AnalyticsFilters.FilterOption;
 import me.neoblade298.neorogue.commands.AnalyticsReport.EquipmentMetric;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.analytics.AnalyticsManager;
 import me.neoblade298.neorogue.session.fight.Mob;
 
@@ -32,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.Mob;
 public class LyticsCommand {
 	// Ordered list of subcommands shown when /nrlytics is run with no arguments.
 	private static final List<String> SUBCOMMANDS = List.of("version", "equipment", "classes", "losses", "chance",
-			"mobs", "minibosses", "bosses", "mob");
+			"mobs", "minibosses", "bosses", "mob", "achievement");
 
 	private LyticsCommand() {
 	}
@@ -47,6 +50,16 @@ public class LyticsCommand {
 						.executes(LyticsCommand::showVersion)
 						.then(Commands.argument("version", IntegerArgumentType.integer())
 								.executes(LyticsCommand::setVersion)))
+
+				// achievement <achievementId> <class> <mastery>
+				.then(Commands.literal("achievement")
+						.executes(LyticsCommand::usage)
+						.then(Commands.argument("achievementId", StringArgumentType.word())
+								.suggests(suggest(LyticsCommand::achievementIds))
+								.then(Commands.argument("class", StringArgumentType.word())
+										.suggests(suggest(LyticsCommand::playerClasses))
+										.then(Commands.argument("mastery", IntegerArgumentType.integer(1))
+												.executes(LyticsCommand::runAchievement)))))
 
 				// equipment [id=<equipmentId>] [key=value ...]
 				.then(Commands.literal("equipment")
@@ -140,6 +153,39 @@ public class LyticsCommand {
 		int version = IntegerArgumentType.getInteger(ctx, "version");
 		AnalyticsManager.setQueryBalanceVersion(version);
 		Util.msgRaw(s, "<gray>Analytics balance version set to <yellow>" + version);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runAchievement(CommandContext<CommandSourceStack> ctx) {
+		CommandSender s = ctx.getSource().getSender();
+		String achievementId = getStr(ctx, "achievementId");
+		Achievement achievement = AchievementManager.get(achievementId);
+		if (achievement == null) {
+			Util.msgRaw(s, "<red>Unknown achievement: <white>" + achievementId);
+			return Command.SINGLE_SUCCESS;
+		}
+
+		EquipmentClass equipmentClass;
+		try {
+			equipmentClass = EquipmentClass.valueOf(getStr(ctx, "class").toUpperCase());
+		}
+		catch (IllegalArgumentException ex) {
+			Util.msgRaw(s, "<red>Invalid class. Expected: <white>" + String.join(", ", playerClasses()));
+			return Command.SINGLE_SUCCESS;
+		}
+		if (!AchievementManager.getForScope(equipmentClass).contains(achievement)) {
+			Util.msgRaw(s, "<red>That achievement is not tracked for <white>" + equipmentClass.name());
+			return Command.SINGLE_SUCCESS;
+		}
+
+		int mastery = IntegerArgumentType.getInteger(ctx, "mastery");
+		if (mastery > achievement.getMasteryThresholds().length) {
+			Util.msgRaw(s, "<red>Invalid mastery. Maximum for this achievement: <white>"
+					+ achievement.getMasteryThresholds().length);
+			return Command.SINGLE_SUCCESS;
+		}
+
+		AnalyticsReport.achievementOwners(s, achievement, equipmentClass, mastery);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -283,6 +329,17 @@ public class LyticsCommand {
 			}
 			return builder.buildFuture();
 		};
+	}
+
+	private static Collection<String> achievementIds() {
+		return AchievementManager.getAll().stream().map(Achievement::getId).toList();
+	}
+
+	private static Collection<String> playerClasses() {
+		return java.util.Arrays.stream(EquipmentClass.values())
+				.filter(equipmentClass -> equipmentClass != EquipmentClass.SHOP
+						&& equipmentClass != EquipmentClass.CLASSLESS)
+				.map(Enum::name).toList();
 	}
 
 	// ---- Helpers -----------------------------------------------------------

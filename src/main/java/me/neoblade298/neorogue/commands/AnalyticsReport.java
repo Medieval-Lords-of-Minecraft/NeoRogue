@@ -11,17 +11,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -225,6 +228,66 @@ public class AnalyticsReport {
 	}
 
 	private AnalyticsReport() {}
+
+	public static void achievementOwners(CommandSender s, Achievement achievement, EquipmentClass equipmentClass,
+			int mastery) {
+		int totalJoined = Bukkit.getOfflinePlayers().length;
+		int threshold = achievement.getMasteryThresholds()[mastery - 1];
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				int owners = 0;
+				int playedBefore = 0;
+				boolean failed = false;
+				String sql = "SELECT"
+						+ " (SELECT COUNT(DISTINCT uuid) FROM neorogue_achievements"
+						+ " WHERE achievement = ? AND scope = ? AND progress >= ?) AS owners,"
+						+ " (SELECT COUNT(DISTINCT uuid) FROM neorogue_playerflags WHERE flag = ?) AS playedBefore";
+				try (Connection con = SQLManager.getConnection("NeoRogue");
+						PreparedStatement ps = con.prepareStatement(sql)) {
+					ps.setString(1, achievement.getId());
+					ps.setString(2, equipmentClass.name());
+					ps.setInt(3, threshold);
+					ps.setString(4, PlayerData.FLAG_PLAYED_BEFORE);
+					try (ResultSet rs = ps.executeQuery()) {
+						if (rs.next()) {
+							owners = rs.getInt("owners");
+							playedBefore = rs.getInt("playedBefore");
+						}
+					}
+				}
+				catch (SQLException ex) {
+					failed = true;
+					ex.printStackTrace();
+				}
+
+				int ownerCount = owners;
+				int playedBeforeCount = playedBefore;
+				boolean queryFailed = failed;
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (queryFailed) {
+							Util.msgRaw(s, "<red>Failed to query achievement analytics (see console).");
+							return;
+						}
+						Util.msgRaw(s, "<gold>=== Achievement Ownership ===");
+						Util.msgRaw(s, "<white>" + achievement.getId() + " <gray>| <white>" + equipmentClass.name()
+								+ " <gray>| Mastery <white>" + mastery + "+ <gray>(progress " + threshold + "+)");
+						Util.msgRaw(s, "<yellow>Owners: <white>" + ownerCount);
+						Util.msgRaw(s, "<gray>All joined: <white>" + ownerCount + "/" + totalJoined
+								+ " <gray>(<yellow>" + percentage(ownerCount, totalJoined) + "%<gray>)");
+						Util.msgRaw(s, "<gray>Played before: <white>" + ownerCount + "/" + playedBeforeCount
+								+ " <gray>(<yellow>" + percentage(ownerCount, playedBeforeCount) + "%<gray>)");
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private static String percentage(int count, int total) {
+		return total == 0 ? "0" : df.format(100.0 * count / total);
+	}
 
 	// Class-wide run winrates. A sample is one player/class participating in one completed run;
 	// DISTINCT prevents fights and individual mobs from multiplying that run's contribution.

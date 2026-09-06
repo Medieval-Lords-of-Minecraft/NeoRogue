@@ -103,10 +103,9 @@ public class MainMenuInventory extends CoreInventory {
 
 	private int countAvailableForClass(PlayerData data, EquipmentClass ec) {
 		int available = 0;
-		int points = data.getPoints(ec);
 		for (UnlockNode node : UnlockRegistry.getNodesForClass(ec)) {
 			if (data.hasUnlockNode(node.getId())) continue;
-			if (node.getCost() <= points && node.checkRequirementsMet(data)) {
+			if (UnlockRegistry.canAfford(data, node) && node.checkRequirementsMet(data)) {
 				available++;
 			}
 		}

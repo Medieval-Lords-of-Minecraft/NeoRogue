@@ -205,8 +205,10 @@ public class UnlockNode {
 			lore.add(Component.text("Available", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE));
 		} else if (!prereqsMet) {
 			lore.add(Component.text("Locked (missing prerequisites)", NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE));
-		} else {
+		} else if (data.getPoints(nodeClass) < cost) {
 			lore.add(Component.text("Locked (not enough points)", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
+		} else {
+			lore.add(Component.text("Locked (not enough AshCoins)", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE));
 		}
 
 		// Separator

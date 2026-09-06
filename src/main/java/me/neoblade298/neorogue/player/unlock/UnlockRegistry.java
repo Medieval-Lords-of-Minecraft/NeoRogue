@@ -232,8 +232,13 @@ public class UnlockRegistry {
 		if (data == null || node == null) return false;
 		if (data.getPoints(node.getNodeClass()) < node.getCost()) return false;
 		if (node.getAshcoinsCost() <= 0) return true;
+		return getAshcoins(data) >= node.getAshcoinsCost();
+	}
+
+	public static long getAshcoins(PlayerData data) {
+		if (data == null) return 0;
 		me.neoblade298.ashstore.player.PlayerData ashData = me.neoblade298.ashstore.player.PlayerManager.get(data.getUniqueId());
-		return ashData != null && ashData.canAfford(node.getAshcoinsCost());
+		return ashData != null ? ashData.getCoins() : 0;
 	}
 
 	/**
