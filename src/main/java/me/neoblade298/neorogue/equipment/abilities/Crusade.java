@@ -50,7 +50,7 @@ public class Crusade extends Equipment implements Power {
 	private static final ParticleContainer blade = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 238, 150), 0.8F)).count(1).spread(0, 0).speed(0);
 	private static final ParticleContainer glow = new ParticleContainer(Particle.FIREWORK).count(1).spread(0, 0).speed(0);
-	private static final ParticleContainer launch = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.05, 0.05).speed(0.01);
+	private static final ParticleContainer launch = new ParticleContainer(Particle.FIREWORK).count(1).spread(0.05, 0.05).speed(0.01);
 	private static final SoundContainer formSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.7F, 1.2F);
 	private int damage;
 
