@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -966,14 +967,14 @@ public class Region {
 			cleanup(node, inst);
 		}
 		// Apparently needs to be a runnable or the button you press doesn't get removed
-		// 20 tick delay so lecterns don't phase players through floor
+		// Brief delay so lecterns don't phase players through the floor
 		else {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					cleanup(node, inst);
 				}
-			}.runTaskLater(NeoRogue.inst(), 20);
+			}.runTaskLater(NeoRogue.inst(), 5);
 		}
 	}
 
@@ -1006,7 +1007,12 @@ public class Region {
 				Node n = nodes[skipRow][lane];
 				if (n != null && n.getType() == NodeType.FIGHT) {
 					Location loc = nodeToLocation(n, 1);
-					loc.getBlock().setType(Material.AIR); // Fight head
+					Block block = loc.getBlock();
+					boolean isCurrentButton = Tag.BUTTONS.isTagged(block.getType()) && s.getNode() != null
+							&& s.getNode().getDestinations().contains(n);
+					if (!isCurrentButton) {
+						block.setType(Material.AIR); // Fight head
+					}
 				}
 			}
 		}
