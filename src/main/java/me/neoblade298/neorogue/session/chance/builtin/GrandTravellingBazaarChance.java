@@ -148,27 +148,29 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 	public void initialize(Session s, ChanceInstance inst) {
 		for (PlayerSessionData data : s.getParty().values()) {
 			HashMap<String, String> values = parseData(data);
-
-			// Roll 3 independent reward artifacts (one per choice, duplicates allowed).
-			// Draw from the player's personal artifact droptable so artifacts they already
-			// own (non-stackable) are never offered as a reward.
 			DropTableSet<Artifact> pool = data.getArtifactDroptable();
-			putReward(values, "r1", pool, s, data);
-			putReward(values, "r2", pool, s, data);
-			putReward(values, "r3", pool, s, data);
 
 			// Choice 1 cost: pick a random removable artifact the player currently has
+			Artifact artifactCost = null;
 			ArrayList<ArtifactInstance> ownedRemovable = new ArrayList<ArtifactInstance>();
 			for (ArtifactInstance ai : data.getArtifacts().values()) {
 				if (ai.getArtifact().isRemovable()) ownedRemovable.add(ai);
 			}
 			if (!ownedRemovable.isEmpty()) {
 				ArtifactInstance pick = ownedRemovable.get(NeoRogue.gen.nextInt(ownedRemovable.size()));
-				values.put("c1", pick.getArtifact().getId());
+				artifactCost = pick.getArtifact();
+				values.put("c1", artifactCost.getId());
 			}
 			else {
 				values.remove("c1");
 			}
+
+			// Roll 3 independent reward artifacts (one per choice, duplicates allowed).
+			// Choice 1 excludes the artifact being traded so stackable artifacts cannot
+			// be exchanged for another copy of themselves.
+			putReward(values, "r1", pool, s, data, artifactCost);
+			putReward(values, "r2", pool, s, data, null);
+			putReward(values, "r3", pool, s, data, null);
 
 			// Choice 3 cost: pick a random non-storage, non-artifact, non-consumable equipment
 			ArrayList<EquipmentMetadata> candidates = data.aggregateEquipment(meta -> {
@@ -196,8 +198,9 @@ public class GrandTravellingBazaarChance extends ChanceSet {
 	// Rolls a single reward artifact from the player's personal droptable (which already
 	// excludes owned non-stackable artifacts). Removes the key if no artifact is available.
 	private static void putReward(HashMap<String, String> values, String key, DropTableSet<Artifact> pool,
-			Session s, PlayerSessionData data) {
-		ArrayList<Artifact> rolled = Equipment.getArtifact(pool, s.getBaseDropValue(), 1,
+			Session s, PlayerSessionData data, Artifact exclusion) {
+		ArrayList<Artifact> exclusions = exclusion == null ? null : new ArrayList<Artifact>(List.of(exclusion));
+		ArrayList<Artifact> rolled = pool.getMultiple(s.getBaseDropValue(), 1, true, exclusions,
 				data.getPlayerClass(), EquipmentClass.CLASSLESS);
 		if (rolled.isEmpty()) values.remove(key);
 		else values.put(key, rolled.get(0).getId());

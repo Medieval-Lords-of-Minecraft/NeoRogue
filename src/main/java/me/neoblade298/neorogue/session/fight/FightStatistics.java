@@ -165,7 +165,7 @@ public class FightStatistics {
 		String scoreText = score != null ? " | Reward Rating: " + score.getMiniMessageDisplay() : "";
 		return SharedUtil.color(
 			"<gray>Fight Statistics [<white>" + timer + "</white>]" + scoreText + "\n====== (Hoverable Stats) ======\n"
-					+ "[<yellow>Playername</yellow> <red>HP</red> - <red>Damage Dealt </red>/ <dark_red>Taken "
+					+ "[<yellow>Playername</yellow> <green>HP</green> - <red>Damage Dealt </red>/ <dark_red>Taken "
 					+ "</dark_red>/ <gold>Statuses</gold>]"
 		);
 	}
@@ -351,7 +351,7 @@ public class FightStatistics {
 		boolean lostHp = diff < 0;
 		return Component.text(data.getSessionData().getData().getDisplay(), NamedTextColor.YELLOW)
 		.append(Component.text(" ", NamedTextColor.GRAY))
-		.append(Component.text(hp + "♥", NamedTextColor.RED))
+		.append(Component.text(hp + "♥", NamedTextColor.GREEN))
 		.append(Component.text(" (", NamedTextColor.GRAY))
 		.append(Component.text((lostHp ? "-" : "+") + df.format(Math.abs(diff)), lostHp ? NamedTextColor.RED : NamedTextColor.GREEN))
 		.append(Component.text(") - ", NamedTextColor.GRAY))

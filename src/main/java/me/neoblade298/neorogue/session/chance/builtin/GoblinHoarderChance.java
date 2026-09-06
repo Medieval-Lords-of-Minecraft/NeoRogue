@@ -24,8 +24,8 @@ public class GoblinHoarderChance extends ChanceSet {
 				+ "only I can stop it, but I need the supplies!\" It offers to mend your wounds in exchange. "
 				+ "If you refuse, it begrudgingly lets you pass — but not before swiping a few " + PlayerSessionData.CURRENCY + " on the way out.");
 
-		stage.addChoice(new ChanceChoice(Material.GLASS_BOTTLE, "Trade all potions",
-				"Give all potions for a <yellow>+30 HP</yellow> heal.",
+		stage.addChoice(new ChanceChoice(Material.GLASS_BOTTLE, "Trade your potions",
+				"Give all your potions for a <yellow>+30 HP</yellow> heal.",
 				"You have no potions to offer!",
 				(s, inst, data) -> !data.aggregateEquipment(
 						meta -> meta.getEquipment().getType() == EquipmentType.CONSUMABLE).isEmpty(),

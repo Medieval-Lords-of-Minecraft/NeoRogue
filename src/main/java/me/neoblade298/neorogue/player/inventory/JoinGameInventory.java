@@ -114,7 +114,10 @@ public class JoinGameInventory extends CoreInventory {
 		meta.displayName(Component.text(session.getName(), NamedTextColor.GOLD));
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text("Host: " + (hostName != null ? hostName : "Unknown"), NamedTextColor.GRAY));
-		lore.add(Component.text("Region: " + session.getRegion().getType().getDisplay(), NamedTextColor.GRAY));
+		String regionName = session.getRegion() == null
+				? session.getSessionType().getInitialRegion().getDisplay()
+				: session.getRegion().getType().getDisplay();
+		lore.add(Component.text("Region: " + regionName, NamedTextColor.GRAY));
 		lore.add(Component.text("Nodes visited: " + session.getNodesVisited(), NamedTextColor.GRAY));
 		lore.add(Component.empty());
 		if (isLobby) {

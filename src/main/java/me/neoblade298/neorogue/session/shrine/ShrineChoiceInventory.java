@@ -26,7 +26,7 @@ public class ShrineChoiceInventory extends CoreInventory {
 	private boolean isHost;
 
 	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst, boolean isHost) {
-		super(p, Bukkit.createInventory(p, 9, Component.text("Choose", NamedTextColor.BLUE)));
+		super(p, Bukkit.createInventory(p, 9, Component.text("Host Choice", NamedTextColor.BLUE)));
 		this.inst = inst;
 		this.isHost = isHost;
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));

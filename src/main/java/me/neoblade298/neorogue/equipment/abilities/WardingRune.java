@@ -14,9 +14,7 @@ import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
@@ -42,7 +40,7 @@ public class WardingRune extends Equipment {
 			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)), 100);
+			data.applyStatus(StatusType.SHELL, data, reduc, 100, this);
 			am.setBool(true);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

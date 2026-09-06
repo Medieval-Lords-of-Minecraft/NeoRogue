@@ -21,7 +21,7 @@ public class SilverClover extends Equipment {
 	public SilverClover(boolean isUpgraded) {
 		super(ID, "Silver Clover", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		duration = isUpgraded ? 6 : 4;
+		duration = isUpgraded ? 3 : 2;
 	}
 
 	public static Equipment get() {
