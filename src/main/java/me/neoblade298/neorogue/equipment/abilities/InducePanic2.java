@@ -45,7 +45,7 @@ public class InducePanic2 extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		InducePanicInstance inst = new InducePanicInstance(data, sessionEq, slot, es);
+		InducePanic2Instance inst = new InducePanic2Instance(data, sessionEq, slot, es);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -54,13 +54,14 @@ public class InducePanic2 extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+		data.addTrigger(ID, bind, inst);
 	}
 
-	private class InducePanicInstance extends EquipmentInstance	{
+	private class InducePanic2Instance extends EquipmentInstance	{
 		private LivingEntity mark;
-		public InducePanicInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		public InducePanic2Instance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
 			super(data, sessionEq, slot, es);
-			InducePanicInstance inst = this;
+			InducePanic2Instance inst = this;
 			Player p = data.getPlayer();
 			action = (pdata, in) -> {
 				pdata.addTask(new BukkitRunnable() {

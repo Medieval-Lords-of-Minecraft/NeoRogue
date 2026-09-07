@@ -266,7 +266,6 @@ public abstract class FightInstance extends Instance {
 			return;
 		PlayerFightData data = userData.get(pu);
 		FightInstance fi = data.getInstance();
-		Session s = fi.getSession();
 		ItemStack[] inv = p.getInventory().getContents();
 		int[] cooldowns = new int[9]; // Get material cooldowns so they persist in death
 		for (int i = 0; i < 9; i++) {

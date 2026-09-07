@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -62,6 +63,7 @@ public class DarkPulse extends Equipment {
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
+			if (ev.getMeta().hasTag(id)) return TriggerResult.keep();
 			inst.pulse(ev.getTotalDamage(), slot);
 			return TriggerResult.keep();
 		});
@@ -111,8 +113,10 @@ public class DarkPulse extends Equipment {
 				pulseDamage *= damage;
 
 			pulseSound.play(data.getPlayer(), loc);
+			DamageMeta meta = new DamageMeta(data, pulseDamage, DamageType.DARK, DamageStatTracker.of(id + slot, eq));
+			meta.addTag(id);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(data.getPlayer(), loc, tp)) {
-					FightInstance.dealDamage(data, DamageType.DARK, pulseDamage, ent, DamageStatTracker.of(id + slot, eq));
+					FightInstance.dealDamage(meta, ent);
 				}
 			}
 			
