@@ -77,7 +77,7 @@ public class CrateringBlows extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.HEAVY_CORE, "Whenever you apply " + GlossaryTag.CONCUSSED.tag(this)
+		item = createItem(Material.HEAVY_CORE, GlossaryTag.PASSIVE.tag(this) + ". Whenever you apply " + GlossaryTag.CONCUSSED.tag(this)
 				+ ", create a " + DescUtil.val((int) DURATION + "s") + " orbital that deals "
 				+ GlossaryTag.EARTHEN.tag(this, damage) + " damage at radius " + DescUtil.val((int) RADIUS) + ".");
 	}

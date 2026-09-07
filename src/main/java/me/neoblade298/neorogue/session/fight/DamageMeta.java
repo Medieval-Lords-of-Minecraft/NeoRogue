@@ -702,7 +702,12 @@ public class DamageMeta {
 				}
 			}
 			else {
+				PlayerFightData playerRecipient = recipient instanceof PlayerFightData ? (PlayerFightData) recipient : null;
+				if (playerRecipient != null && owner.getMob() != null) {
+					playerRecipient.setCurrentMobDamageSource(owner.getMob().getDisplay());
+				}
 				target.damage(finalDamage);
+				if (playerRecipient != null) playerRecipient.setCurrentMobDamageSource(null);
 			}
 			damageCancelled = target.isValid() && target.getHealth() >= healthBefore;
 

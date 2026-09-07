@@ -93,6 +93,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.PlayerAttributeController;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.instances.EditInventoryInstance;
 import me.neoblade298.neorogue.session.instances.EndRunInstance;
@@ -591,12 +592,13 @@ public class SessionManager implements Listener {
 	private static Component createSessionDeathMessage(Player player) {
 		EntityDamageEvent damage = player.getLastDamageCause();
 		Entity killer = damage != null ? damage.getDamageSource().getCausingEntity() : null;
+		PlayerFightData playerData = FightInstance.getUserData(player.getUniqueId());
 		Component prefix = Component.text("[", NamedTextColor.DARK_GRAY)
 				.append(Component.text("Caravans", NamedTextColor.RED))
 				.append(Component.text("] ", NamedTextColor.DARK_GRAY));
 		Component victimName = player.displayName().colorIfAbsent(NamedTextColor.RED);
+		Component killerName = playerData != null ? playerData.getCurrentMobDamageSource() : null;
 		if (killer != null) {
-			Component killerName;
 			if (killer instanceof Player killerPlayer) {
 				killerName = killerPlayer.displayName().colorIfAbsent(NamedTextColor.YELLOW);
 			}
@@ -606,6 +608,8 @@ public class SessionManager implements Listener {
 						? killerData.getMob().getDisplay()
 						: killer.name().colorIfAbsent(NamedTextColor.YELLOW);
 			}
+		}
+		if (killerName != null) {
 			return prefix.append(victimName).append(Component.text(" was killed by ", NamedTextColor.GRAY)).append(killerName);
 		}
 		String cause = damage != null ? damage.getCause().name().toLowerCase().replace('_', ' ') : "unknown causes";

@@ -100,6 +100,7 @@ public class PlayerFightData extends FightData {
 	private Player p;
 	private long nextAttack, nextOffAttack;
 	private Equipment lastMainhandBasicAttack, lastOffhandBasicAttack;
+	private Component currentMobDamageSource;
 	private ArrayList<ProjectileGroup> aftershots = new ArrayList<ProjectileGroup>();
 	private final HashSet<String> analyticsEquipmentKeys = new HashSet<String>();
 
@@ -248,6 +249,14 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 		updateMana();
 		updateBoardLines();
+	}
+
+	public Component getCurrentMobDamageSource() {
+		return currentMobDamageSource;
+	}
+
+	public void setCurrentMobDamageSource(Component currentMobDamageSource) {
+		this.currentMobDamageSource = currentMobDamageSource;
 	}
 
 	private void snapshotAnalyticsEquipment(PlayerSessionData data) {
