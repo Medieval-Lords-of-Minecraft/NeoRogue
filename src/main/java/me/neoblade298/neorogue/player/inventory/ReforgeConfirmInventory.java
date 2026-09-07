@@ -26,6 +26,7 @@ public class ReforgeConfirmInventory extends CoreInventory {
 	private Equipment result;
 	private CoreInventory prev;
 	private boolean confirmed = false;
+	private boolean openingGlossary = false;
 
 	private static final int EQ1_SLOT = 3, EQ2_SLOT = 5, RESULT_SLOT = 13;
 
@@ -74,6 +75,7 @@ public class ReforgeConfirmInventory extends CoreInventory {
 				final Equipment glossaryEq = eq;
 				new BukkitRunnable() {
 					public void run() {
+						openingGlossary = true;
 						new EquipmentGlossaryInventory(p, glossaryEq, ReforgeConfirmInventory.this);
 					}
 				}.runTask(NeoRogue.inst());
@@ -109,9 +111,17 @@ public class ReforgeConfirmInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
+		if (openingGlossary) {
+			openingGlossary = false;
+			return;
+		}
 		if (!confirmed && toReforge != null) {
-			data.giveEquipment(toReforge, (Component) null, null);
-			data.giveEquipment(reforgeWith, (Component) null, null);
+			SessionEquipment returnedToReforge = toReforge;
+			SessionEquipment returnedReforgeWith = reforgeWith;
+			toReforge = null;
+			reforgeWith = null;
+			data.giveEquipment(returnedToReforge, (Component) null, null);
+			data.giveEquipment(returnedReforgeWith, (Component) null, null);
 			if (prev != null) {
 				new BukkitRunnable() {
 					public void run() {
