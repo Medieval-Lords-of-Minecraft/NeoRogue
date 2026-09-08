@@ -265,6 +265,7 @@ import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -1450,16 +1451,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	// Context-aware variant of getItem() for "choice" surfaces (rewards, chance events, shop, glossary).
-	// Adds a "Reforgeable with:" line containing only the reforge partners the player currently owns; if
-	// they own none (or data is null), it's identical to getItem() and shows no reforge line.
+	// Adds a "Reforgeable with:" line containing only unlocked reforge partners the player currently owns.
+	// If they own none but have an unlocked option, a generic "Reforgeable" line is shown instead.
 	public ItemStack getChoiceItem(PlayerSessionData data) {
 		List<Equipment> owned = getOwnedReforgeOptions(data);
 		// When REFORGE_REQUIRES_BOTH is active, both items must be upgraded, so the partner always needs a +
 		boolean reforgeRequiresBoth = data != null && data.getSession() != null
 				&& NotorietySetting.REFORGE_REQUIRES_BOTH.isActive(data.getSession());
 		if (owned.isEmpty()) {
-			// No owned reforge partners, but the item can still be reforged — show a generic "Reforgeable" line.
-			if (!reforgeOptions.isEmpty())
+			if (hasUnlockedReforgeOption(data))
 				return buildItemStack(itemMaterial, itemPreLore, itemLoreLine, owned, true, reforgeRequiresBoth, false);
 			return item.clone();
 		}
@@ -1477,10 +1477,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 			owned.add(meta.getEquipment().getId());
 		}
 		for (Equipment eq : reforgeOptions.keySet()) {
-			if (owned.contains(eq.getId()))
+			if (owned.contains(eq.getId()) && UnlockRegistry.isEquipmentUnlockedFor(data.getData(), eq.getId()))
 				result.add(eq);
 		}
 		return result;
+	}
+
+	private boolean hasUnlockedReforgeOption(PlayerSessionData data) {
+		if (data == null) return false;
+		return reforgeOptions.keySet().stream()
+				.anyMatch(eq -> UnlockRegistry.isEquipmentUnlockedFor(data.getData(), eq.getId()));
 	}
 
 	public boolean isUpgraded() {

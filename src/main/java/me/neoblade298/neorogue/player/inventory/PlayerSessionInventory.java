@@ -340,8 +340,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private static ItemStack createTutorialIcon() {
-		return CoreInventory.createButton(Material.WRITABLE_BOOK,
-				Component.text("Tutorial", NamedTextColor.GOLD));
+		ItemStack item = CoreInventory.createButton(Material.WRITABLE_BOOK,
+				Component.text("Glossary & Tutorial", NamedTextColor.GOLD));
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(List.of(
+				Component.text("Left-click for glossary", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+				Component.text("Right-click for tutorial", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+				Component.text("Any equipment can be right clicked to open its glossary!", NamedTextColor.GRAY)
+						.decoration(TextDecoration.ITALIC, false)));
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	// Refreshes just the cargo icon in the player's own (non-spectating) inventory. Call after run cargo
@@ -723,9 +731,19 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 		else if (slot == TUTORIAL && cursor.getType().isAir()) {
 			e.setCancelled(true);
-			p.closeInventory();
-			data.trigger(SessionTrigger.OPEN_TUTORIAL_BOOK, null);
-			BookRegistry.openTableOfContents(p, "neorogue_guide");
+			if (e.isRightClick()) {
+				p.closeInventory();
+				data.trigger(SessionTrigger.OPEN_TUTORIAL_BOOK, null);
+				BookRegistry.openTableOfContents(p, "neorogue_guide");
+			}
+			else if (e.isLeftClick()) {
+				new BukkitRunnable() {
+					public void run() {
+						handleInventoryClose();
+						new EquipmentGlossaryBrowserInventory(p);
+					}
+				}.runTask(NeoRogue.inst());
+			}
 			return;
 		}
 

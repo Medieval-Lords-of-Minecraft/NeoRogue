@@ -71,11 +71,9 @@ public class Atrophy extends Equipment {
 	
 	private class AtrophyInstance extends EquipmentInstance {
 		private FightData markedTarget;
-		private String markId;
 		
 		public AtrophyInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, String markId) {
 			super(data, sessionEq, slot, es);
-			this.markId = markId;
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				LivingEntity trg = TargetHelper.getNearestInSight(p, Atrophy.tp);
