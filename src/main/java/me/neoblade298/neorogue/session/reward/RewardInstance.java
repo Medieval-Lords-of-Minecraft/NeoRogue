@@ -99,6 +99,18 @@ public class RewardInstance extends EditInventoryInstance {
 		return new RewardInstance(s, rewards, NodeType.TREASURE);
 	}
 
+	public static RewardInstance createStartingBonuses(Session s) {
+		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+		for (UUID uuid : s.getParty().keySet()) {
+			ArrayList<SessionEquipment> choices = SessionEquipment.wrap(
+					new ArrayList<Artifact>(Equipment.getStartingBonuses(3)));
+			ArrayList<Reward> playerRewards = new ArrayList<Reward>();
+			playerRewards.add(new EquipmentChoiceReward(choices));
+			rewards.put(uuid, playerRewards);
+		}
+		return new RewardInstance(s, rewards, NodeType.START);
+	}
+
 	@Override
 	public void setup() {
 		for (PlayerSessionData data : s.getParty().values()) {
@@ -308,6 +320,10 @@ public class RewardInstance extends EditInventoryInstance {
 
 	public HashMap<UUID, ArrayList<Reward>> getRewards() {
 		return rewards;
+	}
+
+	public boolean isStartingBonusReward() {
+		return previous == NodeType.START;
 	}
 
 	// Null-safe access to a player's reward list. Missing entries (e.g. a fight that generated no rewards

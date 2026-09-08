@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.*;
@@ -126,6 +128,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EchoStone;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.EmbersOfGlory;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.EverlastingHealth;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
@@ -172,9 +175,11 @@ import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TempestSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
+import me.neoblade298.neorogue.equipment.artifacts.TreasureChest;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.artifacts.VerricsNotebook;
+import me.neoblade298.neorogue.equipment.artifacts.WarChest;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
 import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
 import me.neoblade298.neorogue.equipment.consumables.CatalystPotion;
@@ -284,6 +289,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static DropTableSet<Equipment> weapons = new DropTableSet<Equipment>();
 	private static DropTableSet<Equipment> powers = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
+	private static DropTableSet<Artifact> startingBonuses = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
 
 	private ArrayList<Equipment> reforgeParents = new ArrayList<Equipment>();
@@ -312,6 +318,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		weapons.reload();
 		powers.reload();
 		artifacts.reload();
+		startingBonuses.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
 			new Absorb(b);
@@ -1145,6 +1152,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DiscountCard();
 		new EarthenTome();
 		new EchoStone();
+		new EmbersOfGlory();
 		new EnergyBattery();
 		new EverlastingHealth();
 		new Exhaustion();
@@ -1194,9 +1202,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TempestSigil();
 		new TemporaryHealth();
 		new TomeOfWisdom();
+		new TreasureChest();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
 		new VerricsNotebook();
+		new WarChest();
 		new WarpedAnvil();
 
 		// Levelup artifacts
@@ -1375,6 +1385,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	private void setupDroptable() {
+		if (this instanceof Artifact artifact && artifact.isStartingBonus()) {
+			startingBonuses.add(ecs, artifact);
+		}
 		if (!canDrop)
 			return;
 		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)
@@ -1926,6 +1939,21 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return weapons.getMultiple(value, numDrops, ec);
 	}
 
+	public static Equipment getWeapon(DropTableSet<Equipment> set, Rarity rarity, EquipmentClass... ecs) {
+		ArrayList<Equipment> candidates = new ArrayList<Equipment>();
+		for (Equipment eq : set.getMatching(ecs)) {
+			if (eq.getType() == EquipmentType.WEAPON && eq.getRarity() == rarity) candidates.add(eq);
+		}
+		if (candidates.isEmpty()) return null;
+		return candidates.get(NeoRogue.gen.nextInt(candidates.size()));
+	}
+
+	public static ArrayList<Artifact> getStartingBonuses(int count) {
+		ArrayList<Artifact> candidates = startingBonuses.getMatching(EquipmentClass.CLASSLESS);
+		Collections.shuffle(candidates, NeoRogue.gen);
+		return new ArrayList<Artifact>(candidates.subList(0, Math.min(count, candidates.size())));
+	}
+
 	public static ArrayList<Equipment> getPower(int value, int numDrops, EquipmentClass... ec) {
 		return powers.getMultiple(value, numDrops, ec);
 	}
@@ -2186,6 +2214,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		protected static final int TIER_MAX = 10;
 		private static final int[] EQUIPMENT_VALUES = new int[Rarity.values().length * TIER_MAX];
 		protected HashMap<EquipmentClass, ArrayList<DropTable<E>>> droptables = new HashMap<EquipmentClass, ArrayList<DropTable<E>>>();
+		private HashMap<EquipmentClass, ArrayList<E>> drops = new HashMap<EquipmentClass, ArrayList<E>>();
 
 		// base tier = regions completed * 2
 		// standard fight S = 3 base tier, 1 base+1 tier
@@ -2249,6 +2278,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 					list.add(originalList.get(i).clone());
 				}
 				droptables.put(ec, list);
+				drops.put(ec, new ArrayList<E>(original.drops.get(ec)));
 			}
 		}
 
@@ -2263,6 +2293,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 					tables.add(new DropTable<E>());
 				}
 				droptables.put(ec, tables);
+				drops.put(ec, new ArrayList<E>());
 			}
 		}
 
@@ -2282,16 +2313,30 @@ public abstract class Equipment implements Comparable<Equipment> {
 					table.remove(drop);
 				}
 			}
+			for (ArrayList<E> list : drops.values()) {
+				list.remove(drop);
+			}
 		}
 
 		public void add(EquipmentClass[] ecs, E drop) {
 			for (EquipmentClass ec : ecs) {
+				drops.get(ec).add(drop);
 				for (int i = 0; i < TIER_MAX; i++) {
 					ArrayList<DropTable<E>> table = droptables.get(ec);
 					int value = getValue(drop.rarity, i);
 					if (value > 0) table.get(i).add(drop, value);
 				}
 			}
+		}
+
+		public ArrayList<E> getMatching(EquipmentClass... ecs) {
+			ArrayList<E> matches = new ArrayList<E>();
+			for (EquipmentClass ec : ecs) {
+				for (E drop : drops.getOrDefault(ec, new ArrayList<E>())) {
+					if (!matches.contains(drop)) matches.add(drop);
+				}
+			}
+			return matches;
 		}
 
 		/*

@@ -57,8 +57,12 @@ public class RewardInventory extends CoreInventory {
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
 
-		contents[8] = createSkipButton("Clear remaining rewards");
+		if (!isStartingBonusReward()) contents[8] = createSkipButton("Clear remaining rewards");
 		inv.setContents(contents);
+	}
+
+	private boolean isStartingBonusReward() {
+		return data.getSession().getInstance() instanceof RewardInstance reward && reward.isStartingBonusReward();
 	}
 
 	public ItemStack createSkipButton(String name) {
@@ -106,6 +110,7 @@ public class RewardInventory extends CoreInventory {
 		}
 		else if (slot == 8) {
 			if (spectator != null) return;
+			if (isStartingBonusReward()) return;
 			if (data.getSession().getSessionType() == SessionType.TUTORIAL) return;
 			skipRewards(new ArrayList<Reward>(rewards));
 			p.closeInventory();

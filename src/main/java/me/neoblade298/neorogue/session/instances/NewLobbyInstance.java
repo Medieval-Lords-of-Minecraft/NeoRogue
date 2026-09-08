@@ -31,6 +31,7 @@ import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
 import me.neoblade298.neorogue.player.unlock.UnlockRegistry;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -247,7 +248,7 @@ public class NewLobbyInstance extends LobbyInstance {
 
 		new BukkitRunnable() {
 			public void run() {
-				s.setInstance(NodeSelectInstance.create(s));
+                s.setInstance(RewardInstance.createStartingBonuses(s));
 				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);

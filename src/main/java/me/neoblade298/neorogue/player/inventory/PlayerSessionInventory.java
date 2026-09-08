@@ -440,8 +440,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private static ItemStack createLockedOffhandIcon(Equipment restrictor) {
-		ItemStack item = addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE,
-				Component.text("Offhand Locked", NamedTextColor.RED)), 0);
+		ItemStack item = CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE,
+				Component.text("Offhand Locked", NamedTextColor.RED));
 		ItemMeta meta = item.getItemMeta();
 		meta.lore(List.of(Component.text("Requires an empty offhand while ", NamedTextColor.GRAY)
 				.append(restrictor.getDisplay())
@@ -1198,7 +1198,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		else {
 			return addNbt(bind.getItem(), bind.getDataSlot());
 		}
-		case OFFHAND: return createOffhandIcon();
+		case OFFHAND:
+			Equipment offhandRestrictor = data.getOffhandRestrictor();
+			return offhandRestrictor != null ? createLockedOffhandIcon(offhandRestrictor) : createOffhandIcon();
 		default: return null; // should never happen
 		}
 	}
