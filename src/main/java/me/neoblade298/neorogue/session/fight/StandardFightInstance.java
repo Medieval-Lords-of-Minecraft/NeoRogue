@@ -30,6 +30,7 @@ import net.kyori.adventure.title.Title;
 
 public class StandardFightInstance extends FightInstance {
 	private static final int KILLS_TO_SCALE = 7; // number of mobs to kill before increasing total mobs by 1
+	private static final int MAP_GENERATION_ATTEMPTS = 10;
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
 	// Chance for each mob in a standard fight to spawn with the fight's modifier. Configurable.
@@ -90,6 +91,30 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	public FightScore getFightScore() {
 		return fightScore;
+	}
+
+	@Override
+	protected void prepareMap() {
+		if (map.hasResolvedCombatSpawner()) return;
+
+		RegionType type = map.getType();
+		int numPieces = Math.max(3, map.getPieces().size());
+		for (int attempt = 1; attempt <= MAP_GENERATION_ATTEMPTS; attempt++) {
+			Map replacement = Map.generate(type, numPieces, s.isDebug());
+			if (!replacement.hasResolvedCombatSpawner()) continue;
+			Bukkit.getLogger().warning("[NeoRogue Spawn] Regenerated a standard fight map with no resolved combat spawners"
+					+ " [region=" + type + ", attempt=" + attempt + "]");
+			map = replacement;
+			return;
+		}
+
+		throw new IllegalStateException("Could not generate a standard fight map with a resolved combat spawner"
+				+ " [region=" + type + ", attempts=" + MAP_GENERATION_ATTEMPTS + "]");
+	}
+
+	@Override
+	protected boolean shouldRecoverMissingInitialMobs() {
+		return true;
 	}
 	
 	@Override

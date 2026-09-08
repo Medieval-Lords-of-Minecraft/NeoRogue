@@ -1145,6 +1145,7 @@ public abstract class FightInstance extends Instance {
 	
 	@Override
 	public void setup() {
+		prepareMap();
 		instantiate();
 		s.broadcastTitle(Title.title(Component.text("Commencing fight..."), Component.text(" ")));
 		setupInstance(s);
@@ -1157,19 +1158,30 @@ public abstract class FightInstance extends Instance {
 						.compare(spawnCoords.toLocation().distanceSquared(a.getLocation()), spawnCoords.toLocation().distanceSquared(b.getLocation()))
 		);
 		
-		new BukkitRunnable() {
+		tasks.add(new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (!isActive || s.getInstance() != FightInstance.this) return;
 				setupPlayers();
 			}
-		}.runTaskLater(NeoRogue.inst(), 20L);
+		}.runTaskLater(NeoRogue.inst(), 20L));
 		
-		new BukkitRunnable() {
+		tasks.add(new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (!isActive || s.getInstance() != FightInstance.this) return;
 				startMobSpawning(spawnersByDist);
 			}
-		}.runTaskLater(NeoRogue.inst(), 40L);
+		}.runTaskLater(NeoRogue.inst(), 40L));
+
+		if (shouldRecoverMissingInitialMobs()) {
+			tasks.add(new BukkitRunnable() {
+				@Override
+				public void run() {
+					recoverMissingInitialMobs(spawnersByDist);
+				}
+			}.runTaskLater(NeoRogue.inst(), 80L));
+		}
 		
 		tasks.add(new BukkitRunnable() {
 			boolean alternate = false;
@@ -1213,6 +1225,13 @@ public abstract class FightInstance extends Instance {
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L));
+	}
+
+	protected void prepareMap() {
+	}
+
+	protected boolean shouldRecoverMissingInitialMobs() {
+		return false;
 	}
 
 	protected void setupPlayers() {
@@ -1266,12 +1285,45 @@ public abstract class FightInstance extends Instance {
 		// on the next kill/despawn rather than being force-spawned all at once.
 		spawnCounter += activateSpawner(toActivate);
 
-		startTime = System.currentTimeMillis();
+		if (startTime == 0) startTime = System.currentTimeMillis();
 		for (MapSpawnerInstance inst : initialSpawns) {
 			if (NeoRogue.isDebugFlag("spawns"))
 				Bukkit.getLogger().info("[NeoRogue Spawn] Initial spawn entry: " + inst.getMob().getId());
 			inst.spawnMob();
 		}
+	}
+
+	private void recoverMissingInitialMobs(ArrayList<MapSpawnerInstance> spawnersByDist) {
+		if (!isActive || s.getInstance() != this || getActiveMobCount() > 0) return;
+
+		Bukkit.getLogger().warning("[NeoRogue Spawn] No mobs were tracked after the initial wave; retrying once"
+				+ " [session=" + s.getHost() + ", spawners=" + describeSpawners() + "]");
+		startMobSpawning(spawnersByDist);
+		tasks.add(new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!isActive || s.getInstance() != FightInstance.this || getActiveMobCount() > 0) return;
+				Bukkit.getLogger().severe("[NeoRogue Spawn] Initial-wave recovery failed; fight still has no tracked mobs"
+						+ " [session=" + s.getHost() + ", spawners=" + describeSpawners() + "]");
+			}
+		}.runTaskLater(NeoRogue.inst(), 40L));
+	}
+
+	private int getActiveMobCount() {
+		int count = 0;
+		for (FightData data : fightData.values()) {
+			if (data == null || data.getInstance() != this || data.getActiveMob() == null) continue;
+			LivingEntity entity = data.getEntity();
+			if (entity != null && entity.isValid() && !entity.isDead()) count++;
+		}
+		return count;
+	}
+
+	private String describeSpawners() {
+		ArrayList<String> descriptions = new ArrayList<String>();
+		for (MapSpawnerInstance spawner : spawners) descriptions.add(spawner.getMobId());
+		for (MapSpawnerInstance spawner : initialSpawns) descriptions.add("initial:" + spawner.getMobId());
+		return descriptions.toString();
 	}
 	
 	protected abstract void setupInstance(Session s);
@@ -1528,6 +1580,10 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void addSpawner(MapSpawnerInstance spawner) {
+		if (!spawner.isResolved()) {
+			Bukkit.getLogger().severe("[NeoRogue Spawn] Ignoring unresolved combat spawner '" + spawner.getMobId() + "'");
+			return;
+		}
 		spawners.add(spawner);
 		if (spawner.getMaxMobs() == -1) {
 			unlimitedSpawners.add(spawner);
@@ -1535,6 +1591,10 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void addInitialSpawn(MapSpawnerInstance spawner) {
+		if (!spawner.isResolved()) {
+			Bukkit.getLogger().severe("[NeoRogue Spawn] Ignoring unresolved initial spawner '" + spawner.getMobId() + "'");
+			return;
+		}
 		initialSpawns.add(spawner);
 	}
 	

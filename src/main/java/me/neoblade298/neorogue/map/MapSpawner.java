@@ -8,6 +8,7 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawner {
@@ -39,6 +40,10 @@ public class MapSpawner {
 	public MythicMob getMythicMob() {
 		return mythicMob;
 	}
+
+	public boolean isResolved() {
+		return mob != null && mythicMob != null;
+	}
 	
 	public String getMobId() {
 		return id;
@@ -52,8 +57,8 @@ public class MapSpawner {
 		return coords;
 	}
 	
-	public MapSpawnerInstance instantiate(Session s, MapPieceInstance settings, int xOff, int zOff) {
-		return new MapSpawnerInstance(s, this, settings, xOff, zOff);
+	public MapSpawnerInstance instantiate(Session s, FightInstance fight, MapPieceInstance settings, int xOff, int zOff) {
+		return new MapSpawnerInstance(s, fight, this, settings, xOff, zOff);
 	}
 	
 	public double getRadius() {

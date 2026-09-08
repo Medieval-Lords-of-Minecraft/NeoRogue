@@ -401,6 +401,21 @@ public class Map {
 	public boolean hasCustomMobInfo() {
 		return hasCustomMobInfo;
 	}
+
+	public RegionType getType() {
+		return type;
+	}
+
+	public boolean hasResolvedCombatSpawner() {
+		for (MapPieceInstance inst : pieces) {
+			MapPiece piece = inst.getPiece();
+			if (!piece.hasSpawners()) continue;
+			for (MapSpawner spawner : piece.getSpawners(inst.getSpawnerSet())) {
+				if (spawner.isResolved()) return true;
+			}
+		}
+		return false;
+	}
 	
 	public void cleanup() {
 		

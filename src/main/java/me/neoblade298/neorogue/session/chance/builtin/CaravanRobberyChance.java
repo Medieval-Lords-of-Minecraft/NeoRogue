@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.chance.builtin;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -34,7 +35,7 @@ public class CaravanRobberyChance extends ChanceSet {
 						if (pd.getAbilitiesEquipped() + 1 >= pd.getMaxAbilities()) {
 							pd.unequip(EquipmentType.ABILITY);
 						}
-						pd.giveEquipment(Exhaustion.get());
+						pd.giveArtifact((Artifact) Exhaustion.get(), 3);
 
 						// Have to manually call this as usually inventory
 						// is not re-setup for artifacts

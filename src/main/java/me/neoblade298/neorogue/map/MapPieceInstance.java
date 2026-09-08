@@ -324,24 +324,24 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Session s = fi.getSession();
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff));
+					fi.addInitialSpawn(spawner.instantiate(s, fi, this, xOff, zOff));
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff));
+					fi.addSpawner(spawner.instantiate(s, fi, this, xOff, zOff));
 				}
 			}
 		}
 		else {
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					spawner.instantiate(null, this, xOff, zOff);
+					spawner.instantiate(null, null, this, xOff, zOff);
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					spawner.instantiate(null, this, xOff, zOff);
+					spawner.instantiate(null, null, this, xOff, zOff);
 				}
 			}
 		}
