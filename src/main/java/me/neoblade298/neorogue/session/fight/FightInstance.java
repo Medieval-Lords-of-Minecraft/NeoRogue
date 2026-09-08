@@ -1339,6 +1339,8 @@ public abstract class FightInstance extends Instance {
 	private PlayerFightData setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
 		PlayerFightData fd = new PlayerFightData(this, data);
+		data.getAttributes().applyValue(PlayerAttributeController.SAFE_FALL_DISTANCE,
+				Attribute.SAFE_FALL_DISTANCE, 2);
 		// fightData.put already done in PlayerFightData constructor
 		userData.put(uuid, fd);
 		return fd;

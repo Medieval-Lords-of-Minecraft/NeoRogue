@@ -17,12 +17,14 @@ import me.neoblade298.neorogue.NeoRogue;
 public class PlayerAttributeController {
 	public static final String GRAVITY = "gravity";
 	public static final String JUMP = "jump";
+	public static final String SAFE_FALL_DISTANCE = "safe_fall_distance";
 	public static final String WITHERED = "withered";
 
 	private static final Map<UUID, PlayerAttributeController> active = new HashMap<UUID, PlayerAttributeController>();
 	private static final Map<String, Attribute> knownModifiers = Map.of(
 			GRAVITY, Attribute.GRAVITY,
 			JUMP, Attribute.JUMP_STRENGTH,
+			SAFE_FALL_DISTANCE, Attribute.SAFE_FALL_DISTANCE,
 			WITHERED, Attribute.JUMP_STRENGTH);
 
 	private final UUID playerId;
@@ -69,10 +71,19 @@ public class PlayerAttributeController {
 	}
 
 	public void applyTimedValue(PlayerFightData data, String id, Attribute attribute, double value, int ticks) {
+		applyValue(id, attribute, value);
+		UUID version = modifierVersions.get(id);
+		if (version == null) return;
+		data.addGuaranteedTask(UUID.randomUUID(), () -> {
+			if (version.equals(modifierVersions.get(id))) removeModifier(id);
+		}, ticks);
+	}
+
+	public void applyValue(String id, Attribute attribute, double value) {
 		removeModifier(id);
 		AttributeInstance instance = getAttribute(attribute);
 		if (instance == null) return;
-		applyTimedModifier(data, id, attribute, value - instance.getValue(), Operation.ADD_NUMBER, ticks);
+		applyModifier(id, attribute, value - instance.getValue(), Operation.ADD_NUMBER);
 	}
 
 	public void removeModifier(String id) {
