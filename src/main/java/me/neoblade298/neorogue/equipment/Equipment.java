@@ -1671,6 +1671,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		} else if (showGenericReforgeable) {
 			loreItalicized.add(Component.text("Reforgeable", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
 		}
+		if (!reforgeParents.isEmpty()) {
+			loreItalicized.add(Component.text("Reforged", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
+		}
 		// Bind lore is injected at this index — below the properties (incl. wrapped lines), preLore, the
 		// cursed note, and the "Reforgeable with" line — so it always sits above the description. Stored on
 		// the item so the bind line can be placed reliably regardless of how the upper section wrapped.
@@ -1686,6 +1689,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				loreItalicized.add(tc);
 			}
 		}
+		loreItalicized.add(Component.text("[Right click for glossary]", NamedTextColor.AQUA));
 		ArrayList<Component> lore = new ArrayList<Component>(loreItalicized.size());
 		for (Component c : loreItalicized) {
 			lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));

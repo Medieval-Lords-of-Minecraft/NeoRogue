@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -14,8 +15,10 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.session.Session;
@@ -27,6 +30,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class SessionStatsInventory extends CoreInventory {
+	private final HashMap<Integer, PlayerSessionData> playerSlots = new HashMap<Integer, PlayerSessionData>();
+
 	public SessionStatsInventory(Player viewer, Session s, boolean won) {
 		// Party members get an expanded view with their personal finances/experience below the public
 		// combat stats. Spectators (not in the party) only see the public head row.
@@ -59,6 +64,7 @@ public class SessionStatsInventory extends CoreInventory {
 		for (PlayerSessionData data : ordered) {
 			if (idx >= 9) break;
 			inv.setItem(idx, createStatsHead(s, data, maxStats));
+			playerSlots.put(idx, data);
 			idx += 2;
 		}
 
@@ -106,6 +112,15 @@ public class SessionStatsInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		if (e.getRawSlot() >= inv.getSize()) return;
+		PlayerSessionData selected = playerSlots.get(e.getSlot());
+		if (selected == null) return;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				new PlayerSessionSpectateInventory(selected, p);
+			}
+		}.runTask(NeoRogue.inst());
 	}
 
 	@Override

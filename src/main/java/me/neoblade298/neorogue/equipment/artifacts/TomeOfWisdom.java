@@ -17,6 +17,7 @@ public class TomeOfWisdom extends Artifact {
 		super(ID, "Tome Of Wisdom", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		canStack = true;
+		removable = false;
 	}
 	
 	public static Equipment get() {
