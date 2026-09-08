@@ -23,16 +23,19 @@ import me.neoblade298.neorogue.player.unlock.UnlockNode.AchievementRequirement;
  *
  * <ul>
  *   <li>{@code default-commands}: run when a gained achievement mastery tier has no matching reward.</li>
+ *   <li>{@code default-broadcasts}: MiniMessage messages sent when no specific reward matches.</li>
  *   <li>{@code default-display-names}: MiniMessage descriptions shown on every achievement.</li>
  *   <li>{@code rewards}: each runs its commands when the just-gained achievement tier exactly
  *       matches one of its {@code requirements} (id + class + tier) and every requirement is met
  *       at or above its tier. The exact-tier match means a reward fires once, without persistence.</li>
  * </ul>
  *
- * Command placeholders: {@code %player%} (name), {@code %uuid%}. Commands run from console.
+ * Commands support {@code %player%} and {@code %uuid%}. Broadcasts additionally support
+ * {@code %achievement%}, replaced with the hoverable achievement component.
  */
 public class AchievementRewardRegistry {
 	private static final List<String> defaultCommands = new ArrayList<>();
+	private static final List<String> defaultBroadcasts = new ArrayList<>();
 	private static final List<String> defaultDisplayNames = new ArrayList<>();
 	private static final Map<String, AchievementReward> rewards = new HashMap<>();
 	// achievement id -> rewards that require it (so we only re-check affected rewards)
@@ -43,6 +46,7 @@ public class AchievementRewardRegistry {
 
 	public static void reload() {
 		defaultCommands.clear();
+		defaultBroadcasts.clear();
 		defaultDisplayNames.clear();
 		rewards.clear();
 		rewardsByRequirement.clear();
@@ -50,6 +54,8 @@ public class AchievementRewardRegistry {
 		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "achievement-rewards.yml"), (yml, file) -> {
 			List<String> defaults = yml.getStringList("default-commands");
 			if (defaults != null) defaultCommands.addAll(defaults);
+			List<String> defaultBroadcastMessages = yml.getStringList("default-broadcasts");
+			if (defaultBroadcastMessages != null) defaultBroadcasts.addAll(defaultBroadcastMessages);
 			List<String> defaultDisplays = yml.getStringList("default-display-names");
 			if (defaultDisplays != null) defaultDisplayNames.addAll(defaultDisplays);
 
@@ -76,11 +82,14 @@ public class AchievementRewardRegistry {
 				List<String> cmds = new ArrayList<>();
 				List<String> rawCmds = sec.getStringList("commands");
 				if (rawCmds != null) cmds.addAll(rawCmds);
+				List<String> broadcasts = new ArrayList<>();
+				List<String> rawBroadcasts = sec.getStringList("broadcasts");
+				if (rawBroadcasts != null) broadcasts.addAll(rawBroadcasts);
 				List<String> displayNames = new ArrayList<>();
 				List<String> rawDisplayNames = sec.getStringList("display-names");
 				if (rawDisplayNames != null) displayNames.addAll(rawDisplayNames);
 
-				AchievementReward reward = new AchievementReward(key, reqs, cmds, displayNames);
+				AchievementReward reward = new AchievementReward(key, reqs, cmds, broadcasts, displayNames);
 				rewards.put(key, reward);
 				for (AchievementRequirement req : reqs) {
 					rewardsByRequirement.computeIfAbsent(req.id(), k -> new ArrayList<>()).add(reward);
@@ -119,12 +128,14 @@ public class AchievementRewardRegistry {
 		List<AchievementReward> candidates = rewardsByRequirement.get(achievement.getId());
 		if (candidates == null || candidates.isEmpty()) {
 			runCommands(p, defaultCommands);
+			runBroadcasts(p, achievement, progress, defaultBroadcasts);
 			return;
 		}
 
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		if (pd == null) {
 			runCommands(p, defaultCommands);
+			runBroadcasts(p, achievement, progress, defaultBroadcasts);
 			return;
 		}
 
@@ -158,11 +169,15 @@ public class AchievementRewardRegistry {
 			}
 			if (all) {
 				runCommands(p, reward.getCommands());
+				runBroadcasts(p, achievement, progress, reward.getBroadcasts());
 				grantedSpecificReward = true;
 			}
 		}
 
-		if (!grantedSpecificReward) runCommands(p, defaultCommands);
+		if (!grantedSpecificReward) {
+			runCommands(p, defaultCommands);
+			runBroadcasts(p, achievement, progress, defaultBroadcasts);
+		}
 	}
 
 	// Parses a requirement key ("id" or "id@CLASS") with its required tier. Class-scoped achievements
@@ -194,8 +209,24 @@ public class AchievementRewardRegistry {
 
 	private static void runCommands(Player p, List<String> commands) {
 		for (String cmd : commands) {
-			String parsed = cmd.replace("%player%", p.getName()).replace("%uuid%", p.getUniqueId().toString());
+			String parsed = cmd.replace("%player%", p.getName())
+					.replace("%uuid%", p.getUniqueId().toString());
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parsed);
+		}
+	}
+
+	private static void runBroadcasts(Player p, Achievement achievement, AchievementProgress progress,
+			List<String> broadcasts) {
+		for (String broadcast : broadcasts) {
+			String parsed = broadcast.replace("%player%", p.getName())
+					.replace("%uuid%", p.getUniqueId().toString());
+			var message = NeoCore.miniMessage().deserialize(parsed).replaceText(config -> config
+					.matchLiteral("%achievement%")
+					.replacement(AchievementManager.getHoverable(
+							achievement, progress.getMastery(), progress.getScope(), progress)));
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				online.sendMessage(message);
+			}
 		}
 	}
 }

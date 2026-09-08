@@ -314,22 +314,11 @@ public class AchievementManager {
 	// already receives their personal toast and chat message.
 	private static void broadcastAnnouncement(Player earner, Achievement achievement, int mastery, EquipmentClass ec,
 			AchievementProgress progress) {
-		Component hoverText = buildAchievementHover(achievement, mastery, ec, progress);
-		String scope = ec != null ? ec.name().toLowerCase() : "global";
 		Component msg = Component.text("[Achievement] ", NamedTextColor.YELLOW)
 				.append(Component.text(earner.getName(), NamedTextColor.GOLD))
 				.append(Component.text(" earned ", NamedTextColor.GRAY))
-				.append(achievement.getDisplayName())
-				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
-		if (ec != null) {
-			msg = msg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
-		}
-		else {
-			msg = msg.append(Component.text(" [Global]", NamedTextColor.GRAY));
-		}
-		msg = msg.append(Component.text("!", NamedTextColor.GRAY))
-				.hoverEvent(HoverEvent.showText(hoverText))
-				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
+				.append(getHoverable(achievement, mastery, ec, progress))
+				.append(Component.text("!", NamedTextColor.GRAY));
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			if (online.equals(earner)) continue;
 			online.sendMessage(msg);
@@ -365,22 +354,24 @@ public class AchievementManager {
 		queue.addLast(new ToastEntry(displayName, description, achievement.getMaterial()));
 		processToastQueue(uuid);
 
-		// Build hover text using the same lore structure as the inventory item
-		Component hoverText = buildAchievementHover(achievement, mastery, ec, progress);
-
-		String scope = ec != null ? ec.name().toLowerCase() : "global";
 		Component chatMsg = Component.text("[Achievement] ", NamedTextColor.YELLOW)
-				.append(achievement.getDisplayName())
+				.append(getHoverable(achievement, mastery, ec, progress));
+		p.sendMessage(chatMsg);
+	}
+
+	public static Component getHoverable(Achievement achievement, int mastery, EquipmentClass ec,
+			AchievementProgress progress) {
+		Component component = achievement.getDisplayName()
 				.append(Component.text(" (" + mastery + "/" + achievement.getMasteryThresholds().length + ")", NamedTextColor.GOLD));
 		if (ec != null) {
-			chatMsg = chatMsg.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
+			component = component.append(Component.text(" [" + ec.getDisplay() + "]", NamedTextColor.YELLOW));
 		}
 		else {
-			chatMsg = chatMsg.append(Component.text(" [Global]", NamedTextColor.GRAY));
+			component = component.append(Component.text(" [Global]", NamedTextColor.GRAY));
 		}
-		chatMsg = chatMsg.hoverEvent(HoverEvent.showText(hoverText))
+		String scope = ec != null ? ec.name().toLowerCase() : "global";
+		return component.hoverEvent(HoverEvent.showText(buildAchievementHover(achievement, mastery, ec, progress)))
 				.clickEvent(ClickEvent.runCommand("/nr achievements " + scope));
-		p.sendMessage(chatMsg);
 	}
 
 	// Builds the shared hover tooltip (class line + lore + "click to view") used by both the

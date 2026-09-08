@@ -13,13 +13,15 @@ public class AchievementReward {
 	private final String id;
 	private final List<AchievementRequirement> requirements;
 	private final List<String> commands;
+	private final List<String> broadcasts;
 	private final List<String> displayNames;
 
 	public AchievementReward(String id, List<AchievementRequirement> requirements, List<String> commands,
-			List<String> displayNames) {
+			List<String> broadcasts, List<String> displayNames) {
 		this.id = id;
 		this.requirements = requirements;
 		this.commands = commands;
+		this.broadcasts = broadcasts;
 		this.displayNames = displayNames;
 	}
 
@@ -33,6 +35,10 @@ public class AchievementReward {
 
 	public List<String> getCommands() {
 		return commands;
+	}
+
+	public List<String> getBroadcasts() {
+		return broadcasts;
 	}
 
 	public List<String> getDisplayNames() {

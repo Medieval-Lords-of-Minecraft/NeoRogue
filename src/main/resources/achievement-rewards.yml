@@ -1,5 +1,5 @@
 # ============================================================================
-# Achievement command rewards
+# Achievement rewards
 # ----------------------------------------------------------------------------
 # Reload after editing with /nradmin reload.
 #
@@ -8,6 +8,12 @@
 #   %player% - the player's name
 #   %uuid%   - the player's UUID
 #
+# Broadcasts are deserialized as MiniMessage and sent to every online player.
+# Placeholders available in broadcasts:
+#   %player%      - the player's name
+#   %uuid%        - the player's UUID
+#   %achievement% - the hoverable, clickable achievement component
+#
 # Achievement ids can be viewed in-game via /nr achievements.
 # ============================================================================
 
@@ -15,6 +21,10 @@
 default-commands: []
 #  - "broadcast %player% earned an achievement!"
 #  - "give %player% diamond 1"
+
+# Default broadcasts sent when no specific reward is completed.
+default-broadcasts: []
+#  - "<yellow>%player%</yellow> earned %achievement%!"
 
 # Default display names are MiniMessage descriptions shown on every achievement.
 default-display-names: []
@@ -36,7 +46,8 @@ rewards: {}
 #      - "1 Nether Star"
 #    commands:
 #      - "give %player% nether_star 1"
-#      - "broadcast %player% is a completionist!"
+#    broadcasts:
+#      - "<yellow>%player%</yellow> completed %achievement%!"
 #  thief_low_district:
 #    requirements:
 #      low_district_victor@THIEF: 1
