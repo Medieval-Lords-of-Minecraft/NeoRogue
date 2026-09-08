@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -22,6 +21,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -46,11 +47,12 @@ public class Atrophy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
-		AtrophyInstance inst = new AtrophyInstance(data, sessionEq, slot, es);
+		String markId = data.getPlayer().getUniqueId() + "-" + id + "-" + slot;
+		AtrophyInstance inst = new AtrophyInstance(data, sessionEq, slot, es, markId);
 		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
+			if (fd == null || !fd.hasStatus(markId)) return TriggerResult.keep();
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this)));
 			fd.applyStatus(StatusType.INSANITY, data, ins, -1, this);
 			return TriggerResult.keep();
@@ -68,14 +70,24 @@ public class Atrophy extends Equipment {
 	}
 	
 	private class AtrophyInstance extends EquipmentInstance {
-		private LivingEntity trg;
+		private FightData markedTarget;
+		private String markId;
 		
-		public AtrophyInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es) {
+		public AtrophyInstance(PlayerFightData data, SessionEquipment sessionEq, int slot, EquipSlot es, String markId) {
 			super(data, sessionEq, slot, es);
+			this.markId = markId;
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
-				trg = TargetHelper.getNearestInSight(p, Atrophy.tp);
+				LivingEntity trg = TargetHelper.getNearestInSight(p, Atrophy.tp);
 				if (trg == null) return TriggerResult.keep();
+				FightData targetData = FightInstance.getFightData(trg);
+				if (targetData == null) return TriggerResult.keep();
+				if (markedTarget != null && markedTarget.hasStatus(markId)) {
+					markedTarget.removeStatus(markId);
+				}
+				Status mark = Status.createByGenericType(GenericStatusType.BASIC, markId, targetData, true);
+				targetData.applyStatus(mark, data, 1, -1, Atrophy.this);
+				markedTarget = targetData;
 				Sounds.infect.play(p, trg);
 				pc.play(p, trg);
 				return TriggerResult.keep();
