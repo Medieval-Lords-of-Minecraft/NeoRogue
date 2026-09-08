@@ -83,8 +83,12 @@ public abstract class EditInventoryInstance extends Instance {
 						data.getData().getDisplay() + " must unequip some abilities before continuing!");
 				return false;
 			}
+			if (p != null && !p.getItemOnCursor().getType().isAir()) {
+				s.broadcastError(data.getData().getDisplay() + " must finish moving their equipment before continuing!");
+				return false;
+			}
 			
-			if (data.getPlayer() != null && InventoryListener.hasOpenCoreInventory(p)) {
+			if (p != null && InventoryListener.hasOpenCoreInventory(p)) {
 				s.broadcastError(data.getData().getDisplay() + " must close their inventory before continuing!");
 				return false;
 			}

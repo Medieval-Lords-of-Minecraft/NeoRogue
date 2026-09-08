@@ -35,7 +35,7 @@ public class ChargedCloak extends Equipment {
 	private static final Circle THRESHOLD_RING = new Circle(1.1);
 	private static final ParticleContainer THRESHOLD_PARTICLE = new ParticleContainer(Particle.DUST).count(1)
 			.spread(0, 0).speed(0).dustOptions(new DustOptions(Color.fromRGB(80, 200, 255), 0.9F));
-	private static final ParticleContainer SPEED_PARTICLE = new ParticleContainer(Particle.FIREWORK).count(8)
+	private static final ParticleContainer SPEED_PARTICLE = new ParticleContainer(Particle.FIREWORK).count(4)
 			.spread(0.1, 0.45).offsetY(0.8).speed(0.01);
 	private static final SoundContainer THRESHOLD_SOUND = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_CHIME,
 			0.45F, 1.6F);
@@ -63,17 +63,16 @@ public class ChargedCloak extends Equipment {
 			if (!event.isStatus(StatusType.ELECTRIFIED) || event.getStacks() <= 0) return TriggerResult.keep();
 
 			int total = appliedStacks.getCount() + event.getStacks();
-			int activations = total / threshold;
-			appliedStacks.setCount(total % threshold);
-			if (activations > 0) {
+			if (total >= threshold) {
+				appliedStacks.setCount(total - threshold);
 				Player p = data.getPlayer();
 				THRESHOLD_RING.play(p, THRESHOLD_PARTICLE, p.getLocation().add(0, 0.15, 0), LocalAxes.xz(), null);
 				SPEED_PARTICLE.play(p, p);
 				THRESHOLD_SOUND.play(p, p);
 				SPEED_SOUND.play(p, p);
-				for (int i = 0; i < activations; i++) {
-					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, SPEED_DURATION, SPEED_AMPLIFIER));
-				}
+				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, SPEED_DURATION, SPEED_AMPLIFIER));
+			} else {
+				appliedStacks.setCount(total);
 			}
 			return TriggerResult.keep();
 		});

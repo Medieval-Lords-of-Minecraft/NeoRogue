@@ -218,9 +218,9 @@ public class EquipmentGlossaryBrowserInventory extends GlossaryInventory {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				openOther = true;
 				refresh();
 				openInventory();
+				openOther = true;
 			}
 		}.runTask(NeoRogue.inst());
 	}
