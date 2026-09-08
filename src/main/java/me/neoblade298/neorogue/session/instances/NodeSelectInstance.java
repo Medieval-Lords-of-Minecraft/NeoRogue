@@ -161,7 +161,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
-			FightInstance inst = (FightInstance) n.getInstance();
+			if (n == null || !(n.getInstance() instanceof FightInstance inst))
+				return;
 			new FightInfoInventory(e.getPlayer(), s, null, inst, inst.getMap().getMobs(), false);
 		} else {
 			super.handleSpectatorInteractEvent(e);
@@ -213,9 +214,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			// Validation
 			if (!s.isEveryoneOnline())
 				return;
-			if (s.setInstance(node.getInstance()))
-				s.visitNode(node);
-			if (node.getInstance() instanceof FightInstance) {
+			Instance next = node.getInstance();
+			if (!s.canSetInstance(next))
+				return;
+			s.visitNode(node);
+			if (s.setInstance(next) && next instanceof FightInstance) {
 				s.setBusy(true);
 			}
 			return;
@@ -224,7 +227,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
-			FightInstance inst = (FightInstance) n.getInstance();
+			if (n == null || !(n.getInstance() instanceof FightInstance inst))
+				return;
 			new FightInfoInventory(e.getPlayer(), s, s.getParty().get(p.getUniqueId()), inst, inst.getMap().getMobs(), false);
 		} else {
 			super.handleInteractEvent(e);

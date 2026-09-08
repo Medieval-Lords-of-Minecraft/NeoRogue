@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -19,6 +20,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.ShiftClickableInventory;
@@ -48,6 +50,10 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
+			e.setCancelled(true);
+			return;
+		}
 		int slot = e.getSlot();
 		
 		if (slot == 0) {
@@ -87,25 +93,27 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			}
 			p.closeInventory();
 		}
-		else {
+		else if (slot == 2) {
 			e.setCancelled(true);
-			ItemStack item = e.getCurrentItem();
-			if (item == null || item.getType().isAir() || item.getAmount() <= 0) return;
-			String id = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
-			if (id.isBlank()) {
+			SessionEquipment input = SessionEquipment.fromItem(inv.getItem(0));
+			if (input == null || input.getEquipment().isUpgraded() || !input.getEquipment().canUpgrade()) {
 				Util.displayError(p, "Invalid upgrade!");
+				updateOutput();
 				return;
 			}
 
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			inv.setItem(0, null);
-			Equipment eq = Equipment.get(id, true);
-			data.giveEquipment(eq,
+			inv.setItem(2, null);
+			data.giveEquipment(input.upgrade(),
 					SharedUtil.color("You upgraded to a(n) "),
 					SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded to a(n) "), false);
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			inst.useUpgrade(p.getUniqueId());
 			p.closeInventory();
+		}
+		else {
+			e.setCancelled(true);
 		}
 	}
 
@@ -114,12 +122,9 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		// Stop previewing and restore the normal equipment display.
 		data.setPreviewingUpgrades(false);
 		if (inv.getItem(0) != null) {
-			ItemStack placed = inv.getItem(0);
-			String equipId = NBT.get(placed, nbt -> { return nbt.getString("equipId"); });
-			boolean isUpgraded = Boolean.TRUE.equals(NBT.get(placed, nbt -> { return nbt.getBoolean("isUpgraded"); }));
-			Equipment eq = Equipment.get(equipId, isUpgraded);
+			SessionEquipment placed = SessionEquipment.fromItem(inv.getItem(0));
 			// Returning the item the player placed in - it was already owned, don't re-fire acquire
-			data.giveEquipment(eq, null, null, false);
+			if (placed != null) data.giveEquipment(placed, null, null, false);
 		}
 		data.setupInventory();
 	}
@@ -146,18 +151,17 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			inv.setItem(2, null);
 		}
 		else {
-			String id = NBT.get(item, nbt -> { return nbt.getString("equipId"); });
-			boolean isUpgraded = Boolean.TRUE.equals(NBT.get(item, nbt -> { return nbt.getBoolean("isUpgraded"); }));
-			if (id.isBlank()) {
+			SessionEquipment input = SessionEquipment.fromItem(item);
+			if (input == null) {
 				inv.setItem(2, CoreInventory.createButton(Material.BARRIER, Component.text("This item is not equipment", NamedTextColor.RED)));
 				return;
 			}
-			if (isUpgraded) {
+			if (input.getEquipment().isUpgraded() || !input.getEquipment().canUpgrade()) {
 				inv.setItem(2, CoreInventory.createButton(Material.BARRIER, Component.text("This item is already upgraded", NamedTextColor.RED)));
 				return;
 			}
 			
-			inv.setItem(2, Equipment.get(id, true).getItem());
+			inv.setItem(2, input.upgrade().getItem());
 		}
 	}
 }

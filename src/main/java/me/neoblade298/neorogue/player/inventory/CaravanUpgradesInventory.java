@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerData;
@@ -84,11 +85,11 @@ public class CaravanUpgradesInventory extends CoreInventory {
 
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(line(Component.text(up.getTitle(), titleColor)));
+		meta.displayName(configuredLine(up.getTitle(), titleColor));
 
 		List<Component> lore = new ArrayList<Component>();
 		for (String d : up.getDescription()) {
-			lore.add(line(Component.text(d, NamedTextColor.GRAY)));
+			lore.add(configuredLine(d, NamedTextColor.GRAY));
 		}
 		if (!up.getActions().isEmpty()) {
 			lore.add(Component.empty());
@@ -117,14 +118,19 @@ public class CaravanUpgradesInventory extends CoreInventory {
 			lore.add(line(Component.text("Requires:", NamedTextColor.WHITE)));
 			for (String[] orGroup : up.getRequires()) {
 				boolean anyMet = false;
-				StringBuilder names = new StringBuilder();
 				for (int i = 0; i < orGroup.length; i++) {
 					if (pd.hasPurchasedUpgrade(orGroup[i])) anyMet = true;
-					CaravanUpgrade r = CaravanUpgradeRegistry.get(orGroup[i]);
-					if (i > 0) names.append(" or ");
-					names.append(r != null ? r.getTitle() : orGroup[i]);
 				}
-				lore.add(line(Component.text(" - " + names, anyMet ? NamedTextColor.GREEN : NamedTextColor.RED)));
+				NamedTextColor requirementColor = anyMet ? NamedTextColor.GREEN : NamedTextColor.RED;
+				Component names = Component.text(" - ", requirementColor);
+				for (int i = 0; i < orGroup.length; i++) {
+					CaravanUpgrade required = CaravanUpgradeRegistry.get(orGroup[i]);
+					if (i > 0) names = names.append(Component.text(" or ", requirementColor));
+					names = names.append(NeoCore.miniMessage()
+							.deserialize(required != null ? required.getTitle() : orGroup[i])
+							.colorIfAbsent(requirementColor));
+				}
+				lore.add(line(names));
 			}
 		}
 
@@ -140,6 +146,10 @@ public class CaravanUpgradesInventory extends CoreInventory {
 
 	private static Component line(Component c) {
 		return c.decoration(TextDecoration.ITALIC, State.FALSE);
+	}
+
+	private static Component configuredLine(String miniMessage, NamedTextColor fallbackColor) {
+		return line(NeoCore.miniMessage().deserialize(miniMessage).colorIfAbsent(fallbackColor));
 	}
 
 	@Override

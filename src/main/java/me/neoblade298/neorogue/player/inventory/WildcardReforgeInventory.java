@@ -17,6 +17,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,18 +32,18 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class WildcardReforgeInventory extends CoreInventory {
 	private static final int PREVIOUS = 4, NEXT = 6;
 	private PlayerSessionData data;
-	private Equipment toReforge, wildcard;
+	private SessionEquipment toReforge, wildcard;
 	private ArrayList<Equipment> results;
 	private int page;
 
-	public WildcardReforgeInventory(PlayerSessionData data, Equipment toReforge, Equipment wildcard) {
+	public WildcardReforgeInventory(PlayerSessionData data, SessionEquipment toReforge, SessionEquipment wildcard) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(),
-				calculateSize(toReforge.getAllReforgeResults().size()),
+				calculateSize(toReforge.getEquipment().getAllReforgeResults().size()),
 				Component.text("Wildcard Reforge", NamedTextColor.GOLD)));
 		this.data = data;
 		this.toReforge = toReforge;
 		this.wildcard = wildcard;
-		this.results = toReforge.getAllReforgeResults();
+		this.results = toReforge.getEquipment().getAllReforgeResults();
 		setupInventory();
 	}
 
@@ -135,7 +136,7 @@ public class WildcardReforgeInventory extends CoreInventory {
 		cmp = cmp.append(Component.text(" into a(n) ").append(result.getHoverable().append(Component.text("!"))));
 		data.getSession().broadcast(cmp);
 
-		data.giveEquipmentSilent(result);
+		data.giveEquipment(result, null, null, false);
 		toReforge = null;
 		wildcard = null;
 		new BukkitRunnable() {
@@ -148,8 +149,8 @@ public class WildcardReforgeInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (toReforge != null) {
-			data.giveEquipment(toReforge, null, null);
-			data.giveEquipment(wildcard, null, null);
+			data.giveEquipment(toReforge, null, null, false);
+			data.giveEquipment(wildcard, null, null, false);
 		}
 	}
 

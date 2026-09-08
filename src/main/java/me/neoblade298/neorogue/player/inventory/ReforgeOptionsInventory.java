@@ -17,29 +17,32 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeOptionsInventory extends CoreInventory {
 	private PlayerSessionData data;
-	private Equipment toReforge, reforgeWith;
+	private SessionEquipment toReforge, reforgeWith;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionData data, Equipment toReforge, Equipment reforgeWith) {
+	public ReforgeOptionsInventory(PlayerSessionData data, SessionEquipment toReforge, SessionEquipment reforgeWith) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		this.data = data;
 		this.toReforge = toReforge;
 		this.reforgeWith = reforgeWith;
 
 		ItemStack[] contents = inv.getContents();
-		Equipment[] options = toReforge.getReforgeOptions().get(reforgeWith.getUnupgraded());
+		Equipment primary = toReforge.getEquipment();
+		Equipment secondary = reforgeWith.getEquipment();
+		Equipment[] options = primary.getReforgeOptions().get(secondary.getUnupgraded());
 		int offset = options.length - 5; // -5 for middle of inv, -1 for 0 offset at size 2
 		contents[3] = toReforge.getItem();
 		contents[5] = reforgeWith.getItem();
 		for (int i = 0; i < options.length; i++) {
 			Equipment eq = options[i];
 			if (eq == null) {
-				Bukkit.getLogger().warning("[NeoRogue] Failed to load reforge option " + options[i] + " for item " + toReforge.getId() + ", skipping");
+				Bukkit.getLogger().warning("[NeoRogue] Failed to load reforge option " + options[i] + " for item " + primary.getId() + ", skipping");
 				continue;
 			}
 			contents[(2 * i) - offset + 9] = eq.getItem();
@@ -80,11 +83,11 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			Equipment reforged = getFromSlot(e.getSlot());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());
-			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
+			if (!toReforge.getEquipment().getId().equals(reforgeWith.getEquipment().getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
 			data.getSession().broadcast(cmp);
 			
-			data.giveEquipmentSilent(reforged);
+			data.giveEquipment(reforged, null, null, false);
 			toReforge = null;
 			reforgeWith = null;
 			new BukkitRunnable() {

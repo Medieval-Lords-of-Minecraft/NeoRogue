@@ -779,7 +779,7 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData deadData = userData.get(dead.getUniqueId());
 		PlayerFightData reviverData = userData.get(p.getUniqueId());
 		deadData.setDeath(false);
-		deadData.applyStatus(StatusType.INVINCIBLE, reviverData, 1, 20);
+		deadData.applyStatus(StatusType.INVINCIBLE, reviverData, 1, 40);
 		reviverData.getStats().addRevive();
 		bars.remove(reviveBar);
 		new BukkitRunnable() {

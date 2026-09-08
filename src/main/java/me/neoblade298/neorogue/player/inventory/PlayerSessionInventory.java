@@ -815,7 +815,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError(msg, false);
 					return;
 				}
-				handleReforge(e, reforgePair[0], reforgePair[1], slot, clickedDataSlot);
+				handleReforge(cursor, reforgePair, slot, clickedDataSlot);
 				return;
 			}
 
@@ -829,7 +829,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError(msg, false);
 					return;
 				}
-				handleWildcardReforge(e, wildcardPair[0], wildcardPair[1], slot, clickedDataSlot);
+				handleWildcardReforge(cursor, wildcardPair, slot, clickedDataSlot);
 				return;
 			}
 
@@ -903,32 +903,51 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return false;
 	}
 
-	private void handleReforge(InventoryClickEvent e, Equipment primary, Equipment secondary, int slot, int dataSlot) {
+	private void handleReforge(ItemStack cursor, Equipment[] pair, int slot, int dataSlot) {
+		SessionEquipment[] components = reserveReforgeComponents(cursor, pair, slot, dataSlot);
+		if (components == null) return;
 		new BukkitRunnable() {
 			public void run() {
-				p.setItemOnCursor(null);
-				EquipSlot type = slotTypes.get(slot);
-				removeEquipment(type, dataSlot, slot, e.getClickedInventory());
-				inv.setItem(slot, iconFromEquipSlot(type, slot));
-				handleInventoryClose();
-				new ReforgeOptionsInventory(data, primary, secondary);
+				new ReforgeOptionsInventory(data, components[0], components[1]);
 			}
 		}.runTask(NeoRogue.inst());
-		return;
 	}
 
-	private void handleWildcardReforge(InventoryClickEvent e, Equipment target, Equipment wildcard, int slot, int dataSlot) {
+	private void handleWildcardReforge(ItemStack cursor, Equipment[] pair, int slot, int dataSlot) {
+		SessionEquipment[] components = reserveReforgeComponents(cursor, pair, slot, dataSlot);
+		if (components == null) return;
 		new BukkitRunnable() {
 			public void run() {
-				p.setItemOnCursor(null);
-				EquipSlot type = slotTypes.get(slot);
-				removeEquipment(type, dataSlot, slot, e.getClickedInventory());
-				inv.setItem(slot, iconFromEquipSlot(type, slot));
-				handleInventoryClose();
-				new WildcardReforgeInventory(data, target, wildcard);
+				new WildcardReforgeInventory(data, components[0], components[1]);
 			}
 		}.runTask(NeoRogue.inst());
-		return;
+	}
+
+	private SessionEquipment[] reserveReforgeComponents(ItemStack cursor, Equipment[] pair, int slot, int dataSlot) {
+		SessionEquipment cursorComponent = SessionEquipment.fromItem(cursor);
+		EquipSlot type = slotTypes.get(slot);
+		SessionEquipment clickedComponent = data.getSessionEquipment(type)[dataSlot];
+		if (cursorComponent == null || clickedComponent == null) return null;
+
+		SessionEquipment first;
+		SessionEquipment second;
+		if (cursorComponent.getEquipment() == pair[0] && clickedComponent.getEquipment() == pair[1]) {
+			first = cursorComponent;
+			second = clickedComponent;
+		}
+		else if (clickedComponent.getEquipment() == pair[0] && cursorComponent.getEquipment() == pair[1]) {
+			first = clickedComponent;
+			second = cursorComponent;
+		}
+		else {
+			return null;
+		}
+
+		p.setItemOnCursor(null);
+		removeEquipment(type, dataSlot, slot, inv);
+		inv.setItem(slot, iconFromEquipSlot(type, slot));
+		handleInventoryClose();
+		return new SessionEquipment[] { first, second };
 	}
 	
 	public void clearHighlights() {
@@ -1065,10 +1084,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		
 		if (p.getItemOnCursor().getType().isAir()) return;
 		ItemStack clicked = p.getItemOnCursor();
-		String equipId = NBT.get(clicked, nbt -> { return nbt.getString("equipId"); });
-		boolean isUpgraded = Boolean.TRUE.equals(NBT.get(clicked, nbt -> { return nbt.getBoolean("isUpgraded"); }));
-		data.giveEquipmentSilent(Equipment.get(equipId, isUpgraded));
 		p.setItemOnCursor(null);
+		SessionEquipment returned = SessionEquipment.fromItem(clicked);
+		if (returned == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Discarded invalid cursor item while closing the session inventory for "
+					+ p.getName() + ": " + clicked);
+			return;
+		}
+		data.giveEquipment(returned, null, null, false);
 	}
 
 	@Override

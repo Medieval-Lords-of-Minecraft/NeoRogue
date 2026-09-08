@@ -388,6 +388,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (s.getInstance() != ChanceInstance.this) return;
 				if (nextInstance != null) {
 					String instDisplay = null;
 					if (nextInstance instanceof FightInstance) {
@@ -412,6 +413,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (s.getInstance() != ChanceInstance.this) return;
 				returning = false;
 				s.setInstance(next);
 				s.setBusy(false);

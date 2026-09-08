@@ -378,11 +378,12 @@ public class RewardInstance extends EditInventoryInstance {
 		NodeSelectInstance next = NodeSelectInstance.create(s);
 		new BukkitRunnable() {
 			public void run() {
-				if (!s.isBusy() && s.canSetInstance(next)) {
+				if (s.getInstance() == RewardInstance.this && !s.isBusy() && s.canSetInstance(next)) {
 					s.broadcast("Returning to node select...");
 					s.setBusy(true);
 					new BukkitRunnable() {
 						public void run() {
+							if (s.getInstance() != RewardInstance.this) return;
 							s.setInstance(next);
 							s.setBusy(false);
 

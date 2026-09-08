@@ -218,12 +218,16 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 						displayError(msg, true);
 						return;
 					}
+					SessionEquipment cursorComponent = SessionEquipment.fromItem(cursor);
+					SessionEquipment clickedComponent = SessionEquipment.fromItem(clicked);
+					SessionEquipment primary = cursorComponent.getEquipment() == reforgePair[0] ? cursorComponent : clickedComponent;
+					SessionEquipment secondary = primary == cursorComponent ? clickedComponent : cursorComponent;
+					p.setItemOnCursor(null);
+					inv.setItem(e.getSlot(), null);
+					handleInventoryClose();
 					new BukkitRunnable() {
 						public void run() {
-							p.setItemOnCursor(null);
-							inv.setItem(e.getSlot(), null);
-							handleInventoryClose();
-							new ReforgeOptionsInventory(data, reforgePair[0], reforgePair[1]);
+							new ReforgeOptionsInventory(data, primary, secondary);
 						}
 					}.runTask(NeoRogue.inst());
 					return;
@@ -239,12 +243,16 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 						displayError(msg, true);
 						return;
 					}
+					SessionEquipment cursorComponent = SessionEquipment.fromItem(cursor);
+					SessionEquipment clickedComponent = SessionEquipment.fromItem(clicked);
+					SessionEquipment target = cursorComponent.getEquipment() == wildcardPair[0] ? cursorComponent : clickedComponent;
+					SessionEquipment wildcard = target == cursorComponent ? clickedComponent : cursorComponent;
+					p.setItemOnCursor(null);
+					inv.setItem(e.getSlot(), null);
+					handleInventoryClose();
 					new BukkitRunnable() {
 						public void run() {
-							p.setItemOnCursor(null);
-							inv.setItem(e.getSlot(), null);
-							handleInventoryClose();
-							new WildcardReforgeInventory(data, wildcardPair[0], wildcardPair[1]);
+							new WildcardReforgeInventory(data, target, wildcard);
 						}
 					}.runTask(NeoRogue.inst());
 					return;

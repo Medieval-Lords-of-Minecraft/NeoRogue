@@ -94,7 +94,7 @@ public class ReforgeConfirmInventory extends CoreInventory {
 
 			toReforge = null;
 			reforgeWith = null;
-			data.giveEquipment(result, (Component) null, null);
+			data.giveEquipment(result, (Component) null, null, false);
 			new BukkitRunnable() {
 				public void run() {
 					p.closeInventory();
@@ -120,8 +120,8 @@ public class ReforgeConfirmInventory extends CoreInventory {
 			SessionEquipment returnedReforgeWith = reforgeWith;
 			toReforge = null;
 			reforgeWith = null;
-			data.giveEquipment(returnedToReforge, (Component) null, null);
-			data.giveEquipment(returnedReforgeWith, (Component) null, null);
+			data.giveEquipment(returnedToReforge, (Component) null, null, false);
+			data.giveEquipment(returnedReforgeWith, (Component) null, null, false);
 			if (prev != null) {
 				new BukkitRunnable() {
 					public void run() {

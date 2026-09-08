@@ -228,6 +228,7 @@ public class ShopInstance extends EditInventoryInstance {
 		s.setBusy(true);
 		new BukkitRunnable() {
 			public void run() {
+				if (s.getInstance() != ShopInstance.this) return;
 				s.setInstance(next);
 				s.setBusy(false);
 			}
@@ -256,6 +257,7 @@ public class ShopInstance extends EditInventoryInstance {
 			s.setBusy(true);
 			new BukkitRunnable() {
 				public void run() {
+					if (s.getInstance() != ShopInstance.this) return;
 					s.setInstance(NodeSelectInstance.create(s));
 					s.setBusy(false);
 				}

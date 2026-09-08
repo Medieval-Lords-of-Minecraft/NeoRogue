@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -165,6 +166,7 @@ public abstract class Instance {
 	// render each player's PlayerFightData bar; other instances use the PlayerSessionData bar below.
 	public void updateActionBar() {
 		for (PlayerSessionData data : s.getParty().values()) {
+			if (SessionManager.getSession(data.getUniqueId()) != s) continue;
 			Player p = data.getPlayer();
 			if (p == null) continue;
 			Component bar = getActionBar(data);

@@ -127,12 +127,9 @@ public abstract class EditInventoryInstance extends Instance {
 
 	@Override
 	public void handlePlayerLogin(Player p) {
-		if (s.isSpectator(p.getUniqueId())) {
-			return;
-		}
-		else {
+		super.handlePlayerLogin(p);
+		if (!s.isSpectator(p.getUniqueId()))
 			s.getData(p.getUniqueId()).syncHealth();
-		}
 	}
 
 	@Override

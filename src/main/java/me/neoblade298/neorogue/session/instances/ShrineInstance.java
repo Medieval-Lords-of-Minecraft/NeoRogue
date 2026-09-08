@@ -262,8 +262,9 @@ public class ShrineInstance extends EditInventoryInstance {
 				state = RETURNING_STATE;
 				new BukkitRunnable() {
 					public void run() {
-						s.setInstance(next);
-						state = RETURN_FAIL_STATE; // Only used if we're still stuck in the room
+						if (s.getInstance() != ShrineInstance.this) return;
+						if (!s.setInstance(next))
+							state = RETURN_FAIL_STATE;
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
 			}

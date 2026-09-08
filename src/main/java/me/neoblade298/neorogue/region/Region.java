@@ -935,6 +935,8 @@ public class Region {
 		lane /= NODE_DIST_BETWEEN;
 		row -= zOff + Z_EDGE_PADDING;
 		row /= NODE_DIST_BETWEEN;
+		if (row < 0 || row >= rowCount || -lane < 0 || -lane >= LANE_COUNT)
+			return null;
 		return nodes[row][-lane];
 	}
 
