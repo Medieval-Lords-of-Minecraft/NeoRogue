@@ -27,6 +27,8 @@ import me.ascheladd.asheconomy.pricing.ItemPriceQuote;
 import me.ascheladd.asheconomy.pricing.MaterialPrices;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -335,6 +337,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		if (offhand[0].getEquipment().isCursed()) {
 			return "You can't equip this while your cursed offhand is equipped!";
 		}
+		StorageInventory openStorage = getOpenStorageInventory();
+		if (openStorage != null) {
+			return openStorage.hasOpenStorageSlot() ? null
+					: "You need an open storage slot before equipping this with an offhand!";
+		}
 		for (int i = 0; i < Math.min(maxStorage, storage.length); i++) {
 			if (storage[i] == null) return null;
 		}
@@ -356,15 +363,13 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 		if (es != EquipSlot.STORAGE && se.getEquipment().restrictsOffhand() && offhand[0] != null) {
 			SessionEquipment moved = removeEquipment(EquipSlot.OFFHAND, 0);
-			for (int i = 0; i < Math.min(maxStorage, storage.length); i++) {
-				if (storage[i] != null) continue;
-				storage[i] = moved;
+			StorageInventory openStorage = getOpenStorageInventory();
+			if (openStorage != null ? openStorage.addEquipment(moved) : sendToStorage(moved)) {
 				Util.msgRaw(getPlayer(), Component.text("Your ", NamedTextColor.GRAY)
 						.append(moved.getHoverable())
 						.append(Component.text(" was moved to storage because ", NamedTextColor.GRAY))
 						.append(se.getHoverable())
 						.append(Component.text(" requires an empty offhand.", NamedTextColor.GRAY)));
-				break;
 			}
 		}
 		SessionEquipment[] slots = getArrayFromEquipSlot(es);
@@ -388,6 +393,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 		trigger(SessionTrigger.EQUIPMENT_LAYOUT_CHANGED, null);
 		return true;
+	}
+
+	private StorageInventory getOpenStorageInventory() {
+		CoreInventory upper = InventoryListener.getUpperInventory(getPlayer());
+		return upper instanceof StorageInventory ? (StorageInventory) upper : null;
 	}
 
 	public boolean setEquipment(EquipSlot es, int slot, Equipment eq) {

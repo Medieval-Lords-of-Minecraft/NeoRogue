@@ -368,12 +368,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 	@Override
 	public boolean canShiftClickIn(ItemStack item) {
-		for (int i = 0; i < data.getMaxStorage(); i++) {
-			if (inv.getItem(i) == null) {
-				return true;
-			}
-		}
-		return false;
+		return hasOpenStorageSlot();
 	}
 
 	@Override
@@ -384,5 +379,21 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				return;
 			}
 		}
+	}
+
+	public boolean hasOpenStorageSlot() {
+		for (int i = 0; i < data.getMaxStorage(); i++) {
+			if (inv.getItem(i) == null) return true;
+		}
+		return false;
+	}
+
+	public boolean addEquipment(SessionEquipment equipment) {
+		for (int i = 0; i < data.getMaxStorage(); i++) {
+			if (inv.getItem(i) != null) continue;
+			inv.setItem(i, equipment.getChoiceItem(data));
+			return true;
+		}
+		return false;
 	}
 }
