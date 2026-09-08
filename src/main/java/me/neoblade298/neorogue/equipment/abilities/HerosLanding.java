@@ -52,19 +52,8 @@ public class HerosLanding extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		ActionMeta armed = new ActionMeta();
-		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			armed.setBool(true);
-			p.setVelocity(new Vector(0, 0.5, 0));
-			Sounds.jump.play(p, p);
-			return TriggerResult.keep();
-		});
-
-		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
-
-		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
-			if (!armed.getBool()) return TriggerResult.keep();
+		long[] nextToggle = new long[1];
+		EquipmentInstance inst = new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			armed.setBool(false);
 			Player p = data.getPlayer();
 			strPart.play(p, p);
@@ -82,6 +71,18 @@ public class HerosLanding extends Equipment {
 			}
 			
 			return TriggerResult.cancel();
+		}, (p, pdata, in) -> armed.getBool());
+		data.addTrigger(id, Trigger.FALL_DAMAGE, inst);
+
+		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, (pdata, in) -> {
+			long now = System.currentTimeMillis();
+			if (now < nextToggle[0]) return TriggerResult.keep();
+			nextToggle[0] = now + 2000;
+			Player p = data.getPlayer();
+			armed.setBool(true);
+			p.setVelocity(new Vector(0, 0.5, 0));
+			Sounds.jump.play(p, p);
+			return TriggerResult.keep();
 		});
 	}
 
