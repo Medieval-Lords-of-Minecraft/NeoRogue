@@ -45,7 +45,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Crusade extends Equipment implements Power {
 	private static final String ID = "Crusade";
-	private static final int ACTIVATION_THRES = 5, RANGE = 20;
+	private static final int ACTIVATION_THRES = 5, SWORD_THRES = 15, RANGE = 20;
 	private static final long FORMATION_TICKS = 10L;
 	private static final ParticleContainer blade = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 238, 150), 0.8F)).count(1).spread(0, 0).speed(0);
@@ -80,12 +80,15 @@ public class Crusade extends Equipment implements Power {
 	@Override
 	public void onPowerActivated(PlayerFightData data, int slot, EquipSlot es) {
 		ProjectileGroup projectiles = new ProjectileGroup(new CrusadeProjectile(slot, this));
+		ActionMeta progress = new ActionMeta();
 		data.addTask(new BukkitRunnable() {
 			@Override
 			public void run() {
 				data.addTrigger(id + "-active", Trigger.APPLY_STATUS, (pdata, in) -> {
 					ApplyStatusEvent ev = (ApplyStatusEvent) in;
 					if (!ev.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
+					if (progress.addCount(ev.getStacks()) < SWORD_THRES) return TriggerResult.keep();
+					progress.addCount(-SWORD_THRES);
 					queueSwords(data, projectiles, ev.getTarget().getUniqueId(), 1);
 					return TriggerResult.keep();
 				});
@@ -150,7 +153,7 @@ public class Crusade extends Equipment implements Power {
 		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying "
 				+ GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. After activation, applying "
-				+ GlossaryTag.SANCTIFIED.tag(this) + " forms a sword that fires after " + DescUtil.val("0.5s")
+				+ GlossaryTag.SANCTIFIED.tag(this, SWORD_THRES) + " forms a sword that fires after " + DescUtil.val("0.5s")
 				+ ", dealing " + GlossaryTag.LIGHT.tag(this, damage) + " damage each.");
 	}
 

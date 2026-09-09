@@ -354,17 +354,6 @@ public class DamageMeta {
 
 		// Status effects
 		if (!isSecondary) {
-			if (recipient.hasStatus(StatusType.SANCTIFIED) && containsType(DamageCategory.LIGHT)) {
-				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
-					// Arbitrarily use the first sanct applier as the shield applier
-					if (ent.getKey() instanceof PlayerFightData) {
-						owner.addSimpleShield(ent.getKey().getUniqueId(), 5, 100,
-								StatusType.SANCTIFIED.name(), StatusType.SANCTIFIED.ctag);
-						break;
-					}
-				}
-			}
-			
 			if (owner.hasStatus(StatusType.FROST) && containsType(DamageCategory.MAGICAL)) {
 				Status status = owner.getStatus(StatusType.FROST);
 				int stacks = status.getStacks();

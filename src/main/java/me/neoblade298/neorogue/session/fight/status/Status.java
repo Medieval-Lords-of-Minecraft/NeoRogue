@@ -74,7 +74,7 @@ public abstract class Status {
 		case CONCUSSED: return new ConcussedStatus(target);
 		case CORRUPTION: return new CorruptionStatus(target);
 		case INSANITY: return new InsanityStatus(target);
-		case SANCTIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
+		case SANCTIFIED: return new SanctifiedStatus(target);
 		case THORNS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case WEAKENED: return new WeakenedStatus(target);
 		case REFLECT: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
