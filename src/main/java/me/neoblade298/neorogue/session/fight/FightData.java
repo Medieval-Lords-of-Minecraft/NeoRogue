@@ -33,6 +33,8 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
@@ -50,6 +52,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightData {
+	private static final double SHIELD_THREAT_PER_POINT = 30;
+	private static final TargetProperties SHIELD_TAUNT_TARGETS = TargetProperties.radius(10, false, TargetType.ENEMY);
 	protected FightInstance inst;
 	protected String mobDisplay;
 	protected ActiveMob am;
@@ -574,6 +578,15 @@ public class FightData {
 			}
 		}
 		shields.addShield(shield);
+		if (applierData != null && entity != null && shield.getTotal() > 0) {
+			Player applierPlayer = applierData.getPlayer();
+			double threat = shield.getTotal() * SHIELD_THREAT_PER_POINT;
+			for (LivingEntity target : TargetHelper.getEntitiesInRadius(applierPlayer, entity.getLocation(), SHIELD_TAUNT_TARGETS)) {
+				if (NeoRogue.mythicApi.isMythicMob(target)) {
+					NeoRogue.mythicApi.addThreat(target, applierPlayer, threat);
+				}
+			}
+		}
 		if (applierData != null) {
 			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
 		}
