@@ -1131,6 +1131,8 @@ public class Session {
 		String label = open ? "Click to Join" : "Click to Request to Join";
 		String hover = (open ? "Click to join " : "Click to request to join ") + hostName + "'s lobby";
 		Component msg = Component.text(hostName, NamedTextColor.YELLOW)
+				.hoverEvent(HoverEvent.showText(Component.text("Click to view profile", NamedTextColor.GRAY)))
+				.clickEvent(ClickEvent.runCommand("/nr profile " + hostName))
 				.append(lead)
 				.append(Component.text("[" + label + "]", NamedTextColor.GOLD)
 						.decorate(TextDecoration.BOLD)

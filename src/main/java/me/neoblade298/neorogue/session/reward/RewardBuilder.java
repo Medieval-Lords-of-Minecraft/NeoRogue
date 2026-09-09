@@ -10,22 +10,23 @@ import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.event.RewardFightEvent;
+import me.neoblade298.neorogue.session.event.RewardBuildEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 
 public class RewardBuilder {
 	private final Session s;
 	private final PlayerSessionData data;
-	private final RewardFightEvent ev;
+	private final RewardBuildEvent ev;
 	private final ArrayList<Reward> rewards = new ArrayList<>();
 	private final ArrayList<SessionEquipment> equipDrops = new ArrayList<>();
 
 	public RewardBuilder(Session s, PlayerSessionData data, NodeType type) {
 		this.s = s;
 		this.data = data;
-		this.ev = new RewardFightEvent(type);
+		this.ev = new RewardBuildEvent(data, type);
 		data.trigger(SessionTrigger.REWARD_FIGHT, ev);
+		data.trigger(SessionTrigger.REWARD_BUILD, ev);
 	}
 
 	public RewardBuilder coins(int base) {
@@ -41,7 +42,7 @@ public class RewardBuilder {
 		EquipmentClass ec = data.getPlayerClass();
 		int finalValue = value + ev.getBonusRarity();
 		int finalCount = count + ev.getBonusEquipment();
-		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(data.getData().getEquipmentDroptable(), finalValue, finalCount, ec, EquipmentClass.CLASSLESS)));
+		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(ev.getEquipmentDroptable(), finalValue, finalCount, ec, EquipmentClass.CLASSLESS)));
 		return this;
 	}
 
@@ -49,7 +50,7 @@ public class RewardBuilder {
 		EquipmentClass ec = data.getPlayerClass();
 		int finalValue = value + ev.getBonusRarity();
 		int finalCount = count + ev.getBonusEquipment();
-		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(data.getData().getEquipmentDroptable(), finalValue, finalCount, unwrap(exclusions), ec, EquipmentClass.CLASSLESS)));
+		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(ev.getEquipmentDroptable(), finalValue, finalCount, unwrap(exclusions), ec, EquipmentClass.CLASSLESS)));
 		return this;
 	}
 
@@ -59,7 +60,7 @@ public class RewardBuilder {
 	 */
 	public RewardBuilder equipmentDropsRaw(int value, int count) {
 		EquipmentClass ec = data.getPlayerClass();
-		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, count, ec, EquipmentClass.CLASSLESS)));
+		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(ev.getEquipmentDroptable(), value, count, ec, EquipmentClass.CLASSLESS)));
 		return this;
 	}
 
@@ -68,7 +69,7 @@ public class RewardBuilder {
 	 */
 	public RewardBuilder equipmentDropsRaw(int value, int count, ArrayList<SessionEquipment> exclusions) {
 		EquipmentClass ec = data.getPlayerClass();
-		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(data.getData().getEquipmentDroptable(), value, count, unwrap(exclusions), ec, EquipmentClass.CLASSLESS)));
+		equipDrops.addAll(SessionEquipment.wrap(Equipment.getDrop(ev.getEquipmentDroptable(), value, count, unwrap(exclusions), ec, EquipmentClass.CLASSLESS)));
 		return this;
 	}
 
@@ -82,7 +83,7 @@ public class RewardBuilder {
 
 	public RewardBuilder artifacts(int value, int count) {
 		EquipmentClass ec = data.getPlayerClass();
-		ArrayList<SessionEquipment> arts = SessionEquipment.wrap(new ArrayList<>(Equipment.getArtifact(data.getArtifactDroptable(), value, count, ec, EquipmentClass.CLASSLESS)));
+		ArrayList<SessionEquipment> arts = SessionEquipment.wrap(new ArrayList<>(Equipment.getArtifact(ev.getArtifactDroptable(), value, count, ec, EquipmentClass.CLASSLESS)));
 		if (arts.size() == 1) {
 			rewards.add(new EquipmentReward(arts.get(0)));
 		} else {
@@ -93,7 +94,7 @@ public class RewardBuilder {
 
 	public RewardBuilder consumable(int value, double bonusUpgradeChance) {
 		EquipmentClass ec = data.getPlayerClass();
-		Consumable cons = Equipment.getConsumable(data.getData().getConsumableDroptable(), value, ec, EquipmentClass.CLASSLESS);
+		Consumable cons = Equipment.getConsumable(ev.getConsumableDroptable(), value, ec, EquipmentClass.CLASSLESS);
 		SessionEquipment se = s.rollUpgrade(new SessionEquipment(cons), bonusUpgradeChance + ev.getBonusUpgradeChance());
 		rewards.add(new EquipmentReward(se));
 		return this;

@@ -15,7 +15,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.neoblade298.neocore.bukkit.book.BookRegistry;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.FormatUtil;
@@ -32,7 +31,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 public class MainMenuInventory extends CoreInventory {
 	private static final int HOST_GAME = 11, JOIN_GAME = 12, ACHIEVEMENTS = 14, UNLOCKS = 15,
-			STATS = 4, TUTORIAL = 18, EQUIPMENT_GLOSSARY = 26;
+			STATS = 4, MANUAL = 22;
 	private static final DecimalFormat pct = new DecimalFormat("#0.#");
 
 	public MainMenuInventory(Player p) {
@@ -55,10 +54,7 @@ public class MainMenuInventory extends CoreInventory {
 		int totalAvailable = countAvailableUnlocks(pd);
 		if (totalAvailable > 0) contents[UNLOCKS].setAmount(Math.min(totalAvailable, 64));
 		contents[STATS] = createStatsButton(pd);
-		contents[TUTORIAL] = CoreInventory.createButton(Material.WRITABLE_BOOK,
-				Component.text("Tutorial", NamedTextColor.GOLD));
-		contents[EQUIPMENT_GLOSSARY] = CoreInventory.createButton(Material.KNOWLEDGE_BOOK,
-				Component.text("Equipment Glossary", NamedTextColor.AQUA));
+		contents[MANUAL] = ManualInventory.createIcon();
 		inv.setContents(contents);
 	}
 
@@ -157,12 +153,8 @@ public class MainMenuInventory extends CoreInventory {
 		case STATS:
 			new StatsMenuInventory(p);
 			break;
-		case TUTORIAL:
-			p.closeInventory();
-			BookRegistry.openTableOfContents(p, "neorogue_guide");
-			break;
-		case EQUIPMENT_GLOSSARY:
-			new EquipmentGlossaryBrowserInventory(p, this);
+		case MANUAL:
+			new ManualInventory(p, this);
 			break;
 		}
 	}

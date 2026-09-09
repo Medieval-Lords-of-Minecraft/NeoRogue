@@ -6,13 +6,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -105,23 +105,27 @@ import me.neoblade298.neorogue.equipment.armor.WraithMantle;
 import me.neoblade298.neorogue.equipment.armor.YellowCloak;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
+import me.neoblade298.neorogue.equipment.artifacts.AntimatterStartingBonus;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
 import me.neoblade298.neorogue.equipment.artifacts.AthenianChalice;
 import me.neoblade298.neorogue.equipment.artifacts.AurorBadge;
 import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
 import me.neoblade298.neorogue.equipment.artifacts.AzureCutter;
 import me.neoblade298.neorogue.equipment.artifacts.BagOfPreparation;
+import me.neoblade298.neorogue.equipment.artifacts.BlackRose;
 import me.neoblade298.neorogue.equipment.artifacts.BloodyTrinket;
 import me.neoblade298.neorogue.equipment.artifacts.Bramblevine;
 import me.neoblade298.neorogue.equipment.artifacts.Brightfeather;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
 import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
 import me.neoblade298.neorogue.equipment.artifacts.ClearGoblet;
+import me.neoblade298.neorogue.equipment.artifacts.CobblestoneSapling;
 import me.neoblade298.neorogue.equipment.artifacts.ConcealingCloak;
 import me.neoblade298.neorogue.equipment.artifacts.CrackedCrystal;
 import me.neoblade298.neorogue.equipment.artifacts.CrossOfAntiquan;
 import me.neoblade298.neorogue.equipment.artifacts.CrystalFeather;
 import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
+import me.neoblade298.neorogue.equipment.artifacts.CurseMarkStartingBonus;
 import me.neoblade298.neorogue.equipment.artifacts.DarkArtsTreatise;
 import me.neoblade298.neorogue.equipment.artifacts.EarthenTome;
 import me.neoblade298.neorogue.equipment.artifacts.EchoStone;
@@ -129,11 +133,13 @@ import me.neoblade298.neorogue.equipment.artifacts.EmbersOfGlory;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.EnchantedClay;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.EverlastingHealth;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
 import me.neoblade298.neorogue.equipment.artifacts.FaeriePendant;
+import me.neoblade298.neorogue.equipment.artifacts.FlameSigil;
 import me.neoblade298.neorogue.equipment.artifacts.ForgemastersMark;
 import me.neoblade298.neorogue.equipment.artifacts.GiantSlayer;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
@@ -145,11 +151,15 @@ import me.neoblade298.neorogue.equipment.artifacts.HallowedEmbers;
 import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
 import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
+import me.neoblade298.neorogue.equipment.artifacts.HuntersCharm;
 import me.neoblade298.neorogue.equipment.artifacts.HuntersCompass;
 import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
 import me.neoblade298.neorogue.equipment.artifacts.IronVow;
+import me.neoblade298.neorogue.equipment.artifacts.Kettlebell;
+import me.neoblade298.neorogue.equipment.artifacts.LightningInABottle;
 import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
 import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
+import me.neoblade298.neorogue.equipment.artifacts.MechanistManual;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
 import me.neoblade298.neorogue.equipment.artifacts.MiasmaInABottle;
 import me.neoblade298.neorogue.equipment.artifacts.MistralVeil;
@@ -169,17 +179,23 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
+import me.neoblade298.neorogue.equipment.artifacts.SmellingSalts;
 import me.neoblade298.neorogue.equipment.artifacts.StarlightVeil;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
+import me.neoblade298.neorogue.equipment.artifacts.StrawTarget;
 import me.neoblade298.neorogue.equipment.artifacts.TempestSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TemporaryHealth;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TreasureChest;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
+import me.neoblade298.neorogue.equipment.artifacts.UnmeltingSnowflake;
 import me.neoblade298.neorogue.equipment.artifacts.VerricsNotebook;
 import me.neoblade298.neorogue.equipment.artifacts.WarChest;
+import me.neoblade298.neorogue.equipment.artifacts.WhiteBook;
+import me.neoblade298.neorogue.equipment.artifacts.WingCharm;
+import me.neoblade298.neorogue.equipment.artifacts.WitchCauldron;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
 import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
 import me.neoblade298.neorogue.equipment.consumables.CatalystPotion;
@@ -1129,6 +1145,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Artifacts
 		new AlchemistBag();
 		new AmuletOfOffering();
+		new AntimatterStartingBonus();
 		new Anxiety();
 		new ArmorStand();
 		new AthenianChalice();
@@ -1136,6 +1153,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new AvalonianAnchor();
 		new AzureCutter();
 		new BagOfPreparation();
+		new BlackRose();
 		new BloodyTrinket();
 		new BurningCross();
 		new Bramblevine();
@@ -1143,22 +1161,26 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new CailiricCrystal();
 		new CharmOfGallus();
 		new ClearGoblet();
+		new CobblestoneSapling();
 		new ConcealingCloak();
 		new CrackedCrystal();
 		new CrossOfAntiquan();
 		new CrystalFeather();
 		new CrystallineFlask();
+		new CurseMarkStartingBonus();
 		new DaedalusHammer();
 		new DarkArtsTreatise();
 		new DiscountCard();
 		new EarthenTome();
 		new EchoStone();
 		new EmbersOfGlory();
+		new EnchantedClay();
 		new EnergyBattery();
 		new EverlastingHealth();
 		new Exhaustion();
 		new FaerieDust();
 		new FaeriePendant();
+		new FlameSigil();
 		new ForceTrinket();
 		new ForgemastersMark();
 		new GlacialHammer();
@@ -1171,12 +1193,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new HermesBoots();
 		new HiddenBlade();
 		new HolyScriptures();
+		new HuntersCharm();
 		new HuntersCompass();
 		new InfernalTome();
 		new IronVow();
+		new Kettlebell();
+		new LightningInABottle();
 		new LionheartBangle();
 		new Lockbox();
 		new ManaflowBand();
+		new MechanistManual();
 		new ManaHaze();
 		new MercenaryHeadband();
 		new MerchantSpyglass();
@@ -1196,9 +1222,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new ScrollOfFrost();
 		new SigilOfTheIronLegion();
 		new ShellTrinket();
+		new SmellingSalts();
 		new StarlightVeil();
 		new StaticNecklace();
 		new StormSigil();
+		new StrawTarget();
 		new TarotCard();
 		new TempestSigil();
 		new TemporaryHealth();
@@ -1206,9 +1234,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TreasureChest();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
+		new UnmeltingSnowflake();
 		new VerricsNotebook();
 		new WarChest();
 		new WarpedAnvil();
+		new WhiteBook();
+		new WingCharm();
+		new WitchCauldron();
 
 		// Levelup artifacts
 		new EmeraldCluster();
@@ -1958,10 +1990,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return candidates.get(NeoRogue.gen.nextInt(candidates.size()));
 	}
 
-	public static ArrayList<Artifact> getStartingBonuses(int count) {
-		ArrayList<Artifact> candidates = startingBonuses.getMatching(EquipmentClass.CLASSLESS);
-		Collections.shuffle(candidates, NeoRogue.gen);
-		return new ArrayList<Artifact>(candidates.subList(0, Math.min(count, candidates.size())));
+	public static ArrayList<Artifact> getStartingBonuses(int count, EquipmentClass... ecs) {
+		ArrayList<Artifact> candidates = startingBonuses.getMatching(ecs);
+		DropTable<Artifact> table = new DropTable<Artifact>();
+		for (Artifact artifact : candidates) {
+			table.add(artifact, artifact.getStartingBonusWeight());
+		}
+		return table.getMultiple(Math.min(count, candidates.size()), true, null);
 	}
 
 	public static ArrayList<Equipment> getPower(int value, int numDrops, EquipmentClass... ec) {
@@ -2225,6 +2260,17 @@ public abstract class Equipment implements Comparable<Equipment> {
 		private static final int[] EQUIPMENT_VALUES = new int[Rarity.values().length * TIER_MAX];
 		protected HashMap<EquipmentClass, ArrayList<DropTable<E>>> droptables = new HashMap<EquipmentClass, ArrayList<DropTable<E>>>();
 		private HashMap<EquipmentClass, ArrayList<E>> drops = new HashMap<EquipmentClass, ArrayList<E>>();
+		private ArrayList<WeightModifier<E>> weightModifiers = new ArrayList<WeightModifier<E>>();
+
+		private static class WeightModifier<E extends Equipment> {
+			private final Predicate<E> predicate;
+			private final double multiplier;
+
+			private WeightModifier(Predicate<E> predicate, double multiplier) {
+				this.predicate = predicate;
+				this.multiplier = multiplier;
+			}
+		}
 
 		// base tier = regions completed * 2
 		// standard fight S = 3 base tier, 1 base+1 tier
@@ -2290,6 +2336,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				droptables.put(ec, list);
 				drops.put(ec, new ArrayList<E>(original.drops.get(ec)));
 			}
+			weightModifiers.addAll(original.weightModifiers);
 		}
 
 		public DropTableSet<E> clone(EquipmentClass... ecs) {
@@ -2337,6 +2384,26 @@ public abstract class Equipment implements Comparable<Equipment> {
 					if (value > 0) table.get(i).add(drop, value);
 				}
 			}
+		}
+
+		public void multiplyWeight(Predicate<E> predicate, double multiplier) {
+			if (multiplier < 1) throw new IllegalArgumentException("Weight multiplier must be at least 1");
+			if (multiplier == 1) return;
+			weightModifiers.add(new WeightModifier<E>(predicate, multiplier));
+		}
+
+		private DropTable<E> getTable(EquipmentClass ec, int value) {
+			if (weightModifiers.isEmpty()) return droptables.get(ec).get(value);
+
+			DropTable<E> result = new DropTable<E>();
+			for (E drop : drops.get(ec)) {
+				double weight = getValue(drop.rarity, value) * 100;
+				for (WeightModifier<E> modifier : weightModifiers) {
+					if (modifier.predicate.test(drop)) weight *= modifier.multiplier;
+				}
+				if (weight > 0) result.add(drop, (int) Math.round(weight));
+			}
+			return result;
 		}
 
 		public ArrayList<E> getMatching(EquipmentClass... ecs) {
@@ -2392,7 +2459,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 					// Check if droptable exists for this class at this value
 					if (!droptables.containsKey(ec[i]) || value >= droptables.get(ec[i]).size())
 						continue;
-					DropTable<E> temp = droptables.get(ec[i]).get(value);
+					DropTable<E> temp = getTable(ec[i], value);
 					// Check if the droptable has any valid drops
 					if (temp.size() == 0)
 						continue;
@@ -2420,7 +2487,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 							+ ", falling back to lower value");
 					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
 				}
-				DropTable<E> table = droptables.get(ec[0]).get(value);
+				DropTable<E> table = getTable(ec[0], value);
 				if (table.size() < numDrops) {
 					Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value
 							+ " for equip class " + ec[0].name() + ", falling back to lower value");

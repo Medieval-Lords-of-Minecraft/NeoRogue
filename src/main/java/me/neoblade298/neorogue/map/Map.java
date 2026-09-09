@@ -94,6 +94,7 @@ public class Map {
 					if (type.equals("BOSS")) bossPieces.get(region).add(piece);
 					else if (type.equals("MINIBOSS")) minibossPieces.get(region).add(piece);
 					else if (type.equals("STANDARD")) standardPieces.get(region).add(piece);
+					registerMobRegions(piece, baseRegion(region));
 					// Do not turn into an else, there are other types like BORDER pieces
 				}
 				catch (Exception e) {
@@ -105,6 +106,33 @@ public class Map {
 		
 		for (RegionType type : RegionType.values()) {
 			Collections.shuffle(standardPieces.get(type));
+		}
+	}
+
+	private static void registerMobRegions(MapPiece piece, RegionType region) {
+		for (MapSpawner[] spawners : piece.getSpawnerSets()) {
+			for (MapSpawner spawner : spawners) {
+				if (spawner.getMob() != null) spawner.getMob().addRegion(region);
+			}
+		}
+		if (piece.getInitialSpawns() == null) return;
+		for (MapSpawner spawner : piece.getInitialSpawns()) {
+			if (spawner.getMob() != null) spawner.getMob().addRegion(region);
+		}
+	}
+
+	private static RegionType baseRegion(RegionType region) {
+		switch (region) {
+		case LOW_DISTRICT_DEBUG:
+			return RegionType.LOW_DISTRICT;
+		case HARVEST_FIELDS_DEBUG:
+			return RegionType.HARVEST_FIELDS;
+		case FROZEN_WASTES_DEBUG:
+			return RegionType.FROZEN_WASTES;
+		case MEADOWOOD_DEBUG:
+			return RegionType.MEADOWOOD;
+		default:
+			return region;
 		}
 	}
 	

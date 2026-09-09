@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.session.fight;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.settings.NotorietySetting;
 import net.kyori.adventure.text.Component;
@@ -46,6 +49,7 @@ public class Mob implements Comparable<Mob> {
 	private HashMap<DamageType, Amount> damageTypes = new HashMap<DamageType, Amount>();
 	private HashMap<DamageCategory, Amount> damageCategories = new HashMap<DamageCategory, Amount>();
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
+	private EnumSet<RegionType> regions = EnumSet.noneOf(RegionType.class);
 	private List<String> summons, disabledModifiers;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 	
@@ -90,6 +94,10 @@ public class Mob implements Comparable<Mob> {
 		 * }
 		 */
 		return mobs.get(id);
+	}
+
+	public static Collection<Mob> getAll() {
+		return mobs.values();
 	}
 
 	// Returns the canonical stat id for a mob, collapsing alternate "forms" (e.g. Angvoth2 -> Angvoth)
@@ -233,17 +241,25 @@ public class Mob implements Comparable<Mob> {
 	public double getKnockbackMultiplier() {
 		return knockbackMultiplier;
 	}
+
+	public ItemStack getBestiaryItemDisplay() {
+		return getItemDisplay(null, null, null, false);
+	}
 	
 	public ItemStack getItemDisplay(Session s, FightInstance inst, MobModifier modifier, boolean isChance) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
-		int effectiveLevel = isChance ? s.getLevel() : s.getLevel() + 1;
 
-		// Add 1 to session level to show next node's health if it's next node. If it's a chance, don't
+		// Without a session, the bestiary shows the mob's unscaled base health.
+		int health = (int) baseHealth;
+		if (s != null) {
+			int effectiveLevel = isChance ? s.getLevel() : s.getLevel() + 1;
+			health = (int) getMaxHealthScale(s, effectiveLevel);
+		}
 		Component stats = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text("" + (int) getMaxHealthScale(s, effectiveLevel), NamedTextColor.YELLOW));
+				.append(Component.text("" + health, NamedTextColor.YELLOW));
 		if (inst instanceof StandardFightInstance) {
 			stats = stats.append(Component.text(" | ", NamedTextColor.DARK_GRAY))
 					.append(Component.text("Fight Progress: ", NamedTextColor.GOLD))
@@ -357,6 +373,19 @@ public class Mob implements Comparable<Mob> {
 
 	public List<String> getDisabledModifiers() {
 		return disabledModifiers;
+	}
+
+	public void addRegion(RegionType region) {
+		regions.add(region);
+		if (summons == null) return;
+		for (String summonId : summons) {
+			Mob summon = get(summonId);
+			if (summon != null && !summon.regions.contains(region)) summon.addRegion(region);
+		}
+	}
+
+	public boolean isInRegion(RegionType region) {
+		return regions.contains(region);
 	}
 	
 	public String getId() {

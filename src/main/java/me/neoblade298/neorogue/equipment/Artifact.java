@@ -7,9 +7,11 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public abstract class Artifact extends Equipment {
+	public static final int DEFAULT_STARTING_BONUS_WEIGHT = 20;
 	protected boolean canStack; // If an artifact can be obtained from a player's droptable more than once
 	protected boolean removable = true; // If false, chance events can't select this artifact for removal or trade
 	private boolean startingBonus;
+	private int startingBonusWeight = DEFAULT_STARTING_BONUS_WEIGHT;
 
 	// The nine post-fight gem artifacts (Ruby/Sapphire/Emerald x Shard/Cluster/Gem). They're earned
 	// only through the post-fight gem choice and must never appear in drop pools or chance trades.
@@ -40,6 +42,15 @@ public abstract class Artifact extends Equipment {
 		startingBonus = true;
 		canDrop = false;
 		removable = false;
+	}
+
+	protected void setStartingBonusWeight(int startingBonusWeight) {
+		if (startingBonusWeight < 1) throw new IllegalArgumentException("Starting bonus weight must be positive");
+		this.startingBonusWeight = startingBonusWeight;
+	}
+
+	public int getStartingBonusWeight() {
+		return startingBonusWeight;
 	}
 
 	public Artifact(String id, String display, Rarity rarity, EquipmentClass ec) {

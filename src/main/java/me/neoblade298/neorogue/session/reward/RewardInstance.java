@@ -102,8 +102,9 @@ public class RewardInstance extends EditInventoryInstance {
 	public static RewardInstance createStartingBonuses(Session s) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		for (UUID uuid : s.getParty().keySet()) {
+			PlayerSessionData data = s.getParty().get(uuid);
 			ArrayList<SessionEquipment> choices = SessionEquipment.wrap(
-					new ArrayList<Artifact>(Equipment.getStartingBonuses(3)));
+					new ArrayList<Artifact>(Equipment.getStartingBonuses(3, data.getPlayerClass(), EquipmentClass.CLASSLESS)));
 			ArrayList<Reward> playerRewards = new ArrayList<Reward>();
 			playerRewards.add(new EquipmentChoiceReward(choices));
 			rewards.put(uuid, playerRewards);
