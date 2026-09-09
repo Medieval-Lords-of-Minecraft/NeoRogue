@@ -229,7 +229,8 @@ public class EquipmentGlossaryBrowserInventory extends GlossaryInventory {
 	public void handleInventoryClick(InventoryClickEvent event) {
 		event.setCancelled(true);
 		int slot = event.getSlot();
-		if (slot >= 0 && slot < ITEMS_PER_PAGE && event.isLeftClick() && event.getCurrentItem() != null) {
+		if (slot >= 0 && slot < ITEMS_PER_PAGE && (event.isLeftClick() || event.isRightClick())
+				&& event.getCurrentItem() != null) {
 			String equipId = NBT.get(event.getCurrentItem(),
 					nbt -> nbt.getKeys().contains("equipId") ? nbt.getString("equipId") : null);
 			if (equipId == null) return;

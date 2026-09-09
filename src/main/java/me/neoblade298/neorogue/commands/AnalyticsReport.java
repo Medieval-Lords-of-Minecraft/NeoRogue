@@ -780,7 +780,7 @@ public class AnalyticsReport {
 	// Leaderboard of mobs ranked by average damage dealt to the party per fight they appear in.
 	public static void mobs(CommandSender s, int version, String regionType, String playerClass,
 			AnalyticsFilters filters) {
-		mobLeaderboard(s, version, regionType, playerClass, null, "Mob Damage Leaderboard",
+		mobLeaderboard(s, version, regionType, playerClass, Mob.getStatIds(MobType.NORMAL), "Mob Damage Leaderboard",
 				"/nrlytics mobs", filters);
 	}
 
