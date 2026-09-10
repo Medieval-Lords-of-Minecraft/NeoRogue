@@ -28,8 +28,22 @@ public class CmdGlossary extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Player p = (Player) s;
-		
+		if (!(s instanceof Player p)) {
+			if (args.length == 0) {
+				Util.msgRaw(s, "<red>Specify an equipment to view its lore!");
+				return;
+			}
+			Equipment eq = Equipment.get(args[0], false);
+			if (eq == null) {
+				Util.msgRaw(s, "<red>Couldn't find an equipment with that name!");
+				return;
+			}
+			for (var line : eq.getItem().lore()) {
+				s.sendMessage(line);
+			}
+			return;
+		}
+
 		if (args.length == 0) {
 			new EquipmentGlossaryBrowserInventory(p);
 			return;

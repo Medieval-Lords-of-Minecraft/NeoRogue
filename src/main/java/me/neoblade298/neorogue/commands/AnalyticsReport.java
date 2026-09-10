@@ -17,8 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.achievement.Achievement;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -41,6 +43,7 @@ public class AnalyticsReport {
 	private static final int MIN_SAMPLES = 10;
 	private static final int LEADERBOARD_LIMIT = 10;
 	private static final String LOW_SAMPLE_MARKER = " <red>!</red>";
+	private static final String EQUIPMENT_MARKER = "\u0000equipment:";
 	public static final List<String> EQUIPMENT_METRIC_KEYS = List.of(
 			"DAMAGE", "BUFF", "MITIGATED", "SHIELDS", "HEALING", "STATUS", "WINRATE", "PICKRATE");
 
@@ -188,6 +191,28 @@ public class AnalyticsReport {
 		if (lines.stream().anyMatch(line -> line.contains(LOW_SAMPLE_MARKER))) {
 			lines.add(0, "<red>!</red> <gray>Fewer than " + MIN_SAMPLES + " samples; interpret cautiously.");
 		}
+	}
+
+	private static String equipmentLine(String before, String equipmentId, boolean upgraded, String after) {
+		return before + EQUIPMENT_MARKER + equipmentId + ":" + upgraded + "\u0000" + after;
+	}
+
+	private static void sendEquipmentLine(CommandSender sender, String line) {
+		int markerStart = line.indexOf(EQUIPMENT_MARKER);
+		if (markerStart < 0) {
+			Util.msgRaw(sender, line);
+			return;
+		}
+
+		int markerEnd = line.indexOf('\u0000', markerStart + EQUIPMENT_MARKER.length());
+		String[] equipmentData = line.substring(markerStart + EQUIPMENT_MARKER.length(), markerEnd).split(":", 2);
+		boolean upgraded = Boolean.parseBoolean(equipmentData[1]);
+		Equipment equipment = Equipment.get(equipmentData[0], upgraded);
+		Component display = equipment == null
+				? Component.text(equipmentData[0] + (upgraded ? "+" : ""), NamedTextColor.WHITE)
+				: equipment.getHoverable();
+		Util.msgRaw(sender, SharedUtil.color(line.substring(0, markerStart)).append(display)
+				.append(SharedUtil.color(line.substring(markerEnd + 1))));
 	}
 
 	private static void addReportMeta(ArrayList<String> lines, AnalyticsFilters filters) {
@@ -446,14 +471,13 @@ public class AnalyticsReport {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Util.msgRaw(s, "<gold>=== Analytics: <yellow>" + id + "</yellow> (balance v" + version + ") ===");
+						sendEquipmentLine(s, equipmentLine("<gold>=== Analytics: ", id, equipmentId.endsWith("+"),
+								" <gold>(balance v" + version + ") ==="));
 						if (lines.isEmpty()) {
 							Util.msgRaw(s, "<yellow>No recorded contributions for this equipment.");
 							return;
 						}
-						for (String line : lines) {
-							Util.msgRaw(s, line);
-						}
+						for (String line : lines) sendEquipmentLine(s, line);
 					}
 				}.runTask(NeoRogue.inst());
 			}
@@ -567,9 +591,7 @@ public class AnalyticsReport {
 							Util.msgRaw(s, "<yellow>No equipment recorded.");
 							return;
 						}
-						for (String line : lines) {
-							Util.msgRaw(s, line);
-						}
+						for (String line : lines) sendEquipmentLine(s, line);
 						sendPageControls(s, "/nrlytics equipment metric=" + metric.key, filters);
 					}
 				}.runTask(NeoRogue.inst());
@@ -625,9 +647,9 @@ public class AnalyticsReport {
 				if (metric == EquipmentMetric.WINRATE) value *= 100;
 				double winrate = n > 0 ? (100.0 * wins / n) : 0;
 				String winrateContext = metric == EquipmentMetric.WINRATE ? "" : " | " + df.format(winrate) + "% WR";
-				rows.add("  <yellow>" + df.format(value) + metric.suffix + "</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>| " + n + "F" + winrateContext
-						+ lowSampleMarker(n));
+				rows.add(equipmentLine("  <yellow>" + df.format(value) + metric.suffix + "</yellow> ",
+						rs.getString("equipmentId"), upgraded,
+						" <gray>| " + n + "F" + winrateContext + lowSampleMarker(n)));
 			}
 		}
 	}
@@ -657,9 +679,7 @@ public class AnalyticsReport {
 							Util.msgRaw(s, "<yellow>No offers recorded.");
 							return;
 						}
-						for (String line : lines) {
-							Util.msgRaw(s, line);
-						}
+						for (String line : lines) sendEquipmentLine(s, line);
 						String baseCommand = "/nrlytics equipment metric=pickrate";
 						if (sortBy.equals("class")) baseCommand += " sort=class";
 						sendPageControls(s, baseCommand, filters);
@@ -721,17 +741,16 @@ public class AnalyticsReport {
 				int offered = rs.getInt("offered");
 				int picked = rs.getInt("picked");
 				double rate = offered > 0 ? (100.0 * picked / offered) : 0;
-				String line = "  <yellow>" + df.format(rate) + "%</yellow> <white>" + rs.getString("equipmentId")
-						+ (upgraded ? "+" : "") + "</white> <gray>| " + picked + "/" + offered
-						+ lowSampleMarker(offered);
+				String after = " <gray>| " + picked + "/" + offered + lowSampleMarker(offered);
 				boolean shopOnly = "SHOP".equals(rs.getString("minSource"))
 						&& "SHOP".equals(rs.getString("maxSource"));
 				if (shopOnly) {
-					line += " <gray>| avg price <white>" + df.format(rs.getDouble("avgOfferedPrice"));
-					if (picked > 0) line += "</white> offered, <yellow>" + df.format(rs.getDouble("avgPickedPrice")) + "</yellow> bought";
-					else line += "</white> offered, <dark_gray>none bought";
+					after += " <gray>| avg price <white>" + df.format(rs.getDouble("avgOfferedPrice"));
+					if (picked > 0) after += "</white> offered, <yellow>" + df.format(rs.getDouble("avgPickedPrice")) + "</yellow> bought";
+					else after += "</white> offered, <dark_gray>none bought";
 				}
-				rows.add(new String[] { line });
+				rows.add(new String[] { equipmentLine("  <yellow>" + df.format(rate) + "%</yellow> ",
+						rs.getString("equipmentId"), upgraded, after) });
 			}
 		}
 	}

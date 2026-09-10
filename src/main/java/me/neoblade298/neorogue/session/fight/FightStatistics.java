@@ -288,8 +288,8 @@ public class FightStatistics {
 			map.computeIfAbsent(key, EquipmentContribution::new).damageDealt += ent.getValue();
 		}
 
-		// Buff value-added: damage buffs and mitigation. STATUS-category buffs are intentionally
-		// omitted - the raw status stacks below already capture status effectiveness.
+		// Buff value-added: damage buffs, mitigation, and shields. STATUS-category buffs are
+		// intentionally omitted - the raw status stacks below already capture status effectiveness.
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
 			StatTracker stat = ent.getKey();
 			String key = stat.getEquipmentId();
@@ -302,6 +302,9 @@ public class FightStatistics {
 			}
 			else if (c == StatCategory.DAMAGE_TAKEN) {
 				map.computeIfAbsent(key, EquipmentContribution::new).damageMitigated += amt;
+			}
+			else if (c == StatCategory.SHIELDS) {
+				map.computeIfAbsent(key, EquipmentContribution::new).shieldsApplied += amt;
 			}
 		}
 
@@ -437,6 +440,11 @@ public class FightStatistics {
 					getSourceAction(ent.getKey(), "Shields Applied", ent.getValue())));
 			}
 			hover = appendSorted(hover, shieldLines);
+			hasDetail = true;
+		}
+		Component shieldBuffs = buffSection(StatCategory.SHIELDS);
+		if (shieldBuffs != null) {
+			hover = hover.appendNewline().append(shieldBuffs);
 			hasDetail = true;
 		}
 		if (!healingByEquip.isEmpty()) {

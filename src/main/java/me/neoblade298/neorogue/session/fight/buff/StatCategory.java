@@ -5,6 +5,7 @@ package me.neoblade298.neorogue.session.fight.buff;
 public enum StatCategory {
     DAMAGE_DEALT,
     DAMAGE_TAKEN,
+    SHIELDS,
     STATUS,
     OTHER;
 }

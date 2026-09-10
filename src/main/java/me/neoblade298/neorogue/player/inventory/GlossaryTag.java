@@ -35,7 +35,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"A type of physical damage."),
 	FIRE(Material.BLAZE_POWDER, "<#FF6A00>Fire</#FF6A00>",
 			"A type of magical damage."),
-	ICE(Material.PACKED_ICE, "<#66D9FF>Ice</#66D9FF>",
+	ICE(Material.PACKED_ICE, "<#1677C8>Ice</#1677C8>",
 			"A type of magical damage."),
 	LIGHTNING(Material.LIGHTNING_ROD, "<#FFE14D>Lightning</#FFE14D>",
 			"A type of magical damage."),

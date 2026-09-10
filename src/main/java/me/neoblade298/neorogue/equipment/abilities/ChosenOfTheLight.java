@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -11,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Power;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -24,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class ChosenOfTheLight extends Equipment implements Power {
 	private static final String ID = "ChosenOfTheLight";
+	private static final int DURATION_SECONDS = 5;
 	private double mult;
 	private int heal, multStr;
 	
@@ -31,7 +31,7 @@ public class ChosenOfTheLight extends Equipment implements Power {
 		super(ID, "Chosen of the Light", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		heal = 1;
-		mult = isUpgraded ? 0.25 : 0.15;
+		mult = isUpgraded ? 0.05 : 0.03;
 		multStr = (int) (mult * 100);
 	}
 	
@@ -63,7 +63,7 @@ public class ChosenOfTheLight extends Equipment implements Power {
 					ApplyStatusEvent ev2 = (ApplyStatusEvent) in2;
 					if (!ev2.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
 					data.addHealth(heal, ChosenOfTheLight.this);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), 200);
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, ChosenOfTheLight.this, true)), DURATION_SECONDS * 20);
 					return TriggerResult.keep();
 				});
 			}
@@ -75,6 +75,6 @@ public class ChosenOfTheLight extends Equipment implements Power {
 	item = createItem(Material.IRON_ORE,
 			GlossaryTag.PASSIVE.tag(this) + " " + GlossaryTag.POWER.tag(this) + ". Activates after applying " + GlossaryTag.SANCTIFIED.tag(this) + " " + DescUtil.val(ACTIVATION_THRES) + " times. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
 			DescUtil.val(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
-				DescUtil.val(multStr + "%") + " [<white>10s</white>], stackable.");
+				DescUtil.val(multStr + "%") + " " + DescUtil.duration(DURATION_SECONDS, isUpgraded) + ", stackable.");
 	}
 }

@@ -30,7 +30,7 @@ public class Bide extends Equipment {
 	public Bide(boolean isUpgraded) {
 		super(ID, "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 0));
-		shields = 50;
+		shields = 30;
 		duration = 5;
 		berserk = isUpgraded ? 3 : 2;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);

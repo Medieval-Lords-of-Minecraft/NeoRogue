@@ -137,7 +137,7 @@ public class StatTracker {
     }
 
     public static BuffStatTracker shield(String id, Equipment eq) {
-        return new BuffStatTracker(id, eq, "Shields Buffed").category(StatCategory.DAMAGE_TAKEN);
+        return new BuffStatTracker(id, eq, "Shields Buffed").category(StatCategory.SHIELDS);
     }
 
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq) {
