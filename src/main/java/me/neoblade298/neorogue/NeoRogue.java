@@ -341,7 +341,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", SessionManager.SPECTATE_PERMISSION, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAchievements("achievements", "View achievements", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdProfile("profile", "View a player's profile", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdCargo("cargo", "Manage your cargo", null, SubcommandRunner.PLAYER_ONLY));
