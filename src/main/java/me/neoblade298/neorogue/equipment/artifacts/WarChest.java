@@ -41,6 +41,6 @@ public class WarChest extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRAPPED_CHEST, "Obtain a random " + DescUtil.val("uncommon") + " weapon.");
+		item = createItem(Material.CHEST, "Obtain a random " + DescUtil.val("uncommon") + " weapon.");
 	}
 }

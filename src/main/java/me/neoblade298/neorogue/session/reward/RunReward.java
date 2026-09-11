@@ -185,6 +185,23 @@ public class RunReward {
 				+ "</underlined></green>";
 	}
 
+	private static String hoverableRegionMult(Session s, double mult) {
+		int notorietyPct = s.getNotorietyMoneyBonusPercent();
+		int partyPct = getPartyMoneyBonusPercent(s);
+		StringBuilder hover = new StringBuilder("<gray>Base region reward <yellow>\u00d71");
+		if (notorietyPct != 0) {
+			hover.append("<newline><white>Notoriety bonus (+").append(notorietyPct)
+					.append("%)<gray>: <yellow>\u00d7").append(formatMult(s.getNotorietyMoneyMultiplier()));
+		}
+		if (partyPct != 0) {
+			hover.append("<newline><white>Party bonus (").append(s.getParty().size()).append(" players, +")
+					.append(partyPct).append("%)<gray>: <yellow>\u00d7")
+					.append(formatMult(1.0 + partyPct / 100.0));
+		}
+		return "<hover:show_text:'" + hover + "'><green><underlined>\u00d7" + formatMult(mult)
+				+ "</underlined></green>";
+	}
+
 	private static String currencyBoostReceiptLine(PlayerSessionData psd) {
 		if (!isRelevantMultiplier(psd.getRunCurrencyBoostMultiplier())) return "";
 		StringBuilder names = new StringBuilder();
@@ -207,7 +224,8 @@ public class RunReward {
 	private static void awardRegionCompletion(Session s, RegionType completed, double sellPercent, boolean announce) {
 		double partyMultiplier = 1.0 + getPartyMoneyBonusPercent(s) / 100.0;
 		double standardMultiplier = s.getNotorietyMoneyMultiplier() * partyMultiplier;
-		double normalBaseReward = completed.getRegionReward() * standardMultiplier;
+		double rawBaseReward = completed.getRegionReward();
+		double normalBaseReward = rawBaseReward * standardMultiplier;
 		for (PlayerSessionData psd : s.getParty().values()) {
 			PlayerData pd = psd.getData();
 			double baseReward = applyCurrencyBoost(psd, normalBaseReward);
@@ -250,8 +268,7 @@ public class RunReward {
 				cargoLine += "): <yellow>" + formatMoney(cargoReward) + "<newline>";
 			}
 			String regionMultiplierLine = isRelevantMultiplier(standardMultiplier)
-					? "<gray>Region reward multiplier: <green>\u00d7" + String.format("%.2f", standardMultiplier)
-							+ "<newline>"
+					? "<gray>Reward multiplier: " + hoverableRegionMult(s, standardMultiplier) + "<newline>"
 					: "";
 			String currencyLine = currencyBoostReceiptLine(psd);
 			if (!currencyLine.isEmpty()) currencyLine += "<newline>";
@@ -259,7 +276,7 @@ public class RunReward {
 					? "<gray>Caravan completion reward: <yellow>" + formatMoney(caravanReward) + "<newline>"
 					: "";
 			Util.msgRaw(p, "<gold><bold>" + completed.getDisplay() + " Rewards</bold><newline>"
-					+ "<gray>Base region reward: <yellow>" + formatMoney(baseReward) + "<newline>"
+					+ "<gray>Base region reward: <yellow>" + formatMoney(rawBaseReward) + "<newline>"
 					+ regionMultiplierLine
 					+ currencyLine
 					+ caravanLine

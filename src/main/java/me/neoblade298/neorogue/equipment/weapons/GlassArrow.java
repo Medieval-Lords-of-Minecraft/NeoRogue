@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.LimitedAmmunition;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.MarkTarget;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class GlassArrow extends LimitedAmmunition {
@@ -20,6 +21,11 @@ public class GlassArrow extends LimitedAmmunition {
 
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(MarkTarget.get(), SplinteringArrow.get());
 	}
 
 	@Override

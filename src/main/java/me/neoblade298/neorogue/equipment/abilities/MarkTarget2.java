@@ -46,15 +46,17 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class MarkTarget2 extends Equipment {
 	private static final String ID = "MarkTarget2";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	private int rend;
-	private double damage;
+	private static final int REND_THRESHOLD = 12;
+	private int rend, passiveDamage;
+	private double projectileDamage;
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.CRIMSON_SPORE).count(50).spread(0.3, 0.3).offsetY(2);
 	
 	public MarkTarget2(boolean isUpgraded) {
 		super(ID, "Mark Target II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
 		rend = isUpgraded ? 18 : 12;
-		damage = isUpgraded ? 1.5 : 1.0;
+		passiveDamage = isUpgraded ? 35 : 30;
+		projectileDamage = isUpgraded ? 1.5 : 1.0;
 	}
 	
 	public static Equipment get() {
@@ -83,8 +85,8 @@ public class MarkTarget2 extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING,
+			if (fd.getStatus(StatusType.REND).getStacks() < REND_THRESHOLD) return TriggerResult.keep();
+			ev.getMeta().addDamageSlice(new DamageSlice(data, passiveDamage, DamageType.SLASHING,
 					DamageStatTracker.of(ID + slot, this)));
 			return TriggerResult.keep();
 		});
@@ -103,9 +105,9 @@ public class MarkTarget2 extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHER_BRICK,
 				"On cast, mark [<white>8s</white>] and apply " + GlossaryTag.REND.tag(this, rend) + " to the enemy you're looking at. " +
-				"Damaging a marked enemy with a basic attack fires a homing projectile using your current ammunition with a base damage of " + DescUtil.val(damage) + ". " +
-				"Additionally, you passively " +
-				"deal an additional " + GlossaryTag.SLASHING.tag(this, damage) + " damage per stack of " + GlossaryTag.REND.tag(this) + ".");
+				"Damaging a marked enemy with a basic attack fires a homing projectile using your current ammunition with a base damage of " + DescUtil.val(projectileDamage) + ". " +
+				"Additionally, deal an additional " + GlossaryTag.SLASHING.tag(this, passiveDamage)
+				+ " damage when hitting an enemy with at least " + GlossaryTag.REND.tag(this, REND_THRESHOLD) + ".");
 	}
 
 	private class MarkTarget2Projectile extends Projectile {
@@ -140,7 +142,7 @@ public class MarkTarget2 extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(ID + slot + "proj", eq, "Projectile damage dealt")));
+			dm.addDamageSlice(new DamageSlice(data, projectileDamage, ammoProps.getType(), DamageStatTracker.of(ID + slot + "proj", eq, "Projectile damage dealt")));
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.DIRECT), Buff.increase(data, dmg, BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId() + slot, ammo.getAmmo())));
 			ammo.onStart(proj);
 		}

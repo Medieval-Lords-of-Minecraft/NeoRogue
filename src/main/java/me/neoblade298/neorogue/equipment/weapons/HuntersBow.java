@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.equipment.abilities.Blind;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -36,7 +37,7 @@ public class HuntersBow extends Bow {
 
 	@Override
 	public void setupReforges() {
-		overrideReforgeDrop = true;
+		addReforge(Blind.get(), Sightshatter.get(), Sadist.get());
 	}
 	
 	public static Equipment get() {

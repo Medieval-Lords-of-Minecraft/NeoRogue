@@ -30,7 +30,7 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 | Keen Senses | — | — | — | — | 5 perm shields; Focus +1; Trap dmg +20→30% | Passive |
 | Lay Explosive | 15 | 5 | 15 | 3 rad | 50→60 AoE dmg (trap, recastable, range 3) | Active |
 | Lay Trap | 10 | 5 | 15 | 4 rad | 120 dmg; Slow 3 for 2→3s; 5 shields (2s charge) | Active |
-| Mark Target | 10 | 0 | 12 | — | Rend 8→12; +2→3 slash dmg per Rend stack (range 8) | Active |
+| Mark Target | 10 | 0 | 12 | — | Rend 8→12; at 10 Rend: +20→30 slash dmg (range 8) | Active |
 | Piercing Shot | 15 | 15 | 8 | — | +35→55 piercing dmg; pierce 1 enemy | Active |
 | Point Blank | — | — | — | — | +15→25 dmg if projectile hits within 5→7 blocks | Passive |
 | Posturing | — | — | — | — | Every 4→3s crouched: +3→5 permanent dmg | Passive |
@@ -77,7 +77,7 @@ description: "Archer balance reference. Use when: evaluating archer ability cost
 | Hexing Shot | 0 | 0 | 3 tog | 3 rad | Toggle: -15 BA → hex; kill hexed → 60→90 AoE trap | Toggle |
 | Malice | 0 | 0 | 3 tog | — | Toggle: -15 BA → Injury 12; per 100→75 Injury: +1 Focus | Toggle |
 | Mana Infusion | 0 | 0 | 2 tog | — | Toggle: 3 mana/shot → +20→30 dmg; regen 2→4 mana/hit | Toggle |
-| Mark Target II | 10 | 0 | 12 | — | Rend 18→25; +3 dmg/Rend; BAs on marked fire bonus proj (range 8) | Active |
+| Mark Target II | 10 | 0 | 12 | — | Rend 12→18; at 12 Rend: +30→35 slash dmg; marked BAs fire bonus proj (range 8) | Active |
 | Momentum | — | — | — | — | If moved 5+ blocks since last shot: +10→20 dmg [3s] | Passive |
 | Piercing Shot II | — | — | — | — | Every 3rd BA: +10→20 piercing + pierce 1 | Passive |
 | Posturing II | — | — | — | — | Every 6s crouched: +1 Focus; +6→8 pierce/Focus (2x crouched) | Passive |

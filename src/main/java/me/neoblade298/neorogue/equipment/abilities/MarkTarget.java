@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -12,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -30,6 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class MarkTarget extends Equipment {
 	private static final String ID = "MarkTarget";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
+	private static final int REND_THRESHOLD = 5;
 	private int rend, damage;
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.CRIMSON_SPORE).count(50).spread(0.3, 0.3).offsetY(2);
 	
@@ -37,7 +37,7 @@ public class MarkTarget extends Equipment {
 		super(ID, "Mark Target", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
 		rend = isUpgraded ? 12 : 8;
-		damage = isUpgraded ? 3 : 2;
+		damage = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {
@@ -65,8 +65,8 @@ public class MarkTarget extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING,
+			if (fd.getStatus(StatusType.REND).getStacks() < REND_THRESHOLD) return TriggerResult.keep();
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.SLASHING,
 					DamageStatTracker.of(ID + slot, this)));
 			return TriggerResult.keep();
 		});
@@ -75,7 +75,8 @@ public class MarkTarget extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_BRICK,
-				"On cast, apply " + GlossaryTag.REND.tag(this, rend) + " to the enemy you're looking at. Additionally, you passively " +
-				"deal an additional " + GlossaryTag.SLASHING.tag(this, damage) + " damage per stack of " + GlossaryTag.REND.tag(this) + ".");
+				"On cast, apply " + GlossaryTag.REND.tag(this, rend) + " to the enemy you're looking at. Additionally, "
+				+ "deal an additional " + GlossaryTag.SLASHING.tag(this, damage) + " damage when hitting an enemy with at least "
+				+ GlossaryTag.REND.tag(this, REND_THRESHOLD) + ".");
 	}
 }

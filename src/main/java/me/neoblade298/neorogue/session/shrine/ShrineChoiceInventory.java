@@ -23,10 +23,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineChoiceInventory extends CoreInventory {
 	private ShrineInstance inst;
+	private PlayerSessionData data;
 
 	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst) {
 		super(p, Bukkit.createInventory(p, 9, Component.text("Shrine Choice", NamedTextColor.BLUE)));
 		this.inst = inst;
+		this.data = data;
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {

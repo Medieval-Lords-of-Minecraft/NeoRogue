@@ -415,7 +415,7 @@ public void setupItem() {
 
 ## Reforges
 
-Reforges combine two source equipment into one or more result equipment (one rarity tier higher).
+Reforges combine two source equipment into one or more result equipment. Reforge results must always be exactly one rarity level higher than the highest rarity among all reforge sources.
 
 ### setupReforges() Pattern
 ```java
@@ -429,7 +429,7 @@ public void setupReforges() {
 
 - First arg: the other source equipment that combines with `this`
 - Remaining args: one or more result equipment the player can choose from
-- Results are always one rarity tier higher than the sources (COMMON + COMMON → UNCOMMON)
+- Results are always exactly one rarity level higher than the highest-rarity source (COMMON + UNCOMMON → RARE)
 - Multiple results give the player a choice
 
 ### Reforge Balance Rules

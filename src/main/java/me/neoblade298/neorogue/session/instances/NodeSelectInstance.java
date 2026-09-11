@@ -38,6 +38,7 @@ import net.kyori.adventure.title.Title;
 public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
 	private BukkitTask task;
+	private Node node;
 	protected ArrayList<TextDisplay> holograms = new ArrayList<TextDisplay>();
 	
 	private static final ArrayList<Component> tips = new ArrayList<Component>();
@@ -66,11 +67,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	@Override
 	public void setup() {
 		Region region = s.getRegion();
+		node = s.getNode();
 
 		// Teleport player to their previous node selection
-		if (s.getNode().getRow() != 0)
-			spawn = region.nodeToLocation(s.getNode(), 1);
-		region.update(s.getNode(), this);
+		if (node.getRow() != 0)
+			spawn = region.nodeToLocation(node, 1);
+		region.update(node, this);
 
 		// Set up info hologram
 		createInfoHologram(spawn.clone().add(0, 2.8, 8));
@@ -147,7 +149,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 		// Cleanup region after player is teleported away to avoid player falling through floor with lecterns
 		NodeSelectInstance inst = this;
-		s.getRegion().cleanup(s.getNode(), inst, pluginDisable);
+		s.getRegion().cleanup(node, inst, pluginDisable);
 
 		for (TextDisplay holo : holograms) {
 			holo.remove();

@@ -991,6 +991,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RighteousLance(b);
 			new Riftmaker(b);
 			new RuneHarvester(b);
+			new Sadist(b);
 			new SearingArrow(b);
 			new SerratedArrow(b);
 			new SerratedRazor(b);
@@ -999,11 +1000,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShieldbearerStaff(b);
 			new ShieldPike(b);
 			new SlowingOrb(b);
+			new Sightshatter(b);
 			new Snareweaver(b);
 			new SoulHarvester(b);
 			new SparkdrainKnife(b);
 			new SparkKnife(b);
 			new SparkStick(b);
+			new SplinteringArrow(b);
 			new Stormweaver(b);
 			new StickyBomb(b);
 			new StoneArrow(b);
