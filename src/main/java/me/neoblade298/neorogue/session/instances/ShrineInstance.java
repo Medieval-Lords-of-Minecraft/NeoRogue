@@ -14,9 +14,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.type.Wall;
-import org.bukkit.block.data.type.Wall.Height;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
@@ -37,13 +34,13 @@ public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(50).spread(2, 2).speed(0.1);
 	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
 			HOLO_X = 0, HOLO_Y = 2.5, HOLO_Z = 7;
-	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURNING_STATE = 3, RETURN_FAIL_STATE = 4;
+	private static final String UNDECIDED = "N", UPGRADE_PENDING = "U", COMPLETE = "D";
+	private static final int UPGRADE_STATE = 2, RETURNING_STATE = 3, RETURN_FAIL_STATE = 4;
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
+	private HashSet<UUID> pendingUpgrade = new HashSet<UUID>();
 	private TextDisplay holo;
-	// True when this shrine was restored from a save, so setup() preserves the loaded state (notUsed,
-	// chosen block layout) instead of resetting to a fresh INIT shrine.
 	private boolean deserialized = false;
 	
 	public ShrineInstance(Session s) {
@@ -54,11 +51,18 @@ public class ShrineInstance extends EditInventoryInstance {
 	public ShrineInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
 		deserialized = true;
-		state = Integer.parseInt(data.substring(data.length() - 1));
+		int savedState = Integer.parseInt(data.substring(data.length() - 1));
+		if (savedState == RETURNING_STATE || savedState == RETURN_FAIL_STATE) state = savedState;
 		
 		for (PlayerSessionData pd : party.values()) {
-			if (pd.getInstanceData().equals("F")) {
-				notUsed.add(pd.getPlayer().getUniqueId());
+			UUID uuid = pd.getUniqueId();
+			String playerState = pd.getInstanceData();
+			if (UNDECIDED.equals(playerState) || ("F".equals(playerState) && savedState != UPGRADE_STATE)) {
+				notUsed.add(uuid);
+			}
+			else if (UPGRADE_PENDING.equals(playerState) || ("F".equals(playerState) && savedState == UPGRADE_STATE)) {
+				notUsed.add(uuid);
+				pendingUpgrade.add(uuid);
 			}
 		}
 
@@ -82,21 +86,8 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 		super.setup();
 
-		// Restore the block layout + hologram for the current state. A fresh (or INIT) shrine shows the
-		// emerald blocks from the schematic; a shrine saved mid-upgrade shows the anvil, and one saved
-		// mid-rest shows the rest layout (in practice rest sends players straight back to node select,
-		// so a rest-state save is unlikely).
-		if (state == UPGRADE_STATE) {
-			applyUpgradeLayout();
-			holo = createUpgradeHologram();
-		}
-		else if (state == REST_STATE) {
-			applyRestLayout();
-		}
-		else {
-			Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));
-			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
-		}
+		Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 
 	@Override
@@ -128,8 +119,10 @@ public class ShrineInstance extends EditInventoryInstance {
 
 	@Override
 	public Component getActionBar(PlayerSessionData data) {
-		boolean isReady = !notUsed.contains(data.getUniqueId());
-		return getActionBar(data, isReady ? "Ready" : "Not Ready",
+		UUID uuid = data.getUniqueId();
+		if (pendingUpgrade.contains(uuid)) return getActionBar(data, "Choose an Upgrade", NamedTextColor.YELLOW);
+		boolean isReady = !notUsed.contains(uuid);
+		return getActionBar(data, isReady ? "Ready" : "Choose Rest or Upgrade",
 				isReady ? NamedTextColor.GREEN : NamedTextColor.RED);
 	}
 
@@ -157,100 +150,51 @@ public class ShrineInstance extends EditInventoryInstance {
 				return;
 			}
 			
-			if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK && state == INIT_STATE) {
-				new ShrineChoiceInventory(p, s.getParty().get(p.getUniqueId()), this, s.getHost().equals(uuid));
+			if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK && notUsed.contains(uuid)) {
+				if (pendingUpgrade.contains(uuid)) {
+					new ShrineUpgradeInventory(p, s.getData(uuid), this);
+				}
+				else {
+					new ShrineChoiceInventory(p, s.getParty().get(uuid), this);
+				}
 				return;
 			}
-
-			if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid) && state == UPGRADE_STATE) {
-				new ShrineUpgradeInventory(p, s.getData(p.getUniqueId()), this);
-			}
-			else {
-				super.handleInteractEvent(e);
-			}
+			super.handleInteractEvent(e);
 		}
 		else {
 			super.handleInteractEvent(e);
 		}
 	}
 	
-	// True if close inventory after suggesting
-	public boolean suggestState(Player p, boolean rest) {
-		if (!s.canSuggest()) return false;
-		String suggestion = rest ? "resting" : "upgrading";
-		s.setSuggestCooldown();
-		s.broadcast(
-			p.name().color(NamedTextColor.YELLOW)
-			.append(Component.text(" suggests ", NamedTextColor.GRAY))
-			.append(Component.text(suggestion, NamedTextColor.YELLOW))
-			.append(Component.text("!", NamedTextColor.GRAY))
-		);
-		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-		return true;
-	}
-
-	public void chooseState(boolean rest) {
-		state = rest ? REST_STATE : UPGRADE_STATE;
-		for (PlayerSessionData data : s.getParty().values()) {
-			if (rest) data.markRestedAtShrine();
-			else data.markUpgradedAtShrine();
-		}
-		s.broadcast("The host has chosen to <yellow>" + (rest ? "rest" : "upgrade"));
+	public void chooseState(Player p, boolean rest) {
+		UUID uuid = p.getUniqueId();
+		if (!notUsed.contains(uuid) || pendingUpgrade.contains(uuid)) return;
+		PlayerSessionData data = s.getData(uuid);
+		if (rest) data.markRestedAtShrine();
+		else data.markUpgradedAtShrine();
 		part.play(blockMiddle.getLocation());
-		s.broadcastSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
-		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-		holo.remove();
+		p.playSound(p, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1F, 1F);
+		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 		if (rest) {
-			applyRestLayout();
-			notUsed.clear();
-			
-			for (PlayerSessionData data : s.getParty().values()) {
-				data.healPercent(0.35);
-			}
-			updateBoardLines();
-			
-			returnToNodes();
+			data.healPercent(0.35);
+			notUsed.remove(uuid);
+			finishIfReady();
 		}
 		else {
-			applyUpgradeLayout();
-			holo = createUpgradeHologram();
+			pendingUpgrade.add(uuid);
 		}
-	}
-
-	// Sets the shrine blocks to the "upgrade" (anvil) layout. Shared by chooseState() and setup() so a
-	// deserialized upgrade-state shrine shows the anvil instead of the default emerald blocks.
-	private void applyUpgradeLayout() {
-		blockBottom.setType(Material.REINFORCED_DEEPSLATE);
-		blockMiddle.setType(Material.ANVIL);
-		Directional anvil = (Directional) blockMiddle.getBlockData();
-		anvil.setFacing(BlockFace.EAST);
-		blockMiddle.setBlockData(anvil);
-		blockTop.setType(Material.WITHER_SKELETON_SKULL);
-	}
-
-	// Sets the shrine blocks to the "rest" (lodestone/skull) layout. Shared by chooseState() and setup().
-	private void applyRestLayout() {
-		blockBottom.setType(Material.LODESTONE);
-		blockMiddle.setType(Material.DIORITE_WALL);
-		Wall wall = (Wall) blockMiddle.getBlockData();
-		wall.setHeight(BlockFace.EAST, Height.LOW);
-		wall.setHeight(BlockFace.WEST, Height.LOW);
-		blockMiddle.setBlockData(wall);
-		blockTop.setType(Material.SKELETON_SKULL);
-	}
-
-	private TextDisplay createUpgradeHologram() {
-		Component text = Component.text("Use the anvil!").appendNewline()
-			.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift right click paper!"));
-		return NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+		updateBoardLines();
 	}
 	
 	public void useUpgrade(UUID uuid) {
+		pendingUpgrade.remove(uuid);
 		notUsed.remove(uuid);
-		if (notUsed.isEmpty()) {
-			returnToNodes();
-		}
 		updateBoardLines();
+		finishIfReady();
+	}
+
+	private void finishIfReady() {
+		if (notUsed.isEmpty()) returnToNodes();
 	}
 	
 	public void returnToNodes() {
@@ -274,16 +218,19 @@ public class ShrineInstance extends EditInventoryInstance {
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			ent.getValue().setInstanceData(notUsed.contains(ent.getKey()) ? "F" : "T");
+			UUID uuid = ent.getKey();
+			String playerState = pendingUpgrade.contains(uuid) ? UPGRADE_PENDING
+					: notUsed.contains(uuid) ? UNDECIDED : COMPLETE;
+			ent.getValue().setInstanceData(playerState);
 		}
 		return InstanceType.SHRINE.prefix() + state;
 	}
 
 	@Override
 	public void handlePlayerLeaveParty(OfflinePlayer p) {
-		notUsed.remove(p.getUniqueId());
-		if (notUsed.isEmpty()) {
-			returnToNodes();
-		}
+		UUID uuid = p.getUniqueId();
+		pendingUpgrade.remove(uuid);
+		notUsed.remove(uuid);
+		finishIfReady();
 	}
 }

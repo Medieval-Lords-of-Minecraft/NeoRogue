@@ -23,19 +23,17 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineChoiceInventory extends CoreInventory {
 	private ShrineInstance inst;
-	private boolean isHost;
 
-	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst, boolean isHost) {
-		super(p, Bukkit.createInventory(p, 9, Component.text("Host Choice", NamedTextColor.BLUE)));
+	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst) {
+		super(p, Bukkit.createInventory(p, 9, Component.text("Shrine Choice", NamedTextColor.BLUE)));
 		this.inst = inst;
-		this.isHost = isHost;
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {
 			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, Component.text("Rest", NamedTextColor.GREEN), 
-					"Everyone in the party heals for 35% of their max health.", 250, NamedTextColor.GRAY);
+					"Heal for 35% of your max health.", 250, NamedTextColor.GRAY);
 			contents[5 + i] = CoreInventory.createButton(Material.ANVIL, Component.text("Upgrade", NamedTextColor.GOLD), 
-					"Everyone in the party gets to upgrade 1 equipment.", 250, NamedTextColor.GRAY);
+					"Upgrade 1 of your equipment.", 250, NamedTextColor.GRAY);
 		}
 		contents[4] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
 		inv.setContents(contents);
@@ -49,42 +47,21 @@ public class ShrineChoiceInventory extends CoreInventory {
 		
 		int slot = e.getSlot();
 		if (slot < 4) {
-			if (isHost) {
-				inst.chooseState(true);
-				new BukkitRunnable() {
-					public void run() {
-						p.closeInventory();
-					}
-				}.runTask(NeoRogue.inst());
-			}
-			else {
-				if (inst.suggestState(p, true)) {
-					new BukkitRunnable() {
-						public void run() {
-							p.closeInventory();
-						}
-					}.runTask(NeoRogue.inst());
+			inst.chooseState(p, true);
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
 				}
-			}
+			}.runTask(NeoRogue.inst());
 		}
 		else if (slot > 4) {
-			if (isHost) {
-				inst.chooseState(false);
-				new BukkitRunnable() {
-					public void run() {
-						p.closeInventory();
-					}
-				}.runTask(NeoRogue.inst());
-			}
-			else {
-				if (inst.suggestState(p, false)) {
-					new BukkitRunnable() {
-						public void run() {
-							p.closeInventory();
-						}
-					}.runTask(NeoRogue.inst());
+			inst.chooseState(p, false);
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+					new ShrineUpgradeInventory(p, data, inst);
 				}
-			}
+			}.runTask(NeoRogue.inst());
 		}
 	}
 
