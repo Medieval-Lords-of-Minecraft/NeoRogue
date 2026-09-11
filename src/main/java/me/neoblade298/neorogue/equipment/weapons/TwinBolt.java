@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.equipment.abilities.ManaInfusion;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -43,6 +44,11 @@ public class TwinBolt extends Equipment {
 
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(ManaInfusion.get(), Ignis.get());
 	}
 
 	@Override

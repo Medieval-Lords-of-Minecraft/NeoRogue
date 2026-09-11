@@ -955,6 +955,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IcyBow(b);
 			new ImbuedDagger(b);
 			new DrainWand(b);
+			new Ignis(b);
 			new IronBolt(b);
 			new IronSword(b);
 			new IronThrowingKnife(b);
