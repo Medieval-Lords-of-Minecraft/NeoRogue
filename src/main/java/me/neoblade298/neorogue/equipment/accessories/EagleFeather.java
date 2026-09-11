@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -40,5 +39,10 @@ public class EagleFeather extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER, "Increase range of all projectiles by " + DescUtil.val(buff) + ".");
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(SwallowTail.get(), Windplume.get());
 	}
 }

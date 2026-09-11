@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -12,6 +13,8 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.SessionEquipment;
+import me.neoblade298.neorogue.equipment.abilities.Incapacitation;
+import me.neoblade298.neorogue.equipment.abilities.RazorTome;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -21,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DoubleTap extends Bow {
 	private static final String ID = "DoubleTap";
-	private static final int THRESHOLD = 3;
+	private static final int THRESHOLD = 5;
 	
 	public DoubleTap(boolean isUpgraded) {
 		super(ID, "Double Tap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
@@ -36,6 +39,12 @@ public class DoubleTap extends Bow {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(Incapacitation.get(), Swiftsunder.get());
+		addReforge(RazorTome.get(), Razorthorn.get());
 	}
 
 	@Override
@@ -62,6 +71,6 @@ public class DoubleTap extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Every third basic attack fires an " + GlossaryTag.AFTERSHOT.tag(this) + " that deals only ammunition damage.");
+		item = createItem(Material.BOW, "Every " + DescUtil.val(THRESHOLD) + " basic attacks, fire an " + GlossaryTag.AFTERSHOT.tag(this) + " that deals only ammunition damage.");
 	}
 }

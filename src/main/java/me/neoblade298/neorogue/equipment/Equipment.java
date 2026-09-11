@@ -758,6 +758,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new VirulentCore(b);
 			new VoidBracelet(b);
 			new Wildfire(b);
+			new Windplume(b);
 			new Winterstone(b);
 			new YellowRing(b);
 
@@ -933,6 +934,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EvasiveKnife(b);
 			new Excalibur(b);
 			new ExplosiveArrow(b);
+			new ExplosiveArrow2(b);
 			new FencingSword(b);
 			new Firefly(b);
 			new FireStaff(b);
@@ -982,6 +984,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PocketBallista(b);
 			new Rapier(b);
 			new Razor(b);
+			new Razorthorn(b);
 			new ReckoningOrb(b);
 			new RedBaron(b);
 			new RighteousFlame(b);
@@ -1015,6 +1018,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneThrowingKnife(b);
 			new StonePlating(b);
 			new StonyWand(b);
+			new Swiftsunder(b);
 			new TacticiansDagger(b);
 			new TheGreatDivide(b);
 			new ToxicRazor(b);
