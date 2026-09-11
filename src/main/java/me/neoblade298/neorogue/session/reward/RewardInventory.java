@@ -19,7 +19,6 @@ import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
-import me.neoblade298.neorogue.session.SessionType;
 import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
@@ -57,16 +56,11 @@ public class RewardInventory extends CoreInventory {
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
 
-		if (!isStartingBonusReward()) contents[8] = createSkipButton("Clear remaining rewards");
+		contents[8] = createSkipButton("Clear remaining rewards");
 		inv.setContents(contents);
 	}
 
-	private boolean isStartingBonusReward() {
-		return data.getSession().getInstance() instanceof RewardInstance reward && reward.isStartingBonusReward();
-	}
-
 	public ItemStack createSkipButton(String name) {
-		if (data.getSession().getSessionType() == SessionType.TUTORIAL) return null;
 		if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
 			ItemStack item = PotOfGreed.get().getItem();
 			return CoreInventory.createButton(item.getType(),
@@ -86,7 +80,12 @@ public class RewardInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 
 		int slot = e.getSlot();
-		if (slot < rewards.size()) {
+		if (slot == 8) {
+			if (spectator != null) return;
+			skipRewards(new ArrayList<Reward>(rewards));
+			p.closeInventory();
+		}
+		else if (slot < rewards.size()) {
 			Reward reward = rewards.get(slot);
 			
 			// Special spectator behavior
@@ -107,13 +106,6 @@ public class RewardInventory extends CoreInventory {
 		}
 		else if (slot == 7 && data.getSession().getParty().size() > 1) {
 			new SpectateSelectInventory(data.getSession(), p, data, true);
-		}
-		else if (slot == 8) {
-			if (spectator != null) return;
-			if (isStartingBonusReward()) return;
-			if (data.getSession().getSessionType() == SessionType.TUTORIAL) return;
-			skipRewards(new ArrayList<Reward>(rewards));
-			p.closeInventory();
 		}
 	}
 

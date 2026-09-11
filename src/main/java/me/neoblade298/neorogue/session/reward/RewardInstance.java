@@ -323,10 +323,6 @@ public class RewardInstance extends EditInventoryInstance {
 		return rewards;
 	}
 
-	public boolean isStartingBonusReward() {
-		return previous == NodeType.START;
-	}
-
 	// Null-safe access to a player's reward list. Missing entries (e.g. a fight that generated no rewards
 	// for someone, or an entirely empty reward map) are treated as an empty, already-claimed list, so
 	// lookups never NPE and the player can pass through the reward screen as if they had claimed all.

@@ -356,7 +356,7 @@ public class FightStatistics {
 		.append(Component.text(" ", NamedTextColor.GRAY))
 		.append(Component.text(hp + "♥", NamedTextColor.GREEN))
 		.append(Component.text(" (", NamedTextColor.GRAY))
-		.append(Component.text((lostHp ? "-" : "+") + df.format(Math.abs(diff)), lostHp ? NamedTextColor.RED : NamedTextColor.GREEN))
+		.append(Component.text((lostHp ? "-" : "+") + df.format(Math.abs(diff)), lostHp ? NamedTextColor.DARK_RED : NamedTextColor.DARK_GREEN))
 		.append(Component.text(") - ", NamedTextColor.GRAY))
 		.hoverEvent(nameHover.children().isEmpty() ? null : HoverEvent.showText(getNameHoverComponent()));
 	}
