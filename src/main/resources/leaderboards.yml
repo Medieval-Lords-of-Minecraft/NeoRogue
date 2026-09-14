@@ -1,2 +1,5 @@
 # Leaderboard display locations are managed with /nradmin leaderboard.
+# Each location may optionally override the global defaults with:
+# entries: 10
+# refresh-seconds: 3600
 locations: {}

@@ -16,6 +16,9 @@ tutorial-end-message: '<dark_gray>[<dark_red><bold>MLMC</bold></dark_red>] <gray
 # Player UUIDs listed here are excluded from every leaderboard.
 # Run /nradmin leaderboard reload after changing this list.
 leaderboards:
+  # Defaults may be overridden per display in leaderboards.yml.
+  refresh-seconds: 3600
+  entries: 10
   excluded-player-uuids: []
 
 # Requires a restart. Upgrade bonuses from caravan.yml are added to these base limits.

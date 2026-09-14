@@ -39,7 +39,12 @@ public class LeaderboardConfig {
 				LeaderboardPeriod period = LeaderboardPeriod.valueOf(locationSection.getString("period", "ALLTIME").toUpperCase(Locale.ROOT));
 				LeaderboardRunMode runMode = LeaderboardRunMode.valueOf(locationSection.getString("run-mode", "ALL").toUpperCase(Locale.ROOT));
 				Integer notoriety = locationSection.isInt("notoriety") ? locationSection.getInt("notoriety") : null;
+				Integer entryLimit = locationSection.isInt("entries") ? locationSection.getInt("entries") : null;
+				Long refreshSeconds = locationSection.contains("refresh-seconds")
+						? locationSection.getLong("refresh-seconds") : null;
 				if (notoriety != null && (notoriety < 0 || notoriety > 10)) throw new IllegalArgumentException();
+				if (entryLimit != null && entryLimit <= 0) throw new IllegalArgumentException();
+				if (refreshSeconds != null && refreshSeconds <= 0) throw new IllegalArgumentException();
 				String worldName = locationSection.getString("world");
 				if (worldName == null || Bukkit.getWorld(worldName) == null) {
 					NeoRogue.inst().getLogger().warning("Leaderboard location '" + id + "' references unloaded world '" + worldName + "'; it will be retried when the world loads");
@@ -47,7 +52,8 @@ public class LeaderboardConfig {
 				}
 				locations.add(new LeaderboardLocation(id, type, period, notoriety, runMode, worldName,
 						locationSection.getDouble("x"), locationSection.getDouble("y"), locationSection.getDouble("z"),
-						(float) locationSection.getDouble("yaw"), (float) locationSection.getDouble("pitch")));
+						(float) locationSection.getDouble("yaw"), (float) locationSection.getDouble("pitch"),
+						entryLimit, refreshSeconds));
 			} catch (IllegalArgumentException ex) {
 				NeoRogue.inst().getLogger().warning("Leaderboard location '" + id + "' has an invalid option, skipping");
 			}
@@ -60,7 +66,7 @@ public class LeaderboardConfig {
 		String id = UUID.randomUUID().toString().substring(0, 8);
 		LeaderboardLocation entry = new LeaderboardLocation(id, type, period, notoriety, runMode,
 				location.getWorld().getName(), location.getX(), location.getY(), location.getZ(),
-				location.getYaw(), location.getPitch());
+				location.getYaw(), location.getPitch(), null, null);
 		String path = LOCATIONS + "." + id + ".";
 		yml.set(path + "leaderboard", type.name());
 		yml.set(path + "period", period.name());
@@ -116,7 +122,7 @@ public class LeaderboardConfig {
 
 	public record LeaderboardLocation(String id, LeaderboardType type, LeaderboardPeriod period,
 			Integer notoriety, LeaderboardRunMode runMode, String world, double x, double y, double z,
-			float yaw, float pitch) {
+			float yaw, float pitch, Integer entryLimit, Long refreshSeconds) {
 		public Location toLocation() {
 			World loadedWorld = Bukkit.getWorld(world);
 			return loadedWorld == null ? null : new Location(loadedWorld, x, y, z, yaw, pitch);
