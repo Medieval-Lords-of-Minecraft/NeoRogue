@@ -358,6 +358,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Demoralize(b);
 			new DensityOrb(b);
 			new Depletion(b);
+			new DevouringWildfire(b);
 			new Dexterity(b);
 			new Disappear(b);
 			new Discharge(b);

@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.leaderboard.LeaderboardConfig.LeaderboardLocation;
 import me.neoblade298.neorogue.leaderboard.LeaderboardConfig.LeaderboardPeriod;
 import me.neoblade298.neorogue.leaderboard.LeaderboardConfig.LeaderboardRunMode;
@@ -46,8 +47,9 @@ public class CmdAdminLeaderboard extends Subcommand {
 		case "teleport", "tp" -> teleport(sender, args);
 		case "remove" -> remove(sender, args);
 		case "reload" -> {
+			NeoRogue.inst().reloadConfig();
 			LeaderboardManager.reload();
-			Util.msgRaw(sender, "<green>Reloaded leaderboard locations.");
+			Util.msgRaw(sender, "<green>Reloaded leaderboard config and locations.");
 		}
 		case "refresh" -> {
 			LeaderboardManager.refresh();

@@ -8,11 +8,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -45,6 +48,7 @@ public class LeaderboardManager implements Listener {
 
 	private static final Map<String, ActiveDisplay> displays = new LinkedHashMap<>();
 	private static LeaderboardConfig config;
+	private static Set<UUID> excludedPlayerIds = Set.of();
 	private static BukkitTask refreshTask;
 	private static int generation;
 
@@ -75,6 +79,7 @@ public class LeaderboardManager implements Listener {
 	public static void reload() {
 		if (config == null) return;
 		generation++;
+		excludedPlayerIds = loadExcludedPlayerIds();
 		List<LeaderboardLocation> locations = config.load();
 		Map<String, Location> bukkitLocations = new LinkedHashMap<>();
 		for (LeaderboardLocation location : locations) {
@@ -130,6 +135,7 @@ public class LeaderboardManager implements Listener {
 	public static void refresh() {
 		if (displays.isEmpty()) return;
 		int refreshGeneration = ++generation;
+		Set<UUID> refreshExcludedPlayerIds = excludedPlayerIds;
 		Map<BoardKey, List<String>> locationsByBoard = new HashMap<>();
 		for (ActiveDisplay active : displays.values()) {
 			locationsByBoard.computeIfAbsent(BoardKey.from(active.location()), ignored -> new ArrayList<>())
@@ -139,7 +145,7 @@ public class LeaderboardManager implements Listener {
 			Map<BoardKey, List<LeaderboardRow>> results = new HashMap<>();
 			for (BoardKey key : locationsByBoard.keySet()) {
 				try {
-					results.put(key, query(key));
+					results.put(key, query(key, refreshExcludedPlayerIds));
 				} catch (SQLException ex) {
 					NeoRogue.inst().getLogger().log(java.util.logging.Level.SEVERE,
 							"Failed to refresh " + key.type().display() + " leaderboard", ex);
@@ -150,7 +156,7 @@ public class LeaderboardManager implements Listener {
 		});
 	}
 
-	private static List<LeaderboardRow> query(BoardKey key) throws SQLException {
+	private static List<LeaderboardRow> query(BoardKey key, Set<UUID> excludedPlayerIds) throws SQLException {
 		String aggregate = key.type() == LeaderboardType.WINRATE
 				? "COUNT(*) AS runs, SUM(r.won) AS wins, AVG(r.won) AS score"
 				: "MIN(r.playtime) AS score";
@@ -159,6 +165,12 @@ public class LeaderboardManager implements Listener {
 				.append(" JOIN neorogue_analytics_run_players rp ON rp.runId = r.runId")
 				.append(" WHERE r.endless = 0");
 		List<Object> parameters = new ArrayList<>();
+		if (!excludedPlayerIds.isEmpty()) {
+			sql.append(" AND rp.playerUuid NOT IN (")
+					.append(String.join(", ", Collections.nCopies(excludedPlayerIds.size(), "?")))
+					.append(")");
+			parameters.addAll(excludedPlayerIds.stream().map(UUID::toString).toList());
+		}
 		if (key.type() == LeaderboardType.FASTEST_CLEAR) sql.append(" AND r.won = 1");
 		if (key.period() == LeaderboardPeriod.MONTHLY) {
 			sql.append(" AND r.ts >= ?");
@@ -193,6 +205,18 @@ public class LeaderboardManager implements Listener {
 			}
 		}
 		return rows;
+	}
+
+	private static Set<UUID> loadExcludedPlayerIds() {
+		HashSet<UUID> playerIds = new HashSet<>();
+		for (String configuredId : NeoRogue.inst().getConfig().getStringList("leaderboards.excluded-player-uuids")) {
+			try {
+				playerIds.add(UUID.fromString(configuredId));
+			} catch (IllegalArgumentException ex) {
+				NeoRogue.inst().getLogger().warning("Invalid UUID in leaderboards.excluded-player-uuids: " + configuredId);
+			}
+		}
+		return Set.copyOf(playerIds);
 	}
 
 	private static long monthStart() {

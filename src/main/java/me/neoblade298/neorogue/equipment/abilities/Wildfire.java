@@ -54,6 +54,11 @@ public class Wildfire extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(Engulf.get(), DevouringWildfire.get());
+	}
+
+	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, sessionEq, slot, es, (pdata, in) -> {
 			Sounds.equip.play(data.getPlayer(), data.getPlayer());

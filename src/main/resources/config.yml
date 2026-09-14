@@ -13,6 +13,11 @@ inspection-worlds:
 # {player} is replaced with the player's name.
 tutorial-end-message: '<dark_gray>[<dark_red><bold>MLMC</bold></dark_red>] <gray>Welcome to the server <yellow>{player}</yellow>!'
 
+# Player UUIDs listed here are excluded from every leaderboard.
+# Run /nradmin leaderboard reload after changing this list.
+leaderboards:
+  excluded-player-uuids: []
+
 # Requires a restart. Upgrade bonuses from caravan.yml are added to these base limits.
 caravan:
   cargo:
