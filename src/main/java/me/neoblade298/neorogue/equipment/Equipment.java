@@ -939,6 +939,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FencingSword(b);
 			new Firefly(b);
 			new FireStaff(b);
+			new FirestormRod(b);
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
@@ -969,6 +970,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LitArrow(b);
 			new MageMace(b);
 			new MagicSpear(b);
+			new MagicSpear2(b);
 			new ManaEater(b);
 			new MassiveHalberd(b);
 			new MechanicalBow(b);
@@ -979,6 +981,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MonksStaff2(b);
 			new MultiCrossbow(b);
 			new Nightmare(b);
+			new NimbusRod(b);
+			new NimbusRod2(b);
 			new Nocturne(b);
 			new NoxianFalx(b);
 			new OldStaff(b);

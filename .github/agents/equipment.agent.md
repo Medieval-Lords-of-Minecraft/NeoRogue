@@ -446,7 +446,9 @@ public void setupReforges() {
 
 ## FX Delegation
 
-For particle effects and sound design beyond basic `pc.play()` calls, delegate to the `@fx` agent. Provide it the equipment's theme, damage type, and mechanical timing.
+After implementing or changing equipment, **always hand off to the `@fx` agent** for a dedicated effects and sound review. Provide the equipment's theme, damage type, mechanical timing, and the files changed. The handoff is required even when the equipment already has basic particle or sound calls; `@fx` may confirm that no further changes are needed.
+
+Do not consider equipment work complete until `@fx` has reviewed the implementation and any FX edits have been validated.
 
 ## Constraints
 
@@ -468,6 +470,7 @@ For particle effects and sound design beyond basic `pc.play()` calls, delegate t
 5. Write `setupItem()` with proper GlossaryTag/DescUtil formatting
 6. Add `setupReforges()` if applicable
 7. Ensure static final declarations for particles, shapes, target properties
+8. Hand off the completed equipment to `@fx` for effects and sound review
 
 ## Output Format
 
