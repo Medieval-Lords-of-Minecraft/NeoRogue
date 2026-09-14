@@ -213,7 +213,7 @@ public class AchievementManager {
 		for (Achievement ach : achievements) {
 			AchievementScope scope = ach.getScope();
 			if (ec == null) {
-				if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+				if (scope == AchievementScope.BOTH) {
 					result.add(ach);
 				}
 			} else {
@@ -234,7 +234,7 @@ public class AchievementManager {
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.SESSION)) {
 			AchievementScope scope = achievement.getScope();
 			// Register global progress
-			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+			if (scope == AchievementScope.BOTH) {
 				String regKey = achievement.getId() + ":GLOBAL";
 				if (tryRegister(registeredSession, data, regKey)) {
 					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());
@@ -265,7 +265,7 @@ public class AchievementManager {
 		for (Achievement achievement : achievementsByTrigger.get(AchievementTriggerType.FIGHT)) {
 			AchievementScope scope = achievement.getScope();
 			// Register global progress
-			if (scope == AchievementScope.GLOBAL || scope == AchievementScope.BOTH) {
+			if (scope == AchievementScope.BOTH) {
 				String regKey = achievement.getId() + ":GLOBAL";
 				if (tryRegister(registeredFight, data, regKey)) {
 					AchievementProgress progress = pd.getGlobalAchievementProgress(achievement.getId());

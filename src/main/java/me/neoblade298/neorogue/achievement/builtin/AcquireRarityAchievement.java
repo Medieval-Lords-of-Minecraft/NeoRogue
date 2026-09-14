@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
+import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -52,6 +53,11 @@ public class AcquireRarityAchievement implements Achievement {
 	@Override
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;
+	}
+
+	@Override
+	public AchievementScope getScope() {
+		return AchievementScope.BOTH;
 	}
 
 	@Override

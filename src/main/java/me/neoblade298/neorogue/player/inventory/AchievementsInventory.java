@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -24,9 +25,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class AchievementsInventory extends CoreInventory {
 	private static final int BACK = 0, FILTER = 1;
+	private static final int SORT = 9;
 	private static final int PROGRESS_START = 2, PROGRESS_END = 8;
 	private static final int ITEMS_START = 18, ITEMS_END = 44;
 	private static final int PAGE_SIZE = ITEMS_END - ITEMS_START + 1; // 27
@@ -37,6 +40,7 @@ public class AchievementsInventory extends CoreInventory {
 	private PlayerData progressData;
 	private EquipmentClass achievementClass;
 	private ClassFilter filter = ClassFilter.ALL;
+	private SortMode sortMode = SortMode.DEFAULT;
 	private Player spectator;
 	private PlayerData targetData;
 	// Reopens the inventory the back button should return to. Null falls back to the achievements menu.
@@ -54,7 +58,7 @@ public class AchievementsInventory extends CoreInventory {
 		super(viewer, Bukkit.createInventory(viewer, 54, buildTitle(pd, ec)));
 		this.progressData = pd;
 		this.achievementClass = ec;
-		this.sorted = buildSortedList(pd, ec, filter);
+		this.sorted = buildSortedList(pd, ec, filter, sortMode);
 		this.targetData = targetData;
 		this.spectator = targetData != null ? viewer : null;
 		this.prevInventory = prevInventory;
@@ -66,14 +70,19 @@ public class AchievementsInventory extends CoreInventory {
 		return Component.text(prefix + " Achievements", NamedTextColor.AQUA);
 	}
 
-	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec, ClassFilter filter) {
+	private static List<AchievementProgress> buildSortedList(PlayerData pd, EquipmentClass ec, ClassFilter filter,
+			SortMode sortMode) {
 		List<Achievement> visible = AchievementManager.getForScope(ec);
 		List<AchievementProgress> list = new ArrayList<>(visible.size());
 		for (Achievement ach : visible) {
 			if (!filter.includes(ach, ec)) continue;
 			list.add(getProgress(pd, ach, ec));
 		}
-		// Achievements are shown in registration order (see AchievementManager's list)
+		if (sortMode == SortMode.ALPHABETICAL) {
+			list.sort(Comparator.comparing(
+					progress -> PlainTextComponentSerializer.plainText().serialize(progress.getAchievement().getDisplayName()),
+					String.CASE_INSENSITIVE_ORDER));
+		}
 		return list;
 	}
 
@@ -94,6 +103,7 @@ public class AchievementsInventory extends CoreInventory {
 		if (achievementClass != null) {
 			contents[FILTER] = createFilterButton();
 		}
+		contents[SORT] = createSortButton();
 
 		// Progress bar (slots 2-8)
 		fillProgressBar(contents);
@@ -125,6 +135,17 @@ public class AchievementsInventory extends CoreInventory {
 		meta.lore(List.of(
 				Component.text(filter.description, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE),
 				Component.text("Click to change", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, State.FALSE)));
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	private ItemStack createSortButton() {
+		ItemStack item = CoreInventory.createButton(Material.COMPARATOR,
+				Component.text("Sort: " + sortMode.display, NamedTextColor.YELLOW));
+		ItemMeta meta = item.getItemMeta();
+		meta.lore(List.of(
+				Component.text(sortMode.description, NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE),
+				Component.text("Click to toggle", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, State.FALSE)));
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -187,7 +208,15 @@ public class AchievementsInventory extends CoreInventory {
 		}
 		if (slot == FILTER && achievementClass != null) {
 			filter = filter.next();
-			sorted = buildSortedList(progressData, achievementClass, filter);
+			sorted = buildSortedList(progressData, achievementClass, filter, sortMode);
+			page = 0;
+			inv.clear();
+			setupInventory();
+			return;
+		}
+		if (slot == SORT) {
+			sortMode = sortMode.next();
+			sorted = buildSortedList(progressData, achievementClass, filter, sortMode);
 			page = 0;
 			inv.clear();
 			setupInventory();
@@ -213,6 +242,22 @@ public class AchievementsInventory extends CoreInventory {
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
+	}
+
+	private enum SortMode {
+		DEFAULT("Default", "Show achievements in their default order."),
+		ALPHABETICAL("Alphabetical", "Sort achievements by display name.");
+
+		private final String display, description;
+
+		SortMode(String display, String description) {
+			this.display = display;
+			this.description = description;
+		}
+
+		private SortMode next() {
+			return values()[(ordinal() + 1) % values().length];
+		}
 	}
 
 	private enum ClassFilter {

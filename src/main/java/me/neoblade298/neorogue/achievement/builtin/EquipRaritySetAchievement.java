@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
-import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -41,7 +40,6 @@ public class EquipRaritySetAchievement implements Achievement {
 	@Override public Component getDisplayName() { return displayName; }
 	@Override public Material getMaterial() { return material; }
 	@Override public int[] getMasteryThresholds() { return THRESHOLDS; }
-	@Override public AchievementScope getScope() { return AchievementScope.GLOBAL; }
 	@Override public EnumSet<AchievementTriggerType> getTriggerTypes() { return EnumSet.of(AchievementTriggerType.SESSION); }
 
 	@Override

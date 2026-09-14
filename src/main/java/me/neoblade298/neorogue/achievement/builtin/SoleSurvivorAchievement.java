@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
-import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -39,11 +38,6 @@ public class SoleSurvivorAchievement implements Achievement {
 	@Override
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;
-	}
-
-	@Override
-	public AchievementScope getScope() {
-		return AchievementScope.GLOBAL;
 	}
 
 	@Override

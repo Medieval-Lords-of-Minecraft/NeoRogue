@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
-import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.achievement.AchievementTriggerType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -40,12 +39,7 @@ public class UseConsumablesAchievement implements Achievement {
 	public int[] getMasteryThresholds() {
 		return THRESHOLDS;
 	}
-
-	@Override
-	public AchievementScope getScope() {
-		return AchievementScope.GLOBAL;
-	}
-
+	
 	@Override
 	public List<Component> getDescription(int progress, int mastery) {
 		int target = mastery < THRESHOLDS.length ? THRESHOLDS[mastery] : THRESHOLDS[THRESHOLDS.length - 1];

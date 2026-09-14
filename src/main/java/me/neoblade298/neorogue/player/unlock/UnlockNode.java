@@ -16,7 +16,6 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.achievement.Achievement;
 import me.neoblade298.neorogue.achievement.AchievementManager;
 import me.neoblade298.neorogue.achievement.AchievementProgress;
-import me.neoblade298.neorogue.achievement.AchievementScope;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -92,7 +91,7 @@ public class UnlockNode {
 					if (ach != null) {
 						if (ach.getRequiredClass() != null) {
 							autoClass = ach.getRequiredClass();
-						} else if (nodeClass != null && ach.getScope() != AchievementScope.GLOBAL) {
+						} else if (nodeClass != null) {
 							autoClass = nodeClass;
 						}
 					}
