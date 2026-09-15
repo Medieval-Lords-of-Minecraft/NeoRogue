@@ -83,6 +83,7 @@ public class CreateEarth extends Equipment {
 						inst.setCooldown(0);
 						return;
 					}
+					b.setType(Material.DEEPSLATE);
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), earth);
 					Sounds.explode.play(p, loc);

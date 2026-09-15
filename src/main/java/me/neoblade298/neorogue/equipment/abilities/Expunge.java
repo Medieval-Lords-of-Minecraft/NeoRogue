@@ -45,7 +45,7 @@ public class Expunge extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, 7));
 		
 		stacks = isUpgraded ? 15 : 10;
-		bonus = isUpgraded ? 12 : 8;
+		bonus = isUpgraded ? 4 : 3;
 		poisonDuration = 120;
 	}
 	

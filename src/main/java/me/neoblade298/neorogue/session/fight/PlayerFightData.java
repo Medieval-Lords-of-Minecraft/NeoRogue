@@ -298,6 +298,10 @@ public class PlayerFightData extends FightData {
 		return charge(ticks, 1);
 	}
 
+	public TaskChain charge(double seconds) {
+		return chargeSecs(seconds);
+	}
+
 	public TaskChain chargeSecs(double seconds) {
 		return charge((int) (seconds * 20));
 	}

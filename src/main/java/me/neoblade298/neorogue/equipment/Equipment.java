@@ -493,6 +493,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningRush(b);
 			new LightningStrike(b);
 			new LightPulse(b);
+			new LightTheSky(b);
 			new LimitBreak(b);
 			new LordOfTheNight(b);
 			new Mahoraga(b);
@@ -514,6 +515,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MindBlast(b);
 			new MindGrowth(b);
 			new MindGrowth2(b);
+			new Mindflare(b);
 			new MindShell(b);
 			new Momentum(b);
 			new MortalEngine(b);
@@ -596,6 +598,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Slipstream(b);
 			new Smite(b);
+			new Snakebite(b);
 			new SmokeBomb(b);
 			new SoulBattery(b);
 			new SparkBomb(b);
@@ -657,10 +660,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Voltaics(b);
 			new WallJump(b);
 			new WarCry(b);
+			new WhateverItTakes(b);
 			new Warmup(b);
 			new WarningShot(b);
 			new WeaponEnchantmentDarkness(b);
 			new WeaponEnchantmentElectrified(b);
+			new WeaponEnchantmentElectrified2(b);
 			new WeaponEnchantmentHoly(b);
 			new WingsOfJudgment(b);
 			new Windcall(b);
@@ -922,6 +927,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CripplingFencingSword(b);
 			new DaedalusStormbow(b);
 			new DarkScepter(b);
+			new DeepslateScepter(b);
+			new ThunderboltScepter(b);
 			new DivergentPiercer(b);
 			new DoubleTap(b);
 			new EarthStaff(b);
@@ -933,6 +940,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EnfeeblingWand(b);
 			new EtherealKnife(b);
 			new EvasiveKnife(b);
+			new ResonatingKnife(b);
 			new Excalibur(b);
 			new ExplosiveArrow(b);
 			new ExplosiveArrow2(b);
@@ -940,6 +948,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Firefly(b);
 			new FireStaff(b);
 			new FirestormRod(b);
+			new InfernalScepter(b);
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
@@ -996,6 +1005,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RighteousFlame(b);
 			new RighteousLance(b);
 			new Riftmaker(b);
+			new RodOfErosion(b);
 			new RuneHarvester(b);
 			new Sadist(b);
 			new SearingArrow(b);
@@ -1029,6 +1039,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StonyWand(b);
 			new Swiftsunder(b);
 			new TacticiansDagger(b);
+			new TacticiansFang(b);
 			new TheGreatDivide(b);
 			new ToxicRazor(b);
 			new UnderDarkness(b);
@@ -1040,6 +1051,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WoodenDagger(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
+			new ZeussDagger(b);
 
 			new Neoblade(b);
 
@@ -1076,6 +1088,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new AzureCutter();
 		new BagOfPreparation();
 		new BlackRose();
+		new BladeFragment();
 		new BloodyTrinket();
 		new Brawlheart();
 		new BurningCross();
@@ -1083,9 +1096,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new Brightfeather();
 		new CailiricCrystal();
 		new CharmOfGallus();
+		new ChampionBelt();
 		new ClearGoblet();
 		new CobblestoneSapling();
 		new ConcealingCloak();
+		new CometDust();
 		new CrackedCrystal();
 		new CrossOfAntiquan();
 		new CrystalFeather();
@@ -1093,6 +1108,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new CurseMarkStartingBonus();
 		new DaedalusHammer();
 		new DarkArtsTreatise();
+		new DiamondShard();
 		new DiscountCard();
 		new EarthenTome();
 		new EchoStone();
@@ -1151,6 +1167,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new ScrollOfFrost();
 		new SigilOfTheIronLegion();
 		new ShellTrinket();
+		new Sharpener();
+		new ShimmeringFeather();
 		new SmellingSalts();
 		new StarlightVeil();
 		new StaticNecklace();

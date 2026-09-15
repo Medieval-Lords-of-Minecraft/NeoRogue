@@ -1,11 +1,10 @@
 package me.neoblade298.neorogue.equipment.accessories;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -28,7 +27,7 @@ public class NaturesGift extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot, SessionEquipment sessionEq) {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (FightInstance.isOnGrass(data.getEntity())) {
+			if (FightInstance.isOnDeepslate(data.getEntity())) {
 				data.addMana(manaPerTick);
 			}
 			return TriggerResult.keep();
@@ -37,7 +36,7 @@ public class NaturesGift extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FERN,
-				"Gain " + DescUtil.val(manaPerTick) + " mana per second while standing on grass.");
+		item = createItem(Material.DEEPSLATE,
+				"Gain " + DescUtil.val(manaPerTick) + " mana per second while standing on deepslate.");
 	}
 }

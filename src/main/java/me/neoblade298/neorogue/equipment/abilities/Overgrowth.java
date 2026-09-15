@@ -1,6 +1,4 @@
 package me.neoblade298.neorogue.equipment.abilities;
-import me.neoblade298.neorogue.equipment.SessionEquipment;
-
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.SessionEquipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -40,15 +39,15 @@ public class Overgrowth extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(RADIUS, true);
 	private static final Circle circ = new Circle(RADIUS);
 	private static final ParticleContainer projPart = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(50, 180, 50), 1.2F))
+			.dustOptions(new DustOptions(Color.fromRGB(75, 75, 85), 1.2F))
 			.count(3).spread(0.1, 0.1).speed(0);
 	private static final ParticleContainer edge = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(30, 130, 30), 1F))
+			.dustOptions(new DustOptions(Color.fromRGB(45, 45, 55), 1F))
 			.count(1).spread(0, 0).speed(0);
-	private static final ParticleContainer fill = new ParticleContainer(Particle.SPORE_BLOSSOM_AIR)
+	private static final ParticleContainer fill = new ParticleContainer(Particle.ASH)
 			.count(1).spread(0.1, 0).speed(0);
 	private static final ParticleContainer impact = new ParticleContainer(Particle.BLOCK)
-			.blockData(Material.GRASS_BLOCK.createBlockData())
+			.blockData(Material.DEEPSLATE.createBlockData())
 			.count(50).spread(2.5, 0.5).speed(0.2);
 
 	private int damage;
@@ -88,7 +87,7 @@ public class Overgrowth extends Equipment {
 					DamageStatTracker.of(id + slot, this)), ent);
 		}
 
-		FightInstance.terraformGrass(loc, RADIUS);
+		FightInstance.terraformDeepslate(loc, RADIUS);
 	}
 
 	private class OvergrowthProjectile extends Projectile {
@@ -127,8 +126,8 @@ public class Overgrowth extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MOSS_BLOCK,
+		item = createItem(Material.DEEPSLATE,
 				"Lob a potion that explodes on impact, dealing " + GlossaryTag.EARTHEN.tag(this, damage)
-				+ " damage to nearby enemies and turning nearby terrain to grass.");
+				+ " damage to nearby enemies and turning nearby terrain to deepslate.");
 	}
 }
