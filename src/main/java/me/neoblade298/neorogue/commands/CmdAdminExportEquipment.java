@@ -15,9 +15,11 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.commands.EquipmentCategoryClassifier.Classification;
+import me.neoblade298.neorogue.commands.EquipmentStatusClassifier.StatusInteractions;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class CmdAdminExportEquipment extends Subcommand {
 	public CmdAdminExportEquipment(String key, String desc, String perm, SubcommandRunner runner) {
@@ -56,12 +58,18 @@ public class CmdAdminExportEquipment extends Subcommand {
 		for (GlossaryTag tag : GlossaryTag.values()) {
 			columns.add(tag.name().toLowerCase());
 		}
+		for (StatusType status : StatusType.values()) {
+			if (status.isHidden()) continue;
+			columns.add("apply_" + status.name().toLowerCase());
+			columns.add("use_" + status.name().toLowerCase());
+		}
 		writeRow(writer, columns);
 	}
 
 	private static void writeEquipment(BufferedWriter writer, Equipment equipment) throws IOException {
 		List<String> values = new ArrayList<>();
 		Classification classification = EquipmentCategoryClassifier.classify(equipment);
+		StatusInteractions statuses = EquipmentStatusClassifier.classify(equipment);
 		values.add(equipment.getId());
 		values.add(equipment.getRarity().name());
 		values.add(Boolean.toString(isDroppable(equipment)));
@@ -72,6 +80,11 @@ public class CmdAdminExportEquipment extends Subcommand {
 		values.add(Boolean.toString(classification.isDefense()));
 		for (GlossaryTag tag : GlossaryTag.values()) {
 			values.add(equipment.getTags().contains(tag) ? "1" : "0");
+		}
+		for (StatusType status : StatusType.values()) {
+			if (status.isHidden()) continue;
+			values.add(statuses.applies().contains(status) ? "1" : "0");
+			values.add(statuses.uses().contains(status) ? "1" : "0");
 		}
 		writeRow(writer, values);
 	}
