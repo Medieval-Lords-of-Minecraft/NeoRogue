@@ -31,7 +31,7 @@ public class ZeussDagger extends Equipment {
 	public ZeussDagger(boolean isUpgraded) {
 		super(ID, "Zeus's Dagger", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 240 : 160, 0.3, 0.2, DamageType.ELECTRIFIED,
+				EquipmentProperties.ofWeapon(isUpgraded ? 240 : 160, 0.3, 0.2, DamageType.LIGHTNING,
 						Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		electrified = isUpgraded ? 5 : 3;
 	}

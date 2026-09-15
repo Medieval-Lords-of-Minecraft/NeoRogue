@@ -150,19 +150,20 @@ public class InfernalScepter extends Equipment {
 			Player player = data.getPlayer();
 			Sounds.explode.play(player, projectile.getLocation());
 			BURST.play(player, BURST_EDGE, projectile.getLocation(), LocalAxes.xz(), BURST_FILL);
+			boolean empowers = false;
 			for (LivingEntity target : TargetHelper.getEntitiesInRadius(player, projectile.getLocation(), TARGETS)) {
 				FightData targetData = FightInstance.getFightData(target);
-				boolean empowers = targetData != null && targetData.hasStatus(StatusType.BURN)
+				empowers |= targetData != null && targetData.hasStatus(StatusType.BURN)
 						&& targetData.getStatus(StatusType.BURN).getStacks() >= BURN_THRESHOLD;
 				DamageMeta damage = new DamageMeta(data, DAMAGE, DamageType.FIRE,
 						DamageStatTracker.of(id + slot, InfernalScepter.this));
 				damage.setProjectileInstance(projectile);
 				damage.isBasicAttack(InfernalScepter.this, true);
 				FightInstance.dealDamage(damage, target);
-				if (empowers) {
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data,
-							fireDamageIncrease, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), InfernalScepter.this)));
-				}
+			}
+			if (empowers) {
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data,
+						fireDamageIncrease, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), InfernalScepter.this)));
 			}
 			projectile.cancel();
 		}
