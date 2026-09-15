@@ -20,8 +20,9 @@ public class StandardPriorityAction extends PriorityAction {
 		this.count = count;
 	}
 	
-	public void addCount(int count) {
+	public int addCount(int count) {
 		this.count += count;
+		return this.count;
 	}
 	public void setBool(boolean bool) {
 		this.bool = bool;

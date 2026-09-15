@@ -77,7 +77,7 @@ public class Snakebite extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
-				"On cast, " + DescUtil.charge(this, 1, properties.get(PropertyType.CHARGE_TIME))
+				"On cast, " + DescUtil.charge(this, 1, (int) properties.get(PropertyType.CHARGE_TIME))
 						+ " before applying " + GlossaryTag.POISON.tag(this, poison) + " ["
 						+ DescUtil.duration(poisonDuration / 20, true) + "] to enemies in a cone in front of you. Then, deal "
 						+ GlossaryTag.POISON.tag(this) + " damage based on their " + GlossaryTag.POISON.tag(this)
